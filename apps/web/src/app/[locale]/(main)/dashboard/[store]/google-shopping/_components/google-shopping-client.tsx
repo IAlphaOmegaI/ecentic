@@ -11,7 +11,9 @@ import { useState } from "react";
 import { CustomHairlineFigure } from "@/components/hairline/custom-figure";
 import { Link } from "@/i18n/navigation";
 import * as GoogleMerchant from "@/server/app/integration/google-merchant";
+import { DashboardEmptyState } from "../../../_components/empty-state";
 import { StatusPill } from "../../../_components/grid";
+import { DashboardLoadingState } from "../../../_components/loading-state";
 
 /**
  * Full Google Shopping management surface for one store. Walks the Path 1
@@ -606,6 +608,13 @@ export const DiagnosticsPanel = ({ store }: { store: string }) => {
         </p>
       </div>
 
+      {isPulling && (
+        <DashboardLoadingState
+          title={translate("pulling")}
+          figure="merchant-folio"
+          compact
+        />
+      )}
       {diagnostics && (
         <>
           {/* Same connected stat grid as the channel status above, rather
@@ -640,9 +649,11 @@ export const DiagnosticsPanel = ({ store }: { store: string }) => {
 
           {diagnostics.itemIssues.length === 0 &&
           diagnostics.accountIssues.length === 0 ? (
-            <p className="p-4 text-foreground-dimmed text-sm">
-              {translate("empty")}
-            </p>
+            <DashboardEmptyState
+              title={translate("empty")}
+              figure="merchant-folio"
+              compact
+            />
           ) : (
             diagnostics.itemIssues
               .slice(0, 25)

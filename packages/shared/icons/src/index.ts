@@ -22,6 +22,7 @@ export * from "./icons/chevron-left";
 export * from "./icons/chevron-right";
 export * from "./icons/chevron-y";
 export * from "./icons/circle-bolt";
+export * from "./icons/circle-info";
 export * from "./icons/circle-minus";
 export * from "./icons/clock";
 export * from "./icons/code";

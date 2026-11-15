@@ -1,5 +1,5 @@
 export const RunSkeleton = () => (
-  <div aria-hidden="true">
+  <div aria-hidden="true" className="animate-pulse motion-reduce:animate-none">
     <div className="flex items-center justify-between gap-4 border-accent-foreground border-b bg-background-rich px-6 py-5 sm:px-8">
       <div className="h-6 w-56 rounded-sm bg-accent-foreground/40" />
       <div className="h-9 w-40 rounded-sm bg-accent-foreground/20" />

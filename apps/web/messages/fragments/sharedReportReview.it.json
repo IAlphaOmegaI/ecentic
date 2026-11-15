@@ -1,0 +1,32 @@
+{
+  "share": {
+    "review": {
+      "title": "Risultati dei confronti con l’IA",
+      "description": "Un’analisi salvata dei confronti tra prodotti effettuati da modelli di IA. I risultati descrivono simulazioni, non l’attività reale degli acquirenti.",
+      "recorded": "Registrato il {date}",
+      "score": {
+        "label": "Tasso di vittoria nei confronti",
+        "context": "{wins, plural, one {# vittoria} many {# vittorie} other {# vittorie}} su {total, plural, one {# risultato registrato} many {# risultati registrati} other {# risultati registrati}}.",
+        "empty": "Non sono stati registrati risultati di confronto per questa analisi."
+      },
+      "providers": {
+        "title": "Risultati per fornitore di IA",
+        "description": "Vittorie e sconfitte registrate per ogni modello.",
+        "outcomes": "{wins, plural, one {# vittoria} many {# vittorie} other {# vittorie}} · {losses, plural, one {# sconfitta} many {# sconfitte} other {# sconfitte}}",
+        "empty": "Non sono stati registrati risultati per fornitore."
+      },
+      "finding": {
+        "title": "Risultato principale",
+        "details": "Leggi l’impatto riportato"
+      },
+      "cta": {
+        "title": "Confronta i tuoi prodotti",
+        "description": "Avvia un’analisi gratuita per vedere come i modelli di IA confrontano le tue schede prodotto."
+      },
+      "unavailable": {
+        "title": "Questo rapporto non è disponibile",
+        "description": "Il link potrebbe essere errato oppure l’analisi potrebbe non essere ancora terminata."
+      }
+    }
+  }
+}

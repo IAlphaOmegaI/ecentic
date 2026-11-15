@@ -4,7 +4,6 @@ import type { SearchParamsProps } from "@zenncore/web/types";
 import { connection } from "next/server";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
-import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import {
   QueryTransitionFade,
   QueryTransitionProvider,
@@ -15,6 +14,7 @@ import { Environment } from "@/server/utils/environment";
 import type { Pager } from "@/server/utils/pagination";
 import { extractPaginationParams } from "@/server/utils/pagination";
 import { CompetitorsTable } from "../../../_components/competitors-table";
+import { DashboardEmptyState } from "../../../_components/empty-state";
 import { EntityMark } from "../../brand/_components/entity-mark";
 import { ResearchUnavailable } from "../../research/_components/shell";
 import {
@@ -71,24 +71,17 @@ const Summary = async ({ params }: { params: StoreParams }) => {
   const { brands } = result.data;
   if (brands.length === 0)
     return (
-      <section className="grid min-h-80 items-center border-accent-foreground border-b md:grid-cols-3">
-        <div className="px-4 py-8 sm:px-6 md:col-span-2">
-          <h2 className="font-semibold text-2xl">{translate("empty.title")}</h2>
-          <p className="mt-3 max-w-xl text-foreground-dimmed text-sm leading-6">
-            {translate("empty.description")}
-          </p>
-          <Button
-            className="mt-5"
-            render={<Link href={`/dashboard/${store}/competitors/add`} />}
-          >
-            {translate("action.primary")}
-            <PlusIcon className="size-4" />
-          </Button>
-        </div>
-        <div className="mx-auto w-full max-w-72 px-6">
-          <CommerceFigure kind="headphones" className="h-52" />
-        </div>
-      </section>
+      <DashboardEmptyState
+        title={translate("empty.title")}
+        description={translate("empty.description")}
+        figure="rivals-balance"
+        className="border-accent-foreground border-b"
+      >
+        <Button render={<Link href={`/dashboard/${store}/competitors/add`} />}>
+          {translate("action.primary")}
+          <PlusIcon className="size-4" />
+        </Button>
+      </DashboardEmptyState>
     );
   const tested = brands.filter((brand) => brand.simulations > 0);
   const total = brands.reduce((sum, brand) => sum + brand.simulations, 0);

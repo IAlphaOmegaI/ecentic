@@ -213,7 +213,7 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
                 ? translate("profile.action.saving")
                 : translate("profile.action.primary")}
               {isProfilePending ? (
-                <LoaderIcon className="size-4 animate-spin" />
+                <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
               ) : (
                 <ArrowRightIcon className="size-4" />
               )}
@@ -242,7 +242,7 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
                 ? translate("password.action.updating")
                 : translate("password.action.primary")}
               {isPasswordPending ? (
-                <LoaderIcon className="size-4 animate-spin" />
+                <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
               ) : (
                 <ArrowRightIcon className="size-4" />
               )}
@@ -268,7 +268,7 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
           disabled={isSignOutPending}
         >
           {isSignOutPending ? (
-            <LoaderIcon className="size-4 animate-spin" />
+            <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
           ) : (
             <LogOutIcon className="size-4" />
           )}

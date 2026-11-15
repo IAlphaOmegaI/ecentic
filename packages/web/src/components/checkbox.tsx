@@ -15,7 +15,7 @@ export const Checkbox = ({
     <CheckBoxPrimitive.Root
       indeterminate={indeterminate}
       className={createClassName(
-        "flex size-5 items-center justify-center focus-visible:outline-2 focus-visible:outline-primary-dimmed focus-visible:outline-offset-2 data-unchecked:border data-unchecked:border-accent-foreground data-checked:bg-primary data-indeterminate:bg-primary",
+        "flex size-5 items-center justify-center rounded-sm focus-visible:outline-2 focus-visible:outline-primary-dimmed focus-visible:outline-offset-2 data-unchecked:border data-unchecked:border-accent-foreground data-checked:bg-primary data-indeterminate:bg-primary",
         className,
         classList?.root,
       )}

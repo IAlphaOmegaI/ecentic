@@ -18,7 +18,9 @@ import {
   Crosshair,
   StatusPill,
 } from "@/app/[locale]/(main)/dashboard/_components/grid";
+import { StoreMark } from "@/app/[locale]/(main)/dashboard/_components/store-mark";
 import { AnalysisText } from "@/components/analysis-text";
+import { FeedbackLoading, FeedbackState } from "@/components/feedback-state";
 import * as Discovery from "@/server/app/intelligence/discovery";
 
 const MAX_QUERIES = 8;
@@ -240,6 +242,7 @@ const QuerySection = ({
 type DiscoveryClientProps = {
   /** Prefill the target store domain (and, with `lockStore`, fix it). */
   defaultTargetStore?: string;
+  targetStoreIdentity?: { name: string; domain: string | null };
   /**
    * Hide the target store field and always evaluate against
    * `defaultTargetStore` — used when the tool is scoped to one store's
@@ -250,6 +253,7 @@ type DiscoveryClientProps = {
 
 export const DiscoveryClient = ({
   defaultTargetStore = "",
+  targetStoreIdentity,
   lockStore = false,
 }: DiscoveryClientProps = {}) => {
   const translate = useTranslations("dashboard.discovery");
@@ -333,17 +337,42 @@ export const DiscoveryClient = ({
   });
 
   return (
-    <div className="flex min-w-0 flex-col">
-      <div className="flex flex-col gap-3 border-accent-foreground border-b px-4 py-4 sm:flex-row sm:items-center sm:gap-6 sm:px-6">
-        <div className="min-w-0 sm:w-72 sm:shrink-0">
-          <p className="font-medium text-foreground-dimmed text-sm">
-            {translate("targetStore.label")}
+    <div className="flex min-h-full min-w-0 flex-1 flex-col">
+      {lockStore ? (
+        <section className="flex flex-col gap-4 border-accent-foreground border-b px-4 py-5 sm:px-6 lg:flex-row lg:items-center lg:gap-6">
+          <div className="flex min-w-0 flex-1 items-center gap-4">
+            <StoreMark
+              domain={
+                targetStoreIdentity
+                  ? targetStoreIdentity.domain
+                  : defaultTargetStore
+              }
+              className="size-12"
+            />
+            <div className="min-w-0 flex-1">
+              <p className="text-foreground-dimmed text-sm">
+                {translate("targetStore.label")}
+              </p>
+              <h2 className="mt-1 truncate font-semibold text-foreground-rich text-lg">
+                {targetStoreIdentity?.name || defaultTargetStore}
+              </h2>
+              {targetStoreIdentity?.name && (
+                <p className="mt-1 truncate text-foreground-dimmed text-sm">
+                  {defaultTargetStore}
+                </p>
+              )}
+            </div>
+          </div>
+          <p className="max-w-xl text-foreground-dimmed text-sm leading-6 lg:w-1/2 lg:border-accent-foreground lg:border-l lg:pl-6">
+            {translate("targetStore.description")}
           </p>
-          {lockStore ? (
-            <p className="mt-1 truncate font-medium text-foreground-rich text-sm">
-              {defaultTargetStore}
+        </section>
+      ) : (
+        <div className="flex flex-col gap-3 border-accent-foreground border-b px-4 py-4 sm:flex-row sm:items-center sm:gap-6 sm:px-6">
+          <div className="min-w-0 sm:w-72 sm:shrink-0">
+            <p className="font-medium text-foreground-dimmed text-sm">
+              {translate("targetStore.label")}
             </p>
-          ) : (
             <TextField
               value={targetStore}
               onValueChange={setTargetStore}
@@ -356,22 +385,15 @@ export const DiscoveryClient = ({
                 disabled={isRunning}
               />
             </TextField>
-          )}
-        </div>
-        <p className="max-w-xl text-foreground-dimmed text-sm leading-6">
-          {translate("targetStore.description")}
-        </p>
-        {lockStore && (
-          <div className="sm:ml-auto">
-            <StatusPill tone="primary">
-              {translate("targetStore.yourStore")}
-            </StatusPill>
           </div>
-        )}
-      </div>
+          <p className="max-w-xl text-foreground-dimmed text-sm leading-6">
+            {translate("targetStore.description")}
+          </p>
+        </div>
+      )}
 
       <section className="relative">
-        <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <Crosshair className="top-0 left-0 -translate-y-1/2" />
         <div className="flex items-start justify-between gap-4 px-4 pt-6 pb-5 sm:px-6">
           <div>
             <h2 className="font-semibold text-foreground-rich text-xl">
@@ -477,32 +499,26 @@ export const DiscoveryClient = ({
       </p>
 
       <section
-        className="relative border-accent-foreground border-t"
+        className="relative flex flex-1 flex-col border-accent-foreground border-t"
         aria-busy={isRunning}
       >
-        <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        <Crosshair className="top-0 right-0 -translate-y-1/2" />
         {isRunning && (
-          <p
-            role="status"
-            className="flex items-center gap-3 px-4 py-5 text-foreground-dimmed text-sm sm:px-6"
-          >
-            <LoaderIcon
-              aria-hidden
-              className="size-4 shrink-0 animate-spin motion-reduce:animate-none"
-            />
-            {translate("loading")}
-          </p>
+          <FeedbackLoading
+            title={translate("loading")}
+            figure="question-cards"
+            compact={result !== null}
+            scope={result === null ? "page" : "section"}
+          />
         )}
         {result === null ? (
           !isRunning && (
-            <div className="px-4 py-8 sm:px-6">
-              <p className="font-medium text-foreground-dimmed text-sm">
-                {translate("empty.status")}
-              </p>
-              <p className="mt-3 max-w-2xl text-foreground-dimmed text-sm leading-6">
-                {translate("empty.description")}
-              </p>
-            </div>
+            <FeedbackState
+              title={translate("empty.status")}
+              description={translate("empty.description")}
+              figure="shopper-basket"
+              scope="page"
+            />
           )
         ) : (
           <>

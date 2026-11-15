@@ -80,7 +80,8 @@ const UcpContent = async ({ store }: { store: string }) => {
     GoogleMerchant.getUcpProducts(Environment.SERVER, { store }),
   ]);
 
-  if (!readiness.success || !products.success) return <ChannelLoadError />;
+  if (!readiness.success || !products.success)
+    return <ChannelLoadError scope="section" />;
 
   const labels = {
     unknown: translate("unknown"),

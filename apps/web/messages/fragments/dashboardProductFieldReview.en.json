@@ -1,0 +1,25 @@
+{
+  "dashboard": {
+    "productWorkspace": {
+      "listing": {
+        "title": "Saved listing",
+        "description": "Review the product facts saved in your catalog. Coverage measures presence only.",
+        "coverage": "{present} of {total} fields saved",
+        "missingValue": "Not saved",
+        "missingImages": "No product photos saved",
+        "imageHint": "Add clear product photos in your catalog source.",
+        "missingDescription": "Add a description covering the product’s use and key features.",
+        "sourceHint": "Change these details in your catalog source, then sync them to ecentic.",
+        "structuredSaved": "Inspect the saved data before publishing. The live page may differ.",
+        "structuredMissing": "Generate a draft from your saved product facts, then review it before publishing.",
+        "unreachable": "The storefront could not be reached, so its published data has not been verified.",
+        "action": {
+          "primary": "Manage catalog source",
+          "secondary": "Read full description",
+          "tertiary": "Show less",
+          "quaternary": "Inspect structured data"
+        }
+      }
+    }
+  }
+}

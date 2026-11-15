@@ -96,11 +96,11 @@ const Field = ({
 }) => (
   <div className="flex flex-col gap-1.5">
     <div className="flex items-baseline justify-between gap-3">
-      <span className="font-medium text-xs text-foreground-dimmed uppercase tracking-wider">
+      <span className="font-medium text-foreground-dimmed text-xs uppercase tracking-wider">
         {label}
       </span>
       {hint && (
-        <span className="font-mono text-xs text-foreground-dimmed">{hint}</span>
+        <span className="font-mono text-foreground-dimmed text-xs">{hint}</span>
       )}
     </div>
     {children}
@@ -375,7 +375,9 @@ export const Playground = () => {
                 isRunning || !config.prompt.trim() || config.models.length === 0
               }
             >
-              {isRunning && <LoaderIcon className="size-4 animate-spin" />}
+              {isRunning && (
+                <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
+              )}
               Run on {config.models.length}{" "}
               {config.models.length === 1 ? "model" : "models"}
             </Button>
@@ -509,7 +511,7 @@ export const Playground = () => {
             })}
 
             <div className="flex flex-wrap items-center gap-2">
-              <span className="w-24 shrink-0 font-medium text-xs text-foreground-dimmed uppercase tracking-wider">
+              <span className="w-24 shrink-0 font-medium text-foreground-dimmed text-xs uppercase tracking-wider">
                 Custom
               </span>
               {config.custom.map((id) => (
@@ -544,7 +546,7 @@ export const Playground = () => {
             </div>
 
             {custom.trim() && (
-              <p className="font-mono text-xs text-foreground-dimmed">
+              <p className="font-mono text-foreground-dimmed text-xs">
                 {custom.trim()} → {PROVIDERS[providerOf(custom.trim())].label}
               </p>
             )}

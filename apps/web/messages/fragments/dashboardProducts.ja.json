@@ -26,14 +26,14 @@
         "poor": "低い（50%未満）",
         "distribution": "品質分布",
         "avgQuality": "平均品質",
-        "kicker": "01.1 — 品質"
+        "kicker": "品質"
       },
       "optimization": {
         "readiness": "商品準備状況",
         "optimized": "最適化済み",
         "pending": "保留中",
         "unoptimized": "未最適化",
-        "kicker": "01.2 — 最適化"
+        "kicker": "最適化"
       },
       "detail": {
         "backToProducts": "商品一覧に戻る",
@@ -130,7 +130,7 @@
           "lost": "敗北",
           "noWins": "勝利記録なし",
           "noLosses": "敗北記録なし",
-          "kicker": "01 — バトルカード"
+          "kicker": "バトルカード"
         },
         "audit": {
           "aiContentQuality": "AIコンテンツ品質",
@@ -141,7 +141,7 @@
           "title": "商品情報を最適化",
           "description": "AIエージェントが読み取る項目について、カテゴリに応じたコンテンツ品質スコアと、この商品情報が対象ユーザーに対してどのようにポジショニングされているかを表示します。",
           "completeness": "完全性:",
-          "currentListing": "02 — 現在の商品情報",
+          "currentListing": "現在の商品情報",
           "characters": "{count}文字",
           "noDescription": "説明がありません",
           "liveOnStore": "ストアで公開中",
@@ -157,7 +157,7 @@
           "structuredDataPublished": "最適化した構造化データを公開しました",
           "structuredDataPublishedDescription": "ecentic.structured_data メタフィールドに書き込みました。アプリ埋め込みは現在、デフォルトの商品マークアップの代わりにこれを出力しています。埋め込みがオフの場合は、テーマエディターで有効化して「Save」を押してください。",
           "openThemeEditor": "テーマエディターを開く",
-          "listingAuditKicker": "01 — AI商品情報監査",
+          "listingAuditKicker": "AI商品情報監査",
           "status": {
             "optimizedByEcentic": "ecenticで最適化済み",
             "ecenticStandard": "ecentic標準",

@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useOnboardingError } from "@/app/[locale]/(auth)/onboarding/_components/use-onboarding-error";
+import { FeedbackState } from "@/components/feedback-state";
 import { useRouter } from "@/i18n/navigation";
 import { formatElapsed } from "@/lib/date";
 import type * as Competitor from "@/server/app/competitor";
@@ -260,47 +261,22 @@ export const OffersTab = ({
     >
       <AnimatePresence mode="wait" initial={false}>
         {!isDiscovering && logs.length === 0 && (
-          <motion.div
-            key="idle"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className={cn(
-              "m-auto flex size-full flex-1 flex-col items-center justify-center p-4",
-              dashboard && "min-h-64 items-start px-4 py-6 sm:px-6",
-            )}
+          <FeedbackState
+            title={translate("title")}
+            description={translate("description")}
+            figure="rivals-balance"
+            scope="page"
           >
-            <div
-              className={cn("relative z-20 max-w-md", dashboard && "max-w-2xl")}
-            >
-              <h3
-                className={cn(
-                  "text-center font-medium text-2xl text-foreground",
-                  dashboard && "text-left font-semibold text-lg",
-                )}
-              >
-                {translate("title")}
-              </h3>
-              <p
-                className={cn(
-                  "mt-1 text-center text-foreground-dimmed text-lg",
-                  dashboard && "mt-2 text-left text-sm leading-6",
-                )}
-              >
-                {translate("description")}
-              </p>
-            </div>
             <Button
               color="primary"
               type="button"
               onClick={handleDiscover}
               disabled={products.length === 0}
-              className="relative z-20 mt-4"
             >
-              {translate("action")} <ShoppingCartIcon />
+              {translate("action")}{" "}
+              <ShoppingCartIcon aria-hidden className="size-4" />
             </Button>
-          </motion.div>
+          </FeedbackState>
         )}
 
         {(isDiscovering || logs.length > 0) && (

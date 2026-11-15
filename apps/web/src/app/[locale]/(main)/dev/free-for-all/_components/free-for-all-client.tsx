@@ -68,7 +68,7 @@ const StoreCard = ({
     <div className="border-accent-foreground border-b px-4 py-3">
       <div className="flex flex-wrap items-center gap-3">
         {isTopRanked && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 font-semibold text-xs text-success uppercase tracking-wider">
+          <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 font-semibold text-success text-xs uppercase tracking-wider">
             <AwardIcon className="size-3" />
             Top pick
           </span>
@@ -147,7 +147,7 @@ const StoreCard = ({
       )} */}
 
       {(store.status === "discovering" || store.status === "searching") && (
-        <span className="inline-block h-3 w-1.5 animate-pulse bg-primary/60" />
+        <span className="inline-block h-3 w-1.5 animate-pulse bg-primary/60 motion-reduce:animate-none" />
       )}
     </div>
   </div>
@@ -157,7 +157,7 @@ const RankingCard = ({ rankings }: { rankings: RankedProduct[] }) => (
   <div className="rounded-lg border border-success/50 bg-success/5">
     <div className="flex items-center gap-2 border-success/30 border-b px-4 py-3">
       <AwardIcon className="size-4 text-success" />
-      <p className="font-semibold text-xs text-success uppercase tracking-widest">
+      <p className="font-semibold text-success text-xs uppercase tracking-widest">
         Agent's Ranking
       </p>
     </div>
@@ -201,7 +201,7 @@ const RankingCard = ({ rankings }: { rankings: RankedProduct[] }) => (
                 {item.data_signal}
               </p>
             )}
-            <p className="mt-1 font-mono text-xs text-foreground-dimmed/60">
+            <p className="mt-1 font-mono text-foreground-dimmed/60 text-xs">
               {item.product_id}
             </p>
           </div>
@@ -443,7 +443,7 @@ export const FreeForAllClient = () => {
     <div className="space-y-4">
       <div className="rounded-lg border border-accent-foreground bg-background-rich">
         <div className="border-accent-foreground border-b px-4 py-3">
-          <p className="font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
+          <p className="font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
             Stores in the ring
           </p>
           <p className="mt-1.5 text-foreground-dimmed text-sm">
@@ -514,7 +514,7 @@ export const FreeForAllClient = () => {
             >
               {isRunning ? (
                 <span className="flex items-center gap-2">
-                  <span className="inline-block size-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  <span className="inline-block size-3 animate-spin rounded-full border-2 border-current border-t-transparent motion-reduce:animate-none" />
                   Deciding…
                 </span>
               ) : (
@@ -530,7 +530,7 @@ export const FreeForAllClient = () => {
       {searchParams !== null && (
         <div className="rounded-lg border border-accent-foreground bg-background-rich">
           <div className="border-accent-foreground border-b px-4 py-3">
-            <p className="font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
+            <p className="font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
               Derived Search Parameters
             </p>
             <p className="mt-1.5 text-foreground-dimmed text-sm">
@@ -545,7 +545,7 @@ export const FreeForAllClient = () => {
 
       {stores.length > 0 && (
         <div>
-          <p className="mb-2 font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
+          <p className="mb-2 font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
             Store catalogs
           </p>
           <div className="grid gap-4 lg:grid-cols-2">
@@ -567,7 +567,7 @@ export const FreeForAllClient = () => {
         <div className="rounded-lg border border-accent-foreground bg-background-rich">
           <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
             <div className="flex items-center gap-3">
-              <p className="font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
+              <p className="font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
                 Decision Rationale
               </p>
               {phase === "running" && !verdict && (
@@ -584,7 +584,7 @@ export const FreeForAllClient = () => {
                 {verdict}
               </MessageResponse>
             ) : (
-              <span className="inline-block h-3 w-1.5 animate-pulse bg-primary/60" />
+              <span className="inline-block h-3 w-1.5 animate-pulse bg-primary/60 motion-reduce:animate-none" />
             )}
           </div>
         </div>
@@ -593,7 +593,7 @@ export const FreeForAllClient = () => {
       <div className="rounded-lg border border-accent-foreground bg-background-rich">
         <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
           <div className="flex items-center gap-3">
-            <p className="font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
+            <p className="font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
               Event Log
             </p>
             {phase === "running" && (

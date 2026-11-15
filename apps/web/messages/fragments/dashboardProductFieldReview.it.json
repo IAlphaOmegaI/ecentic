@@ -1,0 +1,25 @@
+{
+  "dashboard": {
+    "productWorkspace": {
+      "listing": {
+        "title": "Scheda salvata",
+        "description": "Controlla i dati del prodotto salvati nel catalogo. La copertura indica soltanto quali campi sono compilati.",
+        "coverage": "{present} campi salvati su {total}",
+        "missingValue": "Non salvato",
+        "missingImages": "Nessuna foto del prodotto salvata",
+        "imageHint": "Aggiungi foto chiare del prodotto nella fonte del catalogo.",
+        "missingDescription": "Aggiungi una descrizione dell’uso del prodotto e delle sue caratteristiche principali.",
+        "sourceHint": "Modifica questi dati nella fonte del catalogo, poi sincronizzali con ecentic.",
+        "structuredSaved": "Controlla i dati salvati prima di pubblicarli. Quelli sulla pagina del negozio possono essere diversi.",
+        "structuredMissing": "Genera una bozza dai dati del prodotto salvati, poi controllala prima di pubblicarla.",
+        "unreachable": "Non è stato possibile raggiungere il negozio, quindi i dati pubblicati non sono stati verificati.",
+        "action": {
+          "primary": "Gestisci fonte del catalogo",
+          "secondary": "Leggi tutta la descrizione",
+          "tertiary": "Mostra meno",
+          "quaternary": "Esamina i dati strutturati"
+        }
+      }
+    }
+  }
+}

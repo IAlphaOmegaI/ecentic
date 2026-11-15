@@ -1,0 +1,15 @@
+{
+  "dashboard": {
+    "nav": {
+      "assistant": {
+        "chat": {
+          "heading": "What should we work on?",
+          "placeholder": "Draft a question for Judy…",
+          "draftHint": "Chat is coming soon. Your draft stays here until you leave this workspace.",
+          "send": "Send message",
+          "close": "Minimize Judy"
+        }
+      }
+    }
+  }
+}

@@ -46,6 +46,10 @@ const rawColor =
   /\b(?:bg|text|border|ring|outline|shadow|fill|stroke|from|via|to)-(?:\[(?:#[\da-fA-F]+|rgba?\(|hsla?\(|oklch\()[^\]]*\]|(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d+|white\b|black\b)/g;
 const rawRadius =
   /\brounded(?:-[trblse]{1,2})?-(?:xs|md|xl|2xl|3xl|4xl|\[[^\]]+\])/g;
+const overlayRadiusFiles = [
+  "apps/web/src/app/[locale]/(main)/dashboard/_components/workspace-viewport.tsx",
+  "apps/web/src/components/ui/toast.tsx",
+];
 const appearance =
   /\b(?:text|tracking|leading|shadow|drop-shadow|p[xytrblse]?|m[xytrblse]?|gap(?:-[xy])?)-\[(?!var\(|length:--)[^\]]+\]/g;
 const theme = await readFile(
@@ -70,6 +74,16 @@ for (const file of files.filter((candidate) => !excluded(candidate))) {
     ] as const)
       for (const match of value.matchAll(pattern))
         issues.push({ file, line, rule, value: match[0] });
+    for (const match of value.matchAll(
+      /\brounded(?:-[trblse]{1,2})?-overlay\b/g,
+    ))
+      if (!overlayRadiusFiles.includes(file))
+        issues.push({
+          file,
+          line,
+          rule: "scoped-overlay-radius",
+          value: match[0],
+        });
     for (const match of value.matchAll(semanticSurface))
       if (!colors.has(match[1]))
         issues.push({
@@ -140,6 +154,14 @@ const report = {
   files: files.filter((file) => !excluded(file)).length,
   foundations,
   radii: ["none", "sm", "lg", "full"],
+  radiusExceptions: [
+    {
+      token: "overlay",
+      files: overlayRadiusFiles,
+      reason:
+        "14 November review explicitly rounds only the expanded Judy window and toasts; ordinary controls keep the existing four treatments.",
+    },
+  ],
   issues,
   geometryExceptions: geometry,
   exclusions,
@@ -154,7 +176,7 @@ const serialized = `${JSON.stringify(report, null, 2)}\n`;
 if (parameters.includes("--out") && output)
   await writeFile(resolve(process.cwd(), output), serialized);
 console.log(
-  `Theme: ${foundations.length}/7 foundations, four radius treatments, ${report.files} source files. ${issues.length} violations; ${geometry.length} documented geometry exceptions.`,
+  `Theme: ${foundations.length}/7 foundations, four base radius treatments plus the scoped Judy/toast exception, ${report.files} source files. ${issues.length} violations; ${geometry.length} documented geometry exceptions.`,
 );
 if (issues.length) console.log(JSON.stringify(issues, null, 2));
 if (!parameters.includes("--out"))

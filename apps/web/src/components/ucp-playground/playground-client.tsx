@@ -1,8 +1,8 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { LoaderIcon, RobotIcon, ShoppingCartIcon } from "@zenncore/icons";
-import { cn } from "@zenncore/utils";
+import { LoaderIcon, ShoppingCartIcon } from "@zenncore/icons";
+import { cn, resultify } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import {
@@ -16,6 +16,7 @@ import {
   type GenericForm,
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
+import { useToastManager } from "@zenncore/web/components/toast";
 import {
   DefaultChatTransport,
   getToolName,
@@ -23,12 +24,10 @@ import {
   type ToolUIPart,
 } from "ai";
 import { useLocale, useMessages, useTranslations } from "next-intl";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { z } from "zod";
-import {
-  SectionKicker,
-  StatusPill,
-} from "@/app/[locale]/(main)/dashboard/_components/grid";
+import { StatusPill } from "@/app/[locale]/(main)/dashboard/_components/grid";
+import { FeedbackLoading, FeedbackState } from "@/components/feedback-state";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import {
   Conversation,
@@ -58,6 +57,7 @@ import type {
 import type {
   PlaygroundDataParts,
   PlaygroundUIMessage,
+  ResolvedShoppingService,
 } from "@/server/app/intelligence/ucp/playground";
 import { resolvePlaygroundStore } from "@/server/app/intelligence/ucp/playground-actions";
 
@@ -526,9 +526,9 @@ const ErrorView = ({ message }: { message: string }) => (
 
 const Thinking = () => (
   <div className="flex items-center gap-1.5 py-1.5">
-    <span className="size-1.5 animate-bounce rounded-full bg-foreground-dimmed [animation-delay:-0.2s]" />
-    <span className="size-1.5 animate-bounce rounded-full bg-foreground-dimmed [animation-delay:-0.1s]" />
-    <span className="size-1.5 animate-bounce rounded-full bg-foreground-dimmed" />
+    <span className="size-1.5 animate-bounce rounded-full bg-foreground-dimmed [animation-delay:-0.2s] motion-reduce:animate-none" />
+    <span className="size-1.5 animate-bounce rounded-full bg-foreground-dimmed [animation-delay:-0.1s] motion-reduce:animate-none" />
+    <span className="size-1.5 animate-bounce rounded-full bg-foreground-dimmed motion-reduce:animate-none" />
   </div>
 );
 
@@ -646,10 +646,12 @@ const CartView = ({
 };
 
 const ToolLoading = ({ label }: { label: string }) => (
-  <div className="flex items-center gap-2 rounded-lg border border-accent-foreground bg-background-rich px-4 py-3 text-foreground-dimmed text-sm">
-    <span className="inline-block size-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
-    {label}
-  </div>
+  <FeedbackLoading
+    title={label}
+    figure="shopping-bot"
+    compact
+    className="rounded-lg border border-accent-foreground/50"
+  />
 );
 
 const cartLoadingLabel = (
@@ -877,6 +879,8 @@ type PlaygroundClientProps = {
   defaultStoreUrl?: string;
   /** A store already resolved on the server, so the session starts connected. */
   initialConnection?: PlaygroundDataParts["profile"] | null;
+  /** A failed automatic profile lookup is a real disconnected state. */
+  initialFailure?: Extract<ResolvedShoppingService, { success: false }>["code"];
   /**
    * Caps how many messages the visitor may send. Set for anonymous visitors on
    * the public playground; the API route enforces the same cap server-side.
@@ -893,11 +897,16 @@ export const PlaygroundClient = ({
   appearance = "default",
   defaultStoreUrl = "",
   initialConnection = null,
+  initialFailure,
   messageLimit,
   lockStore = false,
 }: PlaygroundClientProps) => {
   const translate = useTranslations("dashboard.ucpPlaygroundDashboard");
   const messagesCatalog = useMessages();
+  const toast = useToastManager();
+  const connectionAttempt = useRef(false);
+  const [failure, setFailure] = useState(initialFailure);
+  const [draftDomain, setDraftDomain] = useState(defaultStoreUrl);
 
   const connectFormConfig = useMemo(
     () =>
@@ -905,7 +914,8 @@ export const PlaygroundClient = ({
         storeUrl: field({
           shape: "text",
           validator: z
-            .string()
+            .string({ error: translate("connect.fields.storeUrl.validation") })
+            .trim()
             .min(1, translate("connect.fields.storeUrl.validation")),
           label: translate("connect.fields.storeUrl.label"),
           placeholder: translate("connect.fields.storeUrl.placeholder"),
@@ -923,7 +933,6 @@ export const PlaygroundClient = ({
   const [connection, setConnection] = useState<
     PlaygroundDataParts["profile"] | null
   >(initialConnection);
-  const [connectError, setConnectError] = useState<string | null>(null);
   const [text, setText] = useState("");
 
   const {
@@ -969,23 +978,45 @@ export const PlaygroundClient = ({
 
   const [handleConnect, isConnecting] = useAsyncAction(
     async ({ storeUrl: domain }: FormEntries<typeof connectFormConfig>) => {
-      setConnectError(null);
+      if (connectionAttempt.current) return;
+      connectionAttempt.current = true;
+      const resolution = await resultify(() =>
+        resolvePlaygroundStore({ store: domain }),
+      );
+      connectionAttempt.current = false;
 
-      const resolution = await resolvePlaygroundStore({ store: domain });
-
-      if (!resolution.success) {
-        setConnectError(resolution.error.message);
+      if (!resolution.success || !resolution.data.success) {
+        const code = resolution.success ? resolution.data.code : "unreachable";
+        setFailure(code);
+        const description = (() => {
+          switch (code) {
+            case "domain":
+              return translate("connect.failure.domain");
+            case "profile":
+              return translate("connect.failure.profile");
+            case "shopping":
+              return translate("connect.failure.shopping");
+            case "unreachable":
+              return translate("connect.failure.unreachable");
+          }
+        })();
+        toast.add({
+          type: "error",
+          title: translate("connect.failure.title"),
+          description,
+        });
         return;
       }
 
       setStoreUrl(domain);
-      setConnection(resolution.data);
+      setFailure(undefined);
+      setConnection(resolution.data.data);
     },
   );
 
   const handleDisconnect = useCallback(() => {
     setConnection(null);
-    setConnectError(null);
+    setFailure(undefined);
     setMessages([]);
     clearError();
   }, [setMessages, clearError]);
@@ -1016,6 +1047,71 @@ export const PlaygroundClient = ({
   const isEmpty = messages.length === 0;
 
   if (!connection) {
+    if (appearance === "dashboard") {
+      return (
+        <div
+          data-playground-connect={appearance}
+          data-connection-state={
+            isConnecting ? "connecting" : failure ? "unavailable" : "idle"
+          }
+          aria-busy={isConnecting}
+          className="flex min-w-0 flex-1 flex-col items-center justify-center px-4 py-8 sm:px-6"
+        >
+          <div className="w-full max-w-3xl">
+            {isConnecting ? (
+              <FeedbackLoading
+                title={translate("connect.action.connecting")}
+                description={draftDomain}
+                figure="channel-plug-hub"
+                className="px-0 sm:px-0"
+              />
+            ) : (
+              <FeedbackState
+                title={translate(
+                  failure ? "connect.failure.title" : "connect.title",
+                )}
+                description={translate(
+                  failure
+                    ? `connect.failure.${failure}`
+                    : "connect.description",
+                )}
+                figure="channel-plug-hub"
+                className="px-0 sm:px-0"
+              />
+            )}
+            <InferredForm
+              className="mx-auto flex w-full max-w-xl flex-col items-stretch gap-3 space-y-0 sm:flex-row sm:items-end [&>div]:min-w-0 [&>div]:flex-1"
+              config={{
+                ...connectFormConfig,
+                storeUrl: {
+                  ...connectFormConfig.storeUrl,
+                  disabled: isConnecting,
+                },
+              }}
+              defaultValues={{ storeUrl: defaultStoreUrl }}
+              onChange={(values) => {
+                if (values.storeUrl === draftDomain) return;
+                setDraftDomain(values.storeUrl ?? "");
+                setFailure(undefined);
+              }}
+              onSubmit={handleConnect}
+            >
+              <Button
+                color="primary"
+                disabled={isConnecting}
+                type="submit"
+                className="shrink-0"
+              >
+                {isConnecting
+                  ? translate("connect.action.connecting")
+                  : translate("connect.action.primary")}
+              </Button>
+            </InferredForm>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div
         data-playground-connect={appearance}
@@ -1023,8 +1119,6 @@ export const PlaygroundClient = ({
           "flex flex-1 flex-col items-center justify-center p-8",
           appearance === "workbench" &&
             "relative isolate justify-start overflow-hidden px-8 pt-6 pb-10 max-sm:px-4",
-          appearance === "dashboard" &&
-            "min-w-0 items-stretch justify-start p-0",
         )}
       >
         {appearance === "workbench" && (
@@ -1038,16 +1132,12 @@ export const PlaygroundClient = ({
           className={cn(
             "w-full max-w-md space-y-4",
             appearance === "workbench" && "max-w-xl",
-            appearance === "dashboard" &&
-              "grid max-w-none space-y-0 lg:grid-cols-3",
           )}
         >
           <div
             className={cn(
               "space-y-1 text-center",
               appearance === "workbench" && "space-y-3 text-left",
-              appearance === "dashboard" &&
-                "space-y-2 border-accent-foreground border-b px-4 py-6 text-left sm:px-6 lg:border-r lg:border-b-0",
             )}
           >
             <h2
@@ -1068,12 +1158,7 @@ export const PlaygroundClient = ({
               {translate("connect.description")}
             </p>
           </div>
-          <div
-            className={cn(
-              "space-y-4",
-              appearance === "dashboard" && "px-4 py-6 sm:px-6 lg:col-span-2",
-            )}
-          >
+          <div className="space-y-4">
             <InferredForm
               className={cn(
                 "flex flex-col gap-3",
@@ -1085,18 +1170,19 @@ export const PlaygroundClient = ({
               onSubmit={handleConnect}
             >
               <Button
-                className={cn("w-full", appearance === "dashboard" && "w-fit")}
+                className="w-full"
                 color="primary"
                 disabled={isConnecting}
                 type="submit"
               >
-                {isConnecting && <LoaderIcon className="size-4 animate-spin" />}
+                {isConnecting && (
+                  <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
+                )}
                 {isConnecting
                   ? translate("connect.action.connecting")
                   : translate("connect.action.primary")}
               </Button>
             </InferredForm>
-            {connectError && <ErrorView message={connectError} />}
           </div>
         </div>
       </div>
@@ -1115,7 +1201,7 @@ export const PlaygroundClient = ({
     >
       {/* Connected store + transport */}
       <div className="flex shrink-0 items-center justify-between gap-3 p-4">
-        <SectionKicker>
+        <div className="min-w-0 text-sm">
           <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 normal-case">
             <span className="font-mono font-semibold text-primary">
               {connectedHost}
@@ -1129,7 +1215,7 @@ export const PlaygroundClient = ({
               {connection.endpoint}
             </span>
           </span>
-        </SectionKicker>
+        </div>
         {!lockStore && (
           <Button
             variant="soft"
@@ -1146,33 +1232,24 @@ export const PlaygroundClient = ({
       <Conversation className="min-h-0">
         <ConversationContent className="mx-auto min-h-full w-full max-w-3xl gap-6 px-4 py-6 sm:px-6">
           {isEmpty ? (
-            <div className="flex flex-1 flex-col items-center justify-center gap-6 py-12 text-center">
-              <div className="flex size-12 items-center justify-center rounded-lg border border-accent-foreground bg-background-dimmed">
-                <RobotIcon className="size-6 text-primary" />
-              </div>
-              <div className="space-y-1.5">
-                <h2 className="font-semibold text-foreground-rich text-xl">
-                  {translate("session.emptyTitle")}
-                </h2>
-                <p className="mx-auto max-w-md text-foreground-dimmed text-sm leading-relaxed">
-                  {translate("session.emptyDescription", {
-                    host: connectedHost ?? "",
-                  })}
-                </p>
-              </div>
-              {!isOutOfMessages && (
-                <div className="flex flex-wrap items-center justify-center gap-2">
-                  {starterSuggestions.map((suggestion) => (
-                    <Suggestion
-                      color="primary"
-                      key={suggestion}
-                      onClick={submit}
-                      suggestion={suggestion}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
+            <FeedbackState
+              title={translate("session.emptyTitle")}
+              description={translate("session.emptyDescription", {
+                host: connectedHost ?? "",
+              })}
+              figure="shopping-bot"
+              scope="page"
+            >
+              {!isOutOfMessages &&
+                starterSuggestions.map((suggestion) => (
+                  <Suggestion
+                    color="primary"
+                    key={suggestion}
+                    onClick={submit}
+                    suggestion={suggestion}
+                  />
+                ))}
+            </FeedbackState>
           ) : (
             messages.map((message, index) => (
               <Message from={message.role} key={message.id}>

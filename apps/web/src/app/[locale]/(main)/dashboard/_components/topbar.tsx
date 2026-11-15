@@ -1,5 +1,14 @@
-import { ChevronDownIcon, CreditCardIcon, GearIcon } from "@zenncore/icons";
-import { unwrapResult } from "@zenncore/utils";
+import {
+  ChevronDownIcon,
+  CreditCardIcon,
+  GearIcon,
+  UserIcon,
+} from "@zenncore/icons";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@zenncore/web/components/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,18 +20,13 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { type ReactNode, Suspense } from "react";
 import { Link, redirect } from "@/i18n/navigation";
 import * as Authentication from "@/server/app/authentication";
-import * as Subscription from "@/server/app/subscription";
 import { Environment } from "@/server/utils/environment";
-import {
-  SubscriptionBadgeSkeleton,
-  UserButtonSkeleton,
-} from "./chrome-skeletons";
+import { UserButtonSkeleton } from "./chrome-skeletons";
 import { CommandPalette } from "./command-palette";
 import { AccountNotifications } from "./notification-bell";
 import { MobileNavigation } from "./sidebar";
-import { SubscriptionBadge } from "./subscription-badge";
 
-/** The static workspace frame does not wait for account or subscription reads. */
+/** The static workspace frame does not wait for account reads. */
 export const WorkspaceTopbar = ({ children }: { children: ReactNode }) => (
   <header className="flex h-16 shrink-0 items-center justify-between gap-2 bg-emphasis px-3 font-normal text-background-rich sm:gap-6 sm:px-6">
     <div className="flex min-w-0 max-w-xl flex-1 items-center gap-2">
@@ -56,14 +60,6 @@ export const Topbar = ({
   </WorkspaceTopbar>
 );
 
-const Plan = async () => {
-  const subscription = await unwrapResult(
-    Subscription.getStoredSubscription(Environment.SERVER),
-  );
-
-  return <SubscriptionBadge subscription={subscription} />;
-};
-
 const Account = async () => {
   const [account, translate] = await Promise.all([
     Authentication.getCurrentUser(Environment.SERVER),
@@ -80,9 +76,12 @@ const Account = async () => {
         aria-label={`${translate("settings")} · ${user.name} ${user.surname ?? ""}`.trim()}
         className="group flex min-w-0 items-center gap-2 rounded-lg py-1 pr-1.5 pl-1 transition-colors hover:bg-background-rich/8 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 data-popup-open:bg-background-rich/8"
       >
-        <span className="flex size-8 shrink-0 items-center justify-center rounded-sm bg-background-rich/15 font-semibold text-background-rich text-sm">
-          {user.name.charAt(0)}
-        </span>
+        <Avatar aria-hidden className="size-8 shrink-0 bg-background-rich/12">
+          <AvatarImage src={user.image ?? undefined} alt="" />
+          <AvatarFallback>
+            <UserIcon className="size-4 text-background-rich/70" />
+          </AvatarFallback>
+        </Avatar>
         <span className="hidden max-w-28 truncate font-semibold text-background-rich text-sm lg:block">
           {user.name} {user.surname}
         </span>
@@ -94,19 +93,22 @@ const Account = async () => {
       <DropdownMenuContent
         align="end"
         sideOffset={10}
-        className="w-64 border border-accent-foreground bg-background-rich p-1 font-normal"
+        className="w-64 font-normal"
       >
-        <div className="px-2 py-2.5">
-          <p className="truncate font-semibold text-foreground-rich text-sm">
-            {user.name} {user.surname}
-          </p>
-          <p className="mt-0.5 truncate text-foreground-dimmed text-xs">
-            {user.email}
-          </p>
-          <div className="mt-3 flex min-h-7 items-center">
-            <Suspense fallback={<SubscriptionBadgeSkeleton />}>
-              <Plan />
-            </Suspense>
+        <div className="flex items-center gap-2.5 px-2 py-2.5">
+          <Avatar aria-hidden className="size-8 shrink-0">
+            <AvatarImage src={user.image ?? undefined} alt="" />
+            <AvatarFallback>
+              <UserIcon className="size-4 text-foreground-dimmed" />
+            </AvatarFallback>
+          </Avatar>
+          <div className="min-w-0 flex-1">
+            <p className="truncate font-semibold text-foreground-rich text-sm">
+              {user.name} {user.surname}
+            </p>
+            <p className="mt-0.5 truncate text-foreground-dimmed text-xs">
+              {user.email}
+            </p>
           </div>
         </div>
         <DropdownMenuSeparator />

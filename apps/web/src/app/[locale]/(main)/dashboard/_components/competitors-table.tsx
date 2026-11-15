@@ -13,6 +13,7 @@ import { usePaginationChangeHandler } from "@/hooks/pagination";
 import { normalizePrice } from "@/lib/currency";
 import { formatRelativeTime } from "@/lib/date";
 import { EntityMark } from "../[store]/brand/_components/entity-mark";
+import { DashboardEmptyState } from "./empty-state";
 
 const WinRateBar = ({ rate }: { rate: number }) => {
   const { bar, text } = (() => {
@@ -186,14 +187,12 @@ export const CompetitorsTable = ({
         >
           <DataTable className={cn(!paginated && "border-b-0")}>
             <DataTableEmpty>
-              <div className="px-4 py-8 sm:px-6">
-                <p className="font-semibold text-foreground-rich text-lg">
-                  {translate("states.empty.primary")}
-                </p>
-                <p className="mt-2 text-foreground-dimmed text-sm leading-6">
-                  {translate("states.empty.secondary")}
-                </p>
-              </div>
+              <DashboardEmptyState
+                title={translate("states.empty.primary")}
+                description={translate("states.empty.secondary")}
+                figure="rivals-balance"
+                compact
+              />
             </DataTableEmpty>
           </DataTable>
           {paginated && (

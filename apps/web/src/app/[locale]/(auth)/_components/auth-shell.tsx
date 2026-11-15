@@ -160,7 +160,10 @@ export const AuthShell = async ({
 };
 
 export const AuthFormSkeleton = () => (
-  <div aria-hidden className="space-y-4">
+  <div
+    aria-hidden
+    className="animate-pulse space-y-4 motion-reduce:animate-none"
+  >
     <div className="h-10 rounded-sm bg-accent" />
     <div className="h-10 rounded-sm bg-accent" />
     <div className="h-6" />

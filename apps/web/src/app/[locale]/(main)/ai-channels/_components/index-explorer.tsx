@@ -2,7 +2,13 @@
 
 import { ArrowRightIcon, CommerceGlobePointerIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
+import {
+  Tab,
+  Tabs,
+  TabsIndicator,
+  TabsList,
+  TabsPanel,
+} from "@zenncore/web/components/tabs";
 import type { ReactNode } from "react";
 import { MarketingStatus } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
@@ -77,20 +83,23 @@ export const IndexExplorer = ({ channels, labels }: IndexExplorer.Props) => (
               {labels.capabilitiesLabel}
             </p>
             <Tabs defaultValue="simulate">
-              <TabsList
-                aria-label={`${channel.name}: ${labels.capabilitiesLabel}`}
-                className="grid w-full grid-cols-2 border-background-rich/15 bg-emphasis-dimmed p-1 sm:grid-cols-4"
-              >
-                {channel.capabilities.map((capability) => (
-                  <Tab
-                    key={capability.key}
-                    value={capability.key}
-                    className="h-auto min-h-12 min-w-0 whitespace-normal px-2 py-2 text-background-rich/75 text-sm data-[active]:bg-primary data-selected:bg-primary data-[active]:text-background-rich data-selected:text-background-rich"
-                  >
-                    {capability.title}
-                  </Tab>
-                ))}
-              </TabsList>
+              <div className="overflow-x-auto overscroll-x-contain">
+                <TabsList
+                  aria-label={`${channel.name}: ${labels.capabilitiesLabel}`}
+                  className="min-w-max border-background-rich/15"
+                >
+                  <TabsIndicator />
+                  {channel.capabilities.map((capability) => (
+                    <Tab
+                      key={capability.key}
+                      value={capability.key}
+                      className="border-background-rich/15 text-background-rich/75 text-sm"
+                    >
+                      {capability.title}
+                    </Tab>
+                  ))}
+                </TabsList>
+              </div>
               {channel.capabilities.map((capability) => (
                 <TabsPanel
                   key={capability.key}

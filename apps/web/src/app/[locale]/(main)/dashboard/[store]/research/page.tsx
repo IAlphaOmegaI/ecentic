@@ -15,6 +15,7 @@ import * as BrandSnapshot from "@/server/app/brand-snapshot";
 import * as Scan from "@/server/app/scan";
 import { isSubscriptionRequired } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
+import { DashboardEmptyState } from "../../_components/empty-state";
 import { Crosshair } from "../../_components/grid";
 import {
   ResearchBrandSkeleton,
@@ -54,26 +55,17 @@ const LatestResearch = async ({ params }: { params: ResearchParams }) => {
   const [latest, ...previous] = result.data;
   if (!latest)
     return (
-      <section className="grid min-h-72 items-center border-accent-foreground border-b md:grid-cols-3">
-        <div className="px-4 py-8 sm:px-6 md:col-span-2">
-          <h2 className="font-semibold text-2xl text-foreground-rich">
-            {translate("empty.title")}
-          </h2>
-          <p className="mt-3 max-w-xl text-foreground-dimmed text-sm leading-6">
-            {translate("empty.description")}
-          </p>
-          <Button
-            className="mt-5"
-            render={<Link href={`/dashboard/${store}/simulations`} />}
-          >
-            {translate("comparison.action.primary")}
-            <ArrowRightIcon className="size-4" />
-          </Button>
-        </div>
-        <div className="mx-auto w-full max-w-72 px-6 pb-6 md:py-6">
-          <CommerceFigure kind="comparisonStand" className="h-48" />
-        </div>
-      </section>
+      <DashboardEmptyState
+        title={translate("empty.title")}
+        description={translate("empty.description")}
+        figure="comparison-stand"
+        className="border-accent-foreground border-b"
+      >
+        <Button render={<Link href={`/dashboard/${store}/simulations`} />}>
+          {translate("comparison.action.primary")}
+          <ArrowRightIcon className="size-4" />
+        </Button>
+      </DashboardEmptyState>
     );
   const total = latest.wins + latest.losses;
   return (

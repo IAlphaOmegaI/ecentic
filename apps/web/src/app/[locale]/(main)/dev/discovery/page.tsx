@@ -47,8 +47,8 @@ const AccessCode = async () => {
 
 const AccessCodeSkeleton = () => (
   <>
-    <div className="h-11 animate-pulse rounded-lg border border-accent-foreground bg-background-dimmed" />
-    <div className="h-4 w-64 animate-pulse rounded-sm bg-background-dimmed" />
+    <div className="h-11 animate-pulse rounded-lg border border-accent-foreground bg-background-dimmed motion-reduce:animate-none" />
+    <div className="h-4 w-64 animate-pulse rounded-sm bg-background-dimmed motion-reduce:animate-none" />
   </>
 );
 

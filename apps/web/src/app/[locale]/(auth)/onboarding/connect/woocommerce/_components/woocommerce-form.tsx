@@ -136,7 +136,7 @@ export const WooCommerceForm = () => {
         {isPending ? (
           <>
             {translate("woocommerce.action.connecting")}
-            <LoaderIcon className="size-4 animate-spin" />
+            <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
           </>
         ) : (
           <>

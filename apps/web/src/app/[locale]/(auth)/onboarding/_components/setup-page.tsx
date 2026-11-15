@@ -133,7 +133,7 @@ const Back = () => {
   return (
     <>
       {pending ? (
-        <LoaderIcon className="size-4 animate-spin" />
+        <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
       ) : (
         <ArrowLeftIcon className="size-4" />
       )}

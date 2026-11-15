@@ -255,7 +255,7 @@ export const FlowTester = () => {
       {/* Input panel */}
       <div className="rounded-lg border border-accent-foreground bg-background-rich">
         <div className="border-accent-foreground border-b px-4 py-2.5">
-          <p className="font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
+          <p className="font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
             Store endpoint
           </p>
           <p className="mt-1 text-foreground-dimmed text-xs">
@@ -293,7 +293,7 @@ export const FlowTester = () => {
           >
             {isRunning ? (
               <span className="flex items-center gap-2">
-                <span className="inline-block size-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                <span className="inline-block size-3 animate-spin rounded-full border-2 border-current border-t-transparent motion-reduce:animate-none" />
                 Running…
               </span>
             ) : (
@@ -302,7 +302,7 @@ export const FlowTester = () => {
           </Button>
         </div>
         <div className="border-accent-foreground border-t px-4 py-3">
-          <p className="font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
+          <p className="font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
             Agent profile fixture
           </p>
           <p className="mt-1 text-foreground-dimmed text-xs">
@@ -316,7 +316,7 @@ export const FlowTester = () => {
       <div className="rounded-lg border border-accent-foreground bg-background-rich">
         <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-2.5">
           <div className="flex items-center gap-2">
-            <p className="font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
+            <p className="font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
               Output
             </p>
             {phase === "running" && (
@@ -371,7 +371,7 @@ export const FlowTester = () => {
                 }
               })}
               {isRunning && phase !== "done" && phase !== "error" && (
-                <span className="inline-block h-3 w-1.5 animate-pulse bg-primary/60" />
+                <span className="inline-block h-3 w-1.5 animate-pulse bg-primary/60 motion-reduce:animate-none" />
               )}
             </div>
           )}
@@ -424,7 +424,7 @@ const CheckoutResult = ({ lines }: { lines: LogLine[] }) => {
   return (
     <div className="rounded-lg border border-accent-foreground bg-background-rich">
       <div className="border-accent-foreground border-b px-4 py-2.5">
-        <p className="font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
+        <p className="font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
           Checkout session
         </p>
         <p className="mt-1 text-foreground-dimmed text-xs">
@@ -491,7 +491,7 @@ const CartResult = ({ lines }: { lines: LogLine[] }) => {
   return (
     <div className="rounded-lg border border-accent-foreground bg-background-rich">
       <div className="border-accent-foreground border-b px-4 py-2.5">
-        <p className="font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
+        <p className="font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
           Cart state
         </p>
         <p className="mt-1 text-foreground-dimmed text-xs">

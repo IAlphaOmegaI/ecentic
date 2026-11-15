@@ -22,6 +22,7 @@ import { formatElapsed } from "@/lib/date";
 import { countForCurrentUser } from "@/server/app/competitor";
 import type * as Simulate from "@/server/app/intelligence/simulate";
 import { StatusPill, TopFindingCallout } from "./grid";
+import { DashboardLoadingState } from "./loading-state";
 
 const providers = [
   {
@@ -325,9 +326,11 @@ export const SimulationModal = ({
                     </div>
                   ))}
                   {logs.length === 0 && (
-                    <p className="text-foreground-dimmed text-sm">
-                      {translate("states.initializing")}
-                    </p>
+                    <DashboardLoadingState
+                      title={translate("states.initializing")}
+                      figure="shopping-bot"
+                      compact
+                    />
                   )}
                 </div>
               </ScrollArea>

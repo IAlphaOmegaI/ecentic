@@ -1323,7 +1323,9 @@ export const PromptInputSubmit = ({
   let Icon = <ArrowRightIcon className="size-4" />;
 
   if (status === "submitted") {
-    Icon = <LoaderIcon className="size-4 animate-spin" />;
+    Icon = (
+      <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
+    );
   } else if (status === "streaming") {
     Icon = <XCircleIcon className="size-4" />;
   } else if (status === "error") {

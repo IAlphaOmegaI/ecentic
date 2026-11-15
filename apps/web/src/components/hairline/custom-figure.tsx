@@ -37,6 +37,7 @@ import rivalsBalanceRest from "./rest/rivals-balance.json";
 import settingsGearsRest from "./rest/settings-gears.json";
 import shelfLadderRest from "./rest/shelf-ladder.json";
 import shopifyBagRest from "./rest/shopify-bag.json";
+import shopperBasketRest from "./rest/shopper-basket.json";
 import shoppingBotRest from "./rest/shopping-bot.json";
 import sneakerRest from "./rest/sneaker.json";
 import sofaRest from "./rest/sofa.json";
@@ -68,6 +69,7 @@ type FigureWindow = Window & {
 const restPoses = {
   "research-telescope": researchTelescopeRest,
   "question-cards": questionCardsRest,
+  "shopper-basket": shopperBasketRest,
   "brand-megaphone": brandMegaphoneRest,
   "rivals-balance": rivalsBalanceRest,
   "target-finder": targetFinderRest,

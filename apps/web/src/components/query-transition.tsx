@@ -1,8 +1,8 @@
 "use client";
 
-import { LoaderIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { createContext } from "@zenncore/utils/hooks";
+import { useTranslations } from "next-intl";
 import type { PropsWithChildren, ReactNode, RefObject } from "react";
 import {
   useCallback,
@@ -11,6 +11,7 @@ import {
   useRef,
   useTransition,
 } from "react";
+import { FeedbackLoading } from "@/components/feedback-state";
 
 type QueryTransition = {
   pending: boolean;
@@ -62,9 +63,17 @@ export const QueryTransitionProvider = ({ children }: PropsWithChildren) => {
 export const QueryTransitionFade = ({
   children,
   indicator,
-  blur = false,
-}: PropsWithChildren<{ indicator?: ReactNode; blur?: boolean }>) => {
+  blur = true,
+  className,
+  contentClassName,
+}: PropsWithChildren<{
+  indicator?: ReactNode;
+  blur?: boolean;
+  className?: string;
+  contentClassName?: string;
+}>) => {
   const { pending, focusOrigin } = useQueryTransition();
+  const translate = useTranslations("general.states.pending");
   const content = useRef<HTMLDivElement>(null);
   const restoreFocus = useRef<HTMLElement | null>(null);
 
@@ -120,7 +129,7 @@ export const QueryTransitionFade = ({
   }, [pending, focusOrigin]);
 
   return (
-    <div className="relative">
+    <div className={cn("relative", className)}>
       <div
         ref={content}
         aria-busy={pending}
@@ -129,6 +138,7 @@ export const QueryTransitionFade = ({
           "transition-[opacity,filter] duration-200 motion-reduce:transition-none",
           pending && "pointer-events-none opacity-60",
           pending && blur && "blur-sm motion-reduce:blur-none",
+          contentClassName,
         )}
       >
         {children}
@@ -143,7 +153,11 @@ export const QueryTransitionFade = ({
           {indicator ? (
             <div className="sticky top-8">{indicator}</div>
           ) : (
-            <LoaderIcon className="size-6 animate-spin text-foreground-dimmed motion-reduce:animate-none" />
+            <FeedbackLoading
+              compact
+              title={translate("primary")}
+              className="rounded-lg bg-background-rich/95"
+            />
           )}
         </div>
       )}

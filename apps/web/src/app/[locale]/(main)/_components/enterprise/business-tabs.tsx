@@ -8,7 +8,13 @@ import {
   CommercePlug_3SparkleIcon,
 } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
+import {
+  Tab,
+  Tabs,
+  TabsIndicator,
+  TabsList,
+  TabsPanel,
+} from "@zenncore/web/components/tabs";
 import type { AppConfig } from "next-intl";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
@@ -26,11 +32,9 @@ export const BusinessTabs = ({ copy }: BusinessTabs.Props) => (
     defaultValue={copy.items[0]?.id}
     className="enterprise-business-tabs relative"
   >
-    <div className="px-7 pb-8 max-sm:px-4 max-sm:pb-6">
-      <TabsList
-        aria-label={copy.title}
-        className="grid w-full grid-cols-4 gap-1 rounded-lg border-0 bg-background-dimmed p-1 max-[801px]:grid-cols-2"
-      >
+    <div className="overflow-x-auto overscroll-x-contain px-7 pb-8 max-sm:px-4 max-sm:pb-6">
+      <TabsList aria-label={copy.title} className="min-w-max">
+        <TabsIndicator />
         {copy.items.map((item, index) => {
           const appearance = audiences[index] ?? audiences[0];
           const Icon = appearance.Icon;
@@ -39,12 +43,9 @@ export const BusinessTabs = ({ copy }: BusinessTabs.Props) => (
               key={item.id}
               value={item.id}
               data-tone={appearance.tone}
-              className="group/tab h-auto min-h-16 justify-start gap-3 rounded-sm border-0 px-4 py-3 text-left text-base leading-snug before:hidden focus-visible:-outline-offset-4! data-[tone=secondary]:data-[active]:text-secondary data-[tone=secondary]:data-selected:text-secondary data-[tone=success]:data-[active]:text-success-foreground data-[tone=success]:data-selected:text-success-foreground data-[tone=warning]:data-[active]:text-warning-foreground data-[tone=warning]:data-selected:text-warning-foreground data-[active]:bg-background-rich data-selected:bg-background-rich data-[active]:text-primary-text data-selected:text-primary-text max-sm:gap-2 max-sm:px-3 max-sm:text-sm"
+              className="gap-2 text-sm"
             >
-              <Icon
-                aria-hidden
-                className="size-6 shrink-0 text-primary-text group-data-[tone=secondary]/tab:text-secondary group-data-[tone=success]/tab:text-success-foreground group-data-[tone=warning]/tab:text-warning-foreground"
-              />
+              <Icon aria-hidden className="size-4 shrink-0" />
               {item.eyebrow}
             </Tab>
           );
@@ -69,7 +70,7 @@ export const BusinessTabs = ({ copy }: BusinessTabs.Props) => (
                   aria-hidden
                   className="relative mb-8 size-10 text-primary-text group-data-[tone=secondary]/audience:text-secondary group-data-[tone=success]/audience:text-success-foreground group-data-[tone=warning]/audience:text-warning-foreground"
                 />
-                <h3 className="relative max-w-[15ch] text-3xl xl:text-4xl 2xl:text-5xl leading-none">
+                <h3 className="relative max-w-[15ch] text-3xl leading-none xl:text-4xl 2xl:text-5xl">
                   {item.title}
                 </h3>
                 <p className="relative mt-6 mb-10 max-w-[40ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">

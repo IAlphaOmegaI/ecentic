@@ -1,22 +1,22 @@
 "use client";
 
-import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
+import {
+  Tab,
+  Tabs,
+  TabsIndicator,
+  TabsList,
+  TabsPanel,
+} from "@zenncore/web/components/tabs";
 import type { useMessages } from "next-intl";
 
 export const TrackComparison = ({ content }: TrackComparison.Props) => (
   <Tabs defaultValue="visits" data-track-comparison>
-    <div className="border-accent-foreground border-y px-8 py-6 max-sm:px-4">
+    <div className="overflow-x-auto overscroll-x-contain border-accent-foreground border-y px-8 py-6 max-sm:px-4">
       <p className="mb-4 text-foreground-dimmed">{content.comparisonHint}</p>
-      <TabsList
-        aria-label={content.comparisonLabel}
-        className="grid w-full grid-cols-3 bg-background"
-      >
+      <TabsList aria-label={content.comparisonLabel} className="min-w-max">
+        <TabsIndicator />
         {content.signals.map((signal) => (
-          <Tab
-            key={signal.id}
-            value={signal.id}
-            className="h-auto min-h-14 min-w-0 px-4 py-4 text-base leading-snug data-active:bg-primary-text data-active:text-background-rich max-sm:px-2 max-sm:text-sm"
-          >
+          <Tab key={signal.id} value={signal.id} className="text-sm">
             {signal.label}
           </Tab>
         ))}

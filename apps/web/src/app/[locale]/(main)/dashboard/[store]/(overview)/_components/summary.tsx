@@ -1,6 +1,5 @@
 import {
   ArrowRightIcon,
-  CheckCircleIcon,
   CommerceFilePenIcon,
   HammerIcon,
   RadarIcon,
@@ -13,6 +12,7 @@ import * as Optimization from "@/server/app/optimization";
 import * as Product from "@/server/app/product";
 import { unwrapEntitled } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
+import { DashboardEmptyState } from "../../../_components/empty-state";
 import { overviewPriorities } from "./priorities";
 
 export const OverviewSummary = async ({
@@ -84,38 +84,22 @@ export const OverviewSummary = async ({
         </p>
       </header>
       {rows.length === 0 && (
-        <div className="flex items-start gap-3.5 px-5 py-4 sm:px-6">
-          {allClear ? (
-            <CheckCircleIcon
-              aria-hidden
-              className="size-7 shrink-0 text-success"
-            />
-          ) : (
-            <HammerIcon
-              aria-hidden
-              className="size-7 shrink-0 text-foreground-dimmed"
-            />
-          )}
-          <div>
-            <h3 className="font-semibold text-sm">
-              {allClear ? ready("title") : checks("unavailable.title")}
-            </h3>
-            <p className="mt-2 text-foreground-dimmed text-sm leading-6">
-              {allClear
-                ? ready("description")
-                : checks("unavailable.description")}
-            </p>
-            <Link
-              href={`/dashboard/${store}/${allClear ? "channels" : "optimize"}`}
-              className="mt-3 inline-flex items-center gap-2 font-medium text-primary-text text-sm hover:underline"
-            >
-              {allClear
-                ? ready("action.primary")
-                : translate("action.tertiary")}
-              <ArrowRightIcon aria-hidden className="size-4" />
-            </Link>
-          </div>
-        </div>
+        <DashboardEmptyState
+          figure={allClear ? "overview-console" : "repair-tools"}
+          title={allClear ? ready("title") : checks("unavailable.title")}
+          description={
+            allClear ? ready("description") : checks("unavailable.description")
+          }
+          className="py-6"
+        >
+          <Link
+            href={`/dashboard/${store}/${allClear ? "channels" : "optimize"}`}
+            className="mt-3 inline-flex items-center gap-2 font-medium text-primary-text text-sm hover:underline"
+          >
+            {allClear ? ready("action.primary") : translate("action.tertiary")}
+            <ArrowRightIcon aria-hidden className="size-4" />
+          </Link>
+        </DashboardEmptyState>
       )}
       <ol
         className={cn(

@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRightIcon, SearchIcon, ShoppingCartIcon } from "@zenncore/icons";
-import { resultify } from "@zenncore/utils";
+import { cn, resultify } from "@zenncore/utils";
 import {
   Avatar,
   AvatarFallback,
@@ -23,7 +23,14 @@ import {
   PopoverTrigger,
 } from "@zenncore/web/components/popover";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState } from "react";
+import {
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { CustomHairlineFigure } from "@/components/hairline/custom-figure";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { formatPrice } from "@/lib/currency";
 import { dashboardDestinations } from "@/lib/dashboard-destinations";
@@ -48,7 +55,21 @@ const navItems = [
 
 /** Catalog matches load after typing, never as part of the chrome shell. */
 export const CommandPalette = () => {
-  const [open, setOpen] = useState(false);
+  const [session, setSession] = useState({ open: false, generation: 0 });
+  const open = session.open;
+  const setOpen = useCallback(
+    (value: boolean | ((open: boolean) => boolean)) => {
+      setSession((previous) => {
+        const next = typeof value === "function" ? value(previous.open) : value;
+        if (next === previous.open) return previous;
+        return {
+          open: next,
+          generation: previous.generation + Number(next),
+        };
+      });
+    },
+    [],
+  );
   const translate = useTranslations("dashboard.commandPalette");
   const trigger = useRef<HTMLButtonElement>(null);
   const input = useRef<HTMLInputElement>(null);
@@ -62,7 +83,7 @@ export const CommandPalette = () => {
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, []);
+  }, [setOpen]);
 
   return (
     <Popover open={open} onOpenChange={setOpen} modal={false}>
@@ -78,27 +99,34 @@ export const CommandPalette = () => {
         <span className="min-w-0 truncate text-background-rich/70 text-sm max-sm:sr-only">
           {translate("trigger")}
         </span>
-        <kbd className="ml-auto hidden shrink-0 font-medium text-background-rich/50 text-xs sm:block">
+        <ShortcutKey className="ml-auto hidden sm:inline-flex">
           {translate("keyboardShortcut")}
-        </kbd>
+        </ShortcutKey>
       </PopoverTrigger>
       <PopoverPositioner
         anchor={trigger}
         side="bottom"
         align="start"
-        sideOffset={-40}
+        sideOffset={({ anchor }) => -anchor.height}
         collisionPadding={16}
         className="z-50"
       >
         <PopoverPopup
           initialFocus={input}
           finalFocus={trigger}
-          className="inset-shadow-background-rich/20 inset-shadow-sm flex max-h-(--available-height) w-(--anchor-width) min-w-72 max-w-(--available-width) flex-col rounded-lg border-background-rich/15 bg-emphasis bg-linear-to-b from-background-rich/15 via-emphasis to-emphasis p-0 text-background-rich shadow-sm transition duration-150 ease-out data-ending-style:scale-100 data-starting-style:scale-100 data-ending-style:blur-sm data-starting-style:blur-sm motion-reduce:transition-none motion-reduce:data-ending-style:opacity-100 motion-reduce:data-starting-style:opacity-100 motion-reduce:data-ending-style:blur-none motion-reduce:data-starting-style:blur-none"
+          className="group/search-panel inset-shadow-background-rich/20 inset-shadow-sm flex max-h-(--available-height) w-(--anchor-width) max-w-(--available-width) flex-col rounded-lg border-background-rich/15 bg-emphasis bg-linear-to-b from-background-rich/15 via-emphasis to-emphasis p-0 text-background-rich shadow-sm transition-[clip-path] duration-200 ease-out [clip-path:inset(0_0_0_0_round_var(--radius-lg))] data-ending-style:scale-100 data-starting-style:scale-100 data-ending-style:opacity-100 data-starting-style:opacity-100 motion-reduce:transition-none data-ending-style:[clip-path:inset(0_0_calc(100%_-_var(--anchor-height))_0_round_var(--radius-lg))] data-starting-style:[clip-path:inset(0_0_calc(100%_-_var(--anchor-height))_0_round_var(--radius-lg))] motion-reduce:data-ending-style:[clip-path:inset(0_0_0_0)] motion-reduce:data-starting-style:[clip-path:inset(0_0_0_0)]"
         >
           <PopoverTitle className="sr-only">
             {translate("trigger")}
           </PopoverTitle>
-          {open && <Results inputRef={input} onClose={() => setOpen(false)} />}
+          {/* The package keeps this content mounted until the panel has folded
+              back into the bar. A fresh opening still starts with an empty query. */}
+          <Results
+            key={session.generation}
+            active={open}
+            inputRef={input}
+            onClose={() => setOpen(false)}
+          />
         </PopoverPopup>
       </PopoverPositioner>
     </Popover>
@@ -111,9 +139,11 @@ type SearchResponse = {
 };
 
 const Results = ({
+  active,
   inputRef,
   onClose,
 }: {
+  active: boolean;
   inputRef: React.RefObject<HTMLInputElement | null>;
   onClose: () => void;
 }) => {
@@ -141,7 +171,7 @@ const Results = ({
   const searchKey = `${store}:${normalized}:${retry}`;
 
   useEffect(() => {
-    if (!store || !normalized) return;
+    if (!active || !store || !normalized) return;
     const requestState = { cancelled: false };
     const timeout = window.setTimeout(async () => {
       const result = await resultify(() =>
@@ -157,7 +187,7 @@ const Results = ({
       requestState.cancelled = true;
       window.clearTimeout(timeout);
     };
-  }, [store, normalized, searchKey]);
+  }, [active, store, normalized, searchKey]);
 
   const currentResponse = response?.key === searchKey ? response : null;
   const searching = Boolean(store && normalized && !currentResponse);
@@ -207,39 +237,39 @@ const Results = ({
           maxLength={120}
           placeholder={translate("placeholder")}
           aria-label={translate("placeholder")}
-          className="pr-10 text-background-rich placeholder:text-background-rich/50"
+          className="pr-12 text-background-rich placeholder:text-background-rich/50"
           classList={{
             root: "p-0",
             field:
-              "h-10 rounded-none border-0 bg-transparent px-4 text-background-rich shadow-none outline-none focus-within:outline-none focus-within:ring-0",
+              "h-[calc(var(--anchor-height)_-_2px)] rounded-none border-0 bg-transparent px-4 text-background-rich shadow-none outline-none focus-within:outline-none focus-within:ring-0",
             icon: "text-background-rich/70 opacity-100",
           }}
         />
-        <kbd
+        <span
           aria-hidden
-          className="pointer-events-none absolute top-2 right-4 rounded-sm bg-background-rich/10 px-2 py-1 text-background-rich/60 text-xs"
+          className="pointer-events-none absolute inset-y-0 right-4 flex items-center justify-end text-background-rich/60 text-xs"
         >
-          {translate("keyboardEscape")}
-        </kbd>
+          <ShortcutKey className="absolute hidden -translate-y-1 opacity-0 transition-[opacity,translate] duration-200 ease-out group-data-ending-style/search-panel:translate-y-0 group-data-starting-style/search-panel:translate-y-0 group-data-ending-style/search-panel:opacity-100 group-data-starting-style/search-panel:opacity-100 motion-reduce:transition-none sm:inline-flex">
+            {translate("keyboardShortcut")}
+          </ShortcutKey>
+          <ShortcutKey className="transition-[opacity,translate] duration-200 ease-out group-data-ending-style/search-panel:translate-y-1 group-data-starting-style/search-panel:translate-y-1 group-data-ending-style/search-panel:opacity-0 group-data-starting-style/search-panel:opacity-0 motion-reduce:transition-none">
+            {translate("keyboardEscape")}
+          </ShortcutKey>
+        </span>
       </div>
       <CommandList className="max-h-96 min-h-0 flex-1 scroll-py-2 overscroll-contain p-2">
         {searching && (
-          <p
-            role="status"
-            className="px-2 py-4 text-background-rich/60 text-sm"
-          >
-            {translate("states.searching")}
-          </p>
+          <SearchState pending title={translate("states.searching")} />
         )}
         {!hasResults && !searching && !failed && (
-          <p
-            role="status"
-            className="px-2 py-8 text-center text-background-rich/70 text-sm"
-          >
-            {query
-              ? translate("states.emptyForQuery", { query })
-              : translate("states.empty")}
-          </p>
+          <SearchState
+            title={
+              query
+                ? translate("states.emptyForQuery", { query })
+                : translate("states.empty")
+            }
+            description={translate("states.emptyHint")}
+          />
         )}
         {failed && (
           <>
@@ -339,17 +369,78 @@ const Results = ({
           </CommandGroup>
         )}
       </CommandList>
-      <div className="flex shrink-0 items-center gap-4 border-background-rich/15 border-t px-4 py-2 text-background-rich/50 text-xs">
-        <span>
-          <kbd>↵</kbd> {translate("hints.open")}
+      <div className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-2 border-background-rich/15 border-t px-4 py-2 text-background-rich/50 text-xs">
+        <span className="inline-flex items-center gap-2 whitespace-nowrap">
+          <ShortcutKey>↵</ShortcutKey> {translate("hints.open")}
         </span>
-        <span>
-          <kbd>{translate("keyboardEscape")}</kbd> {translate("hints.close")}
+        <span className="inline-flex items-center gap-2 whitespace-nowrap">
+          <ShortcutKey>{translate("keyboardEscape")}</ShortcutKey>{" "}
+          {translate("hints.close")}
         </span>
       </div>
     </Command>
   );
 };
+
+const ShortcutKey = ({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) => (
+  <kbd
+    className={cn(
+      "inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-sm border border-background-rich/10 bg-background-rich/10 px-1.5 font-body font-medium text-background-rich/70 text-xs leading-none",
+      className,
+    )}
+  >
+    {children}
+  </kbd>
+);
+
+const SearchState = ({
+  pending = false,
+  title,
+  description,
+}: {
+  pending?: boolean;
+  title: string;
+  description?: string;
+}) => (
+  <div
+    role="status"
+    className="flex flex-col items-start gap-3 px-2 py-4 sm:flex-row sm:items-center sm:gap-4"
+  >
+    <div aria-hidden className="pointer-events-none w-20 shrink-0 sm:w-24">
+      <CustomHairlineFigure
+        name={pending ? "inspection-queue" : "target-finder"}
+        label=""
+        surface="dark"
+        className="bg-transparent [--hairline-plate:var(--color-emphasis)]"
+      />
+    </div>
+    <div className="min-w-0 flex-1">
+      <p className="break-words font-medium text-background-rich text-sm">
+        {title}
+      </p>
+      {description && (
+        <p className="mt-1 text-background-rich/60 text-xs leading-relaxed">
+          {description}
+        </p>
+      )}
+      {pending && (
+        <div
+          aria-hidden
+          className="mt-3 space-y-2 motion-reduce:[&_*]:animate-none"
+        >
+          <div className="h-1.5 w-3/4 animate-pulse rounded-full bg-background-rich/15" />
+          <div className="h-1.5 w-1/2 animate-pulse rounded-full bg-background-rich/10" />
+        </div>
+      )}
+    </div>
+  </div>
+);
 
 const SearchMark = ({ image }: { image?: string }) => (
   <Avatar className="size-8 shrink-0 rounded-lg border border-background-rich/15 bg-background-rich/8">

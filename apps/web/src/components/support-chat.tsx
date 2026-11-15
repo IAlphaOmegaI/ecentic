@@ -16,7 +16,7 @@ export const SupportChat = () => {
   if (!baseUrl || !token) return null;
 
   return (
-    <div className="fixed right-5 bottom-5 z-40 flex flex-col items-end gap-2">
+    <div className="fixed right-5 bottom-(--floating-controls-bottom) z-40 flex flex-col items-end gap-2">
       {failed && (
         <p role="status">
           <a

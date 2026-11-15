@@ -15,6 +15,7 @@ import type { AppConfig } from "next-intl";
 import { parseAsInteger, parseAsStringLiteral, useQueryStates } from "nuqs";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { useRef } from "react";
+import { FeedbackState } from "@/components/feedback-state";
 import { Link } from "@/i18n/navigation";
 import { blogImage } from "@/lib/blog-image";
 import { isOptimizable } from "@/lib/image-hosts";
@@ -187,7 +188,21 @@ const Archive = ({ entries, copy }: BlogIndexArchive.Props) => {
           </article>
         ))}
         {visible.length === 0 && (
-          <p className="p-6 text-foreground-dimmed">{copy.empty}</p>
+          <FeedbackState
+            title={copy.empty}
+            figure="open-book"
+            surface="background"
+          >
+            {query.collection !== "all" && (
+              <Button
+                color="primary"
+                variant="soft"
+                onClick={() => void setQuery({ collection: "all", page: 1 })}
+              >
+                {copy.all}
+              </Button>
+            )}
+          </FeedbackState>
         )}
       </div>
       <div className="flex flex-wrap items-center justify-between gap-4 bg-background-dimmed p-4 sm:p-6">

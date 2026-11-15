@@ -55,6 +55,7 @@ import {
   saveProfile,
 } from "@/server/app/intelligence/ucp/profile";
 import type * as Product from "@/server/app/product";
+import { DashboardEmptyState } from "../../../_components/empty-state";
 import { StatusPill } from "../../../_components/grid";
 import { UcpAdvancedValidator } from "./ucp-advanced-validator";
 
@@ -492,7 +493,7 @@ export const UcpManager = ({
               disabled={isGenerating}
             >
               {isGenerating ? (
-                <LoaderIcon className="size-4 animate-spin text-foreground-dimmed" />
+                <LoaderIcon className="size-4 animate-spin text-foreground-dimmed motion-reduce:animate-none" />
               ) : (
                 <CircleBoltIcon className="size-4 text-foreground-dimmed" />
               )}
@@ -517,20 +518,14 @@ export const UcpManager = ({
   return (
     <div className="min-w-0">
       <Tabs defaultValue="validate">
-        <div className="overflow-x-auto border-accent-foreground border-b px-4 sm:px-6">
-          <TabsList className="w-fit gap-4 overflow-visible rounded-none border-0">
-            <TabsIndicator className="inset-shadow-none top-auto bottom-0 h-0.5 bg-none bg-primary transition-[width,translate] motion-reduce:transition-none" />
-            <Tab
-              value="validate"
-              className="h-12 gap-2 border-r-0 px-0 text-sm data-[active]:text-primary data-selected:text-primary"
-            >
+        <div className="overflow-x-auto overscroll-x-contain border-accent-foreground border-b px-4 py-4 sm:px-6">
+          <TabsList className="min-w-max" aria-label={review("tabs.check")}>
+            <TabsIndicator />
+            <Tab value="validate" className="gap-2 text-sm">
               <CommerceFileShieldIcon aria-hidden="true" className="size-4" />
               {review("tabs.check")}
             </Tab>
-            <Tab
-              value="products"
-              className="h-12 gap-2 border-r-0 px-0 text-sm data-[active]:text-primary data-selected:text-primary"
-            >
+            <Tab value="products" className="gap-2 text-sm">
               <CommerceCode_3Icon aria-hidden="true" className="size-4" />
               {review("tabs.data")}
             </Tab>
@@ -817,11 +812,11 @@ export const UcpManager = ({
                   }}
                 >
                   <DataTableEmpty>
-                    <div className="p-10 text-center">
-                      <p className="font-normal text-foreground-dimmed text-sm">
-                        {translate("products.empty")}
-                      </p>
-                    </div>
+                    <DashboardEmptyState
+                      title={translate("products.empty")}
+                      figure="product-label"
+                      compact
+                    />
                   </DataTableEmpty>
                 </DataTable>
               </div>

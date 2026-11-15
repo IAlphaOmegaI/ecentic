@@ -440,9 +440,14 @@ export const OptimizeClient = ({
                             return (
                               <div
                                 key={insight.category}
-                                className="flex gap-3 border-accent-foreground border-b px-4 py-4 last:border-b-0 sm:px-6"
+                                className="flex gap-4 border-accent-foreground border-b px-4 py-4 last:border-b-0 sm:px-6"
                               >
-                                <Icon className="mt-0.5 size-5 shrink-0 text-primary" />
+                                <span className="mt-0.5 flex w-10 shrink-0 justify-center">
+                                  <Icon
+                                    aria-hidden
+                                    className="size-5 text-primary"
+                                  />
+                                </span>
                                 <div className="min-w-0">
                                   <h3 className="font-medium text-foreground-rich text-sm">
                                     {translate(
@@ -459,7 +464,7 @@ export const OptimizeClient = ({
                             );
                           })}
                         {item.candidate && item.candidate.models.length > 0 && (
-                          <p className="px-4 py-3 text-foreground-dimmed text-xs sm:px-6">
+                          <p className="px-18 py-3 text-foreground-dimmed text-xs sm:px-20">
                             {translate("row.context", {
                               models: formatter.list(item.candidate.models),
                             })}
@@ -467,7 +472,7 @@ export const OptimizeClient = ({
                         )}
                       </div>
                     )}
-                    <div className="flex flex-wrap items-center gap-2 border-accent-foreground border-t px-4 py-4 sm:px-6">
+                    <div className="flex flex-wrap items-center gap-2 border-accent-foreground border-t py-4 pr-4 pl-18 sm:pr-6 sm:pl-20">
                       <Button
                         variant="soft"
                         color="neutral"

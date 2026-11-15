@@ -2,12 +2,15 @@
 
 import {
   ArrowRightIcon,
-  CheckIcon,
   CircleBoltIcon,
+  CodeIcon,
+  CommerceFilePenIcon,
+  CreditCardIcon,
+  FileIcon,
   FileSearchIcon,
   LoaderIcon,
+  PhotoIcon,
   TrendUpIcon,
-  XIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
@@ -46,7 +49,15 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useFormatter, useTranslations } from "next-intl";
 import { parseAsStringLiteral, useQueryState } from "nuqs";
-import { type ReactNode, useMemo, useState, useTransition } from "react";
+import {
+  type ReactNode,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { AnalysisText } from "@/components/analysis-text";
 import { Link, useRouter } from "@/i18n/navigation";
 import {
@@ -56,7 +67,9 @@ import {
 import * as Audit from "@/server/app/intelligence/audit";
 import * as Optimization from "@/server/app/optimization";
 import type { ProductChannels as ProductChannelsData } from "@/server/utils/product-channels";
+import { DashboardEmptyState } from "../../../../_components/empty-state";
 import { StatusPill } from "../../../../_components/grid";
+import { DashboardLoadingState } from "../../../../_components/loading-state";
 import { ProductChannels } from "./channel-preview";
 import { FindOffers } from "./find-offers";
 import { OfferShelf } from "./offer-shelf";
@@ -194,20 +207,6 @@ const columns = (
   ] satisfies ColumnDef<
     ProductDetailData["competitors"][number] & { _id: string }
   >[];
-
-const qualityFields = (
-  fields: ReturnType<
-    typeof useTranslations<"dashboard.products.detail.fields">
-  >,
-) =>
-  [
-    { key: "title", label: fields("title") },
-    { key: "description", label: fields("description") },
-    { key: "price", label: fields("price") },
-    { key: "sku", label: fields("sku") },
-    { key: "images", label: fields("images") },
-    { key: "structuredData", label: fields("structuredData") },
-  ] as const;
 
 const Model = {
   ChatGPT: {
@@ -643,16 +642,14 @@ const OverviewTab = ({
 export const ComparisonEmpty = ({ children }: { children?: ReactNode }) => {
   const translate = useTranslations("dashboard.productWorkspace");
   return (
-    <div className="flex min-h-64 flex-col items-center justify-center gap-3 border-accent-foreground border-b px-6 py-8 text-center">
-      <FileSearchIcon aria-hidden className="size-10 text-foreground-dimmed" />
-      <h2 className="font-heading font-semibold text-foreground-rich text-xl">
-        {translate("states.empty.title")}
-      </h2>
-      <p className="max-w-md text-foreground-dimmed text-sm leading-6">
-        {translate("states.empty.description")}
-      </p>
+    <DashboardEmptyState
+      title={translate("states.empty.title")}
+      description={translate("states.empty.description")}
+      figure="comparison-stand"
+      className="border-accent-foreground border-b"
+    >
       {children}
-    </div>
+    </DashboardEmptyState>
   );
 };
 
@@ -811,49 +808,226 @@ const ReplayTab = ({
   );
 };
 
-const ListingCompleteness = ({
+const ListingDescription = ({ content }: { content: string | null }) => {
+  const listing = useTranslations("dashboard.productWorkspace.listing");
+  const [expanded, setExpanded] = useState(false);
+  const [overflowing, setOverflowing] = useState(false);
+  const descriptionRef = useRef<HTMLDivElement>(null);
+  const descriptionId = useId();
+  useEffect(() => {
+    const description = descriptionRef.current;
+    if (!description || expanded) return;
+    const measure = () =>
+      setOverflowing(description.scrollHeight > description.clientHeight + 1);
+    const observer = new ResizeObserver(measure);
+    observer.observe(description);
+    measure();
+    return () => observer.disconnect();
+  }, [expanded]);
+  if (!content?.trim()) {
+    return (
+      <p className="text-foreground-dimmed text-sm leading-6">
+        {listing("missingDescription")}
+      </p>
+    );
+  }
+  return (
+    <>
+      <div
+        ref={descriptionRef}
+        id={descriptionId}
+        className={cn(
+          "break-words text-foreground text-sm leading-7 [&_ol]:list-decimal [&_ol]:pl-5 [&_p+p]:mt-2 [&_ul]:list-disc [&_ul]:pl-5",
+          !expanded && "line-clamp-4",
+        )}
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: ProductContent sanitizes imported description HTML before passing it to the client
+        dangerouslySetInnerHTML={{ __html: content }}
+      />
+      {(overflowing || expanded) && (
+        <Button
+          variant="soft"
+          color="neutral"
+          className="mt-3"
+          aria-expanded={expanded}
+          aria-controls={descriptionId}
+          onClick={() => setExpanded(!expanded)}
+        >
+          {expanded ? listing("action.tertiary") : listing("action.secondary")}
+        </Button>
+      )}
+    </>
+  );
+};
+
+const ListingReview = ({
   product,
+  structuredData,
+  children,
 }: {
   product: ProductDetailData["product"];
+  structuredData: string | null;
+  children: ReactNode;
 }) => {
   const fields = useTranslations("dashboard.products.detail.fields");
-  const shared = useTranslations("dashboard.shared");
+  const listing = useTranslations("dashboard.productWorkspace.listing");
+  const formatter = useFormatter();
+  const images = (() => {
+    const parsed: unknown = (() => {
+      try {
+        return JSON.parse(product.images ?? "[]");
+      } catch {
+        return [];
+      }
+    })();
+    const saved = Array.isArray(parsed)
+      ? parsed.filter((image): image is string => typeof image === "string")
+      : [];
+    return [
+      ...new Set(
+        [product.image, ...saved].filter(
+          (image): image is string =>
+            Boolean(image) &&
+            typeof image === "string" &&
+            (/^https?:\/\//i.test(image) || image.startsWith("/")),
+        ),
+      ),
+    ];
+  })();
+  // The server score counts the same six saved fields across the catalog.
+  // A successful generation saves structured data without reloading this view.
+  const present = Math.min(
+    6,
+    Math.round((product.quality / 100) * 6) +
+      Number(Boolean(structuredData) && !product.structuredData),
+  );
+  const price = (() => {
+    if (!product.price?.trim()) return null;
+    if (!product.currency || !Number.isFinite(Number(product.price)))
+      return product.price;
+    return formatter.number(Number(product.price), {
+      style: "currency",
+      currency: product.currency,
+    });
+  })();
 
   return (
-    <div className="divide-y divide-accent-foreground border-accent-foreground border-b">
-      {qualityFields(fields).map(({ key, label }) => {
-        const value = product[key];
-        const filled = (() => {
-          if (!value) return false;
-          if (key === "images") return value !== "[]";
-          return true;
-        })();
-
-        return (
-          <div
-            key={key}
-            className="flex items-center justify-between gap-4 bg-background-rich px-4 py-4 sm:px-6"
-          >
-            <div className="flex items-center gap-3">
-              {filled ? (
-                <CheckIcon className="size-5 text-success-dimmed" />
-              ) : (
-                <XIcon className="size-5 text-foreground-dimmed" />
-              )}
-              <span className="font-medium text-foreground">{label}</span>
+    <section
+      data-listing-review
+      className="min-w-0 border-accent-foreground border-b bg-background-rich"
+    >
+      <header className="flex flex-wrap items-start justify-between gap-3 border-accent-foreground border-b px-4 py-5 sm:px-6">
+        <div className="min-w-0 max-w-xl">
+          <h2 className="font-heading font-semibold text-foreground-rich text-xl">
+            {listing("title")}
+          </h2>
+          <p className="mt-1 text-foreground-dimmed text-sm leading-6">
+            {listing("description")}
+          </p>
+        </div>
+        <p className="shrink-0 rounded-full bg-background-dimmed px-3 py-1 font-medium text-foreground text-xs tabular-nums">
+          {listing("coverage", {
+            present: formatter.number(present),
+            total: formatter.number(6),
+          })}
+        </p>
+      </header>
+      <div className="grid min-w-0 sm:grid-cols-3">
+        <section className="min-w-0 border-accent-foreground border-b px-4 py-5 sm:border-r sm:border-b-0 sm:px-6">
+          <h3 className="flex items-center gap-2 font-medium text-foreground-rich text-sm">
+            <PhotoIcon aria-hidden className="size-4 text-foreground-dimmed" />
+            {fields("images")}
+          </h3>
+          {images.length ? (
+            <div className="mt-4 flex flex-wrap gap-3">
+              {images.slice(0, 6).map((image) => (
+                <Avatar
+                  key={image}
+                  className="size-24 rounded-lg border border-accent-foreground bg-background"
+                >
+                  <AvatarImage
+                    src={image}
+                    alt={product.title}
+                    className="object-contain"
+                  />
+                  <AvatarFallback className="rounded-lg bg-background-dimmed">
+                    <PhotoIcon
+                      aria-hidden
+                      className="size-8 text-foreground-dimmed"
+                    />
+                  </AvatarFallback>
+                </Avatar>
+              ))}
             </div>
-            <span
-              className={cn(
-                "font-medium text-sm",
-                filled ? "text-foreground" : "text-foreground-dimmed",
-              )}
-            >
-              {filled ? shared("present") : shared("missing")}
-            </span>
-          </div>
-        );
-      })}
-    </div>
+          ) : (
+            <div className="mt-4 flex items-center gap-4 sm:flex-col sm:items-start">
+              <div className="flex size-20 shrink-0 items-center justify-center rounded-lg bg-primary/5 text-primary">
+                <PhotoIcon aria-hidden className="size-10" />
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-sm">
+                  {listing("missingImages")}
+                </p>
+                <p className="mt-1 text-foreground-dimmed text-sm leading-6">
+                  {listing("imageHint")}
+                </p>
+              </div>
+            </div>
+          )}
+        </section>
+        <div className="min-w-0 sm:col-span-2">
+          <section className="border-accent-foreground border-b px-4 py-5 sm:px-6">
+            <h3 className="flex items-center gap-2 font-medium text-foreground-dimmed text-xs">
+              <FileIcon aria-hidden className="size-4" />
+              {fields("title")}
+            </h3>
+            <p className="mt-2 break-words font-semibold text-foreground-rich text-lg">
+              {product.title.trim() || listing("missingValue")}
+            </p>
+          </section>
+          <section className="border-accent-foreground border-b px-4 py-5 sm:px-6">
+            <h3 className="mb-2 flex items-center gap-2 font-medium text-foreground-dimmed text-xs">
+              <CommerceFilePenIcon aria-hidden className="size-4" />
+              {fields("description")}
+            </h3>
+            <ListingDescription content={product.description} />
+          </section>
+          <dl className="grid grid-cols-2 divide-x divide-accent-foreground">
+            <div className="min-w-0 px-4 py-4 sm:px-6">
+              <dt className="flex items-center gap-2 text-foreground-dimmed text-xs">
+                <CreditCardIcon aria-hidden className="size-4" />
+                {fields("price")}
+              </dt>
+              <dd className="mt-2 break-words font-medium text-foreground-rich text-sm tabular-nums">
+                {price ?? listing("missingValue")}
+              </dd>
+            </div>
+            <div className="min-w-0 px-4 py-4 sm:px-6">
+              <dt className="flex items-center gap-2 text-foreground-dimmed text-xs">
+                <CodeIcon aria-hidden className="size-4" />
+                {fields("sku")}
+              </dt>
+              <dd className="mt-2 break-words font-medium text-foreground-rich text-sm">
+                {product.sku?.trim() || listing("missingValue")}
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+      <footer className="flex flex-wrap items-center justify-between gap-3 border-accent-foreground border-t px-4 py-4 sm:px-6">
+        <p className="max-w-xl text-foreground-dimmed text-xs leading-5">
+          {listing("sourceHint")}
+        </p>
+        <Button
+          variant="soft"
+          color="neutral"
+          render={<Link href="/dashboard/settings?tab=integrations" />}
+        >
+          {listing("action.primary")}
+          <ArrowRightIcon aria-hidden className="size-4" />
+        </Button>
+      </footer>
+      {children}
+    </section>
   );
 };
 
@@ -867,14 +1041,17 @@ const auditFieldKeys = [
 ] as const;
 
 export const AuditSkeleton = () => (
-  <div className="divide-y divide-accent-foreground border-accent-foreground border-b">
+  <div className="grid grid-cols-2 gap-px border-accent-foreground border-b bg-accent-foreground sm:grid-cols-3">
     {auditFieldKeys.map((key) => (
       <div
         key={key}
-        className="flex items-center justify-between bg-background-rich px-4 py-4"
+        className="flex items-start gap-3 bg-background-rich px-4 py-4 sm:px-6"
       >
-        <div className="h-4 w-40 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
-        <div className="h-2 w-32 animate-pulse rounded-full bg-foreground/10 motion-reduce:animate-none" />
+        <div className="size-5 shrink-0 animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
+        <div className="flex-1 space-y-2">
+          <div className="h-4 w-20 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+          <div className="h-3 w-12 animate-pulse rounded-full bg-foreground/10 motion-reduce:animate-none" />
+        </div>
       </div>
     ))}
   </div>
@@ -885,9 +1062,7 @@ export const ListingAudit = ({
 }: {
   product: ProductDetailData["product"];
 }) => {
-  const _auditCopy = useTranslations("dashboard.products.detail.audit");
   const workspace = useTranslations("dashboard.productWorkspace");
-  const _fields = useTranslations("dashboard.products.detail.fields");
   const [audit, setAudit] = useState<Audit.Type | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "ready" | "error">(
     "idle",
@@ -932,33 +1107,23 @@ export const ListingAudit = ({
             : workspace("action.primary")}
         </Button>
       </div>
-      {status === "loading" ? (
-        <div role="status" aria-label={workspace("audit.running")}>
-          <AuditSkeleton />
-        </div>
-      ) : status === "ready" && audit ? (
-        <AuditResult audit={audit} />
-      ) : (
-        <>
-          {status === "error" && (
-            <p
-              role="alert"
-              className="border-accent-foreground border-b px-4 py-4 text-error-dimmed text-sm sm:px-6"
-            >
-              {workspace("audit.failed")}
-            </p>
-          )}
-          <div className="border-accent-foreground border-b px-4 py-4 sm:px-6">
-            <h3 className="font-semibold text-foreground-rich">
-              {workspace("audit.savedFields")}
-            </h3>
-            <p className="mt-1 text-foreground-dimmed text-xs">
-              {workspace("audit.coverageDescription")}
-            </p>
-          </div>
-          <ListingCompleteness product={product} />
-        </>
+      {status === "loading" && (
+        <DashboardLoadingState
+          title={workspace("audit.running")}
+          figure="readiness-scanner"
+          compact={audit !== null}
+          className="border-accent-foreground border-b"
+        />
       )}
+      {status === "error" && (
+        <p
+          role="alert"
+          className="border-accent-foreground border-b px-4 py-4 text-error-dimmed text-sm sm:px-6"
+        >
+          {workspace("audit.failed")}
+        </p>
+      )}
+      {audit && <AuditResult audit={audit} />}
     </>
   );
 };
@@ -1236,45 +1401,6 @@ const BattlecardTab = ({
   );
 };
 
-// Collapses a listing field to a row carrying its status, so the tab shows
-// what's wrong at a glance instead of three always-open content dumps.
-const ListingField = ({
-  label,
-  status,
-  tone,
-  children,
-}: {
-  label: string;
-  status: string;
-  tone: "success" | "error" | "neutral";
-  children: ReactNode;
-}) => (
-  <AccordionItem
-    value={label}
-    className="border-accent-foreground border-b bg-background-rich"
-  >
-    {/* The trigger is a <button>, so its contents must be phrasing content. */}
-    <AccordionTrigger
-      className="items-center px-4 py-4 hover:bg-background-dimmed/40 sm:px-6"
-      classList={{
-        trigger: {
-          icon: "size-4 shrink-0 text-foreground-dimmed group-data-panel-open:rotate-180",
-        },
-      }}
-    >
-      <span className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-x-4 gap-y-2">
-        <span className="font-medium text-foreground-dimmed text-sm tracking-normal">
-          {label}
-        </span>
-        <StatusPill tone={tone}>{status}</StatusPill>
-      </span>
-    </AccordionTrigger>
-    <AccordionPanel>
-      <div className="border-accent-foreground border-t">{children}</div>
-    </AccordionPanel>
-  </AccordionItem>
-);
-
 const OptimizeTab = ({
   store,
   product,
@@ -1289,13 +1415,12 @@ const OptimizeTab = ({
   themeEditorUrl: string | null;
 }) => {
   const translate = useTranslations("dashboard.products.detail.optimizeTab");
-  const formatter = useFormatter();
+  const listing = useTranslations("dashboard.productWorkspace.listing");
   const fields = useTranslations("dashboard.products.detail.fields");
   const applyOptimization = useTranslations(
     "dashboard.products.detail.applyOptimization",
   );
   const publish = useTranslations("dashboard.products.detail.publish");
-  const shared = useTranslations("dashboard.shared");
   const toast = useToastManager();
   const errorCopy = useTranslations("onboarding.experience.errors");
   const [isPending, startTransition] = useTransition();
@@ -1437,158 +1562,122 @@ const OptimizeTab = ({
         reviewQueueHref={`/dashboard/${store}/optimize`}
       />
 
-      <ListingAudit key={product.id} product={product} />
-
-      <div className="relative border-accent-foreground border-b px-4 py-5 sm:px-6">
-        <h2 className="font-heading font-semibold text-foreground-rich text-xl">
-          {translate("currentListing")}
-        </h2>
-      </div>
-
-      {/* Same treatment as the battlecard. Each field collapses to a row with
-          its status, and anything that needs attention starts expanded — so the
-          fix is one click away without three content dumps (each with its own
-          nested scrollbar) sitting open by default. */}
-      <Accordion
-        multiple
-        className="text-foreground"
-        defaultValue={[
-          ...(product.description ? [] : [fields("description")]),
-          // The goal state needs no attention; every other status has a next
-          // step waiting inside.
-          ...(status === "ecentic-optimized" ? [] : [fields("structuredData")]),
-        ]}
-      >
-        <ListingField
-          label={fields("title")}
-          tone="neutral"
-          status={translate("characters", {
-            count: formatter.number(product.title.length),
-          })}
-        >
-          <p className="px-4 py-5 text-foreground sm:px-6">{product.title}</p>
-        </ListingField>
-
-        <ListingField
-          label={fields("description")}
-          tone={product.description ? "success" : "error"}
-          status={product.description ? shared("present") : shared("missing")}
-        >
-          {product.description ? (
-            <div
-              className="break-words px-4 py-5 text-foreground text-sm leading-relaxed sm:px-6 [&_ol]:mt-1 [&_ol]:list-decimal [&_ol]:pl-4 [&_p+p]:mt-2 [&_ul]:mt-1 [&_ul]:list-disc [&_ul]:pl-4"
-              // biome-ignore lint/security/noDangerouslySetInnerHtml: product description is HTML sourced from the user's own store
-              dangerouslySetInnerHTML={{ __html: product.description }}
-            />
-          ) : (
-            <p className="px-4 py-5 text-foreground-dimmed text-sm sm:px-6">
-              {translate("noDescription")}
-            </p>
-          )}
-        </ListingField>
-
-        {/* The collapsed row reports the live page, not our database — a green
-            "Generated" beside a page with no markup is exactly the lie that
-            sent us looking here in the first place. */}
-        <ListingField
-          label={fields("structuredData")}
-          tone={liveStatus.tone}
-          status={liveStatus.label}
-        >
-          <div className="flex flex-wrap items-center justify-between gap-3 border-accent-foreground border-b px-4 py-4 sm:px-6">
-            <div className="flex items-center gap-2">
-              <span className="font-medium text-foreground-dimmed text-sm tracking-normal">
-                {translate("liveOnStore")}
-              </span>
-              <StatusPill tone={liveStatus.tone}>{liveStatus.label}</StatusPill>
-            </div>
-            <span className="text-foreground-dimmed text-xs">
-              {translate("whatAgentsRead")}
-            </span>
-          </div>
-
-          {embedNotice && (
-            <div
-              className={cn(
-                "border-accent-foreground border-b px-4 py-5 sm:px-6",
-                embedNotice.intent === "problem"
-                  ? "bg-warning/5"
-                  : "bg-background-dimmed",
-              )}
-            >
-              <p
-                className={cn(
-                  "font-medium text-sm tracking-normal",
-                  embedNotice.intent === "problem"
-                    ? "text-warning-dimmed"
-                    : "text-foreground-dimmed",
-                )}
-              >
-                {embedNotice.title}
+      <ListingReview product={product} structuredData={structuredData}>
+        <section className="border-accent-foreground border-t">
+          <div className="flex flex-wrap items-start justify-between gap-4 px-4 py-5 sm:px-6">
+            <div className="min-w-0 max-w-xl">
+              <h3 className="flex items-center gap-2 font-semibold text-base text-foreground-rich">
+                <CodeIcon aria-hidden className="size-5 text-primary" />
+                {fields("structuredData")}
+              </h3>
+              <p className="mt-2 text-foreground-dimmed text-sm leading-6">
+                {structuredData
+                  ? listing("structuredSaved")
+                  : listing("structuredMissing")}
               </p>
-              <p className="mt-1 text-foreground text-sm">{embedNotice.text}</p>
-              {embedNotice.showEnable && themeEditorUrl && (
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-foreground-dimmed text-xs">
+                <span>{translate("liveOnStore")}</span>
+                <StatusPill tone={liveStatus.tone}>
+                  {liveStatus.label}
+                </StatusPill>
+              </div>
+              {status === "unreachable" && (
+                <p className="mt-2 text-foreground-dimmed text-xs leading-5">
+                  {listing("unreachable")}
+                </p>
+              )}
+            </div>
+            <div className="flex shrink-0 flex-wrap gap-2">
+              {embedNotice?.showEnable && themeEditorUrl && (
                 <Button
                   type="button"
+                  variant="soft"
                   color="neutral"
-                  className="mt-3"
                   onClick={() => window.open(themeEditorUrl, "_blank")}
                 >
                   {translate("enableAppEmbed")}
-                  <ArrowRightIcon className="size-4" />
+                  <ArrowRightIcon aria-hidden className="size-4" />
                 </Button>
               )}
-            </div>
-          )}
-
-          {structuredData ? (
-            <div className="space-y-0">
-              <p className="px-4 py-5 text-foreground-dimmed text-sm sm:px-6">
-                {translate("structuredDataHelp", {
-                  metafield: "ecentic.structured_data",
-                })}
-              </p>
-              {/* JSON-LD is genuinely unbounded, so this one keeps a cap. */}
-              <pre className="max-h-80 max-w-full overflow-auto whitespace-pre-wrap break-all bg-background-dimmed px-4 py-5 font-mono text-foreground-dimmed text-xs leading-relaxed sm:px-6">
-                {structuredData}
-              </pre>
-              {canPublish && (
+              {structuredData ? (
+                canPublish && (
+                  <Button
+                    type="button"
+                    variant="soft"
+                    color="neutral"
+                    onClick={publishStructured}
+                    disabled={isPublishingStructured}
+                    aria-busy={isPublishingStructured}
+                  >
+                    {isPublishingStructured ? (
+                      <LoaderIcon
+                        aria-hidden
+                        className="size-4 animate-spin motion-reduce:animate-none"
+                      />
+                    ) : (
+                      <ArrowRightIcon aria-hidden className="size-4" />
+                    )}
+                    {isPublishingStructured
+                      ? translate("publishing")
+                      : translate("publishStructuredData")}
+                  </Button>
+                )
+              ) : (
                 <Button
                   type="button"
+                  variant="soft"
                   color="neutral"
-                  className="m-4 sm:mx-6"
-                  onClick={publishStructured}
-                  disabled={isPublishingStructured}
+                  onClick={handleGenerateJsonLd}
+                  disabled={isPending}
+                  aria-busy={isPending}
                 >
-                  {isPublishingStructured
-                    ? translate("publishing")
-                    : translate("publishStructuredData")}
-                  {!isPublishingStructured && (
-                    <ArrowRightIcon className="size-4" />
+                  {isPending ? (
+                    <LoaderIcon
+                      aria-hidden
+                      className="size-4 animate-spin motion-reduce:animate-none"
+                    />
+                  ) : (
+                    <CodeIcon aria-hidden className="size-4" />
                   )}
+                  {isPending
+                    ? translate("generating")
+                    : translate("generateJsonLd")}
                 </Button>
               )}
             </div>
-          ) : (
-            <div className="space-y-4 px-4 py-5 sm:px-6">
-              <p className="text-foreground-dimmed text-sm">
-                {translate("noStructuredDataYet")}
-              </p>
-              <Button
-                type="button"
-                color="neutral"
-                onClick={handleGenerateJsonLd}
-                disabled={isPending}
+          </div>
+          {(structuredData || embedNotice) && (
+            <Accordion>
+              <AccordionItem
+                value="structured-details"
+                className="border-accent-foreground border-t"
               >
-                {isPending
-                  ? translate("generating")
-                  : translate("generateJsonLd")}
-                {!isPending && <ArrowRightIcon className="size-4" />}
-              </Button>
-            </div>
+                <AccordionTrigger className="px-4 py-3 text-foreground text-sm sm:px-6">
+                  {listing("action.quaternary")}
+                </AccordionTrigger>
+                <AccordionPanel>
+                  {embedNotice && (
+                    <div className="border-accent-foreground border-t bg-background-dimmed px-4 py-4 sm:px-6">
+                      <p className="font-medium text-foreground-rich text-sm">
+                        {embedNotice.title}
+                      </p>
+                      <p className="mt-1 text-foreground-dimmed text-sm leading-6">
+                        {embedNotice.text}
+                      </p>
+                    </div>
+                  )}
+                  {structuredData && (
+                    <pre className="max-h-80 max-w-full overflow-auto whitespace-pre-wrap break-all border-accent-foreground border-t bg-background-dimmed px-4 py-4 font-mono text-foreground text-xs leading-6 sm:px-6">
+                      {structuredData}
+                    </pre>
+                  )}
+                </AccordionPanel>
+              </AccordionItem>
+            </Accordion>
           )}
-        </ListingField>
-      </Accordion>
+        </section>
+      </ListingReview>
+      <ListingAudit key={product.id} product={product} />
     </>
   );
 };

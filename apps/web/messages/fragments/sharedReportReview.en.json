@@ -1,0 +1,32 @@
+{
+  "share": {
+    "review": {
+      "title": "AI comparison results",
+      "description": "A saved scan of product comparisons by AI models. These results describe simulations, not live shopper activity.",
+      "recorded": "Recorded {date}",
+      "score": {
+        "label": "Comparison win rate",
+        "context": "{wins, plural, one {# win} other {# wins}} across {total, plural, one {# recorded outcome} other {# recorded outcomes}}.",
+        "empty": "No comparison outcomes were recorded for this scan."
+      },
+      "providers": {
+        "title": "Results by AI provider",
+        "description": "Recorded wins and losses for each model.",
+        "outcomes": "{wins, plural, one {# win} other {# wins}} · {losses, plural, one {# loss} other {# losses}}",
+        "empty": "No provider results were recorded."
+      },
+      "finding": {
+        "title": "Main finding",
+        "details": "Read the reported impact"
+      },
+      "cta": {
+        "title": "Compare your own products",
+        "description": "Start a free scan to see how AI models compare your listings."
+      },
+      "unavailable": {
+        "title": "This report is unavailable",
+        "description": "The link may be incorrect, or the scan may not be complete yet."
+      }
+    }
+  }
+}

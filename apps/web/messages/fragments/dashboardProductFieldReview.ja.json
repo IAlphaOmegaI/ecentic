@@ -1,0 +1,25 @@
+{
+  "dashboard": {
+    "productWorkspace": {
+      "listing": {
+        "title": "保存済みの商品情報",
+        "description": "カタログに保存されている商品情報を確認します。充足率は、各項目に情報があるかどうかを示します。",
+        "coverage": "{total}項目中{present}項目を保存済み",
+        "missingValue": "未保存",
+        "missingImages": "商品写真が保存されていません",
+        "imageHint": "カタログの連携元に、商品がはっきり分かる写真を追加してください。",
+        "missingDescription": "商品の用途と主な特徴が分かる説明を追加してください。",
+        "sourceHint": "情報を変更するには、カタログの連携元で編集してからecenticに同期してください。",
+        "structuredSaved": "保存済みのデータを確認してから公開してください。ストアのページにあるデータとは異なる場合があります。",
+        "structuredMissing": "保存済みの商品情報から下書きを生成し、内容を確認してから公開してください。",
+        "unreachable": "ストアに接続できなかったため、公開されているデータは未確認です。",
+        "action": {
+          "primary": "カタログの連携元を管理",
+          "secondary": "説明をすべて読む",
+          "tertiary": "折りたたむ",
+          "quaternary": "構造化データを確認"
+        }
+      }
+    }
+  }
+}

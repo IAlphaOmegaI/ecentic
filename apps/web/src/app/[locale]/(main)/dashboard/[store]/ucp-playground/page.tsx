@@ -29,6 +29,7 @@ const ConnectedPlayground = async ({ params }: { params: StoreParams }) => {
       appearance="dashboard"
       defaultStoreUrl={record.domain}
       lockStore
+      initialFailure={service.success ? undefined : service.code}
       initialConnection={
         service.success
           ? {

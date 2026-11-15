@@ -1,0 +1,25 @@
+{
+  "dashboard": {
+    "productWorkspace": {
+      "listing": {
+        "title": "Fiche enregistrée",
+        "description": "Consultez les informations du produit enregistrées dans votre catalogue. La couverture indique uniquement les champs renseignés.",
+        "coverage": "{present} champs sur {total} renseignés",
+        "missingValue": "Non renseigné",
+        "missingImages": "Aucune photo du produit enregistrée",
+        "imageHint": "Ajoutez des photos nettes du produit dans la source de votre catalogue.",
+        "missingDescription": "Ajoutez une description précisant l’usage du produit et ses principales caractéristiques.",
+        "sourceHint": "Modifiez ces informations dans la source de votre catalogue, puis synchronisez-les avec ecentic.",
+        "structuredSaved": "Vérifiez les données enregistrées avant de les publier. La page de la boutique peut afficher d’autres données.",
+        "structuredMissing": "Générez un brouillon à partir des informations enregistrées du produit, puis vérifiez-le avant publication.",
+        "unreachable": "La boutique est inaccessible. Les données publiées n’ont donc pas pu être vérifiées.",
+        "action": {
+          "primary": "Gérer la source du catalogue",
+          "secondary": "Lire toute la description",
+          "tertiary": "Réduire",
+          "quaternary": "Examiner les données structurées"
+        }
+      }
+    }
+  }
+}

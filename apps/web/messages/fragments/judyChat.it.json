@@ -1,0 +1,15 @@
+{
+  "dashboard": {
+    "nav": {
+      "assistant": {
+        "chat": {
+          "heading": "Da dove iniziamo?",
+          "placeholder": "Scrivi una domanda per Judy…",
+          "draftHint": "La chat sarà presto disponibile. La bozza rimane qui finché non esci da questo spazio di lavoro.",
+          "send": "Invia messaggio",
+          "close": "Riduci Judy"
+        }
+      }
+    }
+  }
+}

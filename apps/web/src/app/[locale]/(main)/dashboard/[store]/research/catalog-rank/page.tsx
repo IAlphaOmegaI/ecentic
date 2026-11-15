@@ -5,20 +5,24 @@ import { RankChecker } from "./_components/rank-checker";
 import { CatalogRankShell, CatalogRankSkeleton } from "./_components/shell";
 
 type StoreParams = Promise<{ locale: string; store: string }>;
-export default ({ params }: { params: StoreParams }) => (
-  <CatalogRankShell>
-    <Suspense fallback={<CatalogRankSkeleton />}>
-      <RankContent params={params} />
-    </Suspense>
-  </CatalogRankShell>
-);
-const RankContent = async ({ params }: { params: StoreParams }) => {
+export default async ({ params }: { params: StoreParams }) => {
+  const configured = await CatalogRank.isCatalogConfigured();
+  return (
+    <CatalogRankShell>
+      <Suspense fallback={<CatalogRankSkeleton configured={configured} />}>
+        <RankContent params={params} configured={configured} />
+      </Suspense>
+    </CatalogRankShell>
+  );
+};
+const RankContent = async ({
+  params,
+  configured,
+}: {
+  params: StoreParams;
+  configured: boolean;
+}) => {
   await connection();
   const { store } = await params;
-  return (
-    <RankChecker
-      store={store}
-      configured={await CatalogRank.isCatalogConfigured()}
-    />
-  );
+  return <RankChecker store={store} configured={configured} />;
 };

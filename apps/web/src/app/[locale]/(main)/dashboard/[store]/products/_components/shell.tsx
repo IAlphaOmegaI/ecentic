@@ -1,16 +1,12 @@
 "use client";
 
-import {
-  AlertCircleIcon,
-  ArrowRightIcon,
-  LoaderIcon,
-  PlusIcon,
-} from "@zenncore/icons";
+import { ArrowRightIcon, LoaderIcon, PlusIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { useFormatter, useTranslations } from "next-intl";
 import { type ReactNode, useTransition } from "react";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { Link, useRouter } from "@/i18n/navigation";
+import { DashboardEmptyState } from "../../../_components/empty-state";
 import { Crosshair, Slot } from "../../../_components/grid";
 
 import { DashboardHeaderFigure } from "../../../_components/header-figure";
@@ -28,7 +24,7 @@ export const ProductsShell = ({
 }) => {
   const translate = useTranslations("dashboard.products.catalog");
   return (
-    <div className="flex min-w-0 flex-col">
+    <div className="flex min-h-full min-w-0 flex-col">
       <header className="flex min-w-0 flex-wrap items-center justify-between gap-5 px-4 py-6 sm:px-6">
         <div className="flex min-w-0 items-center gap-4">
           <DashboardHeaderFigure subject="products" />
@@ -49,7 +45,7 @@ export const ProductsShell = ({
         <Slot>{stats}</Slot>
       </div>
       <section
-        className="relative min-w-0 border-accent-foreground border-b bg-background-rich"
+        className="relative flex min-w-0 flex-1 flex-col border-accent-foreground border-b bg-background-rich"
         aria-label={translate("tableLabel")}
       >
         <Slot>{table}</Slot>
@@ -160,58 +156,52 @@ export const CatalogFeedback = ({
   const [pending, startTransition] = useTransition();
   return (
     <div
-      className="flex min-h-72 flex-col items-center justify-center gap-3 px-6 py-10 text-center"
+      className="flex min-w-0 flex-1 flex-col"
       role={kind === "error" ? "alert" : undefined}
       aria-busy={pending}
     >
-      {kind === "error" ? (
-        <AlertCircleIcon className="size-10 text-error-dimmed" />
-      ) : (
-        <div aria-hidden className="size-20 text-primary">
-          <EvolvingAscii artwork="catalog" />
-        </div>
-      )}
-      <h2 className="font-semibold text-foreground-rich text-xl">
-        {translate(`states.${kind}.title`)}
-      </h2>
-      <p className="max-w-md text-foreground-dimmed text-sm leading-6">
-        {translate(`states.${kind}.description`)}
-      </p>
-      {kind === "error" ? (
-        <Button
-          variant="soft"
-          color="neutral"
-          disabled={pending}
-          onClick={() => startTransition(() => router.refresh())}
-        >
-          {pending && (
-            <LoaderIcon
-              className="size-4 animate-spin motion-reduce:animate-none"
-              aria-hidden
-            />
-          )}
-          {translate("action.retry")}
-        </Button>
-      ) : (
-        store && (
+      <DashboardEmptyState
+        title={translate(`states.${kind}.title`)}
+        description={translate(`states.${kind}.description`)}
+        figure={kind === "error" ? "readiness-scanner" : "product-label"}
+        scope="page"
+      >
+        {kind === "error" ? (
           <Button
-            color={kind === "empty" ? "primary" : "neutral"}
-            variant={kind === "empty" ? "default" : "soft"}
-            render={
-              <Link
-                href={`/dashboard/${store}/products${kind === "empty" ? "/add" : ""}`}
-              />
-            }
+            variant="soft"
+            color="neutral"
+            disabled={pending}
+            onClick={() => startTransition(() => router.refresh())}
           >
-            {kind === "empty" ? (
-              <PlusIcon className="size-4" />
-            ) : (
-              <ArrowRightIcon className="size-4" />
+            {pending && (
+              <LoaderIcon
+                className="size-4 animate-spin motion-reduce:animate-none"
+                aria-hidden
+              />
             )}
-            {translate(kind === "empty" ? "action.add" : "action.clear")}
+            {translate("action.retry")}
           </Button>
-        )
-      )}
+        ) : (
+          store && (
+            <Button
+              color={kind === "empty" ? "primary" : "neutral"}
+              variant={kind === "empty" ? "default" : "soft"}
+              render={
+                <Link
+                  href={`/dashboard/${store}/products${kind === "empty" ? "/add" : ""}`}
+                />
+              }
+            >
+              {kind === "empty" ? (
+                <PlusIcon className="size-4" />
+              ) : (
+                <ArrowRightIcon className="size-4" />
+              )}
+              {translate(kind === "empty" ? "action.add" : "action.clear")}
+            </Button>
+          )
+        )}
+      </DashboardEmptyState>
     </div>
   );
 };

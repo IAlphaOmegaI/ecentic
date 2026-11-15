@@ -6,11 +6,12 @@ import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useOnboardingError } from "@/app/[locale]/(auth)/onboarding/_components/use-onboarding-error";
+import { FeedbackLoading, FeedbackState } from "@/components/feedback-state";
+import { Motion } from "@/components/motion";
 import { callOnboardingAction } from "@/lib/onboarding-errors";
 import type * as Competitor from "@/server/app/competitor";
 import * as Search from "@/server/app/intelligence/search";
@@ -80,14 +81,14 @@ export const SearchTab = ({
   return (
     <div
       className={cn(
-        "relative flex h-full flex-col overflow-hidden",
+        "relative flex h-full flex-col overflow-hidden max-sm:overflow-y-auto",
         dashboard && "h-auto min-h-64 bg-background-rich",
         className,
       )}
     >
       <div
         className={cn(
-          "relative border-accent-foreground border-b bg-background-dimmed p-4",
+          "relative shrink-0 border-accent-foreground border-b bg-background-dimmed p-4",
           dashboard && "bg-background-rich py-6 sm:px-6",
         )}
       >
@@ -180,69 +181,36 @@ export const SearchTab = ({
         </div>
       </div>
 
-      <AnimatePresence mode="wait" initial={false}>
-        {competitors.length === 0 && !isSearching && (
-          <motion.div
-            key="empty"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="flex flex-1 items-center justify-center p-8"
-          >
-            <p className="text-center text-foreground-dimmed text-sm">
-              {translate("empty")}
-            </p>
-          </motion.div>
-        )}
+      {competitors.length === 0 && !isSearching && (
+        <FeedbackState
+          title={translate("label")}
+          description={translate("empty")}
+          figure="target-finder"
+          scope="page"
+          className="shrink-0"
+        />
+      )}
 
-        {competitors.length === 0 && isSearching && (
-          <motion.div
-            key="loading"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="flex flex-1 items-center justify-center gap-3 p-8"
-          >
-            {[0, 0.2, 0.4].map((delay) => (
-              <motion.span
-                key={delay}
-                animate={{ opacity: [0.2, 1, 0.2] }}
-                transition={{
-                  duration: 1,
-                  repeat: Number.POSITIVE_INFINITY,
-                  delay,
-                  ease: "easeInOut",
-                }}
-                className="inline-block size-1.5 rounded-full bg-primary"
-              />
-            ))}
-            <span className="text-foreground-dimmed text-sm">
-              {translate("loading")}
-            </span>
-          </motion.div>
-        )}
+      {competitors.length === 0 && isSearching && (
+        <FeedbackLoading
+          title={translate("loading")}
+          figure="target-finder"
+          scope="page"
+          className="shrink-0"
+        />
+      )}
 
-        {competitors.length > 0 && (
-          <motion.div
-            key="results"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="flex min-h-0 flex-1 flex-col"
-          >
-            <CompetitorResults
-              dashboard={dashboard}
-              competitors={competitors}
-              noun="competitor"
-              verb="found"
-              onClear={() => setCompetitors([])}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {competitors.length > 0 && (
+        <Motion.Item key="results" className="flex min-h-0 flex-1 flex-col">
+          <CompetitorResults
+            dashboard={dashboard}
+            competitors={competitors}
+            noun="competitor"
+            verb="found"
+            onClear={() => setCompetitors([])}
+          />
+        </Motion.Item>
+      )}
     </div>
   );
 };

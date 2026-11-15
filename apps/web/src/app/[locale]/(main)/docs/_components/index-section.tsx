@@ -83,7 +83,7 @@ export namespace IndexSection {
 }
 
 export const IndexQuickstartSkeleton = () => (
-  <div aria-hidden="true">
+  <div aria-hidden="true" className="animate-pulse motion-reduce:animate-none">
     <div className="border-accent-foreground border-b px-8 py-6 max-sm:px-4">
       <div className="h-6 w-48 bg-background-dimmed" />
     </div>

@@ -12,6 +12,7 @@ import {
 import { Button } from "@zenncore/web/components/button";
 import { useTranslations } from "next-intl";
 import { type PropsWithChildren, useState } from "react";
+import { FeedbackState } from "@/components/feedback-state";
 import type { AuditCheck, AuditFinding, Report } from "@/lib/webmcp";
 
 export const Source = ({ url }: { url: string }) => (
@@ -295,9 +296,11 @@ export const AuditPanel = ({ report }: { report: Report }) => {
             ))}
           </Accordion>
         ) : (
-          <p className="px-6 pb-6 text-foreground-dimmed text-sm sm:px-8">
-            {translate("empty")}
-          </p>
+          <FeedbackState
+            title={translate("empty")}
+            figure="readiness-scanner"
+            compact
+          />
         )}
       </section>
       <aside className="space-y-6 border-accent-foreground border-t bg-background-dimmed p-6 sm:p-8 lg:border-t-0 lg:border-l">

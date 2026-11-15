@@ -17,6 +17,7 @@ import { OffersTab } from "@/app/[locale]/(auth)/onboarding/competitors/_compone
 import { SearchTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/search-tab";
 import { UrlTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/url-tab";
 import * as Competitor from "@/server/app/competitor";
+import { DashboardEmptyState } from "../../../../_components/empty-state";
 
 export namespace AddCompetitors {
   export type Props = {
@@ -190,9 +191,11 @@ export const AddCompetitors = ({
         </div>
 
         {competitors.length === 0 ? (
-          <p className="px-4 pb-6 text-foreground-dimmed text-sm sm:px-6">
-            {translate("emptyRoster")}
-          </p>
+          <DashboardEmptyState
+            title={translate("emptyRoster")}
+            figure="rivals-balance"
+            compact
+          />
         ) : (
           <div className="h-105 border-accent-foreground border-t">
             <CompetitorList

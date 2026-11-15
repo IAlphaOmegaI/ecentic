@@ -27,6 +27,7 @@ import {
 import { Link } from "@/i18n/navigation";
 import { formatRelativeTime } from "@/lib/date";
 import type * as Simulate from "@/server/app/intelligence/simulate";
+import { DashboardEmptyState } from "./empty-state";
 import { Crosshair } from "./grid";
 
 type TrendPoint = { date: string; winRate: number };
@@ -102,18 +103,13 @@ const WinRateLineChart = ({
 
   if (chart.length === 0)
     return (
-      <div
-        className={cn(
-          "flex h-60 min-w-0 flex-col items-center justify-center gap-4 px-6 text-center sm:h-64",
-          className,
-        )}
-      >
-        <TrendDownIcon aria-hidden className="size-10 text-primary" />
-        <div className="max-w-64 text-sm leading-relaxed">
-          <p className="text-foreground-rich">{emptyPrimary}</p>
-          <p className="mt-2 text-foreground-dimmed">{emptySecondary}</p>
-        </div>
-      </div>
+      <DashboardEmptyState
+        title={emptyPrimary}
+        description={emptySecondary}
+        figure="analytics-recorder"
+        compact
+        className={className}
+      />
     );
 
   return (
@@ -340,9 +336,13 @@ export const OverviewRecentScans = ({
         </Button>
       </header>
       {activity.length === 0 ? (
-        <p className="border-accent-foreground border-t px-6 py-6 text-foreground-dimmed text-sm leading-relaxed">
-          {translate("states.noActivity")}
-        </p>
+        <DashboardEmptyState
+          title={translate("states.noTrend")}
+          description={translate("states.noActivity")}
+          figure="report-printer"
+          compact
+          className="border-accent-foreground border-t"
+        />
       ) : (
         <div className="relative border-accent-foreground border-t">
           <Crosshair className="top-0 left-0 -translate-y-1/2" />

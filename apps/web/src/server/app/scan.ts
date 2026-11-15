@@ -242,8 +242,10 @@ export const getShareData = withContext(async (_, { id }: { id: string }) => {
     return { success: false, error: new NotFoundError("Scan") };
   }
 
-  const simulations = await Simulation.getForScan(Environment.SERVER, {
-    scan: id,
+  // The completed scan link is public. Read only its rows through the
+  // repository; the dashboard's getForScan action requires a signed-in user.
+  const simulations = await Simulation.find(Environment.SERVER, {
+    where: eq(schema.simulation.scanId, id),
   });
 
   if (!simulations.success) return simulations;

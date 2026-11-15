@@ -19,6 +19,7 @@ import { useMessages, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { z } from "zod";
 import * as GoogleMerchant from "@/server/app/integration/google-merchant";
+import { DashboardEmptyState } from "../../../_components/empty-state";
 import { Chip } from "./google-shopping-client";
 
 /**
@@ -509,7 +510,11 @@ export const UcpProductsPanel = ({
 
   if (products.length === 0)
     return (
-      <p className="p-4 text-foreground-dimmed text-sm">{translate("empty")}</p>
+      <DashboardEmptyState
+        title={translate("empty")}
+        figure="checkout-till"
+        compact
+      />
     );
 
   const eligibleCount = products.filter(

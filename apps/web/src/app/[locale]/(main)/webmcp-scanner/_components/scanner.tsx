@@ -12,6 +12,7 @@ import {
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { z } from "zod";
+import { FeedbackLoading } from "@/components/feedback-state";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import type { Outcome } from "@/lib/webmcp";
 import * as WebMcp from "@/server/app/webmcp";
@@ -135,16 +136,6 @@ export const Scanner = ({
             {translate("scope")}
           </p>
           <div aria-live="polite" aria-atomic="true">
-            {pending && (
-              <p
-                className={cn(
-                  "text-primary-text text-sm",
-                  appearance === "workbench" && "text-primary-rich",
-                )}
-              >
-                {translate("progress")}
-              </p>
-            )}
             {failed && (
               <p role="alert" className="text-error text-sm">
                 {translate("errors.failed")}
@@ -157,6 +148,19 @@ export const Scanner = ({
                   ? ` ${translate("errors.retryAfter", { seconds: outcome.retryAfter })}`
                   : ""}
               </p>
+            )}
+            {pending && (
+              <FeedbackLoading
+                title={translate("progress")}
+                figure="browser-toolbench"
+                surface={appearance === "workbench" ? "dark" : "rich"}
+                className={cn(
+                  "border-t",
+                  appearance === "workbench"
+                    ? "border-background-rich/15"
+                    : "border-accent-foreground",
+                )}
+              />
             )}
             {outcome?.kind === "complete" && (
               <p className="sr-only">{translate("complete")}</p>

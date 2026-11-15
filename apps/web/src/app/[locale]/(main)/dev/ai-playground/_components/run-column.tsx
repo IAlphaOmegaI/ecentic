@@ -69,7 +69,7 @@ const tokens = (value: number | undefined): string =>
 
 const Metric = ({ label, value }: { label: string; value: string }) => (
   <div className="flex flex-col gap-0.5">
-    <span className="font-medium text-xs text-foreground-dimmed uppercase tracking-wider">
+    <span className="font-medium text-foreground-dimmed text-xs uppercase tracking-wider">
       {label}
     </span>
     <span className="font-mono text-foreground-rich text-xs tabular-nums">
@@ -119,7 +119,7 @@ const ObjectOutput = ({ state }: { state: RunState }) => {
       </pre>
       {validated && (
         <div className="border-success/30 border-l-2 pl-3">
-          <p className="mb-1 font-medium text-xs text-success uppercase tracking-wider">
+          <p className="mb-1 font-medium text-success text-xs uppercase tracking-wider">
             Schema valid
           </p>
           <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-foreground-rich text-xs">
@@ -145,7 +145,7 @@ export const RunColumn = ({ id, state }: { id: string; state: RunState }) => {
           <p className="truncate font-semibold text-foreground-rich text-sm">
             {labelOf(id)}
           </p>
-          <p className="mt-0.5 truncate font-mono text-xs text-foreground-dimmed">
+          <p className="mt-0.5 truncate font-mono text-foreground-dimmed text-xs">
             <span className={provider.accent}>{provider.label}</span>
             <span className="mx-1.5 opacity-40">/</span>
             {id}
@@ -155,7 +155,7 @@ export const RunColumn = ({ id, state }: { id: string; state: RunState }) => {
           <CopyButton value={copyable} />
           <StatusPill tone={tones[state.status]}>
             {state.status === "streaming" && (
-              <LoaderIcon className="size-3 animate-spin" />
+              <LoaderIcon className="size-3 animate-spin motion-reduce:animate-none" />
             )}
             {state.status}
           </StatusPill>
@@ -172,7 +172,7 @@ export const RunColumn = ({ id, state }: { id: string; state: RunState }) => {
       <div className="min-w-0 flex-1 p-4">
         {state.error && (
           <div className="mb-3 border-error/30 border-l-2 bg-error/5 px-3 py-2">
-            <p className="font-medium text-xs text-error uppercase tracking-wider">
+            <p className="font-medium text-error text-xs uppercase tracking-wider">
               Error
             </p>
             <p className="mt-1 break-words font-mono text-error text-xs">
@@ -183,10 +183,10 @@ export const RunColumn = ({ id, state }: { id: string; state: RunState }) => {
 
         {state.reasoning && (
           <details className="mb-3 border-accent-foreground border-l-2 pl-3">
-            <summary className="cursor-pointer font-medium text-xs text-foreground-dimmed uppercase tracking-wider">
+            <summary className="cursor-pointer font-medium text-foreground-dimmed text-xs uppercase tracking-wider">
               Reasoning
             </summary>
-            <pre className="mt-1 whitespace-pre-wrap break-words font-mono text-xs text-foreground-dimmed">
+            <pre className="mt-1 whitespace-pre-wrap break-words font-mono text-foreground-dimmed text-xs">
               {state.reasoning}
             </pre>
           </details>
@@ -211,7 +211,7 @@ export const RunColumn = ({ id, state }: { id: string; state: RunState }) => {
       </div>
 
       {state.finish && state.finish !== "stop" && (
-        <p className="border-accent-foreground border-t px-4 py-2 font-mono text-xs text-warning">
+        <p className="border-accent-foreground border-t px-4 py-2 font-mono text-warning text-xs">
           finish reason: {state.finish}
         </p>
       )}

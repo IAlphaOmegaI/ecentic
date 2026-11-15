@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import { connection } from "next/server";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
+import { FeedbackLoading } from "@/components/feedback-state";
 import { JsonLd } from "@/components/json-ld";
 import { MarketingQuestions } from "@/components/marketing/faq";
 import { MarketingEdgeCrosses } from "@/components/marketing/light-band";
@@ -46,15 +47,17 @@ export const generateMetadata = async (): Promise<Metadata> => {
   return { ...metadata, title: { absolute: translate("meta.title") } };
 };
 
-const PlaygroundSkeleton = () => (
-  <div className="flex min-h-145 flex-1 items-center justify-center p-8 max-sm:min-h-130">
-    <div className="w-full max-w-md space-y-3">
-      <div className="mx-auto h-4 w-40 animate-pulse bg-accent-foreground/30 motion-reduce:animate-none" />
-      <div className="h-9 w-full animate-pulse bg-accent-foreground/20 motion-reduce:animate-none" />
-      <div className="h-9 w-full animate-pulse bg-accent-foreground/30 motion-reduce:animate-none" />
-    </div>
-  </div>
-);
+const PlaygroundSkeleton = async () => {
+  const translate = await getTranslations("general.states.pending");
+  return (
+    <FeedbackLoading
+      title={translate("primary")}
+      figure="checkout-workbench"
+      surface="dark"
+      className="min-h-145 flex-1 max-sm:min-h-130"
+    />
+  );
+};
 
 const MeteredPlayground = async () => {
   // Same deferral as `readSession` in server/utils/authentication.ts: Better

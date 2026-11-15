@@ -220,10 +220,10 @@ export const SectionHeader = ({
 );
 
 const statusPillTones = {
-  success: "bg-success/10 text-success",
-  warning: "bg-warning/10 text-warning",
-  error: "bg-error/10 text-error",
-  primary: "bg-primary/10 text-primary",
+  success: "bg-success/10 text-success-foreground",
+  warning: "bg-warning/10 text-warning-foreground",
+  error: "bg-error/10 text-error-foreground",
+  primary: "bg-primary/10 text-primary-text",
   neutral: "bg-background-dimmed text-foreground-dimmed",
 } as const;
 

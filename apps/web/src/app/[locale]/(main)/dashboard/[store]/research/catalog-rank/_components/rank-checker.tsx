@@ -13,10 +13,11 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { useFormatter, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { z } from "zod";
-import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { Link } from "@/i18n/navigation";
 import * as CatalogRank from "@/server/app/intelligence/catalog-rank";
+import { DashboardEmptyState } from "../../../../_components/empty-state";
 import { StatusPill } from "../../../../_components/grid";
+import { DashboardLoadingState } from "../../../../_components/loading-state";
 
 const COUNTRIES = ["US", "GB", "DE", "FR", "IT", "ES", "NL", "CA"] as const;
 
@@ -30,6 +31,7 @@ export const RankChecker = ({
   const translate = useTranslations("dashboard.visibility.rankChecker");
   const research = useTranslations("dashboard.research");
   const format = useFormatter();
+  const general = useTranslations("general");
   const [checked, setChecked] = useState<{ country: string; at: Date } | null>(
     null,
   );
@@ -82,35 +84,33 @@ export const RankChecker = ({
 
   if (!configured) {
     return (
-      <div className="flex min-h-64 flex-col items-start justify-center gap-3 border-accent-foreground border-b px-4 py-8 sm:px-6">
-        <h2 className="font-semibold text-foreground-rich text-xl">
-          {research("rank.unavailable.title")}
-        </h2>
-        <p className="max-w-xl text-foreground-dimmed text-sm leading-6">
-          {research("rank.unavailable.description")}
-        </p>
-        <div className="mt-2 flex flex-wrap gap-3">
-          <Button
-            variant="soft"
-            color="neutral"
-            render={<Link href={`/dashboard/${store}/visibility`} />}
-          >
-            {research("rank.unavailable.action.primary")}
-          </Button>
-          <Button
-            variant="soft"
-            color="neutral"
-            render={<Link href={`/dashboard/${store}/research`} />}
-          >
-            {research("rank.unavailable.action.secondary")}
-          </Button>
-        </div>
-      </div>
+      <DashboardEmptyState
+        title={research("rank.unavailable.title")}
+        description={research("rank.unavailable.description")}
+        figure="channel-plug-hub"
+        scope="page"
+        className="border-accent-foreground border-b"
+      >
+        <Button
+          variant="soft"
+          color="neutral"
+          render={<Link href={`/dashboard/${store}/visibility`} />}
+        >
+          {research("rank.unavailable.action.primary")}
+        </Button>
+        <Button
+          variant="soft"
+          color="neutral"
+          render={<Link href={`/dashboard/${store}/research`} />}
+        >
+          {research("rank.unavailable.action.secondary")}
+        </Button>
+      </DashboardEmptyState>
     );
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex min-w-0 flex-1 flex-col">
       <div className="border-accent-foreground border-b px-4 py-5 sm:px-6">
         <InferredForm
           config={config}
@@ -124,7 +124,7 @@ export const RankChecker = ({
             disabled={isChecking}
           >
             {isChecking ? (
-              <LoaderIcon className="size-4 animate-spin" />
+              <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
             ) : (
               <BullseyeIcon className="size-4" />
             )}
@@ -133,20 +133,21 @@ export const RankChecker = ({
         </InferredForm>
       </div>
 
-      {!measurement && (
-        <div className="grid min-h-64 items-center md:grid-cols-3">
-          <div className="px-4 py-8 sm:px-6 md:col-span-2">
-            <h2 className="font-semibold text-xl">
-              {research("rank.empty.title")}
-            </h2>
-            <p className="mt-3 max-w-xl text-foreground-dimmed text-sm leading-6">
-              {research("rank.empty.description")}
-            </p>
-          </div>
-          <div className="mx-auto w-full max-w-64 px-6 pb-6 md:py-6">
-            <CommerceFigure kind="shopifyBag" className="h-44" />
-          </div>
-        </div>
+      {isChecking && (
+        <DashboardLoadingState
+          title={general("states.pending.primary")}
+          description={research("rank.description")}
+          figure="target-finder"
+          compact={measurement !== null}
+        />
+      )}
+      {!measurement && !isChecking && (
+        <DashboardEmptyState
+          title={research("rank.empty.title")}
+          description={research("rank.empty.description")}
+          figure="target-finder"
+          scope="page"
+        />
       )}
       {measurement && (
         <div className="flex flex-col">

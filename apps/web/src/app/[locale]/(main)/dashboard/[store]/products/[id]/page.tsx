@@ -1,6 +1,7 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
 import * as Product from "@/server/app/product";
+import { sanitize } from "@/server/utils/blog-content";
 import { Environment } from "@/server/utils/environment";
 import { ProductDetail } from "./_components/product-detail";
 import {
@@ -26,10 +27,19 @@ const ProductContent = async ({ params }: { params: DetailParams }) => {
       />
     );
   if (!detail.data) return <ProductFeedback kind="missing" />;
+  const data = {
+    ...detail.data,
+    product: {
+      ...detail.data.product,
+      description: detail.data.product.description
+        ? sanitize(detail.data.product.description)
+        : null,
+    },
+  };
   return (
     <>
-      <ProductHeader data={detail.data} />
-      <ProductDetail data={detail.data} />
+      <ProductHeader data={data} />
+      <ProductDetail data={data} />
     </>
   );
 };

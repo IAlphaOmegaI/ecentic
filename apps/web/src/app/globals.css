@@ -35,9 +35,16 @@ html:is(:lang(ja), :lang(zh-CN)) .marketing-site :is(h1, h2, h3, h4) {
   --color-band-start: var(--color-emphasis);
   --color-band-middle: var(--color-primary-dimmed);
   --color-band-end: var(--color-primary);
+  /* Expanded Judy and toast edges share the requested softer treatment.
+     Ordinary controls retain the shared small/large radius foundations. */
+  --radius-overlay: calc(var(--spacing) * 4);
 }
 
 html {
+  --floating-controls-bottom: max(
+    calc(var(--spacing) * 5),
+    env(safe-area-inset-bottom)
+  );
   scroll-behavior: smooth;
   scroll-padding-top: 5.5rem;
 }

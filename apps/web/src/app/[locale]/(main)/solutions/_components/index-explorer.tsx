@@ -8,7 +8,13 @@ import {
   AccordionTrigger,
 } from "@zenncore/web/components/accordion";
 import { Button } from "@zenncore/web/components/button";
-import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
+import {
+  Tab,
+  Tabs,
+  TabsIndicator,
+  TabsList,
+  TabsPanel,
+} from "@zenncore/web/components/tabs";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { useInteractive } from "@/components/marketing/interactive/use-interactive";
 import type { MarketingPage } from "@/components/marketing/page";
@@ -27,17 +33,11 @@ export const SolutionsAudience = ({
   label,
 }: SolutionsAudience.Props) => (
   <Tabs defaultValue={items[0]?.id}>
-    <div className="border-accent-foreground border-t bg-background-dimmed px-8 py-6 max-sm:px-4">
-      <TabsList
-        aria-label={label}
-        className="grid w-full grid-cols-4 gap-1 border-0 bg-background p-1 max-md:grid-cols-2"
-      >
+    <div className="overflow-x-auto overscroll-x-contain border-accent-foreground border-t bg-background-dimmed px-8 py-6 max-sm:px-4">
+      <TabsList aria-label={label} className="min-w-max">
+        <TabsIndicator />
         {items.map((item) => (
-          <Tab
-            key={item.id}
-            value={item.id}
-            className="h-auto min-h-16 rounded-sm border-0 px-4 py-4 text-center text-base leading-snug before:hidden hover:bg-background-rich focus-visible:-outline-offset-4 data-[active]:bg-primary-text data-selected:bg-primary-text max-sm:px-2 max-sm:text-sm"
-          >
+          <Tab key={item.id} value={item.id} className="text-sm">
             {item.title}
           </Tab>
         ))}
@@ -102,7 +102,7 @@ export const SolutionsWorkflows = ({
             id={section.id}
             className="scroll-mt-24 border-accent-foreground border-b bg-background-dimmed last:border-b-0"
           >
-            <h3 className="flex items-start gap-6 px-8 py-8 font-heading text-3xl lg:text-4xl xl:text-5xl leading-tight max-sm:gap-4 max-sm:px-4 max-sm:py-6">
+            <h3 className="flex items-start gap-6 px-8 py-8 font-heading text-3xl leading-tight max-sm:gap-4 max-sm:px-4 max-sm:py-6 lg:text-4xl xl:text-5xl">
               <span className="text-primary-text">
                 {String(index + 1).padStart(2, "0")}
               </span>
@@ -132,10 +132,10 @@ export const SolutionsWorkflows = ({
             }}
           >
             <span className="flex items-baseline gap-8 max-sm:gap-4">
-              <span className="font-heading text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl text-primary-text leading-none">
+              <span className="font-heading text-3xl text-primary-text leading-none lg:text-4xl xl:text-5xl 2xl:text-6xl">
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <span className="font-heading text-3xl lg:text-4xl xl:text-5xl text-background-rich leading-tight tracking-tight">
+              <span className="font-heading text-3xl text-background-rich leading-tight tracking-tight lg:text-4xl xl:text-5xl">
                 {section.title}
               </span>
             </span>

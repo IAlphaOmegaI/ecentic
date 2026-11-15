@@ -62,7 +62,7 @@ export const TabsIndicator = ({
   return (
     <TabsPrimitive.Indicator
       className={createClassName(
-        "absolute top-0 left-0 z-[-1] h-full w-(--active-tab-width) translate-x-(--active-tab-left) bg-background-rich bg-linear-to-b from-primary-text/90 to-primary-text inset-shadow-sm inset-shadow-background-rich/30 transition-all duration-200 ease-in-out",
+        "absolute inset-shadow-background-rich/30 inset-shadow-sm top-0 left-0 z-[-1] h-full w-(--active-tab-width) translate-x-(--active-tab-left) bg-background-rich bg-linear-to-b from-primary-text/90 to-primary-text transition-[width,height,translate] duration-200 ease-out motion-reduce:transition-none",
         className,
       )}
       {...props}

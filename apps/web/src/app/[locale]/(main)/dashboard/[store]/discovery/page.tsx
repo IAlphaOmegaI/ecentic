@@ -18,7 +18,16 @@ const StoreDiscovery = async ({ params }: { params: StoreParams }) => {
   if (!result.success) return <ResearchUnavailable />;
   const record = result.data;
 
-  return <DiscoveryClient defaultTargetStore={record.domain} lockStore />;
+  return (
+    <DiscoveryClient
+      defaultTargetStore={record.domain}
+      targetStoreIdentity={{
+        name: record.name,
+        domain: record.platform === "csv" ? null : record.domain,
+      }}
+      lockStore
+    />
+  );
 };
 
 export default ({

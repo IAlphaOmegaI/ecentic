@@ -53,6 +53,7 @@ import type {
   Surface,
 } from "@/server/app/intelligence/listing-quality";
 import { SURFACES } from "@/server/app/intelligence/listing-rules";
+import { DashboardEmptyState } from "../../../_components/empty-state";
 import { AffectedProducts, ProductIdentity } from "./affected-products";
 import {
   type QualityScope,
@@ -176,7 +177,10 @@ export const QualitySummary = ({ products }: { products: ListingReport[] }) => {
   const translate = useTranslations("dashboard.qualityWorkspace");
   const formatter = useFormatter();
   return (
-    <section aria-label={translate("summary.label")}>
+    <section
+      aria-label={translate("summary.label")}
+      className="@container/quality-summary"
+    >
       <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6">
         <div>
           <h2 className="font-semibold text-base text-foreground-rich">
@@ -203,19 +207,22 @@ export const QualitySummary = ({ products }: { products: ListingReport[] }) => {
           </PopoverPositioner>
         </Popover>
       </div>
-      <div className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-t">
+      <div className="grid @2xl/quality-summary:grid-cols-3 grid-cols-1 @2xl/quality-summary:divide-x divide-y @2xl/quality-summary:divide-y-0 divide-accent-foreground border-accent-foreground border-t">
         {SURFACES.map((surface) => {
           const summary = qualitySummary(products, surface);
           if (!summary) return null;
           return (
-            <div key={surface} className="min-w-0 px-4 py-4 sm:px-6">
-              <div className="flex min-h-10 items-start gap-2 font-medium text-foreground text-xs sm:min-h-8 sm:text-sm">
+            <div
+              key={surface}
+              className="grid min-w-0 @2xl/quality-summary:grid-cols-1 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 px-4 py-4 sm:px-6"
+            >
+              <div className="flex @2xl/quality-summary:min-h-10 @2xl/quality-summary:items-start items-center gap-2 font-medium text-foreground text-sm">
                 <SurfaceMark surface={surface} />
                 <span className="min-w-0 break-words">
                   {translate(`scope.${surface}`)}
                 </span>
               </div>
-              <p className="mt-2 font-semibold text-2xl text-foreground-rich tabular-nums sm:text-3xl">
+              <p className="@2xl/quality-summary:mt-2 @2xl/quality-summary:text-left text-right font-semibold @2xl/quality-summary:text-3xl text-2xl text-foreground-rich tabular-nums">
                 {summary.readyShare === null
                   ? "—"
                   : formatter.number(summary.readyShare / 100, {
@@ -224,7 +231,7 @@ export const QualitySummary = ({ products }: { products: ListingReport[] }) => {
                     })}
               </p>
               <div
-                className="mt-4 flex h-2 overflow-hidden rounded-full bg-accent-foreground"
+                className="col-span-full mt-4 flex h-2 overflow-hidden rounded-full bg-accent-foreground"
                 role="img"
                 aria-label={translate("summary.breakdown", {
                   blocker: formatter.number(summary.blocker),
@@ -253,7 +260,7 @@ export const QualitySummary = ({ products }: { products: ListingReport[] }) => {
                   ),
                 )}
               </div>
-              <p className="mt-2 text-foreground-dimmed text-xs tabular-nums">
+              <p className="col-span-full mt-2 text-foreground-dimmed text-xs tabular-nums">
                 {translate("summary.passing", {
                   count: formatter.number(summary.ready + summary.info),
                   total: formatter.number(summary.total),
@@ -281,25 +288,20 @@ const FilterFeedback = ({
 }) => {
   const translate = useTranslations("dashboard.qualityWorkspace");
   return (
-    <div
-      className="flex min-h-64 flex-col items-center justify-center gap-4 px-6 py-10 text-center"
-      role="status"
+    <DashboardEmptyState
+      title={translate(empty ? "states.clear.title" : "states.noMatches.title")}
+      description={translate(
+        empty ? "states.clear.description" : "states.noMatches.description",
+      )}
+      figure={empty ? "readiness-scanner" : "target-finder"}
+      compact
     >
-      <FindingMark status={empty ? "ready" : "info"} />
-      <h3 className="font-semibold text-foreground-rich text-lg">
-        {translate(empty ? "states.clear.title" : "states.noMatches.title")}
-      </h3>
-      <p className="max-w-md text-foreground-dimmed text-sm leading-6">
-        {translate(
-          empty ? "states.clear.description" : "states.noMatches.description",
-        )}
-      </p>
       {!empty && (
         <Button variant="soft" color="neutral" onClick={clear}>
           {translate("action.tertiary")}
         </Button>
       )}
-    </div>
+    </DashboardEmptyState>
   );
 };
 
@@ -363,11 +365,16 @@ export const QualityWorkspace = ({
         }}
       >
         <div className="flex flex-wrap items-center gap-4 border-accent-foreground border-y px-4 py-4 sm:px-6">
-          <TabsList aria-label={translate("views.label")}>
-            <Tab value="issues">{translate("views.issues")}</Tab>
-            <Tab value="products">{translate("views.products")}</Tab>
-            <TabsIndicator />
-          </TabsList>
+          <div className="min-w-0 max-w-full overflow-x-auto overscroll-x-contain">
+            <TabsList
+              aria-label={translate("views.label")}
+              className="min-w-max"
+            >
+              <Tab value="issues">{translate("views.issues")}</Tab>
+              <Tab value="products">{translate("views.products")}</Tab>
+              <TabsIndicator />
+            </TabsList>
+          </div>
           <span
             className="ml-auto text-foreground-dimmed text-xs"
             aria-live="polite"
@@ -497,7 +504,7 @@ export const QualityWorkspace = ({
                     <ChevronRightIcon className="size-4 shrink-0 text-foreground-dimmed transition-transform group-data-panel-open:rotate-90 motion-reduce:transition-none" />
                   </AccordionTrigger>
                   <AccordionPanel>
-                    <div className="border-accent-foreground border-t bg-background px-4 py-4 sm:px-6">
+                    <div className="border-accent-foreground border-t bg-background py-4 pr-4 pl-18 sm:pr-6 sm:pl-20">
                       <p className="mb-4 max-w-3xl text-foreground text-sm leading-6">
                         {rules(`${issue.rule}.detail`)}
                       </p>
@@ -530,13 +537,13 @@ export const QualityWorkspace = ({
                       >
                         <span className="min-w-0 flex-1">
                           <ProductIdentity product={product} />
-                          <span className="mt-2 flex flex-wrap gap-4">
-                            <Status status={qualityStatus(product, scope)} />
-                            <span className="text-foreground-dimmed text-xs">
-                              {translate("findings", {
-                                count: findings.length,
-                              })}
-                            </span>
+                        </span>
+                        <span className="flex shrink-0 flex-col items-end gap-1 text-right sm:flex-row sm:items-center sm:gap-4">
+                          <Status status={qualityStatus(product, scope)} />
+                          <span className="text-foreground-dimmed text-xs">
+                            {translate("findings", {
+                              count: findings.length,
+                            })}
                           </span>
                         </span>
                         <ChevronRightIcon className="size-4 shrink-0 text-foreground-dimmed transition-transform group-data-panel-open:rotate-90 motion-reduce:transition-none" />
@@ -547,7 +554,7 @@ export const QualityWorkspace = ({
                             findings.map((finding) => (
                               <div
                                 key={finding.rule}
-                                className="border-accent-foreground border-b px-4 py-4 sm:px-6"
+                                className="border-accent-foreground border-b py-4 pr-4 pl-18 sm:pr-6 sm:pl-20"
                               >
                                 <h3 className="font-semibold text-foreground-rich text-sm">
                                   {rules(`${finding.rule}.title`)}
@@ -562,11 +569,11 @@ export const QualityWorkspace = ({
                               </div>
                             ))
                           ) : (
-                            <p className="px-4 py-4 text-foreground-dimmed text-sm sm:px-6">
+                            <p className="py-4 pr-4 pl-18 text-foreground-dimmed text-sm sm:pr-6 sm:pl-20">
                               {translate("noFindings")}
                             </p>
                           )}
-                          <div className="px-4 py-4 sm:px-6">
+                          <div className="py-4 pr-4 pl-18 sm:pr-6 sm:pl-20">
                             <AffectedProductLink
                               store={store}
                               product={product}

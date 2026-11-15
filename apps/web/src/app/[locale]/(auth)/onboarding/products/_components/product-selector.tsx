@@ -170,7 +170,7 @@ export const ProductSelector = ({
           >
             <div className="bg-background-rich">
               <Table className="min-w-160 table-fixed overflow-visible">
-                <TableHeader className="sticky top-0 z-10 [&_th]:bg-background-rich [&_th]:border-b [&_th]:border-accent-foreground">
+                <TableHeader className="sticky top-0 z-10 [&_th]:border-accent-foreground [&_th]:border-b [&_th]:bg-background-rich">
                   <TableRow className="border-b-0">
                     <TableHead className="w-10 px-4 py-2" />
                     {tableHeaders.map((header, index) => (
@@ -297,7 +297,7 @@ export const ProductSelector = ({
           >
             {translate("action.next")}
             {isPending ? (
-              <LoaderIcon className="size-4 animate-spin" />
+              <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
             ) : (
               <ArrowRightIcon className="size-4" />
             )}
@@ -315,7 +315,7 @@ const Back = () => {
   return (
     <>
       {pending ? (
-        <LoaderIcon className="size-4 animate-spin" />
+        <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
       ) : (
         <ArrowLeftIcon className="size-4" />
       )}

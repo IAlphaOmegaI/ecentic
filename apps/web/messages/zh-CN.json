@@ -472,7 +472,14 @@
         "title": "向 Judy 提问",
         "status": "预览",
         "description": "Judy 正在开发中，暂不支持聊天或操作商品目录。请先使用仪表板中的工具。",
-        "name": "Judy"
+        "name": "Judy",
+        "chat": {
+          "heading": "想从哪里开始？",
+          "placeholder": "写下想问 Judy 的问题…",
+          "draftHint": "聊天功能即将上线。离开此工作区前，草稿会保留在这里。",
+          "send": "发送消息",
+          "close": "最小化 Judy"
+        }
       }
     },
     "sidebar": {
@@ -556,7 +563,8 @@
         "searching": "搜索中…",
         "empty": "无结果",
         "emptyForQuery": "未找到“{query}”的结果",
-        "unavailable": "搜索暂时不可用，请重试。"
+        "unavailable": "搜索暂时不可用，请重试。",
+        "emptyHint": "试试商品名称、SKU 或页面名称。"
       },
       "sections": {
         "products": "商品",
@@ -910,14 +918,14 @@
         "poor": "较差（<50%）",
         "distribution": "数据质量分布",
         "avgQuality": "平均数据质量",
-        "kicker": "01.1 — 质量"
+        "kicker": "质量"
       },
       "optimization": {
         "readiness": "商品准备度",
         "optimized": "已优化",
         "pending": "待处理",
         "unoptimized": "未优化",
-        "kicker": "01.2 — 优化"
+        "kicker": "优化"
       },
       "detail": {
         "backToProducts": "返回商品列表",
@@ -987,7 +995,7 @@
           "lost": "落败",
           "noWins": "暂无胜出记录",
           "noLosses": "暂无失败记录",
-          "kicker": "01 — 竞品对比卡"
+          "kicker": "竞品对比卡"
         },
         "audit": {
           "aiContentQuality": "AI 内容质量",
@@ -998,7 +1006,7 @@
           "title": "优化商品信息",
           "description": "为 AI 智能体读取的字段提供按类目划分的内容质量评分，并展示该商品信息面向目标受众的定位。",
           "completeness": "完整度：",
-          "currentListing": "02 — 当前商品信息",
+          "currentListing": "当前商品信息",
           "characters": "{count} 个字符",
           "noDescription": "未找到描述",
           "liveOnStore": "店铺在线版本",
@@ -1014,7 +1022,7 @@
           "structuredDataPublished": "优化后的结构化数据已发布",
           "structuredDataPublishedDescription": "已写入 ecentic.structured_data 元字段。应用嵌入现在会渲染该数据，而不是默认商品标记。如果嵌入处于关闭状态，请在主题编辑器中开启并点击保存。",
           "openThemeEditor": "打开主题编辑器",
-          "listingAuditKicker": "01 — AI 商品信息检测",
+          "listingAuditKicker": "AI 商品信息检测",
           "status": {
             "optimizedByEcentic": "由 ecentic 优化",
             "ecenticStandard": "ecentic 标准",
@@ -2765,6 +2773,33 @@
         "searching": "搜索中",
         "done": "完成",
         "error": "错误"
+      },
+      "workbench": {
+        "sourceTitle": "您的店铺",
+        "sourceDescription": "选择要比较的商品目录。其结果将与竞争店铺的结果分开展示。",
+        "sameRequest": "使用同一个购买请求，在所有店铺执行相同搜索。",
+        "competitorDescription": "最多添加五家在 UCP 配置中提供 MCP 购物端点的店铺。",
+        "competitorLabel": "竞争店铺 {number, number}",
+        "slots": "{count, number} / 5",
+        "validation": {
+          "domain": "请输入店铺域名或 HTTP(S) URL。",
+          "request": "购买请求不能超过 1,000 个字符。",
+          "unique": "每一项请使用不同的店铺。"
+        },
+        "requestHint": "选填。留空时将执行一般商品搜索。",
+        "ready": "{count, plural, =0 {添加店铺即可开始。} other {本次比较包含 # 家店铺。}}",
+        "running": "正在读取店铺配置…",
+        "failure": {
+          "title": "无法比较这些店铺",
+          "description": "比较未能完成。请检查下方店铺结果，然后重试。",
+          "store": "无法读取兼容的购物端点。请检查该店铺的 UCP 配置。"
+        },
+        "log": {
+          "parameters": "搜索参数",
+          "profile": "已解析配置",
+          "searching": "搜索中",
+          "results": "{count, plural, other {返回了 # 件商品}}"
+        }
       }
     },
     "ucpPlaygroundDashboard": {
@@ -2784,6 +2819,13 @@
         "action": {
           "primary": "连接",
           "connecting": "连接中…"
+        },
+        "failure": {
+          "title": "无法连接到店铺",
+          "domain": "请输入店铺域名，然后重试。",
+          "unreachable": "请检查域名后重试。无法访问该店铺的 UCP 配置。",
+          "profile": "无法读取此店铺的有效 UCP 配置。请检查其结账设置。",
+          "shopping": "此店铺尚未在 UCP 配置中发布受支持的购物端点。"
         }
       },
       "session": {
@@ -3554,7 +3596,26 @@
           "description": "此商品可能已被移除，也可能属于其他商店。请打开目录选择商品。"
         }
       },
-      "publishDescription": "为 {title} 生成优化后的标题和描述，并发布到已连接的店铺，替换当前商品信息。"
+      "publishDescription": "为 {title} 生成优化后的标题和描述，并发布到已连接的店铺，替换当前商品信息。",
+      "listing": {
+        "title": "已保存的商品信息",
+        "description": "查看目录中保存的商品信息。完整度仅表示字段是否已填写。",
+        "coverage": "已保存 {present} / {total} 个字段",
+        "missingValue": "未保存",
+        "missingImages": "尚未保存商品照片",
+        "imageHint": "请在目录数据源中添加清晰的商品照片。",
+        "missingDescription": "请添加介绍商品用途和主要特点的描述。",
+        "sourceHint": "请在目录数据源中修改这些信息，然后同步到 ecentic。",
+        "structuredSaved": "发布前请检查已保存的数据。店铺页面上的数据可能与此不同。",
+        "structuredMissing": "根据已保存的商品信息生成草稿，检查后再发布。",
+        "unreachable": "无法访问店铺，因此尚未核实已发布的数据。",
+        "action": {
+          "primary": "管理目录数据源",
+          "secondary": "查看完整描述",
+          "tertiary": "收起",
+          "quaternary": "查看结构化数据"
+        }
+      }
     },
     "productChannels": {
       "tab": "商品信息与渠道",
@@ -8353,6 +8414,34 @@
       "title": "准备让每个 AI 购物智能体都选择您的商品？",
       "description": "ecentic 自动优化您的商品信息。可免费开始。",
       "action": "免费开始"
+    },
+    "review": {
+      "title": "AI 比较结果",
+      "description": "这是一份已保存的 AI 模型商品比较扫描报告。结果反映的是模拟比较，而非真实购物者的活动。",
+      "recorded": "记录日期：{date}",
+      "score": {
+        "label": "比较胜率",
+        "context": "在 {total, plural, other {# 条}}已记录结果中获胜 {wins, plural, other {# 次}}。",
+        "empty": "此次扫描尚未记录任何比较结果。"
+      },
+      "providers": {
+        "title": "按 AI 提供商查看结果",
+        "description": "各模型已记录的获胜和落败次数。",
+        "outcomes": "{wins, plural, other {# 胜}} · {losses, plural, other {# 负}}",
+        "empty": "尚未记录提供商结果。"
+      },
+      "finding": {
+        "title": "主要发现",
+        "details": "阅读报告中的影响分析"
+      },
+      "cta": {
+        "title": "比较您自己的商品",
+        "description": "开始免费扫描，了解 AI 模型如何比较您的商品信息。"
+      },
+      "unavailable": {
+        "title": "此报告暂不可用",
+        "description": "链接可能不正确，或扫描尚未完成。"
+      }
     }
   },
   "dealRedemption": {

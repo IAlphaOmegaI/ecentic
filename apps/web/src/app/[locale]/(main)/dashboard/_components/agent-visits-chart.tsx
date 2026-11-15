@@ -1,6 +1,5 @@
 "use client";
 
-import { CommerceChartActivity_2Icon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useLocale, useTranslations } from "next-intl";
 import {
@@ -13,6 +12,7 @@ import {
   YAxis,
 } from "recharts";
 import type { TrafficTimeSeriesPoint } from "@/server/app/tracking";
+import { DashboardEmptyState } from "./empty-state";
 
 // The accessor groups provider families, including their crawlers. These are
 // deliberately not labelled as visits from the corresponding chat products.
@@ -74,15 +74,12 @@ export const AgentVisitsChart = ({
       </ul>
 
       {maximum === 0 ? (
-        <div className="flex min-h-56 flex-col justify-center gap-3 py-6">
-          <CommerceChartActivity_2Icon
-            aria-hidden
-            className="size-8 text-primary"
-          />
-          <p className="max-w-sm text-foreground-dimmed text-sm leading-6">
-            {translate("empty")}
-          </p>
-        </div>
+        <DashboardEmptyState
+          figure="analytics-recorder"
+          title={translate("empty")}
+          compact
+          surface="background"
+        />
       ) : (
         <div className="mt-6 h-56 w-full min-w-0">
           <ResponsiveContainer width="100%" height="100%" minWidth={0}>

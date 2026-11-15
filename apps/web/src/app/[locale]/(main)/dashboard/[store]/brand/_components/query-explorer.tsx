@@ -27,6 +27,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { AnalysisText } from "@/components/analysis-text";
 import type * as Brand from "@/server/app/intelligence/brand";
+import { DashboardEmptyState } from "../../../_components/empty-state";
 import { EntityMark } from "./entity-mark";
 
 const filters = ["all", "mentioned", "absent"] as const;
@@ -252,26 +253,20 @@ export const QueryExplorer = ({ queries }: QueryExplorer.Props) => {
           })}
         </Accordion>
       ) : (
-        <div className="px-5 py-10 sm:px-6">
-          <h3 className="font-semibold text-base text-foreground-rich">
-            {translate("empty.title")}
-          </h3>
-          <p className="mt-2 text-foreground-dimmed text-sm">
-            {translate(
-              queries.length === 0 ? "empty.saved" : "empty.description",
-            )}
-          </p>
+        <DashboardEmptyState
+          title={translate("empty.title")}
+          description={translate(
+            queries.length === 0 ? "empty.saved" : "empty.description",
+          )}
+          figure="question-cards"
+          compact
+        >
           {hasFilters && (
-            <Button
-              variant="soft"
-              color="emphasis"
-              onClick={clear}
-              className="mt-5"
-            >
+            <Button variant="soft" color="emphasis" onClick={clear}>
               {translate("action.primary")}
             </Button>
           )}
-        </div>
+        </DashboardEmptyState>
       )}
     </section>
   );

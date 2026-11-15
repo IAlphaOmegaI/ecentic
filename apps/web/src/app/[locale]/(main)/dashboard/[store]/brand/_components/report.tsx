@@ -59,7 +59,7 @@ export const BrandEmpty = async ({ store }: { store: string }) => {
     { key: "actions", icon: CheckCircleIcon },
   ] as const;
   return (
-    <div className="grid min-w-0 lg:grid-cols-2">
+    <div className="grid min-w-0 flex-1 lg:grid-cols-2">
       <div className="flex min-w-0 flex-col items-start justify-center px-6 py-10 sm:px-8 sm:py-12">
         <h2 className="max-w-md font-heading font-semibold text-3xl text-foreground-rich tracking-tight">
           {translate("empty.title")}

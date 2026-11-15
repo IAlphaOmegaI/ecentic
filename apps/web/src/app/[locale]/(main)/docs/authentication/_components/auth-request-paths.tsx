@@ -6,7 +6,13 @@ import {
   AccordionPanel,
   AccordionTrigger,
 } from "@zenncore/web/components/accordion";
-import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
+import {
+  Tab,
+  Tabs,
+  TabsIndicator,
+  TabsList,
+  TabsPanel,
+} from "@zenncore/web/components/tabs";
 import type { AppConfig } from "next-intl";
 import type { ReactNode } from "react";
 import { MarketingEdgeCrosses } from "@/components/marketing/light-band";
@@ -17,26 +23,20 @@ export const AuthRequestPaths = ({
   authenticated,
 }: AuthRequestPaths.Props) => (
   <Tabs defaultValue="open" className="min-w-0">
-    <div className="relative">
+    <div className="relative border-accent-foreground border-b px-4 py-4 sm:px-8">
       <MarketingEdgeCrosses />
       <MarketingEdgeCrosses edge="bottom" />
-      <TabsList
-        aria-label={copy.label}
-        className="grid w-full grid-cols-2 rounded-none border-x-0 border-t-0 bg-background-dimmed"
-      >
-        <Tab
-          value="open"
-          className="h-auto min-h-16 whitespace-normal px-4 py-4 text-base data-[active]:bg-primary data-[active]:text-background-rich"
-        >
-          {copy.open}
-        </Tab>
-        <Tab
-          value="authenticated"
-          className="h-auto min-h-16 whitespace-normal px-4 py-4 text-base data-[active]:bg-primary data-[active]:text-background-rich"
-        >
-          {copy.authenticated}
-        </Tab>
-      </TabsList>
+      <div className="overflow-x-auto overscroll-x-contain">
+        <TabsList aria-label={copy.label} className="min-w-max">
+          <TabsIndicator />
+          <Tab value="open" className="text-sm">
+            {copy.open}
+          </Tab>
+          <Tab value="authenticated" className="text-sm">
+            {copy.authenticated}
+          </Tab>
+        </TabsList>
+      </div>
     </div>
     <TabsPanel value="open" keepMounted className="min-w-0 outline-primary">
       {open}

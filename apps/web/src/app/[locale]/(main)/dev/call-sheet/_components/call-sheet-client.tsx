@@ -252,7 +252,7 @@ const FindingCard = ({
                       Parsed structured data, reformatted — open the URL above
                       to read it as they published it.
                     </p>
-                    <pre className="mt-1 max-h-40 overflow-auto whitespace-pre-wrap break-all font-mono text-xs text-foreground-dimmed">
+                    <pre className="mt-1 max-h-40 overflow-auto whitespace-pre-wrap break-all font-mono text-foreground-dimmed text-xs">
                       {entry.snippet}
                     </pre>
                   </div>
@@ -387,7 +387,7 @@ const AgentShelf = ({
         <StatusPill tone="primary">Live model run</StatusPill>
         {isRunning && (
           <span className="flex items-center gap-2 text-foreground-dimmed text-sm">
-            <LoaderIcon className="size-4 animate-spin" />
+            <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
             Asking the models…
           </span>
         )}
@@ -660,7 +660,7 @@ export const CallSheetClient = () => {
               disabled={isScanning || !store.trim()}
             >
               {isScanning ? (
-                <LoaderIcon className="size-4 animate-spin" />
+                <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
               ) : (
                 <RadarIcon aria-hidden className="size-4" />
               )}
@@ -741,7 +741,7 @@ export const CallSheetClient = () => {
                 Scan log ({log.length})
               </CollapsibleTrigger>
               <CollapsiblePanel className="w-full justify-start bg-transparent">
-                <pre className="mt-2 max-h-56 overflow-auto whitespace-pre-wrap break-all border border-accent-foreground bg-background-dimmed p-3 font-mono text-xs text-foreground-dimmed">
+                <pre className="mt-2 max-h-56 overflow-auto whitespace-pre-wrap break-all border border-accent-foreground bg-background-dimmed p-3 font-mono text-foreground-dimmed text-xs">
                   {log.join("\n")}
                 </pre>
               </CollapsiblePanel>

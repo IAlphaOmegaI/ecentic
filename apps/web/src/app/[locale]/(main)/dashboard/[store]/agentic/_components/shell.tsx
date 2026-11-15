@@ -126,8 +126,8 @@ export const ScoreSkeleton = () => (
           key={key}
           className="relative flex flex-col justify-between gap-6 bg-background-rich p-5"
         >
-          <div className="h-3 w-24 animate-pulse bg-foreground/10" />
-          <div className="h-10 w-16 animate-pulse bg-foreground/10" />
+          <div className="h-3 w-24 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+          <div className="h-10 w-16 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
         </div>
       ))}
     </div>
@@ -138,10 +138,10 @@ export const ScoreSkeleton = () => (
           className="flex min-w-0 flex-col overflow-hidden bg-background-rich"
         >
           <div className="border-accent-foreground border-b px-4 py-3">
-            <div className="h-3 w-24 animate-pulse bg-foreground/10" />
+            <div className="h-3 w-24 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
           </div>
           <div className="flex flex-col gap-3 p-4">
-            <div className="h-1.5 w-full animate-pulse rounded-full bg-foreground/10" />
+            <div className="h-1.5 w-full animate-pulse rounded-full bg-foreground/10 motion-reduce:animate-none" />
           </div>
         </div>
       ))}
@@ -154,8 +154,8 @@ export const ChecksSkeleton = () => (
   <div className="divide-y divide-accent-foreground">
     {CHECK_ROWS.map((key) => (
       <div key={key} className="flex items-center gap-3 p-4">
-        <div className="h-4 w-40 animate-pulse bg-foreground/10" />
-        <div className="ml-auto h-5 w-24 animate-pulse rounded-full bg-foreground/10" />
+        <div className="h-4 w-40 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+        <div className="ml-auto h-5 w-24 animate-pulse rounded-full bg-foreground/10 motion-reduce:animate-none" />
       </div>
     ))}
   </div>
@@ -171,16 +171,16 @@ export const ScanSkeleton = () => (
   >
     <div className="min-w-0">
       <div className="flex items-start gap-3">
-        <div className="mt-1 size-6 shrink-0 animate-pulse rounded-sm bg-foreground/10" />
+        <div className="mt-1 size-6 shrink-0 animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
         <div className="min-w-0 flex-1 space-y-1.5">
-          <div className="h-5 w-36 animate-pulse bg-foreground/10" />
-          <div className="h-4 w-full max-w-80 animate-pulse bg-foreground/10" />
+          <div className="h-5 w-36 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+          <div className="h-4 w-full max-w-80 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
         </div>
       </div>
-      <div className="mt-3 h-4 w-36 animate-pulse bg-foreground/10" />
+      <div className="mt-3 h-4 w-36 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
     </div>
-    <div className="h-10 w-full animate-pulse rounded-lg bg-foreground/10 sm:w-32" />
-    <div className="h-4 w-full max-w-xl animate-pulse bg-foreground/10 sm:col-span-2" />
+    <div className="h-10 w-full animate-pulse rounded-lg bg-foreground/10 motion-reduce:animate-none sm:w-32" />
+    <div className="h-4 w-full max-w-xl animate-pulse bg-foreground/10 motion-reduce:animate-none sm:col-span-2" />
   </div>
 );
 
@@ -188,16 +188,16 @@ export const ScanSkeleton = () => (
 export const JourneySkeleton = () => (
   <div className="flex flex-col">
     <div className="flex flex-col gap-3 border-accent-foreground border-b p-4">
-      <div className="h-5 w-24 animate-pulse rounded-full bg-foreground/10" />
-      <div className="h-4 w-full max-w-2xl animate-pulse bg-foreground/10" />
+      <div className="h-5 w-24 animate-pulse rounded-full bg-foreground/10 motion-reduce:animate-none" />
+      <div className="h-4 w-full max-w-2xl animate-pulse bg-foreground/10 motion-reduce:animate-none" />
     </div>
     <div className="p-4">
       <div className="overflow-hidden bg-background-rich">
         <div className="min-h-48" />
         <div className="flex gap-6 border-accent-foreground border-t px-4 py-3">
-          <div className="h-3 w-16 animate-pulse bg-foreground/10" />
-          <div className="h-3 w-28 animate-pulse bg-foreground/10" />
-          <div className="h-3 w-20 animate-pulse bg-foreground/10" />
+          <div className="h-3 w-16 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+          <div className="h-3 w-28 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+          <div className="h-3 w-20 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
         </div>
       </div>
     </div>
@@ -209,10 +209,10 @@ export const CompetitorsSkeleton = () => (
   <div aria-hidden className="min-w-0 motion-reduce:[&_*]:animate-none">
     <div className="overflow-hidden">
       <div className="flex items-center gap-4 border-accent-foreground border-b px-4 py-6 sm:px-6">
-        <div className="h-9 w-20 animate-pulse rounded-sm bg-foreground/10" />
+        <div className="h-9 w-20 animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
         <div className="space-y-2">
-          <div className="h-4 w-48 animate-pulse bg-foreground/10" />
-          <div className="h-1 w-40 animate-pulse rounded-full bg-foreground/10" />
+          <div className="h-4 w-48 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+          <div className="h-1 w-40 animate-pulse rounded-full bg-foreground/10 motion-reduce:animate-none" />
         </div>
       </div>
       {["a", "b", "c"].map((key) => (
@@ -220,9 +220,9 @@ export const CompetitorsSkeleton = () => (
           key={key}
           className="flex items-center gap-4 border-accent-foreground border-b px-4 py-3 last:border-b-0"
         >
-          <div className="h-4 w-40 animate-pulse bg-foreground/10" />
-          <div className="ml-auto h-4 w-24 animate-pulse bg-foreground/10" />
-          <div className="h-9 w-20 animate-pulse rounded-sm bg-foreground/10" />
+          <div className="h-4 w-40 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+          <div className="ml-auto h-4 w-24 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+          <div className="h-9 w-20 animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
         </div>
       ))}
     </div>
@@ -235,7 +235,7 @@ export const MethodologySkeleton = () => (
     {["a", "b", "c", "d"].map((key) => (
       <div
         key={key}
-        className="h-4 w-full max-w-3xl animate-pulse bg-foreground/10"
+        className="h-4 w-full max-w-3xl animate-pulse bg-foreground/10 motion-reduce:animate-none"
       />
     ))}
   </div>

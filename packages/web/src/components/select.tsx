@@ -107,7 +107,7 @@ export const SelectPopup = ({
       />
       <SelectPrimitive.Popup
         className={createClassName(
-          "group max-h-(--available-height) origin-(--transform-origin) overflow-y-auto rounded-lg border border-accent-foreground bg-background py-1 text-foreground transition-[transform,scale,opacity] data-[side=none]:data-starting-style:scale-100 data-[side=none]:data-starting-style:opacity-100 data-[side=none]:data-starting-style:transition-none data-ending-style:scale-90 data-starting-style:scale-90 data-ending-style:opacity-0 data-starting-style:opacity-0 data-ending-style:transition-none",
+          "group max-h-(--available-height) origin-(--transform-origin) overflow-y-auto rounded-lg border border-foreground/10 bg-background py-1 text-foreground transition-[transform,scale,opacity] data-[side=none]:data-starting-style:scale-100 data-[side=none]:data-starting-style:opacity-100 data-[side=none]:data-starting-style:transition-none data-ending-style:scale-90 data-starting-style:scale-90 data-ending-style:opacity-0 data-starting-style:opacity-0 data-ending-style:transition-none",
           className,
           classList?.root,
         )}

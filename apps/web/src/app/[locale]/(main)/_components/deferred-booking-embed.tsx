@@ -1,7 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
+import { FeedbackLoading } from "@/components/feedback-state";
 
 // Cal's embed is 2.1MB and sets every third-party cookie the page gets flagged
 // for, and it sits at the very bottom of the homepage — nobody has scrolled to
@@ -9,9 +11,21 @@ import { useEffect, useRef, useState } from "react";
 // visitor nothing: the surrounding `h-155` box already reserves the space,
 // so this cannot move layout, and 400px of margin means the calendar is ready
 // before a scrolling reader arrives.
-const BookingEmbed = dynamic(() =>
-  import("@/components/cal").then((module) => module.BookingEmbed),
+const BookingEmbed = dynamic(
+  () => import("@/components/cal").then((module) => module.BookingEmbed),
+  { loading: () => <BookingLoading /> },
 );
+
+const BookingLoading = () => {
+  const translate = useTranslations("general.states.pending");
+  return (
+    <FeedbackLoading
+      title={translate("primary")}
+      figure="demo-plane"
+      className="h-full"
+    />
+  );
+};
 
 export const DeferredBookingEmbed = ({
   margin = "400px",
@@ -45,7 +59,7 @@ export const DeferredBookingEmbed = ({
 
   return (
     <div ref={container} className="size-full">
-      {approached && <BookingEmbed />}
+      {approached ? <BookingEmbed /> : <BookingLoading />}
     </div>
   );
 };

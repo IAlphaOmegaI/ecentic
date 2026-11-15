@@ -14,6 +14,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { z } from "zod";
+import { FeedbackState } from "@/components/feedback-state";
 import { providerLogos } from "@/content/provider-logos";
 import { Link } from "@/i18n/navigation";
 
@@ -299,20 +300,16 @@ export const PlatformGrid = () => {
         );
       })}
       {matches.length === 0 && (
-        <div className="bg-linear-to-br from-primary/8 to-background-rich px-6 py-10 sm:px-8">
-          <h2 className="font-heading font-medium text-foreground-rich text-xl">
-            {translate("empty.title")}
-          </h2>
-          <p className="mt-3 max-w-xl text-foreground-dimmed leading-relaxed">
-            {translate("empty.description")}
-          </p>
-          <div className="mt-6">
-            <Button render={<Link href="/onboarding/connect/csv" />}>
-              <span>{translate("empty.action.primary")}</span>
-              <ArrowRightIcon aria-hidden="true" className="size-4" />
-            </Button>
-          </div>
-        </div>
+        <FeedbackState
+          title={translate("empty.title")}
+          description={translate("empty.description")}
+          figure="channel-plug-hub"
+        >
+          <Button render={<Link href="/onboarding/connect/csv" />}>
+            {translate("empty.action.primary")}
+            <ArrowRightIcon aria-hidden="true" className="size-4" />
+          </Button>
+        </FeedbackState>
       )}
     </div>
   );

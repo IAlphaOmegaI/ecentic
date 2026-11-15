@@ -268,7 +268,7 @@ export const CompareForm = () => {
                 {isRunning ? (
                   <>
                     {translateForm("action.comparing")}
-                    <LoaderIcon className="size-4 animate-spin" />
+                    <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
                   </>
                 ) : (
                   <>
@@ -543,7 +543,7 @@ const CompareResults = ({
             transition={{ ...Spring.Gentle, delay: 0.3 }}
           >
             {percentA > 15 && (
-              <span className="font-medium text-sm text-background-rich">
+              <span className="font-medium text-background-rich text-sm">
                 {percentA}%
               </span>
             )}

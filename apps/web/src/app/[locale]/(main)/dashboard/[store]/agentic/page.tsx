@@ -32,6 +32,7 @@ import * as Store from "@/server/app/store";
 import { unwrapEntitled } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
 import { renderProse } from "../../../_components/rich-text";
+import { DashboardEmptyState } from "../../_components/empty-state";
 import { StatCell, StatusPill } from "../../_components/grid";
 import {
   CompetitorScans,
@@ -432,9 +433,11 @@ const ChecksSection = async ({ params }: { params: StoreParams }) => {
 
   if (!report)
     return (
-      <p className="p-4 text-foreground-dimmed text-sm">
-        {translate("checks.empty")}
-      </p>
+      <DashboardEmptyState
+        title={translate("checks.empty")}
+        figure="agent-test-gauge"
+        compact
+      />
     );
 
   return (
@@ -517,9 +520,11 @@ const CompetitorsSection = async ({ params }: { params: StoreParams }) => {
   );
   if (!targets || targets.length === 0)
     return (
-      <p className="p-4 text-foreground-dimmed text-sm">
-        {translate("competitors.empty")}
-      </p>
+      <DashboardEmptyState
+        title={translate("competitors.empty")}
+        figure="rivals-balance"
+        compact
+      />
     );
 
   const [scans, overview] = await Promise.all([

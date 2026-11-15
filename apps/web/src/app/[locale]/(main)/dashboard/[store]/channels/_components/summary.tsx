@@ -16,6 +16,7 @@ import { useTransition } from "react";
 import { Link } from "@/i18n/navigation";
 import { formatRelativeTime } from "@/lib/date";
 import type * as GoogleMerchant from "@/server/app/integration/google-merchant";
+import { DashboardEmptyState } from "../../../_components/empty-state";
 import { Crosshair } from "../../../_components/grid";
 import { ChannelSection } from "./workspace";
 
@@ -27,28 +28,36 @@ type Source = {
   lastSyncedAt: string | null;
 };
 
-export const ChannelLoadError = () => {
+export const ChannelLoadError = ({
+  scope = "page",
+}: {
+  scope?: "page" | "section";
+}) => {
   const translate = useTranslations("dashboard.channels.error");
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   return (
     <div
       role="alert"
-      className="flex min-h-64 flex-col items-start justify-center gap-3 px-4 py-8 sm:px-6"
+      aria-busy={pending}
+      className="flex min-w-0 flex-1 flex-col"
     >
-      <FileSearchIcon className="size-9 text-primary" />
-      <h2 className="font-semibold text-xl">{translate("title")}</h2>
-      <p className="max-w-xl text-foreground-dimmed text-sm">
-        {translate("description")}
-      </p>
-      <Button
-        variant="soft"
-        color="neutral"
-        disabled={pending}
-        onClick={() => startTransition(() => router.refresh())}
+      <DashboardEmptyState
+        title={translate("title")}
+        description={translate("description")}
+        figure="channel-plug-hub"
+        scope={scope}
+        compact={scope === "section"}
       >
-        {translate("action.primary")}
-      </Button>
+        <Button
+          variant="soft"
+          color="neutral"
+          disabled={pending}
+          onClick={() => startTransition(() => router.refresh())}
+        >
+          {translate("action.primary")}
+        </Button>
+      </DashboardEmptyState>
     </div>
   );
 };

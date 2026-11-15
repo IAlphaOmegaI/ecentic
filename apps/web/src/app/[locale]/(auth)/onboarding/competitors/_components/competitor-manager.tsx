@@ -58,40 +58,25 @@ export const CompetitorManager = ({
             defaultValue="offers"
             className="flex min-h-0 flex-1 flex-col overflow-hidden"
           >
-            <div className="shrink-0 overflow-x-auto overscroll-x-contain border-accent-foreground border-b">
+            <div className="shrink-0 overflow-x-auto overscroll-x-contain border-accent-foreground border-b px-4 py-4 sm:px-6">
               <TabsList
                 aria-label={translate("page.title")}
-                className="w-max min-w-full rounded-none border-0"
+                className="min-w-max"
               >
-                <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
-                <Tab
-                  value="offers"
-                  className="h-auto min-h-12 flex-1 shrink-0 whitespace-nowrap px-4 py-3"
-                >
+                <TabsIndicator />
+                <Tab value="offers" className="text-sm">
                   {translate("tabs.offers")}
                 </Tab>
-                <Tab
-                  value="auto"
-                  className="h-auto min-h-12 flex-1 shrink-0 whitespace-nowrap px-4 py-3"
-                >
+                <Tab value="auto" className="text-sm">
                   {translate("tabs.auto")}
                 </Tab>
-                <Tab
-                  value="url"
-                  className="h-auto min-h-12 flex-1 shrink-0 whitespace-nowrap px-4 py-3"
-                >
+                <Tab value="url" className="text-sm">
                   {translate("tabs.url")}
                 </Tab>
-                <Tab
-                  value="search"
-                  className="h-auto min-h-12 flex-1 shrink-0 whitespace-nowrap px-4 py-3"
-                >
+                <Tab value="search" className="text-sm">
                   {translate("tabs.search")}
                 </Tab>
-                <Tab
-                  value="merchant"
-                  className="h-auto min-h-12 flex-1 shrink-0 whitespace-nowrap px-4 py-3"
-                >
+                <Tab value="merchant" className="text-sm">
                   {translate("tabs.merchant")}
                 </Tab>
               </TabsList>
@@ -209,7 +194,7 @@ const Skip = () => {
     <>
       {translate("skip")}{" "}
       {pending ? (
-        <LoaderIcon className="size-4 animate-spin" />
+        <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
       ) : (
         <ArrowRightIcon className="size-4" />
       )}
@@ -224,7 +209,7 @@ const Back = () => {
   return (
     <>
       {pending ? (
-        <LoaderIcon className="size-4 animate-spin" />
+        <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
       ) : (
         <ArrowLeftIcon className="size-4" />
       )}
@@ -241,7 +226,7 @@ const Next = () => {
     <>
       {translate("nextReview")}
       {pending ? (
-        <LoaderIcon className="size-4 animate-spin" />
+        <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
       ) : (
         <ArrowRightIcon className="size-4" />
       )}

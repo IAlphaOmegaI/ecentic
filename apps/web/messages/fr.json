@@ -472,7 +472,14 @@
         "title": "Demander à Judy",
         "status": "Aperçu",
         "description": "Judy est en préparation. Le chat et les actions sur le catalogue ne sont pas encore disponibles. En attendant, utilisez les outils du tableau de bord.",
-        "name": "Judy"
+        "name": "Judy",
+        "chat": {
+          "heading": "Sur quoi souhaitez-vous travailler ?",
+          "placeholder": "Préparez une question pour Judy…",
+          "draftHint": "Le chat arrive bientôt. Votre brouillon reste ici tant que vous ne quittez pas cet espace de travail.",
+          "send": "Envoyer le message",
+          "close": "Réduire Judy"
+        }
       }
     },
     "sidebar": {
@@ -556,7 +563,8 @@
         "searching": "Recherche…",
         "empty": "Aucun résultat",
         "emptyForQuery": "Aucun résultat pour « {query} »",
-        "unavailable": "La recherche est temporairement indisponible. Réessayez."
+        "unavailable": "La recherche est temporairement indisponible. Réessayez.",
+        "emptyHint": "Essayez un nom de produit, un SKU ou une page."
       },
       "sections": {
         "products": "Produits",
@@ -910,14 +918,14 @@
         "poor": "Faible (<50 %)",
         "distribution": "Répartition de la qualité",
         "avgQuality": "qualité moy.",
-        "kicker": "01.1 — Qualité"
+        "kicker": "Qualité"
       },
       "optimization": {
         "readiness": "État de préparation du produit",
         "optimized": "Optimisé",
         "pending": "En attente",
         "unoptimized": "Non optimisé",
-        "kicker": "01.2 — Optimisation"
+        "kicker": "Optimisation"
       },
       "detail": {
         "backToProducts": "Retour aux produits",
@@ -987,7 +995,7 @@
           "lost": "Perdu",
           "noWins": "Aucune victoire enregistrée",
           "noLosses": "Aucune défaite enregistrée",
-          "kicker": "01 — Battlecards"
+          "kicker": "Battlecards"
         },
         "audit": {
           "aiContentQuality": "Qualité du contenu IA",
@@ -998,7 +1006,7 @@
           "title": "Optimiser la fiche produit",
           "description": "Scores de qualité du contenu adaptés à la catégorie pour les champs lus par les agents IA, ainsi que le positionnement de cette fiche pour son audience.",
           "completeness": "Complétude :",
-          "currentListing": "02 — Fiche actuelle",
+          "currentListing": "Fiche actuelle",
           "characters": "{count} caractères",
           "noDescription": "Aucune description trouvée",
           "liveOnStore": "En ligne sur la boutique",
@@ -1014,7 +1022,7 @@
           "structuredDataPublished": "Données structurées optimisées publiées",
           "structuredDataPublishedDescription": "Écrit dans le métachamp ecentic.structured_data. L’intégration de l’application l’affiche désormais à la place du balisage produit par défaut. Si l’intégration est désactivée, activez-la dans l’éditeur de thème puis cliquez sur Enregistrer.",
           "openThemeEditor": "Ouvrir l’éditeur de thème",
-          "listingAuditKicker": "01 — Audit IA de la fiche produit",
+          "listingAuditKicker": "Audit IA de la fiche produit",
           "status": {
             "optimizedByEcentic": "Optimisé par ecentic",
             "ecenticStandard": "standard ecentic",
@@ -2765,6 +2773,33 @@
         "searching": "Recherche en cours",
         "done": "Terminé",
         "error": "Erreur"
+      },
+      "workbench": {
+        "sourceTitle": "Votre boutique",
+        "sourceDescription": "Choisissez le catalogue à comparer. Ses résultats restent séparés de ceux des concurrents.",
+        "sameRequest": "Une même demande d’achat et une même recherche pour toutes les boutiques.",
+        "competitorDescription": "Ajoutez jusqu’à cinq boutiques dont les profils UCP déclarent des points de terminaison d’achat MCP.",
+        "competitorLabel": "Concurrent {number, number}",
+        "slots": "{count, number} / 5",
+        "validation": {
+          "domain": "Saisissez un domaine de boutique ou une URL HTTP(S).",
+          "request": "La demande d’achat doit contenir au maximum 1 000 caractères.",
+          "unique": "Utilisez une boutique différente pour chaque entrée."
+        },
+        "requestHint": "Facultatif. Laissez ce champ vide pour une recherche générale de produits.",
+        "ready": "{count, plural, =0 {Ajoutez une boutique pour commencer.} one {Votre boutique est sélectionnée.} many {# boutiques dans cette comparaison.} other {# boutiques dans cette comparaison.}}",
+        "running": "Lecture des profils des boutiques…",
+        "failure": {
+          "title": "Impossible de comparer ces boutiques",
+          "description": "La comparaison n’a pas pu aboutir. Vérifiez les résultats ci-dessous, puis réessayez.",
+          "store": "Impossible de lire un point de terminaison d’achat compatible. Vérifiez le profil UCP de cette boutique."
+        },
+        "log": {
+          "parameters": "Paramètres de recherche",
+          "profile": "Profil résolu",
+          "searching": "Recherche en cours",
+          "results": "{count, plural, one {# produit renvoyé} many {# produits renvoyés} other {# produits renvoyés}}"
+        }
       }
     },
     "ucpPlaygroundDashboard": {
@@ -2784,6 +2819,13 @@
         "action": {
           "primary": "Connecter",
           "connecting": "Connexion…"
+        },
+        "failure": {
+          "title": "Impossible de se connecter à cette boutique",
+          "domain": "Saisissez un domaine de boutique, puis réessayez.",
+          "unreachable": "Vérifiez le domaine, puis réessayez. Son profil UCP est inaccessible.",
+          "profile": "Impossible de lire un profil UCP valide pour cette boutique. Vérifiez sa configuration de paiement.",
+          "shopping": "Cette boutique n’a pas publié de point de terminaison d’achat compatible dans son profil UCP."
         }
       },
       "session": {
@@ -3554,7 +3596,26 @@
           "description": "Ce produit a peut-être été supprimé ou appartient à une autre boutique. Ouvrez le catalogue pour choisir un produit."
         }
       },
-      "publishDescription": "Générez un titre et une description optimisés pour {title}, puis publiez-les dans la boutique connectée en remplacement de la fiche actuelle."
+      "publishDescription": "Générez un titre et une description optimisés pour {title}, puis publiez-les dans la boutique connectée en remplacement de la fiche actuelle.",
+      "listing": {
+        "title": "Fiche enregistrée",
+        "description": "Consultez les informations du produit enregistrées dans votre catalogue. La couverture indique uniquement les champs renseignés.",
+        "coverage": "{present} champs sur {total} renseignés",
+        "missingValue": "Non renseigné",
+        "missingImages": "Aucune photo du produit enregistrée",
+        "imageHint": "Ajoutez des photos nettes du produit dans la source de votre catalogue.",
+        "missingDescription": "Ajoutez une description précisant l’usage du produit et ses principales caractéristiques.",
+        "sourceHint": "Modifiez ces informations dans la source de votre catalogue, puis synchronisez-les avec ecentic.",
+        "structuredSaved": "Vérifiez les données enregistrées avant de les publier. La page de la boutique peut afficher d’autres données.",
+        "structuredMissing": "Générez un brouillon à partir des informations enregistrées du produit, puis vérifiez-le avant publication.",
+        "unreachable": "La boutique est inaccessible. Les données publiées n’ont donc pas pu être vérifiées.",
+        "action": {
+          "primary": "Gérer la source du catalogue",
+          "secondary": "Lire toute la description",
+          "tertiary": "Réduire",
+          "quaternary": "Examiner les données structurées"
+        }
+      }
     },
     "productChannels": {
       "tab": "Fiche et canaux",
@@ -8353,6 +8414,34 @@
       "title": "Prêt à faire choisir vos produits par chaque agent d’achat IA ?",
       "description": "ecentic optimise automatiquement vos fiches produit. Gratuit pour commencer.",
       "action": "Commencer gratuitement"
+    },
+    "review": {
+      "title": "Résultats des comparaisons par IA",
+      "description": "Une analyse enregistrée de comparaisons de produits par des modèles d’IA. Ces résultats décrivent des simulations, pas l’activité réelle des acheteurs.",
+      "recorded": "Enregistré le {date}",
+      "score": {
+        "label": "Taux de victoire",
+        "context": "{wins, plural, one {# victoire} many {# victoires} other {# victoires}} sur {total, plural, one {# résultat enregistré} many {# résultats enregistrés} other {# résultats enregistrés}}.",
+        "empty": "Aucun résultat de comparaison n’a été enregistré pour cette analyse."
+      },
+      "providers": {
+        "title": "Résultats par fournisseur d’IA",
+        "description": "Victoires et défaites enregistrées pour chaque modèle.",
+        "outcomes": "{wins, plural, one {# victoire} many {# victoires} other {# victoires}} · {losses, plural, one {# défaite} many {# défaites} other {# défaites}}",
+        "empty": "Aucun résultat par fournisseur n’a été enregistré."
+      },
+      "finding": {
+        "title": "Constat principal",
+        "details": "Lire l’impact indiqué"
+      },
+      "cta": {
+        "title": "Comparez vos propres produits",
+        "description": "Lancez une analyse gratuite pour voir comment les modèles d’IA comparent vos fiches produit."
+      },
+      "unavailable": {
+        "title": "Ce rapport n’est pas disponible",
+        "description": "Le lien est peut-être incorrect, ou l’analyse n’est pas encore terminée."
+      }
     }
   },
   "dealRedemption": {

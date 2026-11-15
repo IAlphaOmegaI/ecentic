@@ -9,7 +9,7 @@ import { DashboardHeaderFigure } from "../../../_components/header-figure";
 export const ResultsShell = ({ children }: PropsWithChildren) => {
   const translate = useTranslations("dashboard.workspace.results");
   return (
-    <div className="flex min-w-0 flex-col">
+    <div className="flex min-h-full min-w-0 flex-col">
       <header className="relative flex items-center gap-4 border-accent-foreground border-b px-4 py-6 sm:px-6">
         <DashboardHeaderFigure subject="results" />
         <div>

@@ -80,7 +80,7 @@ export const MenuPopup = ({
   return (
     <MenuPrimitive.Popup
       className={createClassName(
-        "origin-(--transform-origin) overflow-hidden rounded-lg border border-accent-foreground bg-background py-0 text-foreground transition-[transform,scale,opacity] data-ending-style:scale-90 data-starting-style:scale-90 data-ending-style:opacity-0 data-starting-style:opacity-0",
+        "origin-(--transform-origin) overflow-hidden rounded-lg border border-foreground/10 bg-background py-0 text-foreground transition-[transform,scale,opacity] data-ending-style:scale-90 data-starting-style:scale-90 data-ending-style:opacity-0 data-starting-style:opacity-0",
         className,
       )}
       {...props}

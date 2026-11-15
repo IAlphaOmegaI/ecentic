@@ -30,6 +30,7 @@ import {
   Crosshair,
   StatusPill,
 } from "@/app/[locale]/(main)/dashboard/_components/grid";
+import { FeedbackLoading } from "@/components/feedback-state";
 import { Reveal, RevealItem } from "@/components/reveal";
 import { Fade } from "@/lib/animations";
 import { LATEST_UCP_VERSION, UCP_REVISIONS } from "@/lib/ucp";
@@ -1420,13 +1421,20 @@ export const UcpValidatorForm = ({
           <Crosshair className="right-1 bottom-0 translate-y-1/2" />
         </section>
         <AnimatePresence mode="wait" initial={false}>
-          {result && (
+          {isChecking ? (
+            <FeedbackLoading
+              key="checking"
+              title={translate("action.checking")}
+              figure="checkout-till"
+              className="border-accent-foreground border-b"
+            />
+          ) : result ? (
             <Results
               key={run}
               result={result}
               className="border-t-0 border-b"
             />
-          )}
+          ) : null}
         </AnimatePresence>
         <Accordion>
           <AccordionItem value="coverage" className="border-accent-foreground">
@@ -1598,7 +1606,16 @@ export const UcpValidatorForm = ({
       {!hideIntro && <ValidationTargetsSection />}
 
       <AnimatePresence mode="wait" initial={false}>
-        {result && <Results key={run} result={result} />}
+        {isChecking ? (
+          <FeedbackLoading
+            key="checking"
+            title={translate("action.checking")}
+            figure="checkout-till"
+            className="border-accent-foreground border-t"
+          />
+        ) : result ? (
+          <Results key={run} result={result} />
+        ) : null}
       </AnimatePresence>
     </div>
   );

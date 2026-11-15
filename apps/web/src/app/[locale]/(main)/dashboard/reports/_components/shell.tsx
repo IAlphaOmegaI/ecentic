@@ -38,12 +38,12 @@ export const ReportLibrarySkeleton = () => (
     className="divide-y divide-accent-foreground motion-reduce:[&_*]:animate-none"
   >
     <div className="space-y-3 bg-primary/5 px-4 py-6 sm:px-6">
-      <div className="h-6 w-64 max-w-full animate-pulse bg-foreground/10" />
-      <div className="h-4 w-96 max-w-full animate-pulse bg-foreground/5" />
-      <div className="h-8 w-32 animate-pulse rounded-lg bg-foreground/10" />
+      <div className="h-6 w-64 max-w-full animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+      <div className="h-4 w-96 max-w-full animate-pulse bg-foreground/5 motion-reduce:animate-none" />
+      <div className="h-8 w-32 animate-pulse rounded-lg bg-foreground/10 motion-reduce:animate-none" />
     </div>
     <div className="bg-background-rich px-4 py-4 sm:px-6">
-      <div className="h-5 w-40 animate-pulse rounded-sm bg-foreground/10" />
+      <div className="h-5 w-40 animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
     </div>
     {["rate", "products", "competitors", "changes"].map((key) => (
       <div
@@ -51,10 +51,10 @@ export const ReportLibrarySkeleton = () => (
         className="flex items-center justify-between gap-6 px-4 py-5 sm:px-6"
       >
         <div className="min-w-0 space-y-3">
-          <div className="h-5 w-40 animate-pulse bg-foreground/10" />
-          <div className="h-4 w-80 max-w-full animate-pulse bg-foreground/5" />
+          <div className="h-5 w-40 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+          <div className="h-4 w-80 max-w-full animate-pulse bg-foreground/5 motion-reduce:animate-none" />
         </div>
-        <div className="h-9 w-28 shrink-0 animate-pulse rounded-lg bg-foreground/10" />
+        <div className="h-9 w-28 shrink-0 animate-pulse rounded-lg bg-foreground/10 motion-reduce:animate-none" />
       </div>
     ))}
   </div>

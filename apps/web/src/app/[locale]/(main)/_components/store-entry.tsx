@@ -126,7 +126,7 @@ export const StoreEntry = ({ className }: StoreEntry.Props) => {
             ? translate("states.pending")
             : translate("action.primary")}
           {isPending ? (
-            <LoaderIcon className="size-4 animate-spin" />
+            <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
           ) : (
             <ArrowRightIcon className="size-4" />
           )}

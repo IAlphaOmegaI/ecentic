@@ -31,6 +31,7 @@ import {
 import type * as Competitor from "@/server/app/competitor";
 import type * as Simulate from "@/server/app/intelligence/simulate";
 import type * as Product from "@/server/app/product";
+import { DashboardEmptyState } from "../../../_components/empty-state";
 import {
   Crosshair,
   SectionGutter,
@@ -38,6 +39,7 @@ import {
   StatusPill,
   TopFindingCallout,
 } from "../../../_components/grid";
+import { DashboardLoadingState } from "../../../_components/loading-state";
 
 const models = [
   { id: "gpt4", label: "ChatGPT", logo: "/images/chatgpt.svg" },
@@ -112,6 +114,7 @@ type RosterEntry = {
  */
 const RosterList = ({
   label,
+  figure,
   entries,
   selected,
   disabled,
@@ -119,6 +122,7 @@ const RosterList = ({
   onToggleAll,
 }: {
   label: string;
+  figure: "product-label" | "rivals-balance";
   entries: RosterEntry[];
   selected: ReadonlySet<string>;
   disabled: boolean;
@@ -157,9 +161,11 @@ const RosterList = ({
         viewportProps={{ role: "region", tabIndex: 0, "aria-label": label }}
       >
         {entries.length === 0 ? (
-          <p className="px-4 py-6 text-foreground-dimmed text-xs">
-            {translate("nothingYet")}
-          </p>
+          <DashboardEmptyState
+            title={translate("nothingYet")}
+            figure={figure}
+            compact
+          />
         ) : (
           entries.map((entry) => (
             // biome-ignore lint/a11y/noLabelWithoutControl: base-ui Checkbox renders a hidden native input inside the label
@@ -476,6 +482,7 @@ export const SimulationsClient = ({
           <div className="grid grid-cols-1 gap-px bg-accent-foreground lg:grid-cols-2">
             <RosterList
               label={translate("setup.products")}
+              figure="product-label"
               entries={products.map((product) => ({
                 id: product.id,
                 title: product.title,
@@ -489,6 +496,7 @@ export const SimulationsClient = ({
             />
             <RosterList
               label={translate("setup.competitors")}
+              figure="rivals-balance"
               entries={competitorList.map((competitor) => ({
                 id: competitor.id,
                 title: competitor.title,
@@ -681,9 +689,19 @@ export const SimulationsClient = ({
                   className="max-h-72 overflow-y-auto scroll-smooth bg-background-rich px-5 py-4"
                 >
                   {logs.length === 0 ? (
-                    <p className="font-mono text-foreground-dimmed text-xs">
-                      {run("noLogsYet")}
-                    </p>
+                    isRunning ? (
+                      <DashboardLoadingState
+                        title={run("status.running")}
+                        figure="shopping-bot"
+                        compact
+                      />
+                    ) : (
+                      <DashboardEmptyState
+                        title={run("noLogsYet")}
+                        figure="shopping-bot"
+                        compact
+                      />
+                    )
                   ) : (
                     <div className="space-y-1">
                       {logs.map((entry) => (

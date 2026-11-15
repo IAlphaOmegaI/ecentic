@@ -17,7 +17,9 @@ export const VisibilityShell = ({ audit }: { audit: ReactNode }) => {
       title={translate("checks.title")}
       description={translate("checks.description")}
     >
-      <ChannelSection>{audit}</ChannelSection>
+      <ChannelSection className="flex min-w-0 flex-1 flex-col">
+        {audit}
+      </ChannelSection>
       <ChannelSection className="flex flex-col gap-4 px-4 py-5 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
         <div className="flex min-w-0 items-start gap-3">
           <BarChartIcon

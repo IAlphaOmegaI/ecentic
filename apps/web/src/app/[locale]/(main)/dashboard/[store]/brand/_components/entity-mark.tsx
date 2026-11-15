@@ -2,6 +2,11 @@ import {
   BrandAppleIcon,
   BrandRedditIcon,
   BrandYoutubeIcon,
+  CommerceBookOpenIcon,
+  CommerceFilePenIcon,
+  GlobeIcon,
+  PhotoIcon,
+  RobotIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import Image from "next/image";
@@ -56,7 +61,7 @@ const favicons: Record<string, string> = {
   "nytimes.com/wirecutter": "wirecutter",
 };
 
-/** Genuine local identity assets; unknown labels stay initials instead of invented logos. */
+/** Real identity assets take precedence; generic sources use a subject icon. */
 export const EntityMark = ({
   name,
   kind = "brand",
@@ -76,13 +81,6 @@ export const EntityMark = ({
   const provider = Object.hasOwn(identities, key) ? identities[key] : undefined;
   const mark = Object.hasOwn(localMarks, key) ? localMarks[key] : undefined;
   const favicon = Object.hasOwn(favicons, key) ? favicons[key] : undefined;
-  const initials = name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((word) => Array.from(word)[0])
-    .join("")
-    .toLocaleUpperCase();
   const Icon = (() => {
     switch (true) {
       case key === "apple":
@@ -91,8 +89,18 @@ export const EntityMark = ({
         return BrandYoutubeIcon;
       case key === "reddit":
         return BrandRedditIcon;
+      case kind === "source" &&
+        /review|editorial|publication|article/.test(key):
+        return CommerceBookOpenIcon;
+      case kind === "source" &&
+        /manufacturer|product page|specification|documentation/.test(key):
+        return CommerceFilePenIcon;
+      case kind === "source":
+        return GlobeIcon;
+      case kind === "engine":
+        return RobotIcon;
       default:
-        return null;
+        return PhotoIcon;
     }
   })();
   return (
@@ -128,12 +136,8 @@ export const EntityMark = ({
           className="size-full object-contain"
           unoptimized
         />
-      ) : Icon ? (
-        <Icon className="size-full" />
       ) : (
-        <span className="font-semibold text-foreground-dimmed text-xs">
-          {initials}
-        </span>
+        <Icon className="size-full text-foreground-dimmed" />
       )}
     </span>
   );

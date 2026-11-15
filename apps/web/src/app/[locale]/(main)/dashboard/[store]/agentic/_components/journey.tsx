@@ -17,7 +17,9 @@ import type {
   JourneyStep,
   JourneyVerdict,
 } from "@/server/app/intelligence/agentic-contract";
+import { DashboardEmptyState } from "../../../_components/empty-state";
 import { StatusPill } from "../../../_components/grid";
+import { DashboardLoadingState } from "../../../_components/loading-state";
 
 const POLL_MS = 8_000;
 const MAX_NODES = 64;
@@ -465,9 +467,11 @@ export const JourneyTrace = ({
 
   if (!snapshot)
     return (
-      <p className="p-4 text-foreground-dimmed text-sm">
-        {translate("journey.empty")}
-      </p>
+      <DashboardEmptyState
+        title={translate("journey.empty")}
+        figure="shopping-bot"
+        compact
+      />
     );
 
   return (
@@ -496,11 +500,6 @@ export const JourneyTrace = ({
         {snapshot.insight && (
           <p className="max-w-3xl text-foreground-dimmed text-sm">
             {snapshot.insight}
-          </p>
-        )}
-        {snapshot.status === "running" && pills.length === 0 && (
-          <p className="text-foreground-dimmed text-sm">
-            {translate("journey.running")}
           </p>
         )}
       </div>
@@ -546,14 +545,18 @@ export const JourneyTrace = ({
                 />
               </div>
             </>
+          ) : snapshot.status === "running" ? (
+            <DashboardLoadingState
+              title={translate("journey.running")}
+              figure="shopping-bot"
+              compact
+            />
           ) : (
-            <div className="flex min-h-48 items-center px-6">
-              <p className="text-foreground-dimmed text-sm">
-                {snapshot.status === "running"
-                  ? translate("journey.running")
-                  : translate("journey.empty")}
-              </p>
-            </div>
+            <DashboardEmptyState
+              title={translate("journey.empty")}
+              figure="shopping-bot"
+              compact
+            />
           )}
         </div>
         <a

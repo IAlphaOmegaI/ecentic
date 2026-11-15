@@ -11,7 +11,9 @@ export const UcpShell = ({ children }: { children: ReactNode }) => {
       title={channels("checkout.title")}
       description={translate("description")}
     >
-      <div className="min-w-0 flex-1 bg-background-rich">{children}</div>
+      <div className="flex min-w-0 flex-1 flex-col bg-background-rich">
+        {children}
+      </div>
     </ChannelsWorkspace>
   );
 };

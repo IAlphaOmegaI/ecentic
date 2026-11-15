@@ -2,7 +2,6 @@
 
 import {
   ArrowRightIcon,
-  BoxMinusIcon,
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -21,7 +20,6 @@ import { Button } from "@zenncore/web/components/button";
 import type { ColumnDef } from "@zenncore/web/components/data-table";
 import {
   DataTable,
-  DataTableEmpty,
   DataTablePagination,
   DataTableProvider,
   useDataTable,
@@ -45,6 +43,7 @@ import { usePaginationChangeHandler } from "@/hooks/pagination";
 import { Link } from "@/i18n/navigation";
 import { formatPrice } from "@/lib/currency";
 import { formatRelativeTime } from "@/lib/date";
+import { DashboardEmptyState } from "./empty-state";
 
 const WinRateBar = ({ rate }: { rate: number }) => {
   const { bar, text } = (() => {
@@ -672,45 +671,45 @@ export const ProductsTable = ({
           sorting={sorting}
         />
       )}
-      <div className="w-full min-w-0 max-w-full overflow-x-auto overscroll-x-contain">
-        <DataTable
-          className={cn(
-            "table-fixed",
-            preview ? "min-w-170" : "min-w-288",
-            (!paginated || preview) && "border-b-0",
+      {visibleRows.length === 0 ? (
+        <DashboardEmptyState
+          figure={
+            filtered ||
+            (preview && (Boolean(search.trim()) || comparison !== "all"))
+              ? "inspection-queue"
+              : "import-chute"
+          }
+          title={translate(
+            filtered ||
+              (preview && (Boolean(search.trim()) || comparison !== "all"))
+              ? "states.noMatches.primary"
+              : "states.empty.primary",
           )}
-          classList={{
-            "header-cell":
-              "bg-background-dimmed/50 font-medium text-xs normal-case tracking-normal",
-            "body-row": "transition-colors hover:bg-primary/3",
-            "body-cell": "py-3 font-normal",
-          }}
-        >
-          <DataTableEmpty>
-            <div className="p-8 text-center">
-              <BoxMinusIcon className="mx-auto mb-6 size-24" />
-              <p className="text-foreground text-lg">
-                {translate(
-                  filtered ||
-                    (preview &&
-                      (Boolean(search.trim()) || comparison !== "all"))
-                    ? "states.noMatches.primary"
-                    : "states.empty.primary",
-                )}
-              </p>
-              <p className="mt-1 text-foreground-dimmed text-sm">
-                {translate(
-                  filtered ||
-                    (preview &&
-                      (Boolean(search.trim()) || comparison !== "all"))
-                    ? "states.noMatches.secondary"
-                    : "states.empty.secondary",
-                )}
-              </p>
-            </div>
-          </DataTableEmpty>
-        </DataTable>
-      </div>
+          description={translate(
+            filtered ||
+              (preview && (Boolean(search.trim()) || comparison !== "all"))
+              ? "states.noMatches.secondary"
+              : "states.empty.secondary",
+          )}
+          compact
+        />
+      ) : (
+        <div className="w-full min-w-0 max-w-full overflow-x-auto overscroll-x-contain">
+          <DataTable
+            className={cn(
+              "table-fixed",
+              preview ? "min-w-170" : "min-w-288",
+              (!paginated || preview) && "border-b-0",
+            )}
+            classList={{
+              "header-cell":
+                "bg-background-dimmed/50 font-medium text-xs normal-case tracking-normal",
+              "body-row": "transition-colors hover:bg-primary/3",
+              "body-cell": "py-3 font-normal",
+            }}
+          />
+        </div>
+      )}
       {preview && <OverviewPagination count={visibleRows.length} />}
       {paginated && !preview && (
         <DataTablePagination

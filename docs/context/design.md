@@ -124,6 +124,23 @@ technical grid or competing forms. Keep the lifecycle test’s potential test-ca
 Use light full-width sections, one border owner per seam and sparse edge crosses. Public versions
 of shared tools retain their own approved composition.
 
+Playground connection failures use the shared error toast with a short, localized explanation.
+Keep the entered domain so the user can correct it; do not insert a large raw diagnostic block
+into the connection form. Profile comparisons pair a compact store roster with one buyer request
+and one run action. Keep detailed protocol output available behind a disclosure rather than
+letting it dominate the setup task.
+
+### Shared comparison reports
+
+A shared result is a readable public report, not another onboarding screen. Use a compact brand
+and language header, followed by one charcoal cutout containing the recorded metadata, measured
+win-rate dial and provider outcomes. The dial uses the actual win/loss ratio, not a decorative
+score threshold. Combine the main finding, missing attributes, loss rate and next action into
+one light section; do not repeat them across separate finding, attributes and conversion bands.
+Keep longer supporting detail accessible. Use an em dash
+when no outcomes exist; never render an untested provider as a measured zero. Completed reports
+must open without sign-in, while missing and incomplete reports show an unavailable state.
+
 ### Onboarding
 
 Guided and progressive. A blue narrative plane and light task workspace explain the current
@@ -347,9 +364,13 @@ Why: The user explicitly rejected the nested framing: “you know we hate square
 
 Use only `rounded-none`, `rounded-sm`, `rounded-lg` and `rounded-full` (including their directional
 variants). Square is for structural regions; small corners are for compact
-menus; large corners are for inputs, buttons, dialogs, thumbnails and the workspace inner junction; full is for
+menus and selection checkboxes; large corners are for inputs, buttons, dialogs, thumbnails and the workspace inner junction; full is for
 avatars, dots and deliberate pills. Legacy theme names alias these values for compatibility;
 new code uses the four approved names. Do not vary radii to decorate adjacent cards.
+The 14 November follow-up explicitly rounds the open Judy chat and toast edges further:
+their named `rounded-overlay` app theme token derives from spacing-4 (16px at the default root size).
+This is a scoped exception for these overlays, not a change to the shared large radius.
+Ordinary buttons, inputs, menus and the workspace retain their existing corner treatment.
 
 Cutouts are part of ecentic's original geometry and extend beyond navigation. They work on
 **white, blue and dark surfaces**, including workflow bands, pricing and footer compositions.
@@ -725,14 +746,21 @@ gradient rails, angular command decks and decorative chrome still applies. Keep 
 primary actions, selection and measured data.
 
 Navigation is a coherent workspace frame. Store identity, store switching and “All stores”
-belong in one selector. Group account identity, settings, billing and the current plan in a
-compact account menu rather than scattering a plan badge among unrelated utility icons.
-Keep search directly reachable, including on mobile. The dashboard search opens as an opaque charcoal extension of its top-bar field, using the package Popover and Command components without a page backdrop. Match Judy’s emphasis charcoal and restrained vertical highlight. A short opacity/blur reveal uses the package Popover transition, with no lateral slide, zoom or delayed focus; remove the transition and blur for reduced motion. Keep the input immediately ready for typing, support arrow-key selection and Enter, and return focus to the field on Escape. Sidebar families use the package Accordion with a short height/opacity transition and rotating chevron; reduced motion removes these transitions. Keep child routes in the sidebar, never in a duplicate band above the page. Dashboard language selection lives in
-Settings > Account, not in the top bar. Notifications belong inside the account menu, using
+belong in one selector. Use a real store logo or favicon with a recognizable store-image fallback,
+not a letter tile. The account menu repeats the saved profile image or a person fallback beside
+the name and email. Group account identity, settings, notifications and billing in this compact
+menu; plan details belong in Billing rather than a separate prominent badge.
+Keep search directly reachable, including on mobile. The dashboard search opens as an opaque charcoal extension of its top-bar field, using the package Popover and Command components without a page backdrop. Match Judy’s emphasis charcoal and restrained vertical highlight. Reveal the results downward from the existing field and fold them back into it on close; the input stays sharp, stationary and immediately ready for typing. Use a short package transition, without lateral slide, zoom or delayed focus, and reveal immediately for reduced motion. Support arrow-key selection and Enter, and return focus to the field on Escape. Sidebar families use the package Accordion with a short height/opacity transition and rotating chevron; reduced motion removes these transitions. Keep child routes in the sidebar, never in a duplicate band above the page. Dashboard language selection lives in
+Settings > Account, not in the top bar. Use one compact keycap treatment for the command
+shortcut, Escape and footer keyboard hints, including their opening and closing states.
+The mobile dashboard sidebar is a left-hand drawer: it slides from that edge through the
+package Sheet transition and opens immediately for reduced motion. This does not change the
+public navigation's approved fade treatment. Notifications belong inside the account menu, using
 the shared menu components rather than a separate top-bar bell. Menus
 are compact, gently rounded and separated before reset or destructive actions. Dropdowns,
-submenus and compact explanatory popovers use the theme's `shadow-sm`; heavy floating shadows
-must not make filters look like modal dialogs. Popup surfaces must be opaque and use declared
+submenus and compact explanatory popovers use one semi-transparent theme border or ring and
+the theme's `shadow-sm`; do not stack an opaque border on top of the package ring. Heavy floating
+shadows must not make filters look like modal dialogs. Popup surfaces must be opaque and use declared
 theme colors (`bg-background-rich`, `text-foreground`). Legacy component-library names such
 as `bg-popover` do not exist in this theme and leave underlying table text visible. Inspect
 the computed background, not merely the presence of a background class in source.
@@ -778,9 +806,13 @@ tabs rather than wide pastel selectors.
 A bottom assistant dock uses Judy, a playful blue Fiat 500-inspired toy car with the grain
 texture of the ecentic mark. The control is a compact black pill: `rounded-full`, `h-12`, `max-w-80`, with a `w-10 h-8` car so the illustration supports the label. A restrained vertical theme gradient and inner highlight give it a raised surface. Hover, pressed and open states remain charcoal, without inheriting the shared popover trigger’s light hover background. A small masked progressive backdrop blur and a low-opacity blurred surround melt the outside edge into the workspace; the title, image and controls remain crisp. This is an explicit exception to the light content-region rule. This replaces the earlier robot
 and the more realistic Mini Cooper interpretation.
+The dock expands from its measured bounds into a charcoal chat window occupying about 80% of the available workspace (90% width on narrow screens). The open window uses the named `rounded-overlay` theme radius; the pill and composer retain their existing shapes. Keep one header bar, a scrollable conversation region and a bottom composer. Use the package Dialog for focus management, Escape and dismissal; Motion transforms connect the same surface in both directions. Judy makes one brief playful movement on opening and settles. Reduced motion skips the morph and dance. Recompute the available space for viewport or virtual-keyboard changes, and return focus to the dock on close.
 While its AI functionality is deferred, label it as a preview and explain that state on open;
-do not imply that a prompt was sent or processed. Bottom scroll fades must be subtle and
+do not imply that a prompt was sent or processed. The composer begins as one compact rounded bar with its send control at the right. Grow it only as the draft wraps or gains lines, cap its height with an internal text scroll, and shrink it again when cleared. Keep the brief preview note outside the input. Use the existing full radius for the single line and the existing large radius for multiline text. It may retain an unsent local draft, with sending disabled and the preview limitation visible. Bottom scroll fades must be subtle and
 pointer-transparent. Reserve enough space for the final rows and actions to clear the dock.
+On mobile, Judy and the support launcher share one safe-area-aware horizontal band with
+matching vertical centers. Leave clear space between their touch targets at the narrowest
+viewport; their different heights must not create staggered baselines.
 This dashboard treatment does not replace the public site's tonal ASCII and Hairline language.
 Give every dashboard page its own function-specific Hairline drawing, including nested tools,
 setup routes and account pages. Use the route `subject` API in
@@ -838,6 +870,29 @@ percentages. Retain a completed report while refreshing, disable duplicate run a
 and display understandable failed-run and data-unavailable states. Keep raw provider errors
 out of the UI. Test absent samples, long answers, empty filters and reduced motion as well
 as populated desktop/mobile layouts.
+
+### Empty and loading states
+
+Use the shared `FeedbackState` / `FeedbackLoading` compositions in public and shared flows;
+`DashboardEmptyState` / `DashboardLoadingState` are the dashboard entry points to the same
+components. Pair a function-specific Hairline figure with a clear heading, a short explanation
+and the relevant next action. The light surface reaches the pane edges; do not put it inside
+another padded card. There are two explicit spatial scopes:
+
+- **Page:** `scope="page"` fills the remaining route area with `flex-1`. Every ancestor must
+  carry the flex column height chain. A disconnected, unavailable or empty screen must not
+  stop at an arbitrary height or leave an unrelated background strip underneath.
+- **Section:** the default fills its containing table, list, tool or panel. Use `compact` for
+  filters, search menus and brief inline feedback. Give no-match results a way to reset the
+  filter. A small button can retain its built-in spinner; do not inflate a control to page size.
+
+Initial server loading retains a matching PPR skeleton with the same page/section allocation.
+Active work uses the shared illustrated indeterminate state with a brief reveal and clear text;
+never invent completion percentages. Refetching keeps existing content visible behind a subtle
+blur, blocks stale row actions and restores the initiating focus when it resolves. Reduced
+motion removes blur/reveal motion and pulsing; Hairline subjects remain clear at rest. The
+command menu keeps its compact illustration and short loading placeholders. Inspect the
+empty, loading, failed and populated state for each route family, not only a single example.
 
 ### Product tables and workspace scrolling
 
@@ -902,8 +957,16 @@ Source sync is an import of the connected catalog. Offer management can affect p
 optimizations across the store. Route users to those existing workflows with truthful labels;
 do not invent a single-product sync action. Keep read-only page navigation free of writes and
 paid AI work. AI content review starts from an explicit action, with pending/error/retry states,
-while the saved-field checklist remains available immediately. Use Zenncore Tabs, Accordion,
+while the saved listing remains available immediately. Use Zenncore Tabs, Accordion,
 DataTable, Popover, AlertDialog and Button for these controls.
+
+Show saved field coverage beside the actual listing content rather than repeating a presence
+grid above empty accordions. Keep the photo, title, description, price and SKU together;
+place structured-data status and its available actions beside the data they affect. Missing
+content gets brief, specific guidance. Only long content and code need a disclosure. Preserve
+the distinction between saved field presence, AI content review and verified live-page data.
+On mobile, comparison metrics give the main win rate a full-width row with supporting counts
+below; three columns require enough usable width for their labels and actions.
 
 ### Optimize workbench
 
@@ -919,6 +982,10 @@ the summary; use genuine provider marks for Google and ChatGPT and distinguish t
 from shared catalog rules.
 
 Use one connected, full-width summary followed by compact tabs for issues and product findings.
+Respond to the usable pane width, not just the viewport: channel summaries become full-width
+label/value rows on narrow panes and three columns only when each column has room to breathe.
+Keep the matching skeleton on the same responsive grid, allow the legend to wrap and contain
+any scrolling for long translated tab labels within the tab strip.
 Group the issue queue by the highest applicable severity, then affected-product count; do not
 truncate it to an arbitrary top-eight list. An issue counts each affected product once, even
 when it has multiple findings. Surface and severity filters must change the actual issue queue

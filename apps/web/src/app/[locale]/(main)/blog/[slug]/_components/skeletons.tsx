@@ -3,7 +3,12 @@ import { MarketingShell } from "@/components/marketing/page";
 /** Matches the article header and contents/body split while URL data resolves. */
 export const BlogArticleSkeleton = ({ label }: { label: string }) => (
   <MarketingShell>
-    <div role="status" aria-label={label} aria-busy="true">
+    <div
+      role="status"
+      aria-label={label}
+      aria-busy="true"
+      className="animate-pulse motion-reduce:animate-none"
+    >
       <div aria-hidden="true" className="border-accent-foreground border-b">
         <div className="mx-auto w-[min(1186px,calc(100%-56px))] border-accent-foreground border-x px-8 pt-16 pb-12 max-sm:w-[calc(100%-32px)] max-sm:px-4 max-sm:pt-12 max-sm:pb-8 lg:px-12">
           <div className="mb-8 h-10 w-36 bg-background-dimmed" />

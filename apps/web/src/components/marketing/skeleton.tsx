@@ -19,7 +19,12 @@ export const MarketingSkeleton = async ({
           ) : undefined
         }
         title={
-          <span role="status" aria-label={enterpriseChrome.loading}>
+          <span
+            role="status"
+            aria-busy="true"
+            aria-label={enterpriseChrome.loading}
+            className="block animate-pulse motion-reduce:animate-none"
+          >
             <span
               aria-hidden="true"
               className="block h-14 w-4/5 bg-background-rich/20"

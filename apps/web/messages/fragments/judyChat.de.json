@@ -1,0 +1,15 @@
+{
+  "dashboard": {
+    "nav": {
+      "assistant": {
+        "chat": {
+          "heading": "Woran möchten Sie arbeiten?",
+          "placeholder": "Formulieren Sie eine Frage an Judy…",
+          "draftHint": "Der Chat ist bald verfügbar. Ihr Entwurf bleibt erhalten, bis Sie diesen Arbeitsbereich verlassen.",
+          "send": "Nachricht senden",
+          "close": "Judy minimieren"
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,12 @@
 "use client";
 
-import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
+import {
+  Tab,
+  Tabs,
+  TabsIndicator,
+  TabsList,
+  TabsPanel,
+} from "@zenncore/web/components/tabs";
 import type { AppConfig } from "next-intl";
 
 export const VersioningLifecycle = ({ copy }: VersioningLifecycle.Props) => (
@@ -9,17 +15,16 @@ export const VersioningLifecycle = ({ copy }: VersioningLifecycle.Props) => (
       <p className="mb-4 text-foreground-dimmed text-sm leading-relaxed">
         {copy.hint}
       </p>
-      <TabsList aria-label={copy.label} className="w-full">
-        {copy.items.map((item) => (
-          <Tab
-            key={item.header}
-            value={item.header}
-            className="min-h-12 min-w-0 flex-1 px-2 font-mono text-xs focus-visible:before:outline-foreground-rich data-[active]:bg-primary-text data-[active]:text-background-rich sm:text-sm"
-          >
-            {item.header}
-          </Tab>
-        ))}
-      </TabsList>
+      <div className="overflow-x-auto overscroll-x-contain">
+        <TabsList aria-label={copy.label} className="min-w-max">
+          <TabsIndicator />
+          {copy.items.map((item) => (
+            <Tab key={item.header} value={item.header} className="text-sm">
+              {item.header}
+            </Tab>
+          ))}
+        </TabsList>
+      </div>
     </div>
     {copy.items.map((item) => (
       <TabsPanel

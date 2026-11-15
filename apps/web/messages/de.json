@@ -472,7 +472,14 @@
         "title": "Judy fragen",
         "status": "Vorschau",
         "description": "Judy ist noch in Entwicklung. Chat und Katalogaktionen sind noch nicht verfügbar. Nutzen Sie bis dahin die Werkzeuge im Dashboard.",
-        "name": "Judy"
+        "name": "Judy",
+        "chat": {
+          "heading": "Woran möchten Sie arbeiten?",
+          "placeholder": "Formulieren Sie eine Frage an Judy…",
+          "draftHint": "Der Chat ist bald verfügbar. Ihr Entwurf bleibt erhalten, bis Sie diesen Arbeitsbereich verlassen.",
+          "send": "Nachricht senden",
+          "close": "Judy minimieren"
+        }
       }
     },
     "sidebar": {
@@ -556,7 +563,8 @@
         "searching": "Suche läuft…",
         "empty": "Keine Ergebnisse",
         "emptyForQuery": "Keine Ergebnisse für „{query}“",
-        "unavailable": "Die Suche ist vorübergehend nicht verfügbar. Versuche es erneut."
+        "unavailable": "Die Suche ist vorübergehend nicht verfügbar. Versuche es erneut.",
+        "emptyHint": "Suchen Sie nach einem Produktnamen, einer SKU oder einer Seite."
       },
       "sections": {
         "products": "Produkte",
@@ -910,14 +918,14 @@
         "poor": "Schlecht (<50 %)",
         "distribution": "Qualitätsverteilung",
         "avgQuality": "Durchschn. Qualität",
-        "kicker": "01.1 — Qualität"
+        "kicker": "Qualität"
       },
       "optimization": {
         "readiness": "KI-Bereitschaft des Produkts",
         "optimized": "Optimiert",
         "pending": "Ausstehend",
         "unoptimized": "Nicht optimiert",
-        "kicker": "01.2 — Optimierung"
+        "kicker": "Optimierung"
       },
       "detail": {
         "backToProducts": "Zurück zu den Produkten",
@@ -987,7 +995,7 @@
           "lost": "Verloren",
           "noWins": "Keine Siege erfasst",
           "noLosses": "Keine Niederlagen erfasst",
-          "kicker": "01 — Battlecards"
+          "kicker": "Battlecards"
         },
         "audit": {
           "aiContentQuality": "Qualität der Inhalte für KI",
@@ -998,7 +1006,7 @@
           "title": "Produktangebot optimieren",
           "description": "Kategoriespezifische Bewertungen der Content-Qualität für die Felder, die KI-Agenten lesen, sowie die Positionierung dieses Produktangebots für seine Zielgruppe.",
           "completeness": "Vollständigkeit:",
-          "currentListing": "02 — Aktuelles Produktangebot",
+          "currentListing": "Aktuelles Produktangebot",
           "characters": "{count} Zeichen",
           "noDescription": "Keine Beschreibung gefunden",
           "liveOnStore": "Live im Shop",
@@ -1014,7 +1022,7 @@
           "structuredDataPublished": "Optimierte strukturierte Daten veröffentlicht",
           "structuredDataPublishedDescription": "In das Metafeld ecentic.structured_data geschrieben. Das App-Embed rendert diese Daten jetzt anstelle des Standard-Markups des Produkts. Wenn das Embed deaktiviert ist, aktivieren Sie es im Theme-Editor und klicken Sie auf „Speichern“.",
           "openThemeEditor": "Theme-Editor öffnen",
-          "listingAuditKicker": "01 — KI-Listing-Audit",
+          "listingAuditKicker": "KI-Listing-Audit",
           "status": {
             "optimizedByEcentic": "Optimiert von ecentic",
             "ecenticStandard": "ecentic-Standard",
@@ -2765,6 +2773,33 @@
         "searching": "Suche läuft",
         "done": "Abgeschlossen",
         "error": "Fehler"
+      },
+      "workbench": {
+        "sourceTitle": "Ihr Shop",
+        "sourceDescription": "Wählen Sie den Katalog für den Vergleich. Seine Ergebnisse bleiben von denen der Wettbewerber getrennt.",
+        "sameRequest": "Eine Kaufanfrage, dieselbe Suche für alle Shops.",
+        "competitorDescription": "Fügen Sie bis zu fünf Shops mit MCP-Shopping-Endpunkten in ihren UCP-Profilen hinzu.",
+        "competitorLabel": "Wettbewerber {number, number}",
+        "slots": "{count, number} / 5",
+        "validation": {
+          "domain": "Geben Sie eine Shop-Domain oder eine HTTP(S)-URL ein.",
+          "request": "Die Kaufanfrage darf höchstens 1.000 Zeichen enthalten.",
+          "unique": "Verwenden Sie für jeden Eintrag einen anderen Shop."
+        },
+        "requestHint": "Optional. Leer lassen, um allgemein nach Produkten zu suchen.",
+        "ready": "{count, plural, =0 {Fügen Sie zuerst einen Shop hinzu.} one {Ihr Shop ist ausgewählt.} other {# Shops in diesem Vergleich.}}",
+        "running": "Shop-Profile werden gelesen…",
+        "failure": {
+          "title": "Diese Shops konnten nicht verglichen werden",
+          "description": "Der Vergleich konnte nicht abgeschlossen werden. Prüfen Sie die Ergebnisse unten und versuchen Sie es erneut.",
+          "store": "Ein kompatibler Shopping-Endpunkt konnte nicht gelesen werden. Prüfen Sie das UCP-Profil dieses Shops."
+        },
+        "log": {
+          "parameters": "Suchparameter",
+          "profile": "Profil aufgelöst",
+          "searching": "Suche läuft",
+          "results": "{count, plural, one {# Produkt zurückgegeben} other {# Produkte zurückgegeben}}"
+        }
       }
     },
     "ucpPlaygroundDashboard": {
@@ -2784,6 +2819,13 @@
         "action": {
           "primary": "Verbinden",
           "connecting": "Wird verbunden…"
+        },
+        "failure": {
+          "title": "Verbindung zum Shop fehlgeschlagen",
+          "domain": "Geben Sie eine Shop-Domain ein und versuchen Sie es erneut.",
+          "unreachable": "Prüfen Sie die Domain und versuchen Sie es erneut. Das UCP-Profil war nicht erreichbar.",
+          "profile": "Für diesen Shop konnte kein gültiges UCP-Profil gelesen werden. Prüfen Sie die Checkout-Konfiguration.",
+          "shopping": "Dieser Shop hat keinen unterstützten Shopping-Endpunkt in seinem UCP-Profil veröffentlicht."
         }
       },
       "session": {
@@ -3554,7 +3596,26 @@
           "description": "Dieses Produkt wurde möglicherweise entfernt oder gehört zu einem anderen Shop. Öffnen Sie den Katalog, um ein Produkt auszuwählen."
         }
       },
-      "publishDescription": "Erstellen Sie einen optimierten Titel und eine optimierte Beschreibung für {title} und veröffentlichen Sie beides im verbundenen Shop. Die aktuellen Produktdaten werden dabei ersetzt."
+      "publishDescription": "Erstellen Sie einen optimierten Titel und eine optimierte Beschreibung für {title} und veröffentlichen Sie beides im verbundenen Shop. Die aktuellen Produktdaten werden dabei ersetzt.",
+      "listing": {
+        "title": "Gespeicherter Produkteintrag",
+        "description": "Prüfe die im Katalog gespeicherten Produktdaten. Die Abdeckung zeigt nur, welche Felder ausgefüllt sind.",
+        "coverage": "{present} von {total} Feldern gespeichert",
+        "missingValue": "Nicht gespeichert",
+        "missingImages": "Keine Produktfotos gespeichert",
+        "imageHint": "Füge in deiner Katalogquelle aussagekräftige Produktfotos hinzu.",
+        "missingDescription": "Ergänze eine Beschreibung mit dem Verwendungszweck und den wichtigsten Produkteigenschaften.",
+        "sourceHint": "Ändere diese Angaben in deiner Katalogquelle und synchronisiere sie anschließend mit ecentic.",
+        "structuredSaved": "Prüfe die gespeicherten Daten vor der Veröffentlichung. Die Daten auf der Shopseite können davon abweichen.",
+        "structuredMissing": "Erstelle aus den gespeicherten Produktdaten einen Entwurf und prüfe ihn vor der Veröffentlichung.",
+        "unreachable": "Der Shop war nicht erreichbar. Die veröffentlichten Daten konnten daher nicht geprüft werden.",
+        "action": {
+          "primary": "Katalogquelle verwalten",
+          "secondary": "Vollständige Beschreibung lesen",
+          "tertiary": "Weniger anzeigen",
+          "quaternary": "Strukturierte Daten prüfen"
+        }
+      }
     },
     "productChannels": {
       "tab": "Produktdaten & Kanäle",
@@ -8353,6 +8414,34 @@
       "title": "Bereit, dass jeder KI-Einkaufsagent Ihre Produkte auswählt?",
       "description": "ecentic optimiert Ihre Produktangebote automatisch. Kostenloser Einstieg.",
       "action": "Kostenlos starten"
+    },
+    "review": {
+      "title": "Ergebnisse der KI-Vergleiche",
+      "description": "Eine gespeicherte Analyse von Produktvergleichen durch KI-Modelle. Die Ergebnisse beschreiben Simulationen, keine tatsächlichen Käuferaktivitäten.",
+      "recorded": "Erfasst am {date}",
+      "score": {
+        "label": "Gewinnquote im Vergleich",
+        "context": "{wins, plural, one {# Sieg} other {# Siege}} bei {total, plural, one {# erfasstem Ergebnis} other {# erfassten Ergebnissen}}.",
+        "empty": "Für diese Analyse wurden keine Vergleichsergebnisse erfasst."
+      },
+      "providers": {
+        "title": "Ergebnisse nach KI-Anbieter",
+        "description": "Erfasste Siege und Niederlagen für jedes Modell.",
+        "outcomes": "{wins, plural, one {# Sieg} other {# Siege}} · {losses, plural, one {# Niederlage} other {# Niederlagen}}",
+        "empty": "Es wurden keine Ergebnisse nach Anbieter erfasst."
+      },
+      "finding": {
+        "title": "Wichtigste Erkenntnis",
+        "details": "Gemeldete Auswirkungen lesen"
+      },
+      "cta": {
+        "title": "Vergleichen Sie Ihre eigenen Produkte",
+        "description": "Starten Sie eine kostenlose Analyse und sehen Sie, wie KI-Modelle Ihre Produktangebote vergleichen."
+      },
+      "unavailable": {
+        "title": "Dieser Bericht ist nicht verfügbar",
+        "description": "Der Link ist möglicherweise falsch oder die Analyse ist noch nicht abgeschlossen."
+      }
     }
   },
   "dealRedemption": {

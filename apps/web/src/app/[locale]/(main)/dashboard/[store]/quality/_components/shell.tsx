@@ -1,17 +1,12 @@
 "use client";
 
-import {
-  AlertCircleIcon,
-  ArrowRightIcon,
-  FileSearchIcon,
-  LoaderIcon,
-} from "@zenncore/icons";
+import { ArrowRightIcon, FileSearchIcon, LoaderIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { type ReactNode, useTransition } from "react";
-import { CustomHairlineFigure } from "@/components/hairline/custom-figure";
 import { Link } from "@/i18n/navigation";
+import { DashboardEmptyState } from "../../../_components/empty-state";
 import { Crosshair } from "../../../_components/grid";
 import { DashboardHeaderFigure } from "../../../_components/header-figure";
 
@@ -51,46 +46,37 @@ export const QualityFeedback = ({
   const [pending, startTransition] = useTransition();
   return (
     <div
-      className="flex min-h-96 flex-1 flex-col items-center justify-center gap-4 px-6 py-12 text-center"
+      className="flex min-w-0 flex-1 flex-col"
       role={kind === "error" ? "alert" : "status"}
       aria-busy={pending}
     >
-      {kind === "error" ? (
-        <AlertCircleIcon className="size-10 text-foreground-dimmed" />
-      ) : (
-        <div aria-hidden className="w-80 max-w-full sm:w-96">
-          <CustomHairlineFigure
-            name="inspection-queue"
-            label={translate("states.empty.title")}
-          />
-        </div>
-      )}
-      <h2 className="font-semibold text-foreground-rich text-xl">
-        {translate(`states.${kind}.title`)}
-      </h2>
-      <p className="max-w-md text-foreground-dimmed text-sm leading-6">
-        {translate(`states.${kind}.description`)}
-      </p>
-      {kind === "error" ? (
-        <Button
-          variant="soft"
-          color="neutral"
-          disabled={pending}
-          onClick={() => startTransition(() => router.refresh())}
-        >
-          {pending && (
-            <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
-          )}
-          {translate("action.secondary")}
-        </Button>
-      ) : (
-        store && (
-          <Button render={<Link href={`/dashboard/${store}/products`} />}>
-            <ArrowRightIcon className="size-4" />
-            {translate("action.primary")}
+      <DashboardEmptyState
+        title={translate(`states.${kind}.title`)}
+        description={translate(`states.${kind}.description`)}
+        figure="inspection-queue"
+        scope="page"
+      >
+        {kind === "error" ? (
+          <Button
+            variant="soft"
+            color="neutral"
+            disabled={pending}
+            onClick={() => startTransition(() => router.refresh())}
+          >
+            {pending && (
+              <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
+            )}
+            {translate("action.secondary")}
           </Button>
-        )
-      )}
+        ) : (
+          store && (
+            <Button render={<Link href={`/dashboard/${store}/products`} />}>
+              <ArrowRightIcon className="size-4" />
+              {translate("action.primary")}
+            </Button>
+          )
+        )}
+      </DashboardEmptyState>
     </div>
   );
 };
@@ -98,7 +84,7 @@ export const QualityFeedback = ({
 export const QualitySkeleton = () => {
   const translate = useTranslations("dashboard.qualityWorkspace");
   return (
-    <div aria-hidden>
+    <div aria-hidden className="@container/quality-summary">
       <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6">
         <div>
           <h2 className="font-semibold text-base text-foreground-rich">
@@ -111,18 +97,21 @@ export const QualitySkeleton = () => {
           {translate("method.title")}
         </Button>
       </div>
-      <div className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-t">
+      <div className="grid @2xl/quality-summary:grid-cols-3 grid-cols-1 @2xl/quality-summary:divide-x divide-y @2xl/quality-summary:divide-y-0 divide-accent-foreground border-accent-foreground border-t">
         {(["universal", "google", "chatgpt"] as const).map((surface) => (
-          <div key={surface} className="min-w-0 px-4 py-4 sm:px-6">
-            <div className="flex min-h-10 items-start gap-2 font-medium text-foreground text-xs sm:min-h-8 sm:text-sm">
+          <div
+            key={surface}
+            className="grid min-w-0 @2xl/quality-summary:grid-cols-1 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 px-4 py-4 sm:px-6"
+          >
+            <div className="flex @2xl/quality-summary:min-h-10 @2xl/quality-summary:items-start items-center gap-2 font-medium text-foreground text-sm">
               <span className="size-4 shrink-0 animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
               <span className="min-w-0 break-words">
                 {translate(`scope.${surface}`)}
               </span>
             </div>
-            <div className="mt-2 h-8 w-16 max-w-full animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none sm:h-9" />
-            <div className="mt-4 h-2 w-full animate-pulse rounded-full bg-foreground/10 motion-reduce:animate-none" />
-            <div className="mt-2 h-4 w-20 max-w-full animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
+            <div className="@2xl/quality-summary:mt-2 @2xl/quality-summary:h-9 h-8 w-16 max-w-full animate-pulse @2xl/quality-summary:justify-self-start justify-self-end rounded-sm bg-foreground/10 motion-reduce:animate-none" />
+            <div className="col-span-full mt-4 h-2 w-full animate-pulse rounded-full bg-foreground/10 motion-reduce:animate-none" />
+            <div className="col-span-full mt-2 h-4 w-20 max-w-full animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
           </div>
         ))}
       </div>

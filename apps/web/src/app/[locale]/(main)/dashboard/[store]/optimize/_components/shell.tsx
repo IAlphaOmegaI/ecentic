@@ -1,10 +1,11 @@
 "use client";
 
-import { AlertCircleIcon, ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
+import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { useTranslations } from "next-intl";
 import { type ReactNode, useTransition } from "react";
 import { Link, useRouter } from "@/i18n/navigation";
+import { DashboardEmptyState } from "../../../_components/empty-state";
 import { Crosshair } from "../../../_components/grid";
 import { DashboardHeaderFigure } from "../../../_components/header-figure";
 
@@ -61,47 +62,51 @@ export const OptimizeFeedback = ({
   const [pending, startTransition] = useTransition();
   return (
     <div
-      className="flex min-h-72 flex-1 flex-col items-center justify-center gap-4 px-6 py-10 text-center"
+      className="flex flex-1 flex-col"
       role={kind === "error" ? "alert" : "status"}
       aria-busy={pending}
     >
-      {kind === "error" && (
-        <AlertCircleIcon className="size-8 text-foreground-dimmed" />
-      )}
-      <h2 className="font-semibold text-foreground-rich text-xl">
-        {stateCopy.title}
-      </h2>
-      <p className="max-w-md text-foreground-dimmed text-sm leading-6">
-        {stateCopy.description}
-      </p>
-      {kind === "filtered" && onReset && (
-        <Button variant="soft" color="neutral" onClick={onReset}>
-          {quality("action.tertiary")}
-        </Button>
-      )}
-      {kind === "error" && (
-        <Button
-          variant="soft"
-          color="neutral"
-          disabled={pending}
-          onClick={() => startTransition(() => router.refresh())}
-        >
-          {pending && (
-            <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
-          )}
-          {translate("action.quaternary")}
-        </Button>
-      )}
-      {kind === "empty" && store && (
-        <Button
-          variant="soft"
-          color="primary"
-          render={<Link href={`/dashboard/${store}/quality`} />}
-        >
-          {translate("action.tertiary")}
-          <ArrowRightIcon className="size-4" />
-        </Button>
-      )}
+      <DashboardEmptyState
+        title={stateCopy.title}
+        description={stateCopy.description}
+        figure={
+          kind === "published"
+            ? "report-printer"
+            : kind === "filtered"
+              ? "inspection-queue"
+              : "repair-tools"
+        }
+        scope="page"
+      >
+        {kind === "filtered" && onReset && (
+          <Button variant="soft" color="neutral" onClick={onReset}>
+            {quality("action.tertiary")}
+          </Button>
+        )}
+        {kind === "error" && (
+          <Button
+            variant="soft"
+            color="neutral"
+            disabled={pending}
+            onClick={() => startTransition(() => router.refresh())}
+          >
+            {pending && (
+              <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
+            )}
+            {translate("action.quaternary")}
+          </Button>
+        )}
+        {kind === "empty" && store && (
+          <Button
+            variant="soft"
+            color="primary"
+            render={<Link href={`/dashboard/${store}/quality`} />}
+          >
+            {translate("action.tertiary")}
+            <ArrowRightIcon className="size-4" />
+          </Button>
+        )}
+      </DashboardEmptyState>
     </div>
   );
 };

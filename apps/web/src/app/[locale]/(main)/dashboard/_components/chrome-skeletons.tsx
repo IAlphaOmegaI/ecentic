@@ -12,19 +12,19 @@ export const StatusPillSkeleton = ({
   className?: string;
 }) => (
   <div
-    className={`h-5 animate-pulse rounded-full bg-foreground/10 ${className}`}
+    className={`h-5 animate-pulse rounded-full bg-foreground/10 motion-reduce:animate-none ${className}`}
   />
 );
 
 export const StoreSwitcherSkeleton = () => (
   <div aria-hidden className="shrink-0 px-3 pt-2 pb-3">
     <div className="flex w-full items-center gap-2.5 rounded-lg px-2 py-2">
-      <div className="size-8 shrink-0 animate-pulse rounded-lg bg-background-rich/12" />
+      <div className="size-8 shrink-0 animate-pulse rounded-lg bg-background-rich/12 motion-reduce:animate-none" />
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-        <div className="h-3.5 w-24 animate-pulse rounded-sm bg-background-rich/12" />
-        <div className="h-3 w-16 animate-pulse rounded-sm bg-background-rich/12" />
+        <div className="h-3.5 w-24 animate-pulse rounded-sm bg-background-rich/12 motion-reduce:animate-none" />
+        <div className="h-3 w-16 animate-pulse rounded-sm bg-background-rich/12 motion-reduce:animate-none" />
       </div>
-      <div className="size-4 shrink-0 animate-pulse rounded-sm bg-background-rich/12" />
+      <div className="size-4 shrink-0 animate-pulse rounded-sm bg-background-rich/12 motion-reduce:animate-none" />
     </div>
   </div>
 );
@@ -46,8 +46,8 @@ export const SidebarNavSkeleton = () => (
         key={key}
         className="mx-3 flex h-10 shrink-0 items-center gap-3 rounded-lg px-3"
       >
-        <div className="size-5 shrink-0 animate-pulse rounded-sm bg-background-rich/12" />
-        <div className="h-4 w-24 animate-pulse rounded-sm bg-background-rich/12" />
+        <div className="size-5 shrink-0 animate-pulse rounded-sm bg-background-rich/12 motion-reduce:animate-none" />
+        <div className="h-4 w-24 animate-pulse rounded-sm bg-background-rich/12 motion-reduce:animate-none" />
       </div>
     ))}
   </nav>
@@ -55,25 +55,25 @@ export const SidebarNavSkeleton = () => (
 
 // A single nav badge, sized to the pill it replaces so the row never reflows.
 export const NavBadgeSkeleton = () => (
-  <span className="inline-block h-3 w-4 animate-pulse rounded-sm bg-background-rich/12 align-middle" />
+  <span className="inline-block h-3 w-4 animate-pulse rounded-sm bg-background-rich/12 align-middle motion-reduce:animate-none" />
 );
 
 export const CommandPaletteSkeleton = () => (
   <div className="flex h-9 flex-1 items-center gap-2 rounded-lg border border-background-rich/10 bg-background-rich/8 px-3">
-    <div className="size-4 shrink-0 animate-pulse bg-background-rich/12" />
-    <div className="h-4 w-24 animate-pulse bg-background-rich/12" />
-    <div className="ml-auto h-4 w-8 animate-pulse rounded-sm bg-background-rich/12" />
+    <div className="size-4 shrink-0 animate-pulse bg-background-rich/12 motion-reduce:animate-none" />
+    <div className="h-4 w-24 animate-pulse bg-background-rich/12 motion-reduce:animate-none" />
+    <div className="ml-auto h-4 w-8 animate-pulse rounded-sm bg-background-rich/12 motion-reduce:animate-none" />
   </div>
 );
 
 export const SubscriptionBadgeSkeleton = () => (
-  <div className="h-5 w-16 animate-pulse rounded-sm bg-foreground/10" />
+  <div className="h-5 w-16 animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
 );
 
 export const UserButtonSkeleton = () => (
   <div className="flex items-center gap-2.5">
-    <div className="size-9 shrink-0 animate-pulse rounded-lg bg-background-rich/12" />
-    <div className="hidden h-4 w-28 animate-pulse rounded-sm bg-background-rich/12 lg:block" />
+    <div className="size-9 shrink-0 animate-pulse rounded-lg bg-background-rich/12 motion-reduce:animate-none" />
+    <div className="hidden h-4 w-28 animate-pulse rounded-sm bg-background-rich/12 motion-reduce:animate-none lg:block" />
   </div>
 );
 
@@ -85,12 +85,12 @@ export const StatsSkeleton = () => (
         className="relative flex h-44 flex-col justify-between bg-background-rich p-5"
       >
         <div className="flex items-center justify-between">
-          <div className="h-3 w-28 animate-pulse bg-foreground/10" />
-          <div className="absolute top-5 right-5 size-7.5 animate-pulse bg-foreground/10" />
+          <div className="h-3 w-28 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+          <div className="absolute top-5 right-5 size-7.5 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
         </div>
         <div>
-          <div className="h-11 w-24 animate-pulse bg-foreground/10" />
-          <div className="mt-3 h-4 w-32 animate-pulse bg-foreground/10" />
+          <div className="h-11 w-24 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+          <div className="mt-3 h-4 w-32 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
         </div>
       </div>
     ))}
@@ -101,8 +101,8 @@ export const ChartSkeleton = () => (
   <div className="grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3">
     <div className="bg-background-rich xl:col-span-2">
       <div className="p-4">
-        <div className="h-3 w-32 animate-pulse bg-foreground/10" />
-        <div className="mt-2 h-8 w-44 animate-pulse bg-foreground/10" />
+        <div className="h-3 w-32 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+        <div className="mt-2 h-8 w-44 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
       </div>
 
       <div className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-y">
@@ -111,30 +111,30 @@ export const ChartSkeleton = () => (
             <div key={model} className="p-6">
               <div className="flex w-full items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="size-8 animate-pulse bg-foreground/10" />
-                  <div className="h-3.5 w-14 animate-pulse bg-foreground/10" />
+                  <div className="size-8 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+                  <div className="h-3.5 w-14 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
                 </div>
                 <div className="flex items-baseline gap-0.5">
-                  <div className="h-9 w-10 animate-pulse bg-foreground/10" />
-                  <div className="h-4 w-3 animate-pulse bg-foreground/10" />
+                  <div className="h-9 w-10 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+                  <div className="h-4 w-3 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
                 </div>
               </div>
-              <div className="mt-3 h-1 w-full animate-pulse bg-foreground/10" />
+              <div className="mt-3 h-1 w-full animate-pulse bg-foreground/10 motion-reduce:animate-none" />
             </div>
           ),
         )}
       </div>
 
       <div className="p-4">
-        <div className="mb-3 h-3 w-24 animate-pulse bg-foreground/10" />
-        <div className="h-56 w-full animate-pulse bg-foreground/10" />
+        <div className="mb-3 h-3 w-24 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+        <div className="h-56 w-full animate-pulse bg-foreground/10 motion-reduce:animate-none" />
       </div>
     </div>
 
     <div className="flex flex-col gap-px bg-accent-foreground">
       <div className="flex-1 bg-background-rich">
         <div className="px-4 pt-4 pb-2">
-          <div className="h-3.5 w-24 animate-pulse bg-foreground/10" />
+          <div className="h-3.5 w-24 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
         </div>
         <div className="flex flex-col">
           {(["a", "b", "c"] as const).map((key) => (
@@ -142,19 +142,19 @@ export const ChartSkeleton = () => (
               key={key}
               className="flex items-start gap-3 border-accent-foreground border-b p-4 last:border-b-0"
             >
-              <div className="mt-0.5 size-8 shrink-0 animate-pulse bg-foreground/10" />
+              <div className="mt-0.5 size-8 shrink-0 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
               <div className="flex-1 space-y-2">
-                <div className="h-4 w-full animate-pulse bg-foreground/10" />
-                <div className="h-3 w-4/5 animate-pulse bg-foreground/10" />
-                <div className="h-2.5 w-14 animate-pulse bg-foreground/10" />
+                <div className="h-4 w-full animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+                <div className="h-3 w-4/5 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+                <div className="h-2.5 w-14 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
               </div>
             </div>
           ))}
         </div>
       </div>
       <div className="flex items-center justify-between bg-background-rich p-4">
-        <div className="h-9 w-28 animate-pulse bg-foreground/10" />
-        <div className="h-9 w-36 animate-pulse bg-foreground/10" />
+        <div className="h-9 w-28 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+        <div className="h-9 w-36 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
       </div>
     </div>
   </div>
@@ -164,10 +164,10 @@ export const CompetitorTableSkeleton = () => (
   <div>
     <div className="flex items-center justify-between border-accent-foreground border-b p-4">
       <div className="space-y-2">
-        <div className="h-3 w-40 animate-pulse bg-foreground/10" />
-        <div className="h-6 w-36 animate-pulse bg-foreground/10" />
+        <div className="h-3 w-40 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+        <div className="h-6 w-36 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
       </div>
-      <div className="h-9 w-24 animate-pulse bg-foreground/10" />
+      <div className="h-9 w-24 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
     </div>
     <div className="overflow-x-auto bg-background-rich">
       <table className="w-full">
@@ -177,7 +177,7 @@ export const CompetitorTableSkeleton = () => (
               (header) => (
                 <th key={header} className="px-4 py-3 text-left">
                   {header && (
-                    <div className="h-3 w-14 animate-pulse bg-foreground/10" />
+                    <div className="h-3 w-14 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
                   )}
                 </th>
               ),
@@ -192,27 +192,27 @@ export const CompetitorTableSkeleton = () => (
             >
               <td className="px-4 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="size-9 shrink-0 animate-pulse bg-foreground/10" />
+                  <div className="size-9 shrink-0 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
                   <div className="space-y-1.5">
-                    <div className="h-4 w-28 animate-pulse bg-foreground/10" />
-                    <div className="h-3 w-16 animate-pulse bg-foreground/10" />
+                    <div className="h-4 w-28 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+                    <div className="h-3 w-16 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
                   </div>
                 </div>
               </td>
               <td className="px-4 py-4">
                 <div className="flex items-center gap-2">
-                  <div className="h-1 w-20 animate-pulse bg-foreground/10" />
-                  <div className="h-4 w-9 animate-pulse bg-foreground/10" />
+                  <div className="h-1 w-20 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+                  <div className="h-4 w-9 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
                 </div>
               </td>
               <td className="px-4 py-4">
-                <div className="h-4 w-10 animate-pulse bg-foreground/10" />
+                <div className="h-4 w-10 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
               </td>
               <td className="px-4 py-4">
-                <div className="h-4 w-20 animate-pulse bg-foreground/10" />
+                <div className="h-4 w-20 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
               </td>
               <td className="px-4 py-4">
-                <div className="size-9 animate-pulse bg-foreground/10" />
+                <div className="size-9 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
               </td>
             </tr>
           ))}
@@ -220,10 +220,10 @@ export const CompetitorTableSkeleton = () => (
       </table>
     </div>
     <div className="flex items-center justify-between border-accent-foreground border-t p-4">
-      <div className="h-4 w-24 animate-pulse bg-foreground/10" />
+      <div className="h-4 w-24 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
       <div className="flex gap-2">
-        <div className="h-9 w-9 animate-pulse bg-foreground/10" />
-        <div className="h-9 w-9 animate-pulse bg-foreground/10" />
+        <div className="h-9 w-9 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+        <div className="h-9 w-9 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
       </div>
     </div>
   </div>
@@ -233,10 +233,10 @@ export const TableSkeleton = () => (
   <div>
     <div className="flex items-center justify-between border-accent-foreground border-b p-4">
       <div className="space-y-2">
-        <div className="h-3 w-32 animate-pulse bg-foreground/10" />
-        <div className="h-6 w-28 animate-pulse bg-foreground/10" />
+        <div className="h-3 w-32 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+        <div className="h-6 w-28 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
       </div>
-      <div className="h-9 w-36 animate-pulse bg-foreground/10" />
+      <div className="h-9 w-36 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
     </div>
     <div className="overflow-x-auto bg-background-rich">
       <table className="w-full">
@@ -254,7 +254,7 @@ export const TableSkeleton = () => (
             ].map((header) => (
               <th key={header} className="px-4 py-3 text-left">
                 {header && (
-                  <div className="h-3 w-14 animate-pulse bg-foreground/10" />
+                  <div className="h-3 w-14 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
                 )}
               </th>
             ))}
@@ -268,36 +268,36 @@ export const TableSkeleton = () => (
             >
               <td className="px-4 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="size-9 shrink-0 animate-pulse bg-foreground/10" />
+                  <div className="size-9 shrink-0 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
                   <div className="space-y-1.5">
-                    <div className="h-4 w-36 animate-pulse bg-foreground/10" />
-                    <div className="h-3 w-20 animate-pulse bg-foreground/10" />
+                    <div className="h-4 w-36 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+                    <div className="h-3 w-20 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
                   </div>
                 </div>
               </td>
               <td className="px-4 py-4">
                 <div className="flex items-center gap-2">
-                  <div className="h-1 w-20 animate-pulse bg-foreground/10" />
-                  <div className="h-4 w-9 animate-pulse bg-foreground/10" />
+                  <div className="h-1 w-20 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+                  <div className="h-4 w-9 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
                 </div>
               </td>
               <td className="px-4 py-4">
-                <div className="h-4 w-9 animate-pulse bg-foreground/10" />
+                <div className="h-4 w-9 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
               </td>
               <td className="px-4 py-4">
-                <div className="h-4 w-9 animate-pulse bg-foreground/10" />
+                <div className="h-4 w-9 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
               </td>
               <td className="px-4 py-4">
-                <div className="h-4 w-9 animate-pulse bg-foreground/10" />
+                <div className="h-4 w-9 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
               </td>
               <td className="px-4 py-4">
                 <div className="flex items-center gap-2">
-                  <div className="h-1 w-20 animate-pulse bg-foreground/10" />
-                  <div className="h-4 w-9 animate-pulse bg-foreground/10" />
+                  <div className="h-1 w-20 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+                  <div className="h-4 w-9 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
                 </div>
               </td>
               <td className="px-4 py-4">
-                <div className="size-9 animate-pulse bg-foreground/10" />
+                <div className="size-9 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
               </td>
             </tr>
           ))}
@@ -322,11 +322,11 @@ export const PageSkeleton = () => (
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div>
-            <div className="h-5 w-56 animate-pulse rounded-full bg-foreground/10" />
-            <div className="mt-3 h-9 w-40 animate-pulse bg-foreground/10" />
-            <div className="mt-1 h-5 w-80 max-w-full animate-pulse bg-foreground/10" />
+            <div className="h-5 w-56 animate-pulse rounded-full bg-foreground/10 motion-reduce:animate-none" />
+            <div className="mt-3 h-9 w-40 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+            <div className="mt-1 h-5 w-80 max-w-full animate-pulse bg-foreground/10 motion-reduce:animate-none" />
           </div>
-          <div className="h-9 w-32 animate-pulse bg-foreground/10" />
+          <div className="h-9 w-32 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
         </div>
       </div>
 
@@ -359,7 +359,7 @@ export const PageSkeleton = () => (
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div className="h-10 w-full rounded-sm bg-background-dimmed p-1">
-            <div className="h-8 w-1/3 animate-pulse rounded-sm bg-foreground/10" />
+            <div className="h-8 w-1/3 animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
           </div>
           <TableSkeleton />
         </div>

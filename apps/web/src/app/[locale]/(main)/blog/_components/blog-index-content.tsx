@@ -3,6 +3,7 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
+import { FeedbackState } from "@/components/feedback-state";
 import {
   MarketingEdgeCrosses,
   MarketingLightBand,
@@ -208,9 +209,13 @@ export const BlogIndexContent = async () => {
           </div>
         </MarketingLightBand>
       ) : (
-        <div className="mx-auto w-[min(1186px,calc(100%-32px))] border-accent-foreground border-x p-8 text-foreground-dimmed">
-          {translate("states.empty.primary")}
-        </div>
+        <MarketingLightBand>
+          <FeedbackState
+            title={translate("states.empty.primary")}
+            figure="open-book"
+            surface="background"
+          />
+        </MarketingLightBand>
       )}
       <SectionGutter />
       <section
@@ -312,10 +317,11 @@ export const BlogIndexSkeleton = ({
   <div
     role="status"
     aria-label={label}
+    aria-busy="true"
     className={
       compact
-        ? "min-h-160 bg-background p-6"
-        : "mx-auto min-h-160 w-[min(1186px,calc(100%-32px))] border-accent-foreground border-x p-6"
+        ? "min-h-160 animate-pulse bg-background p-6 motion-reduce:animate-none"
+        : "mx-auto min-h-160 w-[min(1186px,calc(100%-32px))] animate-pulse border-accent-foreground border-x p-6 motion-reduce:animate-none"
     }
   >
     <span className="sr-only">{label}</span>

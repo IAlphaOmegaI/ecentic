@@ -11,6 +11,7 @@ import { Link } from "@/i18n/navigation";
 import { seo } from "@/lib/seo";
 import type * as GoogleMerchant from "@/server/app/integration/google-merchant";
 import * as Store from "@/server/app/store";
+import { DashboardEmptyState } from "../../../_components/empty-state";
 
 import { StoreDisconnection } from "./lifecycle-controls";
 
@@ -138,9 +139,11 @@ export const IntegrationsSection = ({
           </h3>
         </div>
         {stores.length === 0 ? (
-          <div className="px-4 py-6 text-foreground-dimmed text-sm sm:px-6">
-            {translate("empty")}
-          </div>
+          <DashboardEmptyState
+            title={translate("empty")}
+            figure="channel-plug-hub"
+            compact
+          />
         ) : (
           <div className="divide-y divide-accent-foreground">
             {stores.map((store) => {

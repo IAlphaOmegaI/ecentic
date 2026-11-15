@@ -269,9 +269,10 @@ export const MobileSidebar = ({ children }: { children: ReactNode }) => {
         <SheetPopup
           side="left"
           closeLabel={translate("action.quaternary")}
-          className="h-dvh max-h-none w-80 max-w-full origin-center gap-0 overflow-hidden rounded-r-lg border-0 bg-emphasis font-normal text-background-rich transition-[opacity,transform,filter] ease-out data-ending-style:translate-x-0 data-starting-style:translate-x-0 data-ending-style:opacity-0 data-starting-style:opacity-0 data-ending-style:blur-sm data-starting-style:blur-sm data-closed:duration-100 data-open:duration-150 motion-reduce:transition-none"
+          className="h-dvh max-h-none w-80 max-w-full origin-left gap-0 overflow-hidden rounded-r-lg border-0 bg-emphasis font-normal text-background-rich transition-transform ease-out data-closed:duration-150 data-open:duration-200 motion-reduce:transition-none motion-reduce:data-ending-style:translate-x-0 motion-reduce:data-starting-style:translate-x-0"
           classList={{
-            backdrop: "z-50 bg-emphasis/40 backdrop-blur-sm",
+            backdrop:
+              "z-50 bg-emphasis/40 backdrop-blur-sm motion-reduce:transition-none",
             close: {
               root: "top-4 right-4 flex size-8 items-center justify-center rounded-lg text-background-rich/70 opacity-100 hover:bg-background-rich/10 hover:text-background-rich",
             },

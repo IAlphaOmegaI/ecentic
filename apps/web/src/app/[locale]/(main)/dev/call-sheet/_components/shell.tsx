@@ -23,7 +23,9 @@ export const CallSheetShell = ({ children }: { children: ReactNode }) => (
 );
 
 const Line = ({ className }: { className: string }) => (
-  <div className={`animate-pulse bg-foreground/10 ${className}`} />
+  <div
+    className={`animate-pulse bg-foreground/10 motion-reduce:animate-none ${className}`}
+  />
 );
 
 export const CallSheetSkeleton = () => (

@@ -1,0 +1,15 @@
+{
+  "dashboard": {
+    "nav": {
+      "assistant": {
+        "chat": {
+          "heading": "何から始めましょうか？",
+          "placeholder": "Judyへの質問を下書き…",
+          "draftHint": "チャット機能は準備中です。このワークスペースを離れるまで下書きは保持されます。",
+          "send": "メッセージを送信",
+          "close": "Judyを最小化"
+        }
+      }
+    }
+  }
+}

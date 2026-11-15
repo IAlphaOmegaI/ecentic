@@ -119,7 +119,7 @@ export const StoreForm = () => {
             ? translate("form.starting")
             : translate("form.action.primary")}
           {isPending ? (
-            <LoaderIcon className="size-4 animate-spin" />
+            <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
           ) : (
             <ArrowRightIcon className="size-4" />
           )}
@@ -130,7 +130,7 @@ export const StoreForm = () => {
         role="status"
         aria-live="polite"
         className={cn(
-          "min-h-5 text-sm text-background-rich sm:px-2",
+          "min-h-5 text-background-rich text-sm sm:px-2",
           problem && "font-medium",
         )}
       >

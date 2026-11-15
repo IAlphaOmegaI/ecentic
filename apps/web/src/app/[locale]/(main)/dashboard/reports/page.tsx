@@ -5,6 +5,7 @@ import { formatRelativeTime } from "@/lib/date";
 import * as Report from "@/server/app/report";
 import { unwrapEntitled } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
+import { DashboardEmptyState } from "../_components/empty-state";
 import { SubscriptionGate } from "../_components/subscription-gate";
 import { ReportDownload, ShareReport } from "./_components/report-actions";
 import { ReportLibrarySkeleton, ReportsShell } from "./_components/shell";
@@ -38,24 +39,37 @@ const ReportLibrary = async () => {
   if (!availability) return null;
   return (
     <>
-      <section className="flex flex-wrap items-center justify-between gap-5 border-accent-foreground border-b bg-primary/5 px-4 py-6 sm:px-6">
-        <div className="max-w-2xl">
-          <h2 className="font-semibold text-foreground-rich text-lg">
-            {translate("shareable.title")}
-          </h2>
-          <p className="mt-2 text-foreground-dimmed text-sm leading-6">
-            {translate("shareable.description")}
-          </p>
-          <p className="mt-2 text-foreground-dimmed text-xs">
-            {availability.scan
-              ? translate("dataStatus.asOf", {
-                  time: formatRelativeTime(availability.scan.createdAt, locale),
-                })
-              : translate("dataStatus.noScans")}
-          </p>
-        </div>
-        <ShareReport scan={availability.scan?.id ?? null} />
-      </section>
+      {availability.scan ? (
+        <section className="flex flex-wrap items-center justify-between gap-5 border-accent-foreground border-b bg-primary/5 px-4 py-6 sm:px-6">
+          <div className="max-w-2xl">
+            <h2 className="font-semibold text-foreground-rich text-lg">
+              {translate("shareable.title")}
+            </h2>
+            <p className="mt-2 text-foreground-dimmed text-sm leading-6">
+              {translate("shareable.description")}
+            </p>
+            <p className="mt-2 text-foreground-dimmed text-xs">
+              {availability.scan
+                ? translate("dataStatus.asOf", {
+                    time: formatRelativeTime(
+                      availability.scan.createdAt,
+                      locale,
+                    ),
+                  })
+                : translate("dataStatus.noScans")}
+            </p>
+          </div>
+          <ShareReport scan={availability.scan?.id ?? null} />
+        </section>
+      ) : (
+        <DashboardEmptyState
+          figure="report-printer"
+          title={translate("dataStatus.noScans")}
+          description={translate("shareable.description")}
+          compact
+          className="border-accent-foreground border-b"
+        />
+      )}
       <div className="border-accent-foreground border-b bg-background-rich px-4 py-4 sm:px-6">
         <h2 className="font-semibold text-foreground-rich text-lg">
           {translate("library.title")}

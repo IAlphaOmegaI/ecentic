@@ -42,3 +42,23 @@ Twenty drawings were created for this pass. Five already custom, precisely fitte
 - Re-run `hairline-create/look.mjs` after changing geometry. It validates rest, answer, 240px rest/answer, both intensity endpoints and both themes. Inspect the contact and motion sheets; passing source checks alone does not establish visual quality.
 
 The independent figure checks and reproducible generation/export scripts are recorded in `output/dashboard-hairline-2026-11-14/`. Actual route layout QA is recorded separately by the page owners.
+
+## Shopper questions empty state
+
+The Shopper questions empty state uses the custom `shopper-basket` figure. Its slotted,
+tapered shopping basket and two physical conversation cards connect the subject to shopping
+questions. The front card lifts toward the reader; the rear card gently parts after a 40ms
+delay. The fixed rest hit area, bounded 6–18-unit lift and shared 700ms easing keep the response
+stable. The existing `question-cards` header and loading figure remain unchanged.
+
+The source is `apps/web/public/hairline/custom/shopper-basket.js`; its neighboring provenance
+file records source/rest hashes. Captured geometry lives in
+`apps/web/src/components/hairline/rest/shopper-basket.json`. The `FeedbackState` consumer in
+`apps/web/src/components/discovery/discovery-client.tsx` keeps the illustration decorative
+with `aria-hidden`; its localized title and description carry the meaning. A suitable
+accessible description for exposed reuse is “Shopping basket with conversation cards.”
+No visible labels are part of the artwork.
+
+Validation and visual proof are in `output/shopper-basket-2026-11-15/`: the fixed bench's
+eight-state look and 16-frame motion sheet cover rest, pointer response, 240px presentation,
+both intensity ends and both themes. The fixed Hairline kernel and bench are unchanged.

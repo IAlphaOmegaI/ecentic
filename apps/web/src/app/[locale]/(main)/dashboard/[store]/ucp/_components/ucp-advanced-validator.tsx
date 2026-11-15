@@ -20,6 +20,8 @@ import { useTranslations } from "next-intl";
 import { type ReactNode, type SubmitEvent, useState } from "react";
 import { Motion } from "@/components/motion";
 import * as UcpAdvancedCheck from "@/server/app/intelligence/ucp/advanced-check";
+import { DashboardEmptyState } from "../../../_components/empty-state";
+import { DashboardLoadingState } from "../../../_components/loading-state";
 
 type Tone = "success" | "danger" | "warning" | "neutral" | "skip";
 
@@ -606,15 +608,12 @@ const AdvancedResults = ({
       <GradeCard grade={result.grade} detail={result.gradeDetail} />
 
       {sections.length === 0 ? (
-        <div className="border-accent-foreground border-t bg-background px-5 py-5">
-          <p className="font-normal text-foreground-dimmed text-sm">
-            {translate("emptyEndpoints")}
-            <span className="font-mono text-foreground">
-              {translate("emptyEndpointsField")}
-            </span>
-            {translate("emptyEndpointsSuffix")}
-          </p>
-        </div>
+        <DashboardEmptyState
+          title={`${translate("emptyEndpoints")}${translate("emptyEndpointsField")}${translate("emptyEndpointsSuffix")}`}
+          figure="checkout-workbench"
+          compact
+          className="border-accent-foreground border-t"
+        />
       ) : (
         <Accordion
           className="text-foreground"
@@ -770,6 +769,13 @@ export const UcpAdvancedValidator = ({
               </p>
             </form>
           </div>
+          {isChecking && (
+            <DashboardLoadingState
+              title={translate("action.running")}
+              figure="checkout-workbench"
+              compact={result !== null}
+            />
+          )}
           {result && <AdvancedResults result={result} />}
         </AccordionPanel>
       </AccordionItem>

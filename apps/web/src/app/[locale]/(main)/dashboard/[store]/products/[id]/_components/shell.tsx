@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  AlertCircleIcon,
-  ChevronLeftIcon,
-  FileSearchIcon,
-  LoaderIcon,
-} from "@zenncore/icons";
+import { ChevronLeftIcon, FileSearchIcon, LoaderIcon } from "@zenncore/icons";
 import {
   Avatar,
   AvatarFallback,
@@ -24,6 +19,7 @@ import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { type ReactNode, Suspense, useTransition } from "react";
 import { Link } from "@/i18n/navigation";
 import { formatRelativeTime } from "@/lib/date";
+import { DashboardEmptyState } from "../../../../_components/empty-state";
 import { Crosshair } from "../../../../_components/grid";
 import { DashboardHeaderFigure } from "../../../../_components/header-figure";
 import type { ProductDetailData } from "./product-detail";
@@ -31,7 +27,7 @@ import type { ProductDetailData } from "./product-detail";
 export const ProductShell = ({ children }: { children: ReactNode }) => {
   const translate = useTranslations("dashboard.productWorkspace");
   return (
-    <div className="min-w-0">
+    <div className="flex min-h-full min-w-0 flex-col">
       <h1 className="sr-only">{translate("title")}</h1>
       <nav
         className="border-accent-foreground border-b px-4 py-2 sm:px-6"
@@ -144,13 +140,13 @@ export const ProductMetrics = ({ data }: { data: ProductDetailData }) => {
   ).length;
   return (
     <section
-      className="relative border-accent-foreground border-b"
+      className="@container relative border-accent-foreground border-b"
       aria-label={translate("method.title")}
     >
       <Crosshair className="top-0 right-0 -translate-y-1/2" />
-      <div className="grid grid-cols-3 divide-x divide-accent-foreground">
-        <div className="min-w-0 px-4 py-4 sm:px-6">
-          <p className="min-h-10 font-medium text-foreground text-xs sm:min-h-5">
+      <div className="grid @2xl:grid-cols-3 grid-cols-2">
+        <div className="@2xl:col-span-1 col-span-2 min-w-0 border-accent-foreground @2xl:border-r border-b @2xl:border-b-0 px-4 py-4 sm:px-6">
+          <p className="font-medium text-foreground text-xs">
             {translate("metrics.rate")}
           </p>
           <p className="mt-2 font-semibold text-2xl text-foreground-rich tabular-nums sm:text-3xl">
@@ -170,8 +166,8 @@ export const ProductMetrics = ({ data }: { data: ProductDetailData }) => {
               : translate("unmeasured")}
           </p>
         </div>
-        <div className="min-w-0 px-4 py-4 sm:px-6">
-          <p className="min-h-10 font-medium text-foreground text-xs sm:min-h-5">
+        <div className="min-w-0 border-accent-foreground border-r px-4 py-4 sm:px-6">
+          <p className="font-medium text-foreground text-xs">
             {translate("metrics.comparisons")}
           </p>
           <p className="mt-2 font-semibold text-2xl text-foreground-rich tabular-nums sm:text-3xl">
@@ -182,7 +178,7 @@ export const ProductMetrics = ({ data }: { data: ProductDetailData }) => {
           </p>
         </div>
         <div className="min-w-0 px-4 py-4 sm:px-6">
-          <p className="min-h-10 font-medium text-foreground text-xs sm:min-h-5">
+          <p className="font-medium text-foreground text-xs">
             {translate("metrics.coverage")}
           </p>
           <p className="mt-2 font-semibold text-2xl text-foreground-rich tabular-nums sm:text-3xl">
@@ -225,32 +221,32 @@ export const ProductFeedback = ({ kind }: { kind: "error" | "missing" }) => {
     <div
       role="alert"
       aria-busy={pending}
-      className="flex min-h-80 flex-col items-center justify-center gap-4 border-accent-foreground border-b px-6 py-12 text-center"
+      className="flex min-w-0 flex-1 flex-col border-accent-foreground border-b"
     >
-      <AlertCircleIcon className="size-10 text-foreground-dimmed" />
-      <h2 className="font-heading font-semibold text-2xl text-foreground-rich">
-        {translate(`states.${kind}.title`)}
-      </h2>
-      <p className="max-w-md text-foreground-dimmed text-sm leading-6">
-        {translate(`states.${kind}.description`)}
-      </p>
-      {kind === "error" ? (
-        <Button
-          variant="soft"
-          color="neutral"
-          disabled={pending}
-          onClick={() => startTransition(() => router.refresh())}
-        >
-          {pending && (
-            <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
-          )}
-          {translate("action.secondary")}
-        </Button>
-      ) : (
-        <Button render={<Link href={`/dashboard/${store}/products`} />}>
-          {translate("action.tertiary")}
-        </Button>
-      )}
+      <DashboardEmptyState
+        title={translate(`states.${kind}.title`)}
+        description={translate(`states.${kind}.description`)}
+        figure="product-label"
+        scope="page"
+      >
+        {kind === "error" ? (
+          <Button
+            variant="soft"
+            color="neutral"
+            disabled={pending}
+            onClick={() => startTransition(() => router.refresh())}
+          >
+            {pending && (
+              <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
+            )}
+            {translate("action.secondary")}
+          </Button>
+        ) : (
+          <Button render={<Link href={`/dashboard/${store}/products`} />}>
+            {translate("action.tertiary")}
+          </Button>
+        )}
+      </DashboardEmptyState>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 export const StageSkeleton = () => (
   <div
     aria-hidden="true"
-    className="flex h-full flex-col gap-[3vh] p-[clamp(1.5rem,4vw,5rem)]"
+    className="flex h-full animate-pulse flex-col gap-[3vh] p-[clamp(1.5rem,4vw,5rem)] motion-reduce:animate-none"
   >
     <div className="h-[4vh] w-[30vw] rounded-sm bg-accent-foreground" />
     <div className="h-[28vh] w-[70vw] rounded-sm bg-accent-foreground" />
@@ -14,7 +14,7 @@ export const StageSkeleton = () => (
 export const BoardSkeleton = () => (
   <div
     aria-hidden="true"
-    className="flex h-full flex-col gap-[4vh] p-[clamp(1.5rem,4vw,5rem)]"
+    className="flex h-full animate-pulse flex-col gap-[4vh] p-[clamp(1.5rem,4vw,5rem)] motion-reduce:animate-none"
   >
     <div className="h-[18vh] w-[80vw] rounded-sm bg-accent-foreground" />
     <div className="flex min-h-0 flex-1 gap-[4vw]">

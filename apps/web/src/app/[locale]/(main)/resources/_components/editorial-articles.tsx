@@ -1,6 +1,7 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { getLocale, getMessages } from "next-intl/server";
+import { FeedbackState } from "@/components/feedback-state";
 import { Link } from "@/i18n/navigation";
 import * as Blog from "@/server/app/blog";
 
@@ -14,9 +15,12 @@ export const EditorialArticles = async () => {
 
   if (posts.length === 0)
     return (
-      <p className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
-        {copy.empty}
-      </p>
+      <FeedbackState
+        title={copy.empty}
+        figure="open-book"
+        surface="background"
+        className="border-accent-foreground border-b"
+      />
     );
 
   return (

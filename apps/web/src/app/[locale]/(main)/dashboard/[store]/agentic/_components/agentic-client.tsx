@@ -37,6 +37,7 @@ import {
   scoreTone,
 } from "@/server/app/intelligence/agentic-contract";
 import { StatusPill } from "../../../_components/grid";
+import { DashboardLoadingState } from "../../../_components/loading-state";
 import { CheckStatusMark } from "./marks";
 
 type LogLine = {
@@ -250,29 +251,37 @@ export const ScanRunner = ({
         </p>
       </div>
 
-      {(isScanning || phase) && (
-        <div className="flex flex-col gap-2 border-accent-foreground border-t p-4">
-          <div className="flex items-baseline justify-between gap-3">
-            <p className="min-w-0 truncate text-foreground text-sm">{phase}</p>
-            {total !== null && (
+      {(isScanning || phase) &&
+        (total === null ? (
+          <DashboardLoadingState
+            title={phase || translate("scan.starting")}
+            figure="agent-test-gauge"
+            compact
+            className="border-accent-foreground border-t"
+          />
+        ) : (
+          <div className="flex flex-col gap-2 border-accent-foreground border-t p-4">
+            <div className="flex items-baseline justify-between gap-3">
+              <p className="min-w-0 truncate text-foreground text-sm">
+                {phase}
+              </p>
               <p className="shrink-0 text-foreground-dimmed text-sm tabular-nums">
                 {translate("scan.progress", {
                   done: String(lines.length),
                   total: String(total),
                 })}
               </p>
-            )}
+            </div>
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-background-dimmed">
+              <div
+                className="h-full rounded-full bg-primary transition-[width] duration-200 motion-reduce:transition-none"
+                style={{
+                  width: `${total > 0 ? (lines.length / total) * 100 : 0}%`,
+                }}
+              />
+            </div>
           </div>
-          <div className="h-1.5 w-full overflow-hidden rounded-full bg-background-dimmed">
-            <div
-              className="h-full rounded-full bg-primary transition-[width] duration-200 motion-reduce:transition-none"
-              style={{
-                width: total ? `${(lines.length / total) * 100}%` : "5%",
-              }}
-            />
-          </div>
-        </div>
-      )}
+        ))}
 
       {lines.length > 0 && (
         <div

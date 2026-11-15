@@ -1,0 +1,25 @@
+{
+  "dashboard": {
+    "productWorkspace": {
+      "listing": {
+        "title": "已保存的商品信息",
+        "description": "查看目录中保存的商品信息。完整度仅表示字段是否已填写。",
+        "coverage": "已保存 {present} / {total} 个字段",
+        "missingValue": "未保存",
+        "missingImages": "尚未保存商品照片",
+        "imageHint": "请在目录数据源中添加清晰的商品照片。",
+        "missingDescription": "请添加介绍商品用途和主要特点的描述。",
+        "sourceHint": "请在目录数据源中修改这些信息，然后同步到 ecentic。",
+        "structuredSaved": "发布前请检查已保存的数据。店铺页面上的数据可能与此不同。",
+        "structuredMissing": "根据已保存的商品信息生成草稿，检查后再发布。",
+        "unreachable": "无法访问店铺，因此尚未核实已发布的数据。",
+        "action": {
+          "primary": "管理目录数据源",
+          "secondary": "查看完整描述",
+          "tertiary": "收起",
+          "quaternary": "查看结构化数据"
+        }
+      }
+    }
+  }
+}

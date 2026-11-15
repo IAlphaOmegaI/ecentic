@@ -5,6 +5,7 @@ import { AuthProvider } from "@/context/auth";
 import { redirect } from "@/i18n/navigation";
 import * as Authentication from "@/server/app/authentication";
 import { Environment } from "@/server/utils/environment";
+import { OnboardingLoading } from "./_components/loading-state";
 import { OnboardingLayout } from "./_components/onboarding-layout";
 
 const AuthenticatedOnboarding = async ({ children }: PropsWithChildren) => {
@@ -23,7 +24,13 @@ const AuthenticatedOnboarding = async ({ children }: PropsWithChildren) => {
 };
 
 export default ({ children }: PropsWithChildren) => (
-  <Suspense>
+  <Suspense
+    fallback={
+      <OnboardingLayout>
+        <OnboardingLoading />
+      </OnboardingLayout>
+    }
+  >
     <AuthenticatedOnboarding>{children}</AuthenticatedOnboarding>
   </Suspense>
 );

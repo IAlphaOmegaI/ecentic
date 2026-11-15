@@ -1,0 +1,44 @@
+{
+  "dashboard": {
+    "ucpComparison": {
+      "workbench": {
+        "sourceTitle": "您的店铺",
+        "sourceDescription": "选择要比较的商品目录。其结果将与竞争店铺的结果分开展示。",
+        "sameRequest": "使用同一个购买请求，在所有店铺执行相同搜索。",
+        "competitorDescription": "最多添加五家在 UCP 配置中提供 MCP 购物端点的店铺。",
+        "competitorLabel": "竞争店铺 {number, number}",
+        "slots": "{count, number} / 5",
+        "validation": {
+          "domain": "请输入店铺域名或 HTTP(S) URL。",
+          "request": "购买请求不能超过 1,000 个字符。",
+          "unique": "每一项请使用不同的店铺。"
+        },
+        "requestHint": "选填。留空时将执行一般商品搜索。",
+        "ready": "{count, plural, =0 {添加店铺即可开始。} other {本次比较包含 # 家店铺。}}",
+        "running": "正在读取店铺配置…",
+        "failure": {
+          "title": "无法比较这些店铺",
+          "description": "比较未能完成。请检查下方店铺结果，然后重试。",
+          "store": "无法读取兼容的购物端点。请检查该店铺的 UCP 配置。"
+        },
+        "log": {
+          "parameters": "搜索参数",
+          "profile": "已解析配置",
+          "searching": "搜索中",
+          "results": "{count, plural, other {返回了 # 件商品}}"
+        }
+      }
+    },
+    "ucpPlaygroundDashboard": {
+      "connect": {
+        "failure": {
+          "title": "无法连接到店铺",
+          "domain": "请输入店铺域名，然后重试。",
+          "unreachable": "请检查域名后重试。无法访问该店铺的 UCP 配置。",
+          "profile": "无法读取此店铺的有效 UCP 配置。请检查其结账设置。",
+          "shopping": "此店铺尚未在 UCP 配置中发布受支持的购物端点。"
+        }
+      }
+    }
+  }
+}

@@ -7,10 +7,10 @@ import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
-import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useOnboardingError } from "@/app/[locale]/(auth)/onboarding/_components/use-onboarding-error";
+import { FeedbackState } from "@/components/feedback-state";
 import { useRouter } from "@/i18n/navigation";
 import { formatElapsed } from "@/lib/date";
 import * as Competitor from "@/server/app/competitor";
@@ -223,54 +223,16 @@ export const AutoDetectTab = ({
     >
       <AnimatePresence mode="wait" initial={false}>
         {!isDetecting && logs.length === 0 && (
-          <motion.div
-            key="idle"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className={cn(
-              "m-auto flex size-full h-full flex-1 flex-col items-center justify-center p-4",
-              dashboard && "min-h-64 items-start px-4 py-6 sm:px-6",
-            )}
+          <FeedbackState
+            title={translate("title")}
+            description={translate("description")}
+            figure="research-telescope"
+            scope="page"
           >
-            {!dashboard && (
-              <Image
-                src="/images/auto-detect.png"
-                alt=""
-                aria-hidden
-                fill
-                className="pointer-events-none select-none object-contain opacity-10"
-              />
-            )}
-
-            <div className="relative z-20">
-              <h3
-                className={cn(
-                  "text-center font-medium text-2xl text-foreground",
-                  dashboard && "text-left font-semibold text-lg",
-                )}
-              >
-                {translate("title")}
-              </h3>
-              <p
-                className={cn(
-                  "relative text-center text-foreground-dimmed text-lg",
-                  dashboard && "mt-2 max-w-2xl text-left text-sm leading-6",
-                )}
-              >
-                {translate("description")}
-              </p>
-            </div>
-            <Button
-              color="primary"
-              type="button"
-              onClick={handleDetect}
-              className="relative z-20 mt-4"
-            >
-              {translate("action")} <RadarIcon />
+            <Button color="primary" type="button" onClick={handleDetect}>
+              {translate("action")} <RadarIcon aria-hidden className="size-4" />
             </Button>
-          </motion.div>
+          </FeedbackState>
         )}
 
         {(isDetecting || logs.length > 0) && (

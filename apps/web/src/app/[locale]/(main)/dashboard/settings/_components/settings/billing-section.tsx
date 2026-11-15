@@ -10,6 +10,7 @@ import { formatPlanPrice } from "@/lib/agent-api";
 import * as Payg from "@/server/app/billing/payg";
 import type * as PerformanceFee from "@/server/app/billing/performance-fee";
 import * as Subscription from "@/server/app/subscription";
+import { DashboardEmptyState } from "../../../_components/empty-state";
 
 type Props = {
   subscription: Subscription.Type | null;
@@ -698,9 +699,11 @@ export const BillingSection = ({
           </h3>
         </div>
         {invoices.length === 0 ? (
-          <div className="px-6 py-6 text-foreground-dimmed text-sm">
-            {translate("noInvoices")}
-          </div>
+          <DashboardEmptyState
+            title={translate("noInvoices")}
+            figure="report-printer"
+            compact
+          />
         ) : (
           <div className="divide-y divide-accent-foreground">
             {invoices.map((invoice) => {

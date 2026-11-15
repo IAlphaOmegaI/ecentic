@@ -1,0 +1,25 @@
+{
+  "dashboard": {
+    "productWorkspace": {
+      "listing": {
+        "title": "Ficha guardada",
+        "description": "Revisa los datos del producto guardados en tu catálogo. La cobertura solo indica qué campos están presentes.",
+        "coverage": "{present} de {total} campos guardados",
+        "missingValue": "Sin guardar",
+        "missingImages": "No hay fotos del producto guardadas",
+        "imageHint": "Añade fotos claras del producto en la fuente de tu catálogo.",
+        "missingDescription": "Añade una descripción con los usos y las características principales del producto.",
+        "sourceHint": "Modifica estos datos en la fuente de tu catálogo y después sincronízalos con ecentic.",
+        "structuredSaved": "Revisa los datos guardados antes de publicarlos. La página de la tienda puede mostrar otros datos.",
+        "structuredMissing": "Genera un borrador a partir de los datos guardados del producto y revísalo antes de publicarlo.",
+        "unreachable": "No se ha podido acceder a la tienda, así que no se han verificado los datos publicados.",
+        "action": {
+          "primary": "Gestionar fuente del catálogo",
+          "secondary": "Leer descripción completa",
+          "tertiary": "Ver menos",
+          "quaternary": "Revisar datos estructurados"
+        }
+      }
+    }
+  }
+}

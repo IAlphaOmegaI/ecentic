@@ -1,10 +1,10 @@
 "use client";
 
-import { AlertCircleIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { useTranslations } from "next-intl";
 import { type ComponentProps, type ReactNode, useTransition } from "react";
 import { useRouter } from "@/i18n/navigation";
+import { DashboardEmptyState } from "../../../_components/empty-state";
 import { Crosshair } from "../../../_components/grid";
 import { DashboardHeaderFigure } from "../../../_components/header-figure";
 
@@ -55,22 +55,20 @@ export const ResearchUnavailable = () => {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   return (
-    <div
-      role="alert"
-      className="flex flex-col items-start gap-3 px-4 py-8 sm:px-6"
-    >
-      <AlertCircleIcon aria-hidden className="size-6 text-warning" />
-      <h2 className="font-semibold text-lg">{translate("title")}</h2>
-      <p className="max-w-xl text-foreground-dimmed text-sm leading-6">
-        {translate("description")}
-      </p>
-      <Button
-        variant="soft"
-        disabled={pending}
-        onClick={() => startTransition(() => router.refresh())}
+    <div role="alert" aria-busy={pending}>
+      <DashboardEmptyState
+        title={translate("title")}
+        description={translate("description")}
+        figure="research-telescope"
       >
-        {translate("action.primary")}
-      </Button>
+        <Button
+          variant="soft"
+          disabled={pending}
+          onClick={() => startTransition(() => router.refresh())}
+        >
+          {translate("action.primary")}
+        </Button>
+      </DashboardEmptyState>
     </div>
   );
 };

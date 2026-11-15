@@ -17,12 +17,9 @@ import {
 } from "@zenncore/web/components/table";
 import { connection } from "next/server";
 import { getLocale, getTranslations } from "next-intl/server";
-import { CustomHairlineFigure } from "@/components/hairline/custom-figure";
-import {
-  type ProviderKey,
-  ProviderLogo,
-} from "@/components/marketing/provider-logo";
+import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { getPathname, Link } from "@/i18n/navigation";
+import { getTrafficBreakdown } from "@/lib/agent-traffic";
 import * as Tracking from "@/server/app/tracking";
 import {
   isSubscriptionRequired,
@@ -30,53 +27,8 @@ import {
 } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
 import { AgentVisitsChart } from "./agent-visits-chart";
+import { DashboardEmptyState } from "./empty-state";
 import { Crosshair } from "./grid";
-
-const SOURCES: {
-  name: string;
-  provider?: ProviderKey;
-  types: readonly string[];
-}[] = [
-  {
-    name: "ChatGPT / OpenAI",
-    provider: "chatgpt",
-    types: [
-      "chatgpt-referral",
-      "chatgpt-user",
-      "chatgpt-agent",
-      "gptbot",
-      "oai-searchbot",
-    ],
-  },
-  {
-    name: "Claude / Anthropic",
-    provider: "claude",
-    types: ["claude-referral", "claude-user", "claudebot", "claude-searchbot"],
-  },
-  {
-    name: "Perplexity",
-    provider: "perplexity",
-    types: [
-      "perplexity-referral",
-      "perplexity-user",
-      "perplexity-comet",
-      "perplexitybot",
-    ],
-  },
-  {
-    name: "Google",
-    provider: "google",
-    types: ["gemini-referral", "google-extended", "googlebot"],
-  },
-  {
-    name: "Microsoft Copilot",
-    provider: "copilot",
-    types: ["copilot-referral"],
-  },
-  { name: "You.com", types: ["you-referral"] },
-  { name: "Amazon", provider: "amazon", types: ["amazonbot"] },
-  { name: "ByteDance", types: ["bytespider"] },
-];
 
 export const AgentVisitsPanel = async ({
   params,
@@ -170,48 +122,15 @@ export const AgentTrafficReport = async ({
   });
   const formatCellCount = (count: number) =>
     count >= 1_000_000 ? compactNumber.format(count) : number.format(count);
-  const referralCount = summary.byAgentType
-    .filter((entry) => entry.agentType.endsWith("-referral"))
-    .reduce((total, entry) => total + entry.count, 0);
-  const probeCount = summary.byAgentType
-    .filter((entry) => entry.agentType === "probe-ping")
-    .reduce((total, entry) => total + entry.count, 0);
-  const requestCount = summary.total30d - referralCount - probeCount;
-  const knownTypes = new Set(SOURCES.flatMap((source) => source.types));
-  const sources = [
-    ...SOURCES,
-    {
-      name: translate("other"),
-      provider: undefined,
-      types: summary.byAgentType
-        .filter(
-          (entry) =>
-            !knownTypes.has(entry.agentType) &&
-            entry.agentType !== "probe-ping",
-        )
-        .map((entry) => entry.agentType),
-    },
-  ]
-    .map((source) => {
-      const entries = summary.byAgentType.filter((entry) =>
-        source.types.includes(entry.agentType),
-      );
-      const referrals = entries
-        .filter((entry) => entry.agentType.endsWith("-referral"))
-        .reduce((total, entry) => total + entry.count, 0);
-      const requests = entries
-        .filter((entry) => !entry.agentType.endsWith("-referral"))
-        .reduce((total, entry) => total + entry.count, 0);
-      return { ...source, referrals, requests };
-    })
-    .filter((source) => source.referrals + source.requests > 0)
-    .sort(
-      (first, second) =>
-        second.referrals + second.requests - first.referrals - first.requests,
-    );
+  const {
+    referrals: referralCount,
+    requests: requestCount,
+    probes: probeCount,
+    sources,
+  } = getTrafficBreakdown(summary.byAgentType, translate("other"));
 
   return (
-    <section className="min-w-0 bg-background">
+    <section className="flex min-w-0 flex-1 flex-col bg-background">
       <header className="flex flex-wrap items-start justify-between gap-3 px-4 py-5 sm:px-6">
         <div>
           <h2 className="font-semibold text-foreground-rich text-lg">
@@ -254,28 +173,21 @@ export const AgentTrafficReport = async ({
         </div>
       </dl>
       {sources.length === 0 ? (
-        <div className="flex flex-col items-center gap-6 px-4 py-10 sm:flex-row sm:px-6">
-          <div aria-hidden className="w-56 max-w-full shrink-0">
-            <CustomHairlineFigure name="analytics-recorder" label="" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <h3 className="font-semibold text-base text-foreground-rich">
-              {translate("empty.title")}
-            </h3>
-            <p className="mt-2 text-foreground-dimmed text-sm leading-6">
-              {translate("empty.description")}
-            </p>
-            <Button
-              variant="soft"
-              color="neutral"
-              className="mt-5"
-              render={<Link href="/dashboard/settings?tab=integrations" />}
-            >
-              {translate("action.primary")}
-              <ArrowRightIcon aria-hidden className="size-4" />
-            </Button>
-          </div>
-        </div>
+        <DashboardEmptyState
+          title={translate("empty.title")}
+          description={translate("empty.description")}
+          figure="analytics-recorder"
+          scope="page"
+        >
+          <Button
+            variant="soft"
+            color="neutral"
+            render={<Link href="/dashboard/settings?tab=integrations" />}
+          >
+            {translate("action.primary")}
+            <ArrowRightIcon aria-hidden className="size-4" />
+          </Button>
+        </DashboardEmptyState>
       ) : (
         <div className="grid min-w-0 xl:grid-cols-2">
           <div className="min-w-0">
@@ -375,8 +287,8 @@ export const AgentVisitsPanelSkeleton = () => (
     className="min-w-0 bg-background motion-reduce:[&_*]:animate-none"
   >
     <div className="px-4 py-5 sm:px-6">
-      <div className="h-6 w-40 animate-pulse bg-foreground/10" />
-      <div className="mt-2 h-5 w-96 max-w-full animate-pulse bg-foreground/5" />
+      <div className="h-6 w-40 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+      <div className="mt-2 h-5 w-96 max-w-full animate-pulse bg-foreground/5 motion-reduce:animate-none" />
     </div>
     <div className="grid grid-cols-2 border-accent-foreground border-y">
       {["referrals", "requests"].map((key) => (
@@ -384,9 +296,9 @@ export const AgentVisitsPanelSkeleton = () => (
           key={key}
           className="min-w-0 border-accent-foreground px-4 py-5 last:border-l sm:px-6"
         >
-          <div className="h-5 w-40 max-w-full animate-pulse bg-foreground/5" />
-          <div className="mt-2 h-9 w-20 animate-pulse bg-foreground/10" />
-          <div className="mt-2 h-5 w-60 max-w-full animate-pulse bg-foreground/5" />
+          <div className="h-5 w-40 max-w-full animate-pulse bg-foreground/5 motion-reduce:animate-none" />
+          <div className="mt-2 h-9 w-20 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+          <div className="mt-2 h-5 w-60 max-w-full animate-pulse bg-foreground/5 motion-reduce:animate-none" />
         </div>
       ))}
     </div>
@@ -396,7 +308,7 @@ export const AgentVisitsPanelSkeleton = () => (
           {["source", "referrals", "requests"].map((key) => (
             <div
               key={key}
-              className="h-4 w-16 max-w-full animate-pulse bg-foreground/5 first:col-span-2"
+              className="h-4 w-16 max-w-full animate-pulse bg-foreground/5 first:col-span-2 motion-reduce:animate-none"
             />
           ))}
         </div>
@@ -406,28 +318,28 @@ export const AgentVisitsPanelSkeleton = () => (
               key={key}
               className="flex items-center gap-3 border-accent-foreground border-b px-4 py-3 last:border-b-0 sm:px-6"
             >
-              <div className="size-9 shrink-0 animate-pulse rounded-lg bg-foreground/10" />
-              <div className="h-5 w-32 max-w-2/5 animate-pulse bg-foreground/5" />
-              <div className="ml-auto h-5 w-8 animate-pulse bg-foreground/10" />
-              <div className="ml-7 h-5 w-8 animate-pulse bg-foreground/10" />
+              <div className="size-9 shrink-0 animate-pulse rounded-lg bg-foreground/10 motion-reduce:animate-none" />
+              <div className="h-5 w-32 max-w-2/5 animate-pulse bg-foreground/5 motion-reduce:animate-none" />
+              <div className="ml-auto h-5 w-8 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+              <div className="ml-7 h-5 w-8 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
             </div>
           ),
         )}
       </div>
       <div className="min-w-0 border-accent-foreground border-t px-4 py-5 sm:px-6 xl:border-t-0 xl:border-l">
-        <div className="h-5 w-32 animate-pulse bg-foreground/10" />
-        <div className="mt-2 h-5 w-64 max-w-full animate-pulse bg-foreground/5" />
-        <div className="mt-4 h-5 w-64 max-w-full animate-pulse bg-foreground/5" />
+        <div className="h-5 w-32 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+        <div className="mt-2 h-5 w-64 max-w-full animate-pulse bg-foreground/5 motion-reduce:animate-none" />
+        <div className="mt-4 h-5 w-64 max-w-full animate-pulse bg-foreground/5 motion-reduce:animate-none" />
         <div className="mt-6 flex h-56 flex-col justify-between py-4">
           {["top", "middle", "bottom"].map((key) => (
             <div key={key} className="h-px w-full bg-accent-foreground" />
           ))}
         </div>
-        <div className="mt-3 h-5 w-full animate-pulse bg-foreground/5" />
+        <div className="mt-3 h-5 w-full animate-pulse bg-foreground/5 motion-reduce:animate-none" />
       </div>
     </div>
     <div className="border-accent-foreground border-t px-4 py-4 sm:px-6">
-      <div className="h-5 w-full max-w-4xl animate-pulse bg-foreground/5" />
+      <div className="h-5 w-full max-w-4xl animate-pulse bg-foreground/5 motion-reduce:animate-none" />
     </div>
   </section>
 );

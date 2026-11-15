@@ -7,11 +7,11 @@ import { Crosshair, Slot } from "../../../_components/grid";
 import { DashboardHeaderFigure } from "../../../_components/header-figure";
 
 export const OverviewActionsSkeleton = () => (
-  <div className="h-9 w-40 animate-pulse rounded-lg bg-foreground/10" />
+  <div className="h-9 w-40 animate-pulse rounded-lg bg-foreground/10 motion-reduce:animate-none" />
 );
 
 export const OverviewUpdatedSkeleton = () => (
-  <div className="h-4 w-48 animate-pulse bg-foreground/10" />
+  <div className="h-4 w-48 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
 );
 
 // The workspace frame is static; each data region streams independently.

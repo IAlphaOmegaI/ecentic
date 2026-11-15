@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircleIcon } from "@zenncore/icons";
+import { CircleInfoIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import {
@@ -22,6 +22,7 @@ import { useTranslations } from "next-intl";
 import { type ReactNode, useId, useState, useTransition } from "react";
 import { AnalysisText } from "@/components/analysis-text";
 import { useRouter } from "@/i18n/navigation";
+import { DashboardEmptyState } from "../../../_components/empty-state";
 import { Crosshair, Slot } from "../../../_components/grid";
 
 import { DashboardHeaderFigure } from "../../../_components/header-figure";
@@ -51,7 +52,7 @@ export const BrandShell = ({
         </div>
         <Slot>{actions}</Slot>
       </header>
-      <div className="relative min-w-0 border-accent-foreground border-y">
+      <div className="relative flex min-w-0 flex-1 flex-col border-accent-foreground border-y">
         <Crosshair className="top-0 left-0 -translate-y-1/2" />
         <Crosshair className="top-0 right-0 -translate-y-1/2" />
         <Slot>{content}</Slot>
@@ -65,8 +66,12 @@ export const BrandMethod = () => {
 
   return (
     <Popover>
-      <PopoverTrigger className="min-h-8 rounded-lg border-transparent bg-transparent px-2 py-1 font-medium text-foreground-dimmed text-xs hover:text-foreground-rich">
-        {translate("method.action.primary")}
+      <PopoverTrigger
+        aria-label={translate("method.action.primary")}
+        title={translate("method.action.primary")}
+        className="size-9 shrink-0 rounded-full border-transparent bg-transparent p-0 text-foreground-dimmed hover:bg-accent hover:text-foreground-rich"
+      >
+        <CircleInfoIcon aria-hidden className="size-5" />
       </PopoverTrigger>
       <PopoverPositioner align="end" className="z-50">
         <PopoverPopup className="w-80 max-w-(--available-width) bg-background-rich px-4 py-4">
@@ -177,21 +182,24 @@ export const BrandUnavailable = () => {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   return (
-    <div role="alert" className="px-6 py-10">
-      <AlertCircleIcon aria-hidden className="mb-4 size-7 text-warning" />
-      <h2 className="font-semibold text-foreground-rich text-xl">
-        {translate("title")}
-      </h2>
-      <p className="mt-2 text-foreground-dimmed text-sm leading-6">
-        {translate("description")}
-      </p>
-      <Button
-        className="mt-5"
-        disabled={pending}
-        onClick={() => startTransition(() => router.refresh())}
+    <div
+      role="alert"
+      aria-busy={pending}
+      className="flex min-w-0 flex-1 flex-col"
+    >
+      <DashboardEmptyState
+        title={translate("title")}
+        description={translate("description")}
+        figure="brand-megaphone"
+        scope="page"
       >
-        {translate("action.primary")}
-      </Button>
+        <Button
+          disabled={pending}
+          onClick={() => startTransition(() => router.refresh())}
+        >
+          {translate("action.primary")}
+        </Button>
+      </DashboardEmptyState>
     </div>
   );
 };

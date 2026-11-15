@@ -13,11 +13,11 @@ export const OverviewSummarySkeleton = () => (
           key={key}
           className="flex min-h-28 min-w-0 gap-3.5 px-5 py-4 sm:px-6"
         >
-          <div className="mt-0.5 size-7 shrink-0 animate-pulse rounded-sm bg-primary/15" />
+          <div className="mt-0.5 size-7 shrink-0 animate-pulse rounded-sm bg-primary/15 motion-reduce:animate-none" />
           <div className="min-w-0 flex-1">
-            <div className="h-5 w-4/5 animate-pulse bg-foreground/10" />
-            <div className="mt-1 h-5 w-full animate-pulse bg-foreground/5" />
-            <div className="mt-2 h-5 w-3/5 animate-pulse bg-primary/10" />
+            <div className="h-5 w-4/5 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+            <div className="mt-1 h-5 w-full animate-pulse bg-foreground/5 motion-reduce:animate-none" />
+            <div className="mt-2 h-5 w-3/5 animate-pulse bg-primary/10 motion-reduce:animate-none" />
           </div>
         </div>
       ))}

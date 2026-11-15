@@ -115,7 +115,7 @@ const SavedPreview = ({
     <div
       data-product-preview={provider}
       className={cn(
-        "flex h-full min-w-0 flex-col bg-background-rich text-foreground-rich",
+        "flex min-w-0 flex-1 flex-col bg-background-rich text-foreground-rich",
         provider === "google" && `${googleFont.variable} font-google`,
         provider === "chatgpt" && "font-sans",
       )}
@@ -292,7 +292,7 @@ export const ProductChannels = ({
           {translate("description")}
         </p>
       </header>
-      <div className="grid min-w-0 lg:grid-cols-2">
+      <div className="grid min-w-0 border-accent-foreground border-b lg:grid-cols-2">
         <div className="min-w-0 border-accent-foreground border-b lg:border-r lg:border-b-0">
           <Tabs
             defaultValue="storefront"
@@ -318,7 +318,7 @@ export const ProductChannels = ({
               <TabsPanel
                 key={provider}
                 value={provider}
-                className="min-w-0 flex-1"
+                className="flex min-w-0 flex-1 flex-col"
               >
                 <SavedPreview
                   product={product}
@@ -330,7 +330,7 @@ export const ProductChannels = ({
             ))}
           </Tabs>
         </div>
-        <div className="min-w-0 divide-y divide-accent-foreground">
+        <div className="grid min-w-0 divide-y divide-accent-foreground bg-background-rich lg:auto-rows-fr">
           <section className="px-4 py-5 sm:px-6">
             <h3 className="flex items-center gap-2 font-semibold text-foreground-rich">
               {sourceLogo && (
