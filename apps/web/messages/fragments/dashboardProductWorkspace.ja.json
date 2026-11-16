@@ -1,0 +1,75 @@
+{
+  "dashboard": {
+    "productWorkspace": {
+      "title": "商品詳細",
+      "description": "この商品の保存済み情報と、記録された AI 比較を確認します。",
+      "status": {
+        "active": "有効",
+        "draft": "下書き",
+        "archived": "アーカイブ済み",
+        "unknown": "ステータス不明"
+      },
+      "updated": "更新：{time}",
+      "latestComparison": "前回の比較：{time}",
+      "priceMissing": "価格が保存されていません",
+      "metrics": {
+        "rate": "シミュレーション勝率",
+        "comparisons": "比較回数",
+        "coverage": "保存済み項目の充足率",
+        "wins": "{total} 件中 {wins} 件で勝利",
+        "competitors": "{count, plural, other {# 件の競合商品と比較}}"
+      },
+      "method": {
+        "title": "数値について",
+        "description": "勝率は記録済みの商品比較から算出します。比較されていない商品やモデルには、測定済みの勝率はありません。充足率は、タイトル、説明、価格、画像、SKU、構造化データの 6 項目が保存されているかを示します。内容に説得力があるかどうかを評価するものではありません。"
+      },
+      "models": {
+        "title": "モデル別の結果",
+        "description": "記録されたシミュレーションの結果です。実際のストアへのアクセスを示すものではありません。",
+        "count": "{count, plural, other {比較 # 回}}"
+      },
+      "tabs": {
+        "overview": "比較",
+        "replay": "エージェントの判断",
+        "battlecard": "競合との比較",
+        "optimize": "商品情報"
+      },
+      "action": {
+        "primary": "AI でレビュー",
+        "secondary": "再試行",
+        "tertiary": "カタログを開く",
+        "quaternary": "さらに表示"
+      },
+      "navigation": {
+        "primary": "商品一覧に戻る",
+        "secondary": "適用待ちの最適化を確認"
+      },
+      "audit": {
+        "title": "AI によるコンテンツレビュー",
+        "description": "表現、商品情報、想定する顧客層との適合性についてレビューを依頼します。保存済みの商品情報は変更されません。",
+        "running": "商品をレビューしています…",
+        "failed": "AI レビューを完了できませんでした。保存済みの商品情報は変更されていません。",
+        "savedFields": "保存済みの商品項目",
+        "coverageDescription": "項目が保存されているかの確認と、AI によるコンテンツレビューは別のものです。",
+        "ready": "レビューが完了しました"
+      },
+      "unmeasured": "未比較",
+      "noReasoning": "この比較には、判断の理由を説明する文章が保存されていません。",
+      "states": {
+        "empty": {
+          "title": "まだ比較されていません",
+          "description": "この商品には、記録された AI 比較がありません。競合商品と比較すると、勝率が表示されます。"
+        },
+        "error": {
+          "title": "この商品を読み込めませんでした",
+          "description": "カタログのデータは保存されています。この商品をもう一度読み込んでください。"
+        },
+        "missing": {
+          "title": "商品が見つかりません",
+          "description": "この商品は削除されたか、別のストアに属している可能性があります。カタログを開いて商品を選んでください。"
+        }
+      },
+      "publishDescription": "{title}のタイトルと説明を最適化して生成し、接続先のストアに公開して現在の商品情報を置き換えます。"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "shopper-basket",
+  "subject": "Shopper questions empty state",
+  "meaning": "A shopping basket of conversation cards: the front question lifts while the card behind gently parts.",
+  "part": "question",
+  "answer": [
+    37.5,
+    30.65,
+    80.9
+  ],
+  "edge": [
+    75,
+    28,
+    99
+  ],
+  "scale": 1.9,
+  "figure": "/hairline/custom/shopper-basket.js",
+  "rest": "apps/web/src/components/hairline/rest/shopper-basket.json",
+  "sourceSha256": "d6bb372b4ae7288b38b4d63947ee7707f1c18e5ee2ee672c3b2c934c4e93de2d",
+  "restSha256": "cb6473200e695d96c75df59bab69556d488cb8b2d71cb4cf09d0121041a780e0",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; lift bounded to 6–18 world units; rear card response delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "Complete SSR rest geometry. Shared CustomHairlineFigure disables pointer code and enhancement for reduced motion.",
+  "accessibility": "Decorative in FeedbackState; adjacent localized title and description convey meaning. No visible figure caption.",
+  "validation": "output/shopper-basket-2026-11-15/validation.txt"
+}

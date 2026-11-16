@@ -1,0 +1,44 @@
+{
+  "dashboard": {
+    "ucpComparison": {
+      "workbench": {
+        "sourceTitle": "Votre boutique",
+        "sourceDescription": "Choisissez le catalogue à comparer. Ses résultats restent séparés de ceux des concurrents.",
+        "sameRequest": "Une même demande d’achat et une même recherche pour toutes les boutiques.",
+        "competitorDescription": "Ajoutez jusqu’à cinq boutiques dont les profils UCP déclarent des points de terminaison d’achat MCP.",
+        "competitorLabel": "Concurrent {number, number}",
+        "slots": "{count, number} / 5",
+        "validation": {
+          "domain": "Saisissez un domaine de boutique ou une URL HTTP(S).",
+          "request": "La demande d’achat doit contenir au maximum 1 000 caractères.",
+          "unique": "Utilisez une boutique différente pour chaque entrée."
+        },
+        "requestHint": "Facultatif. Laissez ce champ vide pour une recherche générale de produits.",
+        "ready": "{count, plural, =0 {Ajoutez une boutique pour commencer.} one {Votre boutique est sélectionnée.} many {# boutiques dans cette comparaison.} other {# boutiques dans cette comparaison.}}",
+        "running": "Lecture des profils des boutiques…",
+        "failure": {
+          "title": "Impossible de comparer ces boutiques",
+          "description": "La comparaison n’a pas pu aboutir. Vérifiez les résultats ci-dessous, puis réessayez.",
+          "store": "Impossible de lire un point de terminaison d’achat compatible. Vérifiez le profil UCP de cette boutique."
+        },
+        "log": {
+          "parameters": "Paramètres de recherche",
+          "profile": "Profil résolu",
+          "searching": "Recherche en cours",
+          "results": "{count, plural, one {# produit renvoyé} many {# produits renvoyés} other {# produits renvoyés}}"
+        }
+      }
+    },
+    "ucpPlaygroundDashboard": {
+      "connect": {
+        "failure": {
+          "title": "Impossible de se connecter à cette boutique",
+          "domain": "Saisissez un domaine de boutique, puis réessayez.",
+          "unreachable": "Vérifiez le domaine, puis réessayez. Son profil UCP est inaccessible.",
+          "profile": "Impossible de lire un profil UCP valide pour cette boutique. Vérifiez sa configuration de paiement.",
+          "shopping": "Cette boutique n’a pas publié de point de terminaison d’achat compatible dans son profil UCP."
+        }
+      }
+    }
+  }
+}

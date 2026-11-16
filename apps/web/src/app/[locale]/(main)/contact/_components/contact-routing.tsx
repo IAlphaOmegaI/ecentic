@@ -93,7 +93,7 @@ export const ContactRouting = ({ section }: ContactRouting.Props) => {
                   <MarketingEdgeCrosses edge="bottom" />
                 )}
                 <AccordionTrigger
-                  className="px-7 py-7 font-heading text-[clamp(1.5rem,2.2vw,2rem)] text-foreground-rich leading-tight hover:bg-background-dimmed focus-visible:-outline-offset-4 max-sm:px-4 max-sm:py-6"
+                  className="px-7 py-7 font-heading text-2xl xl:text-3xl text-foreground-rich leading-tight hover:bg-background-dimmed focus-visible:-outline-offset-4 max-sm:px-4 max-sm:py-6"
                   classList={{ trigger: { icon: "mr-0 size-4 shrink-0" } }}
                 >
                   <span className="flex min-w-0 items-center gap-4">

@@ -1,7 +1,13 @@
 "use client";
 
 import { ArrowRightIcon } from "@zenncore/icons";
-import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
+import {
+  Tab,
+  Tabs,
+  TabsIndicator,
+  TabsList,
+  TabsPanel,
+} from "@zenncore/web/components/tabs";
 import type { ReactNode } from "react";
 import { Plus } from "@/components/plus";
 import { SolutionRoadmap } from "../solution-roadmap";
@@ -46,20 +52,14 @@ const AccountNode = ({ label }: { label: string }) => (
 
 export const AgenciesAccess = ({ labels }: AgenciesAccess.Props) => (
   <Tabs defaultValue="single">
-    <div className="border-accent-foreground border-t bg-background-dimmed p-4 sm:px-8 sm:py-6">
-      <TabsList
-        aria-label={labels.label}
-        className="grid w-full grid-cols-1 gap-2 rounded-none border-0 sm:grid-cols-2"
-      >
+    <div className="overflow-x-auto overscroll-x-contain border-accent-foreground border-t bg-background-dimmed px-4 py-4 sm:px-8 sm:py-6">
+      <TabsList aria-label={labels.label} className="min-w-max">
+        <TabsIndicator />
         {[
           { id: "single", label: labels.single },
           { id: "separate", label: labels.separate },
         ].map((option) => (
-          <Tab
-            key={option.id}
-            value={option.id}
-            className="h-auto min-h-14 rounded-md border-0 px-4 py-4 text-base before:hidden hover:bg-background-rich focus-visible:-outline-offset-4 data-[active]:bg-primary-text data-selected:bg-primary-text"
-          >
+          <Tab key={option.id} value={option.id} className="text-sm">
             {option.label}
           </Tab>
         ))}

@@ -1,0 +1,74 @@
+{
+  "dashboard": {
+    "channels": {
+      "title": "渠道",
+      "description": "保持目录连接，查看提交状态，为 AI 购物助手准备好店铺。",
+      "source": {
+        "title": "目录连接",
+        "description": "查看来源目录及最近一次导入。",
+        "synced": "最近导入：{date}",
+        "never": "暂无导入记录",
+        "public": "通过公开目录导入。发布更改需要获得店铺授权的连接。",
+        "action": {
+          "primary": "管理连接"
+        }
+      },
+      "google": {
+        "title": "提交到 Google",
+        "description": "此店铺已保存的账号和商品记录。",
+        "action": {
+          "primary": "打开 Google"
+        },
+        "pending": "待处理",
+        "verified": "已验证的更新",
+        "issues": "需要处理",
+        "note": "更新通过验证，不代表 Google 已向买家展示该商品。"
+      },
+      "checkout": {
+        "title": "结账",
+        "description": "查看结账配置及其提供的商品。",
+        "action": {
+          "primary": "打开结账"
+        },
+        "scope": "结账配置适用于整个账号，商品列表仅包含此店铺的商品。"
+      },
+      "tools": {
+        "title": "店铺与开发者工具",
+        "description": "需要时，可查看某项功能的具体检查依据。",
+        "checks": "店铺检查",
+        "access": "目录访问",
+        "webmcp": "购物工具",
+        "playground": "测试结账",
+        "comparison": "比较配置"
+      },
+      "research": {
+        "title": "想查看目录排名？",
+        "description": "目录查询位于 AI 研究中，衡量特定市场和查询下的结果，不代表店铺已准备就绪。",
+        "action": {
+          "primary": "查看目录排名"
+        }
+      },
+      "status": {
+        "connected": "已连接",
+        "syncing": "正在导入",
+        "disconnected": "已断开",
+        "error": "需要处理",
+        "unavailable": "暂不可用",
+        "unsupported": "不支持此来源",
+        "setup": "需要设置",
+        "notConnected": "未连接"
+      },
+      "error": {
+        "title": "无法获取渠道信息",
+        "description": "未能加载已保存的连接记录，请稍后重试。",
+        "action": {
+          "primary": "重试"
+        }
+      },
+      "checks": {
+        "title": "目录访问",
+        "description": "检查购物助手可访问的公开文件和商品数据源。"
+      }
+    }
+  }
+}

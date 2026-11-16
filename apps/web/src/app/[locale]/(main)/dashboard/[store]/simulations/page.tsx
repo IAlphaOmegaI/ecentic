@@ -6,15 +6,20 @@ import { formatRelativeTime } from "@/lib/date";
 import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
 import * as Scan from "@/server/app/scan";
+import * as Simulation from "@/server/app/simulation";
 import { Environment } from "@/server/utils/environment";
 import { StatusPillSkeleton } from "../../_components/chrome-skeletons";
-import { StatusPill } from "../../_components/grid";
+import { summarizeComparisons } from "../research/_components/evidence";
+import { ResearchUnavailable } from "../research/_components/shell";
 import { SimulationsShell, SimulationsSkeleton } from "./_components/shell";
 import { SimulationsClient } from "./_components/simulations-client";
 
-type StoreParams = PageProps<"/dashboard/[store]/simulations">["params"];
+type StoreParams =
+  PageProps<"/[locale]/dashboard/[store]/simulations">["params"];
 
-export default ({ params }: PageProps<"/dashboard/[store]/simulations">) => (
+export default ({
+  params,
+}: PageProps<"/[locale]/dashboard/[store]/simulations">) => (
   <SimulationsShell
     statusPill={
       <Suspense fallback={<StatusPillSkeleton />}>
@@ -34,18 +39,25 @@ const LastRun = async ({ params }: { params: StoreParams }) => {
   const { store } = await params;
   const translate = await getTranslations("dashboard.shared.status");
   const latestScans = await resultify(() =>
-    unwrapResult(Scan.getLatest(Environment.SERVER, { limit: 1, store })),
+    unwrapResult(
+      Scan.getLatest(Environment.SERVER, {
+        limit: 1,
+        store,
+        status: "complete",
+      }),
+    ),
   );
-  const latestScan = latestScans.success ? (latestScans.data[0] ?? null) : null;
+  if (!latestScans.success) return null;
+  const latestScan = latestScans.data[0] ?? null;
 
   return (
-    <StatusPill tone={latestScan ? "success" : "neutral"}>
+    <p className="text-foreground-dimmed text-xs">
       {latestScan
         ? translate("lastSimulation", {
             time: formatRelativeTime(latestScan.createdAt, locale),
           })
         : translate("noSimulationsYet")}
-    </StatusPill>
+    </p>
   );
 };
 
@@ -55,33 +67,48 @@ const SimulationsData = async ({ params }: { params: StoreParams }) => {
 
   // Full lists feed the scan-setup roster (pick products/competitors before a
   // run); the skim stays a 10-row preview for the detection tab only.
-  const [products, skimmedProducts, competitors] = await Promise.all([
-    unwrapResult(Product.listForCurrentUser(Environment.SERVER, { store })),
-    unwrapResult(Product.skimForCurrentUser(Environment.SERVER, { store })),
-    unwrapResult(Competitor.listForCurrentUser(Environment.SERVER, { store })),
+  const [productResult, skimmedResult, competitorResult] = await Promise.all([
+    Product.listForCurrentUser(Environment.SERVER, { store }),
+    Product.skimForCurrentUser(Environment.SERVER, { store }),
+    Competitor.listForCurrentUser(Environment.SERVER, { store }),
   ]);
+  if (
+    !productResult.success ||
+    !skimmedResult.success ||
+    !competitorResult.success
+  )
+    return <ResearchUnavailable />;
+  const products = productResult.data;
+  const skimmedProducts = skimmedResult.data;
+  const competitors = competitorResult.data;
 
   const latestScans = await resultify(() =>
-    unwrapResult(Scan.getLatest(Environment.SERVER, { limit: 1, store })),
+    unwrapResult(
+      Scan.getLatest(Environment.SERVER, {
+        limit: 1,
+        store,
+        status: "complete",
+      }),
+    ),
   );
-  const latestCompletedScan = latestScans.success
-    ? (latestScans.data.find((scan) => scan.status === "complete") ?? null)
+  if (!latestScans.success) return <ResearchUnavailable />;
+  const latestCompletedScan = latestScans.data[0] ?? null;
+  const comparisons = latestCompletedScan
+    ? await Simulation.getForStore(Environment.SERVER, { store })
     : null;
-
-  const lastScan = await (async () => {
-    if (!latestCompletedScan) return null;
-    const result = await Scan.getShareData(Environment.SERVER, {
-      id: latestCompletedScan.id,
-    });
-    if (!result.success) return null;
-    return {
-      id: result.data.scan.id,
-      wins: result.data.scan.wins,
-      losses: result.data.scan.losses,
-      topFinding: result.data.scan.topFinding ?? null,
-      modelRates: result.data.modelRates,
-    };
-  })();
+  if (comparisons && !comparisons.success) return <ResearchUnavailable />;
+  const lastScan =
+    latestCompletedScan && comparisons?.success
+      ? {
+          id: latestCompletedScan.id,
+          ...summarizeComparisons(
+            comparisons.data.simulations,
+            latestCompletedScan.id,
+          ),
+          // Legacy findings can cover several stores; only scoped evidence belongs here.
+          topFinding: null,
+        }
+      : null;
 
   return (
     <SimulationsClient

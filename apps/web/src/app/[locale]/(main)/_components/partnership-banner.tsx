@@ -47,7 +47,7 @@ export const PartnershipBanner = async () => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={translate("partnershipBanner.visitEuPresence")}
-            className="flex size-14 shrink-0 translate-y-0 items-center justify-center rounded-xl border border-accent-foreground bg-background shadow-sm transition-all hover:-translate-y-0.5"
+            className="flex size-14 shrink-0 translate-y-0 items-center justify-center rounded-lg border border-accent-foreground bg-background shadow-sm transition-all hover:-translate-y-0.5"
           >
             <Image
               src="/partners/eu-presence.svg"

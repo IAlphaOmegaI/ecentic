@@ -1,0 +1,28 @@
+{
+  "dashboard": {
+    "catalogWorkflow": {
+      "reviewTitle": "Vérifiez votre importation",
+      "reviewHint": "{count, number} lignes de produits sont prêtes à être importées. Les lignes sans titre sont ignorées.",
+      "fieldsHint": "Ajoutez une colonne title ou name. Colonnes facultatives : description, price, currency, image, url, sku et id.",
+      "idsHint": "Les lignes dont l’id correspond à un produit existant le mettent à jour. Sans id, chaque importation crée un nouveau produit.",
+      "previewHint": "Les {count, number} premières lignes acceptées sont affichées.",
+      "readFailed": "Impossible de lire le fichier. Sélectionnez-le à nouveau, puis réessayez.",
+      "partial": "{imported, number} produits importés sur {total, number}. Vérifiez le catalogue avant d’importer à nouveau ce fichier.",
+      "unknownCurrency": "Devise non précisée",
+      "allWork": "Toutes les tâches",
+      "publishable": "Prêt à publier",
+      "manual": "Vérification manuelle",
+      "reviewLabel": "Filtrer les tâches",
+      "sourceTitle": "Source de votre catalogue",
+      "sourceHint": "Importez depuis cette source, vérifiez les données enregistrées, puis comparez ou améliorez la fiche.",
+      "action": {
+        "primary": "Vérifier le fichier",
+        "secondary": "Choisir un autre fichier",
+        "tertiary": "Confirmer l’importation",
+        "quaternary": "Ouvrir le catalogue"
+      },
+      "improveListing": "Améliorer la fiche",
+      "comparisonResults": "Résultats"
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "dashboard": {
+    "productWorkspace": {
+      "title": "Product details",
+      "description": "Review this product’s saved details and recorded AI comparisons.",
+      "status": {
+        "active": "Active",
+        "draft": "Draft",
+        "archived": "Archived",
+        "unknown": "Status unavailable"
+      },
+      "updated": "Updated {time}",
+      "latestComparison": "Last comparison {time}",
+      "priceMissing": "No price saved",
+      "metrics": {
+        "rate": "Simulated win rate",
+        "comparisons": "Comparisons",
+        "coverage": "Saved field coverage",
+        "wins": "Won {wins} of {total}",
+        "competitors": "{count, plural, one {Against # competitor} other {Against # competitors}}"
+      },
+      "method": {
+        "title": "About these numbers",
+        "description": "Win rates use recorded product comparisons. Products and models without comparisons have no measured rate. Field coverage counts six saved fields: title, description, price, image, SKU and structured data. It does not assess how persuasive the content is."
+      },
+      "models": {
+        "title": "Results by model",
+        "description": "Recorded simulations, not live shopping traffic.",
+        "count": "{count, plural, one {# comparison} other {# comparisons}}"
+      },
+      "tabs": {
+        "overview": "Comparisons",
+        "replay": "Agent decisions",
+        "battlecard": "Head-to-head",
+        "optimize": "Listing"
+      },
+      "action": {
+        "primary": "Review with AI",
+        "secondary": "Try again",
+        "tertiary": "Open catalog",
+        "quaternary": "Show more"
+      },
+      "navigation": {
+        "primary": "Back to products",
+        "secondary": "Review optimization queue"
+      },
+      "audit": {
+        "title": "AI content review",
+        "description": "Request a review of the wording, product facts and audience fit. Your saved listing stays unchanged.",
+        "running": "Reviewing the product…",
+        "failed": "The AI review could not be completed. Your saved product details are unchanged.",
+        "savedFields": "Saved product fields",
+        "coverageDescription": "Presence of saved fields is separate from the AI content review.",
+        "ready": "Review completed"
+      },
+      "unmeasured": "Not compared",
+      "noReasoning": "No written reasoning was saved for this comparison.",
+      "states": {
+        "empty": {
+          "title": "No comparisons yet",
+          "description": "This product has no recorded AI comparisons. Its win rate will appear after it has been compared with competitors."
+        },
+        "error": {
+          "title": "This product could not be loaded",
+          "description": "Your catalog is still saved. Try loading this product again."
+        },
+        "missing": {
+          "title": "Product not found",
+          "description": "This product may have been removed or may belong to another store. Open the catalog to choose a product."
+        }
+      },
+      "publishDescription": "Generate an optimized title and description for {title} and publish them to the connected store, replacing the current listing."
+    }
+  }
+}

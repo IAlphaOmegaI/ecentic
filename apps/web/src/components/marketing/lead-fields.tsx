@@ -102,12 +102,12 @@ export const createLeadFields = (copy: LeadCopy) => {
           popup: {
             root: cn(
               fonts,
-              "rounded-md bg-background-rich font-body text-foreground-rich",
+              "rounded-sm bg-background-rich font-body text-foreground-rich",
             ),
             arrow: { arrow: "bg-background-rich" },
           },
           selectItem: {
-            item: "first-of-type:rounded-t-xs last-of-type:rounded-b-xs data-[selected]:not-data-highlighted:text-primary-text data-highlighted:text-background-rich data-highlighted:before:bg-primary-text",
+            item: "first-of-type:rounded-t-sm last-of-type:rounded-b-sm data-[selected]:not-data-highlighted:text-primary-text data-highlighted:text-background-rich data-highlighted:before:bg-primary-text",
           },
         },
       },
@@ -123,12 +123,12 @@ export const createLeadFields = (copy: LeadCopy) => {
           popup: {
             root: cn(
               fonts,
-              "rounded-md bg-background-rich font-body text-foreground-rich",
+              "rounded-sm bg-background-rich font-body text-foreground-rich",
             ),
             arrow: { arrow: "bg-background-rich" },
           },
           selectItem: {
-            item: "first-of-type:rounded-t-xs last-of-type:rounded-b-xs data-[selected]:not-data-highlighted:text-primary-text data-highlighted:text-background-rich data-highlighted:before:bg-primary-text",
+            item: "first-of-type:rounded-t-sm last-of-type:rounded-b-sm data-[selected]:not-data-highlighted:text-primary-text data-highlighted:text-background-rich data-highlighted:before:bg-primary-text",
           },
         },
       },
@@ -158,12 +158,12 @@ export const createLeadFields = (copy: LeadCopy) => {
           popup: {
             root: cn(
               fonts,
-              "rounded-md bg-background-rich font-body text-foreground-rich",
+              "rounded-sm bg-background-rich font-body text-foreground-rich",
             ),
             arrow: { arrow: "bg-background-rich" },
           },
           selectItem: {
-            item: "first-of-type:rounded-t-xs last-of-type:rounded-b-xs data-[selected]:not-data-highlighted:text-primary-text data-highlighted:text-background-rich data-highlighted:before:bg-primary-text",
+            item: "first-of-type:rounded-t-sm last-of-type:rounded-b-sm data-[selected]:not-data-highlighted:text-primary-text data-highlighted:text-background-rich data-highlighted:before:bg-primary-text",
           },
         },
       },
@@ -184,12 +184,12 @@ export const createLeadFields = (copy: LeadCopy) => {
           popup: {
             root: cn(
               fonts,
-              "rounded-md bg-background-rich font-body text-foreground-rich",
+              "rounded-sm bg-background-rich font-body text-foreground-rich",
             ),
             arrow: { arrow: "bg-background-rich" },
           },
           selectItem: {
-            item: "first-of-type:rounded-t-xs last-of-type:rounded-b-xs data-[selected]:not-data-highlighted:text-primary-text data-highlighted:text-background-rich data-highlighted:before:bg-primary-text",
+            item: "first-of-type:rounded-t-sm last-of-type:rounded-b-sm data-[selected]:not-data-highlighted:text-primary-text data-highlighted:text-background-rich data-highlighted:before:bg-primary-text",
           },
         },
       },

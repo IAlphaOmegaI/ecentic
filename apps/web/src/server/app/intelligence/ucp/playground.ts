@@ -350,7 +350,11 @@ export type ResolvedShoppingService =
       transport: PlaygroundTransport;
       profileUrl: string;
     }
-  | { success: false; error: string };
+  | {
+      success: false;
+      code: "domain" | "unreachable" | "profile" | "shopping";
+      error: string;
+    };
 
 export const normalizePlaygroundStoreDomain = (storeUrl: string): string =>
   storeUrl
@@ -366,7 +370,11 @@ export const resolveShoppingService = async (
   const domain = normalizePlaygroundStoreDomain(storeUrl);
 
   if (!domain) {
-    return { success: false, error: "Please enter a store domain." };
+    return {
+      success: false,
+      code: "domain",
+      error: "Please enter a store domain.",
+    };
   }
 
   const businessProfileUrl = `https://${domain}/.well-known/ucp`;
@@ -381,6 +389,7 @@ export const resolveShoppingService = async (
   if (!discoveryResult.success) {
     return {
       success: false,
+      code: "unreachable",
       error: `Could not reach Business UCP profile at ${businessProfileUrl}. Make sure the store serves a valid /.well-known/ucp endpoint.`,
     };
   }
@@ -390,6 +399,7 @@ export const resolveShoppingService = async (
   if (!bodyResult.success) {
     return {
       success: false,
+      code: "profile",
       error: "Could not read business profile response body.",
     };
   }
@@ -399,7 +409,7 @@ export const resolveShoppingService = async (
 
   if (!parsed.success) {
     console.error(parsed.error);
-    return { success: false, error: parsed.error.message };
+    return { success: false, code: "profile", error: parsed.error.message };
   }
 
   const shoppingServices = parsed.data.ucp.services["dev.ucp.shopping"];
@@ -416,6 +426,7 @@ export const resolveShoppingService = async (
   if (!endpoint) {
     return {
       success: false,
+      code: "shopping",
       error:
         "No dev.ucp.shopping service found in the UCP profile. The store does not advertise MCP or REST shopping endpoints.",
     };

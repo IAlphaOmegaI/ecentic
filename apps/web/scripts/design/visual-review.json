@@ -237,9 +237,9 @@
         "apps/web/src/components/marketing/page.tsx",
         "apps/web/src/components/marketing/footer-columns.tsx",
         "apps/web/src/components/language-switcher.tsx",
-        "apps/web/src/components/marketing/ascii-wordmark.tsx",
-        "apps/web/public/images/ascii/tonal/wordmark.svg",
-        "apps/web/public/images/ascii/tonal/wordmark-mobile.svg",
+        "apps/web/src/components/marketing/evolving-ascii.tsx",
+        "apps/web/public/images/ascii/tonal/selection.svg",
+        "apps/web/src/components/navbar.module.css",
         "apps/web/src/components/motion.tsx",
         "apps/web/src/components/marketing/interactive/use-interactive.ts",
         "apps/web/src/hooks/use-document.ts",
@@ -258,13 +258,13 @@
           "id": "footer",
           "locale": "en",
           "width": 1135,
-          "criterion": "One continuous footer field spans links, tonal wordmark and legal content."
+          "criterion": "One continuous footer field spans links, tonal product-selection artwork and legal content. Keep one visible trademark; social links share the compact locale row."
         },
         {
           "id": "compact",
           "locale": "es",
           "width": 390,
-          "criterion": "Translated menus and footer stack without clipping controls, cutouts or the wordmark."
+          "criterion": "Translated menus and footer stack without clipping controls or artwork. The mobile menu's black blur fills the viewport, with a lower text fade; footer link dividers remain distinct from the accordion boundaries."
         }
       ]
     },

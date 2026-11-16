@@ -67,9 +67,19 @@ to the token URL → `{access_token}` (JWT, 60-minute lifetime). Handled by
 
 ## Dashboard
 
-`/dashboard/{store}/visibility` renders the audit report (streamed server
-component), the copyable feed URL, and the Global Catalog rank checker
-(query + market form). Registered in the sidebar as "Visibility".
+`/dashboard/{store}/channels` is the connection and delivery landing. It separates
+catalog import state, saved Google offer records, checkout setup, and developer
+tools. Connected or verified records do not establish shopper visibility.
+
+`/dashboard/{store}/visibility` remains available as Channels → Catalog access.
+It renders the public-file/readiness audit and copyable feed URL. The broader
+Is Agentic storefront report stays at `/dashboard/{store}/agentic` under
+Channels → Storefront checks. Both preserve the report's own scope.
+
+The Shopify Global Catalog query and market form now live separately at
+`/dashboard/{store}/research/catalog-rank` under AI research. A result describes
+the queried catalog, market and time; it is not a universal assistant rank.
+All prior dashboard route URLs remain available.
 
 ## Known follow-ups
 - GMC AI-specific attributes (`question_and_answer`, up to 30 pairs/product) —

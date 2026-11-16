@@ -49,10 +49,32 @@ space. The viewer should recognize a cart, bag, product or word without reading 
 - Do not repeat the same ambiguous texture across unrelated page heroes.
 - Keep texture subordinate where it shares a plane with essential information.
 
-The homepage hero, audience panel, integration arc and global closing CTA may use tonal artwork.
+The audience panel, integration arc and global closing CTA may use tonal artwork. In the latest
+15 November homepage correction, "graphics" means **custom HTML/CSS animation**, using native
+product documents and interface elements. It does not mean a generated 3D image, a Hairline
+drawing or an animated collage of sampled objects. Keep one coherent explanation and a complete
+static state; see the homepage recipe in the public-page skill. The current subject is a
+six-step shopping journey: shopper question, product feed, discovery, selection, merchant
+checkout and store sale. The 16 November revision extends the approved white-object scene into
+a repeating illustrated carousel, superseding the finite cup sequence and three-object mobile
+stack. Keep the feed as a distinct JSON object. Use a generated blue sneaker photo consistently
+through the discovery, chosen-product, checkout and storefront scenes; retain the surrounding
+native HTML and genuine provider marks. The blue écentic box remains visible as a hub, with
+curved connections highlighting its help with the feed, discovery and checkout. The individual
+objects retain their rounded corners and float directly on the blue hero, without a stage
+border or enclosing panel. Omit the redundant name beneath the box. Locale-format the shared
+sample price; preserve JSON keys and identifiers as code. Purchase happens on the merchant’s
+store in this illustrative sequence, not inside every AI provider.
+
+The 16 November follow-up requires automatic playback with no arrows, stage dots or play/pause
+controls. This supersedes the earlier manual controls and hover/focus pausing. Pause automatic
+advancement while offscreen or the document is hidden, and disable movement and advancement
+for reduced motion. Retain a meaningful static scene and the localized description of the
+complete journey. Keep the headline/CTA position stable on desktop and mobile.
 The global closing subject is now a tonal shopping bag; it is not the former generic Hairline
-basket. The footer identity is a large **dimensional tonal-dot wordmark** with a drawing/reveal
-behavior. It remains readable before enhancement and under reduced motion.
+basket. The footer retains a small trademark and a separate **tonal product-selection graphic**
+with a finite reveal. The 15 November review replaces the repeated oversized wordmark; the
+graphic remains recognizable before enhancement and under reduced motion.
 
 Blog can pair a line-drawn book with ASCII behind it. Sector artwork can pair a relevant sampled
 product with a separate line-drawn object when they explain different things. Do not place two

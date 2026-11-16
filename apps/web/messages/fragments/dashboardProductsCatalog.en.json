@@ -1,0 +1,69 @@
+{
+  "dashboard": {
+    "products": {
+      "catalog": {
+        "title": "Products",
+        "description": "Find a product, inspect its results, and improve the fields that matter.",
+        "tableLabel": "Product catalog",
+        "columns": "Columns",
+        "resetColumns": "Reset columns",
+        "sortBy": "Sort by {field}",
+        "noSku": "No SKU",
+        "unmeasured": "Not compared",
+        "rate": "AI win rate: {value}%",
+        "coverage": "Field coverage: {value}%",
+        "coverageHint": "Presence of six catalog fields: title, description, price, image, SKU and structured data. This is not an AI quality review.",
+        "comparisons": "{count, plural, one {# comparison} other {# comparisons}}",
+        "results": "Products: {count, number}",
+        "range": "{from}–{to} of {total}",
+        "summary": {
+          "imported": "In your catalog",
+          "importedHint": "All imported products",
+          "compared": "Compared by AI",
+          "comparedHint": "At least one recorded comparison",
+          "incomplete": "Incomplete listings",
+          "incompleteHint": "One or more of six catalog fields missing",
+          "unavailable": "Catalog totals are temporarily unavailable. You can still browse the list below."
+        },
+        "fields": {
+          "product": "Product",
+          "sku": "SKU",
+          "price": "Price",
+          "currency": "Currency",
+          "winRate": "AI win rate",
+          "quality": "Field coverage",
+          "updatedAt": "Updated"
+        },
+        "selection": {
+          "all": "Select all products on this page",
+          "product": "Select {product}",
+          "count": "{count, number} selected on this page",
+          "hint": "Select products to export their data."
+        },
+        "action": {
+          "add": "Add products",
+          "clear": "Clear search and filters",
+          "retry": "Try again",
+          "export": "Export selected",
+          "deselect": "Clear selection",
+          "open": "Open {product}"
+        },
+        "states": {
+          "empty": {
+            "title": "Your catalog starts here",
+            "description": "Import your products to see their listing details and AI comparison results in one place."
+          },
+          "noMatches": {
+            "title": "No matching products",
+            "description": "Try a different search or remove a filter to see more of your catalog."
+          },
+          "error": {
+            "title": "Your products could not load",
+            "description": "Your catalog is still saved. Try loading the list again."
+          }
+        },
+        "loading": "Loading products…"
+      }
+    }
+  }
+}

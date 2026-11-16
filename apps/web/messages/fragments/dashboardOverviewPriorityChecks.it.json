@@ -1,0 +1,16 @@
+{
+  "dashboard": {
+    "overview": {
+      "priorityChecks": {
+        "incomplete": {
+          "title": "Completa le informazioni sui prodotti",
+          "detail": "{count, plural, one {# scheda prodotto è incompleta.} many {# schede prodotto sono incomplete.} other {# schede prodotto sono incomplete.}}"
+        },
+        "unavailable": {
+          "title": "Le opportunità di miglioramento non sono disponibili",
+          "description": "Apri Ottimizza per consultare i controlli disponibili per questo negozio."
+        }
+      }
+    }
+  }
+}

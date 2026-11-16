@@ -1,12 +1,12 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
 import * as BrandSnapshot from "@/server/app/brand-snapshot";
-import { unwrapEntitled } from "@/server/utils/entitlement";
+import { isSubscriptionRequired } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
-import { RefreshBrand } from "./_components/refresh-brand";
 import { BrandEmpty, BrandReport, FailedNote } from "./_components/report";
 import { RunningBanner } from "./_components/running-banner";
-import { BrandShell, BrandSkeleton } from "./_components/shell";
+import { BrandShell, BrandUnavailable } from "./_components/shell";
+import { BrandSkeleton } from "./_components/skeletons";
 
 // Brand.analyze posts against this segment and its `after()` continuation runs
 // ~20 audited AI queries plus a synthesis pass — well past the default
@@ -18,28 +18,35 @@ type StoreParams = PageProps<"/[locale]/dashboard/[store]/brand">["params"];
 const BrandContent = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
-  // Renders beneath the paywall overlay for accounts without a plan — see
-  // `unwrapEntitled`.
-  const overview = unwrapEntitled(
-    await BrandSnapshot.overviewForStore(Environment.SERVER, { store }),
-  );
-  if (!overview) return null;
+  const overview = await BrandSnapshot.overviewForStore(Environment.SERVER, {
+    store,
+  });
+  if (!overview.success) {
+    if (isSubscriptionRequired(overview.error)) return null;
+    return <BrandUnavailable />;
+  }
 
   return (
     <>
-      {overview.running && <RunningBanner store={store} />}
-      {!overview.running && overview.failed && (
-        <FailedNote error={overview.failed.error} />
-      )}
-      {overview.complete?.report ? (
-        <BrandReport
-          report={overview.complete.report}
-          analyzedAt={overview.complete.updatedAt}
+      {overview.data.running && (
+        <RunningBanner
+          store={store}
+          hasReport={Boolean(overview.data.complete?.report)}
         />
-      ) : overview.running ? (
-        <BrandSkeleton />
-      ) : (
-        <BrandEmpty params={params} />
+      )}
+      {!overview.data.running &&
+        (overview.data.failed || overview.data.interrupted) && (
+          <FailedNote hasReport={Boolean(overview.data.complete?.report)} />
+        )}
+      {overview.data.complete?.report ? (
+        <BrandReport
+          store={store}
+          running={Boolean(overview.data.running)}
+          report={overview.data.complete.report}
+          analyzedAt={overview.data.complete.updatedAt}
+        />
+      ) : overview.data.running ? null : (
+        <BrandEmpty store={store} />
       )}
     </>
   );
@@ -47,11 +54,6 @@ const BrandContent = async ({ params }: { params: StoreParams }) => {
 
 export default ({ params }: PageProps<"/[locale]/dashboard/[store]/brand">) => (
   <BrandShell
-    actions={
-      <Suspense>
-        <RefreshBrand params={params} />
-      </Suspense>
-    }
     content={
       <Suspense fallback={<BrandSkeleton />}>
         <BrandContent params={params} />

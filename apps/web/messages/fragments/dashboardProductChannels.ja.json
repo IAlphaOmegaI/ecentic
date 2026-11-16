@@ -1,0 +1,76 @@
+{
+  "dashboard": {
+    "productChannels": {
+      "tab": "商品情報とチャネル",
+      "title": "チャネル別の商品表示",
+      "description": "保存済みの商品情報をプレビューし、接続状況とフィードの記録を確認できます。",
+      "preview": {
+        "title": "保存済みの商品情報のプレビュー",
+        "description": "保存データを使った表示例です。実際の掲載位置やレイアウトとは異なる場合があります。",
+        "storefront": "ストア",
+        "google": "Google",
+        "chatgpt": "ChatGPT",
+        "imageMissing": "商品画像が保存されていません",
+        "descriptionMissing": "説明が保存されていません",
+        "priceMissing": "価格が保存されていません",
+        "storefrontNote": "取り込んだ商品情報",
+        "googleNote": "ショッピング検索結果に表示する商品情報",
+        "chatgptNote": "アシスタントの商品カードに表示する商品情報",
+        "sample": "プレビュー",
+        "googleMode": "AI モード",
+        "details": "この商品について",
+        "store": "ショップ",
+        "query": "{product}を見せて",
+        "action": {
+          "primary": "サイトを見る"
+        }
+      },
+      "source": {
+        "title": "カタログの接続",
+        "unknown": "接続の詳細を取得できません",
+        "unknownDescription": "連携設定を開いてカタログの接続を確認してください。",
+        "lastSync": "カタログ同期",
+        "productSync": "商品同期",
+        "notSynced": "同期の記録はありません",
+        "status": "接続状況",
+        "error": "要確認",
+        "unavailable": "状況を取得できません",
+        "connected": "接続済み",
+        "syncing": "カタログを同期中",
+        "disconnected": "未接続",
+        "publicImport": "公開カタログの取り込み",
+        "platform": {
+          "feed": "商品フィード",
+          "csv": "CSV取り込み",
+          "unknown": "カタログの取得元"
+        }
+      },
+      "google": {
+        "title": "Googleフィードの記録",
+        "description": "保存済みの同期記録であり、Googleの現在の状態を確認した結果ではありません。「上書きを確認」は補足更新の反映を確認した状態で、Googleでの商品の表示を保証するものではありません。",
+        "unavailable": "フィードの記録を読み込めませんでした。Google Shoppingを開いて接続を確認してください。",
+        "unsupported": "このカタログの取得元では、Googleとの補足データの同期は利用できません。",
+        "notConnected": "このカタログはGoogle Merchant Centerに接続されていません。",
+        "setup": "商品データを送信するには、接続の設定が必要です。",
+        "ready": "接続の準備はできています。この商品のフィード記録はまだ保存されていません。",
+        "pending": "処理待ち",
+        "live": "上書きを確認",
+        "disapproved": "不承認",
+        "error": "更新できませんでした",
+        "lastSent": "送信：{time}",
+        "lastChecked": "確認：{time}",
+        "offer": "オファー {id}"
+      },
+      "assistant": {
+        "title": "アシスタントによる商品発見",
+        "description": "プレビューが表示されても、ChatGPTがこの商品をインデックスに登録したり、おすすめしたりしたことにはなりません。商品情報を充実させ、アシスタントが商品を見つけるための公開リソースを確認してください。"
+      },
+      "action": {
+        "primary": "接続を管理",
+        "secondary": "Google Shoppingを開く",
+        "tertiary": "ストアを表示",
+        "quaternary": "商品発見の設定を確認"
+      }
+    }
+  }
+}

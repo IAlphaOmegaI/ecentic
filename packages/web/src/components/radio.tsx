@@ -20,7 +20,7 @@ export const Radio = ({
     >
       <RadioPrimitive.Indicator
         className={createClassName(
-          "flex before:size-2 before:rounded-full before:bg-gray-50 data-unchecked:hidden",
+          "flex before:size-2 before:rounded-full before:bg-background-rich data-unchecked:hidden",
           classList?.indicator,
         )}
       />

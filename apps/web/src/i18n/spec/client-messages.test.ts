@@ -94,7 +94,10 @@ const SCOPES: ReadonlyArray<{
       ...entriesUnder(join(APP, "(main)/techstars")),
     ],
   },
-  { scope: "dev", entries: entriesUnder(join(APP, "(main)/dev")) },
+  {
+    scope: "dev",
+    entries: entriesUnder(join(APP, "(main)/dev")),
+  },
   {
     scope: "dashboard",
     entries: entriesUnder(join(APP, "(main)/dashboard")),

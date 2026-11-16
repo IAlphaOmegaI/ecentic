@@ -29,7 +29,7 @@ const Chip = ({
 
   return (
     <span
-      className={`rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em] ${className}`}
+      className={`rounded-full px-2 py-0.5 font-semibold text-xs ${className}`}
     >
       {children}
     </span>

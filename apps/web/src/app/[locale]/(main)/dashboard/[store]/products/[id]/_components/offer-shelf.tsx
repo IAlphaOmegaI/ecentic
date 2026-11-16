@@ -7,12 +7,10 @@ import {
   AvatarImage,
 } from "@zenncore/web/components/avatar";
 import Image from "next/image";
-import { useLocale, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { formatPrice } from "@/lib/currency";
 import { formatRelativeTime } from "@/lib/date";
 import * as Offers from "@/server/app/intelligence/offers";
-import { Crosshair, SectionKicker } from "../../../../_components/grid";
 
 export namespace OfferShelf {
   export type Props = {
@@ -36,6 +34,14 @@ export namespace OfferShelf {
  */
 export const OfferShelf = ({ store, product }: OfferShelf.Props) => {
   const locale = useLocale();
+  const formatter = useFormatter();
+  const formatPrice = (value: string, currency: string | null) =>
+    formatter.number(
+      Number(value),
+      currency && /^[A-Za-z]{3}$/.test(currency)
+        ? { style: "currency", currency: currency.toUpperCase() }
+        : { maximumFractionDigits: 2 },
+    );
 
   const translate = useTranslations("dashboard.products.detail.shelf");
   const [offers, setOffers] = useState<Offers.SellerOffer[] | null>(null);
@@ -58,14 +64,9 @@ export const OfferShelf = ({ store, product }: OfferShelf.Props) => {
 
   return (
     <section className="bg-background-rich">
-      <div className="relative flex items-end justify-between border-accent-foreground border-y p-4">
-        <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-        <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-        <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+      <div className="relative flex items-end justify-between border-accent-foreground border-b px-4 py-5 sm:px-6">
         <div>
-          <SectionKicker>{translate("kicker")}</SectionKicker>
-          <p className="mt-2 font-semibold text-foreground-rich text-lg">
+          <p className="font-heading font-semibold text-foreground-rich text-xl">
             {translate("title")}
           </p>
           <p className="mt-1 max-w-2xl text-foreground-dimmed text-sm">
@@ -74,7 +75,7 @@ export const OfferShelf = ({ store, product }: OfferShelf.Props) => {
         </div>
       </div>
 
-      <ul className="divide-y divide-accent-foreground">
+      <ul className="divide-y divide-accent-foreground border-accent-foreground border-b">
         {offers.map((offer) => {
           // Movement is only meaningful once the same seller has been seen
           // twice; a first observation has nothing to have moved from.
@@ -86,9 +87,9 @@ export const OfferShelf = ({ store, product }: OfferShelf.Props) => {
           return (
             <li
               key={offer.sellerDomain ?? offer.seller}
-              className="flex items-center gap-3 p-4"
+              className="flex flex-wrap items-center gap-3 px-4 py-4 sm:px-6"
             >
-              <Avatar className="size-10 shrink-0 rounded-md bg-background-dimmed">
+              <Avatar className="size-10 shrink-0 rounded-lg bg-background-dimmed">
                 <AvatarImage
                   src={offer.imageUrl ?? "/images/fallback.png"}
                   alt={offer.seller}
@@ -127,7 +128,7 @@ export const OfferShelf = ({ store, product }: OfferShelf.Props) => {
                 </p>
               </div>
 
-              <div className="shrink-0 text-right">
+              <div className="ml-auto text-right">
                 <p className="font-medium text-foreground-rich tabular-nums">
                   {offer.price === null
                     ? "—"
@@ -140,7 +141,7 @@ export const OfferShelf = ({ store, product }: OfferShelf.Props) => {
                       // A rival CUTTING its price is the bad news for the
                       // merchant, so the colours track their interest rather
                       // than the arithmetic sign.
-                      delta < 0 ? "text-error" : "text-success",
+                      delta < 0 ? "text-error-dimmed" : "text-success-dimmed",
                     )}
                   >
                     {translate(delta < 0 ? "down" : "up", {

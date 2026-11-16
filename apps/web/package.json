@@ -23,7 +23,8 @@
     "design:source": "bun scripts/design/check-source.ts",
     "design:runtime": "bun scripts/design/check-runtime.ts",
     "design:review": "bun scripts/design/check-review.ts",
-    "design:test": "bun test scripts/design"
+    "design:test": "bun test scripts/design",
+    "design:theme": "bun scripts/design/check-theme.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.48",

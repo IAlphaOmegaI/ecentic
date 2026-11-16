@@ -50,6 +50,7 @@ bun add @zenncore/web
 - [Tabs](./tabs.md) - Tabbed panels
 
 ### Navigation
+- [Command](./command.md) - Keyboard search and command lists
 - [Context Menu](./context-menu.md) - Right-click menus
 - [Menu](./menu.md) - Dropdown menus
 - [Navigation Menu](./navigation-menu.md) - Nav with dropdowns

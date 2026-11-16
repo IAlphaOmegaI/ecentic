@@ -17,7 +17,7 @@ export const Meter = ({
       {children}
       <MeterPrimitive.Track
         className={createClassName(
-          "h-1 overflow-hidden bg-background-dimmed shadow-[inset_0_0_0_1px] shadow-accent-foreground",
+          "h-1 overflow-hidden bg-background-dimmed inset-ring inset-ring-accent-foreground",
           classList?.track,
         )}
       >

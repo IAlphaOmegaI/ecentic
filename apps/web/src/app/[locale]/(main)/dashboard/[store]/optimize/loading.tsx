@@ -1,10 +1,7 @@
-import { OptimizeSkeleton } from "./_components/shell";
+import { OptimizeShell, OptimizeSkeleton } from "./_components/shell";
 
-// Mirrors the optimize page shell so navigation lands without layout shift.
 export default () => (
-  <div className="flex flex-col">
-    <div className="mx-8 border-accent-foreground border-x">
-      <OptimizeSkeleton />
-    </div>
-  </div>
+  <OptimizeShell>
+    <OptimizeSkeleton />
+  </OptimizeShell>
 );

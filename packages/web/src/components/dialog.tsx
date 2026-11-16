@@ -41,7 +41,7 @@ export const DialogPopup = ({
     <DialogPrimitive.Portal container={container} keepMounted={keepMounted}>
       <DialogPrimitive.Backdrop
         className={createClassName(
-          "fixed inset-0 bg-black opacity-20 transition-all duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 dark:opacity-70",
+          "fixed inset-0 bg-emphasis opacity-20 transition-all duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 dark:opacity-70",
           classList?.backdrop,
         )}
       />

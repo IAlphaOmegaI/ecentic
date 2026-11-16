@@ -1,0 +1,32 @@
+{
+  "name": "agent-test-gauge",
+  "subject": "agentic",
+  "meaning": "A readiness test meter with a probe: sweep the dial while examining the product connector.",
+  "part": "dial",
+  "answer": [
+    43,
+    39,
+    58
+  ],
+  "bounds": [
+    [
+      -13,
+      -3,
+      0
+    ],
+    [
+      135,
+      91,
+      119
+    ]
+  ],
+  "scale": 1.8,
+  "figure": "/hairline/custom/agent-test-gauge.js",
+  "rest": "apps/web/src/components/hairline/rest/agent-test-gauge.json",
+  "sourceSha256": "f4ee79113e38b4ba90a48c952bc6088881a0f2c77675eb99d9ef978a03441e0f",
+  "restSha256": "8b884ed34c3ab30d104be9d2d66e6026b6c3ffa26a4386c54a952960489ca7eb",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/agent-test-gauge.validation.txt"
+}

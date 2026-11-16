@@ -1,0 +1,94 @@
+{
+  "dashboard": {
+    "optimizeWorkspace": {
+      "title": "Optimizar",
+      "description": "Mejora tus fichas a partir de las comparaciones. Revisa los datos antes de publicar.",
+      "action": {
+        "primary": "Generar y publicar",
+        "secondary": "Revisar ficha",
+        "tertiary": "Revisar calidad de datos",
+        "quaternary": "Volver a intentar"
+      },
+      "queue": {
+        "title": "Próximas mejoras de las fichas",
+        "description": "Empieza por los productos con menor tasa de victoria simulada. Abre un producto para revisar los resultados.",
+        "sample": "Esta lista usa sugerencias de diagnóstico guardadas. En Calidad de datos encontrarás la revisión completa del catálogo activo.",
+        "count": "{count, plural, one {# producto mostrado} many {# productos mostrados} other {# productos mostrados}}"
+      },
+      "search": "Buscar productos o SKU…",
+      "tabs": {
+        "queue": "Por revisar",
+        "published": "Publicadas",
+        "dismissed": "Descartadas"
+      },
+      "summary": {
+        "candidates": "Listos para publicar",
+        "manual": "Requieren cambios manuales",
+        "published": "Publicaciones registradas"
+      },
+      "row": {
+        "rate": "Tasa de victoria simulada",
+        "manual": "Cambios manuales",
+        "ready": "Publicación disponible",
+        "context": "Modelos registrados: {models}"
+      },
+      "method": {
+        "title": "Cómo funciona esta lista",
+        "description": "Los candidatos tienen una tasa de victoria registrada inferior al 55%. Se excluyen los productos descartados y las fichas publicadas en los últimos 14 días. Un candidato no es un borrador guardado. Generar y publicar crea un texto nuevo y sustituye inmediatamente la ficha de la tienda. Estas sugerencias no predicen ventas ni futuras tasas de victoria."
+      },
+      "states": {
+        "empty": {
+          "title": "Nada pendiente de revisión",
+          "description": "No hay sugerencias para las fichas de esta tienda. Revisa los datos de producto o ejecuta una comparación para encontrar la próxima mejora."
+        },
+        "filtered": {
+          "title": "No hay productos que coincidan",
+          "description": "Prueba con otro nombre de producto o SKU."
+        },
+        "error": {
+          "title": "No se ha podido cargar la lista",
+          "description": "Los datos de tus productos siguen guardados. Vuelve a cargar la lista."
+        }
+      },
+      "confirmation": {
+        "title": "¿Publicar una ficha nueva?",
+        "description": "Se generarán un título y una descripción para {title} y se publicarán en tu tienda conectada. Sustituirán la ficha actual sin una revisión de borrador adicional.",
+        "bulkTitle": "¿Publicar cambios en esta tienda?",
+        "bulkDescription": "Se generarán y publicarán títulos y descripciones para {count, plural, one {# producto apto} many {# productos aptos} other {# productos aptos}} de esta tienda. Se sustituirán las fichas actuales.",
+        "storeTitle": "¿Optimizar la tienda conectada?",
+        "storeDescription": "Se escribirán datos estructurados de producto y, en Shopify, un perfil de tienda. Se generarán y publicarán textos para los productos aptos de esta tienda. Esto puede modificar varios elementos publicados.",
+        "action": {
+          "primary": "Confirmar y publicar",
+          "secondary": "Seguir revisando"
+        }
+      },
+      "bulk": {
+        "action": "Publicar productos aptos"
+      },
+      "store": {
+        "action": "Optimizar tienda"
+      },
+      "toast": {
+        "failed": "No se ha podido completar el cambio",
+        "failedDescription": "Vuelve a intentarlo. Si la publicación había empezado, revisa el producto antes de repetirla.",
+        "published": "{count, plural, one {# ficha publicada} many {# fichas publicadas} other {# fichas publicadas}}",
+        "partial": "Se han publicado {published}; no se han podido completar {failed}. Revisa los productos pendientes antes de volver a intentarlo.",
+        "saved": "Lista actualizada"
+      },
+      "history": {
+        "unmeasured": "Hace falta una nueva comparación para medir el resultado.",
+        "undated": "Fecha de publicación no disponible"
+      },
+      "diagnostics": {
+        "content": "Añadir datos útiles del producto",
+        "contentHint": "Revisa el título y la descripción guardados. Incluye especificaciones exactas y usos relevantes.",
+        "structured_data": "Revisar datos estructurados",
+        "structured_dataHint": "Comprueba los datos estructurados del producto y añade solo atributos verificados.",
+        "seo": "Añadir imágenes del producto",
+        "seoHint": "Añade una imagen real del producto en el origen y sincroniza el catálogo.",
+        "platform": "Conectar acceso de publicación",
+        "platformHint": "Este catálogo no permite publicar cambios directamente. Conecta Shopify o WooCommerce, o actualiza el origen manualmente."
+      }
+    }
+  }
+}

@@ -49,6 +49,16 @@
       "aiInstructions": "KI-Anweisungen",
       "tools": "Kostenlose Tools"
     },
-    "loading": "Seite wird geladen"
+    "loading": "Seite wird geladen",
+    "authenticated": {
+      "action": {
+        "primary": "Zum Dashboard"
+      },
+      "compact": {
+        "action": {
+          "primary": "Dashboard"
+        }
+      }
+    }
   }
 }

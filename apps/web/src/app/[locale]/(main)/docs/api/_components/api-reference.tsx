@@ -159,7 +159,7 @@ export const ApiReference = ({
                 <Tab
                   key={group.id}
                   value={group.id}
-                  className="group relative grid h-auto min-h-24 grid-cols-[1fr_auto] justify-start gap-x-2 gap-y-4 rounded-md border border-transparent bg-transparent px-4 py-4 text-left text-background-rich/65 text-sm before:absolute hover:bg-background-rich/5 hover:text-background-rich focus-visible:before:rounded-md focus-visible:before:outline-primary-rich data-[active]:border-background-rich/20 data-[active]:bg-linear-to-br data-[active]:from-background-rich/10 data-[active]:to-primary/10 data-[active]:text-background-rich data-[active]:shadow-[inset_0_1px_0_color-mix(in_oklab,var(--color-background-rich)_15%,transparent)] lg:flex lg:min-h-14 lg:gap-4"
+                  className="group relative grid h-auto min-h-24 grid-cols-[1fr_auto] justify-start gap-x-2 gap-y-4 rounded-sm border border-transparent bg-transparent px-4 py-4 text-left text-background-rich/65 text-sm before:absolute hover:bg-background-rich/5 hover:text-background-rich focus-visible:before:rounded-sm focus-visible:before:outline-primary-rich data-[active]:border-background-rich/20 data-[active]:bg-linear-to-br data-[active]:from-background-rich/10 data-[active]:to-primary/10 data-[active]:text-background-rich data-[active]:inset-shadow-sm data-[active]:inset-shadow-background-rich/15 lg:flex lg:min-h-14 lg:gap-4"
                 >
                   <Icon
                     className="size-4 shrink-0 text-primary-rich"

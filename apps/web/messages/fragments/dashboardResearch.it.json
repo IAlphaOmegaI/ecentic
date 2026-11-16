@@ -1,0 +1,116 @@
+{
+  "dashboard": {
+    "research": {
+      "title": "Ricerca con IA",
+      "description": "Confronta i prodotti, consulta le risposte salvate e scegli il prossimo test.",
+      "unavailable": {
+        "title": "Impossibile caricare questa ricerca",
+        "description": "Riprova. I risultati salvati non sono stati modificati.",
+        "action": {
+          "primary": "Riprova"
+        }
+      },
+      "empty": {
+        "title": "Inizia con un confronto tra prodotti",
+        "description": "Scegli prodotti e concorrenti reali, poi scopri quale scheda seleziona ogni modello. I test completati appariranno qui."
+      },
+      "comparison": {
+        "title": "Ultimo confronto completato",
+        "action": {
+          "primary": "Prepara un confronto",
+          "secondary": "Consulta i risultati"
+        },
+        "rate": "Tasso di vittoria simulato",
+        "sample": "{wins} vittorie in {total} confronti",
+        "scope": "I risultati riguardano i prodotti di questo negozio in questo test. Descrivono le scelte dei modelli, non visite o vendite.",
+        "recent": "Confronti precedenti",
+        "first": "Questo è il tuo primo confronto completato.",
+        "cohorts": "Prodotti, concorrenti o modelli diversi possono cambiare il tasso. Questi test non misurano un miglioramento attribuibile alle modifiche."
+      },
+      "brand": {
+        "title": "Analisi del brand salvata",
+        "running": "È in corso una nuova analisi.",
+        "failed": "L’ultima analisi non è stata completata. Apri l’analisi del brand per riprovare.",
+        "empty": "Nessuna analisi del brand completata.",
+        "action": {
+          "primary": "Apri l’analisi del brand"
+        },
+        "scope": "Sono risposte di un campione di modelli a cui il brand è stato fornito come contesto. Consulta le domande e le risposte originali prima di intervenire."
+      },
+      "directions": {
+        "questions": {
+          "title": "Esplora le domande d’acquisto",
+          "description": "Prova le domande dei clienti e scopri quali negozi suggerisce ogni modello.",
+          "action": {
+            "primary": "Esplora le domande"
+          }
+        },
+        "competitors": {
+          "title": "Scegli i concorrenti",
+          "description": "Controlla i prodotti concorrenti usati nei confronti e aggiungi offerte rilevate.",
+          "action": {
+            "primary": "Gestisci i concorrenti"
+          }
+        },
+        "rank": {
+          "title": "Verifica una ricerca nel catalogo",
+          "description": "Scopri dove compare il negozio per una ricerca e un paese in Shopify Global Catalog.",
+          "action": {
+            "primary": "Verifica la posizione"
+          }
+        }
+      },
+      "rank": {
+        "title": "Posizione nel catalogo",
+        "description": "Una ricerca in tempo reale su Shopify Global Catalog, limitata alla query e al mercato scelti.",
+        "empty": {
+          "title": "Dove compare il tuo negozio?",
+          "description": "Inserisci una ricerca d’acquisto e scegli un paese. La verifica riguarda le offerte restituite dal catalogo, non una posizione universale su ChatGPT o Google."
+        },
+        "checked": "Shopify Global Catalog · {country} · Verificato: {time}. I risultati possono cambiare tra una ricerca e l’altra."
+      },
+      "comparisons": {
+        "title": "Confronti tra prodotti",
+        "description": "Scegli i prodotti e le offerte concorrenti da testare, poi consulta le scelte dei modelli.",
+        "phases": {
+          "pre": "Pronto per il confronto",
+          "running": "Confronto in corso",
+          "complete": "Confronto completato"
+        },
+        "unmeasured": "Nessun confronto per questo modello"
+      },
+      "questions": {
+        "title": "Domande d’acquisto",
+        "description": "Esplora le risposte generate dai modelli alle domande d’acquisto. I suggerimenti servono alla ricerca, non sono posizioni verificate nei risultati di ricerca."
+      },
+      "competitors": {
+        "title": "Concorrenti",
+        "description": "Gestisci le offerte concorrenti e scopri come si posizionano i tuoi prodotti nel confronto.",
+        "action": {
+          "primary": "Aggiungi concorrenti",
+          "secondary": "Prepara un confronto",
+          "tertiary": "Torna ai concorrenti"
+        },
+        "stats": {
+          "tracked": "Brand nella lista",
+          "tested": "Brand confrontati",
+          "comparisons": "Confronti salvati"
+        },
+        "empty": {
+          "title": "Scegli le alternative che i clienti valutano",
+          "description": "Aggiungi prodotti concorrenti con prezzi e dettagli rilevati. Potrai selezionare le offerte pertinenti quando prepari un confronto."
+        },
+        "evidence": {
+          "title": "Dove i tuoi prodotti incontrano più concorrenza",
+          "description": "Tasso di vittoria simulato dei tuoi prodotti contro ogni brand, dal più basso. Sono mostrati solo i brand con confronti completati.",
+          "sample": "{count} confronti"
+        },
+        "roster": "{total} concorrenti · {selected} selezionati",
+        "updateFailed": "Impossibile aggiornare questo concorrente"
+      }
+    }
+  },
+  "commerceFigures": {
+    "comparisonStand": "Due schede prodotto su un espositore per confrontarle"
+  }
+}

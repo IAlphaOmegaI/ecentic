@@ -44,7 +44,7 @@ export const TravelAndExperiencesRoadmap = ({
                 <CommerceFigure
                   kind={stages[index]?.figure ?? "suitcase"}
                   surface="dark"
-                  className="mx-auto aspect-[4/3] max-w-[400px] bg-primary-text [--hairline-hi:var(--color-background-rich)] [--hairline-plate:var(--color-primary-text)]"
+                  className="mx-auto aspect-[4/3] max-w-100 bg-primary-text [--hairline-hi:var(--color-background-rich)] [--hairline-plate:var(--color-primary-text)]"
                 />
               </div>
             </div>

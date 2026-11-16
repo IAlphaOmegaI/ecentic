@@ -179,7 +179,7 @@ export const IntegrationLedger = ({
     tabIndex={0}
     className="overflow-x-auto focus-visible:outline-2 focus-visible:outline-primary focus-visible:-outline-offset-2"
   >
-    <Table className="min-w-[40rem] table-fixed border-t border-b-0 bg-background">
+    <Table className="min-w-160 table-fixed border-t border-b-0 bg-background">
       <TableHeader className="bg-background-dimmed">
         <TableRow>
           <TableHead
@@ -247,7 +247,7 @@ export const IntegrationTechnicalText = ({ text }: { text: string }) =>
       /^(?:(?:read|write)_[a-z_]+|(?:WordPress|WooCommerce|PHP)\s+\d+(?:\.\d+)*\+?)$/.test(
         part,
       ) ? (
-        <code key={part} className="break-words font-mono text-[0.9em]">
+        <code key={part} className="break-words font-mono text-sm">
           {part}
         </code>
       ) : (

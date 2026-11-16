@@ -1,0 +1,133 @@
+{
+  "dashboard": {
+    "brand": {
+      "design": {
+        "title": "Marchio",
+        "description": "Come appare il tuo marchio nelle risposte di acquisto simulate.",
+        "updated": "Analisi eseguita {time}",
+        "sample": "{count, plural, one {# risposta campionata} many {# risposte campionate} other {# risposte campionate}} · {engines}",
+        "scope": "Il modello riceve il tuo marchio come contesto dell’analisi. È una simulazione, non un test di notorietà spontanea né un registro di conversazioni reali con i clienti.",
+        "action": {
+          "primary": "Analizza il marchio",
+          "secondary": "Ripeti l’analisi",
+          "tertiary": "Esamina il catalogo"
+        },
+        "empty": {
+          "title": "Scopri i punti ciechi del tuo marchio.",
+          "description": "Scopri se il tuo marchio compare nelle domande di acquisto, come viene descritto e dove informazioni più chiare potrebbero aiutare.",
+          "note": "L’analisi usa il negozio e il catalogo per preparare 20 domande per ChatGPT. Puoi continuare a lavorare mentre l’analisi è in corso.",
+          "visualTitle": "Dalla domanda di un acquirente al tuo prossimo passo",
+          "steps": {
+            "questions": {
+              "title": "Chiedi della tua categoria",
+              "description": "Domande con e senza il nome del marchio."
+            },
+            "answers": {
+              "title": "Esamina le risposte",
+              "description": "Menzioni del marchio, alternative e riepiloghi delle risposte."
+            },
+            "actions": {
+              "title": "Scopri cosa migliorare",
+              "description": "Suggerimenti basati sulle risposte campionate."
+            }
+          }
+        },
+        "summaryTitle": "Cosa sapere",
+        "discoveryTitle": "Menzioni per tipo di domanda",
+        "unprompted": "Domande senza il nome del marchio",
+        "named": "Domande che nominano il marchio",
+        "ratio": "{count} risposte su {total}",
+        "noSample": "Nessuna domanda in questo gruppo",
+        "overall": "Menzionato in {count} risposte su {total} campionate.",
+        "noAnswers": "Questo report non contiene risposte salvate. Avvia una nuova analisi per raccogliere i dati.",
+        "tabs": {
+          "plan": "Prossimi passi",
+          "answers": "Risposte",
+          "access": "Verifiche del sito"
+        },
+        "findingsTitle": "Schemi da tenere d’occhio",
+        "journeyTitle": "Dove migliorare",
+        "journeyDescription": "Suggerimenti di questa analisi. Esamina i dati prima di modificare il sito.",
+        "stage": {
+          "find": "Farsi scoprire",
+          "consider": "Entrare nella selezione",
+          "evaluate": "Aiutare gli acquirenti a decidere",
+          "support": "Rispondere alla domanda successiva"
+        },
+        "suggestions": "{count, plural, one {# suggerimento} many {# suggerimenti} other {# suggerimenti}}",
+        "noSuggestions": "Nessuna modifica suggerita per questa fase.",
+        "perceptionTitle": "Come ti descrivono le risposte",
+        "strengths": "Cosa gioca a tuo favore",
+        "concerns": "Cosa solleva dubbi",
+        "alternativesTitle": "Altri marchi nelle risposte",
+        "sourcesTitle": "Fonti suggerite dal modello",
+        "sourcesNote": "Sono domini o tipi di fonti citati dal modello, non citazioni verificate da una ricerca in tempo reale.",
+        "occurrences": "{count, plural, one {# menzione} many {# menzioni} other {# menzioni}}",
+        "accessTitle": "I crawler riescono a raggiungere i tuoi contenuti?",
+        "accessDescription": "Un’istantanea dei file pubblici per la scoperta dei contenuti. Queste verifiche non misurano l’indicizzazione, i posizionamenti nei motori di ricerca o la preparazione del checkout.",
+        "checks": {
+          "robots": "Regole per i crawler",
+          "llms": "Guida ai contenuti per l’AI",
+          "engines": "Accesso dei crawler"
+        },
+        "status": {
+          "pass": "Verificato",
+          "warn": "Da esaminare",
+          "fail": "Bloccato"
+        },
+        "robots": {
+          "pass": "Le regole per i crawler sono state lette.",
+          "warn": "Esamina le regole per i crawler registrate.",
+          "fail": "La scansione ha rilevato restrizioni per i crawler in robots.txt.",
+          "note": "robots.txt controlla l’accesso di ciascun crawler. Ricerca, richieste degli utenti e addestramento dei modelli possono usare crawler diversi."
+        },
+        "llms": {
+          "pass": "Un file llms.txt era raggiungibile.",
+          "warn": "Non è stato registrato alcun file llms.txt raggiungibile.",
+          "note": "Questa guida facoltativa ai contenuti non garantisce che un servizio AI legga, indicizzi o consigli il tuo marchio."
+        },
+        "engines": {
+          "pass": "Non sono stati rilevati blocchi alla radice del sito per i crawler verificati.",
+          "warn": "Non è stato possibile confermare l’accesso in questa scansione.",
+          "fail": "Alcuni crawler verificati hanno restrizioni alla radice del sito.",
+          "note": "Le regole per percorsi specifici, gli altri crawler e l’indicizzazione non rientrano in questa verifica."
+        },
+        "failed": {
+          "title": "L’analisi non è stata completata",
+          "description": "L’ultimo report completato è ancora disponibile qui sotto. Riprova quando vuoi.",
+          "emptyDescription": "Nessun report è stato salvato. Riprova quando vuoi."
+        },
+        "error": "Non è stato possibile avviare l’analisi. Riprova.",
+        "running": {
+          "title": "Analisi del marchio in corso",
+          "description": "ChatGPT sta esaminando le tue domande di acquisto. I risultati appariranno qui appena pronti.",
+          "previous": "Stai visualizzando il report precedente mentre è in corso la nuova analisi.",
+          "steps": "Preparare le domande · Esaminare le risposte · Creare le raccomandazioni"
+        },
+        "loading": "Caricamento dell’analisi del marchio",
+        "unavailable": {
+          "title": "I dati del marchio non sono temporaneamente disponibili",
+          "description": "Non è stato possibile caricare l’analisi salvata. Aggiorna questa sezione per riprovare.",
+          "action": {
+            "primary": "Riprova"
+          }
+        },
+        "noFindings": "In questo report non sono stati salvati schemi ricorrenti.",
+        "summaryAction": {
+          "primary": "Leggi l’analisi completa",
+          "secondary": "Mostra meno"
+        },
+        "method": {
+          "action": {
+            "primary": "Come funziona"
+          }
+        }
+      },
+      "toast": {
+        "started": {
+          "description": "Puoi continuare a lavorare. I risultati appariranno qui al termine dell’analisi."
+        }
+      }
+    }
+  }
+}

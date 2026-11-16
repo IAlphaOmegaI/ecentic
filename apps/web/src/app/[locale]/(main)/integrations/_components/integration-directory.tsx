@@ -159,7 +159,7 @@ export const IntegrationDirectory = ({
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <span className="min-w-0">
-                  <span className="block font-heading text-[clamp(1.5rem,2.5vw,2.3rem)] leading-tight tracking-[-0.035em]">
+                  <span className="block font-heading text-2xl xl:text-3xl 2xl:text-4xl leading-tight tracking-tight">
                     {copy.groups[group]}
                   </span>
                   <span className="mt-4 block max-w-[66ch] font-normal text-base text-foreground-dimmed leading-relaxed">
@@ -276,7 +276,7 @@ export const IntegrationImportFlow = ({
         </div>
         <ImportConnector branch="inputs" />
         <div
-          className="relative isolate self-center rounded-xl border border-background-rich/20 bg-emphasis-dimmed px-4 py-6 text-background-rich shadow-emphasis/10 shadow-xl"
+          className="relative isolate self-center rounded-lg border border-background-rich/20 bg-emphasis-dimmed px-4 py-6 text-background-rich shadow-emphasis/10 shadow-xl"
           data-import-node="catalog"
         >
           <p className="mb-4 text-background-rich/65 text-xs">
@@ -290,14 +290,14 @@ export const IntegrationImportFlow = ({
             ].map((src, index) => (
               <div
                 key={src}
-                className="relative flex min-w-0 items-center gap-3 rounded-md border border-background-rich/50 bg-background-rich p-3 text-foreground-rich"
+                className="relative flex min-w-0 items-center gap-3 rounded-sm border border-background-rich/50 bg-background-rich p-3 text-foreground-rich"
               >
                 <Image
                   src={src}
                   alt=""
                   width={48}
                   height={48}
-                  className="size-12 shrink-0 rounded-md bg-background object-contain p-1"
+                  className="size-12 shrink-0 rounded-sm bg-background object-contain p-1"
                 />
                 <div className="min-w-0">
                   <p className="text-sm leading-snug">

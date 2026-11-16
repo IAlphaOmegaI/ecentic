@@ -6,7 +6,13 @@ import {
   AccordionPanel,
   AccordionTrigger,
 } from "@zenncore/web/components/accordion";
-import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
+import {
+  Tab,
+  Tabs,
+  TabsIndicator,
+  TabsList,
+  TabsPanel,
+} from "@zenncore/web/components/tabs";
 import type { ReactNode } from "react";
 
 export const GuideToolExplorer = ({
@@ -15,18 +21,13 @@ export const GuideToolExplorer = ({
   table,
 }: GuideToolExplorer.Props) => (
   <Tabs defaultValue="table" className="min-w-0">
-    <div className="border-accent-foreground border-y bg-background-dimmed px-7 py-4 max-sm:px-4">
-      <TabsList aria-label={labels.views.label} className="max-w-full">
-        <Tab
-          value="table"
-          className="h-auto min-h-11 px-4 py-2 text-sm data-[active]:bg-primary data-selected:bg-primary"
-        >
+    <div className="overflow-x-auto overscroll-x-contain border-accent-foreground border-y bg-background-dimmed px-7 py-4 max-sm:px-4">
+      <TabsList aria-label={labels.views.label} className="min-w-max">
+        <TabsIndicator />
+        <Tab value="table" className="text-sm">
           {labels.views.table}
         </Tab>
-        <Tab
-          value="tool"
-          className="h-auto min-h-11 px-4 py-2 text-sm data-[active]:bg-primary data-selected:bg-primary"
-        >
+        <Tab value="tool" className="text-sm">
           {labels.views.tool}
         </Tab>
       </TabsList>

@@ -1,0 +1,12 @@
+{
+  "dashboard": {
+    "commandPalette": {
+      "states": {
+        "unavailable": "現在、検索を利用できません。もう一度お試しください。"
+      },
+      "action": {
+        "primary": "再試行"
+      }
+    }
+  }
+}

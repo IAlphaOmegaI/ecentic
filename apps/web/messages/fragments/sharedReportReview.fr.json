@@ -1,0 +1,32 @@
+{
+  "share": {
+    "review": {
+      "title": "Résultats des comparaisons par IA",
+      "description": "Une analyse enregistrée de comparaisons de produits par des modèles d’IA. Ces résultats décrivent des simulations, pas l’activité réelle des acheteurs.",
+      "recorded": "Enregistré le {date}",
+      "score": {
+        "label": "Taux de victoire",
+        "context": "{wins, plural, one {# victoire} many {# victoires} other {# victoires}} sur {total, plural, one {# résultat enregistré} many {# résultats enregistrés} other {# résultats enregistrés}}.",
+        "empty": "Aucun résultat de comparaison n’a été enregistré pour cette analyse."
+      },
+      "providers": {
+        "title": "Résultats par fournisseur d’IA",
+        "description": "Victoires et défaites enregistrées pour chaque modèle.",
+        "outcomes": "{wins, plural, one {# victoire} many {# victoires} other {# victoires}} · {losses, plural, one {# défaite} many {# défaites} other {# défaites}}",
+        "empty": "Aucun résultat par fournisseur n’a été enregistré."
+      },
+      "finding": {
+        "title": "Constat principal",
+        "details": "Lire l’impact indiqué"
+      },
+      "cta": {
+        "title": "Comparez vos propres produits",
+        "description": "Lancez une analyse gratuite pour voir comment les modèles d’IA comparent vos fiches produit."
+      },
+      "unavailable": {
+        "title": "Ce rapport n’est pas disponible",
+        "description": "Le lien est peut-être incorrect, ou l’analyse n’est pas encore terminée."
+      }
+    }
+  }
+}

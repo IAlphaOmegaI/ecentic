@@ -90,7 +90,7 @@ export const FeeWalkthrough = ({ fee, amounts }: FeeWalkthrough.Props) => {
               <pre
                 aria-hidden="true"
                 data-fee-diagram={index}
-                className="m-0 whitespace-pre bg-transparent p-0 font-mono text-[min(16px,calc(100cqw/25))] leading-[1.45] tracking-normal"
+                className="m-0 whitespace-pre bg-transparent p-0 font-mono text-[min(16px,calc(100cqw/25))] leading-normal tracking-normal"
               >
                 {diagrams[index]}
               </pre>

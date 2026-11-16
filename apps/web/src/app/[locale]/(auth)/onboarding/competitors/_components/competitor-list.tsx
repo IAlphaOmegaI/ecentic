@@ -20,6 +20,7 @@ import {
 import Image from "next/image";
 import { useMessages, useTranslations } from "next-intl";
 import { Motion } from "@/components/motion";
+import { isVerifiedCompetitor } from "@/lib/competitor-source";
 import { getCurrencySymbol, normalizePrice } from "@/lib/currency";
 import { getBrandLogo } from "@/lib/logo";
 import type * as Competitor from "@/server/app/competitor";
@@ -49,7 +50,9 @@ export const CompetitorList = ({
             <TableRow>
               <TableHead className="w-10 px-4 py-2" />
               {tableHeaders.map((header) => (
-                <TableHead key={header}>{header}</TableHead>
+                <TableHead key={header} className="normal-case tracking-normal">
+                  {header}
+                </TableHead>
               ))}
               <TableHead className="w-10 px-4 py-2" />
             </TableRow>
@@ -78,7 +81,7 @@ export const CompetitorList = ({
                 </TableCell>
                 <TableCell className="w-full max-w-0">
                   <div className="flex min-w-0 items-center gap-3">
-                    <Avatar className="aspect-square size-9 min-w-9 shrink-0 rounded-md bg-primary/10">
+                    <Avatar className="aspect-square size-9 min-w-9 shrink-0 rounded-lg bg-primary/10">
                       <AvatarImage
                         src={
                           record.image ??
@@ -108,7 +111,9 @@ export const CompetitorList = ({
                   </div>
                 </TableCell>
                 <TableCell>
-                  {record.price ? normalizePrice(record.price) : "\u2014"}
+                  {record.price && isVerifiedCompetitor(record.confidence)
+                    ? normalizePrice(record.price)
+                    : "\u2014"}
                 </TableCell>
                 <TableCell className="text-foreground-dimmed">
                   {record.currency

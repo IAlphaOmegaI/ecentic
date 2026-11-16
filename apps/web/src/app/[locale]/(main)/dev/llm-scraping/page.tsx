@@ -14,7 +14,7 @@ export default () => (
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div>
             <StatusPill tone="neutral">Sandbox — ScrapeLLM</StatusPill>
-            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
+            <h1 className="mt-3 font-bold text-3xl text-foreground-rich tracking-tight">
               LLM Surface Scraping
             </h1>
             <p className="mt-1 max-w-2xl text-foreground-dimmed text-sm">

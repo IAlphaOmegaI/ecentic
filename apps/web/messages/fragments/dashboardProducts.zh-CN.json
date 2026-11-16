@@ -26,14 +26,14 @@
         "poor": "较差（<50%）",
         "distribution": "数据质量分布",
         "avgQuality": "平均数据质量",
-        "kicker": "01.1 — 质量"
+        "kicker": "质量"
       },
       "optimization": {
         "readiness": "商品准备度",
         "optimized": "已优化",
         "pending": "待处理",
         "unoptimized": "未优化",
-        "kicker": "01.2 — 优化"
+        "kicker": "优化"
       },
       "detail": {
         "backToProducts": "返回商品列表",
@@ -130,7 +130,7 @@
           "lost": "落败",
           "noWins": "暂无胜出记录",
           "noLosses": "暂无失败记录",
-          "kicker": "01 — 竞品对比卡"
+          "kicker": "竞品对比卡"
         },
         "audit": {
           "aiContentQuality": "AI 内容质量",
@@ -141,7 +141,7 @@
           "title": "优化商品信息",
           "description": "为 AI 智能体读取的字段提供按类目划分的内容质量评分，并展示该商品信息面向目标受众的定位。",
           "completeness": "完整度：",
-          "currentListing": "02 — 当前商品信息",
+          "currentListing": "当前商品信息",
           "characters": "{count} 个字符",
           "noDescription": "未找到描述",
           "liveOnStore": "店铺在线版本",
@@ -157,7 +157,7 @@
           "structuredDataPublished": "优化后的结构化数据已发布",
           "structuredDataPublishedDescription": "已写入 ecentic.structured_data 元字段。应用嵌入现在会渲染该数据，而不是默认商品标记。如果嵌入处于关闭状态，请在主题编辑器中开启并点击保存。",
           "openThemeEditor": "打开主题编辑器",
-          "listingAuditKicker": "01 — AI 商品信息检测",
+          "listingAuditKicker": "AI 商品信息检测",
           "status": {
             "optimizedByEcentic": "由 ecentic 优化",
             "ecenticStandard": "ecentic 标准",

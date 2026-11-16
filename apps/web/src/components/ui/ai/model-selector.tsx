@@ -43,7 +43,7 @@ export const ModelSelectorContent = ({
   <DialogPopup
     aria-describedby={undefined}
     className={cn(
-      "outline! border-none! p-0 outline-border! outline-solid!",
+      "outline! border-none! p-0 outline-accent-foreground! outline-solid!",
       className,
     )}
     {...props}

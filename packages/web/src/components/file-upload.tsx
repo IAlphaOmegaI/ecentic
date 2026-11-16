@@ -221,7 +221,7 @@ export const FileUploadInput = ({
     // biome-ignore lint/a11y/noStaticElementInteractions: needed to handle drag and drop
     <div
       className={cn(
-        "relative border border-accent-foreground p-2",
+        "relative rounded-lg border border-accent-foreground p-2",
         className,
         classList?.root,
       )}
@@ -249,7 +249,7 @@ export const FileUploadInput = ({
             : inputLabel
         }
         className={cn(
-          "h-32 w-full origin-center flex-col items-center justify-center border border-dashed transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50",
+          "h-32 w-full origin-center flex-col items-center justify-center rounded-lg border border-dashed transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50",
           isDragging
             ? "scale-95 border-primary bg-primary/10"
             : "border-accent-foreground",

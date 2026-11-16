@@ -1,0 +1,16 @@
+{
+  "dashboard": {
+    "overview": {
+      "priorityChecks": {
+        "incomplete": {
+          "title": "Complétez vos fiches produits",
+          "detail": "{count, plural, one {# fiche produit est incomplète.} many {# fiches produits sont incomplètes.} other {# fiches produits sont incomplètes.}}"
+        },
+        "unavailable": {
+          "title": "Les pistes d’amélioration ne sont pas disponibles",
+          "description": "Ouvrez Optimiser pour consulter les vérifications disponibles pour cette boutique."
+        }
+      }
+    }
+  }
+}

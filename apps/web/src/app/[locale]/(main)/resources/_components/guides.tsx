@@ -23,13 +23,13 @@ const guideMeta = [
     logo: shopify,
     href: "/platforms/shopify",
     buttonClassName:
-      "border-[#5E8E3E] bg-[#5E8E3E] text-white shadow-none hover:bg-[#4E7A34]",
+      "border-primary bg-primary text-background-rich shadow-none hover:bg-primary-text",
   },
   {
     logo: woocommerce,
     href: "/platforms/woocommerce",
     buttonClassName:
-      "border-[#7F54B3] bg-[#7F54B3] text-white shadow-none hover:bg-[#6B4799]",
+      "border-primary bg-primary text-background-rich shadow-none hover:bg-primary-text",
   },
 ] as const;
 

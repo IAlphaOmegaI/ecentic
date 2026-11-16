@@ -12,7 +12,7 @@ export const HeroFigure = ({
   >
     <CommerceFigure
       kind={kind}
-      className="aspect-[5/4] w-full max-w-[640px] bg-transparent [--hairline-edge:color-mix(in_oklab,var(--color-background-rich)_85%,transparent)] [--hairline-hi:var(--color-background-rich)] [--hairline-lo:color-mix(in_oklab,var(--color-background-rich)_24%,transparent)] [--hairline-mid:color-mix(in_oklab,var(--color-background-rich)_55%,transparent)] [--hairline-plate:var(--color-primary-text)] max-sm:max-w-[330px] max-lg:max-w-[460px] [&>[data-hairline]]:bg-transparent [&>[data-hairline]]:text-background-rich [&_svg]:overflow-visible"
+      className="aspect-[5/4] w-full max-w-160 bg-transparent [--hairline-edge:color-mix(in_oklab,var(--color-background-rich)_85%,transparent)] [--hairline-hi:var(--color-background-rich)] [--hairline-lo:color-mix(in_oklab,var(--color-background-rich)_24%,transparent)] [--hairline-mid:color-mix(in_oklab,var(--color-background-rich)_55%,transparent)] [--hairline-plate:var(--color-primary-text)] max-sm:max-w-82.5 max-lg:max-w-115 [&>[data-hairline]]:bg-transparent [&>[data-hairline]]:text-background-rich [&_svg]:overflow-visible"
     />
   </div>
 );

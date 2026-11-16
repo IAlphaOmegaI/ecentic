@@ -1,9 +1,9 @@
 "use client";
 
-import { CheckIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
+import { Checkbox } from "@zenncore/web/components/checkbox";
 import { ScrollArea } from "@zenncore/web/components/scroll-area";
 import {
   Select,
@@ -13,12 +13,12 @@ import {
   SelectTrigger,
 } from "@zenncore/web/components/select";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { AnimatePresence, motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useOnboardingError } from "@/app/[locale]/(auth)/onboarding/_components/use-onboarding-error";
+import { FeedbackLoading, FeedbackState } from "@/components/feedback-state";
+import { Motion } from "@/components/motion";
 import { Link } from "@/i18n/navigation";
-import { Spring } from "@/lib/animations";
 import { callOnboardingAction } from "@/lib/onboarding-errors";
 import type * as Competitor from "@/server/app/competitor";
 import * as GoogleMerchant from "@/server/app/integration/google-merchant";
@@ -30,6 +30,8 @@ export namespace MerchantTab {
     onSuccess?: (competitors: Competitor.Type[]) => void;
     store: string;
     className?: string;
+    /** Compact, flush presentation inside the store dashboard. */
+    dashboard?: boolean;
   };
 }
 
@@ -63,6 +65,7 @@ export const MerchantTab = ({
   onSuccess,
   store,
   className,
+  dashboard = false,
 }: MerchantTab.Props) => {
   const toast = useToastManager();
   const formatError = useOnboardingError();
@@ -201,9 +204,18 @@ export const MerchantTab = ({
 
   return (
     <div
-      className={cn("relative flex h-full flex-col overflow-hidden", className)}
+      className={cn(
+        "relative flex h-full flex-col overflow-hidden",
+        dashboard && "h-auto min-h-64 bg-background-rich",
+        className,
+      )}
     >
-      <div className="border-accent-foreground border-b bg-background-dimmed p-4">
+      <div
+        className={cn(
+          "border-accent-foreground border-b bg-background-dimmed p-4",
+          dashboard && "bg-background-rich py-6 sm:px-6",
+        )}
+      >
         <p className="mb-1 font-medium text-foreground text-sm">
           {translate("label")}
         </p>
@@ -291,165 +303,123 @@ export const MerchantTab = ({
         )}
       </div>
 
-      <AnimatePresence mode="wait" initial={false}>
-        {(!loaded || isLoading) && (
-          <motion.div
-            key="loading"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="flex flex-1 items-center justify-center gap-3 p-8"
-          >
-            {[0, 0.2, 0.4].map((delay) => (
-              <motion.span
-                key={delay}
-                animate={{ opacity: [0.2, 1, 0.2] }}
-                transition={{
-                  duration: 1,
-                  repeat: Number.POSITIVE_INFINITY,
-                  delay,
-                  ease: "easeInOut",
-                }}
-                className="inline-block size-1.5 rounded-full bg-primary"
-              />
-            ))}
-            <span className="text-foreground-dimmed text-sm">
-              {translate("loading")}
-            </span>
-          </motion.div>
-        )}
+      {(!loaded || isLoading) && (
+        <FeedbackLoading
+          title={translate("loading")}
+          figure="merchant-folio"
+          scope="page"
+        />
+      )}
 
-        {loaded && !isLoading && report?.reason && rivals.length === 0 && (
-          <motion.div
-            key={report.reason}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="flex flex-1 flex-col items-center justify-center gap-3 p-8 text-center"
-          >
-            <p className="max-w-md text-foreground-dimmed text-sm">
-              {translate(REASON_KEYS[report.reason])}
-            </p>
+      {loaded && !isLoading && report?.reason && rivals.length === 0 && (
+        <FeedbackState
+          title={translate("label")}
+          description={translate(REASON_KEYS[report.reason])}
+          figure="merchant-folio"
+          scope="page"
+        >
+          {report.reason === "unlinked" && (
+            <Button
+              color="primary"
+              variant="soft"
+              type="button"
+              render={<Link href={`/dashboard/${store}/google-shopping`} />}
+            >
+              {translate("action.connect")}
+            </Button>
+          )}
+        </FeedbackState>
+      )}
 
-            {report.reason === "unlinked" && (
-              <Button
-                color="primary"
-                type="button"
-                render={<Link href={`/dashboard/${store}/google-shopping`} />}
-                className="h-9 px-4 text-sm"
-              >
-                {translate("action.connect")}
-              </Button>
-            )}
-          </motion.div>
-        )}
+      {loaded && !isLoading && rivals.length > 0 && (
+        <Motion.Item key="rivals" className="flex min-h-0 flex-1 flex-col">
+          <ScrollArea className="min-h-0 flex-1 bg-background-rich">
+            {rivals.map((rival) => {
+              const isSelected = selected.includes(rival.domain);
+              const overlap = percent(rival.pageOverlapRate);
+              const higher = percent(rival.higherPositionRate);
 
-        {loaded && !isLoading && rivals.length > 0 && (
-          <motion.div
-            key="rivals"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="flex min-h-0 flex-1 flex-col"
-          >
-            <ScrollArea className="min-h-0 flex-1 bg-background-rich">
-              {rivals.map((rival) => {
-                const isSelected = selected.includes(rival.domain);
-                const overlap = percent(rival.pageOverlapRate);
-                const higher = percent(rival.higherPositionRate);
+              return (
+                // biome-ignore lint/a11y/noLabelWithoutControl: package Checkbox renders a native input inside this label
+                <label
+                  key={rival.domain}
+                  className={cn(
+                    "flex w-full cursor-pointer items-center gap-3 border-accent-foreground border-b p-3 text-left transition-colors last:border-b-0 hover:bg-background-dimmed/40",
+                    isSelected && "bg-primary/5",
+                  )}
+                >
+                  <Checkbox
+                    checked={isSelected}
+                    onCheckedChange={() => toggle(rival.domain)}
+                    aria-label={rival.domain}
+                  />
 
-                return (
-                  <motion.button
-                    key={rival.domain}
-                    type="button"
-                    onClick={() => toggle(rival.domain)}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={Spring.Snappy}
-                    className={cn(
-                      "flex w-full items-center gap-3 border-accent-foreground border-b p-3 text-left transition-colors last:border-b-0 hover:bg-background-dimmed/40",
-                      isSelected && "bg-primary/5",
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "flex size-5 shrink-0 items-center justify-center border border-accent-foreground",
-                        isSelected && "border-primary bg-primary text-white",
-                      )}
-                    >
-                      {isSelected && <CheckIcon className="size-3.5" />}
+                  <span className="w-8 shrink-0 font-medium text-foreground-dimmed text-xs tabular-nums">
+                    #{rival.rank}
+                  </span>
+
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-medium text-foreground text-sm">
+                      {rival.domain}
                     </span>
-
-                    <span className="w-8 shrink-0 font-medium text-foreground-dimmed text-xs tabular-nums">
-                      #{rival.rank}
+                    <span className="block text-foreground-dimmed text-xs">
+                      {[
+                        overlap && translate("overlap", { value: overlap }),
+                        higher && translate("higher", { value: higher }),
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
                     </span>
+                  </span>
+                </label>
+              );
+            })}
+          </ScrollArea>
 
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate font-medium text-foreground text-sm">
-                        {rival.domain}
-                      </span>
-                      <span className="block text-foreground-dimmed text-xs">
-                        {[
-                          overlap && translate("overlap", { value: overlap }),
-                          higher && translate("higher", { value: higher }),
-                        ]
-                          .filter(Boolean)
-                          .join(" · ")}
-                      </span>
-                    </span>
-                  </motion.button>
-                );
-              })}
-            </ScrollArea>
-
-            {/* The other half of this source: not just who Google measured,
+          {/* The other half of this source: not just who Google measured,
                 but how much of the roster the model-driven tabs built is
                 corroborated by that measurement. On demand rather than on load
                 — it costs a second report read. */}
-            {validation && (
-              <div className="border-accent-foreground border-t bg-primary/5 px-4 py-2 text-foreground-dimmed text-xs">
-                {translate("validation.summary", {
-                  confirmed: String(validation.confirmed),
-                  total: String(validation.total),
-                })}
-              </div>
-            )}
-
-            <div className="flex items-center justify-between border-accent-foreground border-t bg-background-dimmed px-4 py-2.5">
-              <span className="text-foreground-dimmed text-xs">
-                {translate("measured", { count: rivals.length })}
-              </span>
-              <div className="flex items-center gap-2">
-                <Button
-                  color="accent"
-                  type="button"
-                  onClick={() => handleValidate()}
-                  disabled={isValidating}
-                  className="h-8 px-3 font-medium text-xs"
-                >
-                  {isValidating
-                    ? translate("action.validating")
-                    : translate("action.validate")}
-                </Button>
-                <Button
-                  color="primary"
-                  type="button"
-                  onClick={() => handleAdd()}
-                  disabled={selected.length === 0 || isAdding}
-                  className="h-8 px-4 font-medium text-xs"
-                >
-                  {isAdding
-                    ? translate("action.adding")
-                    : translate("action.add", { count: selected.length })}
-                </Button>
-              </div>
+          {validation && (
+            <div className="border-accent-foreground border-t bg-primary/5 px-4 py-2 text-foreground-dimmed text-xs">
+              {translate("validation.summary", {
+                confirmed: String(validation.confirmed),
+                total: String(validation.total),
+              })}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+
+          <div className="flex items-center justify-between border-accent-foreground border-t bg-background-dimmed px-4 py-2.5">
+            <span className="text-foreground-dimmed text-xs">
+              {translate("measured", { count: rivals.length })}
+            </span>
+            <div className="flex items-center gap-2">
+              <Button
+                color="accent"
+                type="button"
+                onClick={() => handleValidate()}
+                disabled={isValidating}
+                className="h-8 px-3 font-medium text-xs"
+              >
+                {isValidating
+                  ? translate("action.validating")
+                  : translate("action.validate")}
+              </Button>
+              <Button
+                color="primary"
+                type="button"
+                onClick={() => handleAdd()}
+                disabled={selected.length === 0 || isAdding}
+                className="h-8 px-4 font-medium text-xs"
+              >
+                {isAdding
+                  ? translate("action.adding")
+                  : translate("action.add", { count: selected.length })}
+              </Button>
+            </div>
+          </div>
+        </Motion.Item>
+      )}
     </div>
   );
 };

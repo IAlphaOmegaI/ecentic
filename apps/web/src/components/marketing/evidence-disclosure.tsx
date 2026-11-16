@@ -31,10 +31,8 @@ export const EvidenceDisclosure = ({
         <AccordionTrigger
           id={`${id}-title`}
           className={cn(
-            "items-center gap-6 bg-transparent font-heading leading-tight tracking-[-0.025em] hover:text-primary-text",
-            compact
-              ? "py-6 text-xl"
-              : "py-2 text-[clamp(1.65rem,2.5vw,2.4rem)]",
+            "items-center gap-6 bg-transparent font-heading leading-tight tracking-tight hover:text-primary-text",
+            compact ? "py-6 text-xl" : "py-2 text-2xl xl:text-3xl 2xl:text-4xl",
           )}
           classList={{ trigger: { icon: "mr-0 size-5 shrink-0" } }}
         >

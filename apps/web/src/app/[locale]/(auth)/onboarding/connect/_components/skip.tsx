@@ -45,7 +45,7 @@ export const Skip = ({ entry }: Skip.Props) => {
     >
       {translate("action.skip")}
       {isPending ? (
-        <LoaderIcon className="size-4 animate-spin" />
+        <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
       ) : (
         <ArrowRightIcon className="size-4" />
       )}
@@ -61,7 +61,7 @@ const Label = () => {
     <>
       {translate("action.skip")}
       {pending ? (
-        <LoaderIcon className="size-4 animate-spin" />
+        <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
       ) : (
         <ArrowRightIcon className="size-4" />
       )}

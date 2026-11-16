@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type { PropsWithChildren } from "react";
 import { ClientMessages } from "@/i18n/client-messages";
 
@@ -22,8 +23,10 @@ export const metadata: Metadata = {
 // full-height flex container.
 export default ({ children }: PropsWithChildren) => (
   <ClientMessages scope="dashboard">
-    <div className="flex h-screen overflow-hidden bg-background">
-      {children}
-    </div>
+    <NuqsAdapter>
+      <div className="flex h-dvh min-h-0 overflow-hidden bg-background font-normal">
+        {children}
+      </div>
+    </NuqsAdapter>
   </ClientMessages>
 );

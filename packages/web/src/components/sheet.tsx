@@ -41,13 +41,13 @@ export const SheetPopup = ({
     <SheetPrimitive.Portal container={container} keepMounted={keepMounted}>
       <SheetPrimitive.Backdrop
         className={createClassName(
-          "fixed inset-0 bg-black/50 transition-all duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0",
+          "fixed inset-0 bg-emphasis/50 transition-all duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0",
           classList?.backdrop,
         )}
       />
       <SheetPrimitive.Popup
         className={createClassName(
-          "fixed z-50 flex max-h-screen flex-col gap-4 border-accent-foreground bg-accent text-popover-foreground outline-hidden transition ease-in-out data-closed:duration-300 data-open:duration-500",
+          "fixed z-50 flex max-h-screen flex-col gap-4 border-accent-foreground bg-background-rich text-foreground outline-hidden transition ease-in-out data-closed:duration-300 data-open:duration-500",
           side === "right" &&
             "inset-y-0 right-0 h-full w-3/4 origin-right border-l data-ending-style:translate-x-full data-starting-style:translate-x-full sm:max-w-sm",
           side === "left" &&
@@ -64,7 +64,7 @@ export const SheetPopup = ({
         {children}
         <SheetPrimitive.Close
           className={createClassName(
-            "absolute top-4 right-4 text-muted-foreground opacity-50 ring-offset-popover transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-[3px] focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+            "absolute top-4 right-4 text-foreground-dimmed opacity-50 ring-offset-background-rich transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
             classList?.close?.root,
           )}
         >

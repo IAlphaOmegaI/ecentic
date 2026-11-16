@@ -1,0 +1,83 @@
+{
+  "dashboard": {
+    "workspace": {
+      "nav": {
+        "label": "店铺工作区",
+        "research": "AI研究",
+        "channels": "渠道",
+        "results": "实际数据",
+        "overview": "概览",
+        "products": "商品",
+        "optimize": "优化"
+      },
+      "sections": {
+        "label": "工作区栏目",
+        "catalog": "商品目录",
+        "quality": "数据质量",
+        "summary": "概览",
+        "comparisons": "商品对比",
+        "brand": "品牌",
+        "questions": "问题",
+        "competitors": "竞品",
+        "catalogRank": "目录排名",
+        "connections": "连接",
+        "google": "Google",
+        "checks": "店铺检查",
+        "access": "目录访问",
+        "checkout": "结账",
+        "developer": "开发者工具",
+        "shoppingTools": "购物工具",
+        "testCheckout": "测试结账",
+        "compareProfiles": "对比配置"
+      },
+      "results": {
+        "title": "实际数据",
+        "description": "查看这家店铺已记录的AI引荐访问和爬虫活动。",
+        "reportsTitle": "所有店铺的报告",
+        "reportsDescription": "导出已保存的对比结果、目录数据和商品信息更改。这些报告涵盖整个账户。",
+        "action": {
+          "primary": "打开报告",
+          "secondary": "查看AI研究"
+        }
+      },
+      "ready": {
+        "title": "已保存的检查中没有紧急待办",
+        "description": "目录发生变化后，请检查渠道或运行新的对比。",
+        "action": {
+          "primary": "检查渠道"
+        }
+      },
+      "reportScope": "此账户中的所有店铺",
+      "reportMethod": "导出内容为已保存的数据。预测提升仅为估算，并非实测结果。",
+      "downloadError": "无法下载报告，请重试。"
+    },
+    "reports": {
+      "title": "报告",
+      "description": "下载所有店铺已保存的对比结果和商品目录数据。",
+      "shareable": {
+        "title": "分享对比报告",
+        "description": "打开最近一次已完成对比的公开报告。分享前请先检查内容。",
+        "action": {
+          "primary": "打开报告"
+        }
+      },
+      "action": {
+        "downloadCsv": "下载CSV"
+      },
+      "items": {
+        "winRateSummary": {
+          "description": "最近一次已完成扫描的各模型结果。"
+        },
+        "productPerformance": {
+          "description": "已保存的商品字段和模拟胜率，含各模型明细。"
+        },
+        "competitorAnalysis": {
+          "description": "已追踪的竞品、可用时的观测价格，以及对比结果。"
+        },
+        "optimizationImpact": {
+          "description": "已保存的商品信息更改、发布日期和模型估算。"
+        }
+      }
+    }
+  }
+}

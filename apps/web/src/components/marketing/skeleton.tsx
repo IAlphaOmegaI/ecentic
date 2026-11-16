@@ -14,12 +14,17 @@ export const MarketingSkeleton = async ({
           identity ? (
             <span
               aria-hidden
-              className="block size-28 rounded-md bg-background-rich/20 sm:size-36"
+              className="block size-28 rounded-sm bg-background-rich/20 sm:size-36"
             />
           ) : undefined
         }
         title={
-          <span role="status" aria-label={enterpriseChrome.loading}>
+          <span
+            role="status"
+            aria-busy="true"
+            aria-label={enterpriseChrome.loading}
+            className="block animate-pulse motion-reduce:animate-none"
+          >
             <span
               aria-hidden="true"
               className="block h-14 w-4/5 bg-background-rich/20"
@@ -39,7 +44,7 @@ export const MarketingSkeleton = async ({
       >
         <div
           aria-hidden="true"
-          className="mt-6 h-10 w-56 max-w-full rounded-md bg-background-rich/20"
+          className="mt-6 h-10 w-56 max-w-full rounded-sm bg-background-rich/20"
         />
       </MarketingHero>
     </MarketingShell>

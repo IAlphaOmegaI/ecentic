@@ -1,5 +1,6 @@
 "use client";
 
+import { BullseyeIcon, CommerceFilePenIcon, RadarIcon } from "@zenncore/icons";
 import {
   Tab,
   Tabs,
@@ -8,29 +9,91 @@ import {
   TabsPanel,
 } from "@zenncore/web/components/tabs";
 import { useTranslations } from "next-intl";
-import type { ReactNode } from "react";
+import { parseAsStringLiteral, useQueryState } from "nuqs";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { type ReactNode, Suspense } from "react";
 
-export const OverviewDetails = ({
+type OverviewView = "products" | "competitors" | "agents";
+
+export const OverviewDetails = (props: OverviewDetails.Props) => (
+  <NuqsAdapter>
+    <Suspense fallback={<OverviewDetailsContent {...props} />}>
+      <OverviewDetailsQuery {...props} />
+    </Suspense>
+  </NuqsAdapter>
+);
+
+const OverviewDetailsQuery = (props: OverviewDetails.Props) => {
+  const [view, setView] = useQueryState(
+    "view",
+    parseAsStringLiteral(["products", "competitors", "agents"]).withDefault(
+      "products",
+    ),
+  );
+  return (
+    <OverviewDetailsContent
+      {...props}
+      view={view}
+      onViewChange={(value) => {
+        void setView(value);
+      }}
+    />
+  );
+};
+
+const OverviewDetailsContent = ({
   products,
   competitors,
   agents,
-}: OverviewDetails.Props) => {
+  view,
+  onViewChange,
+}: OverviewDetails.Props & {
+  view?: OverviewView;
+  onViewChange?: (value: OverviewView) => void;
+}) => {
   const translate = useTranslations("dashboard.overview.tabs");
 
   return (
-    <Tabs defaultValue="products">
-      <TabsList className="h-10 w-full rounded-md border-0 bg-background-dimmed p-1">
-        <TabsIndicator className="top-1 h-8 rounded" />
-        <Tab value="products" className="h-8 flex-1 border-r-0">
-          {translate("topProducts")}
-        </Tab>
-        <Tab value="competitors" className="h-8 flex-1 border-r-0">
-          {translate("competitors")}
-        </Tab>
-        <Tab value="agents" className="h-8 flex-1 border-r-0">
-          {translate("agentVisits")}
-        </Tab>
-      </TabsList>
+    <Tabs
+      id="overview-details"
+      defaultValue="products"
+      value={view}
+      onValueChange={(value) => {
+        if (
+          value === "products" ||
+          value === "competitors" ||
+          value === "agents"
+        )
+          onViewChange?.(value);
+      }}
+      className="min-w-0 scroll-mt-4"
+    >
+      <div className="border-accent-foreground border-b px-4 py-4 sm:px-6">
+        <TabsList className="max-w-full text-sm">
+          <TabsIndicator />
+          <Tab value="products" className="gap-2">
+            <CommerceFilePenIcon
+              aria-hidden
+              className="hidden size-5 shrink-0 sm:block"
+            />
+            {translate("topProducts")}
+          </Tab>
+          <Tab value="competitors" className="gap-2">
+            <BullseyeIcon
+              aria-hidden
+              className="hidden size-5 shrink-0 sm:block"
+            />
+            {translate("competitors")}
+          </Tab>
+          <Tab value="agents" className="gap-2">
+            <RadarIcon
+              aria-hidden
+              className="hidden size-5 shrink-0 sm:block"
+            />
+            {translate("agentVisits")}
+          </Tab>
+        </TabsList>
+      </div>
 
       <TabsPanel value="products" keepMounted>
         {products}
@@ -38,9 +101,7 @@ export const OverviewDetails = ({
       <TabsPanel value="competitors" keepMounted>
         {competitors}
       </TabsPanel>
-      <TabsPanel value="agents" keepMounted>
-        {agents}
-      </TabsPanel>
+      <TabsPanel value="agents">{agents}</TabsPanel>
     </Tabs>
   );
 };

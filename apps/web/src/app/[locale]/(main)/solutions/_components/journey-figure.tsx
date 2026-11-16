@@ -67,7 +67,7 @@ export const JourneyFigure = ({
             {(["shopify", "woocommerce"] as const).map((provider) => (
               <div
                 key={provider}
-                className="relative flex size-14 items-center justify-center rounded-xl border border-background-rich/60 bg-background-rich! p-2 shadow-emphasis-dimmed/20 shadow-lg first:z-1 sm:size-18 sm:p-3"
+                className="relative flex size-14 items-center justify-center rounded-lg border border-background-rich/60 bg-background-rich! p-2 shadow-emphasis-dimmed/20 shadow-lg first:z-1 sm:size-18 sm:p-3"
               >
                 <ProviderLogo
                   provider={provider}
@@ -87,7 +87,7 @@ export const JourneyFigure = ({
         </div>
       ) : stage === 1 ? (
         <div className="absolute inset-x-0 top-4 bottom-8 mx-auto max-w-96">
-          <div className="absolute inset-x-12 top-6 h-16 rounded-[50%] border-primary-rich/25 border-t" />
+          <div className="absolute inset-x-12 top-6 h-16 rounded-full border-primary-rich/25 border-t" />
           <div
             data-assistant-arc
             className="absolute inset-x-8 top-0 grid grid-cols-3 items-start justify-items-center gap-4"
@@ -150,12 +150,12 @@ export const JourneyFigure = ({
                 rotate: `${(position - 1) * 6}deg`,
               }}
               className={cn(
-                "absolute bottom-2 flex h-[44%] w-[28%] flex-col items-center rounded-md border border-background-rich/20 bg-emphasis-dimmed p-3",
+                "absolute bottom-2 flex h-[44%] w-[28%] flex-col items-center rounded-sm border border-background-rich/20 bg-emphasis-dimmed p-3",
                 position === 1 &&
                   "bottom-6 z-1 border-primary-rich/60 bg-linear-to-b from-primary-dimmed to-emphasis-dimmed",
               )}
             >
-              <div className="flex size-10 items-center justify-center rounded border border-background-rich/35">
+              <div className="flex size-10 items-center justify-center rounded-sm border border-background-rich/35">
                 <Icon className="size-5 text-background-rich/70" />
               </div>
               <div className="mt-auto h-px w-full bg-background-rich/45" />
@@ -186,7 +186,7 @@ export const JourneyFigure = ({
             className="h-9 max-w-28 object-contain"
           />
           <span className="h-2 w-2 rounded-full bg-primary-rich" />
-          <div className="flex size-20 items-center justify-center rounded-xl border border-primary-rich/50 bg-linear-to-br from-primary-dimmed to-emphasis-dimmed">
+          <div className="flex size-20 items-center justify-center rounded-lg border border-primary-rich/50 bg-linear-to-br from-primary-dimmed to-emphasis-dimmed">
             <Icon className="size-9 text-background-rich" />
           </div>
         </div>

@@ -1,0 +1,76 @@
+{
+  "dashboard": {
+    "productChannels": {
+      "tab": "Ficha y canales",
+      "title": "Tu producto en cada canal",
+      "description": "Previsualiza la ficha guardada y revisa su conexión y los registros del feed.",
+      "preview": {
+        "title": "Vista previa de la ficha guardada",
+        "description": "Ejemplo visual creado a partir de los datos guardados. La ubicación y el diseño reales pueden variar.",
+        "storefront": "Tienda",
+        "google": "Google",
+        "chatgpt": "ChatGPT",
+        "imageMissing": "No hay ninguna imagen del producto guardada",
+        "descriptionMissing": "No hay ninguna descripción guardada",
+        "priceMissing": "No hay ningún precio guardado",
+        "storefrontNote": "Los datos importados de tu producto",
+        "googleNote": "Información del producto para un resultado de compras",
+        "chatgptNote": "Información del producto para la ficha de un asistente",
+        "sample": "Vista previa",
+        "googleMode": "Modo IA",
+        "details": "Acerca de este producto",
+        "store": "Tienda",
+        "query": "Muéstrame {product}",
+        "action": {
+          "primary": "Visitar sitio"
+        }
+      },
+      "source": {
+        "title": "Conexión del catálogo",
+        "unknown": "No se dispone de los datos de conexión",
+        "unknownDescription": "Abre las integraciones para revisar la conexión del catálogo.",
+        "lastSync": "Catálogo sincronizado",
+        "productSync": "Producto sincronizado",
+        "notSynced": "No hay ninguna sincronización registrada",
+        "status": "Estado de la conexión",
+        "error": "Requiere atención",
+        "unavailable": "Estado no disponible",
+        "connected": "Conectado",
+        "syncing": "Sincronizando el catálogo",
+        "disconnected": "Desconectado",
+        "publicImport": "Importación de un catálogo público",
+        "platform": {
+          "feed": "Feed de productos",
+          "csv": "Importación CSV",
+          "unknown": "Origen del catálogo"
+        }
+      },
+      "google": {
+        "title": "Registros del feed de Google",
+        "description": "Son registros de sincronización guardados, no una comprobación de Google en tiempo real. Una modificación verificada confirma que se ha incorporado la actualización complementaria, no que Google muestre el producto.",
+        "unavailable": "No se han podido cargar los registros del feed. Abre Google Shopping para comprobar la conexión.",
+        "unsupported": "La sincronización complementaria con Google no está disponible para este origen de catálogo.",
+        "notConnected": "Google Merchant Center no está conectado a este catálogo.",
+        "setup": "Es necesario configurar la conexión antes de enviar registros de productos.",
+        "ready": "La conexión está lista. Aún no se ha guardado ningún registro del feed para este producto.",
+        "pending": "Pendiente",
+        "live": "Modificación verificada",
+        "disapproved": "Rechazado",
+        "error": "No se ha podido actualizar",
+        "lastSent": "Enviado {time}",
+        "lastChecked": "Comprobado {time}",
+        "offer": "Oferta {id}"
+      },
+      "assistant": {
+        "title": "Descubrimiento por asistentes",
+        "description": "La vista previa no confirma que ChatGPT haya indexado o recomendado este producto. Mantén completos los datos del producto y revisa los recursos publicados para que los asistentes lo encuentren."
+      },
+      "action": {
+        "primary": "Gestionar conexión",
+        "secondary": "Abrir Google Shopping",
+        "tertiary": "Ver tienda",
+        "quaternary": "Revisar descubrimiento"
+      }
+    }
+  }
+}

@@ -10,6 +10,7 @@ running local app on port 3000. Source checks and review receipts do not need a 
 ```sh
 bun run design:test
 bun run design:source --out ../../output/design-source.json
+bun run design:theme --strict --out ../../output/design-theme.json
 bun run design:runtime --out ../../output/design-runtime.json
 bun run design:review --out ../../output/design-visual.json
 ```
@@ -110,6 +111,25 @@ or alignment are explicitly `not-checked` where source inspection cannot establi
 The source output includes exact files/lines, evidence, registered coverage and consumer paths.
 Keep the registry's component role current when a component changes its job. Missing expected
 coverage must remain visible rather than being mistaken for a clean scan.
+
+## C7: shared theme appearance
+
+`design:theme` scans browser and shared component source for raw utility colors, unapproved
+radius names, local palette literals and arbitrary typography, tracking, line-height, spacing
+or shadow classes. `--strict` fails on those findings. The shared theme permits seven independent
+interface color foundations and four radius treatments: none, sm, lg and full. Semantic mixes,
+opacity and authentic brand/image colors do not create additional independent UI palettes.
+
+Responsive public headings use the existing named text scale at Tailwind breakpoints. The
+projector `/stage` composition retains its viewport-fit drawing geometry, and the fee walkthrough
+retains the cell-size formula required for its 25-column ASCII drawing. These exceptions are
+reported with paths and reasons. They do not exempt arbitrary styles elsewhere.
+
+The check covers literal classes and local CSS palette definitions, not runtime-generated class
+strings or pixels in screenshots. It does not claim every rendered pixel has one of seven colors.
+Chart coordinates, SVG geometry, external embeds and the server social-image renderer retain
+separate review requirements. Verify real foreground/background contrast whenever a foundation
+or selected-control treatment changes; a static token name is not a contrast guarantee.
 
 ## Runtime coverage
 

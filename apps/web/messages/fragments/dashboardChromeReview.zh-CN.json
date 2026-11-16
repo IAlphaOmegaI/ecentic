@@ -1,0 +1,9 @@
+{
+  "dashboard": {
+    "commandPalette": {
+      "states": {
+        "emptyHint": "试试商品名称、SKU 或页面名称。"
+      }
+    }
+  }
+}

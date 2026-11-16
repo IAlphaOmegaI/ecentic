@@ -1,0 +1,32 @@
+{
+  "share": {
+    "review": {
+      "title": "AI 比较结果",
+      "description": "这是一份已保存的 AI 模型商品比较扫描报告。结果反映的是模拟比较，而非真实购物者的活动。",
+      "recorded": "记录日期：{date}",
+      "score": {
+        "label": "比较胜率",
+        "context": "在 {total, plural, other {# 条}}已记录结果中获胜 {wins, plural, other {# 次}}。",
+        "empty": "此次扫描尚未记录任何比较结果。"
+      },
+      "providers": {
+        "title": "按 AI 提供商查看结果",
+        "description": "各模型已记录的获胜和落败次数。",
+        "outcomes": "{wins, plural, other {# 胜}} · {losses, plural, other {# 负}}",
+        "empty": "尚未记录提供商结果。"
+      },
+      "finding": {
+        "title": "主要发现",
+        "details": "阅读报告中的影响分析"
+      },
+      "cta": {
+        "title": "比较您自己的商品",
+        "description": "开始免费扫描，了解 AI 模型如何比较您的商品信息。"
+      },
+      "unavailable": {
+        "title": "此报告暂不可用",
+        "description": "链接可能不正确，或扫描尚未完成。"
+      }
+    }
+  }
+}

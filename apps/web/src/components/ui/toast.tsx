@@ -6,7 +6,6 @@ import {
   XCircleIcon,
   XIcon,
 } from "@zenncore/icons";
-import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import {
   Toast,
@@ -48,14 +47,7 @@ export const ToastList = ({ types }: ToastList.Props) => {
             <Toast
               key={toast.id}
               toast={toast}
-              className={cn(
-                "border-background-rich/20 border-l-4 bg-emphasis p-4 pr-12 text-background-rich shadow-2xl shadow-emphasis/30",
-                toast.type === "error"
-                  ? "border-l-error-foreground"
-                  : toast.type === "success"
-                    ? "border-l-success-rich"
-                    : "border-l-primary-rich",
-              )}
+              className="rounded-overlay border-background-rich/20 bg-emphasis p-4 pr-12 text-background-rich shadow-2xl shadow-emphasis/30"
             >
               <div className="flex items-start gap-4">
                 <span aria-hidden="true" className="mt-0.5 shrink-0">
@@ -78,7 +70,7 @@ export const ToastList = ({ types }: ToastList.Props) => {
               </div>
               <ToastClose
                 aria-label={dismiss("label")}
-                className="top-3 right-3 size-8 rounded-md text-background-rich/70 hover:bg-background-rich/10 hover:text-background-rich focus-visible:outline-2 focus-visible:outline-primary-rich focus-visible:outline-offset-2"
+                className="top-3 right-3 size-8 rounded-sm text-background-rich/70 hover:bg-background-rich/10 hover:text-background-rich focus-visible:outline-2 focus-visible:outline-primary-rich focus-visible:outline-offset-2"
               >
                 <XIcon className="size-4" />
               </ToastClose>

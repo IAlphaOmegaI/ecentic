@@ -49,7 +49,7 @@ export const CapabilityIllustration = ({
       data-capability-illustration={kind}
       className={cn(
         "relative isolate mt-8 overflow-hidden",
-        tall ? "h-[440px] shrink-0 sm:h-[460px]" : "h-48",
+        tall ? "h-110 shrink-0 sm:h-115" : "h-48",
       )}
     >
       {(tall || kind === "catalog") && (
@@ -74,8 +74,8 @@ export const CapabilityIllustration = ({
             className="pointer-events-none absolute inset-x-[18%] top-24 bottom-12 bg-linear-to-b from-primary-rich/10 via-primary/15 to-transparent [clip-path:polygon(34%_0,66%_0,100%_100%,0_100%)]"
           />
           <div aria-hidden className="pointer-events-none absolute inset-0">
-            <div className="absolute inset-x-12 bottom-16 h-24 rounded-[50%] border border-background-rich/10 [transform:rotate(-8deg)]" />
-            <div className="absolute inset-x-20 bottom-20 h-14 rounded-[50%] border border-primary-rich/20 [transform:rotate(-8deg)]" />
+            <div className="absolute inset-x-12 bottom-16 h-24 rounded-full border border-background-rich/10 [transform:rotate(-8deg)]" />
+            <div className="absolute inset-x-20 bottom-20 h-14 rounded-full border border-primary-rich/20 [transform:rotate(-8deg)]" />
             {cardPositions.map((position, index) => (
               <Motion.Item
                 key={position.left}
@@ -101,12 +101,12 @@ export const CapabilityIllustration = ({
                 className={cn(
                   "absolute h-36 w-[24%] max-w-36 rounded-lg border p-4 sm:h-40",
                   index === 1
-                    ? "z-1 border-primary-rich/70 bg-linear-to-br from-primary-dimmed via-emphasis to-emphasis-dimmed shadow-[0_0_48px_-18px_var(--color-primary)]"
+                    ? "z-1 border-primary-rich/70 bg-linear-to-br from-primary-dimmed via-emphasis to-emphasis-dimmed shadow-lg shadow-primary/20"
                     : "border-background-rich/15 bg-linear-to-br from-emphasis-rich to-emphasis-dimmed",
                 )}
               >
                 <div className="flex h-full flex-col justify-between">
-                  <div className="relative grid h-20 place-items-center rounded-md bg-background-rich/4">
+                  <div className="relative grid h-20 place-items-center rounded-sm bg-background-rich/4">
                     <CommerceBasketShoppingIcon
                       className={cn(
                         "size-10",

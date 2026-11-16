@@ -1,0 +1,28 @@
+{
+  "dashboard": {
+    "catalogWorkflow": {
+      "reviewTitle": "インポート内容を確認",
+      "reviewHint": "{count, number}行の商品データをインポートできます。タイトルのない行は除外されます。",
+      "fieldsHint": "title または name 列が必要です。任意の列：description、price、currency、image、url、sku、id。",
+      "idsHint": "id が一致する行は既存の商品を更新します。id のない行は、インポートのたびに新しい商品を作成します。",
+      "previewHint": "読み込めたデータの先頭{count, number}行を表示しています。",
+      "readFailed": "ファイルを読み込めませんでした。もう一度選択してお試しください。",
+      "partial": "{total, number}件中{imported, number}件の商品をインポートしました。このファイルを再度インポートする前に、カタログで結果を確認してください。",
+      "unknownCurrency": "通貨未指定",
+      "allWork": "すべて",
+      "publishable": "公開可能",
+      "manual": "手動確認",
+      "reviewLabel": "作業を絞り込む",
+      "sourceTitle": "カタログの取得元",
+      "sourceHint": "この取得元からインポートし、保存された情報を確認してから、商品の比較や改善に進みます。",
+      "action": {
+        "primary": "ファイルを確認",
+        "secondary": "別のファイルを選択",
+        "tertiary": "インポートを確定",
+        "quaternary": "カタログを開く"
+      },
+      "improveListing": "商品情報の改善",
+      "comparisonResults": "結果"
+    }
+  }
+}

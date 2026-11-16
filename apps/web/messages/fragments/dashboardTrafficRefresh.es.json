@@ -1,0 +1,42 @@
+{
+  "dashboard": {
+    "traffic": {
+      "title": "Tráfico de IA",
+      "description": "Consulta de dónde procede la actividad de IA registrada.",
+      "period": "Últimos 30 días",
+      "source": "Origen",
+      "other": "Otros orígenes",
+      "referrals": {
+        "title": "Visitas desde IA",
+        "short": "Desde IA",
+        "detail": "Eventos registrados como tráfico procedente de IA."
+      },
+      "requests": {
+        "title": "Solicitudes de agentes y rastreadores",
+        "short": "Solicitudes",
+        "detail": "Agentes de usuario detectados, incluidos rastreadores y navegadores con agentes."
+      },
+      "empty": {
+        "title": "Aún no hay actividad de IA registrada",
+        "description": "La actividad aparecerá cuando el seguimiento detecte tráfico procedente de IA o un agente de usuario reconocido."
+      },
+      "action": {
+        "primary": "Revisar conexiones",
+        "secondary": "Reintentar"
+      },
+      "probes": "{count, plural, one {# señal de prueba del seguimiento, excluida de los totales anteriores.} many {# señales de prueba del seguimiento, excluidas de los totales anteriores.} other {# señales de prueba del seguimiento, excluidas de los totales anteriores.}}",
+      "limitation": "Se cuentan eventos registrados, no personas únicas ni compras. El seguimiento en el navegador no captura todas las solicitudes de los rastreadores.",
+      "chart": {
+        "title": "Actividad diaria",
+        "scope": "Solo OpenAI, Anthropic y Google.",
+        "hint": "Esta evolución combina visitas procedentes de IA y solicitudes. Los demás proveedores figuran en el desglose por origen.",
+        "empty": "No hay actividad registrada de estos tres proveedores.",
+        "accessibleLabel": "Actividad diaria registrada. Usa las teclas de flecha para consultar cada fecha."
+      },
+      "error": {
+        "title": "No se ha podido cargar el tráfico",
+        "description": "Los datos de tráfico no están disponibles temporalmente. Recarga esta vista para volver a intentarlo."
+      }
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "dashboard": {
+    "brand": {
+      "answers": {
+        "title": "Gespeicherte Antworten",
+        "description": "Sehen Sie sich die Fragen an, auf denen diese Analyse beruht.",
+        "search": "Fragen, Antworten oder Marken suchen",
+        "filter": "Markennennung",
+        "filters": {
+          "all": "Alle Antworten",
+          "mentioned": "Erwähnt",
+          "absent": "Nicht erwähnt"
+        },
+        "count": "{count, plural, one {# Antwort} other {# Antworten}} von {total, number}",
+        "position": {
+          "top": "Hauptempfehlung",
+          "listed": "In der Liste",
+          "absent": "Nicht erwähnt"
+        },
+        "context": {
+          "named": "Markenname steht in der Frage",
+          "unbranded": "Markenname steht nicht in der Frage"
+        },
+        "answer": "Zusammenfassung der Antwort",
+        "noAnswer": "Es wurde keine Zusammenfassung gespeichert.",
+        "brands": "Genannte Marken",
+        "noBrands": "Keine Marken erfasst.",
+        "sources": "Vom Modell vorgeschlagene Quellen",
+        "sourcesNote": "Diese Quellen wurden vom Modell genannt. Es sind keine verifizierten Quellenbelege aus einer Live-Suche.",
+        "noSources": "Keine Quellen erfasst.",
+        "empty": {
+          "title": "Keine passenden Antworten",
+          "description": "Versuchen Sie eine andere Suche oder zeigen Sie alle Antworten an.",
+          "saved": "Für diese Analyse wurden keine Antworten gespeichert."
+        },
+        "action": {
+          "primary": "Suche und Filter zurücksetzen"
+        }
+      }
+    }
+  }
+}

@@ -16,10 +16,15 @@ const ConnectedScanner = async ({ params }: { params: StoreParams }) => {
   const translate = await getTranslations("webmcpScanner.dashboard");
   return (
     <>
-      <p className="border-accent-foreground border-b bg-background-rich px-6 py-4 text-foreground-dimmed text-sm sm:px-8">
+      <p className="border-accent-foreground border-b bg-background-rich px-4 py-4 text-foreground-dimmed text-sm sm:px-6">
         {translate("store", { name: record.data.name })}
       </p>
-      <Scanner key={store} initialUrl={record.data.domain} store={store} />
+      <Scanner
+        key={store}
+        initialUrl={record.data.domain}
+        store={store}
+        appearance="dashboard"
+      />
     </>
   );
 };

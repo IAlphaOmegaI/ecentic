@@ -20,10 +20,17 @@ export namespace UrlTab {
     onSuccess?: (competitors: Competitor.Type[]) => void;
     store: string;
     className?: string;
+    /** Compact, flush presentation inside the store dashboard. */
+    dashboard?: boolean;
   };
 }
 
-export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
+export const UrlTab = ({
+  className,
+  onSuccess,
+  store,
+  dashboard = false,
+}: UrlTab.Props) => {
   const toast = useToastManager();
   const formatError = useOnboardingError();
   const translate = useTranslations("onboarding.competitors.url");
@@ -74,7 +81,11 @@ export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
 
   return (
     <div
-      className={cn("relative flex h-full flex-col overflow-hidden", className)}
+      className={cn(
+        "relative flex h-full flex-col overflow-hidden",
+        dashboard && "h-auto min-h-64 bg-background-rich",
+        className,
+      )}
     >
       <AnimatePresence mode="wait" initial={false}>
         {!hasResults ? (
@@ -84,15 +95,20 @@ export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="relative flex flex-1 flex-col gap-4 bg-background-dimmed p-4"
+            className={cn(
+              "relative flex flex-1 flex-col gap-4 bg-background-dimmed p-4",
+              dashboard && "bg-background-rich py-6 sm:px-6",
+            )}
           >
-            <Image
-              src="/images/websearch.png"
-              alt=""
-              aria-hidden
-              fill
-              className="pointer-events-none select-none object-contain opacity-10"
-            />
+            {!dashboard && (
+              <Image
+                src="/images/websearch.png"
+                alt=""
+                aria-hidden
+                fill
+                className="pointer-events-none select-none object-contain opacity-10"
+              />
+            )}
             <div className="relative z-20 flex h-full flex-col gap-4">
               <label
                 htmlFor="urls"
@@ -123,7 +139,10 @@ export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
                 type="button"
                 onClick={handleScrape}
                 disabled={!url?.trim() || isScraping}
-                className="mt-auto px-4 py-2 font-medium text-sm"
+                className={cn(
+                  "mt-auto px-4 py-2 font-medium text-sm",
+                  dashboard && "w-fit",
+                )}
               >
                 {isScraping
                   ? translate("action.extracting")
@@ -176,6 +195,7 @@ export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
             )}
 
             <CompetitorResults
+              dashboard={dashboard}
               competitors={competitors}
               noun="product"
               verb="extracted"

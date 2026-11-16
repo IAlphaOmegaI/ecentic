@@ -26,14 +26,14 @@
         "poor": "Scarsa (<50%)",
         "distribution": "Distribuzione della qualità",
         "avgQuality": "qualità media",
-        "kicker": "01.1 — Qualità"
+        "kicker": "Qualità"
       },
       "optimization": {
         "readiness": "Prontezza del prodotto",
         "optimized": "Ottimizzato",
         "pending": "In attesa",
         "unoptimized": "Non ottimizzato",
-        "kicker": "01.2 — Ottimizzazione"
+        "kicker": "Ottimizzazione"
       },
       "detail": {
         "backToProducts": "Torna ai prodotti",
@@ -130,7 +130,7 @@
           "lost": "Perso",
           "noWins": "Nessuna vittoria registrata",
           "noLosses": "Nessuna sconfitta registrata",
-          "kicker": "01 — Schede di confronto"
+          "kicker": "Schede di confronto"
         },
         "audit": {
           "aiContentQuality": "Qualità dei contenuti AI",
@@ -141,7 +141,7 @@
           "title": "Ottimizza la scheda prodotto",
           "description": "Punteggi della qualità dei contenuti per categoria per i campi letti dagli agenti AI, oltre a come questa scheda prodotto è posizionata per il suo pubblico.",
           "completeness": "Completezza:",
-          "currentListing": "02 — Scheda prodotto attuale",
+          "currentListing": "Scheda prodotto attuale",
           "characters": "{count} caratteri",
           "noDescription": "Nessuna descrizione trovata",
           "liveOnStore": "Pubblicato nel negozio",
@@ -157,7 +157,7 @@
           "structuredDataPublished": "Dati strutturati ottimizzati pubblicati",
           "structuredDataPublishedDescription": "Scritti nel metafield ecentic.structured_data. L'embed dell'app ora li mostra al posto del markup prodotto predefinito. Se l'embed è disattivato, attivalo nell'editor del tema e premi Salva.",
           "openThemeEditor": "Apri l'editor del tema",
-          "listingAuditKicker": "01 — Audit AI della scheda prodotto",
+          "listingAuditKicker": "Audit AI della scheda prodotto",
           "status": {
             "optimizedByEcentic": "Ottimizzato da ecentic",
             "ecenticStandard": "standard ecentic",

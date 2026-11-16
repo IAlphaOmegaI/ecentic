@@ -7,15 +7,15 @@
     "hero": {
       "eyebrow": "La couche commerce IA",
       "title": "Une couche entre votre catalogue et l’IA qui le vend.",
-      "description": "Que les clients recherchent sur Google, achètent sur Amazon ou interrogent un chatbot, l’IA répond désormais avec un produit, et chaque assistant applique ses propres règles pour le choisir et l’acheter. ecentic constitue une couche entre votre catalogue et ces assistants. La plateforme corrige les données qu’ils lisent, prépare votre passage de commande pour leur permettre d’acheter et s’adapte à l’évolution de leurs règles.",
+      "description": "Chaque canal d’IA a ses propres règles pour choisir et acheter des produits. ecentic améliore les données lues par l’IA, prépare le paiement sur les canaux compatibles et aide votre catalogue à suivre l’évolution de leurs règles.",
       "actions": [
-        {
-          "label": "Réserver une démo",
-          "href": "/demo"
-        },
         {
           "label": "Analyser ma boutique gratuitement",
           "href": "/sign-up"
+        },
+        {
+          "label": "Réserver une démo",
+          "href": "/demo"
         }
       ],
       "facts": [
@@ -24,6 +24,22 @@
       "screenshot": {
         "alt": "Vue d’ensemble du taux de victoire ecentic affichant explicitement des données d’exemple.",
         "caption": "Capture produit · données d’exemple"
+      },
+      "artwork": {
+        "label": "Exemple de parcours d’achat : une personne cherche des baskets bleues, écentic prépare le flux de produits, l’IA trouve une paire et la personne finalise son achat dans la boutique.",
+        "question": "Trouve-moi une paire de baskets bleues.",
+        "product": "Baskets bleues",
+        "feed": "Flux de produits",
+        "checkout": "Achat dans votre boutique",
+        "confirmed": "Commande confirmée",
+        "stages": [
+          "Une personne pose sa question",
+          "écentic prépare le flux",
+          "L’IA trouve le produit",
+          "La personne fait son choix",
+          "Achat dans votre boutique",
+          "Votre boutique réalise la vente"
+        ]
       }
     },
     "programs": {
@@ -65,9 +81,9 @@
           "title": "Devenez le produit cité dans la réponse.",
           "description": "Marques DTC et grand public",
           "pains": [
+            "Vous ne savez pas pourquoi l’IA choisit vos concurrents.",
             "L’IA recommande un concurrent dans votre propre catégorie.",
-            "Les distributeurs décrivent vos produits mieux que vous.",
-            "Vous ne voyez pas quels produits les assistants ignorent."
+            "Les boutiques qui vendent vos produits les décrivent plus clairement que votre propre site."
           ],
           "href": "/solutions/brands",
           "label": "Découvrir les marques"

@@ -1,0 +1,15 @@
+{
+  "dashboard": {
+    "nav": {
+      "assistant": {
+        "chat": {
+          "heading": "想从哪里开始？",
+          "placeholder": "写下想问 Judy 的问题…",
+          "draftHint": "聊天功能即将上线。离开此工作区前，草稿会保留在这里。",
+          "send": "发送消息",
+          "close": "最小化 Judy"
+        }
+      }
+    }
+  }
+}

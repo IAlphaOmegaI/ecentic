@@ -1,0 +1,12 @@
+{
+  "dashboard": {
+    "commandPalette": {
+      "states": {
+        "unavailable": "Die Suche ist vorübergehend nicht verfügbar. Versuche es erneut."
+      },
+      "action": {
+        "primary": "Erneut versuchen"
+      }
+    }
+  }
+}

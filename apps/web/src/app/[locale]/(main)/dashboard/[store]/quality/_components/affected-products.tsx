@@ -1,116 +1,130 @@
 "use client";
 
-import { ChevronRightIcon } from "@zenncore/icons";
-import { cn } from "@zenncore/utils";
+import { ArrowRightIcon } from "@zenncore/icons";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@zenncore/web/components/avatar";
+import { Button } from "@zenncore/web/components/button";
 import {
-  Collapsible,
-  CollapsiblePanel,
-  CollapsibleTrigger,
-} from "@zenncore/web/components/collapsible";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@zenncore/web/components/table";
-import Image from "next/image";
+  type ColumnDef,
+  DataTable,
+  DataTableProvider,
+} from "@zenncore/web/components/data-table";
+import { useLocale, useTranslations } from "next-intl";
+import { useState } from "react";
 import { Link } from "@/i18n/navigation";
+import type { ListingReport } from "@/server/app/intelligence/listing-quality";
 
-export const ProductThumb = ({
-  src,
-  alt,
-  className,
+export const ProductIdentity = ({
+  product,
+  store,
 }: {
-  src: string | null;
-  alt: string;
-  className?: string;
-}) => (
-  <Avatar
-    className={cn("size-8 shrink-0 rounded-md bg-background-dimmed", className)}
-  >
-    <AvatarImage src={src ?? "/images/fallback.png"} alt={alt} />
-    <AvatarFallback className="relative">
-      <Image src="/images/fallback.png" alt="" fill />
-    </AvatarFallback>
-  </Avatar>
-);
+  product: Pick<ListingReport, "id" | "title" | "image">;
+  store?: string;
+}) => {
+  const locale = useLocale();
+  const title = product.title.trim() || product.id;
+  const identity = (
+    <>
+      <Avatar className="size-10 shrink-0 rounded-lg border border-accent-foreground bg-background">
+        <AvatarImage src={product.image ?? undefined} alt="" />
+        <AvatarFallback className="font-semibold text-foreground-dimmed text-sm">
+          {title.slice(0, 2).toLocaleUpperCase(locale)}
+        </AvatarFallback>
+      </Avatar>
+      <span
+        className="min-w-0 flex-1 truncate font-semibold text-foreground-rich text-sm"
+        title={title}
+      >
+        {title}
+      </span>
+    </>
+  );
+  return store ? (
+    <Link
+      href={`/dashboard/${store}/products/${product.id}`}
+      className="flex min-w-0 items-center gap-4 rounded-sm hover:text-primary-text focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+    >
+      {identity}
+    </Link>
+  ) : (
+    <span className="flex min-w-0 items-center gap-4">{identity}</span>
+  );
+};
 
-export const AffectedProductsTable = ({
-  store,
+export const AffectedProducts = ({
   products,
-  header,
-}: AffectedProductsTable.Props) => (
-  <div className="mt-2 max-h-64 overflow-auto border border-accent-foreground">
-    <Table className="table-fixed border-b-0">
-      <TableHeader>
-        <TableRow>
-          <TableHead className="sticky top-0 bg-background-rich">
-            {header}
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {products.map((product) => (
-          <TableRow key={product.id} className="hover:bg-background">
-            <TableCell className="overflow-hidden py-2">
-              <Link
-                href={`/dashboard/${store}/products/${product.id}`}
-                className="group flex min-w-0 items-center gap-2"
-              >
-                <ProductThumb src={product.image} alt={product.title} />
-                <span className="min-w-0 truncate font-medium text-foreground-rich transition-colors group-hover:text-primary">
-                  {product.title}
-                </span>
-              </Link>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  </div>
-);
-
-export const AffectedProductsDisclosure = ({
   store,
-  products,
-  header,
-  trigger,
-}: AffectedProductsTable.Props & { trigger: string }) => (
-  <Collapsible className="group w-full">
-    <CollapsibleTrigger className="flex w-fit cursor-pointer items-center gap-1 font-medium text-primary-text text-sm underline-offset-2 hover:underline">
-      <ChevronRightIcon
-        aria-hidden
-        className="size-3.5 transition-transform group-data-open:rotate-90"
-      />
-      {trigger}
-    </CollapsibleTrigger>
-    <CollapsiblePanel className="justify-start bg-transparent">
-      <AffectedProductsTable
-        store={store}
-        products={products}
-        header={header}
-      />
-    </CollapsiblePanel>
-  </Collapsible>
-);
-
-export namespace AffectedProductsTable {
-  export type Product = {
-    id: string;
-    title: string;
-    image: string | null;
-  };
-
-  export type Props = {
-    store: string;
-    products: Product[];
-    header: string;
-  };
-}
+}: {
+  products: ListingReport[];
+  store: string;
+}) => {
+  const translate = useTranslations("dashboard.qualityWorkspace");
+  const [limit, setLimit] = useState(6);
+  const rows = products
+    .slice(0, limit)
+    .map((product) => ({ ...product, _id: product.id }));
+  const columns: ColumnDef<(typeof rows)[number]>[] = [
+    {
+      id: "product",
+      header: translate("product"),
+      cell: ({ row }) => (
+        <ProductIdentity product={row.original} store={store} />
+      ),
+    },
+    {
+      id: "open",
+      meta: { className: "w-16" },
+      header: () => (
+        <span className="sr-only">{translate("productAction.primary")}</span>
+      ),
+      cell: ({ row }) => (
+        <Button
+          variant="ghost"
+          color="neutral"
+          size="icon"
+          render={
+            <Link href={`/dashboard/${store}/products/${row.original.id}`} />
+          }
+          aria-label={translate("openProduct", {
+            product: row.original.title.trim() || row.original.id,
+          })}
+        >
+          <ArrowRightIcon className="size-4" />
+        </Button>
+      ),
+    },
+  ];
+  return (
+    <div className="min-w-0 border-accent-foreground border-t bg-background-rich">
+      <DataTableProvider
+        rows={rows}
+        columns={columns}
+        pageSize={Math.max(1, products.length)}
+      >
+        <DataTable
+          className="table-fixed border-b-0"
+          classList={{
+            "header-cell":
+              "bg-background-dimmed/50 px-4 font-medium text-xs normal-case tracking-normal sm:px-6",
+            "body-cell": "px-4 py-2 font-normal sm:px-6",
+            "body-row": "last:border-b-0",
+          }}
+        />
+      </DataTableProvider>
+      {products.length > limit && (
+        <div className="border-accent-foreground border-t px-4 py-4 sm:px-6">
+          <Button
+            variant="soft"
+            color="neutral"
+            onClick={() => setLimit((current) => current + 20)}
+          >
+            {translate("action.quaternary")}
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+};

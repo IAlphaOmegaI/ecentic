@@ -33,7 +33,7 @@ export const NumberFieldScrubArea = ({
   return (
     <NumberFieldPrimitive.ScrubArea
       className={createClassName(
-        "flex h-10 w-24 select-none items-center justify-center border border-accent-foreground bg-background bg-clip-padding text-foreground hover:bg-background-dimmed active:bg-background-dimmed",
+        "flex h-10 w-24 select-none items-center justify-center rounded-lg border border-accent-foreground bg-background bg-clip-padding text-foreground hover:bg-background-dimmed active:bg-background-dimmed",
         className,
         classList?.root,
       )}
@@ -42,7 +42,7 @@ export const NumberFieldScrubArea = ({
       {children}
       <NumberFieldPrimitive.ScrubAreaCursor
         className={createClassName(
-          "drop-shadow-[0_1px_1px_#0008] filter",
+          "drop-shadow-emphasis/50 drop-shadow-sm filter",
           classList?.cursor,
         )}
       >
@@ -97,7 +97,7 @@ export const NumberFieldInput = ({
   return (
     <NumberFieldPrimitive.Input
       className={createClassName(
-        "h-10 w-24 border-accent-foreground border-t border-b text-center text-base text-foreground tabular-nums focus:z-1 focus:outline-2 focus:outline-primary focus:-outline-offset-1",
+        "h-10 w-24 border-accent-foreground border-t border-b text-center text-base text-foreground tabular-nums first:rounded-s-lg last:rounded-e-lg focus:z-1 focus:outline-2 focus:outline-primary focus:-outline-offset-1",
         className,
       )}
       {...props}
@@ -118,7 +118,7 @@ export const NumberFieldDecrement = ({
   return (
     <NumberFieldPrimitive.Decrement
       className={createClassName(
-        "flex select-none items-center justify-center border border-accent-foreground bg-background bg-clip-padding text-foreground hover:bg-background-dimmed active:bg-background-dimmed",
+        "flex select-none items-center justify-center rounded-s-lg border border-accent-foreground bg-background bg-clip-padding text-foreground hover:bg-background-dimmed active:bg-background-dimmed",
         className,
         classList?.root,
       )}
@@ -145,7 +145,7 @@ export const NumberFieldIncrement = ({
   return (
     <NumberFieldPrimitive.Increment
       className={createClassName(
-        "flex select-none items-center justify-center border border-accent-foreground bg-background bg-clip-padding text-foreground hover:bg-background-dimmed active:bg-background-dimmed",
+        "flex select-none items-center justify-center rounded-e-lg border border-accent-foreground bg-background bg-clip-padding text-foreground hover:bg-background-dimmed active:bg-background-dimmed",
         className,
         classList?.root,
       )}

@@ -37,9 +37,9 @@ export const IntegrationCategory = ({
         },
       }}
     >
-      <span className="flex items-center gap-4">
+      <span className="flex min-w-0 items-center gap-4">
         {mark}
-        {title}
+        <span className="wrap-anywhere min-w-0">{title}</span>
       </span>
     </AccordionTrigger>
     <AccordionPanel className="data-ending-style:overflow-hidden data-starting-style:overflow-hidden data-open:overflow-visible">

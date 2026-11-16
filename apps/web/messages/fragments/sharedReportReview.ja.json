@@ -1,0 +1,32 @@
+{
+  "share": {
+    "review": {
+      "title": "AIによる比較結果",
+      "description": "AIモデルが商品を比較した、保存済みのスキャン結果です。実際の買い物客の行動ではなく、シミュレーションの結果を示しています。",
+      "recorded": "記録日：{date}",
+      "score": {
+        "label": "比較での勝率",
+        "context": "記録された{total, plural, other {#件}}の結果のうち、{wins, plural, other {#件}}で勝利。",
+        "empty": "このスキャンには比較結果が記録されていません。"
+      },
+      "providers": {
+        "title": "AIプロバイダー別の結果",
+        "description": "各モデルで記録された勝敗です。",
+        "outcomes": "{wins, plural, other {#勝}} · {losses, plural, other {#敗}}",
+        "empty": "プロバイダー別の結果は記録されていません。"
+      },
+      "finding": {
+        "title": "主な分析結果",
+        "details": "報告された影響を読む"
+      },
+      "cta": {
+        "title": "自社商品を比較する",
+        "description": "無料スキャンを開始して、AIモデルが商品情報をどのように比較するか確認できます。"
+      },
+      "unavailable": {
+        "title": "このレポートは利用できません",
+        "description": "リンクが正しくないか、スキャンがまだ完了していない可能性があります。"
+      }
+    }
+  }
+}

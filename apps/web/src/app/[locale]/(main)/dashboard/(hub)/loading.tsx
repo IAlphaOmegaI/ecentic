@@ -1,10 +1,4 @@
-import {
-  HubShell,
-  StoresSkeleton,
-  UserBadgeSkeleton,
-} from "../_components/hub-shell";
+import { HubShell, StoresSkeleton } from "../_components/hub-shell";
 
 // Keep navigation on the same frame while the account and store data resolve.
-export default () => (
-  <HubShell userBadge={<UserBadgeSkeleton />} stores={<StoresSkeleton />} />
-);
+export default () => <HubShell stores={<StoresSkeleton />} />;

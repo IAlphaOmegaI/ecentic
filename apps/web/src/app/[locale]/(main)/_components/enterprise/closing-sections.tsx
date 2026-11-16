@@ -130,16 +130,22 @@ export const PricingPaths = ({ copy }: PricingPaths.Props) => (
           <p className="mt-4 mb-8 text-foreground-dimmed">{item.body}</p>
           <div className="mt-auto">
             <Button render={<Link href={item.href} />}>
-              {item.label}
-              <ArrowRightIcon aria-hidden className="size-4" />
+              <span className="min-w-0 whitespace-normal text-left">
+                {item.label}
+              </span>
+              <ArrowRightIcon aria-hidden className="size-4 shrink-0" />
             </Button>
           </div>
         </article>
       ))}
     </div>
-    <div className="px-7 py-8 max-sm:px-4">
-      <MarketingActions actions={[copy.action]} className="mt-0" />
-    </div>
+    <Link
+      href={copy.action.href}
+      className="group relative flex min-h-16 w-full items-center justify-between gap-4 px-7 py-6 font-medium text-foreground-rich text-lg transition-colors hover:bg-primary/5 hover:text-primary-text max-sm:px-4"
+    >
+      <span>{copy.action.label}</span>
+      <ArrowRightIcon aria-hidden className="size-4 shrink-0" />
+    </Link>
   </MarketingBand>
 );
 

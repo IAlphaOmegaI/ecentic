@@ -225,7 +225,7 @@ export const SignUpForm = () => {
           onClick={() => handleSubmit({ type: "google" })}
         >
           {provider === "google" && isPending ? (
-            <LoaderIcon className="size-4 animate-spin" />
+            <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
           ) : (
             <Image src="/images/google.svg" alt="" width={16} height={16} />
           )}
@@ -246,14 +246,14 @@ export const SignUpForm = () => {
           }
         >
           {provider === "shopify" && isPending ? (
-            <LoaderIcon className="size-4 animate-spin" />
+            <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
           ) : (
             <Image
               src="/images/shopify.svg"
               alt=""
               width={16}
               height={16}
-              className="size-[16px]"
+              className="size-4"
             />
           )}
           {translate("action.shopify")}
@@ -272,7 +272,7 @@ export const SignUpForm = () => {
                 className="w-full"
               >
                 {isPending ? (
-                  <LoaderIcon className="size-4 animate-spin" />
+                  <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
                 ) : (
                   <ArrowRightIcon className="size-4" />
                 )}
@@ -304,7 +304,7 @@ export const SignUpForm = () => {
           >
             {submitLabel}
             {provider === "credential" && isPending ? (
-              <LoaderIcon className="size-4 animate-spin" />
+              <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
             ) : (
               <ArrowRightIcon className="size-4" />
             )}

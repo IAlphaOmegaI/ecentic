@@ -47,7 +47,7 @@ export const TrialCard = ({
           <div className="mb-2 flex items-center justify-between">
             <div className="flex items-center gap-1.5">
               <span className="inline-block size-2 bg-warning" />
-              <span className="font-medium text-warning text-xs uppercase tracking-[0.2em]">
+              <span className="font-medium text-warning text-xs">
                 {translate("badge")}
               </span>
             </div>
@@ -111,7 +111,7 @@ export const TrialCard = ({
                         repeat: Number.POSITIVE_INFINITY,
                       }}
                     />
-                    <span className="font-medium text-warning text-xs uppercase tracking-[0.2em]">
+                    <span className="font-medium text-warning text-xs">
                       {translate("modal.endingIn", { date: endsOn })}
                     </span>
                   </div>
@@ -156,7 +156,7 @@ export const TrialCard = ({
               )}
 
               <div className="border-accent-foreground border-b px-6 py-5">
-                <p className="mb-3 font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+                <p className="mb-3 font-medium text-foreground-dimmed text-xs">
                   {translate("modal.featuresHeading", { plan })}
                 </p>
                 <div className="grid grid-cols-1 gap-2">

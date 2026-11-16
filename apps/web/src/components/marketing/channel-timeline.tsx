@@ -53,7 +53,7 @@ export const ChannelTimeline = ({ events, locale }: ChannelTimeline.Props) => {
               <TooltipTrigger
                 aria-describedby={`${tooltip}-${event.id}`}
                 render={<Link href={event.source.url} />}
-                className="group block h-auto w-full rounded-xs p-0 text-left text-foreground hover:bg-transparent focus-visible:outline-primary-text data-popup-open:bg-transparent md:text-center"
+                className="group block h-auto w-full rounded-sm p-0 text-left text-foreground hover:bg-transparent focus-visible:outline-primary-text data-popup-open:bg-transparent md:text-center"
               >
                 <span className="flex items-center gap-4 md:justify-center">
                   <ProviderLogo
@@ -63,7 +63,7 @@ export const ChannelTimeline = ({ events, locale }: ChannelTimeline.Props) => {
                   />
                   <time
                     dateTime={event.date}
-                    className="block font-heading text-4xl text-primary-text md:text-[48px] md:leading-none"
+                    className="block font-heading text-4xl text-primary-text md:text-5xl md:leading-none"
                   >
                     {date.format(new Date(`${event.date}T12:00:00Z`))}
                   </time>
@@ -82,7 +82,7 @@ export const ChannelTimeline = ({ events, locale }: ChannelTimeline.Props) => {
                 <TooltipPopup
                   id={`${tooltip}-${event.id}`}
                   role="tooltip"
-                  className={`${fonts} max-w-[min(340px,calc(100vw-32px))] rounded-md border-accent-foreground bg-background-rich p-4 font-body text-foreground text-sm leading-relaxed shadow-none`}
+                  className={`${fonts} max-w-[min(340px,calc(100vw-32px))] rounded-sm border-accent-foreground bg-background-rich p-4 font-body text-foreground text-sm leading-relaxed shadow-none`}
                 >
                   <p>
                     {date.format(new Date(`${event.date}T12:00:00Z`))} 2026 ·{" "}

@@ -5,7 +5,7 @@ import { and, eq, inArray } from "drizzle-orm";
 import { after } from "next/server";
 import { z } from "zod";
 import * as Evidence from "@/lib/competitor-evidence";
-import { countSimulations } from "@/lib/scan-estimate";
+import { countSimulations, uniformPairing } from "@/lib/scan-estimate";
 import { withAuthentication } from "@/server/utils/authentication";
 import { schema } from "../../database";
 import * as AI from "../../utils/ai";

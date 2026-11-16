@@ -1,0 +1,44 @@
+{
+  "dashboard": {
+    "ucpComparison": {
+      "workbench": {
+        "sourceTitle": "Your storefront",
+        "sourceDescription": "Choose the catalog to compare. Its results stay separate from competitors.",
+        "sameRequest": "One buyer request, the same search across every store.",
+        "competitorDescription": "Add up to five stores with MCP shopping endpoints in their UCP profiles.",
+        "competitorLabel": "Competitor {number, number}",
+        "slots": "{count, number} / 5",
+        "validation": {
+          "domain": "Enter a store domain or an HTTP(S) URL.",
+          "request": "Use 1,000 characters or fewer for the buyer request.",
+          "unique": "Use a different storefront for each entry."
+        },
+        "requestHint": "Optional. Leave blank for a general product search.",
+        "ready": "{count, plural, =0 {Add a storefront to begin.} one {Your store is selected.} other {# stores in this comparison.}}",
+        "running": "Reading the store profiles…",
+        "failure": {
+          "title": "Couldn’t compare these stores",
+          "description": "The comparison couldn’t finish. Check the store results below, then try again.",
+          "store": "Couldn’t read a compatible shopping endpoint. Check this store’s UCP profile."
+        },
+        "log": {
+          "parameters": "Search parameters",
+          "profile": "Profile resolved",
+          "searching": "Searching",
+          "results": "{count, plural, one {# product returned} other {# products returned}}"
+        }
+      }
+    },
+    "ucpPlaygroundDashboard": {
+      "connect": {
+        "failure": {
+          "title": "Couldn’t connect to this store",
+          "domain": "Enter a store domain and try again.",
+          "unreachable": "Check the domain and try again. We couldn’t reach its UCP profile.",
+          "profile": "We couldn’t read a valid UCP profile for this store. Check its checkout setup.",
+          "shopping": "This store hasn’t published a supported shopping endpoint in its UCP profile."
+        }
+      }
+    }
+  }
+}

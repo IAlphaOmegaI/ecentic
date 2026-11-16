@@ -58,7 +58,7 @@ export const WooCheckoutJourney = async () => {
       <div className="relative grid min-w-0 border-accent-foreground border-y lg:grid-cols-[0.8fr_1.2fr]">
         <div className="relative min-w-0 bg-linear-to-br from-primary/12 via-primary/4 to-transparent px-8 py-10 max-sm:px-4">
           <div aria-hidden className="mb-8 flex items-center gap-4">
-            <span className="grid size-12 place-items-center rounded-md border border-primary/30 bg-background-rich text-primary-text">
+            <span className="grid size-12 place-items-center rounded-sm border border-primary/30 bg-background-rich text-primary-text">
               <CommercePhoneIcon className="size-6" />
             </span>
             <span className="font-heading text-3xl text-primary-text">05</span>
@@ -103,7 +103,7 @@ export const WooCheckoutJourney = async () => {
                 aria-hidden
                 className="flex shrink-0 flex-col items-center gap-4"
               >
-                <span className="grid size-12 place-items-center rounded-md border border-accent-foreground bg-background-rich text-primary-text">
+                <span className="grid size-12 place-items-center rounded-sm border border-accent-foreground bg-background-rich text-primary-text">
                   <Icon className="size-6" />
                 </span>
                 <span className="font-heading text-2xl text-primary-text">

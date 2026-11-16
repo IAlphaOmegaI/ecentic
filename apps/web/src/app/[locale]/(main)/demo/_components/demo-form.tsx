@@ -131,7 +131,7 @@ export const DemoForm = ({
                 <div
                   aria-hidden="true"
                   className={cn(
-                    "absolute top-[3.25rem] right-0 left-0 h-px max-sm:top-[2.75rem]",
+                    "absolute top-13 right-0 left-0 h-px max-sm:top-11",
                     index === 0 && "left-8 max-sm:left-3",
                     index === 2 &&
                       "right-[calc(100%_-_2rem)] max-sm:right-[calc(100%_-_0.75rem)]",

@@ -93,7 +93,7 @@ export const NotFoundContent = async ({ locale }: NotFoundContent.Props) => {
         </div>
         <div className="grid grid-cols-[minmax(0,1fr)_260px] items-end gap-x-10 gap-y-6 px-8 pt-4 pb-10 max-sm:grid-cols-[minmax(0,1fr)_148px] max-sm:gap-x-4 max-sm:gap-y-4 max-sm:px-4 max-sm:pb-6 max-[360px]:grid-cols-[minmax(0,1fr)_96px] max-[360px]:gap-x-2">
           <div className="col-start-1 max-sm:col-span-2">
-            <h1 className="text-[clamp(2.5rem,4.5vw,4rem)]">
+            <h1 className="text-4xl lg:text-5xl xl:text-6xl">
               <span className="sr-only">404. </span>
               {content.title}
             </h1>

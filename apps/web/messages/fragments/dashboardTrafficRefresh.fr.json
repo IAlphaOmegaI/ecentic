@@ -1,0 +1,42 @@
+{
+  "dashboard": {
+    "traffic": {
+      "title": "Trafic IA",
+      "description": "Consultez l’origine de l’activité IA enregistrée.",
+      "period": "30 derniers jours",
+      "source": "Source",
+      "other": "Autres sources",
+      "referrals": {
+        "title": "Visites depuis l’IA",
+        "short": "Depuis l’IA",
+        "detail": "Événements classés comme du trafic provenant de l’IA."
+      },
+      "requests": {
+        "title": "Requêtes d’agents et de robots",
+        "short": "Requêtes",
+        "detail": "Agents utilisateurs détectés, dont les robots d’exploration et les navigateurs avec agents."
+      },
+      "empty": {
+        "title": "Aucune activité IA enregistrée pour le moment",
+        "description": "L’activité apparaît lorsque le suivi détecte du trafic provenant de l’IA ou un agent utilisateur reconnu."
+      },
+      "action": {
+        "primary": "Vérifier les connexions",
+        "secondary": "Réessayer"
+      },
+      "probes": "{count, plural, one {# signal de test du suivi, exclu des totaux ci-dessus.} many {# signaux de test du suivi, exclus des totaux ci-dessus.} other {# signaux de test du suivi, exclus des totaux ci-dessus.}}",
+      "limitation": "Les chiffres comptent des événements enregistrés, pas des personnes uniques ni des achats. Le suivi dans le navigateur ne capte pas toutes les requêtes des robots.",
+      "chart": {
+        "title": "Activité quotidienne",
+        "scope": "OpenAI, Anthropic et Google uniquement.",
+        "hint": "Cette courbe regroupe les visites provenant de l’IA et les requêtes. Les autres fournisseurs figurent dans le détail par source.",
+        "empty": "Aucune activité enregistrée pour ces trois fournisseurs.",
+        "accessibleLabel": "Activité quotidienne enregistrée. Utilisez les touches fléchées pour consulter chaque date."
+      },
+      "error": {
+        "title": "Impossible de charger le trafic",
+        "description": "Les données de trafic sont temporairement indisponibles. Rechargez cette vue pour réessayer."
+      }
+    }
+  }
+}

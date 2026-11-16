@@ -1,0 +1,28 @@
+{
+  "dashboard": {
+    "catalogWorkflow": {
+      "reviewTitle": "Import prüfen",
+      "reviewHint": "{count, number} Produktzeilen sind für den Import bereit. Zeilen ohne Titel werden übersprungen.",
+      "fieldsHint": "Verwenden Sie eine Spalte title oder name. Optionale Spalten: description, price, currency, image, url, sku und id.",
+      "idsHint": "Zeilen mit einer passenden id aktualisieren das vorhandene Produkt. Ohne id wird bei jedem Import ein neues Produkt angelegt.",
+      "previewHint": "Die ersten {count, number} akzeptierten Zeilen werden angezeigt.",
+      "readFailed": "Die Datei konnte nicht gelesen werden. Wählen Sie sie erneut aus und versuchen Sie es noch einmal.",
+      "partial": "{imported, number} von {total, number} Produkten importiert. Prüfen Sie das Ergebnis im Katalog, bevor Sie diese Datei erneut importieren.",
+      "unknownCurrency": "Währung nicht angegeben",
+      "allWork": "Alle Aufgaben",
+      "publishable": "Bereit zur Veröffentlichung",
+      "manual": "Manuell prüfen",
+      "reviewLabel": "Aufgaben filtern",
+      "sourceTitle": "Katalogquelle",
+      "sourceHint": "Importieren Sie aus dieser Quelle, prüfen Sie die gespeicherten Angaben und vergleichen oder verbessern Sie dann den Produkteintrag.",
+      "action": {
+        "primary": "Datei prüfen",
+        "secondary": "Andere Datei wählen",
+        "tertiary": "Import bestätigen",
+        "quaternary": "Katalog öffnen"
+      },
+      "improveListing": "Produktseite verbessern",
+      "comparisonResults": "Ergebnisse"
+    }
+  }
+}

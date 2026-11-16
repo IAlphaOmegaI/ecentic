@@ -49,6 +49,16 @@
       "aiInstructions": "AI instructions",
       "tools": "Free tools"
     },
-    "loading": "Loading page"
+    "loading": "Loading page",
+    "authenticated": {
+      "action": {
+        "primary": "Go to dashboard"
+      },
+      "compact": {
+        "action": {
+          "primary": "Dashboard"
+        }
+      }
+    }
   }
 }

@@ -65,7 +65,7 @@ export const JourneySteps = ({
                 )}
               />
             )}
-            <span className="relative grid size-12 place-items-center rounded-md border border-accent-foreground bg-background text-primary-text">
+            <span className="relative grid size-12 place-items-center rounded-sm border border-accent-foreground bg-background text-primary-text">
               <Icon className="size-6" />
             </span>
           </div>
@@ -153,7 +153,7 @@ export const ConnectedJourney = ({
           >
             <div
               aria-hidden
-              className="absolute top-7 left-6 grid size-12 place-items-center rounded-md border border-accent-foreground bg-background text-foreground-dimmed group-data-open/journey:border-primary/40 group-data-open/journey:text-primary-text max-sm:left-2"
+              className="absolute top-7 left-6 grid size-12 place-items-center rounded-sm border border-accent-foreground bg-background text-foreground-dimmed group-data-open/journey:border-primary/40 group-data-open/journey:text-primary-text max-sm:left-2"
             >
               <Icon className="size-6" />
             </div>

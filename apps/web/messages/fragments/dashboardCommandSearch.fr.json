@@ -1,0 +1,12 @@
+{
+  "dashboard": {
+    "commandPalette": {
+      "states": {
+        "unavailable": "La recherche est temporairement indisponible. Réessayez."
+      },
+      "action": {
+        "primary": "Réessayer"
+      }
+    }
+  }
+}

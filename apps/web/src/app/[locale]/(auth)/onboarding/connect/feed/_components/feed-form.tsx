@@ -105,7 +105,7 @@ export const FeedForm = () => {
         {isPending ? (
           <>
             {translate("feed.action.importing")}
-            <LoaderIcon className="size-4 animate-spin" />
+            <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
           </>
         ) : (
           <>

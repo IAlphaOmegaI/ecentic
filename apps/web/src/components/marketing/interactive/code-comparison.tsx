@@ -102,7 +102,7 @@ export const CodeDiff = ({
         </span>
         <span className="ml-auto max-sm:ml-0">{copy.unchanged}</span>
       </div>
-      <pre className="min-w-0 py-6 font-mono text-[13px] leading-6 max-sm:text-xs">
+      <pre className="min-w-0 py-6 font-mono text-xs leading-6 max-sm:text-xs">
         <code>
           {lines.map((line) => (
             <span
@@ -221,7 +221,7 @@ export const AnnotatedCodeComparison = ({
       {image && (
         <div
           className={cn(
-            "relative size-24 shrink-0 overflow-hidden rounded-md max-sm:size-20",
+            "relative size-24 shrink-0 overflow-hidden rounded-sm max-sm:size-20",
             image.artwork
               ? "bg-emphasis-dimmed p-2 text-primary-rich"
               : "bg-background-rich",

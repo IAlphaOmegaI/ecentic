@@ -1,0 +1,129 @@
+{
+  "dashboard": {
+    "overview": {
+      "description": "Cosa richiede attenzione, cosa è cambiato e cosa fare ora.",
+      "summary": {
+        "latestWinRate": "Ultimo tasso di vittoria simulato",
+        "latestResult": "{wins, plural, one {# vittoria} many {# vittorie} other {# vittorie}} su {total, plural, one {# confronto} many {# confronti} other {# confronti}}",
+        "change": "{value} punti percentuali",
+        "coverage": "Prodotti confrontati",
+        "coverageDetail": "{count, number} su {total, plural, one {# prodotto del catalogo} many {# prodotti del catalogo} other {# prodotti del catalogo}}",
+        "coverageHint": "In base ai confronti tra prodotti completati.",
+        "noResult": "Avvia la prima scansione per vedere i risultati.",
+        "topPerformer": "Prodotto con il miglior risultato",
+        "opportunity": "Prodotto da migliorare",
+        "productRate": "Confronti vinti: {rate}",
+        "updated": "Ultima scansione completata {time}",
+        "action": {
+          "primary": "Visualizza prodotto",
+          "secondary": "Migliora questo prodotto",
+          "tertiary": "Scegli prodotti"
+        },
+        "emptyProduct": "I risultati dei prodotti appariranno dopo la prima scansione."
+      },
+      "charts": {
+        "recentActivity": "Scansioni recenti",
+        "latestScan": "Ultima scansione completata",
+        "action": {
+          "tertiary": "Visualizza simulazioni",
+          "primary": "Esamina l’ultima scansione"
+        },
+        "winRateTrend": "Tasso di vittoria per scansione",
+        "winRateByModel": "Tasso di vittoria medio dei prodotti per modello",
+        "modelHint": "La media di ogni modello sui prodotti confrontati.",
+        "states": {
+          "noTrend": "Nessuna scansione completata per ora."
+        },
+        "change": "Dalla scansione precedente",
+        "sampleNote": "Ogni punto è una scansione distinta; i prodotti e i concorrenti selezionati possono variare."
+      },
+      "tabs": {
+        "topProducts": "Prodotti",
+        "competitors": "Concorrenti",
+        "agentVisits": "Visite AI"
+      },
+      "priorities": {
+        "title": "Prossimi passi",
+        "description": "Completa le informazioni mancanti sui prodotti, poi ripeti il confronto.",
+        "fields": {
+          "description": {
+            "title": "Aggiungi le descrizioni mancanti",
+            "detail": "{count, plural, one {# prodotto non ha una descrizione.} many {# prodotti non hanno una descrizione.} other {# prodotti non hanno una descrizione.}}"
+          },
+          "price": {
+            "title": "Aggiungi i prezzi mancanti",
+            "detail": "{count, plural, one {# prodotto non ha un prezzo.} many {# prodotti non hanno un prezzo.} other {# prodotti non hanno un prezzo.}}"
+          },
+          "sku": {
+            "title": "Aggiungi gli SKU mancanti",
+            "detail": "{count, plural, one {# prodotto non ha uno SKU.} many {# prodotti non hanno uno SKU.} other {# prodotti non hanno uno SKU.}}"
+          },
+          "complete": {
+            "title": "I campi essenziali dei prodotti sono compilati",
+            "detail": "Descrizioni, prezzi e SKU verificati."
+          }
+        },
+        "compare": {
+          "title": "Confronta i prodotti rimanenti",
+          "detail": "{count, plural, one {# prodotto non è ancora stato confrontato.} many {# prodotti non sono ancora stati confrontati.} other {# prodotti non sono ancora stati confrontati.}}",
+          "complete": {
+            "title": "Tutto il catalogo è stato confrontato",
+            "detail": "{count, plural, one {# prodotto con confronti completati.} many {# prodotti con confronti completati.} other {# prodotti con confronti completati.}}"
+          }
+        },
+        "optimize": {
+          "title": "Esamina le opportunità per le schede prodotto",
+          "detail": "{count, plural, one {# prodotto nella coda di ottimizzazione.} many {# prodotti nella coda di ottimizzazione.} other {# prodotti nella coda di ottimizzazione.}}",
+          "complete": {
+            "title": "Nessuna opportunità per le schede prodotto in coda",
+            "detail": "Esamina la diagnostica delle schede prodotto dopo la prossima scansione."
+          }
+        },
+        "action": {
+          "primary": "Controlla i dettagli del prodotto",
+          "secondary": "Scegli prodotti",
+          "tertiary": "Apri Ottimizza",
+          "quaternary": "Visualizza confronti"
+        }
+      },
+      "traffic": {
+        "title": "Traffico AI osservato",
+        "description": "Eventi registrati negli ultimi 30 giorni.",
+        "referrals": "Visite dagli assistenti AI",
+        "crawlers": "Richieste di agenti e crawler",
+        "hint": "Si tratta di visite e richieste registrate, non di acquirenti unici o acquisti.",
+        "action": {
+          "primary": "Esamina il traffico AI"
+        }
+      }
+    },
+    "shared": {
+      "activity": {
+        "simulationPending": "Scansione in coda — {total, plural, one {# confronto} many {# confronti} other {# confronti}}",
+        "simulationFailed": "Scansione non riuscita — {completed, plural, one {# confronto completato} many {# confronti completati} other {# confronti completati}} su {total, number}"
+      }
+    },
+    "nav": {
+      "assistant": {
+        "title": "Chiedi a Judy",
+        "status": "Anteprima",
+        "description": "Stiamo preparando Judy. La chat e le azioni sul catalogo non sono ancora disponibili; nel frattempo, usa gli strumenti della dashboard.",
+        "name": "Judy"
+      }
+    },
+    "products": {
+      "table": {
+        "overviewTools": {
+          "sort": "Ordina",
+          "defaultOrder": "Ordine predefinito",
+          "ascending": "Crescente",
+          "descending": "Decrescente",
+          "comparison": "Stato del confronto",
+          "all": "Tutti i prodotti",
+          "compared": "Confrontati",
+          "notCompared": "Non confrontati"
+        }
+      }
+    }
+  }
+}

@@ -7,10 +7,10 @@ import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
-import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useOnboardingError } from "@/app/[locale]/(auth)/onboarding/_components/use-onboarding-error";
+import { FeedbackState } from "@/components/feedback-state";
 import { useRouter } from "@/i18n/navigation";
 import { formatElapsed } from "@/lib/date";
 import * as Competitor from "@/server/app/competitor";
@@ -72,6 +72,8 @@ export namespace AutoDetectTab {
     onSuccess?: (competitors: Competitor.Type[]) => void;
     store: string;
     className?: string;
+    /** Compact, flush presentation inside the store dashboard. */
+    dashboard?: boolean;
   };
 }
 
@@ -80,6 +82,7 @@ export const AutoDetectTab = ({
   onSuccess,
   store,
   className,
+  dashboard = false,
 }: AutoDetectTab.Props) => {
   const locale = useLocale();
 
@@ -211,42 +214,25 @@ export const AutoDetectTab = ({
   });
 
   return (
-    <div className={cn("relative flex h-full bg-background-dimmed", className)}>
+    <div
+      className={cn(
+        "relative flex h-full bg-background-dimmed",
+        dashboard && "h-auto min-h-64 bg-background-rich",
+        className,
+      )}
+    >
       <AnimatePresence mode="wait" initial={false}>
         {!isDetecting && logs.length === 0 && (
-          <motion.div
-            key="idle"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="m-auto flex size-full h-full flex-1 flex-col items-center justify-center p-4"
+          <FeedbackState
+            title={translate("title")}
+            description={translate("description")}
+            figure="research-telescope"
+            scope="page"
           >
-            <Image
-              src="/images/auto-detect.png"
-              alt=""
-              aria-hidden
-              fill
-              className="pointer-events-none select-none object-contain opacity-10"
-            />
-
-            <div className="relative z-20">
-              <h3 className="text-center font-medium text-2xl text-foreground">
-                {translate("title")}
-              </h3>
-              <p className="relative text-center text-foreground-dimmed text-lg">
-                {translate("description")}
-              </p>
-            </div>
-            <Button
-              color="primary"
-              type="button"
-              onClick={handleDetect}
-              className="relative z-20 mt-4"
-            >
-              {translate("action")} <RadarIcon />
+            <Button color="primary" type="button" onClick={handleDetect}>
+              {translate("action")} <RadarIcon aria-hidden className="size-4" />
             </Button>
-          </motion.div>
+          </FeedbackState>
         )}
 
         {(isDetecting || logs.length > 0) && (
@@ -256,7 +242,10 @@ export const AutoDetectTab = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="flex h-full max-h-full min-h-0 flex-1 flex-col"
+            className={cn(
+              "flex h-full max-h-full min-h-0 flex-1 flex-col",
+              dashboard && "h-96",
+            )}
           >
             <div
               className={cn(
@@ -276,7 +265,7 @@ export const AutoDetectTab = ({
                     className="inline-block size-1.5 rounded-full bg-primary"
                   />
                 )}
-                <span className="font-medium text-foreground uppercase tracking-widest">
+                <span className="font-medium text-foreground text-sm">
                   {isDetecting ? translate("scanning") : translate("complete")}
                 </span>
               </div>
@@ -337,7 +326,7 @@ export const AutoDetectTab = ({
                     elapsed: formatElapsed(elapsed, locale),
                   })}
                 </span>
-                <Button onClick={handleDetect} color="accent">
+                <Button onClick={handleDetect} color="neutral" variant="soft">
                   {translate("runAgain")}
                 </Button>
               </div>

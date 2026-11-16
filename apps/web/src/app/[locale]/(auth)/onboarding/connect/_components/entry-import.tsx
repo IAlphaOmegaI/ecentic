@@ -118,7 +118,7 @@ export const EntryImport = ({ entry, children }: EntryImport.Props) => {
     >
       {translate("entry.action.secondary")}
       {isDismissing ? (
-        <LoaderIcon className="size-4 animate-spin" />
+        <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
       ) : (
         <ArrowRightIcon className="size-4" />
       )}
@@ -252,7 +252,7 @@ const Step = ({
         {done ? (
           <CheckIcon className="size-3.5" />
         ) : (
-          <LoaderIcon className="size-4 animate-spin" />
+          <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
         )}
       </span>
       <span>{children}</span>

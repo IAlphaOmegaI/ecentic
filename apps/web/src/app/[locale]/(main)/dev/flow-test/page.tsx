@@ -10,7 +10,7 @@ export default () => (
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div>
-            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
+            <h1 className="mt-3 font-bold text-3xl text-foreground-rich tracking-tight">
               UCP Flow Tester
             </h1>
             <p className="mt-1 text-foreground-dimmed text-sm">

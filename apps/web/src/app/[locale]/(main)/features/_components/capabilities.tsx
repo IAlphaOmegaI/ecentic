@@ -55,7 +55,7 @@ export const Capabilities = async () => {
                 className={cn(
                   "relative flex flex-col p-6 md:min-h-96 md:p-8",
                   "highlighted" in capability && capability.highlighted
-                    ? "bg-primary text-white"
+                    ? "bg-primary text-background-rich"
                     : "bg-background-rich text-foreground",
                 )}
               >
@@ -63,7 +63,7 @@ export const Capabilities = async () => {
                   className={cn(
                     "flex size-9 items-center justify-center border",
                     "highlighted" in capability && capability.highlighted
-                      ? "border-white/20 bg-white/10 text-white"
+                      ? "border-background-rich/20 bg-background-rich/10 text-background-rich"
                       : "border-accent-foreground bg-background text-primary",
                   )}
                 >
@@ -76,7 +76,7 @@ export const Capabilities = async () => {
                   className={cn(
                     "mt-2 font-body font-light text-lg",
                     "highlighted" in capability && capability.highlighted
-                      ? "text-white"
+                      ? "text-background-rich"
                       : "text-foreground-dimmed",
                   )}
                 >
@@ -86,7 +86,7 @@ export const Capabilities = async () => {
                   className={cn(
                     "mt-6 flex flex-col gap-2.5 border-t pt-6 md:mt-auto",
                     "highlighted" in capability && capability.highlighted
-                      ? "border-white/20"
+                      ? "border-background-rich/20"
                       : "border-accent-foreground",
                   )}
                 >
@@ -96,7 +96,7 @@ export const Capabilities = async () => {
                         className={cn(
                           "mt-1 size-4 shrink-0",
                           "highlighted" in capability && capability.highlighted
-                            ? "text-white/80"
+                            ? "text-background-rich/80"
                             : "text-primary",
                         )}
                       />
@@ -104,7 +104,7 @@ export const Capabilities = async () => {
                         className={cn(
                           "font-body font-light",
                           "highlighted" in capability && capability.highlighted
-                            ? "text-white"
+                            ? "text-background-rich"
                             : "text-foreground-dimmed",
                         )}
                       >

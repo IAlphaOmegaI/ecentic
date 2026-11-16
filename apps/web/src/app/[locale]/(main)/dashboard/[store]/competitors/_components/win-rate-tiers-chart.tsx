@@ -68,7 +68,7 @@ export const WinRateTiersChart = ({
                 })();
 
                 return (
-                  <div className="flex items-baseline gap-3 whitespace-nowrap rounded-md border border-accent-foreground bg-background-rich px-3 py-1.5 shadow-md">
+                  <div className="flex items-baseline gap-3 whitespace-nowrap rounded-sm border border-accent-foreground bg-background-rich px-3 py-1.5 shadow-md">
                     <span className="text-foreground-dimmed text-sm">
                       {entry.name}
                     </span>
@@ -92,7 +92,7 @@ export const WinRateTiersChart = ({
         {tiers.map((tier) => (
           <div key={tier.label} className="flex items-start gap-2">
             <div
-              className={cn("mt-1 size-2 shrink-0 rounded-[2px]", tier.color)}
+              className={cn("mt-1 size-2 shrink-0 rounded-sm", tier.color)}
             />
             <div>
               <p className="text-foreground-dimmed text-xs">{tier.label}</p>

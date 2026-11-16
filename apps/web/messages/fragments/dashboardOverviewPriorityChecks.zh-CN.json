@@ -1,0 +1,16 @@
+{
+  "dashboard": {
+    "overview": {
+      "priorityChecks": {
+        "incomplete": {
+          "title": "完善商品信息",
+          "detail": "{count, plural, other {# 件商品缺少目录信息。}}"
+        },
+        "unavailable": {
+          "title": "暂时无法查看优化建议",
+          "description": "打开“优化”，查看此店铺可用的检查。"
+        }
+      }
+    }
+  }
+}

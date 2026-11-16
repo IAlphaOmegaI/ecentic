@@ -1,0 +1,94 @@
+{
+  "dashboard": {
+    "optimizeWorkspace": {
+      "title": "Optimize",
+      "description": "Turn comparison findings into better listings. Review the facts before publishing.",
+      "action": {
+        "primary": "Generate & publish",
+        "secondary": "Review listing",
+        "tertiary": "Check data quality",
+        "quaternary": "Try again"
+      },
+      "queue": {
+        "title": "Your next listing changes",
+        "description": "Start with the lowest simulated win rates. Open a product to inspect the evidence.",
+        "sample": "This queue uses saved diagnostic suggestions. Check Data quality for the full active-catalog audit.",
+        "count": "{count, plural, one {# product shown} other {# products shown}}"
+      },
+      "search": "Search products or SKU…",
+      "tabs": {
+        "queue": "To review",
+        "published": "Published",
+        "dismissed": "Dismissed"
+      },
+      "summary": {
+        "candidates": "Eligible for publishing",
+        "manual": "Require manual changes",
+        "published": "Published records"
+      },
+      "row": {
+        "rate": "Simulated win rate",
+        "manual": "Manual changes",
+        "ready": "Publishing available",
+        "context": "Recorded models: {models}"
+      },
+      "method": {
+        "title": "How this queue works",
+        "description": "Candidates have a recorded win rate below 55%. Dismissed products and listings published within the last 14 days are excluded from publishing candidates. A candidate is not a saved draft. Generate & publish creates new copy and immediately replaces the store listing. These suggestions do not predict sales or future win rates."
+      },
+      "states": {
+        "empty": {
+          "title": "Nothing waiting for review",
+          "description": "No listing suggestions are available for this store. Check product data or run a comparison to find the next improvement."
+        },
+        "filtered": {
+          "title": "No matching products",
+          "description": "Try a different product name or SKU."
+        },
+        "error": {
+          "title": "The queue could not be loaded",
+          "description": "Your product data is still saved. Try loading the queue again."
+        }
+      },
+      "confirmation": {
+        "title": "Publish a new listing?",
+        "description": "Generate a new title and description for {title}, then publish them to your connected store. This replaces the current listing without a separate draft review.",
+        "bulkTitle": "Publish changes for this store?",
+        "bulkDescription": "Generate and publish new titles and descriptions for {count, plural, one {# eligible product} other {# eligible products}} in this store. Existing listings will be replaced.",
+        "storeTitle": "Optimize the connected store?",
+        "storeDescription": "Write product structured data and, for Shopify, a store profile. Generate and publish copy for eligible products in this store. This can make several live changes.",
+        "action": {
+          "primary": "Confirm & publish",
+          "secondary": "Keep reviewing"
+        }
+      },
+      "bulk": {
+        "action": "Publish eligible products"
+      },
+      "store": {
+        "action": "Optimize store"
+      },
+      "toast": {
+        "failed": "The change could not be completed",
+        "failedDescription": "Please try again. If publishing started, check the product before retrying.",
+        "published": "{count, plural, one {# listing published} other {# listings published}}",
+        "partial": "{published} published; {failed} could not be completed. Review the remaining products before trying again.",
+        "saved": "Queue updated"
+      },
+      "history": {
+        "unmeasured": "A new comparison is needed to measure the result.",
+        "undated": "Publication time unavailable"
+      },
+      "diagnostics": {
+        "content": "Add useful product facts",
+        "contentHint": "Review the saved title and description. Include accurate specifications and relevant use cases.",
+        "structured_data": "Review structured data",
+        "structured_dataHint": "Check the product’s structured data and add only verified attributes.",
+        "seo": "Add product imagery",
+        "seoHint": "Add a real product image at the source, then sync the catalog.",
+        "platform": "Connect publishing access",
+        "platformHint": "This catalog cannot publish listing changes directly. Connect Shopify or WooCommerce, or update the source manually."
+      }
+    }
+  }
+}

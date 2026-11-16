@@ -1,0 +1,32 @@
+{
+  "name": "analytics-recorder",
+  "subject": "results",
+  "meaning": "A chart recorder with a moving paper strip: reveal more of the measured trace.",
+  "part": "paper",
+  "answer": [
+    56,
+    63,
+    41
+  ],
+  "bounds": [
+    [
+      -6,
+      -5,
+      0
+    ],
+    [
+      114,
+      111,
+      102
+    ]
+  ],
+  "scale": 1.8,
+  "figure": "/hairline/custom/analytics-recorder.js",
+  "rest": "apps/web/src/components/hairline/rest/analytics-recorder.json",
+  "sourceSha256": "abbd33c242c9062aa45c2a32ef5dba94842e6589e940e3d4df2a54cce74cd124",
+  "restSha256": "4218c71b9181f20c1a539546cb9e7bb1854f90ee935b6a0bd1c6aa18a04ad039",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/analytics-recorder.validation.txt"
+}

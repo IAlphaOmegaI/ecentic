@@ -15,6 +15,7 @@ import {
   TabsPanel,
 } from "@zenncore/web/components/tabs";
 import { useFormatter, useTranslations } from "next-intl";
+import { FeedbackState } from "@/components/feedback-state";
 import { Motion } from "@/components/motion";
 import type { AuditFinding, FormEvidence, Report, Tool } from "@/lib/webmcp";
 import { AuditPanel, Label, Source } from "./audit";
@@ -363,9 +364,11 @@ const FormsPanel = ({ report }: { report: Report }) => {
           })}
         </Accordion>
       ) : (
-        <p className="px-6 pb-6 text-foreground-dimmed text-sm sm:px-8">
-          {translate("empty")}
-        </p>
+        <FeedbackState
+          title={translate("empty")}
+          figure="browser-toolbench"
+          compact
+        />
       )}
     </div>
   );

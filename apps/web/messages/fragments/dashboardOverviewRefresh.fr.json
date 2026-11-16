@@ -1,0 +1,129 @@
+{
+  "dashboard": {
+    "overview": {
+      "description": "Les points à traiter, les changements et les prochaines étapes.",
+      "summary": {
+        "latestWinRate": "Dernier taux de victoire simulé",
+        "latestResult": "{wins, plural, one {# victoire} many {# victoires} other {# victoires}} sur {total, plural, one {# comparaison} many {# comparaisons} other {# comparaisons}}",
+        "change": "{value} points de pourcentage",
+        "coverage": "Produits comparés",
+        "coverageDetail": "{count, number} sur {total, plural, one {# produit du catalogue} many {# produits du catalogue} other {# produits du catalogue}}",
+        "coverageHint": "D’après les comparaisons de produits terminées.",
+        "noResult": "Lancez votre premier scan pour voir les résultats.",
+        "topPerformer": "Produit le plus performant",
+        "opportunity": "Produit à améliorer",
+        "productRate": "Remporte {rate} de ses comparaisons",
+        "updated": "Dernier scan terminé {time}",
+        "action": {
+          "primary": "Voir le produit",
+          "secondary": "Améliorer ce produit",
+          "tertiary": "Choisir des produits"
+        },
+        "emptyProduct": "Les résultats des produits apparaîtront après votre premier scan."
+      },
+      "charts": {
+        "recentActivity": "Scans récents",
+        "latestScan": "Dernier scan terminé",
+        "action": {
+          "tertiary": "Voir les simulations",
+          "primary": "Examiner le dernier scan"
+        },
+        "winRateTrend": "Taux de victoire par scan",
+        "winRateByModel": "Taux de victoire moyen des produits par modèle",
+        "modelHint": "La moyenne de chaque modèle sur les produits comparés.",
+        "states": {
+          "noTrend": "Aucun scan terminé pour le moment."
+        },
+        "change": "Depuis le scan précédent",
+        "sampleNote": "Chaque point correspond à un scan distinct ; les produits et concurrents sélectionnés peuvent varier."
+      },
+      "tabs": {
+        "topProducts": "Produits",
+        "competitors": "Concurrents",
+        "agentVisits": "Visites IA"
+      },
+      "priorities": {
+        "title": "Prochaines étapes",
+        "description": "Complétez les informations produit manquantes, puis relancez la comparaison.",
+        "fields": {
+          "description": {
+            "title": "Ajouter les descriptions manquantes",
+            "detail": "{count, plural, one {# produit n’a pas de description.} many {# produits n’ont pas de description.} other {# produits n’ont pas de description.}}"
+          },
+          "price": {
+            "title": "Ajouter les prix manquants",
+            "detail": "{count, plural, one {# produit n’a pas de prix.} many {# produits n’ont pas de prix.} other {# produits n’ont pas de prix.}}"
+          },
+          "sku": {
+            "title": "Ajouter les SKU manquants",
+            "detail": "{count, plural, one {# produit n’a pas de SKU.} many {# produits n’ont pas de SKU.} other {# produits n’ont pas de SKU.}}"
+          },
+          "complete": {
+            "title": "Les champs produit essentiels sont renseignés",
+            "detail": "Descriptions, prix et SKU vérifiés."
+          }
+        },
+        "compare": {
+          "title": "Comparer les produits restants",
+          "detail": "{count, plural, one {# produit n’a pas encore été comparé.} many {# produits n’ont pas encore été comparés.} other {# produits n’ont pas encore été comparés.}}",
+          "complete": {
+            "title": "Tout votre catalogue a été comparé",
+            "detail": "{count, plural, one {# produit avec des comparaisons terminées.} many {# produits avec des comparaisons terminées.} other {# produits avec des comparaisons terminées.}}"
+          }
+        },
+        "optimize": {
+          "title": "Examiner les améliorations possibles des fiches",
+          "detail": "{count, plural, one {# produit dans votre file d’optimisation.} many {# produits dans votre file d’optimisation.} other {# produits dans votre file d’optimisation.}}",
+          "complete": {
+            "title": "Aucune amélioration de fiche en attente",
+            "detail": "Consultez le diagnostic de vos fiches après le prochain scan."
+          }
+        },
+        "action": {
+          "primary": "Vérifier les informations produit",
+          "secondary": "Choisir des produits",
+          "tertiary": "Ouvrir Optimiser",
+          "quaternary": "Voir les comparaisons"
+        }
+      },
+      "traffic": {
+        "title": "Trafic IA observé",
+        "description": "Événements enregistrés au cours des 30 derniers jours.",
+        "referrals": "Visites depuis des assistants IA",
+        "crawlers": "Requêtes d’agents et de robots d’exploration",
+        "hint": "Il s’agit de visites et de requêtes enregistrées, pas d’acheteurs uniques ni d’achats.",
+        "action": {
+          "primary": "Examiner le trafic IA"
+        }
+      }
+    },
+    "shared": {
+      "activity": {
+        "simulationPending": "Scan en attente — {total, plural, one {# comparaison} many {# comparaisons} other {# comparaisons}}",
+        "simulationFailed": "Échec du scan — {completed, plural, one {# comparaison terminée} many {# comparaisons terminées} other {# comparaisons terminées}} sur {total, number}"
+      }
+    },
+    "nav": {
+      "assistant": {
+        "title": "Demander à Judy",
+        "status": "Aperçu",
+        "description": "Judy est en préparation. Le chat et les actions sur le catalogue ne sont pas encore disponibles. En attendant, utilisez les outils du tableau de bord.",
+        "name": "Judy"
+      }
+    },
+    "products": {
+      "table": {
+        "overviewTools": {
+          "sort": "Trier",
+          "defaultOrder": "Ordre par défaut",
+          "ascending": "Croissant",
+          "descending": "Décroissant",
+          "comparison": "État de comparaison",
+          "all": "Tous les produits",
+          "compared": "Comparés",
+          "notCompared": "Non comparés"
+        }
+      }
+    }
+  }
+}

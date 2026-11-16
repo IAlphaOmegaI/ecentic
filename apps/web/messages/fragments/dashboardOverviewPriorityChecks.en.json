@@ -1,0 +1,16 @@
+{
+  "dashboard": {
+    "overview": {
+      "priorityChecks": {
+        "incomplete": {
+          "title": "Complete your product details",
+          "detail": "{count, plural, one {# product is missing catalog information.} other {# products are missing catalog information.}}"
+        },
+        "unavailable": {
+          "title": "Listing opportunities are unavailable",
+          "description": "Open Optimize to review the checks available for this store."
+        }
+      }
+    }
+  }
+}

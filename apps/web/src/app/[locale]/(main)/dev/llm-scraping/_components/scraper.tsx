@@ -78,13 +78,11 @@ const Field = ({
 }) => (
   <div className="flex flex-col gap-1.5">
     <div className="flex items-baseline justify-between gap-3">
-      <span className="font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.05em]">
+      <span className="font-medium text-foreground-dimmed text-xs uppercase tracking-wider">
         {label}
       </span>
       {hint && (
-        <span className="font-mono text-[11px] text-foreground-dimmed">
-          {hint}
-        </span>
+        <span className="font-mono text-foreground-dimmed text-xs">{hint}</span>
       )}
     </div>
     {children}
@@ -263,7 +261,7 @@ export const Scraper = () => {
     <div className="flex flex-col">
       <div className="flex flex-col gap-6 border-accent-foreground border-b p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="font-mono text-[11px] text-foreground-dimmed">
+          <p className="font-mono text-foreground-dimmed text-xs">
             ≈ {tasks.length * CREDITS_PER_CAPTURE} credits per run — cache hits
             observed to bill 0
           </p>
@@ -280,7 +278,9 @@ export const Scraper = () => {
                 isRunning || !config.prompt.trim() || tasks.length === 0
               }
             >
-              {isRunning && <LoaderIcon className="size-4 animate-spin" />}
+              {isRunning && (
+                <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
+              )}
               Capture {tasks.length} {tasks.length === 1 ? "run" : "runs"}
             </Button>
           </div>

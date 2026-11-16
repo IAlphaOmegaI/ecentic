@@ -19,7 +19,7 @@ export const CatalogConnection = () => (
       providers={["shopify", "woocommerce", "googleMerchant"]}
     />
     <div className="mx-auto h-7 w-px bg-primary-text/30" />
-    <div className="relative mx-auto flex max-w-64 items-center justify-center overflow-hidden rounded-lg border border-primary-text/20 bg-background-rich px-8 py-5 shadow-[0_12px_32px_-24px_var(--color-primary)]">
+    <div className="relative mx-auto flex max-w-64 items-center justify-center overflow-hidden rounded-lg border border-primary-text/20 bg-background-rich px-8 py-5 shadow-lg shadow-primary/20">
       <Image
         src="/images/trademark.svg"
         width={1022}
@@ -30,7 +30,7 @@ export const CatalogConnection = () => (
       <PlatformLight />
     </div>
     <div className="mx-auto h-7 w-px bg-primary-text/30" />
-    <div className="relative mx-auto max-w-80 rounded-lg border border-primary-text/20 bg-background-rich shadow-[0_16px_28px_-24px_var(--color-emphasis)]">
+    <div className="relative mx-auto max-w-80 rounded-lg border border-primary-text/20 bg-background-rich shadow-sm shadow-emphasis/10">
       <div className="flex items-center gap-2 border-accent-foreground border-b px-4 py-3 font-mono text-xs">
         <CommerceCode_3Icon className="size-5 text-primary-text" />
         <span className="text-foreground">product.json</span>

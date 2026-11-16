@@ -65,7 +65,9 @@ const useApplyFilters = () => {
       // A different filter set has different page bounds — restart at page 1.
       parameters.delete("page");
 
-      startTransition(() => router.push(`?${parameters.toString()}`));
+      startTransition(() =>
+        router.push(`?${parameters.toString()}`, { scroll: false }),
+      );
     },
     [router, searchParams, startTransition],
   );
@@ -147,14 +149,17 @@ export const ProductsSearch = () => {
         className="text-sm placeholder:text-foreground-dimmed/70"
       />
       {value && (
-        <button
+        <Button
           type="button"
+          size="icon"
+          color="neutral"
+          variant="ghost"
           aria-label={translate("clear")}
           onClick={handleClear}
-          className="shrink-0 cursor-pointer text-foreground-dimmed transition-colors hover:text-foreground"
+          className="size-7 shrink-0 text-foreground-dimmed"
         >
           <XIcon className="size-4" />
-        </button>
+        </Button>
       )}
     </TextField>
   );
@@ -187,83 +192,101 @@ const ConditionRow = ({
   const operators = operatorsForField(condition.field);
 
   return (
-    <div className="flex items-center gap-1.5">
-      <Select
-        value={condition.field}
-        onValueChange={(field: string | null) => {
-          if (!isProductFilterField(field)) return;
+    <div className="flex min-w-0 items-start gap-2 border-background-rich/15 border-b py-4 first:pt-0 last:border-b-0">
+      <div className="grid min-w-0 flex-1 grid-cols-2 gap-2">
+        <Select
+          value={condition.field}
+          onValueChange={(field: string | null) => {
+            if (!isProductFilterField(field)) return;
 
-          const valid = operatorsForField(field);
-          onPatch({
-            field,
-            operator: valid.includes(condition.operator)
-              ? condition.operator
-              : valid[0],
-          });
-        }}
-      >
-        <SelectTrigger className="h-8 min-w-0 flex-1 bg-background px-2.5 text-sm">
-          {translate(`fields.${condition.field}`)}
-        </SelectTrigger>
-        <SelectPositioner>
-          <SelectPopup>
-            {FIELDS.map((field) => (
-              <SelectItem
-                key={field}
-                value={field}
-                label={translate(`fields.${field}`)}
-              >
-                {translate(`fields.${field}`)}
-              </SelectItem>
-            ))}
-          </SelectPopup>
-        </SelectPositioner>
-      </Select>
-
-      <Select
-        value={condition.operator}
-        onValueChange={(operator: string | null) => {
-          if (!operator) return;
-          if (!(operators as readonly string[]).includes(operator)) return;
-          onPatch({ operator: operator as ProductFilterOperator });
-        }}
-      >
-        <SelectTrigger className="h-8 min-w-0 flex-1 bg-background px-2.5 text-sm">
-          {translate(`operators.${condition.operator}`)}
-        </SelectTrigger>
-        <SelectPositioner>
-          <SelectPopup>
-            {operators.map((operator) => (
-              <SelectItem
-                key={operator}
-                value={operator}
-                label={translate(`operators.${operator}`)}
-              >
-                {translate(`operators.${operator}`)}
-              </SelectItem>
-            ))}
-          </SelectPopup>
-        </SelectPositioner>
-      </Select>
-
-      {operatorNeedsValue(condition.operator) && (
-        <TextField
-          value={condition.value}
-          onValueChange={(value) => onPatch({ value })}
-          className="h-8 min-w-0 flex-1 bg-background"
+            const valid = operatorsForField(field);
+            onPatch({
+              field,
+              operator: valid.includes(condition.operator)
+                ? condition.operator
+                : valid[0],
+            });
+          }}
         >
-          <TextFieldInput
-            placeholder={translate("valuePlaceholder")}
-            className="text-sm"
-          />
-        </TextField>
-      )}
+          <SelectTrigger
+            className="h-10 min-w-0 gap-2 border-transparent bg-background-rich px-4 text-foreground-rich text-sm hover:bg-background active:bg-background data-popup-open:bg-background"
+            classList={{
+              icon: { icon: "size-4 shrink-0 stroke-foreground-dimmed" },
+            }}
+          >
+            <span className="truncate">
+              {translate(`fields.${condition.field}`)}
+            </span>
+          </SelectTrigger>
+          <SelectPositioner alignItemWithTrigger={false}>
+            <SelectPopup className="bg-background-rich shadow-sm">
+              {FIELDS.map((field) => (
+                <SelectItem
+                  key={field}
+                  value={field}
+                  label={translate(`fields.${field}`)}
+                >
+                  {translate(`fields.${field}`)}
+                </SelectItem>
+              ))}
+            </SelectPopup>
+          </SelectPositioner>
+        </Select>
 
+        <Select
+          value={condition.operator}
+          onValueChange={(operator: string | null) => {
+            if (!operator) return;
+            if (!(operators as readonly string[]).includes(operator)) return;
+            onPatch({ operator: operator as ProductFilterOperator });
+          }}
+        >
+          <SelectTrigger
+            className="h-10 min-w-0 gap-2 border-transparent bg-background-rich px-4 text-foreground-rich text-sm hover:bg-background active:bg-background data-popup-open:bg-background"
+            classList={{
+              icon: { icon: "size-4 shrink-0 stroke-foreground-dimmed" },
+            }}
+          >
+            <span className="truncate">
+              {translate(`operators.${condition.operator}`)}
+            </span>
+          </SelectTrigger>
+          <SelectPositioner alignItemWithTrigger={false}>
+            <SelectPopup className="bg-background-rich shadow-sm">
+              {operators.map((operator) => (
+                <SelectItem
+                  key={operator}
+                  value={operator}
+                  label={translate(`operators.${operator}`)}
+                >
+                  {translate(`operators.${operator}`)}
+                </SelectItem>
+              ))}
+            </SelectPopup>
+          </SelectPositioner>
+        </Select>
+
+        {operatorNeedsValue(condition.operator) && (
+          <div className="col-span-2 flex min-w-0 items-center gap-2">
+            <TextField
+              value={condition.value}
+              onValueChange={(value) => onPatch({ value })}
+              className="h-10 min-w-0 flex-1 border-transparent bg-background-rich text-foreground-rich"
+            >
+              <TextFieldInput
+                placeholder={translate("valuePlaceholder")}
+                aria-label={`${translate(`fields.${condition.field}`)}: ${translate("valuePlaceholder")}`}
+                className="text-foreground-rich text-sm placeholder:text-foreground-dimmed"
+              />
+            </TextField>
+          </div>
+        )}
+      </div>
       <Button
         size="icon"
-        variant="ghost"
-        color="accent"
-        className="size-8 shrink-0"
+        variant="soft"
+        color="neutral"
+        className="mt-1 shrink-0 bg-background-rich/10 text-background-rich/80 hover:bg-background-rich/20 hover:text-background-rich"
         onClick={onRemove}
         aria-label={translate("removeCondition")}
       >
@@ -334,27 +357,28 @@ export const ProductsFilters = () => {
     <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger
         render={
-          <Button variant="outline" color="accent" className="h-10 shrink-0" />
+          <Button variant="soft" color="accent" className="h-10 shrink-0" />
         }
       >
         <FilterIcon className="size-4" />
         {translate("addFilter")}
         {applied.length > 0 && (
-          <span className="flex size-5 items-center justify-center rounded-full bg-primary font-medium text-[10px] text-background-rich">
+          <span className="flex size-5 items-center justify-center rounded-full bg-primary font-medium text-background-rich text-xs">
             {applied.length}
           </span>
         )}
       </PopoverTrigger>
 
       <PopoverPositioner side="bottom" align="end" sideOffset={8}>
-        <PopoverPopup className="w-96 max-w-[calc(100vw-2rem)] bg-background-rich p-0">
-          <div className="border-accent-foreground border-b px-3 py-2.5">
-            <PopoverTitle className="font-medium text-foreground text-sm">
+        <PopoverPopup className="w-128 max-w-(--available-width) border-background-rich/15 bg-foreground-rich p-0 text-background-rich shadow-sm">
+          <div className="flex items-center gap-2 border-background-rich/15 border-b px-4 py-4">
+            <FilterIcon className="size-4 shrink-0 text-background-rich/80" />
+            <PopoverTitle className="font-heading font-medium text-background-rich text-base">
               {translate("title")}
             </PopoverTitle>
           </div>
 
-          <div className="flex flex-col gap-2 p-3">
+          <div className="flex max-h-96 min-w-0 flex-col overflow-y-auto px-4 py-4">
             {conditions.map((condition) => (
               <ConditionRow
                 key={condition.key}
@@ -365,9 +389,9 @@ export const ProductsFilters = () => {
             ))}
 
             <Button
-              variant="ghost"
-              color="accent"
-              className="h-8 self-start px-2 text-foreground-dimmed"
+              variant="soft"
+              color="neutral"
+              className="mt-2 self-start bg-background-rich/10 text-background-rich/80 hover:bg-background-rich/20 hover:text-background-rich"
               onClick={() =>
                 setConditions((current) => [...current, blankCondition()])
               }
@@ -377,16 +401,16 @@ export const ProductsFilters = () => {
             </Button>
           </div>
 
-          <div className="flex items-center justify-end gap-2 border-accent-foreground border-t px-3 py-2">
+          <div className="flex items-center justify-between gap-4 border-background-rich/15 border-t px-4 py-4">
             <Button
-              variant="ghost"
-              color="accent"
-              className="h-8"
+              variant="soft"
+              color="neutral"
+              className="bg-background-rich/10 text-background-rich/80 hover:bg-background-rich/20 hover:text-background-rich"
               onClick={handleClear}
             >
               {translate("clear")}
             </Button>
-            <Button color="primary" className="h-8" onClick={handleApply}>
+            <Button color="primary" onClick={handleApply}>
               {translate("apply")}
             </Button>
           </div>
@@ -412,17 +436,28 @@ export const MissingFieldChip = ({
   );
 
   return (
-    <button
+    <Button
       type="button"
-      disabled={active}
-      onClick={() => apply([...applied, { field, operator: "isEmpty" }])}
+      variant="soft"
+      color="neutral"
+      aria-pressed={active}
+      onClick={() =>
+        apply(
+          active
+            ? applied.filter(
+                (filter) =>
+                  !(filter.field === field && filter.operator === "isEmpty"),
+              )
+            : [...applied, { field, operator: "isEmpty" }],
+        )
+      }
       className={cn(
-        "flex cursor-pointer items-center gap-2 rounded-full border border-warning/30 bg-warning/5 px-3 py-1.5 text-sm text-warning transition-colors hover:bg-warning/10",
-        active && "cursor-default opacity-60",
+        "h-auto min-h-8 max-w-full gap-2 rounded-lg px-3 py-1.5 text-left text-xs",
+        active && "border-primary-text/30 bg-primary/5 text-primary-text",
       )}
     >
       <AlertCircleIcon className="size-4" />
       {translate("missing", { count, field: translate(`fields.${field}`) })}
-    </button>
+    </Button>
   );
 };

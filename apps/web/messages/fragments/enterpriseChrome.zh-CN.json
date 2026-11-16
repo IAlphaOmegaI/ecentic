@@ -49,6 +49,16 @@
       "aiInstructions": "AI 指令",
       "tools": "免费工具"
     },
-    "loading": "页面加载中"
+    "loading": "页面加载中",
+    "authenticated": {
+      "action": {
+        "primary": "前往控制台"
+      },
+      "compact": {
+        "action": {
+          "primary": "控制台"
+        }
+      }
+    }
   }
 }

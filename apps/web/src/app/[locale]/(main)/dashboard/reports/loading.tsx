@@ -1,5 +1,7 @@
-import { PageSkeleton } from "../_components/chrome-skeletons";
+import { ReportLibrarySkeleton, ReportsShell } from "./_components/shell";
 
-// The reports layout owns the compact account header. Only its content needs
-// a placeholder; the per-store sidebar is not part of this route.
-export default () => <PageSkeleton />;
+export default () => (
+  <ReportsShell>
+    <ReportLibrarySkeleton />
+  </ReportsShell>
+);

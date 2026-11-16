@@ -6,11 +6,12 @@ import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useOnboardingError } from "@/app/[locale]/(auth)/onboarding/_components/use-onboarding-error";
+import { FeedbackLoading, FeedbackState } from "@/components/feedback-state";
+import { Motion } from "@/components/motion";
 import { callOnboardingAction } from "@/lib/onboarding-errors";
 import type * as Competitor from "@/server/app/competitor";
 import * as Search from "@/server/app/intelligence/search";
@@ -22,6 +23,8 @@ export namespace SearchTab {
     productNames: string[];
     store: string;
     className?: string;
+    /** Compact, flush presentation inside the store dashboard. */
+    dashboard?: boolean;
   };
 }
 
@@ -30,6 +33,7 @@ export const SearchTab = ({
   productNames,
   store,
   className,
+  dashboard = false,
 }: SearchTab.Props) => {
   const toast = useToastManager();
   const formatError = useOnboardingError();
@@ -76,16 +80,27 @@ export const SearchTab = ({
 
   return (
     <div
-      className={cn("relative flex h-full flex-col overflow-hidden", className)}
+      className={cn(
+        "relative flex h-full flex-col overflow-hidden max-sm:overflow-y-auto",
+        dashboard && "h-auto min-h-64 bg-background-rich",
+        className,
+      )}
     >
-      <div className="relative border-accent-foreground border-b bg-background-dimmed p-4">
-        <Image
-          src="/images/websearch.png"
-          alt=""
-          aria-hidden
-          fill
-          className="pointer-events-none select-none object-contain opacity-10"
-        />
+      <div
+        className={cn(
+          "relative shrink-0 border-accent-foreground border-b bg-background-dimmed p-4",
+          dashboard && "bg-background-rich py-6 sm:px-6",
+        )}
+      >
+        {!dashboard && (
+          <Image
+            src="/images/websearch.png"
+            alt=""
+            aria-hidden
+            fill
+            className="pointer-events-none select-none object-contain opacity-10"
+          />
+        )}
         <div className="relative z-10">
           <label
             htmlFor="brandSearch"
@@ -93,11 +108,11 @@ export const SearchTab = ({
           >
             {translate("label")}
           </label>
-          <div className="flex gap-2">
+          <div className="flex min-w-0 flex-col gap-2 sm:flex-row">
             <TextField
               value={query}
               onValueChange={setQuery}
-              className="flex-1 bg-background-rich px-3"
+              className="min-h-10 min-w-0 bg-background-rich px-3 sm:flex-1"
             >
               <SearchIcon className="size-4 shrink-0 text-foreground-dimmed" />
               <TextFieldInput
@@ -109,14 +124,16 @@ export const SearchTab = ({
                 }}
               />
               {query && (
-                <button
+                <Button
+                  variant="ghost"
+                  color="neutral"
                   type="button"
                   aria-label={translate("clearAria")}
                   onClick={() => setQuery(null)}
                   className="shrink-0 text-foreground-dimmed transition-colors hover:text-foreground"
                 >
                   <XIcon className="size-4" />
-                </button>
+                </Button>
               )}
             </TextField>
             <Button
@@ -145,16 +162,18 @@ export const SearchTab = ({
               </span>
               <div className="flex flex-wrap gap-1.5">
                 {productNames.map((name) => (
-                  <button
+                  <Button
+                    variant="soft"
+                    color="neutral"
                     key={name}
                     type="button"
                     title={name}
                     onClick={() => handleSearch(name)}
                     disabled={isSearching}
-                    className="max-w-52 truncate rounded-full border border-accent-foreground bg-background-rich px-3 py-1 text-foreground-dimmed text-xs transition-colors hover:border-primary hover:bg-primary/5 hover:text-primary disabled:opacity-50"
+                    className="h-auto max-w-full justify-start truncate px-3 py-1.5 text-xs sm:max-w-64"
                   >
                     {name}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -162,68 +181,36 @@ export const SearchTab = ({
         </div>
       </div>
 
-      <AnimatePresence mode="wait" initial={false}>
-        {competitors.length === 0 && !isSearching && (
-          <motion.div
-            key="empty"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="flex flex-1 items-center justify-center p-8"
-          >
-            <p className="text-center text-foreground-dimmed text-sm">
-              {translate("empty")}
-            </p>
-          </motion.div>
-        )}
+      {competitors.length === 0 && !isSearching && (
+        <FeedbackState
+          title={translate("label")}
+          description={translate("empty")}
+          figure="target-finder"
+          scope="page"
+          className="shrink-0"
+        />
+      )}
 
-        {competitors.length === 0 && isSearching && (
-          <motion.div
-            key="loading"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="flex flex-1 items-center justify-center gap-3 p-8"
-          >
-            {[0, 0.2, 0.4].map((delay) => (
-              <motion.span
-                key={delay}
-                animate={{ opacity: [0.2, 1, 0.2] }}
-                transition={{
-                  duration: 1,
-                  repeat: Number.POSITIVE_INFINITY,
-                  delay,
-                  ease: "easeInOut",
-                }}
-                className="inline-block size-1.5 rounded-full bg-primary"
-              />
-            ))}
-            <span className="text-foreground-dimmed text-sm">
-              {translate("loading")}
-            </span>
-          </motion.div>
-        )}
+      {competitors.length === 0 && isSearching && (
+        <FeedbackLoading
+          title={translate("loading")}
+          figure="target-finder"
+          scope="page"
+          className="shrink-0"
+        />
+      )}
 
-        {competitors.length > 0 && (
-          <motion.div
-            key="results"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="flex min-h-0 flex-1 flex-col"
-          >
-            <CompetitorResults
-              competitors={competitors}
-              noun="competitor"
-              verb="found"
-              onClear={() => setCompetitors([])}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {competitors.length > 0 && (
+        <Motion.Item key="results" className="flex min-h-0 flex-1 flex-col">
+          <CompetitorResults
+            dashboard={dashboard}
+            competitors={competitors}
+            noun="competitor"
+            verb="found"
+            onClear={() => setCompetitors([])}
+          />
+        </Motion.Item>
+      )}
     </div>
   );
 };

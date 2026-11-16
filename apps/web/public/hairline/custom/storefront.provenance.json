@@ -1,0 +1,32 @@
+{
+  "name": "storefront",
+  "subject": "storeHub",
+  "meaning": "A small storefront with a striped canopy: raise the shutter to open the shop.",
+  "part": "shutter",
+  "answer": [
+    65,
+    62,
+    49
+  ],
+  "bounds": [
+    [
+      -4,
+      -3,
+      0
+    ],
+    [
+      117,
+      83,
+      123
+    ]
+  ],
+  "scale": 1.72,
+  "figure": "/hairline/custom/storefront.js",
+  "rest": "apps/web/src/components/hairline/rest/storefront.json",
+  "sourceSha256": "20dea6d2c4f4a7927357a9cdd446ba97bf17904c0f69c4400d791137f1c88281",
+  "restSha256": "339ccebbcac513183839bc56782f417423372928681360b4b0d4d2739968a3bc",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/storefront.validation.txt"
+}

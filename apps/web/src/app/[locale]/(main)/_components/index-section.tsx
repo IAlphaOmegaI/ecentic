@@ -83,7 +83,7 @@ export const IndexSection = ({
           {SectionIcon && (
             <SectionIcon className="size-5 shrink-0 text-primary" />
           )}
-          <p className="font-medium text-foreground-dimmed text-sm uppercase tracking-[0.16em]">
+          <p className="font-medium text-foreground-dimmed text-sm uppercase tracking-widest">
             {label}
           </p>
         </div>

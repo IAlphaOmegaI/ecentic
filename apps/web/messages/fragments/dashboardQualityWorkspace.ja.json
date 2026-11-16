@@ -1,0 +1,79 @@
+{
+  "dashboard": {
+    "qualityWorkspace": {
+      "title": "データ品質",
+      "description": "不足している情報や無効な値を確認し、修正が必要な商品を見つけます。",
+      "product": "商品",
+      "productsLabel": "商品",
+      "openProduct": "「{product}」を開く",
+      "search": "商品や問題を検索",
+      "scope": {
+        "label": "チェック範囲",
+        "all": "すべてのチェック",
+        "universal": "共通チェック",
+        "google": "Google Merchant",
+        "chatgpt": "ChatGPT フィード"
+      },
+      "status": {
+        "label": "検出結果の種類",
+        "all": "すべての結果",
+        "blocker": "重大な問題",
+        "warning": "警告",
+        "info": "改善の提案",
+        "ready": "問題なし"
+      },
+      "summary": {
+        "label": "プラットフォーム別のカタログチェック",
+        "title": "重大な問題や警告がない商品",
+        "count": "{count, plural, other {有効な商品 # 件をチェック済み}}",
+        "passing": "{total} 件中 {count} 件",
+        "breakdown": "重大な問題あり {blocker} 件、警告あり {warning} 件、改善の提案のみ {info} 件、問題なし {ready} 件。"
+      },
+      "method": {
+        "title": "チェックの仕組み",
+        "description": "保存されている有効な商品のデータを、登録済みのルールに照らして確認します。公開中のストアへのアクセスや、Google・ChatGPT による商品の承認を確認するものではありません。改善の提案のみがある商品は、重大な問題や警告がない商品として数えます。"
+      },
+      "views": {
+        "label": "データ品質の表示",
+        "issues": "問題別",
+        "products": "商品別"
+      },
+      "issueCount": "{count, plural, other {問題 # 件}}",
+      "productCount": "{count, plural, other {商品 # 件}}",
+      "findings": "{count, plural, other {検出結果 # 件}}",
+      "issuesHint": "重大な問題、警告、改善の提案の順に表示します。同じ種類の中では、該当する商品が多い問題を優先します。1 つの商品が複数の問題に該当する場合があります。",
+      "reference": "{surface} のルールの説明を開く",
+      "noFindings": "選択したチェックでは、この商品に問題は見つかりませんでした。",
+      "action": {
+        "primary": "カタログを開く",
+        "secondary": "再試行",
+        "tertiary": "フィルターを解除",
+        "quaternary": "商品をさらに表示"
+      },
+      "productAction": {
+        "primary": "商品を開く"
+      },
+      "searchAction": {
+        "primary": "検索をクリア"
+      },
+      "states": {
+        "empty": {
+          "title": "チェック対象の有効な商品がありません",
+          "description": "チェックの対象は有効な商品のみです。下書きやアーカイブ済みの商品はカタログに残っていますが、ここには含まれません。"
+        },
+        "error": {
+          "title": "品質チェックを読み込めませんでした",
+          "description": "カタログのデータは保存されています。結果をもう一度読み込んでください。"
+        },
+        "clear": {
+          "title": "このチェックでは問題は見つかりませんでした",
+          "description": "有効な商品は、この表示に対応する登録済みのチェックを通過しています。購入プラットフォームによる承認を意味するものではありません。"
+        },
+        "noMatches": {
+          "title": "該当する検出結果や商品がありません",
+          "description": "検索内容を変えるか、フィルターを解除して一覧を表示してください。"
+        }
+      }
+    }
+  }
+}

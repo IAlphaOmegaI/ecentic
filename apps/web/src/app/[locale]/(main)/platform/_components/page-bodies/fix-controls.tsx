@@ -19,7 +19,7 @@ export const FixControls = ({ section }: FixControls.Props) => (
       aria-hidden
       className="relative min-h-72 min-w-0 border-accent-foreground border-t lg:border-t-0 lg:border-l"
     >
-      <div className="sticky top-28 aspect-square max-h-[600px] w-full overflow-hidden text-primary-text">
+      <div className="sticky top-28 aspect-square max-h-150 w-full overflow-hidden text-primary-text">
         <EvolvingAscii artwork="console" />
       </div>
     </div>

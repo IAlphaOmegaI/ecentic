@@ -15,7 +15,7 @@ export default () => (
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div>
             <StatusPill tone="neutral">Sandbox — Free-for-all</StatusPill>
-            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
+            <h1 className="mt-3 font-bold text-3xl text-foreground-rich tracking-tight">
               UCP Free-for-All
             </h1>
             <p className="mt-1 text-foreground-dimmed text-sm">

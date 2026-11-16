@@ -61,21 +61,23 @@ export const Compare = async () => {
             </div>
           </div>
 
-          <div className="flex flex-col bg-primary p-6 text-white md:p-8">
-            <span className="w-fit border border-white/20 bg-white/10 px-3 py-1 font-medium text-sm">
+          <div className="flex flex-col bg-primary p-6 text-background-rich md:p-8">
+            <span className="w-fit border border-background-rich/20 bg-background-rich/10 px-3 py-1 font-medium text-sm">
               {translate("compare.enterprise.badge")}
             </span>
             <h3 className="mt-4 font-body font-medium text-2xl">
               {translate("compare.enterprise.title")}
             </h3>
-            <p className="mt-2 font-body font-light text-lg text-white">
+            <p className="mt-2 font-body font-light text-lg text-background-rich">
               {translate("compare.enterprise.description")}
             </p>
-            <div className="mt-8 flex flex-col gap-2.5 border-white/20 border-t pt-8 md:mt-auto">
+            <div className="mt-8 flex flex-col gap-2.5 border-background-rich/20 border-t pt-8 md:mt-auto">
               {enterpriseStrengths.map((strength) => (
                 <div key={strength} className="flex items-start gap-2">
-                  <CheckIcon className="mt-1 size-4 shrink-0 text-white/80" />
-                  <p className="font-body font-light text-white">{strength}</p>
+                  <CheckIcon className="mt-1 size-4 shrink-0 text-background-rich/80" />
+                  <p className="font-body font-light text-background-rich">
+                    {strength}
+                  </p>
                 </div>
               ))}
             </div>

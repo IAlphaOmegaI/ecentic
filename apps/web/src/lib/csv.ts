@@ -1,29 +1,42 @@
 import type * as CsvIntegration from "@/server/app/integration/csv";
 
-/**
- * Splits one CSV line on commas, honouring double-quoted cells so a quoted
- * description containing commas stays a single value.
- */
-const splitRow = (line: string): string[] => {
-  const values: string[] = [];
-  const cursor = { cell: "", quoted: false };
-
-  for (const char of line) {
+/** Reads quoted cells, escaped quotes and multiline descriptions as one record. */
+const csvRows = (text: string): string[][] => {
+  const rows: string[][] = [];
+  const cursor = { cell: "", row: [] as string[], quoted: false, skip: false };
+  const finishCell = () => {
+    cursor.row.push(cursor.cell.trim());
+    cursor.cell = "";
+  };
+  Array.from(text).forEach((character, index, characters) => {
+    if (cursor.skip) {
+      cursor.skip = false;
+      return;
+    }
     switch (true) {
-      case char === '"':
+      case character === '"' && cursor.quoted && characters[index + 1] === '"':
+        cursor.cell += '"';
+        cursor.skip = true;
+        break;
+      case character === '"':
         cursor.quoted = !cursor.quoted;
         break;
-      case char === "," && !cursor.quoted:
-        values.push(cursor.cell.trim());
-        cursor.cell = "";
+      case character === "," && !cursor.quoted:
+        finishCell();
+        break;
+      case (character === "\n" || character === "\r") && !cursor.quoted:
+        finishCell();
+        rows.push(cursor.row);
+        cursor.row = [];
+        cursor.skip = character === "\r" && characters[index + 1] === "\n";
         break;
       default:
-        cursor.cell += char;
+        cursor.cell += character;
     }
-  }
-
-  values.push(cursor.cell.trim());
-  return values;
+  });
+  finishCell();
+  rows.push(cursor.row);
+  return rows;
 };
 
 /**
@@ -36,15 +49,14 @@ const splitRow = (line: string): string[] => {
  * competitor, so importing them would only pad the catalog.
  */
 export const parseCsvProducts = (text: string): CsvIntegration.Type[] => {
-  const lines = text.trim().split(/\r?\n/);
+  const lines = csvRows(text.trim().replace(/^\uFEFF/, ""));
   if (lines.length < 2) return [];
 
-  const headers = splitRow(lines[0] ?? "").map((header) =>
+  const headers = (lines[0] ?? []).map((header) =>
     header.toLowerCase().replace(/['"]/g, ""),
   );
 
-  return lines.slice(1).flatMap((line) => {
-    const values = splitRow(line);
+  return lines.slice(1).flatMap((values) => {
     if (values.every((value) => value === "")) return [];
 
     const row = Object.fromEntries(
@@ -64,6 +76,7 @@ export const parseCsvProducts = (text: string): CsvIntegration.Type[] => {
         title,
         description: row.description,
         price: row.price,
+        currency: row.currency,
         image: row.image ?? row.image_link ?? row.image_url,
         url: row.url ?? row.link,
         sku: row.sku,
@@ -71,4 +84,25 @@ export const parseCsvProducts = (text: string): CsvIntegration.Type[] => {
       },
     ];
   });
+};
+
+/** CSV currency is explicit data. A currency symbol alone is ambiguous. */
+export const csvPrice = (raw?: string, explicitCurrency?: string) => {
+  const amount = raw?.trim() ?? "";
+  const leading = amount.match(/^([A-Z]{3})\s+([\d.,]+)$/i);
+  const trailing = amount.match(/^([\d.,]+)\s+([A-Z]{3})$/i);
+  const supplied = explicitCurrency?.trim().toUpperCase();
+  const embedded = leading?.[1] ?? trailing?.[2];
+  const currency =
+    supplied && /^[A-Z]{3}$/.test(supplied)
+      ? supplied
+      : (embedded?.toUpperCase() ?? null);
+  return {
+    price: amount
+      ? (leading?.[2] ??
+        trailing?.[1] ??
+        (amount.replace(/^[^\d]*/, "") || amount))
+      : null,
+    currency,
+  };
 };

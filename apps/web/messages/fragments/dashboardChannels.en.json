@@ -1,0 +1,74 @@
+{
+  "dashboard": {
+    "channels": {
+      "title": "Channels",
+      "description": "Keep your catalog connected, check delivery and prepare your store for shopping agents.",
+      "source": {
+        "title": "Catalog connection",
+        "description": "Your source catalog and its most recent import.",
+        "synced": "Last imported {date}",
+        "never": "No import recorded",
+        "public": "Public catalog import. Publishing requires an authorized store connection.",
+        "action": {
+          "primary": "Manage connection"
+        }
+      },
+      "google": {
+        "title": "Google delivery",
+        "description": "Saved account and offer records for this store.",
+        "action": {
+          "primary": "Open Google"
+        },
+        "pending": "Pending",
+        "verified": "Verified updates",
+        "issues": "Needs attention",
+        "note": "A verified update is not proof that Google displays the product."
+      },
+      "checkout": {
+        "title": "Checkout",
+        "description": "Review your checkout profile and the products it exposes.",
+        "action": {
+          "primary": "Open checkout"
+        },
+        "scope": "The checkout profile belongs to your account. Product lists are scoped to this store."
+      },
+      "tools": {
+        "title": "Storefront and developer tools",
+        "description": "Inspect one specific capability when you need the underlying evidence.",
+        "checks": "Storefront checks",
+        "access": "Catalog access",
+        "webmcp": "Shopping tools",
+        "playground": "Test checkout",
+        "comparison": "Compare profiles"
+      },
+      "research": {
+        "title": "Looking for catalog rank?",
+        "description": "A catalog query belongs with research. It measures a particular market and query, not storefront readiness.",
+        "action": {
+          "primary": "Open catalog rank"
+        }
+      },
+      "status": {
+        "connected": "Connected",
+        "syncing": "Importing",
+        "disconnected": "Disconnected",
+        "error": "Needs attention",
+        "unavailable": "Unavailable",
+        "unsupported": "Not supported for this source",
+        "setup": "Setup needed",
+        "notConnected": "Not connected"
+      },
+      "error": {
+        "title": "Channel information unavailable",
+        "description": "We could not load the saved connection records. Try again in a moment.",
+        "action": {
+          "primary": "Try again"
+        }
+      },
+      "checks": {
+        "title": "Catalog access",
+        "description": "Check the public files and product feed available to shopping agents."
+      }
+    }
+  }
+}

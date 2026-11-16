@@ -1,0 +1,25 @@
+{
+  "dashboard": {
+    "productWorkspace": {
+      "listing": {
+        "title": "Gespeicherter Produkteintrag",
+        "description": "Prüfe die im Katalog gespeicherten Produktdaten. Die Abdeckung zeigt nur, welche Felder ausgefüllt sind.",
+        "coverage": "{present} von {total} Feldern gespeichert",
+        "missingValue": "Nicht gespeichert",
+        "missingImages": "Keine Produktfotos gespeichert",
+        "imageHint": "Füge in deiner Katalogquelle aussagekräftige Produktfotos hinzu.",
+        "missingDescription": "Ergänze eine Beschreibung mit dem Verwendungszweck und den wichtigsten Produkteigenschaften.",
+        "sourceHint": "Ändere diese Angaben in deiner Katalogquelle und synchronisiere sie anschließend mit ecentic.",
+        "structuredSaved": "Prüfe die gespeicherten Daten vor der Veröffentlichung. Die Daten auf der Shopseite können davon abweichen.",
+        "structuredMissing": "Erstelle aus den gespeicherten Produktdaten einen Entwurf und prüfe ihn vor der Veröffentlichung.",
+        "unreachable": "Der Shop war nicht erreichbar. Die veröffentlichten Daten konnten daher nicht geprüft werden.",
+        "action": {
+          "primary": "Katalogquelle verwalten",
+          "secondary": "Vollständige Beschreibung lesen",
+          "tertiary": "Weniger anzeigen",
+          "quaternary": "Strukturierte Daten prüfen"
+        }
+      }
+    }
+  }
+}

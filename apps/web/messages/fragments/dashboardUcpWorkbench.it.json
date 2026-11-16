@@ -1,0 +1,44 @@
+{
+  "dashboard": {
+    "ucpComparison": {
+      "workbench": {
+        "sourceTitle": "Il tuo negozio",
+        "sourceDescription": "Scegli il catalogo da confrontare. I suoi risultati restano separati da quelli dei concorrenti.",
+        "sameRequest": "Un’unica richiesta di acquisto e la stessa ricerca per tutti i negozi.",
+        "competitorDescription": "Aggiungi fino a cinque negozi con endpoint di acquisto MCP nei profili UCP.",
+        "competitorLabel": "Concorrente {number, number}",
+        "slots": "{count, number} / 5",
+        "validation": {
+          "domain": "Inserisci un dominio del negozio o un URL HTTP(S).",
+          "request": "La richiesta di acquisto può contenere al massimo 1.000 caratteri.",
+          "unique": "Usa un negozio diverso per ogni voce."
+        },
+        "requestHint": "Facoltativo. Lascia vuoto per una ricerca generale di prodotti.",
+        "ready": "{count, plural, =0 {Aggiungi un negozio per iniziare.} one {Il tuo negozio è selezionato.} many {# negozi in questo confronto.} other {# negozi in questo confronto.}}",
+        "running": "Lettura dei profili dei negozi…",
+        "failure": {
+          "title": "Impossibile confrontare questi negozi",
+          "description": "Il confronto non è stato completato. Controlla i risultati qui sotto e riprova.",
+          "store": "Impossibile leggere un endpoint di acquisto compatibile. Controlla il profilo UCP di questo negozio."
+        },
+        "log": {
+          "parameters": "Parametri di ricerca",
+          "profile": "Profilo risolto",
+          "searching": "Ricerca in corso",
+          "results": "{count, plural, one {# prodotto restituito} many {# prodotti restituiti} other {# prodotti restituiti}}"
+        }
+      }
+    },
+    "ucpPlaygroundDashboard": {
+      "connect": {
+        "failure": {
+          "title": "Impossibile connettersi al negozio",
+          "domain": "Inserisci un dominio del negozio e riprova.",
+          "unreachable": "Controlla il dominio e riprova. Non è stato possibile raggiungere il profilo UCP.",
+          "profile": "Non è stato possibile leggere un profilo UCP valido per questo negozio. Controlla la configurazione del checkout.",
+          "shopping": "Questo negozio non ha pubblicato un endpoint di acquisto supportato nel profilo UCP."
+        }
+      }
+    }
+  }
+}

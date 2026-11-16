@@ -1,0 +1,32 @@
+{
+  "name": "settings-gears",
+  "subject": "settings",
+  "meaning": "Two interlocking adjustment gears: turn the large wheel to tune the workspace.",
+  "part": "gear",
+  "answer": [
+    72,
+    47,
+    25
+  ],
+  "bounds": [
+    [
+      -14,
+      -9,
+      0
+    ],
+    [
+      119,
+      88,
+      58
+    ]
+  ],
+  "scale": 2.0,
+  "figure": "/hairline/custom/settings-gears.js",
+  "rest": "apps/web/src/components/hairline/rest/settings-gears.json",
+  "sourceSha256": "6c6ee7fa992103fb7400770b4077125040f4581fd9f035aa1294d9f23bfe6bed",
+  "restSha256": "223cfcfde932774774575e6b49c54d86396ce853cd7b10fee56e4e74883d8e8d",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/settings-gears.validation.txt"
+}

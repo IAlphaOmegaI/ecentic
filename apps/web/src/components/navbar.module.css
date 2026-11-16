@@ -50,3 +50,13 @@
     transition: none;
   }
 }
+
+/* Keep links on the same fading plane as the expanded menu's backdrop. */
+.scrollFade {
+  mask-image: linear-gradient(
+    to bottom,
+    black calc(100% - var(--spacing) * 12),
+    transparent
+  );
+  scroll-padding-block-end: calc(var(--spacing) * 12);
+}

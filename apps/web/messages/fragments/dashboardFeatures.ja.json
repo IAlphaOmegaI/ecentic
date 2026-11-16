@@ -578,8 +578,7 @@
       },
       "composer": {
         "placeholder": "エージェントに {host} での買い物を依頼…",
-        "hint": "Enter で送信 · Shift + Enter で改行",
-        "remaining": "このプレイグラウンドの無料{limit, plural, other {メッセージ}}：全{limit}件中、残り{remaining}件。"
+        "hint": "Enter で送信 · Shift + Enter で改行"
       },
       "quota": {
         "title": "無料プレイグラウンドメッセージ {limit} 件をすべて使用しました",
@@ -743,11 +742,7 @@
         },
         "frequency": {
           "title": "シミュレーション頻度",
-          "options": [
-            "手動のみ",
-            "毎日",
-            "毎週"
-          ]
+          "options": ["手動のみ", "毎日", "毎週"]
         },
         "persona": {
           "title": "購入ペルソナ",

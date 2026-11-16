@@ -154,7 +154,7 @@ export const SectorConversation = ({
                 {language.missing}
               </span>
             </div>
-            <pre className="min-w-0 py-5 font-mono text-[13px] leading-7 max-sm:text-xs">
+            <pre className="min-w-0 py-5 font-mono text-xs leading-7 max-sm:text-xs">
               <code>
                 <span className="grid grid-cols-[2.5rem_1fr] px-3 text-background-rich/75">
                   <span

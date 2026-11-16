@@ -50,7 +50,7 @@ export const InterestLead = ({
         keepMounted={hasOpened}
         initialFocus={heading}
         className={cn(
-          "marketing-grid-pattern marketing-site marketing-lead-dialog text-(length:--text-base) z-120 mt-0 max-h-[calc(100dvh-48px)] w-[min(720px,calc(100vw-32px))] max-w-none overflow-y-auto rounded-none bg-background p-8 font-body text-foreground leading-[1.6] [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] [color-scheme:light] [font-synthesis:none] motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:scroll-auto motion-reduce:[&_*]:transition-none [&_:where(a,button).bg-primary]:rounded-md [&_:where(a,button).bg-primary]:bg-primary-text [&_:where(a,button).from-primary-rich]:rounded-md [&_:where(a,button,input,select,textarea):focus-visible]:outline-2 [&_:where(a,button,input,select,textarea):focus-visible]:outline-primary-text [&_:where(a,button,input,select,textarea):focus-visible]:outline-offset-4 [&_:where(button,[role=button])]:duration-160 [&_:where(button,[role=button])]:ease-[cubic-bezier(0.23,1,0.32,1)] [&_:where(div:has(>input),div:has(>textarea))]:rounded-md [&_:where(input,textarea,select,[role=combobox])]:rounded-md [&_p]:text-pretty [:where(&)_:where(h1)]:max-w-[1040px] [:where(&)_:where(h1)]:text-[clamp(2.75rem,5.5vw,5rem)] [:where(&)_:where(h1,h2,h3,h4)]:text-balance [:where(&)_:where(h1,h2,h3,h4)]:font-heading [:where(&)_:where(h1,h2,h3,h4)]:font-medium [:where(&)_:where(h1,h2,h3,h4)]:text-foreground-rich [:where(&)_:where(h1,h2,h3,h4)]:leading-[1.08] [:where(&)_:where(h1,h2,h3,h4)]:tracking-[-0.035em] [:where(&)_:where(h2)]:max-w-[900px] [:where(&)_:where(h2)]:text-[clamp(2rem,3.6vw,3.5rem)] [:where(&)_:where(h3)]:text-[clamp(1.4rem,2vw,1.85rem)]",
+          "marketing-grid-pattern marketing-site marketing-lead-dialog text-(length:--text-base) z-120 mt-0 max-h-[calc(100dvh-48px)] w-[min(720px,calc(100vw-32px))] max-w-none overflow-y-auto rounded-none bg-background p-8 font-body text-foreground leading-relaxed [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] [color-scheme:light] [font-synthesis:none] motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:scroll-auto motion-reduce:[&_*]:transition-none [&_:where(a,button).bg-primary]:rounded-sm [&_:where(a,button).bg-primary]:bg-primary-text [&_:where(a,button).from-primary-rich]:rounded-sm [&_:where(a,button,input,select,textarea):focus-visible]:outline-2 [&_:where(a,button,input,select,textarea):focus-visible]:outline-primary-text [&_:where(a,button,input,select,textarea):focus-visible]:outline-offset-4 [&_:where(button,[role=button])]:duration-160 [&_:where(button,[role=button])]:ease-[cubic-bezier(0.23,1,0.32,1)] [&_:where(div:has(>input),div:has(>textarea))]:rounded-sm [&_:where(input,textarea,select,[role=combobox])]:rounded-sm [&_p]:text-pretty [:where(&)_:where(h1)]:max-w-260 [:where(&)_:where(h1)]:text-5xl lg:[:where(&)_:where(h1)]:text-6xl xl:[:where(&)_:where(h1)]:text-7xl [:where(&)_:where(h1,h2,h3,h4)]:text-balance [:where(&)_:where(h1,h2,h3,h4)]:font-heading [:where(&)_:where(h1,h2,h3,h4)]:font-medium [:where(&)_:where(h1,h2,h3,h4)]:text-foreground-rich [:where(&)_:where(h1,h2,h3,h4)]:leading-none [:where(&)_:where(h1,h2,h3,h4)]:tracking-tight [:where(&)_:where(h2)]:max-w-225 [:where(&)_:where(h2)]:text-3xl lg:[:where(&)_:where(h2)]:text-4xl xl:[:where(&)_:where(h2)]:text-5xl 2xl:[:where(&)_:where(h2)]:text-6xl [:where(&)_:where(h3)]:text-2xl 2xl:[:where(&)_:where(h3)]:text-3xl",
           fonts,
         )}
         classList={{ backdrop: "z-[110]" }}
@@ -58,7 +58,7 @@ export const InterestLead = ({
         <DialogTitle
           ref={heading}
           tabIndex={-1}
-          className="marketing-lead-dialog-title mb-6 text-[30px]"
+          className="marketing-lead-dialog-title mb-6 text-3xl"
         >
           {title ?? content.title}
         </DialogTitle>
@@ -68,7 +68,7 @@ export const InterestLead = ({
             fallback={
               <p
                 role="status"
-                className="marketing-lead-loading min-h-[280px] py-6 text-foreground-dimmed"
+                className="marketing-lead-loading min-h-70 py-6 text-foreground-dimmed"
               >
                 {copy.dialog.loading}
               </p>
@@ -83,7 +83,7 @@ export const InterestLead = ({
             />
           </Suspense>
         )}
-        <DialogClose className="mt-6 rounded-xs" disabled={isPending}>
+        <DialogClose className="mt-6 rounded-sm" disabled={isPending}>
           {copy.dialog.action.primary}
         </DialogClose>
       </DialogPopup>

@@ -1,0 +1,83 @@
+{
+  "dashboard": {
+    "workspace": {
+      "nav": {
+        "label": "ストアのワークスペース",
+        "research": "AIリサーチ",
+        "channels": "チャネル",
+        "results": "実績",
+        "overview": "概要",
+        "products": "商品",
+        "optimize": "最適化"
+      },
+      "sections": {
+        "label": "ワークスペースのセクション",
+        "catalog": "カタログ",
+        "quality": "データ品質",
+        "summary": "概要",
+        "comparisons": "商品比較",
+        "brand": "ブランド",
+        "questions": "質問",
+        "competitors": "競合",
+        "catalogRank": "カタログ順位",
+        "connections": "接続",
+        "google": "Google",
+        "checks": "ストアの診断",
+        "access": "カタログへのアクセス",
+        "checkout": "決済",
+        "developer": "開発者ツール",
+        "shoppingTools": "ショッピングツール",
+        "testCheckout": "決済テスト",
+        "compareProfiles": "プロファイル比較"
+      },
+      "results": {
+        "title": "実績",
+        "description": "このストアで記録されたAI経由の流入とクローラーのアクセスを確認できます。",
+        "reportsTitle": "全ストアのレポート",
+        "reportsDescription": "保存済みの比較結果、カタログデータ、商品情報の変更をエクスポートできます。レポートはアカウント全体が対象です。",
+        "action": {
+          "primary": "レポートを開く",
+          "secondary": "AIリサーチを見る"
+        }
+      },
+      "ready": {
+        "title": "保存済みのチェックに緊急の対応事項はありません",
+        "description": "カタログに変更があったら、チャネルを確認するか、新しい比較を実行してください。",
+        "action": {
+          "primary": "チャネルを確認"
+        }
+      },
+      "reportScope": "このアカウントの全ストア",
+      "reportMethod": "エクスポートには保存済みデータが含まれます。予測される改善幅は推定値であり、実測結果ではありません。",
+      "downloadError": "レポートをダウンロードできませんでした。もう一度お試しください。"
+    },
+    "reports": {
+      "title": "レポート",
+      "description": "全ストアの保存済み比較結果とカタログデータをダウンロードできます。",
+      "shareable": {
+        "title": "比較レポートを共有",
+        "description": "直近に完了した比較の公開レポートを開きます。共有する前に内容を確認してください。",
+        "action": {
+          "primary": "レポートを開く"
+        }
+      },
+      "action": {
+        "downloadCsv": "CSVをダウンロード"
+      },
+      "items": {
+        "winRateSummary": {
+          "description": "直近に完了したスキャンのモデル別結果。"
+        },
+        "productPerformance": {
+          "description": "保存済みの商品項目と、モデル別の内訳を含むシミュレーション勝率。"
+        },
+        "competitorAnalysis": {
+          "description": "登録済みの競合、取得済みの場合は観測価格、および比較結果。"
+        },
+        "optimizationImpact": {
+          "description": "保存済みの商品情報の変更、公開日、モデルによる推定値。"
+        }
+      }
+    }
+  }
+}

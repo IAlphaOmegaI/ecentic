@@ -35,7 +35,7 @@ export const Workflows = async () => {
               key={workflow.href}
               className="flex h-full flex-col gap-4 bg-background-rich p-6 md:p-8"
             >
-              <p className="font-medium text-foreground-dimmed text-sm uppercase tracking-[0.18em]">
+              <p className="font-medium text-foreground-dimmed text-sm uppercase tracking-widest">
                 {workflow.eyebrow}
               </p>
               <div className="flex flex-1 flex-col gap-3">

@@ -1,58 +1,54 @@
 "use client";
-
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { Band, PageHeader } from "../../../_components/grid";
-
-/**
- * The channel page's static frame, rendered by both `page.tsx` and
- * `loading.tsx`.
- *
- * The header needs no data, so it prerenders into the static shell. Sharing one
- * copy is what keeps a navigation looking like a refresh — and stops this
- * fairly long piece of prose from being edited in one place and not the other.
- */
+import {
+  ChannelSection,
+  ChannelsWorkspace,
+} from "../../channels/_components/workspace";
 export const GoogleShoppingShell = ({ children }: { children: ReactNode }) => {
   const translate = useTranslations("dashboard.googleShopping");
-
   return (
-    <div className="flex flex-col">
-      <div className="mx-8 border-accent-foreground border-x">
-        <PageHeader
-          context={translate("eyebrow")}
-          title={translate("title")}
-          description={translate("description")}
+    <ChannelsWorkspace
+      subject="googleShopping"
+      title={translate("workspaceTitle")}
+      description={translate("workspaceDescription")}
+      icon={
+        <Image
+          width={24}
+          height={24}
+          src="/images/google.svg"
+          alt=""
+          className="size-6 shrink-0 object-contain"
         />
-        {children}
-      </div>
-    </div>
+      }
+    >
+      {children}
+    </ChannelsWorkspace>
   );
 };
-
 export const SectionBox = ({
-  marks,
   children,
 }: {
-  /** "top" for a band arriving after a hatch gutter — see `Band`. */
   marks?: "top" | "bottom" | "both" | "none";
   children: ReactNode;
-}) => <Band marks={marks}>{children}</Band>;
-
+}) => <ChannelSection>{children}</ChannelSection>;
 export const ManagerSkeleton = () => (
-  <div className="grid min-h-64 gap-px bg-accent-foreground lg:grid-cols-[16rem_minmax(0,1fr)]">
-    <div className="bg-background-dimmed p-5">
-      <div className="h-3 w-24 animate-pulse bg-foreground/10" />
-      <div className="mt-5 grid grid-cols-4 gap-2 lg:grid-cols-1">
-        {(["a", "b", "c", "d"] as const).map((key) => (
-          <div key={key} className="h-8 animate-pulse bg-foreground/10" />
-        ))}
-      </div>
+  <div
+    aria-hidden
+    className="grid animate-pulse bg-background-rich motion-reduce:animate-none lg:grid-cols-2"
+  >
+    <div className="order-2 flex min-h-72 items-center justify-center border-accent-foreground border-t px-6 py-8 lg:order-1 lg:min-h-120 lg:border-t-0 lg:border-r">
+      <div className="size-48 rounded-lg bg-foreground/5" />
     </div>
-    <div className="bg-background-rich p-5 sm:p-6">
-      <div className="h-4 w-56 animate-pulse bg-foreground/10" />
-      <div className="mt-3 h-3 w-full max-w-2xl animate-pulse bg-foreground/10" />
-      <div className="mt-2 h-3 w-4/5 max-w-xl animate-pulse bg-foreground/10" />
-      <div className="mt-6 h-9 w-40 animate-pulse bg-foreground/10" />
+    <div className="order-1 flex flex-col justify-center gap-4 px-4 py-8 sm:px-6 lg:order-2 lg:px-10">
+      <div className="h-5 w-40 rounded-full bg-foreground/5" />
+      <div className="h-16 w-full max-w-md rounded-sm bg-foreground/10" />
+      <div className="h-16 w-full max-w-lg rounded-sm bg-foreground/5" />
+      <div className="mt-2 flex gap-3">
+        <div className="h-10 w-40 rounded-lg bg-foreground/10" />
+        <div className="h-10 w-36 rounded-lg bg-foreground/5" />
+      </div>
     </div>
   </div>
 );

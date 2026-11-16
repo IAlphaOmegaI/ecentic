@@ -11,7 +11,7 @@ export const Booking = async () => {
   return (
     <section
       id="book"
-      className="relative -left-[calc(50vw-50%)] w-screen scroll-mt-[5.5rem]"
+      className="relative -left-[calc(50vw-50%)] w-screen scroll-mt-22"
     >
       <div className="relative mx-auto max-w-6xl border-accent-foreground border-y">
         <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
@@ -52,7 +52,7 @@ export const Booking = async () => {
             </p>
           </div>
 
-          <div className="h-[620px] w-full overflow-hidden bg-background md:col-span-3">
+          <div className="h-155 w-full overflow-hidden bg-background md:col-span-3">
             <DeferredBookingEmbed />
           </div>
         </div>

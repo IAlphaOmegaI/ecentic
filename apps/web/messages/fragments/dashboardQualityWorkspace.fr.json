@@ -1,0 +1,79 @@
+{
+  "dashboard": {
+    "qualityWorkspace": {
+      "title": "Qualité des données",
+      "description": "Repérez les informations produit manquantes ou invalides et les fiches à corriger.",
+      "product": "Produit",
+      "productsLabel": "Produits",
+      "openProduct": "Ouvrir {product}",
+      "search": "Rechercher un produit ou un problème",
+      "scope": {
+        "label": "Périmètre des vérifications",
+        "all": "Toutes les vérifications",
+        "universal": "Vérifications générales",
+        "google": "Google Merchant",
+        "chatgpt": "Flux ChatGPT"
+      },
+      "status": {
+        "label": "Type de constat",
+        "all": "Tous les constats",
+        "blocker": "Blocage",
+        "warning": "Avertissement",
+        "info": "Conseil",
+        "ready": "Aucun problème"
+      },
+      "summary": {
+        "label": "Vérifications du catalogue par plateforme",
+        "title": "Sans blocage ni avertissement",
+        "count": "{count, plural, one {# produit actif vérifié} many {# produits actifs vérifiés} other {# produits actifs vérifiés}}",
+        "passing": "{count} sur {total}",
+        "breakdown": "{blocker} avec des blocages, {warning} avec des avertissements, {info} avec uniquement des conseils, {ready} sans problème."
+      },
+      "method": {
+        "title": "Comment ça marche",
+        "description": "Ces vérifications comparent les données enregistrées des produits actifs à notre ensemble de règles. Elles ne confirment ni l’accès à la boutique en ligne ni l’acceptation par Google ou ChatGPT. Les produits qui ne reçoivent que des conseils sont comptés parmi ceux sans blocage ni avertissement."
+      },
+      "views": {
+        "label": "Vue de la qualité",
+        "issues": "Par problème",
+        "products": "Par produit"
+      },
+      "issueCount": "{count, plural, one {# problème} many {# problèmes} other {# problèmes}}",
+      "productCount": "{count, plural, one {# produit} many {# produits} other {# produits}}",
+      "findings": "{count, plural, one {# constat} many {# constats} other {# constats}}",
+      "issuesHint": "Les blocages apparaissent en premier, puis les avertissements et les conseils. Dans chaque groupe, les problèmes touchant le plus de produits sont prioritaires. Un produit peut être concerné par plusieurs problèmes.",
+      "reference": "Consulter les règles de {surface}",
+      "noFindings": "Aucun problème détecté pour ce produit dans les vérifications sélectionnées.",
+      "action": {
+        "primary": "Ouvrir le catalogue",
+        "secondary": "Réessayer",
+        "tertiary": "Effacer les filtres",
+        "quaternary": "Afficher plus de produits"
+      },
+      "productAction": {
+        "primary": "Ouvrir le produit"
+      },
+      "searchAction": {
+        "primary": "Effacer la recherche"
+      },
+      "states": {
+        "empty": {
+          "title": "Aucun produit actif à vérifier",
+          "description": "Seuls les produits actifs sont vérifiés. Les brouillons et les produits archivés restent dans votre catalogue, mais ne figurent pas ici."
+        },
+        "error": {
+          "title": "Les vérifications n’ont pas pu être chargées",
+          "description": "Votre catalogue est toujours enregistré. Réessayez de charger les résultats."
+        },
+        "clear": {
+          "title": "Aucun problème dans ces vérifications",
+          "description": "Les produits actifs passent les contrôles prévus pour cette vue. Cela ne confirme pas leur acceptation par une plateforme d’achat."
+        },
+        "noMatches": {
+          "title": "Aucun résultat ni produit correspondant",
+          "description": "Essayez une autre recherche ou effacez les filtres pour afficher toute la liste."
+        }
+      }
+    }
+  }
+}

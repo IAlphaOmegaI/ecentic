@@ -1,0 +1,17 @@
+{
+  "method": "Tonal dots",
+  "generator": "apps/web/scripts/tonal-ascii.py",
+  "function": "tonal_mask(source, 72, 0.46, 0.08)",
+  "source": "/images/quality/inspection-emblem.webp",
+  "sourceSha256": "78f76db41bfc4faccec6d37fcabbd975586f2ea360bf26c6e77effe1f21a8f31",
+  "asset": "/images/ascii/tonal/quality-inspection.svg",
+  "assetSha256": "1568503f1dc4ea5c94441cbdaa45c692562581eff3fac3df76bcbbdaf9548e0f",
+  "grid": [
+    72,
+    74
+  ],
+  "exposure": 0.46,
+  "backgroundFeather": 0.08,
+  "marks": 3000,
+  "usage": "Data quality header, decorative inspection emblem; does not indicate a passed audit."
+}

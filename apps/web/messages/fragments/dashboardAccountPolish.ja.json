@@ -1,0 +1,55 @@
+{
+  "dashboard": {
+    "reports": {
+      "unavailable": "保存されたデータはまだありません"
+    },
+    "googleShopping": {
+      "workspaceTitle": "Google ショッピング",
+      "workspaceDescription": "Merchant Center との接続、商品情報の更新、チェックアウトの準備状況を管理します。",
+      "unsupportedWorkspace": {
+        "status": "このソースでは利用できません",
+        "title": "対応するカタログを接続",
+        "description": "Google ショッピングへの配信は、接続済みの Shopify ストアで利用できます。このカタログのソースは、まだ ecentic 経由で Merchant Center に接続できません。商品の確認や他のチャネルの設定は引き続き行えます。",
+        "action": {
+          "primary": "Shopify を接続",
+          "secondary": "接続を確認"
+        }
+      }
+    },
+    "ucpPlaygroundDashboard": {
+      "composer": {
+        "remaining": "このプレイグラウンドの無料{limit, plural, other {メッセージ}}：全{limit, number}件中、残り{remaining, number}件。"
+      }
+    },
+    "agentic": {
+      "scan": {
+        "workspaceTitle": "ストアフロントのスキャン",
+        "awaitingFirst": "未スキャン",
+        "report": "レポートを開く",
+        "providerNote": "ドメインは<provider>Is Agentic</provider>に送信されます。顧客情報や注文データは共有されません。"
+      },
+      "score": {
+        "preview": {
+          "emptyTitle": "ここから最初のスキャンを始めましょう",
+          "publicTitle": "公開レポートがあります",
+          "payments": {
+            "title": "決済",
+            "description": "チェックアウトと決済プロトコルへの対応。"
+          },
+          "discovery": {
+            "title": "発見性",
+            "description": "エージェントがストアを見つけるための情報。"
+          },
+          "accessibility": {
+            "title": "アクセス性",
+            "description": "エージェントがストアにアクセスし、内容を読み取れるかどうか。"
+          },
+          "usability": {
+            "title": "使いやすさ",
+            "description": "エージェントがストアを操作するためのインターフェース。"
+          }
+        }
+      }
+    }
+  }
+}

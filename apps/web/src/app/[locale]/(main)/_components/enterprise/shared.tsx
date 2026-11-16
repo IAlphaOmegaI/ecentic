@@ -28,7 +28,7 @@ export const Programs = ({ copy }: Programs.Props) => (
           ) : (
             <span
               key={program.id}
-              className="enterprise-program-todo text-(length:--text-base) font-medium [&_small]:mt-2 [&_small]:block [&_small]:text-[11px] [&_small]:text-foreground-dimmed"
+              className="enterprise-program-todo text-(length:--text-base) font-medium [&_small]:mt-2 [&_small]:block [&_small]:text-xs [&_small]:text-foreground-dimmed"
             >
               {program.title}
               {copy.missingAsset && <small>{copy.missingAsset}</small>}

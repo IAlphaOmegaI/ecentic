@@ -1,14 +1,7 @@
 "use client";
-
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { Crosshair, SectionGutter, Slot } from "../../../../_components/grid";
-
-/**
- * The page's static frame, rendered by both `page.tsx` and `loading.tsx`. The
- * status pill and the back link are slots because each needs the store; the
- * heading needs no data and prerenders.
- */
+import { ResearchHeader } from "../../../research/_components/shell";
 export const AddCompetitorsShell = ({
   statusPill,
   action,
@@ -19,56 +12,45 @@ export const AddCompetitorsShell = ({
   children: ReactNode;
 }) => {
   const translate = useTranslations("dashboard.competitors.add");
-
   return (
-    <div className="flex flex-col">
-      <div className="mx-8 border-accent-foreground border-x">
-        <div className="-mx-8 border-accent-foreground border-b">
-          <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <div>
-              <Slot>{statusPill}</Slot>
-              <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
-                {translate("shellTitle")}
-              </h1>
-              <p className="mt-1 text-foreground-dimmed text-sm">
-                {translate("shellDescription")}
-              </p>
-            </div>
-            <Slot>{action}</Slot>
-          </div>
-        </div>
-
-        <SectionGutter />
-
-        <div className="-mx-8 border-accent-foreground border-t border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            {children}
-          </div>
-        </div>
+    <div className="flex min-h-full min-w-0 flex-col">
+      <ResearchHeader
+        subject="addCompetitors"
+        title={translate("shellTitle")}
+        description={translate("shellDescription")}
+      >
+        {action}
+      </ResearchHeader>
+      <div className="border-accent-foreground border-b px-4 py-3 text-foreground-dimmed text-sm sm:px-6">
+        {statusPill}
+      </div>
+      <div className="min-w-0 border-accent-foreground border-b bg-background-rich">
+        {children}
       </div>
     </div>
   );
 };
-
-// Sized to the "Back to …" button it stands in for.
 export const BackLinkSkeleton = () => (
-  <div className="h-9 w-40 animate-pulse bg-foreground/10" />
+  <div className="h-9 w-40 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
 );
 
 export const SourcesSkeleton = () => (
-  <div className="flex flex-col gap-6 bg-background-rich p-6">
-    <div className="flex flex-col gap-2">
-      <div className="h-3 w-28 animate-pulse bg-foreground/10" />
-      <div className="h-6 w-44 animate-pulse bg-foreground/10" />
-      <div className="h-4 w-full max-w-2xl animate-pulse bg-foreground/10" />
-      <div className="h-4 w-2/3 max-w-2xl animate-pulse bg-foreground/10" />
+  <div className="flex min-w-0 flex-col bg-background-rich" aria-hidden>
+    <div className="space-y-3 px-4 py-6 sm:px-6">
+      <div className="h-6 w-44 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+      <div className="h-10 w-full max-w-2xl animate-pulse bg-foreground/10 motion-reduce:animate-none" />
     </div>
-    <div className="h-9 w-32 animate-pulse bg-foreground/10" />
+    <div className="border-accent-foreground border-y px-4 py-3 sm:px-6">
+      <div className="h-9 w-full max-w-xl animate-pulse rounded-lg bg-foreground/10 motion-reduce:animate-none" />
+    </div>
+    <div className="flex min-h-64 flex-col justify-center gap-3 px-4 py-6 sm:px-6">
+      <div className="h-6 w-64 max-w-full animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+      <div className="h-10 w-full max-w-2xl animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+      <div className="mt-1 h-9 w-40 animate-pulse rounded-lg bg-foreground/10 motion-reduce:animate-none" />
+    </div>
+    <div className="space-y-3 border-accent-foreground border-t px-4 py-6 sm:px-6">
+      <div className="h-6 w-56 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+      <div className="h-4 w-full max-w-xl animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+    </div>
   </div>
 );

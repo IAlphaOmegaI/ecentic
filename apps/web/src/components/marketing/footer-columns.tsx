@@ -33,7 +33,10 @@ export const FooterColumns = ({ columns, cookies }: FooterColumns.Props) => (
           <AccordionPanel>
             <ul className="px-4 pb-6">
               {column.links.map((link) => (
-                <li key={link.href}>
+                <li
+                  key={link.href}
+                  className="border-accent-foreground/60 border-b border-dashed last:border-b-0"
+                >
                   <Link
                     className="marketing-mobile-link flex py-3 text-base text-foreground-rich transition-colors hover:text-primary-text"
                     href={link.href}

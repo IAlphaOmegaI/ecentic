@@ -1,0 +1,19 @@
+{
+  "dashboard": {
+    "discovery": {
+      "method": "Dein Shop wird in jeder Anfrage genannt. Diese simulierten Empfehlungen messen weder die ungestützte Markenbekanntheit noch aktuelle Platzierungen in Suchergebnissen."
+    },
+    "research": {
+      "rank": {
+        "unavailable": {
+          "title": "Katalograng ist nicht verbunden",
+          "description": "Dieser Arbeitsbereich kann Shopify Global Catalog noch nicht abfragen. Du kannst weiterhin die Zugriffsprüfungen deines Shops und gespeicherte Vergleiche ansehen.",
+          "action": {
+            "primary": "Zugriffsprüfungen ansehen",
+            "secondary": "Gespeicherte Vergleiche ansehen"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "share": {
+    "review": {
+      "title": "Ergebnisse der KI-Vergleiche",
+      "description": "Eine gespeicherte Analyse von Produktvergleichen durch KI-Modelle. Die Ergebnisse beschreiben Simulationen, keine tatsächlichen Käuferaktivitäten.",
+      "recorded": "Erfasst am {date}",
+      "score": {
+        "label": "Gewinnquote im Vergleich",
+        "context": "{wins, plural, one {# Sieg} other {# Siege}} bei {total, plural, one {# erfasstem Ergebnis} other {# erfassten Ergebnissen}}.",
+        "empty": "Für diese Analyse wurden keine Vergleichsergebnisse erfasst."
+      },
+      "providers": {
+        "title": "Ergebnisse nach KI-Anbieter",
+        "description": "Erfasste Siege und Niederlagen für jedes Modell.",
+        "outcomes": "{wins, plural, one {# Sieg} other {# Siege}} · {losses, plural, one {# Niederlage} other {# Niederlagen}}",
+        "empty": "Es wurden keine Ergebnisse nach Anbieter erfasst."
+      },
+      "finding": {
+        "title": "Wichtigste Erkenntnis",
+        "details": "Gemeldete Auswirkungen lesen"
+      },
+      "cta": {
+        "title": "Vergleichen Sie Ihre eigenen Produkte",
+        "description": "Starten Sie eine kostenlose Analyse und sehen Sie, wie KI-Modelle Ihre Produktangebote vergleichen."
+      },
+      "unavailable": {
+        "title": "Dieser Bericht ist nicht verfügbar",
+        "description": "Der Link ist möglicherweise falsch oder die Analyse ist noch nicht abgeschlossen."
+      }
+    }
+  }
+}

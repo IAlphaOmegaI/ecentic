@@ -1,0 +1,31 @@
+{
+  "dashboard": {
+    "ucp": {
+      "review": {
+        "description": "Prüfen Sie die Checkout-Konfiguration Ihres Shops und die Produktdaten, auf die Einkaufsagenten zugreifen können.",
+        "tabs": {
+          "check": "Checkout prüfen",
+          "data": "Produktdaten"
+        },
+        "check": {
+          "title": "Prüfen Sie Ihren Checkout",
+          "description": "Lesen Sie das veröffentlichte UCP-Profil Ihres Shops aus, um fehlende oder ungültige Checkout-Einstellungen zu finden.",
+          "hint": "Verwendet HTTPS. Prüft das veröffentlichte Profil, ohne eine Bestellung aufzugeben."
+        },
+        "details": {
+          "title": "Umfang der Prüfung",
+          "description": "Profilerkennung, Zahlungskonfiguration und Agentenzugriff."
+        },
+        "advanced": {
+          "title": "Live-Endpunkte testen",
+          "summary": "Optional · kann Test-Warenkörbe erstellen",
+          "description": "Prüfen Sie die von Ihrem Shop angegebenen Dienste und testen Sie den Checkout-Ablauf."
+        },
+        "products": {
+          "title": "Abdeckung der Produktdaten",
+          "description": "Generierte Produktdaten bestätigen keine Unterstützung für einen funktionierenden Checkout. Diese Produkte gehören zu diesem Shop."
+        }
+      }
+    }
+  }
+}

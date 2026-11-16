@@ -28,6 +28,10 @@ UL container for items.
 
 Individual page button (li).
 
+Supports the shared Button `variant` values (`default`, `soft`, `outline`,
+`ghost`, `flat`), with `outline` as the default. Use `variant="soft"` for
+dashboard secondary navigation. The active page retains `aria-current="page"`.
+
 ### PaginationLink
 
 The actual link/button.

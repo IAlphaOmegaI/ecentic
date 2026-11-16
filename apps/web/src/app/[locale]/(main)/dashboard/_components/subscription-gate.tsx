@@ -8,6 +8,7 @@ import * as Subscription from "@/server/app/subscription";
 import { isEntitled } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
 import { PlanCards, PlanEnterprise } from "../../pricing/_components/plan-grid";
+import { WorkspaceAccessBlocker } from "./workspace-viewport";
 
 /**
  * The dashboard paywall. Rendered in its own Suspense boundary *beside* the
@@ -36,6 +37,7 @@ export const SubscriptionGate = async () => {
 
   return (
     <div className="absolute inset-0 z-40 overflow-y-auto bg-background">
+      <WorkspaceAccessBlocker />
       <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
         <div className="relative border border-accent-foreground">
           <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />

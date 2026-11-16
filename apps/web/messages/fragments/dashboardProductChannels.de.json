@@ -1,0 +1,76 @@
+{
+  "dashboard": {
+    "productChannels": {
+      "tab": "Produktdaten & Kanäle",
+      "title": "Ihr Produkt in den einzelnen Kanälen",
+      "description": "Sehen Sie sich die gespeicherten Produktdaten in der Vorschau an und prüfen Sie anschließend die Verbindung und Feed-Einträge.",
+      "preview": {
+        "title": "Vorschau der gespeicherten Produktdaten",
+        "description": "Beispielansicht aus gespeicherten Daten. Tatsächliche Platzierungen und Layouts können abweichen.",
+        "storefront": "Onlineshop",
+        "google": "Google",
+        "chatgpt": "ChatGPT",
+        "imageMissing": "Kein Produktbild gespeichert",
+        "descriptionMissing": "Keine Beschreibung gespeichert",
+        "priceMissing": "Kein Preis gespeichert",
+        "storefrontNote": "Ihre importierten Produktdaten",
+        "googleNote": "Produktinformationen für ein Shopping-Ergebnis",
+        "chatgptNote": "Produktinformationen für die Produktkarte eines Assistenten",
+        "sample": "Vorschau",
+        "googleMode": "KI-Modus",
+        "details": "Über dieses Produkt",
+        "store": "Shop",
+        "query": "Zeigen Sie mir {product}",
+        "action": {
+          "primary": "Website besuchen"
+        }
+      },
+      "source": {
+        "title": "Katalogverbindung",
+        "unknown": "Verbindungsdetails nicht verfügbar",
+        "unknownDescription": "Öffnen Sie Ihre Integrationen, um die Katalogverbindung zu prüfen.",
+        "lastSync": "Katalog synchronisiert",
+        "productSync": "Produkt synchronisiert",
+        "notSynced": "Keine Synchronisierung erfasst",
+        "status": "Verbindungsstatus",
+        "error": "Prüfung erforderlich",
+        "unavailable": "Status nicht verfügbar",
+        "connected": "Verbunden",
+        "syncing": "Katalog wird synchronisiert",
+        "disconnected": "Nicht verbunden",
+        "publicImport": "Import eines öffentlichen Katalogs",
+        "platform": {
+          "feed": "Produktfeed",
+          "csv": "CSV-Import",
+          "unknown": "Katalogquelle"
+        }
+      },
+      "google": {
+        "title": "Google-Feed-Einträge",
+        "description": "Dies sind gespeicherte Synchronisierungseinträge, keine Live-Prüfung bei Google. Eine bestätigte Änderung bedeutet, dass die ergänzende Aktualisierung übernommen wurde. Sie bestätigt nicht, dass Google das Produkt anzeigt.",
+        "unavailable": "Die Feed-Einträge konnten nicht geladen werden. Öffnen Sie Google Shopping, um die Verbindung zu prüfen.",
+        "unsupported": "Die ergänzende Google-Synchronisierung ist für diese Katalogquelle nicht verfügbar.",
+        "notConnected": "Google Merchant Center ist nicht mit diesem Katalog verbunden.",
+        "setup": "Richten Sie die Verbindung ein, bevor Produktdaten gesendet werden können.",
+        "ready": "Die Verbindung ist bereit. Für dieses Produkt wurde noch kein Feed-Eintrag gespeichert.",
+        "pending": "Ausstehend",
+        "live": "Änderung bestätigt",
+        "disapproved": "Abgelehnt",
+        "error": "Aktualisierung fehlgeschlagen",
+        "lastSent": "Gesendet {time}",
+        "lastChecked": "Geprüft {time}",
+        "offer": "Angebot {id}"
+      },
+      "assistant": {
+        "title": "Auffindbarkeit durch Assistenten",
+        "description": "Diese Vorschau bestätigt nicht, dass ChatGPT das Produkt indexiert oder empfohlen hat. Halten Sie die Produktdaten vollständig und prüfen Sie die veröffentlichten Ressourcen, über die Assistenten das Produkt finden können."
+      },
+      "action": {
+        "primary": "Verbindung verwalten",
+        "secondary": "Google Shopping öffnen",
+        "tertiary": "Onlineshop ansehen",
+        "quaternary": "Auffindbarkeit prüfen"
+      }
+    }
+  }
+}

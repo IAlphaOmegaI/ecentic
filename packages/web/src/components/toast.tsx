@@ -17,7 +17,7 @@ export const ToastViewport = ({
     <ToastPrimitive.Portal container={container}>
       <ToastPrimitive.Viewport
         className={createClassName(
-          "fixed inset-x-4 top-[max(1rem,env(safe-area-inset-top))] z-[100] mx-auto w-auto max-w-[420px] sm:top-6",
+          "fixed inset-x-4 top-[max(1rem,env(safe-area-inset-top))] z-[100] mx-auto w-auto max-w-105 sm:top-6",
           className,
         )}
         {...props}
@@ -40,7 +40,7 @@ export const Toast = ({
     <ToastPrimitive.Root
       swipeDirection={["up", "right", "left"]}
       className={createClassName(
-        "absolute inset-x-0 top-0 z-[calc(1000-var(--toast-index))] w-full origin-top select-none rounded-xl border border-accent-foreground bg-background bg-clip-padding p-4 shadow-lg duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] [transform:translateX(var(--toast-swipe-movement-x))_translateY(calc(var(--toast-swipe-movement-y)+var(--toast-index)*12px))_scale(calc(1-var(--toast-index)*0.04))] [transition-property:opacity,transform] after:absolute after:top-full after:left-0 after:h-[calc(var(--gap)+1px)] after:w-full after:content-[''] data-limited:pointer-events-none data-ending-style:opacity-0 data-limited:opacity-0 data-starting-style:opacity-0 motion-reduce:transition-none data-ending-style:data-[swipe-direction=left]:[transform:translateX(calc(var(--toast-swipe-movement-x)-150%))_translateY(var(--offset-y))] data-ending-style:data-[swipe-direction=right]:[transform:translateX(calc(var(--toast-swipe-movement-x)+150%))_translateY(var(--offset-y))] data-ending-style:[transform:translateY(calc(-100%_-_2rem))] data-expanded:[transform:translateX(var(--toast-swipe-movement-x))_translateY(var(--offset-y))] data-starting-style:[transform:translateY(calc(-100%_-_2rem))]",
+        "absolute inset-x-0 top-0 z-[calc(1000-var(--toast-index))] w-full origin-top select-none rounded-lg border border-accent-foreground bg-background bg-clip-padding p-4 shadow-lg duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] [transform:translateX(var(--toast-swipe-movement-x))_translateY(calc(var(--toast-swipe-movement-y)+var(--toast-index)*12px))_scale(calc(1-var(--toast-index)*0.04))] [transition-property:opacity,transform] after:absolute after:top-full after:left-0 after:h-[calc(var(--gap)+1px)] after:w-full after:content-[''] data-limited:pointer-events-none data-ending-style:opacity-0 data-limited:opacity-0 data-starting-style:opacity-0 motion-reduce:transition-none data-ending-style:data-[swipe-direction=left]:[transform:translateX(calc(var(--toast-swipe-movement-x)-150%))_translateY(var(--offset-y))] data-ending-style:data-[swipe-direction=right]:[transform:translateX(calc(var(--toast-swipe-movement-x)+150%))_translateY(var(--offset-y))] data-ending-style:[transform:translateY(calc(-100%_-_2rem))] data-expanded:[transform:translateX(var(--toast-swipe-movement-x))_translateY(var(--offset-y))] data-starting-style:[transform:translateY(calc(-100%_-_2rem))]",
         className,
       )}
       style={{

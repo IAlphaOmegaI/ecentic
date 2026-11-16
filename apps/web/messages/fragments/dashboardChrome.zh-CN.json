@@ -898,8 +898,7 @@
       },
       "composer": {
         "placeholder": "让智能体在 {host} 购物…",
-        "hint": "按 Enter 发送 · Shift + Enter 换行",
-        "remaining": "此沙盒剩余 {remaining}/{limit} 条免费{limit, plural, other {消息}}。"
+        "hint": "按 Enter 发送 · Shift + Enter 换行"
       },
       "quota": {
         "title": "已用完全部 {limit} 条免费沙盒消息",
@@ -1063,11 +1062,7 @@
         },
         "frequency": {
           "title": "模拟频率",
-          "options": [
-            "仅手动",
-            "每日",
-            "每周"
-          ]
+          "options": ["仅手动", "每日", "每周"]
         },
         "persona": {
           "title": "购买画像",

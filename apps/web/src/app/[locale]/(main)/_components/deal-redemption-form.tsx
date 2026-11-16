@@ -195,7 +195,7 @@ export const DealRedemptionForm = ({
         {isPending ? (
           <>
             {translate("action.pending")}
-            <LoaderIcon className="size-4 animate-spin" />
+            <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
           </>
         ) : (
           <>

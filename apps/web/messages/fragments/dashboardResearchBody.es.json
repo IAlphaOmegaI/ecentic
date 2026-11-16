@@ -1,0 +1,19 @@
+{
+  "dashboard": {
+    "discovery": {
+      "method": "Tu tienda se menciona en cada consulta. Estas recomendaciones simuladas no miden el reconocimiento espontáneo de marca ni las posiciones en búsquedas en tiempo real."
+    },
+    "research": {
+      "rank": {
+        "unavailable": {
+          "title": "La clasificación del catálogo no está conectada",
+          "description": "Este espacio de trabajo todavía no puede consultar Shopify Global Catalog. Puedes revisar las comprobaciones de acceso a tu tienda y las comparaciones guardadas.",
+          "action": {
+            "primary": "Ver comprobaciones de acceso",
+            "secondary": "Ver comparaciones guardadas"
+          }
+        }
+      }
+    }
+  }
+}

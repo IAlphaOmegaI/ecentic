@@ -17,7 +17,7 @@ export const PlatformProviderStack = ({
       <span
         key={provider}
         data-provider-holder={provider}
-        className="relative grid size-16 shrink-0 place-items-center rounded-full border border-accent-foreground bg-background-rich p-3.5 shadow-[0_6px_12px_-10px_var(--color-emphasis)] max-sm:size-14 max-sm:p-3"
+        className="relative grid size-16 shrink-0 place-items-center rounded-full border border-accent-foreground bg-background-rich p-3.5 shadow-sm shadow-emphasis/10 max-sm:size-14 max-sm:p-3"
         style={{ zIndex: providers.length - index }}
       >
         <ProviderLogo

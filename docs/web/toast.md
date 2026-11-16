@@ -46,6 +46,9 @@ transitions when reduced motion is requested. Keep one viewport for each distinc
 set; the app's `ToastList` supplies the dark surface, semantic status icons and localized
 dismiss label.
 
+App toasts use the shared `rounded-overlay` radius and a translucent border on all
+four sides. Status is carried by the icon and wording, without a colored edge stripe.
+
 **Props:**
 | Prop | Type | Description |
 |------|------|-------------|

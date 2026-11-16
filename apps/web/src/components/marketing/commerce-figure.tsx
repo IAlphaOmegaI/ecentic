@@ -32,6 +32,7 @@ const stockNames = {
 } as const;
 
 const customFigures = {
+  comparisonStand: "comparison-stand",
   demoPlane: "demo-plane",
   shopifyBag: "shopify-bag",
   wooMark: "woo-mark",

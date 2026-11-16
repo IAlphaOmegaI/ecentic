@@ -1,0 +1,75 @@
+{
+  "dashboard": {
+    "productWorkspace": {
+      "title": "Detalles del producto",
+      "description": "Revisa los datos guardados de este producto y sus comparaciones con IA registradas.",
+      "status": {
+        "active": "Activo",
+        "draft": "Borrador",
+        "archived": "Archivado",
+        "unknown": "Estado no disponible"
+      },
+      "updated": "Actualizado {time}",
+      "latestComparison": "Última comparación {time}",
+      "priceMissing": "Sin precio guardado",
+      "metrics": {
+        "rate": "Tasa de victorias simuladas",
+        "comparisons": "Comparaciones",
+        "coverage": "Cobertura de los campos guardados",
+        "wins": "Victorias: {wins} de {total}",
+        "competitors": "{count, plural, one {Frente a # competidor} many {Frente a # competidores} other {Frente a # competidores}}"
+      },
+      "method": {
+        "title": "Sobre estas cifras",
+        "description": "Las tasas de victorias se calculan a partir de las comparaciones de productos registradas. Los productos y modelos sin comparaciones no tienen una tasa medida. La cobertura cuenta seis campos guardados: título, descripción, precio, imagen, SKU y datos estructurados. No evalúa si el contenido resulta convincente."
+      },
+      "models": {
+        "title": "Resultados por modelo",
+        "description": "Simulaciones registradas, no tráfico real de compras.",
+        "count": "{count, plural, one {# comparación} many {# comparaciones} other {# comparaciones}}"
+      },
+      "tabs": {
+        "overview": "Comparaciones",
+        "replay": "Decisiones de los agentes",
+        "battlecard": "Comparación directa",
+        "optimize": "Ficha de producto"
+      },
+      "action": {
+        "primary": "Revisar con IA",
+        "secondary": "Reintentar",
+        "tertiary": "Abrir catálogo",
+        "quaternary": "Mostrar más"
+      },
+      "navigation": {
+        "primary": "Volver a los productos",
+        "secondary": "Revisar las optimizaciones pendientes"
+      },
+      "audit": {
+        "title": "Revisión del contenido con IA",
+        "description": "Solicita una revisión de la redacción, los datos del producto y su adecuación al público objetivo. La ficha guardada no se modifica.",
+        "running": "Revisando el producto…",
+        "failed": "No se ha podido completar la revisión con IA. Los datos guardados del producto no han cambiado.",
+        "savedFields": "Campos del producto guardados",
+        "coverageDescription": "La presencia de datos en los campos guardados se comprueba por separado de la revisión del contenido con IA.",
+        "ready": "Revisión completada"
+      },
+      "unmeasured": "Sin comparar",
+      "noReasoning": "No se guardó ninguna explicación escrita de esta comparación.",
+      "states": {
+        "empty": {
+          "title": "Aún no hay comparaciones",
+          "description": "Este producto no tiene comparaciones con IA registradas. Su tasa de victorias aparecerá después de compararlo con competidores."
+        },
+        "error": {
+          "title": "No se ha podido cargar este producto",
+          "description": "Tu catálogo sigue guardado. Intenta cargar este producto de nuevo."
+        },
+        "missing": {
+          "title": "Producto no encontrado",
+          "description": "Puede que este producto se haya eliminado o pertenezca a otra tienda. Abre el catálogo para elegir un producto."
+        }
+      },
+      "publishDescription": "Genera un título y una descripción optimizados para {title} y publícalos en la tienda conectada, sustituyendo la ficha actual."
+    }
+  }
+}

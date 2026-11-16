@@ -13,9 +13,9 @@ bun add @zenncore/web
 ```tsx
 import {
   Accordion,
-,
+  AccordionItem,
   AccordionTrigger,
-  Accord  AccordionItemionPanel,
+  AccordionPanel,
 } from '@zenncore/web';
 ```
 
@@ -38,11 +38,11 @@ The root container for the accordion component.
 
 | Prop | Type | Description |
 |------|------|-------------|
-| `defaultValue` | `string \| string[]` | Initial open item(s) |
-| `value` | `string \| string[]` | Controlled value |
+| `defaultValue` | `string[]` | Initial open item(s) |
+| `value` | `string[]` | Controlled value |
 | `onValueChange` | `(value: string[]) => void` | Value change callback |
 | `multiple` | `boolean` | Allow multiple items open |
-| `collapsible` | `boolean` | Allow all items to be closed |
+| `disabled` | `boolean` | Disable all item triggers |
 
 ### AccordionItem
 
@@ -131,3 +131,5 @@ The collapsible content panel.
 - Built on top of `@base-ui/react/accordion`
 - Uses `ChevronDownIcon` for the expand indicator
 - Supports keyboard navigation (Enter/Space to toggle)
+
+Panels use the package height transition and expose `data-starting-style` / `data-ending-style`. Apply a short named duration and `motion-reduce:transition-none` when adding opacity or chevron transitions. `classList.trigger.icon` customizes the built-in chevron; do not add a second one.

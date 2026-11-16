@@ -12,6 +12,7 @@ import {
 import { Button } from "@zenncore/web/components/button";
 import { useTranslations } from "next-intl";
 import { type PropsWithChildren, useState } from "react";
+import { FeedbackState } from "@/components/feedback-state";
 import type { AuditCheck, AuditFinding, Report } from "@/lib/webmcp";
 
 export const Source = ({ url }: { url: string }) => (
@@ -78,7 +79,7 @@ const Snippet = ({ source }: { source: string }) => {
           {translate(copied ? "copied" : "action.secondary")}
         </Button>
       </div>
-      <pre className="max-h-80 overflow-auto rounded border border-accent-foreground bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
+      <pre className="max-h-80 overflow-auto rounded-sm border border-accent-foreground bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
         <code>{source}</code>
       </pre>
       <p aria-live="polite" className="text-foreground-dimmed text-xs">
@@ -295,9 +296,11 @@ export const AuditPanel = ({ report }: { report: Report }) => {
             ))}
           </Accordion>
         ) : (
-          <p className="px-6 pb-6 text-foreground-dimmed text-sm sm:px-8">
-            {translate("empty")}
-          </p>
+          <FeedbackState
+            title={translate("empty")}
+            figure="readiness-scanner"
+            compact
+          />
         )}
       </section>
       <aside className="space-y-6 border-accent-foreground border-t bg-background-dimmed p-6 sm:p-8 lg:border-t-0 lg:border-l">

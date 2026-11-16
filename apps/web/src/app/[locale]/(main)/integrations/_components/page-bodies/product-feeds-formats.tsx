@@ -46,7 +46,7 @@ export const ProductFeedsFormats = ({
       </div>
       {rows.slice(0, 3).map((row, index) => (
         <TabsPanel key={row.label} value={index}>
-          <div className="grid border-accent-foreground border-t lg:min-h-[328px] lg:grid-cols-[1fr_2fr]">
+          <div className="grid border-accent-foreground border-t lg:min-h-82 lg:grid-cols-[1fr_2fr]">
             <div className="px-7 py-8 max-sm:px-4 lg:border-accent-foreground lg:border-r">
               <pre className="overflow-x-auto font-mono text-primary-text text-sm leading-7">
                 {shapes[index]}

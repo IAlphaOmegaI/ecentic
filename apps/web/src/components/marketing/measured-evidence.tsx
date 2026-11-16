@@ -192,7 +192,7 @@ export const DuaEvidence = async ({
         </div>
       </div>
       <div className="relative flex min-w-0 flex-col justify-center gap-4 border-accent-foreground border-t bg-background-dimmed px-7 py-10 max-sm:px-4 md:border-t-0 md:border-l">
-        <p className="whitespace-nowrap font-body font-medium text-[clamp(5rem,10vw,9rem)] text-primary proportional-nums leading-none tracking-[-0.06em]">
+        <p className="whitespace-nowrap font-body font-medium text-7xl lg:text-8xl xl:text-9xl text-primary proportional-nums leading-none tracking-tighter">
           {figure}
         </p>
         <p className="max-w-[28ch] text-foreground text-xl leading-snug">

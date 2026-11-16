@@ -105,6 +105,42 @@ metrics and short paths to the next action. White data surfaces sit on a quiet n
 Do not import giant marketing heroes, ambient ASCII or decorative bento arrangements into
 routine product work. Product identity, status and evidence have priority over illustration.
 
+### Channel checks and technical tools
+
+Give each tool one obvious entry task. Agentic starts with the store, scan status and a single
+scan action. Keep external-service attribution and the domain-sharing explanation concise and
+adjacent to that action, rather than in a separate full-width disclaimer strip. Before the first
+scan, icon-led descriptions can explain what will be checked; they must not imply a saved score
+or completed work.
+
+Catalog access separates the product-feed handoff from the preceding readiness checks with one
+full-width seam. Use meaningful file/rank icons and a compact URL/action region. A new handoff
+must not read as another paragraph belonging to the last check.
+
+UCP opens on the store-prefilled checkout check. Keep product data as a separate standard tab;
+generated product coverage is not proof of live checkout support. Put the coverage explanation
+and optional endpoint/lifecycle tests behind package Accordions instead of a permanently visible
+technical grid or competing forms. Keep the lifecycle test’s potential test-cart effect explicit.
+Use light full-width sections, one border owner per seam and sparse edge crosses. Public versions
+of shared tools retain their own approved composition.
+
+Playground connection failures use the shared error toast with a short, localized explanation.
+Keep the entered domain so the user can correct it; do not insert a large raw diagnostic block
+into the connection form. Profile comparisons pair a compact store roster with one buyer request
+and one run action. Keep detailed protocol output available behind a disclosure rather than
+letting it dominate the setup task.
+
+### Shared comparison reports
+
+A shared result is a readable public report, not another onboarding screen. Use a compact brand
+and language header, followed by one charcoal cutout containing the recorded metadata, measured
+win-rate dial and provider outcomes. The dial uses the actual win/loss ratio, not a decorative
+score threshold. Combine the main finding, missing attributes, loss rate and next action into
+one light section; do not repeat them across separate finding, attributes and conversion bands.
+Keep longer supporting detail accessible. Use an em dash
+when no outcomes exist; never render an untested provider as a measured zero. Completed reports
+must open without sign-in, while missing and incomplete reports show an unavailable state.
+
 ### Onboarding
 
 Guided and progressive. A blue narrative plane and light task workspace explain the current
@@ -119,28 +155,40 @@ density, scale and amounts of illustration.
 
 ### Semantic color
 
-The implementation source is `packages/shared/config/src/tailwind/globals.css`. The values below
-describe the current palette; components use semantic utilities or semantic custom properties,
-not copied hex values or raw palette classes.
+The implementation source is `packages/shared/config/src/tailwind/globals.css`. The 13 November
+Brand review sets a site-wide budget: **at most seven interface color foundations and four
+corner treatments, using Tailwind theme utilities only**. Do not add local hex/RGB/HSL colors,
+raw palette classes, arbitrary radius values or one-off appearance values. The seven existing
+foundations are:
 
-| Role | Token | Current base / use |
+| Foundation | Token | Base |
 | --- | --- | --- |
-| Page canvas | `background` | `#f5f5f5` |
-| Supporting surface | `background-dimmed` | `#e8e8e8`; bounded supporting regions |
-| Reading/data surface | `background-rich` | White |
-| High-emphasis text | `foreground-rich` | `#16181d` |
-| Body text | `foreground` | `#404040` |
-| Supporting text | `foreground-dimmed` | `#666666`; readable on the muted surface |
-| Brand / action | `primary` | `#1572fa` |
-| Blue text on light | `primary-text` | Contrast-adjusted `#0a5bd3` |
-| Light blue on dark | `primary-rich` | `#5b9dff` |
-| Dark workbench | `emphasis-dimmed`, `emphasis`, `emphasis-rich` | Related charcoal surfaces |
-| Structural separator | `accent-foreground` | Quiet neutral rule |
-| Outcomes | `success`, `warning`, `error`, `info` | Semantic status, with text/icon support |
+| Off-white canvas | `background` | `#f5f5f5` |
+| White paper / inverse text | `background-rich` | `#ffffff` |
+| Ink | `foreground-rich` | `#16181d` |
+| ecentic blue | `primary` | `#1572fa` |
+| Success | `success` | `#059669` |
+| Warning | `warning` | `#d97706` |
+| Error | `error` | `#e11d48` |
+
+Existing foreground, separator, surface and state shades are shared semantic mixes of these
+foundations, never page-local additions. `primary-text` is the accessible blue for small text
+on light surfaces; `primary-rich` is for inverse contexts. Secondary and informational colors
+resolve to the primary family. Crosses and gradient endpoints also use the shared theme.
+Opacity, antialiasing and gradients do not establish new independent palette foundations.
+This budget is not a claim that every rendered pixel has one of seven literal values.
 
 Blue carries brand, active state or a deliberate major field. It does not need to color every
-heading, border and icon. Real provider marks retain their genuine brand colors. Code syntax
-and semantic outcomes can introduce supporting colors without becoming a decorative rainbow.
+heading, border and icon. Success, warning and error communicate actual outcomes with an icon
+or text, never color alone. Genuine provider logos, product photos, tonal artwork, supplied
+screenshots and rendered social-preview images retain their authentic colors; they are content,
+not permission to copy those colors into buttons, panels or other interface chrome.
+
+Use named theme-scale spacing, font sizes, tracking, shadows and radii. Replace an arbitrary
+value with an exactly equivalent Tailwind utility when available. Necessary data-driven chart
+coordinates, SVG/Hairline geometry, aspect calculations and shared responsive rail formulas
+are geometry rather than a new appearance palette. Do not move one-off appearance values into
+a local custom property merely to evade this rule. `bun run design:theme` inventories deviations.
 
 On dark or blue fields, use the appropriate light text tokens and opacity hierarchy. Audit
 buttons separately: a section-wide text override must not make a primary or secondary button
@@ -150,7 +198,7 @@ label disappear. Disabled, focused, hovered and selected controls must all remai
 
 Public headings use local **LT Superior** through `font-heading`. Body copy, controls and ordinary
 numeric evidence use local **Red Hat Display** through `font-body`. Keep the established product
-font wiring in dashboard and onboarding. Do not add page-local fonts.
+font wiring in dashboard and onboarding. Do not add page-local fonts. Faithful third-party shopping previews may use a scoped provider font through a named theme token: Google previews use the licensed, self-hosted Google Sans Flex; ChatGPT previews use the system sans family from the supplied reference. This exception is confined to the simulated provider surface, not its dashboard frame.
 
 Public type normally stays between regular and semibold. Use medium for confident display
 headings and component titles; reserve semibold for stronger local emphasis. Existing dashboard
@@ -181,8 +229,7 @@ it as another giant title or separate the title from its explanation with a larg
 Why: Eyebrows “mad ethe whole site clearer”; technical mono was requested to make the content look like code.
 <!-- 2026-11-12 learn-taste rule 10; exact user provenance: 1435-03: “different background color, and add those eyebrows back, they mad ethe whole site clearer”; 2255.21: “is this title like the others on the platform, all titles need to be the same across the platform”; 1435-06: “add an icon on the left here, for all official documentation sections everywher”; 1753-36: “mono font so it looks like code with a different color”. Approved with “write all” on 2026-11-12. -->
 
-Keep headings sentence case. Use existing `SectionKicker` conventions for operational indexes;
-do not scatter new tracked uppercase micro-labels through marketing or dashboard cards.
+Keep headings sentence case. Public compositions may use existing `SectionKicker` conventions for operational indexes. Dashboard sections use plain headings: no decorative numbered eyebrows such as “01 Connection” or “02 All competitors”, and no tracked uppercase labels. Real workflow steps and question indexes can retain meaningful numbers. This 14 November correction supersedes the earlier dashboard kicker convention.
 Balance display lines and keep prose near 55–70 characters per line. Compare equivalent titles
 across Platform, Resources, Security, tools and integration pages before choosing a local size.
 
@@ -252,6 +299,11 @@ vertical route and aligned branches rather than disconnected logo lists. A mobil
 must not create a second exterior rail. Its gradient covers both the text and illustration.
 Give the complete illustration enough height at compact widths; do not crop a product card to
 preserve a desktop aspect ratio.
+On phones, roadmap artwork uses a compact, contained frame with reduced vertical gutters;
+do not carry desktop-sized empty space above and below each object. Homepage channel and
+integration cards become compact rows: a small genuine logo beside the title, status aligned
+at the far side, and concise supporting content below when needed. Omit the channel arrow on
+mobile. Keep desktop card layouts and any real integration-interest actions intact.
 
 Side-by-side work areas stretch to their row's height. There should be no leftover gray strip
 under the shorter panel. Desktop sticky illustrations are bounded by their own section, clear
@@ -284,7 +336,7 @@ For light around an isolated illustration, use `IllustrationGlow`. The radial fi
 transparency before its clipping edge. Avoid a small hard rectangle of gradient behind an
 otherwise open drawing. Match Hairline occlusion plates to the local surface.
 
-The footer has **one continuous white-to-blue field** across its navigation, wordmark and legal
+The footer has **one continuous white-to-blue field** across its navigation, artwork and legal
 content. A gradient behind just the CTA or one footer cell does not fulfill that direction.
 The security data-flow review has its own whole-region gradient and actual provider marks.
 
@@ -315,6 +367,16 @@ Why: The user explicitly rejected the nested framing: “you know we hate square
 
 ### Cutouts, radius and depth
 
+Use only `rounded-none`, `rounded-sm`, `rounded-lg` and `rounded-full` (including their directional
+variants). Square is for structural regions; small corners are for compact
+menus and selection checkboxes; large corners are for inputs, buttons, dialogs, thumbnails and the workspace inner junction; full is for
+avatars, dots and deliberate pills. Legacy theme names alias these values for compatibility;
+new code uses the four approved names. Do not vary radii to decorate adjacent cards.
+The 14 November follow-up explicitly rounds the open Judy chat and toast edges further:
+their named `rounded-overlay` app theme token derives from spacing-4 (16px at the default root size).
+This is a scoped exception for these overlays, not a change to the shared large radius.
+Ordinary buttons, inputs, menus and the workspace retain their existing corner treatment.
+
 Cutouts are part of ecentic's original geometry and extend beyond navigation. They work on
 **white, blue and dark surfaces**, including workflow bands, pricing and footer compositions.
 Use shallow stepped shoulders aligned with rails; keep copy, controls and focus rings away
@@ -322,7 +384,7 @@ from the clipped decoration. Clip a decorative surface layer rather than the int
 
 Structural grids and section fields remain predominantly square. Modest rounding is welcome on
 inputs, compact menus, product thumbnails and purposefully contained logo stacks. Shared
-`rounded-md` inputs are the default; the early radius-zero rule is superseded for controls.
+`rounded-lg` inputs are the default, matching buttons. This includes text/search fields, textareas, select/combobox triggers and upload controls; joined fields keep their inner seams square. The earlier small and zero-radius control defaults are superseded.
 Blog thumbnails are slightly rounded squares. Do not make every long panel a rounded card.
 
 Depth should describe the object. A complete product card can tilt or lift; rotating just its
@@ -506,7 +568,7 @@ beneath an accordion does not provide enough structure.
 ### Forms and conversion
 
 All forms use `InferredForm`, Zod and `field()` descriptors. No raw-input clone or one-off manual
-form state. Inputs can be modestly rounded globally.
+form state. Rectangular input chrome uses the shared `rounded-lg` default globally. Do not add a local `rounded-sm` override to a search field or prompt shell.
 
 A store-address form sits directly in the hero's conversion row with its one primary submit
 action and a nearby secondary demo action. Do not repeat “Check my store free” in a separate
@@ -518,9 +580,10 @@ progress. Field errors explain how to fix the input and stay associated with the
 ### Actions, icons and states
 
 **Use native shared primary/secondary/soft button variants with visible states on their actual
-surface (rule 11).** The main action uses the primary gradient. Align related CTAs and
+surface (rule 11).** The main action uses the primary gradient. Long translated button labels
+wrap within their available width while the action icon stays intact. Align related CTAs and
 price/feature/action baselines; follow the [public pricing recipe](../../.agents/skills/ecentic-public-pages/SKILL.md#pricing)
-for the three-plans-then-PAYG/Enterprise composition. Inputs use `rounded-md`; product/blog
+for the three-plans-then-PAYG/Enterprise composition. Inputs use `rounded-lg`; product/blog
 thumbnails are modestly rounded squares while structural bands remain predominantly square.
 Do not duplicate a free-check CTA beside the same form.
 
@@ -565,6 +628,40 @@ Keep the original product film and genuine UI screenshots in their proof section
 replaced. Do not put a dashboard screenshot inside the blue hero as decorative filler. Show
 sample-store UI as sample-store UI, and do not suggest a merchant account was connected if it was
 not. A drawing enhances the narrative; it does not replace proof that needs to be inspected.
+The homepage film does not repeat its illustrative disclaimer below the closed preview; the
+full film retains its accessible transcript and contextual description.
+
+The homepage hero uses a native HTML/CSS shopping journey on the blue cutout. The six distinct
+steps are a shopper asking a question, écentic preparing the product feed, AI discovering the
+product, the shopper choosing it, checkout on the merchant’s store, and the sale returning to
+that store. The 16 November review extends the approved white-object scene into a repeating
+carousel; it replaces the finite three-object cup composition. Keep the JSON feed as its own
+step rather than swapping a feed into the discovery display. A generated blue sneaker photo
+repeats through discovery, selection, checkout and the store, with one consistent example SKU,
+price and currency. Locale-format the price; preserve JSON keys and identifiers as code.
+
+White illustrated objects with theme-rounded corners float directly on the blue hero. There is
+no enclosing stage border or panel. Keep the recognizable storefront, authentic compact provider
+marks and native product-document details. The blue écentic box stays visible below the moving
+journey, with curved connections highlighting its help with the feed, discovery and checkout.
+Show the action within each scene and animate the connecting lines. Keep the original specific
+headline and supporting copy stable while stages move. Desktop can show neighboring steps;
+mobile prioritizes a readable current object and a glimpse of what comes next.
+
+The requested carousel plays automatically without arrows, stage dots, or play/pause controls.
+The 16 November follow-up explicitly removes manual playback controls and hover/focus pausing.
+Pause automatic advancement when the document is hidden or the illustration is offscreen.
+Reduced motion disables automatic advancement and animated transitions, retaining a meaningful
+static scene and the localized description of the complete journey. Keep stage names localized.
+Do not imply live results, a guaranteed sale or checkout inside
+an AI provider that does not support it: this example completes the purchase in the merchant’s
+store. Omit the redundant name beneath the box. Do not replace the native scene with a single
+raster illustration, Hairline figure or dashboard screenshot.
+The hero's demo action uses a white filled package Button beside the blue store-check button.
+On the homepage, signed-in visitors see “Go to dashboard” in place of “Book a demo” in the
+header, hero and closing section. Keep each button's styling and localized navigation intact.
+Resolve the session on the client so the public homepage stays statically rendered; visitors
+without a confirmed session retain the demo action.
 
 Evidence components distinguish public studies, aggregate facts, live values and examples. Dense
 methodology can be disclosed in an accordion. Do not invent KPI definitions, remove material
@@ -596,6 +693,9 @@ subordinate. Avoid scroll-jacking and pointer movement that makes information ha
 
 The user explicitly asked certain simulated demonstrations to advance themselves. This applies
 to those explanatory sequences, not to real forms, billing choices or arbitrary site controls.
+The homepage shopping journey is the explicit 16 November exception to the finite-sequence and
+optional-playback-control defaults below: it repeats automatically with no visible controls,
+while retaining hidden-document, offscreen and reduced-motion safeguards.
 
 - Start only when the relevant example is visible and the visitor has not taken control.
 - Progress through a finite story and stop at the end.
@@ -629,7 +729,7 @@ They preserve factual content and apply the shared canon; dashboard and onboardi
 
 **Navigation keeps progressive blur and internal menu divisions without an opaque table-like
 outer frame (rule 12, C5).** Cutouts structure white, blue and dark section surfaces along the
-rails. The footer uses one continuous field across navigation, dimensional tonal wordmark and
+rails. The footer uses one continuous field across navigation, tonal commerce artwork and
 legal content; the treatment must not stop at one cell.
 
 Why (originally inferred; accepted via “write all”, 2026-11-12): The shell should feel continuous with the page, and cutout geometry should remain a recognizable part of ecentic beyond the navbar.
@@ -644,9 +744,13 @@ return and scrolling behavior. Under reduced motion remove scale and blur and re
 <!-- 2026-11-12 responsive review #5: “fade in from the center or blur in, not slide from the right? same for the desktpp one ideally”. -->
 
 Desktop mega menus have transparent bodies, useful internal rules and no outside table box.
-Subtle header/footer tint is allowed. Mobile navigation preserves the same transparent/internal
-rule direction rather than introducing a filled table. Keep centered geometry and sensible
-scroll limits without forcing the underlying document to jump.
+Subtle header/footer tint is allowed. The open mobile menu uses the approved black blurred
+backdrop across the entire viewport, including below short or expanded content. Internal menu
+surfaces remain transparent rather than becoming a filled table. Keep centered geometry and
+sensible scroll limits without forcing the underlying document to jump.
+The expanded mobile menu fades its scrollable text into the same lower edge as the backdrop,
+with sufficient scroll clearance to bring its last link fully into view. Redundant availability
+chips are omitted from menu links; the destination pages retain their actual statuses.
 
 The locale selector is a recognizable flag control with clear affordance, transparent chrome
 and space from Install. Keep assets under `public`, not bespoke flag React components. Mobile
@@ -654,15 +758,17 @@ menu logo remains left-aligned, with the language choice in the intended menu la
 shared variants for the bottom actions.
 
 The global closing CTA uses tonal artwork, one clear conversion hierarchy and the same geometry
-on all public pages. Footer navigation, drawn tonal wordmark and legal content share the continuous
-gradient described earlier. Keep real link groups accessible and consistently aligned; don't
-turn the wordmark into a replacement for navigation.
+on all public pages. Footer navigation, a compact tonal product-selection graphic and legal content
+share the continuous gradient described earlier. The small trademark supplies identity; do not
+repeat it as a second oversized animated wordmark. Place social links alongside a compact locale
+selector in one utility row. Inside expanded mobile footer groups, subtle inset link dividers are
+distinct from the full-width accordion boundaries. Keep real link groups accessible and aligned.
 
 ## 15. Dashboard and onboarding recipes
 
 ### Store hub
 
-`/dashboard` is the entry to the merchant's stores. Keep its logo, language and account
+`/dashboard` is the entry to the merchant's stores. Keep its logo and account
 controls in the fixed header, with the working area scrolling below. The page heading and
 rails remain in the server-rendered shell while store data streams in.
 
@@ -681,26 +787,291 @@ Each shared seam has one border owner.
 
 ### Dashboard shell and overview
 
-Keep a persistent store switcher and grouped navigation. Use the established inner rails,
-compact `28px`-class page heading, nearby subtitle and connected stat/data regions. Large values
-have stronger weight than their labels. Reuse `SectionKicker` rather than inventing uppercase
-micro-labels for every card.
+Keep a persistent store switcher and six primary destinations: Overview, Products, Optimize, AI research, Channels and Results. This approved consolidation supersedes the earlier catalog/intelligence/channel accordions. Related routes expand inside their parent sidebar group using the package Accordion. Expand the active group automatically and keep subpage links compact; do not repeat the same links in a horizontal bar above the page. Technical tools remain nested under Channels. Preserve existing route URLs and their active parent in navigation. The latest 13 November Shopify
+reference establishes a solid charcoal sidebar and top bar around an off-white workspace,
+with a gently rounded inner junction. Use the negative trademark on the dark chrome. This
+supersedes the earlier all-off-white navigation direction; the rejection of technical-looking
+gradient rails, angular command decks and decorative chrome still applies. Keep blue for
+primary actions, selection and measured data.
 
-The store overview should answer: current result, what changed, what requires attention, and
-what the merchant can do next. An actionable issue or real scan result outranks decorative
-background art. Charts keep metric definitions, selected time range and source limitations clear.
+Navigation is a coherent workspace frame. Store identity, store switching and “All stores”
+belong in one selector. Use a real store logo or favicon with a recognizable store-image fallback,
+not a letter tile. The account menu repeats the saved profile image or a person fallback beside
+the name and email. Group account identity, settings, notifications and billing in this compact
+menu; plan details belong in Billing rather than a separate prominent badge.
+Keep search directly reachable, including on mobile. The dashboard search opens as an opaque charcoal extension of its top-bar field, using the package Popover and Command components without a page backdrop. Match Judy’s emphasis charcoal and restrained vertical highlight. Reveal the results downward from the existing field and fold them back into it on close; the input stays sharp, stationary and immediately ready for typing. Use a short package transition, without lateral slide, zoom or delayed focus, and reveal immediately for reduced motion. Support arrow-key selection and Enter, and return focus to the field on Escape. Sidebar families use the package Accordion with a short height/opacity transition and rotating chevron; reduced motion removes these transitions. Keep child routes in the sidebar, never in a duplicate band above the page. Dashboard language selection lives in
+Settings > Account, not in the top bar. Use one compact keycap treatment for the command
+shortcut, Escape and footer keyboard hints, including their opening and closing states.
+The mobile dashboard sidebar is a left-hand drawer: it slides from that edge through the
+package Sheet transition and opens immediately for reduced motion. This does not change the
+public navigation's approved fade treatment. Notifications belong inside the account menu, using
+the shared menu components rather than a separate top-bar bell. Menus
+are compact, gently rounded and separated before reset or destructive actions. Dropdowns,
+submenus and compact explanatory popovers use one semi-transparent theme border or ring and
+the theme's `shadow-sm`; do not stack an opaque border on top of the package ring. Heavy floating
+shadows must not make filters look like modal dialogs. Popup surfaces must be opaque and use declared
+theme colors (`bg-background-rich`, `text-foreground`). Legacy component-library names such
+as `bg-popover` do not exist in this theme and leave underlying table text visible. Inspect
+the computed background, not merely the presence of a background class in source.
+
+Use a compact 28–30px page heading and nearby subtitle. Do not interpret the hairline
+identity as thin letterforms: page headings and key results are semibold, navigation and
+product titles are medium-to-semibold, and supporting copy is regular. Hairlines provide
+the fine detail; type provides hierarchy. Use one compact, function-specific Hairline drawing for each dashboard header through `DashboardHeaderFigure`. This 14 November direction supersedes the earlier mixed ASCII/header-icon treatment. Keep a recognizable rest pose and restrained pointer response; use product documents for catalogs, inspection equipment for data quality and paired product cards for comparisons. Freshness is a plain,
+localized timestamp, not a tracked uppercase status pill.
+
+The overview answers what needs attention, what changed, and what to do next. Lead with
+real missing product facts, products not yet compared, and eligible listing opportunities,
+each linked to the relevant work. Give the next-step section a compact light, subtly tinted heading and
+connected light rows. Use real counts; missing-field counts may overlap and must not be
+summed into a product total. An optimization queue is not proof that a draft exists or that
+sales or win rates improved. Estimated lift must never be presented as observed lift.
+
+Keep the latest simulated win rate and compact scan trend together as supporting evidence.
+The headline and chart use the same completed scan results. Changes are percentage points;
+separate scans can contain different products and competitors, so explain that limitation.
+Use a fixed 0–100% scale, localized dates, keyboard-inspectable points and dark, high-contrast
+tooltips. Avoid an oversized row repeating one number for every model. Unmeasured products
+show an em dash rather than a losing score.
+
+Separate observed AI-referral events from agent and crawler requests, state the time window,
+and never relabel them as unique shoppers, purchases, citations or simulated wins. Exclude
+tracker test pings from activity totals. Group detector identifiers into readable provider
+rows with separate referral/request columns instead of a long stack of decorative bars.
+Name a trend's actual provider coverage when it includes only a subset of the breakdown.
+Keep recent scan activity as compact linked rows, with a quiet vertical connector and timestamps.
+A pair of edge crosshairs can mark the section seam; avoid adding them to every row.
+Distinguish queued, running, completed and failed states; do not show progress totals when
+the accessor cannot provide a correct planned denominator.
+Direct links should take the merchant to the corresponding scan, filtered catalog or action. The default Overview stops after its useful summary and recent activity; full catalogs and research tables belong in their task destinations. Existing `?view=products|competitors|agents` overview links remain compatible. Results shows store-scoped recorded referrals and requests; reports explicitly cover all stores in the account. Do not advertise report scheduling or a measured optimization lift that the saved data cannot establish. Account-level Reports and Settings use the same charcoal header and light, edge-to-edge workspace as the store dashboard. Hide unpersisted settings switches instead of presenting local state as a saved preference.
+
+Structural surfaces reach the content pane edges: chart regions, scan activity, table headers
+and rows, section rules and hatch gutters have no outer horizontal inset. Put reading padding
+inside headings and cells rather than around a surface. Give each shared border one owner at
+full hairline contrast. Keep crosshairs visible at pane-edge seams. The rounded shell does
+not imply rounded data cards: use square connected regions and shared compact blue-selected
+tabs rather than wide pastel selectors.
+
+A bottom assistant dock uses Judy, a playful blue Fiat 500-inspired toy car with the grain
+texture of the ecentic mark. The control is a compact black pill: `rounded-full`, `h-12`, `max-w-80`, with a `w-10 h-8` car so the illustration supports the label. A restrained vertical theme gradient and inner highlight give it a raised surface. Hover, pressed and open states remain charcoal, without inheriting the shared popover trigger’s light hover background. A small masked progressive backdrop blur and a low-opacity blurred surround melt the outside edge into the workspace; the title, image and controls remain crisp. This is an explicit exception to the light content-region rule. This replaces the earlier robot
+and the more realistic Mini Cooper interpretation.
+The dock expands from its measured bounds into a charcoal chat window occupying about 80% of the available workspace (90% width on narrow screens). The open window uses the named `rounded-overlay` theme radius; the pill and composer retain their existing shapes. Keep one header bar, a scrollable conversation region and a bottom composer. Use the package Dialog for focus management, Escape and dismissal; Motion transforms connect the same surface in both directions. Judy makes one brief playful movement on opening and settles. Reduced motion skips the morph and dance. Recompute the available space for viewport or virtual-keyboard changes, and return focus to the dock on close.
+While its AI functionality is deferred, label it as a preview and explain that state on open;
+do not imply that a prompt was sent or processed. The composer begins as one compact rounded bar with its send control at the right. Grow it only as the draft wraps or gains lines, cap its height with an internal text scroll, and shrink it again when cleared. Keep the brief preview note outside the input. Use the existing full radius for the single line and the existing large radius for multiline text. It may retain an unsent local draft, with sending disabled and the preview limitation visible. Bottom scroll fades must be subtle and
+pointer-transparent. Reserve enough space for the final rows and actions to clear the dock.
+On mobile, Judy and the support launcher share one safe-area-aware horizontal band with
+matching vertical centers. Leave clear space between their touch targets at the narrowest
+viewport; their different heights must not create staggered baselines.
+This dashboard treatment does not replace the public site's tonal ASCII and Hairline language.
+Give every dashboard page its own function-specific Hairline drawing, including nested tools,
+setup routes and account pages. Use the route `subject` API in
+`dashboard/_components/header-figure.tsx`, so the subject is consistent in the shell and
+loading state. Research uses a telescope, Questions uses conversation cards, Brand uses a
+megaphone, and Catalog rank uses a shelf ladder. Do not fall back to the same document stack,
+robot or generic network across unrelated pages. Retain genuine product thumbnails in the
+product-detail header; its unique product-label drawing is the missing-image fallback.
+Check every new drawing at actual header size, at rest, at pointer extremes and with reduced
+motion. The SSR rest image and interactive figure must represent the same object.
+Empty states use composed illustrative graphics rather than
+another ASCII emblem. Data Quality specifically uses a custom interactive Hairline inspection tray with cards and a scanner; its header uses a compact inspection scanner. Their surface fills the remaining workspace instead of ending at an
+arbitrary horizontal rule midway down an empty page.
+
+The latest Products/Brand follow-up rejects black workspace cards against the black sidebar.
+Keep content regions white, off-white or subtly primary-tinted, using ink text and continuous
+hairlines for definition. The charcoal navigation frame stays distinct. Dark chart tooltips
+and genuine code surfaces may retain their task-specific treatment; do not extend them into
+large dark metric cells, content headers or diagnostic cards.
+
+### Brand diagnostics
+
+Brand uses a compact megaphone Hairline figure and heading on the workspace plane, without an inset vertical
+rail or an uppercase context pill. Lead with the diagnosis and mention rates for questions
+with and without the brand name, including the successful answer counts and denominators.
+No sample is an em dash, not 0%. Remove decorative radar scores that obscure the evidence.
+Keep rates aligned to the top. Long diagnoses start with a short preview and an accessible
+expand control, so the first screen still exposes the evidence and next steps. Use the package soft variant for this and other secondary dashboard actions; avoid foreground-outline buttons. Both mention meters share the same red-to-green theme scale across the complete segmented strip, rather than repeating a gradient per square. Uncounted segments remain neutral and the count and denominator remain explicit.
+
+Findings use a clear connected journey rather than oversized blocks of prose. A real company
+or source identity uses its genuine logo or favicon; an unknown identity uses quiet initials.
+Generic office or globe symbols must not masquerade as brand marks. Subject/action icons use
+the shared outline-duotone family. AI evidence prose may emphasize a few important phrases in
+semibold while preserving the complete sentence, including negation and qualifications; do not
+create a colored-keyword rainbow or imply that a styled phrase is independently verified.
+Contain genuine logos and favicons within consistent rounded light frames. Size the mark to
+the available inner area with `object-contain`; a fixed image size must not overflow a smaller
+saved-answer identity frame. Preserve authentic aspect ratios and brand colors.
+
+Saved answer summaries are searchable and filterable by outcome. Keep suggestions, answers
+and site checks in the standard compact tabs; all content surfaces reach the workspace
+edges. Model-suggested sources must not be called verified citations. Identify the engines
+actually used and make the simulated nature of the snapshot clear. Public file checks do
+not establish indexing, recommendation or checkout readiness.
+The current engine receives the audited brand as context even for unbranded question
+wording; do not present those counts as a blind recall measurement. Keep this methodology
+available through a compact, keyboard-accessible “How this works” disclosure beside report
+metadata, rather than a full-width paragraph separating the summary from its tabs. A pair of
+crosshairs at the pane's top seam and the tab seam is sufficient; no extra borders or marks
+on every row.
+
+The first-run state has one analysis action and a short explanation. Initial loading uses
+a matching skeleton; an active analysis uses a clear in-progress state without fake
+percentages. Retain a completed report while refreshing, disable duplicate run actions,
+and display understandable failed-run and data-unavailable states. Keep raw provider errors
+out of the UI. Test absent samples, long answers, empty filters and reduced motion as well
+as populated desktop/mobile layouts.
+
+### Empty and loading states
+
+Use the shared `FeedbackState` / `FeedbackLoading` compositions in public and shared flows;
+`DashboardEmptyState` / `DashboardLoadingState` are the dashboard entry points to the same
+components. Pair a function-specific Hairline figure with a clear heading, a short explanation
+and the relevant next action. The light surface reaches the pane edges; do not put it inside
+another padded card. There are two explicit spatial scopes:
+
+- **Page:** `scope="page"` fills the remaining route area with `flex-1`. Every ancestor must
+  carry the flex column height chain. A disconnected, unavailable or empty screen must not
+  stop at an arbitrary height or leave an unrelated background strip underneath.
+- **Section:** the default fills its containing table, list, tool or panel. Use `compact` for
+  filters, search menus and brief inline feedback. Give no-match results a way to reset the
+  filter. A small button can retain its built-in spinner; do not inflate a control to page size.
+
+Initial server loading retains a matching PPR skeleton with the same page/section allocation.
+Active work uses the shared illustrated indeterminate state with a brief reveal and clear text;
+never invent completion percentages. Refetching keeps existing content visible behind a subtle
+blur, blocks stale row actions and restores the initiating focus when it resolves. Reduced
+motion removes blur/reveal motion and pulsing; Hairline subjects remain clear at rest. The
+command menu keeps its compact illustration and short loading placeholders. Inspect the
+empty, loading, failed and populated state for each route family, not only a single example.
 
 ### Product tables and workspace scrolling
 
 Use the shared DataTable/Table components. The product title owns the flexible column; long
 names truncate or wrap intentionally without pushing actions away. Thumbnails are rounded
 squares. Keep meaningful attributes, statuses, sorting/filtering and row actions consistent.
-Do not hide critical identity to preserve an unnecessary decorative column.
+Do not hide critical identity to preserve an unnecessary decorative column. Give dense tables
+a minimum width that leaves at least 260px for product identity, with horizontal scrolling
+contained in the table. The overview table shows the catalog in ten-row pages with decision-relevant columns, title/SKU
+search, comparison-state filtering, sorting and a column menu.
+
+The full Products list opens with a compact Hairline document stack, clear title and Add products
+action. Follow it with one short summary strip: imported products, products with recorded AI
+comparisons, and unique products missing at least one of the six catalog fields. The catalog
+comes immediately next at the workspace edges. Keep overview charts, traffic and long scan
+narratives on their own screens; do not place them ahead of the working catalog.
+Make this a connected visual strip: a compact, lightly tinted inventory region can carry a recognizable
+tonal catalog subject, while compared/incomplete counts use quiet light regions and bars against
+the actual catalog total. Keep each original count and its explanation visible. Empty catalogs
+must not show a `/0` denominator or a fabricated progress value.
+
+Show product identity, price, AI win rate and field coverage by default. Model-specific results
+and Updated remain optional columns. Sorting happens across the filtered catalog before server
+pagination, with stable ties and missing prices/untested rates kept last. Preserve column choices
+and search focus across queries; reset selection when the page or dataset changes. Selection is
+explicitly current-page and enables a non-destructive CSV export with spreadsheet-formula
+protection. Controls must change actual rows, not only their visual state. Keep pagination controls mounted at the first and last page; mark unavailable actions with `aria-disabled`, skip them in sequential focus, and guard their handlers so reaching a boundary does not drop the keyboard user’s focus.
+
+A measured 0% is a real result; an untested product or model has no measured percentage. Field
+coverage is presence of title, description, price, image, SKU and structured data, not an AI quality
+assessment or an optimization status. Updated is the product record timestamp. Never label it
+Last scan, guess a /100 capacity or infer published optimization from a score. Format numbers,
+percentages and known currencies for the selected locale; an unknown currency must not become USD.
+
+Empty and filtered-empty feedback occupies the viewport-width section, outside the wide table.
+Retain search/filter recovery, a friendly retry with pending feedback, and matching reduced-motion
+skeletons. Each toolbar, missing-field row, selection row and table/footer seam has one border
+owner, with only a few crosses at true workspace edges.
+
+Keep pagination compact and sentence case, with the range and page actions in one useful
+footer. Avoid duplicate full-width count/pager rows, tracked uppercase labels and redundant
+bottom padding. The workspace supplies clearance for Judy; the catalog must not add a second
+empty spacer. Columns and filter triggers use the same restrained package Button treatment. The product filter builder is an explicit charcoal overlay exception: readable conditions, generous control widths and light nested menus, with the shared package Popover handling dismissal and focus. While a sort or filter loads, retain the old rows under a subtle blur and a centered Hairline inspection indicator; keep the toolbar sharp and disable duplicate row actions. Remove blur transitions for reduced motion. This loading feedback must reflect real pending work and must not invent a progress percentage.
+
+### Individual product workspace
+
+Open with the product itself: real image, saved title, status, price and source. A missing
+image gets a clearly identified image placeholder, never invented product photography or an
+unrelated catalog emblem. Use an initial Listing & channels tab with full-region previews,
+source connection state and recorded feed facts. Move simulation metrics into Comparisons;
+do not lead every product visit with duplicated model-score cards.
+
+Storefront, Google and ChatGPT views are illustrative renderings of saved fields, not screenshots
+or proof that a provider displays the product. Preserve real values and label the preview.
+No fabricated rating, recommendation, approval, availability or checkout action belongs in it.
+Google's submitted input and processed product are different states. Show exact recorded offer
+identity, market/language and sent/verified timestamps when available; an override verified by
+the existing job is not guaranteed shopper visibility. Unsupported supplemental sync, missing
+connection, setup, no product record and failed reads must remain distinct.
+
+Source sync is an import of the connected catalog. Offer management can affect published
+optimizations across the store. Route users to those existing workflows with truthful labels;
+do not invent a single-product sync action. Keep read-only page navigation free of writes and
+paid AI work. AI content review starts from an explicit action, with pending/error/retry states,
+while the saved listing remains available immediately. Use Zenncore Tabs, Accordion,
+DataTable, Popover, AlertDialog and Button for these controls.
+
+Show saved field coverage beside the actual listing content rather than repeating a presence
+grid above empty accordions. Keep the photo, title, description, price and SKU together;
+place structured-data status and its available actions beside the data they affect. Missing
+content gets brief, specific guidance. Only long content and code need a disclosure. Preserve
+the distinction between saved field presence, AI content review and verified live-page data.
+On mobile, comparison metrics give the main win rate a full-width row with supporting counts
+below; three columns require enough usable width for their labels and actions.
+
+### Optimize workbench
+
+Lead with actionable, store-scoped work and real saved history. Candidate products are not saved drafts; the current generate-and-publish action needs an explicit explanation and confirmation. Do not show projected growth or synthetic `winRateAfter` values as observed improvements. Use standard tabs, compact search and flush light rows with real product identities and measured comparison denominators. Keep pending, failed, dismissed and published states distinct. Bulk actions operate only on the current store, report partial failures, and do not republish successful items on retry. Until a lightweight accurate queue count exists, omit the sidebar badge rather than display a published-history count as pending work.
+
+Secondary inspection actions use the shared `Button` with `variant="soft"` and a neutral tone; preserve primary blue publishing/review actions. No custom popovers or ad hoc control styles.
+
+### Data Quality
+
+Data Quality explains deterministic checks of saved active-product data. It is not a live
+channel approval report, an AI score, or proof of shopping visibility. Keep that scope near
+the summary; use genuine provider marks for Google and ChatGPT and distinguish their checks
+from shared catalog rules.
+
+Use one connected, full-width summary followed by compact tabs for issues and product findings.
+Respond to the usable pane width, not just the viewport: channel summaries become full-width
+label/value rows on narrow panes and three columns only when each column has room to breathe.
+Keep the matching skeleton on the same responsive grid, allow the legend to wrap and contain
+any scrolling for long translated tab labels within the tab strip.
+Group the issue queue by the highest applicable severity, then affected-product count; do not
+truncate it to an arbitrary top-eight list. An issue counts each affected product once, even
+when it has multiple findings. Surface and severity filters must change the actual issue queue
+and searchable product results. Keep all advisories available and preserve links to official
+rule references and the affected product's detail page.
+
+Status buckets are disjoint. The share without blockers or warnings includes advisory-only
+products, consistent with the existing rules engine, and must be labeled accordingly. No active
+products is an empty scope with no percentage, never an all-clear report; draft products in
+the catalog do not establish a populated active-product audit. A failed read is a separate
+retryable state. Give loaded, empty, filtered-empty, error and loading surfaces equal care,
+including mobile layouts and reduced-motion skeletons. Product lists and expanded issue
+details stay flush to their containing region, with one owner for each separator.
 
 For internally scrolling flex workspaces, every ancestor in the height chain needs the
 appropriate `min-h-0 flex-1 overflow-hidden`. The table/log owns its scroll container. Avoid
 scrolling the whole document from a log sentinel. Horizontal overflow must not destroy vertical
 page navigation on ordinary public tables.
+
+### Channel checks and technical tools
+
+Give each tool one obvious entry task. Agentic starts with the store, scan status and a single
+scan action. Keep external-service attribution and the domain-sharing explanation concise and
+adjacent to that action, rather than in a separate full-width disclaimer strip. Before the first
+scan, icon-led descriptions can explain what will be checked; they must not imply a saved score
+or completed work.
+
+Catalog access separates the product-feed handoff from the preceding readiness checks with one
+full-width seam. Use meaningful file/rank icons and a compact URL/action region. A new handoff
+must not read as another paragraph belonging to the last check.
+
+UCP opens on the store-prefilled checkout check. Keep product data as a separate standard tab;
+generated product coverage is not proof of live checkout support. Put the coverage explanation
+and optional endpoint/lifecycle tests behind package Accordions instead of a permanently visible
+technical grid or competing forms. Keep the lifecycle test’s potential test-cart effect explicit.
+Use light full-width sections, one border owner per seam and sparse edge crosses. Public versions
+of shared tools retain their own approved composition.
 
 ### Onboarding
 
@@ -735,11 +1106,12 @@ surface, localized picker copy and an
 obvious way to replace the selected file. Empty product states pair a relevant illustration
 with working store-connection and CSV-import actions.
 
-Keep the shared flag language switcher available in public, auth, onboarding, dashboard
-and shared-report chrome. Place it outside scrollable task content and billing overlays
-where the shell permits. Preserve the current route, query and fragment when switching.
-Settings may use its existing inline language selector; internal staff and presentation
-stages are separate surfaces, not reasons to omit it from the customer workspace.
+Keep the shared flag language switcher visible in public, auth, onboarding and shared-report
+chrome. Place it outside scrollable task content where the shell permits. In the dashboard,
+including the store hub, language selection belongs in Settings > Account using the shared
+Zenncore Select; the top bar contains search and the account menu. This supersedes the earlier
+always-visible dashboard language rule. Preserve the current route, query and fragment when
+switching, and keep Settings reachable without a billing entitlement.
 
 Notifications appear at the top center, clear of the support launcher, with a dark opaque
 surface, readable title/body contrast, a status icon and a visible dismiss control. Stacks
@@ -826,7 +1198,7 @@ states which patterns to repeat.
 | A mixed-character winding path exception | Keep the recognizable route; use tonal dots; actual code/protocol text stays literal |
 | One Hairline figure per page, only on light | Meaningful figures across sections; match each actual light/dark surface |
 | Generic drawers/baskets/hubs for every concept | Match the physical object to the flow, provider or sector |
-| Outline-only footer wordmark | Dimensional tonal-dot wordmark with a finite drawing reveal |
+| Repeated oversized footer wordmark | Small trademark plus tonal product-selection artwork with a finite reveal |
 | White-only or black-only use of cutouts | Cutouts work on white, blue and dark surfaces |
 | Gradient behind one footer subsection | One continuous footer field |
 | Repeated small padded blue/black boxes | Coherent section or workbench with meaningful internal structure |

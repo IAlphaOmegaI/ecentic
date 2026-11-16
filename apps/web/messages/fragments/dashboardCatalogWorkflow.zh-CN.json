@@ -1,0 +1,28 @@
+{
+  "dashboard": {
+    "catalogWorkflow": {
+      "reviewTitle": "确认导入内容",
+      "reviewHint": "已有 {count, number} 行商品数据可供导入。没有标题的行会被跳过。",
+      "fieldsHint": "请包含 title 或 name 列。可选列：description、price、currency、image、url、sku 和 id。",
+      "idsHint": "id 匹配的行会更新已有商品。没有 id 的行每次导入都会创建新商品。",
+      "previewHint": "显示前 {count, number} 行可导入的数据。",
+      "readFailed": "无法读取文件。请重新选择文件后再试。",
+      "partial": "已导入 {imported, number} 件商品，共 {total, number} 件。再次导入此文件前，请先打开目录检查结果。",
+      "unknownCurrency": "未指定币种",
+      "allWork": "全部任务",
+      "publishable": "可发布",
+      "manual": "人工检查",
+      "reviewLabel": "筛选任务",
+      "sourceTitle": "商品目录来源",
+      "sourceHint": "从此来源导入，检查保存的信息，然后比较或优化商品详情。",
+      "action": {
+        "primary": "检查文件",
+        "secondary": "选择其他文件",
+        "tertiary": "确认导入",
+        "quaternary": "打开目录"
+      },
+      "improveListing": "改进商品信息",
+      "comparisonResults": "结果"
+    }
+  }
+}

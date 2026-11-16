@@ -117,7 +117,7 @@ export const renderInline = (
               key={`code-${state.offset}`}
               className={
                 options.codeClassName ??
-                "rounded-sm bg-background-dimmed px-1 font-mono text-[0.9em] text-foreground"
+                "rounded-sm bg-background-dimmed px-1 font-mono text-sm text-foreground"
               }
             >
               {part.slice(1, -1)}
@@ -169,7 +169,7 @@ const List = ({
             renderInline(itemText(line), options)
           ) : (
             <>
-              <span className="mt-[0.45rem] size-1.5 shrink-0 rounded-full bg-primary" />
+              <span className="mt-2 size-1.5 shrink-0 rounded-full bg-primary" />
               <span>{renderInline(itemText(line), options)}</span>
             </>
           )}

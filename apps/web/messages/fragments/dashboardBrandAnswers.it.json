@@ -1,0 +1,42 @@
+{
+  "dashboard": {
+    "brand": {
+      "answers": {
+        "title": "Risposte salvate",
+        "description": "Esamina le domande su cui si basa questa analisi.",
+        "search": "Cerca domande, risposte o marchi",
+        "filter": "Menzione del marchio",
+        "filters": {
+          "all": "Tutte le risposte",
+          "mentioned": "Con menzione",
+          "absent": "Senza menzione"
+        },
+        "count": "{count, plural, one {# risposta} many {# risposte} other {# risposte}} su {total, number}",
+        "position": {
+          "top": "Raccomandazione principale",
+          "listed": "Nell’elenco",
+          "absent": "Non menzionato"
+        },
+        "context": {
+          "named": "La domanda contiene il nome del marchio",
+          "unbranded": "La domanda non contiene il nome del marchio"
+        },
+        "answer": "Riepilogo della risposta",
+        "noAnswer": "Non è stato salvato un riepilogo della risposta.",
+        "brands": "Marchi menzionati",
+        "noBrands": "Nessun marchio registrato.",
+        "sources": "Fonti suggerite dal modello",
+        "sourcesNote": "Sono fonti indicate dal modello, non citazioni verificate di una ricerca in tempo reale.",
+        "noSources": "Nessuna fonte registrata.",
+        "empty": {
+          "title": "Nessuna risposta corrispondente",
+          "description": "Prova un’altra ricerca o mostra tutte le risposte.",
+          "saved": "Non sono state salvate risposte per questa analisi."
+        },
+        "action": {
+          "primary": "Cancella ricerca e filtri"
+        }
+      }
+    }
+  }
+}

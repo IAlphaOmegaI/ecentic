@@ -23,7 +23,9 @@ export const CallSheetShell = ({ children }: { children: ReactNode }) => (
 );
 
 const Line = ({ className }: { className: string }) => (
-  <div className={`animate-pulse bg-foreground/10 ${className}`} />
+  <div
+    className={`animate-pulse bg-foreground/10 motion-reduce:animate-none ${className}`}
+  />
 );
 
 export const CallSheetSkeleton = () => (
@@ -33,7 +35,7 @@ export const CallSheetSkeleton = () => (
         {["store", "contact", "company", "rep", "email"].map((field) => (
           <div key={field} className="space-y-2">
             <Line className="h-4 w-24" />
-            <Line className="h-10 w-full rounded-md" />
+            <Line className="h-10 w-full rounded-sm" />
           </div>
         ))}
       </div>

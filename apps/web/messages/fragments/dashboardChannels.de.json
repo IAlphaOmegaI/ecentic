@@ -1,0 +1,74 @@
+{
+  "dashboard": {
+    "channels": {
+      "title": "Kanäle",
+      "description": "Halten Sie Ihren Katalog verbunden, prüfen Sie Übertragungen und bereiten Sie Ihren Shop auf Einkaufsagenten vor.",
+      "source": {
+        "title": "Katalogverbindung",
+        "description": "Ihr Quellkatalog und der letzte Import.",
+        "synced": "Zuletzt importiert: {date}",
+        "never": "Kein Import erfasst",
+        "public": "Import des öffentlichen Katalogs. Zum Veröffentlichen ist eine autorisierte Shop-Verbindung nötig.",
+        "action": {
+          "primary": "Verbindung verwalten"
+        }
+      },
+      "google": {
+        "title": "Übertragung an Google",
+        "description": "Gespeicherte Konto- und Angebotsdaten für diesen Shop.",
+        "action": {
+          "primary": "Google öffnen"
+        },
+        "pending": "Ausstehend",
+        "verified": "Verifizierte Updates",
+        "issues": "Handlungsbedarf",
+        "note": "Ein verifiziertes Update belegt nicht, dass Google das Produkt anzeigt."
+      },
+      "checkout": {
+        "title": "Checkout",
+        "description": "Prüfen Sie Ihr Checkout-Profil und die darin angebotenen Produkte.",
+        "action": {
+          "primary": "Checkout öffnen"
+        },
+        "scope": "Das Checkout-Profil gehört zu Ihrem Konto. Die Produktlisten beziehen sich auf diesen Shop."
+      },
+      "tools": {
+        "title": "Shop- und Entwicklertools",
+        "description": "Prüfen Sie bei Bedarf die erfassten Daten einer bestimmten Funktion.",
+        "checks": "Shop-Prüfungen",
+        "access": "Katalogzugriff",
+        "webmcp": "Einkaufstools",
+        "playground": "Checkout testen",
+        "comparison": "Profile vergleichen"
+      },
+      "research": {
+        "title": "Suchen Sie den Katalograng?",
+        "description": "Katalogabfragen finden Sie unter KI-Recherche. Sie messen einen bestimmten Markt und eine Suchanfrage, nicht die Einsatzbereitschaft des Shops.",
+        "action": {
+          "primary": "Katalograng öffnen"
+        }
+      },
+      "status": {
+        "connected": "Verbunden",
+        "syncing": "Import läuft",
+        "disconnected": "Getrennt",
+        "error": "Handlungsbedarf",
+        "unavailable": "Nicht verfügbar",
+        "unsupported": "Für diese Quelle nicht unterstützt",
+        "setup": "Einrichtung erforderlich",
+        "notConnected": "Nicht verbunden"
+      },
+      "error": {
+        "title": "Kanalinformationen nicht verfügbar",
+        "description": "Die gespeicherten Verbindungsdaten konnten nicht geladen werden. Versuchen Sie es gleich erneut.",
+        "action": {
+          "primary": "Erneut versuchen"
+        }
+      },
+      "checks": {
+        "title": "Katalogzugriff",
+        "description": "Prüfen Sie die öffentlichen Dateien und den Produktfeed, auf die Einkaufsagenten zugreifen können."
+      }
+    }
+  }
+}

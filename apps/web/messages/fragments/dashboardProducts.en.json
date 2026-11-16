@@ -26,14 +26,14 @@
         "poor": "Poor (<50%)",
         "distribution": "Quality Distribution",
         "avgQuality": "avg. quality",
-        "kicker": "01.1 — Quality"
+        "kicker": "Quality"
       },
       "optimization": {
         "readiness": "Product Readiness",
         "optimized": "Optimized",
         "pending": "Pending",
         "unoptimized": "Unoptimized",
-        "kicker": "01.2 — Optimization"
+        "kicker": "Optimization"
       },
       "detail": {
         "backToProducts": "Back to Products",
@@ -130,7 +130,7 @@
           "lost": "Lost",
           "noWins": "No wins recorded",
           "noLosses": "No losses recorded",
-          "kicker": "01 — Battlecards"
+          "kicker": "Battlecards"
         },
         "audit": {
           "aiContentQuality": "AI Content Quality",
@@ -141,7 +141,7 @@
           "title": "Optimize Listing",
           "description": "Category-aware content-quality scores for the fields AI agents read, plus how this listing is positioned for its audience.",
           "completeness": "Completeness:",
-          "currentListing": "02 — Current listing",
+          "currentListing": "Current listing",
           "characters": "{count} characters",
           "noDescription": "No description found",
           "liveOnStore": "Live on store",
@@ -157,7 +157,7 @@
           "structuredDataPublished": "Optimized structured data published",
           "structuredDataPublishedDescription": "Written to the ecentic.structured_data metafield. The app embed now renders it in place of the default product markup. If the embed is off, turn it on in the theme editor and press Save.",
           "openThemeEditor": "Open theme editor",
-          "listingAuditKicker": "01 — AI Listing Audit",
+          "listingAuditKicker": "AI Listing Audit",
           "status": {
             "optimizedByEcentic": "Optimized by ecentic",
             "ecenticStandard": "ecentic standard",

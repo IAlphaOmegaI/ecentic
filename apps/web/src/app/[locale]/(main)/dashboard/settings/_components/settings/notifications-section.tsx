@@ -57,7 +57,7 @@ export const NotificationsSection = ({
             className="flex items-center justify-between px-4 py-4"
           >
             <div>
-              <p className="font-medium text-[13px] text-foreground">
+              <p className="font-medium text-foreground text-xs">
                 {translate(`items.${key}.label`)}
               </p>
               <p className="mt-0.5 text-foreground-dimmed text-xs">

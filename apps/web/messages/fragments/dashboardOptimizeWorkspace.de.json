@@ -1,0 +1,94 @@
+{
+  "dashboard": {
+    "optimizeWorkspace": {
+      "title": "Optimieren",
+      "description": "Verbessern Sie Ihre Produkttexte anhand der Vergleiche. Prüfen Sie die Fakten vor dem Veröffentlichen.",
+      "action": {
+        "primary": "Erstellen und veröffentlichen",
+        "secondary": "Produkt prüfen",
+        "tertiary": "Datenqualität prüfen",
+        "quaternary": "Erneut versuchen"
+      },
+      "queue": {
+        "title": "Anstehende Verbesserungen",
+        "description": "Beginnen Sie mit den niedrigsten simulierten Gewinnraten. Öffnen Sie ein Produkt, um die Ergebnisse zu prüfen.",
+        "sample": "Diese Liste enthält gespeicherte Diagnosevorschläge. Den vollständigen Check des aktiven Katalogs finden Sie unter Datenqualität.",
+        "count": "{count, plural, one {# Produkt angezeigt} other {# Produkte angezeigt}}"
+      },
+      "search": "Produkte oder SKU suchen…",
+      "tabs": {
+        "queue": "Zu prüfen",
+        "published": "Veröffentlicht",
+        "dismissed": "Verworfen"
+      },
+      "summary": {
+        "candidates": "Zur Veröffentlichung geeignet",
+        "manual": "Manuelle Änderungen nötig",
+        "published": "Gespeicherte Veröffentlichungen"
+      },
+      "row": {
+        "rate": "Simulierte Gewinnrate",
+        "manual": "Manuelle Änderungen",
+        "ready": "Veröffentlichung verfügbar",
+        "context": "Erfasste Modelle: {models}"
+      },
+      "method": {
+        "title": "Wie diese Liste entsteht",
+        "description": "Kandidaten haben eine erfasste Gewinnrate unter 55 %. Verworfene Produkte und in den letzten 14 Tagen veröffentlichte Produkttexte sind ausgeschlossen. Ein Kandidat ist kein gespeicherter Entwurf. Erstellen und veröffentlichen erzeugt neue Texte und ersetzt den Produkttext im Shop sofort. Diese Vorschläge sagen weder Verkäufe noch künftige Gewinnraten voraus."
+      },
+      "states": {
+        "empty": {
+          "title": "Zurzeit nichts zu prüfen",
+          "description": "Für diesen Shop liegen keine Vorschläge vor. Prüfen Sie die Produktdaten oder starten Sie einen Vergleich, um weitere Verbesserungen zu finden."
+        },
+        "filtered": {
+          "title": "Keine passenden Produkte",
+          "description": "Versuchen Sie einen anderen Produktnamen oder eine andere SKU."
+        },
+        "error": {
+          "title": "Die Liste konnte nicht geladen werden",
+          "description": "Ihre Produktdaten sind weiterhin gespeichert. Laden Sie die Liste erneut."
+        }
+      },
+      "confirmation": {
+        "title": "Neuen Produkttext veröffentlichen?",
+        "description": "Ein neuer Titel und eine Beschreibung für {title} werden erstellt und in Ihrem verbundenen Shop veröffentlicht. Sie ersetzen den aktuellen Text ohne separate Entwurfsprüfung.",
+        "bulkTitle": "Änderungen für diesen Shop veröffentlichen?",
+        "bulkDescription": "Neue Titel und Beschreibungen werden für {count, plural, one {# geeignetes Produkt} other {# geeignete Produkte}} dieses Shops erstellt und veröffentlicht. Bestehende Texte werden ersetzt.",
+        "storeTitle": "Verbundenen Shop optimieren?",
+        "storeDescription": "Strukturierte Produktdaten und bei Shopify ein Shopprofil werden geschrieben. Texte für geeignete Produkte dieses Shops werden erstellt und veröffentlicht. Dabei können mehrere veröffentlichte Inhalte geändert werden.",
+        "action": {
+          "primary": "Bestätigen und veröffentlichen",
+          "secondary": "Weiter prüfen"
+        }
+      },
+      "bulk": {
+        "action": "Geeignete Produkte veröffentlichen"
+      },
+      "store": {
+        "action": "Shop optimieren"
+      },
+      "toast": {
+        "failed": "Die Änderung konnte nicht abgeschlossen werden",
+        "failedDescription": "Versuchen Sie es erneut. Falls die Veröffentlichung bereits begonnen hat, prüfen Sie vorher das Produkt.",
+        "published": "{count, plural, one {# Produkttext veröffentlicht} other {# Produkttexte veröffentlicht}}",
+        "partial": "{published} veröffentlicht; {failed} konnten nicht abgeschlossen werden. Prüfen Sie die verbleibenden Produkte vor einem neuen Versuch.",
+        "saved": "Liste aktualisiert"
+      },
+      "history": {
+        "unmeasured": "Um das Ergebnis zu messen, ist ein neuer Vergleich nötig.",
+        "undated": "Veröffentlichungszeit nicht verfügbar"
+      },
+      "diagnostics": {
+        "content": "Nützliche Produktinformationen ergänzen",
+        "contentHint": "Prüfen Sie den gespeicherten Titel und die Beschreibung. Ergänzen Sie zutreffende technische Daten und relevante Anwendungsfälle.",
+        "structured_data": "Strukturierte Daten prüfen",
+        "structured_dataHint": "Prüfen Sie die strukturierten Produktdaten und ergänzen Sie nur bestätigte Attribute.",
+        "seo": "Produktbilder ergänzen",
+        "seoHint": "Fügen Sie an der Quelle ein echtes Produktbild hinzu und synchronisieren Sie dann den Katalog.",
+        "platform": "Veröffentlichungszugriff verbinden",
+        "platformHint": "Änderungen können aus diesem Katalog nicht direkt veröffentlicht werden. Verbinden Sie Shopify oder WooCommerce oder ändern Sie die Quelle manuell."
+      }
+    }
+  }
+}

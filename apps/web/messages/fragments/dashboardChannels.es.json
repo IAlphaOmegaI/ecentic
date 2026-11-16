@@ -1,0 +1,74 @@
+{
+  "dashboard": {
+    "channels": {
+      "title": "Canales",
+      "description": "Mantén el catálogo conectado, revisa los envíos y prepara tu tienda para los agentes de compra.",
+      "source": {
+        "title": "Conexión del catálogo",
+        "description": "El catálogo de origen y su importación más reciente.",
+        "synced": "Última importación: {date}",
+        "never": "No hay importaciones registradas",
+        "public": "Importación del catálogo público. Para publicar, necesitas una conexión autorizada con la tienda.",
+        "action": {
+          "primary": "Gestionar conexión"
+        }
+      },
+      "google": {
+        "title": "Envíos a Google",
+        "description": "Registros guardados de la cuenta y las ofertas de esta tienda.",
+        "action": {
+          "primary": "Abrir Google"
+        },
+        "pending": "Pendientes",
+        "verified": "Actualizaciones verificadas",
+        "issues": "Requieren atención",
+        "note": "Una actualización verificada no confirma que Google muestre el producto."
+      },
+      "checkout": {
+        "title": "Proceso de compra",
+        "description": "Revisa el perfil de compra y los productos que ofrece.",
+        "action": {
+          "primary": "Abrir proceso de compra"
+        },
+        "scope": "El perfil de compra pertenece a tu cuenta. Las listas de productos corresponden a esta tienda."
+      },
+      "tools": {
+        "title": "Herramientas de tienda y desarrollo",
+        "description": "Consulta las pruebas de una función concreta cuando las necesites.",
+        "checks": "Comprobaciones de la tienda",
+        "access": "Acceso al catálogo",
+        "webmcp": "Herramientas de compra",
+        "playground": "Probar proceso de compra",
+        "comparison": "Comparar perfiles"
+      },
+      "research": {
+        "title": "¿Buscas la posición en el catálogo?",
+        "description": "Las consultas al catálogo están en Investigación. Miden un mercado y una consulta concretos, no la preparación de la tienda.",
+        "action": {
+          "primary": "Abrir posición en el catálogo"
+        }
+      },
+      "status": {
+        "connected": "Conectado",
+        "syncing": "Importando",
+        "disconnected": "Desconectado",
+        "error": "Requiere atención",
+        "unavailable": "No disponible",
+        "unsupported": "No compatible con este origen",
+        "setup": "Falta configuración",
+        "notConnected": "Sin conectar"
+      },
+      "error": {
+        "title": "Información de canales no disponible",
+        "description": "No hemos podido cargar los registros de conexión. Vuelve a intentarlo en un momento.",
+        "action": {
+          "primary": "Reintentar"
+        }
+      },
+      "checks": {
+        "title": "Acceso al catálogo",
+        "description": "Comprueba los archivos públicos y el feed de productos disponibles para los agentes de compra."
+      }
+    }
+  }
+}

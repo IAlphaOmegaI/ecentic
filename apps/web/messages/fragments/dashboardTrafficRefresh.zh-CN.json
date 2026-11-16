@@ -1,0 +1,42 @@
+{
+  "dashboard": {
+    "traffic": {
+      "title": "AI 访问",
+      "description": "查看已记录的 AI 活动来自哪里。",
+      "period": "最近 30 天",
+      "source": "来源",
+      "other": "其他来源",
+      "referrals": {
+        "title": "AI 引荐",
+        "short": "引荐",
+        "detail": "归类为 AI 引荐的访问活动。"
+      },
+      "requests": {
+        "title": "智能体和爬虫请求",
+        "short": "请求",
+        "detail": "已识别的用户代理，包括爬虫和智能体浏览器。"
+      },
+      "empty": {
+        "title": "尚未记录到 AI 活动",
+        "description": "跟踪器检测到 AI 引荐或可识别的用户代理后，活动就会显示在这里。"
+      },
+      "action": {
+        "primary": "检查连接",
+        "secondary": "重试"
+      },
+      "probes": "{count, plural, other {# 条跟踪器测试信号已从上述总数中排除。}}",
+      "limitation": "统计的是已记录的事件，并非独立访客或购买次数。浏览器跟踪无法捕获所有爬虫请求。",
+      "chart": {
+        "title": "每日活动",
+        "scope": "仅显示 OpenAI、Anthropic 和 Google。",
+        "hint": "此趋势包含引荐和请求。其他提供商的数据列在来源明细中。",
+        "empty": "尚未记录到这三家提供商的活动。",
+        "accessibleLabel": "每日活动记录。使用方向键查看各日期的数据。"
+      },
+      "error": {
+        "title": "无法加载访问数据",
+        "description": "访问数据暂时不可用，请重新加载此页面后再试。"
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "generator": "Azure gpt-image-2.5-sunburst via ~/.codex/bin/azure-image",
+  "generatedOn": "2026-11-13",
+  "subject": "Judy, a playful Fiat500-inspired toy/doodle city car; no manufacturer marks",
+  "styleReference": "apps/web/public/images/logo.svg",
+  "editReference": "source/judy-car.png",
+  "source": "source/judy-fiat500.png",
+  "output": "judy-fiat500.webp",
+  "width": 640,
+  "height": 533,
+  "prompt": "Use case: style-transfer. Input image is a style reference for the existing blue-grain Judy car. Redesign the car itself as a playful tiny Fiat 500-inspired city-car character: very short rounded body, high bubble roof, cheerful round headlights, tiny simple wheels, a softly curved nose, exaggerated cute compact proportions. This must read as a stylized dimensional doodle or handmade toy, not a realistic automobile rendering or a Mini Cooper. Keep ecentic's vivid cobalt blue, deep blue shadows and fine printed stochastic grain on clean geometric surfaces. Use soft simplified sculpted forms with a slight hand-drawn charm, a pale roof, dark blue glass, minimal seams and no polished metallic detail. Front three-quarter view, slightly from above, complete vehicle centered and filling about 80 percent of the canvas width. Strong silhouette that reads at 48 pixels. Background must be uniform pure chroma green #00FF00 for extraction, with no green reflections or tint on the car, no checkerboard and no cast shadow. No brand badges, logos, text, license plate writing, face, eyes, robot parts, road, scenery, stars, floating elements or motion blur. The headlights remain headlights rather than eyes. Make it more charming and rounder than the reference.",
+  "processing": "Chroma-key removal where green exceeds red and blue by25; 1pixel inset,0.35pixel edge feather, 16pixel transparent gutter; alpha-preserving640px resize, WebPquality92.",
+  "verification": "Visually inspected at48,64,112and280pixels on offwhite; complete car silhouette and pale roof remain readable. Image review stays inside assigned subagent."
+}

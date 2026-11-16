@@ -1,0 +1,9 @@
+{
+  "dashboard": {
+    "commandPalette": {
+      "states": {
+        "emptyHint": "Suchen Sie nach einem Produktnamen, einer SKU oder einer Seite."
+      }
+    }
+  }
+}

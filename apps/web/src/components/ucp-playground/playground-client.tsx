@@ -1,16 +1,22 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { LoaderIcon, RobotIcon, ShoppingCartIcon } from "@zenncore/icons";
-import { cn } from "@zenncore/utils";
+import { LoaderIcon, ShoppingCartIcon } from "@zenncore/icons";
+import { cn, resultify } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
+import {
+  Collapsible,
+  CollapsiblePanel,
+  CollapsibleTrigger,
+} from "@zenncore/web/components/collapsible";
 import {
   type FormEntries,
   field,
   type GenericForm,
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
+import { useToastManager } from "@zenncore/web/components/toast";
 import {
   DefaultChatTransport,
   getToolName,
@@ -18,12 +24,10 @@ import {
   type ToolUIPart,
 } from "ai";
 import { useLocale, useMessages, useTranslations } from "next-intl";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { z } from "zod";
-import {
-  SectionKicker,
-  StatusPill,
-} from "@/app/[locale]/(main)/dashboard/_components/grid";
+import { StatusPill } from "@/app/[locale]/(main)/dashboard/_components/grid";
+import { FeedbackLoading, FeedbackState } from "@/components/feedback-state";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import {
   Conversation,
@@ -53,6 +57,7 @@ import type {
 import type {
   PlaygroundDataParts,
   PlaygroundUIMessage,
+  ResolvedShoppingService,
 } from "@/server/app/intelligence/ucp/playground";
 import { resolvePlaygroundStore } from "@/server/app/intelligence/ucp/playground-actions";
 
@@ -151,7 +156,7 @@ const Rating = ({
 }) => (
   <span
     className={cn(
-      "flex items-center gap-1 text-[11px] text-foreground-dimmed tabular-nums",
+      "flex items-center gap-1 text-foreground-dimmed text-xs tabular-nums",
       className,
     )}
   >
@@ -195,7 +200,7 @@ const variantAvailability = (
   const quantity = availability.quantity;
   const suffix =
     typeof quantity === "number" && quantity > 0
-      ? translate("availability.quantityLeft", { count: quantity })
+      ? translate("availability.quantityLeft", { count: String(quantity) })
       : "";
 
   const base = ((): { label: string; tone: AvailabilityTone } => {
@@ -234,7 +239,7 @@ const VariantList = ({
         const { label, tone } = variantAvailability(variant, translate);
         return (
           <li
-            className="flex items-center justify-between gap-2 text-[11px] leading-tight"
+            className="flex items-center justify-between gap-2 text-xs leading-tight"
             key={variant.id ?? index}
           >
             <span className="min-w-0 flex-1 truncate text-foreground-dimmed">
@@ -358,7 +363,7 @@ const ProductCard = ({
             src={image}
           />
         ) : (
-          <div className="flex size-full items-center justify-center text-[10px] text-foreground-dimmed/40 uppercase tracking-[0.08em]">
+          <div className="flex size-full items-center justify-center text-foreground-dimmed/40 text-xs">
             {translate("product.noImage")}
           </div>
         )}
@@ -378,14 +383,14 @@ const ProductCard = ({
               </span>
             )}
             {onSale && (
-              <span className="text-[11px] text-foreground-dimmed line-through">
+              <span className="text-foreground-dimmed text-xs line-through">
                 {listPrice}
               </span>
             )}
           </span>
           {variantCount > 1 && (
-            <span className="shrink-0 text-[10px] text-foreground-dimmed uppercase tracking-[0.06em]">
-              {translate("product.variants", { count: variantCount })}
+            <span className="shrink-0 text-foreground-dimmed text-xs">
+              {translate("product.variants", { count: String(variantCount) })}
             </span>
           )}
         </div>
@@ -473,19 +478,22 @@ const ToolView = ({
             "Raw JSON" disclosure used by ProductsCard. */}
         {error && (
           <div>
-            <p className="mb-1 font-medium text-[10px] text-error uppercase tracking-[0.08em]">
+            <p className="mb-1 font-medium text-error text-xs">
               {translate("tool.error")}
             </p>
             <p className="wrap-break-word text-error">{error}</p>
           </div>
         )}
-        <details className="group">
-          <summary className="w-fit cursor-pointer list-none font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em] hover:text-foreground [&::-webkit-details-marker]:hidden">
+        <Collapsible className="group w-full min-w-0">
+          <CollapsibleTrigger
+            className="w-fit"
+            render={<Button variant="soft" color="neutral" />}
+          >
             {translate("tool.rawJson")}
-          </summary>
-          <div className="mt-2 space-y-3">
+          </CollapsibleTrigger>
+          <CollapsiblePanel className="mt-4 space-y-4 bg-transparent duration-200 motion-reduce:transition-none">
             <div>
-              <p className="mb-1 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+              <p className="mb-1 font-medium text-foreground-dimmed text-xs">
                 {translate("tool.arguments")}
               </p>
               <pre className="overflow-x-auto text-foreground/80">
@@ -494,7 +502,7 @@ const ToolView = ({
             </div>
             {output !== undefined && (
               <div>
-                <p className="mb-1 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                <p className="mb-1 font-medium text-foreground-dimmed text-xs">
                   {translate("tool.result")}
                 </p>
                 <pre className="max-h-64 overflow-auto text-foreground/80">
@@ -502,8 +510,8 @@ const ToolView = ({
                 </pre>
               </div>
             )}
-          </div>
-        </details>
+          </CollapsiblePanel>
+        </Collapsible>
       </div>
     </div>
   );
@@ -518,9 +526,9 @@ const ErrorView = ({ message }: { message: string }) => (
 
 const Thinking = () => (
   <div className="flex items-center gap-1.5 py-1.5">
-    <span className="size-1.5 animate-bounce rounded-full bg-foreground-dimmed [animation-delay:-0.2s]" />
-    <span className="size-1.5 animate-bounce rounded-full bg-foreground-dimmed [animation-delay:-0.1s]" />
-    <span className="size-1.5 animate-bounce rounded-full bg-foreground-dimmed" />
+    <span className="size-1.5 animate-bounce rounded-full bg-foreground-dimmed [animation-delay:-0.2s] motion-reduce:animate-none" />
+    <span className="size-1.5 animate-bounce rounded-full bg-foreground-dimmed [animation-delay:-0.1s] motion-reduce:animate-none" />
+    <span className="size-1.5 animate-bounce rounded-full bg-foreground-dimmed motion-reduce:animate-none" />
   </div>
 );
 
@@ -543,7 +551,7 @@ const CartView = ({
   );
 
   return (
-    <div className="w-fit overflow-hidden rounded-xl border border-accent-foreground bg-background-rich">
+    <div className="w-fit overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
       <div className="flex items-center justify-between gap-2 border-accent-foreground border-b bg-background-dimmed px-4 py-2.5">
         <div className="flex items-center gap-2">
           <ShoppingCartIcon className="size-4 text-primary" />
@@ -568,7 +576,7 @@ const CartView = ({
               className="flex items-center gap-3 px-4 py-3"
               key={line.id ?? index}
             >
-              <div className="size-12 shrink-0 overflow-hidden rounded-md bg-background-dimmed">
+              <div className="size-12 shrink-0 overflow-hidden rounded-sm bg-background-dimmed">
                 {line.item?.image_url && (
                   // biome-ignore lint/performance/noImgElement: arbitrary store CDNs can't be whitelisted for next/image
                   <img
@@ -638,10 +646,12 @@ const CartView = ({
 };
 
 const ToolLoading = ({ label }: { label: string }) => (
-  <div className="flex items-center gap-2 rounded-xl border border-accent-foreground bg-background-rich px-4 py-3 text-foreground-dimmed text-sm">
-    <span className="inline-block size-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
-    {label}
-  </div>
+  <FeedbackLoading
+    title={label}
+    figure="shopping-bot"
+    compact
+    className="rounded-lg border border-accent-foreground/50"
+  />
 );
 
 const cartLoadingLabel = (
@@ -711,18 +721,23 @@ const ProductsCard = ({
 
   return (
     <div className="space-y-2">
-      <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+      <p className="font-medium text-foreground-dimmed text-xs">
         {translate("catalog.productCount", { count: products.length })}
       </p>
       <ProductGrid products={products} translate={translate} />
-      <details className="group">
-        <summary className="cursor-pointer list-none text-[10px] text-foreground-dimmed uppercase tracking-[0.08em] hover:text-foreground">
+      <Collapsible className="group w-full min-w-0">
+        <CollapsibleTrigger
+          className="w-fit"
+          render={<Button variant="soft" color="neutral" />}
+        >
           {translate("tool.rawJson")}
-        </summary>
-        <pre className="mt-1 max-h-64 overflow-auto rounded-lg border border-accent-foreground bg-background-dimmed p-3 font-mono text-foreground/80 text-xs">
-          {formatJson(output)}
-        </pre>
-      </details>
+        </CollapsibleTrigger>
+        <CollapsiblePanel className="mt-4 bg-transparent duration-200 motion-reduce:transition-none">
+          <pre className="max-h-64 overflow-auto border-accent-foreground border-y bg-background-dimmed p-4 font-mono text-foreground text-xs">
+            {formatJson(output)}
+          </pre>
+        </CollapsiblePanel>
+      </Collapsible>
     </div>
   );
 };
@@ -839,9 +854,9 @@ const MessageQuotaWall = ({ limit }: { limit: number }) => {
   const translate = useTranslations("dashboard.ucpPlaygroundDashboard");
 
   return (
-    <div className="flex flex-col items-center gap-3 rounded-xl border border-accent-foreground bg-background-dimmed px-4 py-6 text-center">
+    <div className="flex flex-col items-center gap-3 rounded-lg border border-accent-foreground bg-background-dimmed px-4 py-6 text-center">
       <p className="font-medium text-foreground-rich text-sm">
-        {translate("quota.title", { limit })}
+        {translate("quota.title", { limit: String(limit) })}
       </p>
       <p className="max-w-sm text-foreground-dimmed text-xs">
         {translate("quota.description")}
@@ -859,11 +874,13 @@ const transport = new DefaultChatTransport<PlaygroundUIMessage>({
 
 type PlaygroundClientProps = {
   /** Public marketing workbench; dashboard sessions retain their compact UI. */
-  appearance?: "default" | "workbench";
+  appearance?: "default" | "workbench" | "dashboard";
   /** Seeds the connect form — the store opened in the dashboard, if any. */
   defaultStoreUrl?: string;
   /** A store already resolved on the server, so the session starts connected. */
   initialConnection?: PlaygroundDataParts["profile"] | null;
+  /** A failed automatic profile lookup is a real disconnected state. */
+  initialFailure?: Extract<ResolvedShoppingService, { success: false }>["code"];
   /**
    * Caps how many messages the visitor may send. Set for anonymous visitors on
    * the public playground; the API route enforces the same cap server-side.
@@ -880,11 +897,16 @@ export const PlaygroundClient = ({
   appearance = "default",
   defaultStoreUrl = "",
   initialConnection = null,
+  initialFailure,
   messageLimit,
   lockStore = false,
 }: PlaygroundClientProps) => {
   const translate = useTranslations("dashboard.ucpPlaygroundDashboard");
   const messagesCatalog = useMessages();
+  const toast = useToastManager();
+  const connectionAttempt = useRef(false);
+  const [failure, setFailure] = useState(initialFailure);
+  const [draftDomain, setDraftDomain] = useState(defaultStoreUrl);
 
   const connectFormConfig = useMemo(
     () =>
@@ -892,7 +914,8 @@ export const PlaygroundClient = ({
         storeUrl: field({
           shape: "text",
           validator: z
-            .string()
+            .string({ error: translate("connect.fields.storeUrl.validation") })
+            .trim()
             .min(1, translate("connect.fields.storeUrl.validation")),
           label: translate("connect.fields.storeUrl.label"),
           placeholder: translate("connect.fields.storeUrl.placeholder"),
@@ -910,7 +933,6 @@ export const PlaygroundClient = ({
   const [connection, setConnection] = useState<
     PlaygroundDataParts["profile"] | null
   >(initialConnection);
-  const [connectError, setConnectError] = useState<string | null>(null);
   const [text, setText] = useState("");
 
   const {
@@ -956,23 +978,45 @@ export const PlaygroundClient = ({
 
   const [handleConnect, isConnecting] = useAsyncAction(
     async ({ storeUrl: domain }: FormEntries<typeof connectFormConfig>) => {
-      setConnectError(null);
+      if (connectionAttempt.current) return;
+      connectionAttempt.current = true;
+      const resolution = await resultify(() =>
+        resolvePlaygroundStore({ store: domain }),
+      );
+      connectionAttempt.current = false;
 
-      const resolution = await resolvePlaygroundStore({ store: domain });
-
-      if (!resolution.success) {
-        setConnectError(resolution.error.message);
+      if (!resolution.success || !resolution.data.success) {
+        const code = resolution.success ? resolution.data.code : "unreachable";
+        setFailure(code);
+        const description = (() => {
+          switch (code) {
+            case "domain":
+              return translate("connect.failure.domain");
+            case "profile":
+              return translate("connect.failure.profile");
+            case "shopping":
+              return translate("connect.failure.shopping");
+            case "unreachable":
+              return translate("connect.failure.unreachable");
+          }
+        })();
+        toast.add({
+          type: "error",
+          title: translate("connect.failure.title"),
+          description,
+        });
         return;
       }
 
       setStoreUrl(domain);
-      setConnection(resolution.data);
+      setFailure(undefined);
+      setConnection(resolution.data.data);
     },
   );
 
   const handleDisconnect = useCallback(() => {
     setConnection(null);
-    setConnectError(null);
+    setFailure(undefined);
     setMessages([]);
     clearError();
   }, [setMessages, clearError]);
@@ -1003,6 +1047,71 @@ export const PlaygroundClient = ({
   const isEmpty = messages.length === 0;
 
   if (!connection) {
+    if (appearance === "dashboard") {
+      return (
+        <div
+          data-playground-connect={appearance}
+          data-connection-state={
+            isConnecting ? "connecting" : failure ? "unavailable" : "idle"
+          }
+          aria-busy={isConnecting}
+          className="flex min-w-0 flex-1 flex-col items-center justify-center px-4 py-8 sm:px-6"
+        >
+          <div className="w-full max-w-3xl">
+            {isConnecting ? (
+              <FeedbackLoading
+                title={translate("connect.action.connecting")}
+                description={draftDomain}
+                figure="channel-plug-hub"
+                className="px-0 sm:px-0"
+              />
+            ) : (
+              <FeedbackState
+                title={translate(
+                  failure ? "connect.failure.title" : "connect.title",
+                )}
+                description={translate(
+                  failure
+                    ? `connect.failure.${failure}`
+                    : "connect.description",
+                )}
+                figure="channel-plug-hub"
+                className="px-0 sm:px-0"
+              />
+            )}
+            <InferredForm
+              className="mx-auto flex w-full max-w-xl flex-col items-stretch gap-3 space-y-0 sm:flex-row sm:items-end [&>div]:min-w-0 [&>div]:flex-1"
+              config={{
+                ...connectFormConfig,
+                storeUrl: {
+                  ...connectFormConfig.storeUrl,
+                  disabled: isConnecting,
+                },
+              }}
+              defaultValues={{ storeUrl: defaultStoreUrl }}
+              onChange={(values) => {
+                if (values.storeUrl === draftDomain) return;
+                setDraftDomain(values.storeUrl ?? "");
+                setFailure(undefined);
+              }}
+              onSubmit={handleConnect}
+            >
+              <Button
+                color="primary"
+                disabled={isConnecting}
+                type="submit"
+                className="shrink-0"
+              >
+                {isConnecting
+                  ? translate("connect.action.connecting")
+                  : translate("connect.action.primary")}
+              </Button>
+            </InferredForm>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div
         data-playground-connect={appearance}
@@ -1016,7 +1125,7 @@ export const PlaygroundClient = ({
           <CommerceFigure
             kind="checkout"
             surface="dark"
-            className="aspect-[5/3] w-full max-w-[440px] max-sm:max-w-[300px]"
+            className="aspect-[5/3] w-full max-w-110 max-sm:max-w-75"
           />
         )}
         <div
@@ -1049,29 +1158,32 @@ export const PlaygroundClient = ({
               {translate("connect.description")}
             </p>
           </div>
-          <InferredForm
-            className={cn(
-              "flex flex-col gap-3",
-              appearance === "workbench" &&
-                "pt-4 [&_div:has(>input)]:h-12 [&_div:has(>input)]:bg-background-rich [&_div:has(>input)]:px-3 [&_label]:text-background-rich",
-            )}
-            config={connectFormConfig}
-            defaultValues={{ storeUrl: defaultStoreUrl }}
-            onSubmit={handleConnect}
-          >
-            <Button
-              className="w-full"
-              color="primary"
-              disabled={isConnecting}
-              type="submit"
+          <div className="space-y-4">
+            <InferredForm
+              className={cn(
+                "flex flex-col gap-3",
+                appearance === "workbench" &&
+                  "pt-4 [&_div:has(>input)]:h-12 [&_div:has(>input)]:bg-background-rich [&_div:has(>input)]:px-3 [&_label]:text-background-rich",
+              )}
+              config={connectFormConfig}
+              defaultValues={{ storeUrl: defaultStoreUrl }}
+              onSubmit={handleConnect}
             >
-              {isConnecting && <LoaderIcon className="size-4 animate-spin" />}
-              {isConnecting
-                ? translate("connect.action.connecting")
-                : translate("connect.action.primary")}
-            </Button>
-          </InferredForm>
-          {connectError && <ErrorView message={connectError} />}
+              <Button
+                className="w-full"
+                color="primary"
+                disabled={isConnecting}
+                type="submit"
+              >
+                {isConnecting && (
+                  <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
+                )}
+                {isConnecting
+                  ? translate("connect.action.connecting")
+                  : translate("connect.action.primary")}
+              </Button>
+            </InferredForm>
+          </div>
         </div>
       </div>
     );
@@ -1083,12 +1195,13 @@ export const PlaygroundClient = ({
       className={cn(
         "relative flex min-h-40 flex-1 flex-col divide-y divide-accent-foreground",
         appearance === "workbench" &&
-          "h-[700px] min-h-0 bg-background-rich text-foreground max-sm:h-[600px] [&_:is(h2,h3,h4)]:text-foreground-rich!",
+          "h-175 min-h-0 bg-background-rich text-foreground max-sm:h-150 [&_:is(h2,h3,h4)]:text-foreground-rich!",
+        appearance === "dashboard" && "min-h-150 bg-background-rich",
       )}
     >
       {/* Connected store + transport */}
       <div className="flex shrink-0 items-center justify-between gap-3 p-4">
-        <SectionKicker>
+        <div className="min-w-0 text-sm">
           <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 normal-case">
             <span className="font-mono font-semibold text-primary">
               {connectedHost}
@@ -1098,19 +1211,20 @@ export const PlaygroundClient = ({
             >
               {connection.transport}
             </StatusPill>
-            <span className="min-w-0 truncate font-mono text-[11px] text-foreground-dimmed lowercase">
+            <span className="min-w-0 truncate font-mono text-foreground-dimmed text-xs lowercase">
               {connection.endpoint}
             </span>
           </span>
-        </SectionKicker>
+        </div>
         {!lockStore && (
-          <button
-            className="shrink-0 font-medium text-foreground-dimmed text-xs hover:text-foreground"
+          <Button
+            variant="soft"
+            color="neutral"
             onClick={handleDisconnect}
             type="button"
           >
             {translate("session.changeStore")}
-          </button>
+          </Button>
         )}
       </div>
 
@@ -1118,33 +1232,24 @@ export const PlaygroundClient = ({
       <Conversation className="min-h-0">
         <ConversationContent className="mx-auto min-h-full w-full max-w-3xl gap-6 px-4 py-6 sm:px-6">
           {isEmpty ? (
-            <div className="flex flex-1 flex-col items-center justify-center gap-6 py-12 text-center">
-              <div className="flex size-12 items-center justify-center rounded-xl border border-accent-foreground bg-background-dimmed">
-                <RobotIcon className="size-6 text-primary" />
-              </div>
-              <div className="space-y-1.5">
-                <h2 className="font-semibold text-foreground-rich text-xl">
-                  {translate("session.emptyTitle")}
-                </h2>
-                <p className="mx-auto max-w-md text-foreground-dimmed text-sm leading-relaxed">
-                  {translate("session.emptyDescription", {
-                    host: connectedHost ?? "",
-                  })}
-                </p>
-              </div>
-              {!isOutOfMessages && (
-                <div className="flex flex-wrap items-center justify-center gap-2">
-                  {starterSuggestions.map((suggestion) => (
-                    <Suggestion
-                      color="primary"
-                      key={suggestion}
-                      onClick={submit}
-                      suggestion={suggestion}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
+            <FeedbackState
+              title={translate("session.emptyTitle")}
+              description={translate("session.emptyDescription", {
+                host: connectedHost ?? "",
+              })}
+              figure="shopping-bot"
+              scope="page"
+            >
+              {!isOutOfMessages &&
+                starterSuggestions.map((suggestion) => (
+                  <Suggestion
+                    color="primary"
+                    key={suggestion}
+                    onClick={submit}
+                    suggestion={suggestion}
+                  />
+                ))}
+            </FeedbackState>
           ) : (
             messages.map((message, index) => (
               <Message from={message.role} key={message.id}>
@@ -1189,13 +1294,13 @@ export const PlaygroundClient = ({
                   disabled={isGenerating}
                   onChange={handleTextChange}
                   placeholder={translate("composer.placeholder", {
-                    host: connectedHost,
+                    host: connectedHost ?? hostOf(storeUrl),
                   })}
                   rows={1}
                   value={text}
                 />
                 <div className="flex items-center justify-between gap-2 px-3 pt-1 pb-2.5">
-                  <span className="hidden text-[11px] text-foreground-dimmed sm:block">
+                  <span className="hidden text-foreground-dimmed text-xs sm:block">
                     {translate("composer.hint")}
                   </span>
                   <PromptInputSubmit
@@ -1211,7 +1316,7 @@ export const PlaygroundClient = ({
             </PromptInput>
           )}
           {messageLimit !== undefined && !isOutOfMessages && (
-            <p className="text-center text-[11px] text-foreground-dimmed">
+            <p className="text-center text-foreground-dimmed text-xs">
               {translate("composer.remaining", {
                 remaining: remainingMessages,
                 limit: messageLimit,

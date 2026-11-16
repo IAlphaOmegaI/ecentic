@@ -1,47 +1,45 @@
 "use client";
-
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { Crosshair, StatusPill } from "../../../_components/grid";
-
+import { FeedbackLoading } from "@/components/feedback-state";
+import { ChannelsWorkspace } from "../../channels/_components/workspace";
 export const PlaygroundShell = ({ children }: { children: ReactNode }) => {
   const translate = useTranslations("dashboard.ucpPlaygroundDashboard");
 
   return (
-    <div className="mx-8 flex h-full flex-col border-accent-foreground border-x pb-8">
-      <div className="-mx-8 border-accent-foreground border-b">
-        <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <div>
-            <StatusPill tone="neutral">{translate("statusPill")}</StatusPill>
-            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
-              {translate("title")}
-            </h1>
-            <p className="mt-1 text-foreground-dimmed text-sm">
-              {translate("description")}
-            </p>
-          </div>
-        </div>
+    <ChannelsWorkspace
+      subject="ucpPlayground"
+      title={translate("title")}
+      description={translate("description")}
+    >
+      <div className="flex min-w-0 flex-1 flex-col bg-background-rich">
+        {children}
       </div>
+    </ChannelsWorkspace>
+  );
+};
+export const PlaygroundSkeleton = () => {
+  const translate = useTranslations("dashboard.ucpPlaygroundDashboard");
 
-      <div className="-mx-8 min-h-0 flex-1 border-accent-foreground border-b">
-        <div className="relative mx-8 flex h-full flex-col bg-background-rich">
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          {children}
+  return (
+    <div className="flex min-w-0 flex-1 flex-col items-center justify-center px-4 py-8 sm:px-6">
+      <div className="w-full max-w-3xl">
+        <FeedbackLoading
+          title={translate("connect.action.connecting")}
+          figure="channel-plug-hub"
+          className="px-0 sm:px-0"
+        />
+        <div
+          aria-hidden
+          className="mx-auto flex w-full max-w-xl animate-pulse flex-col items-stretch gap-3 motion-reduce:animate-none sm:flex-row sm:items-end"
+        >
+          <div className="flex-1 space-y-2">
+            <div className="h-4 w-28 rounded-sm bg-foreground/10" />
+            <div className="h-10 w-full rounded-lg bg-foreground/5" />
+          </div>
+          <div className="h-10 rounded-lg bg-primary/10 sm:w-24" />
         </div>
       </div>
     </div>
   );
 };
-
-export const PlaygroundSkeleton = () => (
-  <div className="flex flex-1 items-center justify-center p-8">
-    <div className="w-full max-w-md space-y-3">
-      <div className="h-4 w-40 animate-pulse bg-accent-foreground/30" />
-      <div className="h-9 w-full animate-pulse bg-accent-foreground/20" />
-      <div className="h-9 w-full animate-pulse bg-accent-foreground/30" />
-    </div>
-  </div>
-);

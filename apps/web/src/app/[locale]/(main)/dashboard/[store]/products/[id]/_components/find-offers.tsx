@@ -6,12 +6,17 @@ import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import {
+  callOnboardingAction,
+  onboardingErrorKey,
+} from "@/lib/onboarding-errors";
 import * as Offers from "@/server/app/intelligence/offers";
 
 export namespace FindOffers {
   export type Props = {
     store: string;
     product: string;
+    onFound?: () => void;
   };
 }
 
@@ -28,21 +33,24 @@ export namespace FindOffers {
  * product, one chain, ~3s. It is worth its own control precisely because the
  * cost is bounded and obvious.
  */
-export const FindOffers = ({ store, product }: FindOffers.Props) => {
+export const FindOffers = ({ store, product, onFound }: FindOffers.Props) => {
   const toast = useToastManager();
+  const errorCopy = useTranslations("onboarding.experience.errors");
   const router = useRouter();
   const translate = useTranslations("dashboard.products.detail.findOffers");
 
   const [handleFind, isFinding] = useAsyncAction(async () => {
-    const resolution = await Offers.resolveOffersForProduct({
-      store,
-      product,
-    });
+    const resolution = await callOnboardingAction(() =>
+      Offers.resolveOffersForProduct({
+        store,
+        product,
+      }),
+    );
 
     if (!resolution.success) {
       toast.add({
         title: translate("toast.failed"),
-        description: resolution.error.message,
+        description: errorCopy(onboardingErrorKey(resolution.error)),
         type: "error",
       });
       return;
@@ -65,6 +73,7 @@ export const FindOffers = ({ store, product }: FindOffers.Props) => {
       return;
     }
 
+    onFound?.();
     router.refresh();
     toast.add({
       title: translate("toast.found.title"),

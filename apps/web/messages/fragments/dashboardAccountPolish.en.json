@@ -1,0 +1,55 @@
+{
+  "dashboard": {
+    "reports": {
+      "unavailable": "No saved data yet"
+    },
+    "googleShopping": {
+      "workspaceTitle": "Google Shopping",
+      "workspaceDescription": "Manage your Merchant Center connection, listing updates, and checkout readiness.",
+      "unsupportedWorkspace": {
+        "status": "Not available for this source",
+        "title": "Connect a supported catalog",
+        "description": "Google Shopping delivery is available for connected Shopify stores. This catalog source cannot connect to Merchant Center through ecentic yet. You can still review its products and other channel settings.",
+        "action": {
+          "primary": "Connect Shopify",
+          "secondary": "Review connections"
+        }
+      }
+    },
+    "ucpPlaygroundDashboard": {
+      "composer": {
+        "remaining": "{remaining, number} of {limit, number} free {limit, plural, one {message} other {messages}} left in this playground."
+      }
+    },
+    "agentic": {
+      "scan": {
+        "workspaceTitle": "Storefront scan",
+        "awaitingFirst": "Not scanned yet",
+        "report": "Open report",
+        "providerNote": "Your domain is sent to <provider>Is Agentic</provider>. No customer or order data is shared."
+      },
+      "score": {
+        "preview": {
+          "emptyTitle": "Your first scan starts here",
+          "publicTitle": "A public report is available",
+          "payments": {
+            "title": "Payments",
+            "description": "Checkout and payment protocol support."
+          },
+          "discovery": {
+            "title": "Discovery",
+            "description": "Signals that help agents find your store."
+          },
+          "accessibility": {
+            "title": "Accessibility",
+            "description": "Whether agents can reach and read your storefront."
+          },
+          "usability": {
+            "title": "Usability",
+            "description": "Interfaces agents can use to work with your store."
+          }
+        }
+      }
+    }
+  }
+}

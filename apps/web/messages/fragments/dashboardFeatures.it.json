@@ -578,8 +578,7 @@
       },
       "composer": {
         "placeholder": "Chiedi all'agente di acquistare su {host}…",
-        "hint": "Invio per inviare · Maiusc + Invio per una nuova riga",
-        "remaining": "Ti restano {remaining} {limit, plural, one {messaggio gratuito} many {messaggi gratuiti} other {messaggi gratuiti}} su {limit} in questo playground."
+        "hint": "Invio per inviare · Maiusc + Invio per una nuova riga"
       },
       "quota": {
         "title": "Hai usato tutti i {limit} messaggi gratuiti del playground",
@@ -743,11 +742,7 @@
         },
         "frequency": {
           "title": "Frequenza delle simulazioni",
-          "options": [
-            "Solo manuale",
-            "Giornaliera",
-            "Settimanale"
-          ]
+          "options": ["Solo manuale", "Giornaliera", "Settimanale"]
         },
         "persona": {
           "title": "Persona d’acquisto",

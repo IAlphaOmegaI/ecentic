@@ -1,0 +1,32 @@
+{
+  "name": "shelf-ladder",
+  "subject": "catalogRank",
+  "meaning": "A stocked ranking shelf and rolling ladder: raise one product onto the top shelf.",
+  "part": "top product",
+  "answer": [
+    55,
+    23,
+    92
+  ],
+  "bounds": [
+    [
+      -7,
+      -1,
+      0
+    ],
+    [
+      121,
+      68,
+      129
+    ]
+  ],
+  "scale": 1.72,
+  "figure": "/hairline/custom/shelf-ladder.js",
+  "rest": "apps/web/src/components/hairline/rest/shelf-ladder.json",
+  "sourceSha256": "5588d2f22ec35f1c1f5ef004181f204b9fba9fd3e1983d47dbcb4a353b04208b",
+  "restSha256": "59faa9a55f4c19d596643233d623806757f523e1133d528a35f3e197fc191d09",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/shelf-ladder.validation.txt"
+}

@@ -13,6 +13,7 @@ import { Button } from "@zenncore/web/components/button";
 import { useLocale, useTranslations } from "next-intl";
 import { type ComponentProps, type ReactNode, useState } from "react";
 import { StatusPill } from "@/app/[locale]/(main)/dashboard/_components/grid";
+import { FeedbackLoading, FeedbackState } from "@/components/feedback-state";
 import { Link } from "@/i18n/navigation";
 import * as Entry from "@/server/app/entry";
 import type * as Catalog from "@/server/app/storefront/catalog";
@@ -96,20 +97,19 @@ const Notice = ({
 }) => {
   const translate = useTranslations("agentReadiness");
   return (
-    <div className="flex flex-col items-start gap-4 bg-background px-6 py-10 sm:px-8">
-      <div>
-        <p className="font-medium text-2xl text-foreground">{title}</p>
-        <p className="mt-2 max-w-2xl font-light text-foreground-dimmed">
-          {description}
-        </p>
-      </div>
+    <FeedbackState
+      title={title}
+      description={description}
+      figure="readiness-scanner"
+      surface="background"
+    >
       {retry && (
         <Button color="accent" render={<Link href="/agents" />}>
           {translate("actions.primary")}
           <ArrowRightIcon className="size-4" />
         </Button>
       )}
-    </div>
+    </FeedbackState>
   );
 };
 
@@ -190,7 +190,7 @@ const Connect = ({ origin }: { origin: string }) => {
       >
         {translate("actions.connect")}
         {isPending ? (
-          <LoaderIcon className="size-4 animate-spin" />
+          <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
         ) : (
           <ArrowRightIcon className="size-4" />
         )}
@@ -269,7 +269,7 @@ const Thumbnail = ({ product }: { product: Catalog.Product }) => {
 
   if (!source || broken)
     return (
-      <span className="block size-10 shrink-0 rounded-md bg-background-dimmed" />
+      <span className="block size-10 shrink-0 rounded-sm bg-background-dimmed" />
     );
 
   return (
@@ -281,7 +281,7 @@ const Thumbnail = ({ product }: { product: Catalog.Product }) => {
       loading="lazy"
       referrerPolicy="no-referrer"
       onError={() => setBroken(true)}
-      className="size-10 shrink-0 rounded-md bg-background-dimmed object-cover"
+      className="size-10 shrink-0 rounded-sm bg-background-dimmed object-cover"
     />
   );
 };
@@ -477,21 +477,27 @@ const Products = ({ id }: { id: string }) => {
             );
           case prepared.data !== null:
             return (
-              <p className="px-6 py-6 font-light text-foreground-dimmed sm:px-8">
-                {translate("products.empty")}
-              </p>
+              <FeedbackState
+                title={translate("products.empty")}
+                figure="document-stack"
+                surface="background"
+              />
             );
           case prepared.missing || prepared.failed:
             return (
-              <p className="px-6 py-6 font-light text-foreground-dimmed sm:px-8">
-                {translate("products.failed")}
-              </p>
+              <FeedbackState
+                title={translate("products.failed")}
+                figure="readiness-scanner"
+                surface="background"
+              />
             );
           default:
             return (
-              <p className="px-6 py-6 font-light text-foreground-dimmed sm:px-8">
-                {translate("products.loading")}
-              </p>
+              <FeedbackLoading
+                title={translate("products.loading")}
+                figure="document-stack"
+                surface="background"
+              />
             );
         }
       })()}
@@ -652,7 +658,7 @@ export const Run = ({ id }: Run.Props) => {
       {summary.stage !== "done" && summary.stage !== "failed" && (
         <div className="flex flex-col gap-2 border-accent-foreground border-t bg-background px-6 py-6 sm:px-8">
           <p className="flex items-center gap-2 font-medium text-foreground">
-            <LoaderIcon className="size-4 animate-spin text-primary" />
+            <LoaderIcon className="size-4 animate-spin text-primary motion-reduce:animate-none" />
             {stageLabels[summary.stage]}
           </p>
           <ul aria-live="polite" className="flex flex-col gap-1">

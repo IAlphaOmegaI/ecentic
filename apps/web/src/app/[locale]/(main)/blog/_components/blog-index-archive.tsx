@@ -15,6 +15,7 @@ import type { AppConfig } from "next-intl";
 import { parseAsInteger, parseAsStringLiteral, useQueryStates } from "nuqs";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { useRef } from "react";
+import { FeedbackState } from "@/components/feedback-state";
 import { Link } from "@/i18n/navigation";
 import { blogImage } from "@/lib/blog-image";
 import { isOptimizable } from "@/lib/image-hosts";
@@ -155,7 +156,7 @@ const Archive = ({ entries, copy }: BlogIndexArchive.Props) => {
               prefetch={true}
               className="group grid min-w-0 grid-cols-[80px_minmax(0,1fr)] gap-4 p-4 outline-offset-[-2px] transition-colors duration-150 hover:bg-background-dimmed focus-visible:bg-background-dimmed focus-visible:outline-2 focus-visible:outline-primary motion-reduce:transition-none sm:grid-cols-[120px_minmax(0,1fr)_16px] sm:gap-6 sm:p-6"
             >
-              <div className="relative aspect-square overflow-hidden rounded-md bg-background-dimmed">
+              <div className="relative aspect-square overflow-hidden rounded-sm bg-background-dimmed">
                 {entry.thumbnailUrl && (
                   <Image
                     src={blogImage(entry.thumbnailUrl)}
@@ -172,7 +173,7 @@ const Archive = ({ entries, copy }: BlogIndexArchive.Props) => {
                   <time dateTime={entry.isoDate}>{entry.date}</time>
                   <span>{entry.readTime}</span>
                 </p>
-                <h3 className="text-foreground text-lg leading-snug tracking-[-0.02em] group-hover:text-primary-text group-focus-visible:text-primary-text sm:text-[22px]">
+                <h3 className="text-foreground text-lg leading-snug tracking-tight group-hover:text-primary-text group-focus-visible:text-primary-text sm:text-xl">
                   {entry.title}
                 </h3>
                 <p className="mt-2 hidden text-foreground-dimmed text-sm leading-relaxed sm:line-clamp-2">
@@ -187,7 +188,21 @@ const Archive = ({ entries, copy }: BlogIndexArchive.Props) => {
           </article>
         ))}
         {visible.length === 0 && (
-          <p className="p-6 text-foreground-dimmed">{copy.empty}</p>
+          <FeedbackState
+            title={copy.empty}
+            figure="open-book"
+            surface="background"
+          >
+            {query.collection !== "all" && (
+              <Button
+                color="primary"
+                variant="soft"
+                onClick={() => void setQuery({ collection: "all", page: 1 })}
+              >
+                {copy.all}
+              </Button>
+            )}
+          </FeedbackState>
         )}
       </div>
       <div className="flex flex-wrap items-center justify-between gap-4 bg-background-dimmed p-4 sm:p-6">

@@ -1,0 +1,32 @@
+{
+  "name": "channel-plug-hub",
+  "subject": "channels",
+  "meaning": "A physical connection hub with three plugs: seat the front connector in its socket.",
+  "part": "plug",
+  "answer": [
+    72,
+    93,
+    24
+  ],
+  "bounds": [
+    [
+      -16,
+      -7,
+      0
+    ],
+    [
+      131,
+      133,
+      62
+    ]
+  ],
+  "scale": 1.6,
+  "figure": "/hairline/custom/channel-plug-hub.js",
+  "rest": "apps/web/src/components/hairline/rest/channel-plug-hub.json",
+  "sourceSha256": "3daf484f7f8f5b0146f92e44b1634418d5679b8cb387efc84aef2fd56fc96140",
+  "restSha256": "e3506d719f5ff0c49625f664976ac5ecfbfd91a4c39f9709ec3f932d699ceb23",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/channel-plug-hub.validation.txt"
+}

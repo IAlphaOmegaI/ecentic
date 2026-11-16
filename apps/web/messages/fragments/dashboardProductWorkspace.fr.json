@@ -1,0 +1,75 @@
+{
+  "dashboard": {
+    "productWorkspace": {
+      "title": "Détails du produit",
+      "description": "Consultez les données et les comparaisons par IA enregistrées pour ce produit.",
+      "status": {
+        "active": "Actif",
+        "draft": "Brouillon",
+        "archived": "Archivé",
+        "unknown": "Statut indisponible"
+      },
+      "updated": "Mis à jour {time}",
+      "latestComparison": "Dernière comparaison {time}",
+      "priceMissing": "Aucun prix enregistré",
+      "metrics": {
+        "rate": "Taux de victoire simulé",
+        "comparisons": "Comparaisons",
+        "coverage": "Couverture des champs enregistrés",
+        "wins": "Victoires : {wins} sur {total}",
+        "competitors": "{count, plural, one {Face à # concurrent} many {Face à # concurrents} other {Face à # concurrents}}"
+      },
+      "method": {
+        "title": "À propos de ces chiffres",
+        "description": "Les taux de victoire sont calculés à partir des comparaisons de produits enregistrées. Aucun taux n’est mesuré pour les produits ou les modèles sans comparaison. La couverture porte sur six champs enregistrés : titre, description, prix, image, SKU et données structurées. Elle ne mesure pas le pouvoir de persuasion du contenu."
+      },
+      "models": {
+        "title": "Résultats par modèle",
+        "description": "Des simulations enregistrées, pas du trafic d’achat réel.",
+        "count": "{count, plural, one {# comparaison} many {# comparaisons} other {# comparaisons}}"
+      },
+      "tabs": {
+        "overview": "Comparaisons",
+        "replay": "Décisions des agents",
+        "battlecard": "Comparaison directe",
+        "optimize": "Fiche produit"
+      },
+      "action": {
+        "primary": "Analyser avec l’IA",
+        "secondary": "Réessayer",
+        "tertiary": "Ouvrir le catalogue",
+        "quaternary": "Afficher plus"
+      },
+      "navigation": {
+        "primary": "Retour aux produits",
+        "secondary": "Examiner les optimisations en attente"
+      },
+      "audit": {
+        "title": "Analyse du contenu par l’IA",
+        "description": "Demandez une analyse de la rédaction, des informations produit et de leur adéquation au public visé. Votre fiche enregistrée reste inchangée.",
+        "running": "Analyse du produit…",
+        "failed": "L’analyse par l’IA n’a pas pu aboutir. Les informations enregistrées du produit restent inchangées.",
+        "savedFields": "Champs produit enregistrés",
+        "coverageDescription": "La présence des champs enregistrés est vérifiée séparément de l’analyse du contenu par l’IA.",
+        "ready": "Analyse terminée"
+      },
+      "unmeasured": "Non comparé",
+      "noReasoning": "Aucune explication écrite n’a été enregistrée pour cette comparaison.",
+      "states": {
+        "empty": {
+          "title": "Aucune comparaison pour le moment",
+          "description": "Ce produit n’a aucune comparaison par IA enregistrée. Son taux de victoire apparaîtra après sa comparaison avec des concurrents."
+        },
+        "error": {
+          "title": "Impossible de charger ce produit",
+          "description": "Votre catalogue est toujours enregistré. Réessayez de charger ce produit."
+        },
+        "missing": {
+          "title": "Produit introuvable",
+          "description": "Ce produit a peut-être été supprimé ou appartient à une autre boutique. Ouvrez le catalogue pour choisir un produit."
+        }
+      },
+      "publishDescription": "Générez un titre et une description optimisés pour {title}, puis publiez-les dans la boutique connectée en remplacement de la fiche actuelle."
+    }
+  }
+}

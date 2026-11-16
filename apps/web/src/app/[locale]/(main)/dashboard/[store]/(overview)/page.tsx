@@ -1,13 +1,5 @@
-import {
-  ArrowRightIcon,
-  AwardIcon,
-  BullseyeIcon,
-  GaugeIcon,
-  RadarIcon,
-  TrendDownIcon,
-  TrendUpIcon,
-} from "@zenncore/icons";
-import { cn, unwrapResult } from "@zenncore/utils";
+import { ArrowRightIcon, ClockIcon } from "@zenncore/icons";
+import { unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import { connection } from "next/server";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -18,314 +10,157 @@ import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
 import * as Scan from "@/server/app/scan";
 import { Environment } from "@/server/utils/environment";
-import { AgentVisitsPanel } from "../../_components/agent-visits-panel";
 import {
-  ChartSkeleton,
+  AgentVisitsPanel,
+  AgentVisitsPanelSkeleton,
+} from "../../_components/agent-visits-panel";
+import {
   CompetitorTableSkeleton,
-  StatsSkeleton,
-  StatusPillSkeleton,
   TableSkeleton,
 } from "../../_components/chrome-skeletons";
 import { CompetitorsTable } from "../../_components/competitors-table";
-import { StatLabel, StatusPill } from "../../_components/grid";
 import { OverviewActions } from "../../_components/overview-actions";
-import { OverviewCharts } from "../../_components/overview-charts";
+import {
+  OverviewCharts,
+  OverviewRecentScans,
+} from "../../_components/overview-charts";
+import { OverviewDetails } from "../../_components/overview-details";
 import { ProductsTable } from "../../_components/products-table";
-import { OverviewShell } from "./_components/shell";
+import {
+  OverviewPerformanceSkeleton,
+  OverviewRecentScansSkeleton,
+} from "./_components/performance-skeleton";
+import {
+  OverviewActionsSkeleton,
+  OverviewShell,
+  OverviewUpdatedSkeleton,
+} from "./_components/shell";
+import { OverviewSummary } from "./_components/summary";
+import { OverviewSummarySkeleton } from "./_components/summary-skeleton";
+import {
+  OverviewTraffic,
+  OverviewTrafficSkeleton,
+} from "./_components/traffic-summary";
 
-type StoreParams = PageProps<"/dashboard/[store]">["params"];
+type StoreParams = PageProps<"/[locale]/dashboard/[store]">["params"];
 
 // Synchronous so the frame, heading and section borders prerender into the
 // static shell. `params` is request data — awaiting it here would strand the
 // whole page behind the route skeleton, so it is handed to the Suspense leaves
 // that actually need a store id.
-export default ({ params }: PageProps<"/dashboard/[store]">) => (
+export default ({
+  params,
+  searchParams,
+}: PageProps<"/[locale]/dashboard/[store]">) => (
   <OverviewShell
     statusPill={
-      <Suspense fallback={<StatusPillSkeleton className="w-42" />}>
+      <Suspense fallback={<OverviewUpdatedSkeleton />}>
         <LastUpdated params={params} />
       </Suspense>
     }
-    actions={<OverviewActions />}
+    actions={
+      <Suspense fallback={<OverviewActionsSkeleton />}>
+        <OverviewActions />
+      </Suspense>
+    }
     stats={
-      <Suspense fallback={<StatsSkeleton />}>
-        <StatCards params={params} />
+      <Suspense fallback={<OverviewSummarySkeleton />}>
+        <OverviewSummary params={params} />
       </Suspense>
     }
     performance={
-      <Suspense fallback={<ChartSkeleton />}>
+      <Suspense fallback={<OverviewPerformanceSkeleton />}>
         <Performance params={params} />
       </Suspense>
     }
-    products={
-      <Suspense fallback={<TableSkeleton />}>
-        <TopProducts params={params} />
+    traffic={
+      <Suspense fallback={<OverviewTrafficSkeleton />}>
+        <OverviewTraffic params={params} />
       </Suspense>
     }
-    competitors={
-      <Suspense fallback={<CompetitorTableSkeleton />}>
-        <TopCompetitors params={params} />
+    recent={
+      <Suspense fallback={<OverviewRecentScansSkeleton />}>
+        <RecentScans params={params} />
       </Suspense>
     }
-    agents={
-      <Suspense fallback={<TableSkeleton />}>
-        <AgentVisitsPanel params={params} />
+    details={
+      <Suspense fallback={null}>
+        <LegacyDetails params={params} searchParams={searchParams} />
       </Suspense>
     }
   />
 );
+
+// Existing bookmarked overview tabs remain usable, but no longer duplicate
+// three full workspaces on the default overview or start their queries there.
+const LegacyDetails = async ({
+  params,
+  searchParams,
+}: PageProps<"/[locale]/dashboard/[store]">) => {
+  const { view } = await searchParams;
+  if (view !== "products" && view !== "competitors" && view !== "agents")
+    return null;
+  return (
+    <div className="border-accent-foreground border-t">
+      <OverviewDetails
+        products={
+          <Suspense fallback={<TableSkeleton />}>
+            <TopProducts params={params} />
+          </Suspense>
+        }
+        competitors={
+          <Suspense fallback={<CompetitorTableSkeleton />}>
+            <TopCompetitors params={params} />
+          </Suspense>
+        }
+        agents={
+          <Suspense fallback={<AgentVisitsPanelSkeleton />}>
+            <AgentVisitsPanel params={params} />
+          </Suspense>
+        }
+      />
+    </div>
+  );
+};
 
 const LastUpdated = async ({ params }: { params: StoreParams }) => {
   const locale = await getLocale();
 
   await connection();
   const { store } = await params;
-  const translate = await getTranslations("dashboard.shared.status");
-  const data = await unwrapResult(
-    Product.gatherIntelligence(Environment.SERVER, { store }),
-  );
-
-  return (
-    <StatusPill tone={data.scan?.updatedAt ? "success" : "neutral"}>
-      {data.scan?.updatedAt
-        ? translate("liveUpdated", {
-            time: formatRelativeTime(data.scan.updatedAt, locale),
-          })
-        : translate("noScansYet")}
-    </StatusPill>
-  );
-};
-
-const StatCards = async ({ params }: { params: StoreParams }) => {
-  await connection();
-  const { store } = await params;
-  const translate = await getTranslations("dashboard.shared.stats");
-  const data = await unwrapResult(
-    Product.gatherIntelligence(Environment.SERVER, { store }),
-  );
-  const { products } = data;
-
-  if (products.length === 0)
-    return (
-      <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-        {[
-          { label: translate("overallWinRate"), icon: GaugeIcon },
-          { label: translate("productsScanned"), icon: RadarIcon },
-          { label: translate("topPerformer"), icon: AwardIcon },
-          { label: translate("biggestOpportunity"), icon: BullseyeIcon },
-        ].map(({ label, icon: Icon }) => (
-          <div
-            key={label}
-            className="relative flex h-44 flex-col justify-between bg-background-rich p-5"
-          >
-            <StatLabel label={label} icon={<Icon className="size-7.5" />} />
-            <div className="flex flex-col items-center gap-2 pb-4">
-              <p className="font-light text-foreground-dimmed text-sm">
-                {translate("noDataYet")}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-
-  const overall = Math.round(
-    products.reduce((sum, product) => sum + product.winRate.total, 0) /
-      products.length,
-  );
-
-  const sorted = [...products].sort(
-    (a, b) => b.winRate.total - a.winRate.total,
-  );
-
-  const top = sorted[0];
-  const opportunity = sorted[sorted.length - 1];
-
+  const translate = await getTranslations("dashboard.overview.summary");
+  const status = await getTranslations("dashboard.shared.status");
   const scans = await unwrapResult(
-    Scan.getLatest(Environment.SERVER, { store }),
+    Scan.getLatest(Environment.SERVER, { store, status: "complete", limit: 1 }),
   );
-  const completed = scans.filter((scan) => scan.status === "complete");
-
-  const trend = (() => {
-    if (completed.length < 2) return 0;
-
-    const current = completed[0];
-    const previous = completed[1];
-
-    if (!current) return 0;
-    if (!previous) return 0;
-
-    const currentTotal = current.wins + current.losses;
-    const previousTotal = previous.wins + previous.losses;
-
-    const currentRate =
-      currentTotal > 0 ? Math.round((current.wins / currentTotal) * 100) : 0;
-    const previousRate =
-      previousTotal > 0 ? Math.round((previous.wins / previousTotal) * 100) : 0;
-
-    return currentRate - previousRate;
-  })();
+  const latest = scans.find((scan) => scan.status === "complete");
 
   return (
-    <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-      <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
-        <StatLabel
-          label={translate("overallWinRate")}
-          icon={<GaugeIcon className="size-7.5 text-primary" />}
-        />
-        <div>
-          <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
-            {overall}
-            <span className="ml-0.5 font-medium text-foreground-dimmed text-xl">
-              %
-            </span>
-          </p>
-          {trend !== 0 ? (
-            <p className="mt-3 flex items-center gap-2">
-              <span
-                className={cn(
-                  "flex items-center gap-1 font-medium text-xs",
-                  trend >= 0 ? "text-success" : "text-error",
-                )}
-              >
-                {trend >= 0 ? (
-                  <TrendUpIcon className="size-4" />
-                ) : (
-                  <TrendDownIcon className="size-4" />
-                )}
-                {trend >= 0 ? "+" : ""}
-                {trend}%
-              </span>
-              <span className="text-foreground-dimmed text-xs">
-                {translate("vsLastScan")}
-              </span>
-            </p>
-          ) : (
-            <p className="mt-3 text-foreground-dimmed text-xs">
-              {translate("acrossProducts", { count: products.length })}
-            </p>
-          )}
-        </div>
-      </div>
-
-      <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
-        <StatLabel
-          label={translate("productsScanned")}
-          icon={<RadarIcon className="size-7.5 text-warning" />}
-        />
-        <div>
-          <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
-            {data.total}
-            <span className="ml-1 font-medium text-foreground-dimmed text-xl">
-              / 100
-            </span>
-          </p>
-          <div className="mt-3">
-            <div className="h-1 w-full rounded-full bg-accent-foreground">
-              <div
-                className="h-full rounded-full bg-primary transition-[width] duration-600"
-                style={{ width: `${(data.total / 100) * 100}%` }}
-              />
-            </div>
-            <p className="mt-2 text-foreground-dimmed text-xs">
-              {translate("slotsRemaining", { count: 100 - data.total })}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {top && (
-        <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
-          <StatLabel
-            label={translate("topPerformer")}
-            icon={<AwardIcon className="size-7.5 text-success" />}
-          />
-          <div>
-            <p className="line-clamp-1 text-foreground text-sm">{top.title}</p>
-            <p className="mt-1 font-bold text-4xl text-success tabular-nums tracking-[-0.02em]">
-              {top.winRate.total}
-              <span className="ml-0.5 font-medium text-foreground-dimmed text-xl">
-                %
-              </span>
-            </p>
-            <Link
-              href={`/dashboard/${store}/products/${top._id}`}
-              className="mt-3 inline-flex items-center gap-1 text-primary-text text-sm transition-colors hover:text-primary-rich"
-            >
-              {translate("viewDetails")} <ArrowRightIcon className="size-4" />
-            </Link>
-          </div>
-        </div>
-      )}
-
-      {opportunity && (
-        <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
-          <StatLabel
-            label={translate("biggestOpportunity")}
-            icon={<BullseyeIcon className="size-7.5 text-error" />}
-          />
-          <div>
-            <p className="line-clamp-1 text-foreground text-sm">
-              {opportunity.title}
-            </p>
-            <p className="mt-1 font-bold text-4xl text-error tabular-nums tracking-[-0.02em]">
-              {opportunity.winRate.total}
-              <span className="ml-0.5 font-medium text-foreground-dimmed text-xl">
-                %
-              </span>
-            </p>
-            <Link
-              href={`/dashboard/${store}/products/${opportunity._id}`}
-              className="mt-3 inline-flex items-center gap-1 text-primary-text text-sm transition-colors hover:text-primary-rich"
-            >
-              {translate("optimizeNow")} <ArrowRightIcon className="size-4" />
-            </Link>
-          </div>
-        </div>
-      )}
-    </div>
+    <span className="inline-flex items-center gap-2 text-foreground-dimmed text-xs">
+      <ClockIcon aria-hidden className="size-4" />
+      {latest
+        ? translate("updated", {
+            time: formatRelativeTime(latest.updatedAt, locale),
+          })
+        : status("noScansYet")}
+    </span>
   );
 };
 
 const Performance = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
-  const translate = await getTranslations("dashboard.shared.activity");
-  const [data, scans] = await Promise.all([
-    unwrapResult(Product.gatherIntelligence(Environment.SERVER, { store })),
-    unwrapResult(Scan.getLatest(Environment.SERVER, { store })),
-  ]);
+  const scans = await unwrapResult(
+    Scan.getLatest(Environment.SERVER, {
+      store,
+      status: "complete",
+      limit: 30,
+    }),
+  );
 
-  const { products } = data;
-
-  const models =
-    products.length > 0
-      ? [
-          {
-            label: "ChatGPT",
-            rate: Math.round(
-              products.reduce((sum, p) => sum + p.winRate.gpt4, 0) /
-                products.length,
-            ),
-          },
-          {
-            label: "Claude",
-            rate: Math.round(
-              products.reduce((sum, p) => sum + p.winRate.claude, 0) /
-                products.length,
-            ),
-          },
-          {
-            label: "Gemini",
-            rate: Math.round(
-              products.reduce((sum, p) => sum + p.winRate.gemini, 0) /
-                products.length,
-            ),
-          },
-        ]
-      : [];
-
-  const completed = scans.filter((scan) => scan.status === "complete");
+  const completed = scans.filter(
+    (scan) => scan.status === "complete" && scan.wins + scan.losses > 0,
+  );
 
   const trend = completed
     .slice(0, 30)
@@ -338,27 +173,80 @@ const Performance = async ({ params }: { params: StoreParams }) => {
       };
     });
 
-  const activity = scans.slice(0, 5).map((scan) => ({
-    id: scan.id,
-    type:
-      scan.status === "complete"
-        ? ("simulation_complete" as const)
-        : ("simulation_running" as const),
-    message:
-      scan.status === "complete"
-        ? translate("simulationComplete", {
-            wins: scan.wins,
-            losses: scan.losses,
-          })
-        : translate("simulationInProgress", {
-            completed: scan.completedSimulations,
-            total: scan.totalSimulations,
-          }),
-    detail: scan.topFinding,
-    timestamp: scan.createdAt.toISOString(),
-  }));
+  const latest = completed[0];
+  const previous = completed[1];
+  const latestRate = latest
+    ? Math.round((latest.wins / (latest.wins + latest.losses)) * 100)
+    : null;
+  const previousRate = previous
+    ? Math.round((previous.wins / (previous.wins + previous.losses)) * 100)
+    : null;
+  return (
+    <OverviewCharts
+      reportId={latest?.id}
+      trend={trend}
+      result={
+        latest
+          ? {
+              wins: latest.wins,
+              total: latest.wins + latest.losses,
+              change:
+                latestRate !== null && previousRate !== null
+                  ? latestRate - previousRate
+                  : null,
+            }
+          : undefined
+      }
+    />
+  );
+};
 
-  return <OverviewCharts models={models} trend={trend} activity={activity} />;
+const RecentScans = async ({ params }: { params: StoreParams }) => {
+  await connection();
+  const { store } = await params;
+  const translate = await getTranslations("dashboard.shared.activity");
+  const simulation = await getTranslations("dashboard.simulation");
+  const number = new Intl.NumberFormat(await getLocale());
+  const scans = await unwrapResult(
+    Scan.getLatest(Environment.SERVER, { store }),
+  );
+  const activity = scans.slice(0, 3).map((scan) => {
+    const state = (() => {
+      switch (scan.status) {
+        case "complete":
+          return {
+            type: "simulation_complete" as const,
+            message: translate("simulationComplete", {
+              wins: number.format(scan.wins),
+              losses: number.format(scan.losses),
+            }),
+          };
+        case "pending":
+          return {
+            type: "simulation_pending" as const,
+            message: simulation("states.queued"),
+          };
+        case "running":
+          return {
+            type: "simulation_running" as const,
+            message: simulation("states.running"),
+          };
+        default:
+          return {
+            type: "simulation_failed" as const,
+            message: simulation("toast.failed.title"),
+          };
+      }
+    })();
+    return {
+      id: scan.id,
+      ...state,
+      detail: scan.storeId === store ? scan.topFinding : null,
+      timestamp: scan.createdAt.toISOString(),
+    };
+  });
+
+  return <OverviewRecentScans activity={activity} />;
 };
 
 const TopProducts = async ({ params }: { params: StoreParams }) => {
@@ -369,15 +257,15 @@ const TopProducts = async ({ params }: { params: StoreParams }) => {
     Product.gatherIntelligence(Environment.SERVER, { store }),
   );
 
-  const sorted = [...data.products]
-    .sort((a, b) => b.winRate.total - a.winRate.total)
-    .slice(0, 10);
+  const sorted = [...data.products].sort(
+    (a, b) => b.winRate.total - a.winRate.total,
+  );
 
   return (
     <ProductsTable
+      preview
       rows={sorted}
       pageCount={1}
-      kicker={translate("sections.catalog")}
       title={translate("table.productWinRates")}
       action={
         <Button
@@ -403,7 +291,6 @@ const TopCompetitors = async ({ params }: { params: StoreParams }) => {
   return (
     <CompetitorsTable
       rows={data.brands}
-      kicker={translate("sections.competitiveLandscape")}
       title={translate("table.topCompetitors")}
       pageCount={1}
       action={

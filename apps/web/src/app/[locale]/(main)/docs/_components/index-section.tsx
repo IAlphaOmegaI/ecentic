@@ -83,7 +83,7 @@ export namespace IndexSection {
 }
 
 export const IndexQuickstartSkeleton = () => (
-  <div aria-hidden="true">
+  <div aria-hidden="true" className="animate-pulse motion-reduce:animate-none">
     <div className="border-accent-foreground border-b px-8 py-6 max-sm:px-4">
       <div className="h-6 w-48 bg-background-dimmed" />
     </div>
@@ -96,7 +96,7 @@ export const IndexQuickstartSkeleton = () => (
             className="border-accent-foreground border-b last:border-b-0"
           >
             <div className="flex items-center gap-6 border-accent-foreground border-b px-6 py-8 max-sm:px-2">
-              <div className="size-12 shrink-0 rounded-md bg-background-dimmed" />
+              <div className="size-12 shrink-0 rounded-sm bg-background-dimmed" />
               <div className="h-10 w-2/3 bg-background-dimmed" />
             </div>
             <div className="px-8 py-8 max-sm:px-4">

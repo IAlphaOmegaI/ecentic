@@ -2,6 +2,10 @@
 
 import { and, eq } from "drizzle-orm";
 import { schema } from "../database";
+import {
+  isBrandSnapshotRunning,
+  resolveBrandSnapshotState,
+} from "../utils/brand-snapshot-state";
 import { withSubscription } from "../utils/entitlement";
 import { Environment } from "../utils/environment";
 import type { Document } from "../utils/repository";
@@ -14,51 +18,49 @@ export const { get, create, update, destroy, find, exists, count } = repository(
 export type Type = Document<typeof schema.brandSnapshot>;
 
 /**
- * Mirrors {@link import("./intelligence/brand").analyze}'s staleness window: a
- * `running` row older than this is a dead run, not one in flight.
- */
-const RUNNING_STALE_MS = 10 * 60 * 1000;
-
-const isFresh = (snapshot: Type) =>
-  Date.now() - snapshot.createdAt.getTime() < RUNNING_STALE_MS;
-
-/**
- * Everything the brand page needs in one query: the latest completed report,
+ * Everything the brand page needs: the latest completed report,
  * the run currently in flight (if any), and the newest failure when it is more
  * recent than the shown report. Scoped to the current user so a guessed store
- * id resolves to nothing.
+ * id resolves to nothing. Fetch each status independently so repeated failed runs
+ * cannot push the last completed report outside a fixed history window.
  */
 export const overviewForStore = withSubscription(
   async (context, { store }: { store: string }) => {
-    const result = await find(Environment.SERVER, {
-      where: and(
-        eq(schema.brandSnapshot.storeId, store),
-        eq(schema.brandSnapshot.userId, context.session.user.id),
+    const latest = (status: Type["status"]) =>
+      find(Environment.SERVER, {
+        where: and(
+          eq(schema.brandSnapshot.storeId, store),
+          eq(schema.brandSnapshot.userId, context.session.user.id),
+          eq(schema.brandSnapshot.status, status),
+        ),
+        orderBy: [
+          {
+            column: schema.brandSnapshot.createdAt,
+            direction: "desc" as const,
+          },
+        ],
+        limit: 1,
+      });
+    const [complete, running, failed] = await Promise.all([
+      latest("complete"),
+      latest("running"),
+      latest("failed"),
+    ]);
+    if (!complete.success) return complete;
+    if (!running.success) return running;
+    if (!failed.success) return failed;
+
+    return {
+      success: true as const,
+      data: resolveBrandSnapshotState(
+        {
+          complete: complete.data[0]?.report ? complete.data[0] : null,
+          running: running.data[0] ?? null,
+          failed: failed.data[0] ?? null,
+        },
+        Date.now(),
       ),
-      orderBy: [
-        { column: schema.brandSnapshot.createdAt, direction: "desc" as const },
-      ],
-      limit: 10,
-    });
-    if (!result.success) return result;
-
-    const complete =
-      result.data.find(
-        (snapshot) => snapshot.status === "complete" && snapshot.report,
-      ) ?? null;
-    const running =
-      result.data.find(
-        (snapshot) => snapshot.status === "running" && isFresh(snapshot),
-      ) ?? null;
-    const newestFailure =
-      result.data.find((snapshot) => snapshot.status === "failed") ?? null;
-    const failed =
-      newestFailure &&
-      (!complete || newestFailure.createdAt > complete.createdAt)
-        ? newestFailure
-        : null;
-
-    return { success: true as const, data: { complete, running, failed } };
+    };
   },
   "BrandSnapshot.overviewForStore",
 );
@@ -73,7 +75,6 @@ export const isRunning = withSubscription(
       where: and(
         eq(schema.brandSnapshot.storeId, store),
         eq(schema.brandSnapshot.userId, context.session.user.id),
-        eq(schema.brandSnapshot.status, "running"),
       ),
       orderBy: [
         { column: schema.brandSnapshot.createdAt, direction: "desc" as const },
@@ -83,7 +84,10 @@ export const isRunning = withSubscription(
     if (!result.success) return result;
 
     const [latest] = result.data;
-    return { success: true as const, data: Boolean(latest && isFresh(latest)) };
+    return {
+      success: true as const,
+      data: isBrandSnapshotRunning(latest, Date.now()),
+    };
   },
   "BrandSnapshot.isRunning",
 );

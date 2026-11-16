@@ -1,11 +1,16 @@
 "use client";
 
 import { readStreamableValue } from "@ai-sdk/rsc";
-import { PlusIcon, XCircleIcon } from "@zenncore/icons";
-import { cn } from "@zenncore/utils";
+import { AlertCircleIcon, GlobeIcon, SearchIcon } from "@zenncore/icons";
+import { cn, resultify } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
-import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
+import {
+  Collapsible,
+  CollapsiblePanel,
+  CollapsibleTrigger,
+} from "@zenncore/web/components/collapsible";
+import { useToastManager } from "@zenncore/web/components/toast";
 import { useLocale, useTranslations } from "next-intl";
 import {
   type Dispatch,
@@ -24,6 +29,7 @@ import type {
   productSchema,
 } from "@/server/app/intelligence/ucp/advanced-validator";
 import { StatusPill } from "../../../_components/grid";
+import { type ComparisonRequest, ComparisonSetup } from "./comparison-setup";
 
 type ComparisonLine =
   | { kind: "search_params"; params: unknown }
@@ -114,7 +120,7 @@ const ParamChips = ({ params }: { params: unknown }) => {
           key={key}
           className="inline-flex items-center gap-1.5 border border-accent-foreground bg-background px-2.5 py-1 text-xs"
         >
-          <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.06em]">
+          <span className="font-medium text-foreground-dimmed text-sm">
             {key}
           </span>
           <span className="font-medium text-foreground tabular-nums">
@@ -175,6 +181,10 @@ const StoreCard = ({ store }: { store: StoreState }) => {
         )}
       >
         <div className="flex flex-wrap items-center gap-2">
+          <GlobeIcon
+            aria-hidden
+            className="size-4 shrink-0 text-foreground-dimmed"
+          />
           <StatusPill tone={store.role === "source" ? "primary" : "neutral"}>
             {store.role === "source"
               ? translate("results.yourStore")
@@ -203,15 +213,21 @@ const StoreCard = ({ store }: { store: StoreState }) => {
 
       <div className="flex-1">
         {store.error && (
-          <p className="px-4 py-4 font-mono text-error text-xs">
-            {store.error}
-          </p>
+          <div className="flex items-start gap-3 p-4 text-sm">
+            <AlertCircleIcon
+              aria-hidden
+              className="mt-0.5 size-4 shrink-0 text-error"
+            />
+            <p className="text-foreground-dimmed">
+              {translate("workbench.failure.store")}
+            </p>
+          </div>
         )}
 
         {!store.error &&
           store.products.length === 0 &&
           store.status === "done" && (
-            <p className="px-4 py-4 font-light text-foreground-dimmed text-sm">
+            <p className="px-4 py-4 font-normal text-foreground-dimmed text-sm">
               {translate("results.noProducts")}
             </p>
           )}
@@ -223,13 +239,13 @@ const StoreCard = ({ store }: { store: StoreState }) => {
                 key={product.id}
                 className="flex items-baseline gap-3 px-4 py-2.5"
               >
-                <span className="w-5 shrink-0 font-mono text-[11px] text-foreground-dimmed tabular-nums">
+                <span className="w-5 shrink-0 text-foreground-dimmed text-xs tabular-nums">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <p className="min-w-0 flex-1 truncate font-medium text-foreground text-sm">
                   {product.title}
                 </p>
-                <span className="shrink-0 font-mono text-foreground-dimmed text-xs tabular-nums">
+                <span className="shrink-0 text-foreground-dimmed text-xs tabular-nums">
                   {productPrice(product, locale)}
                 </span>
               </li>
@@ -238,18 +254,18 @@ const StoreCard = ({ store }: { store: StoreState }) => {
         )}
 
         {store.products.length > 8 && (
-          <p className="border-accent-foreground border-t px-4 py-2 text-[11px] text-foreground-dimmed">
+          <p className="border-accent-foreground border-t px-4 py-2 text-foreground-dimmed text-xs">
             {translate("results.moreHidden", {
-              count: store.products.length - 8,
+              count: String(store.products.length - 8),
             })}
           </p>
         )}
 
         {isLoading && (
-          <div className="space-y-2 px-4 py-4">
-            <div className="h-3 w-3/4 animate-pulse bg-accent-foreground/40" />
-            <div className="h-3 w-1/2 animate-pulse bg-accent-foreground/30" />
-            <div className="h-3 w-2/3 animate-pulse bg-accent-foreground/20" />
+          <div className="space-y-2 px-4 py-4 motion-reduce:[&_*]:animate-none">
+            <div className="h-3 w-3/4 animate-pulse bg-accent-foreground/40 motion-reduce:animate-none" />
+            <div className="h-3 w-1/2 animate-pulse bg-accent-foreground/30 motion-reduce:animate-none" />
+            <div className="h-3 w-2/3 animate-pulse bg-accent-foreground/20 motion-reduce:animate-none" />
           </div>
         )}
       </div>
@@ -257,26 +273,17 @@ const StoreCard = ({ store }: { store: StoreState }) => {
   );
 };
 
-type CompetitorInput = {
-  id: string;
-  url: string;
-};
-
-const createCompetitorInput = (url = ""): CompetitorInput => ({
-  id: crypto.randomUUID(),
-  url,
-});
-
-export const ComparisonClient = () => {
+export const ComparisonClient = ({
+  initialSourceStore = "",
+}: {
+  initialSourceStore?: string;
+}) => {
   const translate = useTranslations("dashboard.ucpComparison");
-  const [sourceStoreUrl, setSourceStoreUrl] = useState("");
-  const [competitorInputs, setCompetitorInputs] = useState<CompetitorInput[]>([
-    createCompetitorInput(),
-  ]);
-  const [query, setQuery] = useState("");
+  const toast = useToastManager();
   const [lines, setLines] = useState<ComparisonLine[]>([]);
   const [stores, setStores] = useState<StoreState[]>([]);
   const [searchParams, setSearchParams] = useState<unknown>(null);
+  const [logOpen, setLogOpen] = useState(false);
   const [phase, setPhase] = useState<"idle" | "running" | "done" | "error">(
     "idle",
   );
@@ -288,168 +295,190 @@ export const ComparisonClient = () => {
     }
   });
 
-  const updateCompetitorUrl = (id: string, value: string) => {
-    setCompetitorInputs((previous) =>
-      previous.map((input) =>
-        input.id === id ? { ...input, url: value } : input,
-      ),
-    );
-  };
-
-  const addCompetitor = () => {
-    setCompetitorInputs((previous) => [...previous, createCompetitorInput()]);
-  };
-
-  const removeCompetitor = (id: string) => {
-    setCompetitorInputs((previous) =>
-      previous.length <= 1
-        ? previous
-        : previous.filter((input) => input.id !== id),
-    );
-  };
-
-  const validCompetitorCount = competitorInputs.filter((input) =>
-    input.url.trim(),
-  ).length;
-  const canCompare =
-    sourceStoreUrl.trim().length > 0 && validCompetitorCount >= 1;
-
-  const [handleRun, isRunning] = useAsyncAction(async () => {
-    const source = sourceStoreUrl.trim();
-    const competitors = competitorInputs
-      .map((input) => input.url.trim())
-      .filter(Boolean);
-
-    if (!source || competitors.length < 1) return;
-
-    setLines([]);
-    setSearchParams(null);
-    setPhase("running");
-    setStores([
-      {
-        url: source,
-        role: "source",
-        status: "discovering",
-        discovery: null,
-        products: [],
-        error: null,
-      },
-      ...competitors.map((url) => ({
-        url,
-        role: "competitor" as const,
-        status: "discovering" as const,
-        discovery: null,
-        products: [] as z.infer<typeof productSchema>[],
-        error: null,
-      })),
-    ]);
-
-    const { stream } = await runStoreComparison({
+  const [handleRun, isRunning] = useAsyncAction(
+    async ({
       sourceStoreUrl: source,
       competitorStoreUrls: competitors,
-      query: query.trim() || undefined,
-      agentProfileUrl: "https://ecentic.ai/ucp/agent-profile",
-    });
+      query,
+    }: ComparisonRequest) => {
+      setLines([]);
+      setSearchParams(null);
+      setPhase("running");
+      setLogOpen(false);
+      setStores([
+        {
+          url: source,
+          role: "source",
+          status: "discovering",
+          discovery: null,
+          products: [],
+          error: null,
+        },
+        ...competitors.map((url) => ({
+          url,
+          role: "competitor" as const,
+          status: "discovering" as const,
+          discovery: null,
+          products: [] as z.infer<typeof productSchema>[],
+          error: null,
+        })),
+      ]);
 
-    let textBuffer = "";
-
-    for await (const event of readStreamableValue(stream)) {
-      if (!event) continue;
-
-      switch (event.kind) {
-        case "search_params": {
-          setSearchParams(event.params);
-          setLines((previous) => [...previous, event as ComparisonLine]);
-          break;
-        }
-        case "store_profile": {
-          setStores((previous) =>
-            previous.map((store) =>
-              store.url === event.storeUrl
-                ? {
-                    ...store,
-                    status: "searching",
-                    discovery: event.discovery,
-                  }
-                : store,
-            ),
-          );
-          setLines((previous) => [...previous, event as ComparisonLine]);
-          break;
-        }
-        case "store_searching": {
-          setLines((previous) => [...previous, event as ComparisonLine]);
-          break;
-        }
-        case "store_result": {
-          const products = (event.result ?? []) as z.infer<
-            typeof productSchema
-          >[];
-          setStores((previous) =>
-            previous.map((store) =>
-              store.url === event.storeUrl
-                ? {
-                    ...store,
-                    status: "done",
-                    products,
-                  }
-                : store,
-            ),
-          );
-          setLines((previous) => [...previous, event as ComparisonLine]);
-          break;
-        }
-        case "store_error": {
-          setStores((previous) =>
-            previous.map((store) =>
-              store.url === event.storeUrl
-                ? {
-                    ...store,
-                    status: "error",
-                    error: event.message,
-                  }
-                : store,
-            ),
-          );
-          setLines((previous) => [...previous, event as ComparisonLine]);
-          break;
-        }
-        case "text": {
-          textBuffer += event.text;
-          if (/[.\n]/.test(event.text)) {
-            const captured = textBuffer;
-            textBuffer = "";
-            flushText(captured, setLines);
-          }
-          break;
-        }
-        case "error": {
-          if (textBuffer) {
-            const captured = textBuffer;
-            textBuffer = "";
-            flushText(captured, setLines);
-          }
-          setLines((previous) => [...previous, event as ComparisonLine]);
-          setPhase("error");
-          break;
-        }
-        case "done": {
-          if (textBuffer) {
-            const captured = textBuffer;
-            textBuffer = "";
-            flushText(captured, setLines);
-          }
-          setLines((previous) => [...previous, { kind: "done" }]);
-          setPhase("done");
-          break;
-        }
+      const execution = await resultify(() =>
+        runStoreComparison({
+          sourceStoreUrl: source,
+          competitorStoreUrls: competitors,
+          query,
+          agentProfileUrl: "https://ecentic.ai/ucp/agent-profile",
+        }),
+      );
+      if (!execution.success) {
+        setPhase("error");
+        setStores((previous) =>
+          previous.map((store) => ({
+            ...store,
+            status: "error",
+            error: "connection",
+          })),
+        );
+        toast.add({
+          type: "error",
+          title: translate("workbench.failure.title"),
+          description: translate("workbench.failure.description"),
+        });
+        return;
       }
-    }
+      const { stream } = execution.data;
 
-    if (textBuffer) {
-      flushText(textBuffer, setLines);
-    }
-  });
+      const progress = { complete: false, failed: false, textBuffer: "" };
+      const pendingStores = new Set([source, ...competitors]);
+
+      const streamed = await resultify(async () => {
+        for await (const event of readStreamableValue(stream)) {
+          if (!event) continue;
+
+          switch (event.kind) {
+            case "search_params": {
+              setSearchParams(event.params);
+              setLines((previous) => [...previous, event as ComparisonLine]);
+              break;
+            }
+            case "store_profile": {
+              setStores((previous) =>
+                previous.map((store) =>
+                  store.url === event.storeUrl
+                    ? {
+                        ...store,
+                        status: "searching",
+                        discovery: event.discovery,
+                      }
+                    : store,
+                ),
+              );
+              setLines((previous) => [...previous, event as ComparisonLine]);
+              break;
+            }
+            case "store_searching": {
+              setLines((previous) => [...previous, event as ComparisonLine]);
+              break;
+            }
+            case "store_result": {
+              pendingStores.delete(event.storeUrl);
+              const products = (event.result ?? []) as z.infer<
+                typeof productSchema
+              >[];
+              setStores((previous) =>
+                previous.map((store) =>
+                  store.url === event.storeUrl
+                    ? {
+                        ...store,
+                        status: "done",
+                        products,
+                      }
+                    : store,
+                ),
+              );
+              setLines((previous) => [...previous, event as ComparisonLine]);
+              break;
+            }
+            case "store_error": {
+              pendingStores.delete(event.storeUrl);
+              setStores((previous) =>
+                previous.map((store) =>
+                  store.url === event.storeUrl
+                    ? {
+                        ...store,
+                        status: "error",
+                        error: event.message,
+                      }
+                    : store,
+                ),
+              );
+              setLines((previous) => [...previous, event as ComparisonLine]);
+              break;
+            }
+            case "text": {
+              progress.textBuffer += event.text;
+              if (/[.\n]/.test(event.text)) {
+                const captured = progress.textBuffer;
+                progress.textBuffer = "";
+                flushText(captured, setLines);
+              }
+              break;
+            }
+            case "error": {
+              progress.failed = true;
+              if (progress.textBuffer) {
+                const captured = progress.textBuffer;
+                progress.textBuffer = "";
+                flushText(captured, setLines);
+              }
+              setLines((previous) => [...previous, event as ComparisonLine]);
+              setPhase("error");
+              toast.add({
+                type: "error",
+                title: translate("workbench.failure.title"),
+                description: translate("workbench.failure.description"),
+              });
+              break;
+            }
+            case "done": {
+              progress.complete = true;
+              if (progress.textBuffer) {
+                const captured = progress.textBuffer;
+                progress.textBuffer = "";
+                flushText(captured, setLines);
+              }
+              setLines((previous) => [...previous, { kind: "done" }]);
+              setPhase((previous) => (previous === "error" ? "error" : "done"));
+              break;
+            }
+          }
+        }
+      });
+      const interrupted =
+        !streamed.success || !progress.complete || pendingStores.size > 0;
+      if (interrupted) {
+        setPhase("error");
+        setStores((previous) =>
+          previous.map((store) =>
+            store.status === "discovering" || store.status === "searching"
+              ? { ...store, status: "error", error: "connection" }
+              : store,
+          ),
+        );
+        if (!progress.failed)
+          toast.add({
+            type: "error",
+            title: translate("workbench.failure.title"),
+            description: translate("workbench.failure.description"),
+          });
+      }
+      if (progress.textBuffer) {
+        flushText(progress.textBuffer, setLines);
+      }
+    },
+  );
 
   const summaryText = lines
     .filter(
@@ -461,162 +490,34 @@ export const ComparisonClient = () => {
 
   return (
     <div className="flex flex-col">
-      {/* Setup — inputs left, competitor list right, like the validator header */}
-      <div className="grid lg:grid-cols-2">
-        <div className="flex flex-col gap-6 px-6 py-6 sm:px-8 sm:py-8">
-          <div>
-            <label
-              htmlFor="comparison-source"
-              className="block font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
-            >
-              {translate("sourceStore.label")}
-            </label>
-            <TextField
-              value={sourceStoreUrl}
-              onValueChange={setSourceStoreUrl}
-              className="mt-2"
-            >
-              <TextFieldInput
-                id="comparison-source"
-                placeholder={translate("sourceStore.placeholder")}
-                className="font-mono"
-              />
-            </TextField>
-            <p className="mt-2 font-light text-foreground-dimmed text-sm">
-              {translate("sourceStore.description")}
-            </p>
-          </div>
-
-          <div>
-            <label
-              htmlFor="comparison-query"
-              className="block font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
-            >
-              {translate("buyerRequest.label")}
-            </label>
-            <TextField value={query} onValueChange={setQuery} className="mt-2">
-              <TextFieldInput
-                id="comparison-query"
-                placeholder={translate("buyerRequest.placeholder")}
-              />
-            </TextField>
-            <p className="mt-2 font-light text-foreground-dimmed text-sm">
-              {translate("buyerRequest.description")}
-            </p>
-          </div>
-        </div>
-
-        <div className="border-accent-foreground border-t px-6 py-6 sm:px-8 sm:py-8 lg:border-t-0 lg:border-l">
-          <div className="flex items-center justify-between">
-            <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-              {translate("competitors.label")}
-            </span>
-            <span className="font-mono text-[11px] text-foreground-dimmed tabular-nums">
-              {validCompetitorCount}/5
-            </span>
-          </div>
-
-          <div className="mt-2 space-y-2">
-            {competitorInputs.map((input, index) => (
-              <div key={input.id} className="flex items-center gap-2">
-                <TextField
-                  value={input.url}
-                  onValueChange={(value) =>
-                    updateCompetitorUrl(input.id, value)
-                  }
-                  className="flex-1"
-                >
-                  <TextFieldInput
-                    placeholder={translate("competitors.placeholder", {
-                      index: index + 1,
-                    })}
-                    className="font-mono"
-                  />
-                </TextField>
-                <Button
-                  variant="outline"
-                  color="accent"
-                  size="icon"
-                  onClick={() => removeCompetitor(input.id)}
-                  disabled={competitorInputs.length <= 1 || isRunning}
-                  className="size-10 shrink-0"
-                  aria-label={translate("competitors.removeAriaLabel", {
-                    index: index + 1,
-                  })}
-                >
-                  <XCircleIcon className="size-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
-
-          <Button
-            variant="outline"
-            color="accent"
-            onClick={addCompetitor}
-            disabled={isRunning || competitorInputs.length >= 5}
-            className="mt-2 w-full"
-          >
-            <PlusIcon className="size-4" />
-            {translate("competitors.add")}
-          </Button>
-          <p className="mt-2 font-light text-foreground-dimmed text-sm">
-            {translate("competitors.description")}
-          </p>
-        </div>
-      </div>
-
-      {/* Action bar */}
-      <div className="flex flex-col gap-3 border-accent-foreground border-t px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-        <p className="font-light text-foreground-dimmed text-sm">
-          {canCompare
-            ? translate("hint.ready", {
-                count: validCompetitorCount + 1,
-              })
-            : translate("hint.notReady")}
-        </p>
-        <Button
-          color="primary"
-          onClick={handleRun}
-          disabled={isRunning || !canCompare}
-          className="w-full shrink-0 sm:w-auto"
-        >
-          {isRunning ? (
-            <span className="flex items-center gap-2">
-              <span className="inline-block size-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
-              {translate("action.running")}
-            </span>
-          ) : (
-            translate("action.primary")
-          )}
-        </Button>
-      </div>
+      <ComparisonSetup
+        initialSourceStore={initialSourceStore}
+        isRunning={isRunning}
+        onRun={handleRun}
+      />
 
       {searchParams !== null && (
         <div className="border-accent-foreground border-t">
-          <div className="border-accent-foreground border-b bg-background-dimmed px-6 py-3 sm:px-8">
-            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+          <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3 sm:px-6">
+            <p className="font-medium text-foreground-dimmed text-sm">
               {translate("searchParams.title")}
             </p>
-            <p className="mt-1 font-light text-foreground-dimmed text-xs">
+            <p className="mt-1 font-normal text-foreground-dimmed text-xs">
               {translate("searchParams.description")}
             </p>
           </div>
-          <div className="space-y-3 px-6 py-4 sm:px-8">
+          <div className="space-y-3 px-4 py-4 sm:px-6">
             <ParamChips params={searchParams} />
-            <details className="group">
-              <summary className="w-fit cursor-pointer list-none font-medium text-foreground-dimmed text-xs hover:text-foreground [&::-webkit-details-marker]:hidden">
-                <span className="group-open:hidden">
-                  {translate("searchParams.showRaw")}
-                </span>
-                <span className="hidden group-open:inline">
-                  {translate("searchParams.hideRaw")}
-                </span>
-              </summary>
-              <pre className="mt-2 overflow-auto border border-accent-foreground bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
-                {JSON.stringify(searchParams, null, 2)}
-              </pre>
-            </details>
+            <Collapsible className="group w-full min-w-0">
+              <CollapsibleTrigger className="w-fit font-medium text-foreground-dimmed text-xs hover:text-foreground">
+                {translate("searchParams.showRaw")}
+              </CollapsibleTrigger>
+              <CollapsiblePanel className="bg-transparent duration-200 motion-reduce:transition-none">
+                <pre className="mt-2 overflow-auto border border-accent-foreground bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
+                  {JSON.stringify(searchParams, null, 2)}
+                </pre>
+              </CollapsiblePanel>
+            </Collapsible>
           </div>
         </div>
       )}
@@ -624,11 +525,12 @@ export const ComparisonClient = () => {
       {/* Side-by-side results — one gap-px grid, your store first */}
       {stores.length > 0 && (
         <div className="border-accent-foreground border-t">
-          <div className="border-accent-foreground border-b bg-background-dimmed px-6 py-3 sm:px-8">
-            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+          <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3 sm:px-6">
+            <h2 className="flex items-center gap-2 font-medium text-foreground-rich text-lg">
+              <SearchIcon aria-hidden className="size-4" />
               {translate("results.title")}
-            </p>
-            <p className="mt-1 font-light text-foreground-dimmed text-xs">
+            </h2>
+            <p className="mt-1 font-normal text-foreground-dimmed text-xs">
               {translate("results.description")}
             </p>
           </div>
@@ -643,60 +545,61 @@ export const ComparisonClient = () => {
         </div>
       )}
 
-      {(summaryText || phase === "running") && (
+      {summaryText && (
         <div className="border-accent-foreground border-t">
-          <div className="flex flex-wrap items-center gap-3 border-accent-foreground border-b bg-background-dimmed px-6 py-3 sm:px-8">
-            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+          <div className="flex flex-wrap items-center gap-3 border-accent-foreground border-b bg-background-dimmed px-4 py-3 sm:px-6">
+            <p className="font-medium text-foreground-dimmed text-sm">
               {translate("summary.title")}
             </p>
-            {phase === "running" && !summaryText && (
+            {phase === "running" && (
               <StatusPill tone="primary">
                 {translate("summary.generating")}
               </StatusPill>
             )}
           </div>
-          <div className="max-w-3xl whitespace-pre-wrap px-6 py-5 text-foreground text-sm leading-relaxed sm:px-8">
-            {summaryText || (
-              <span className="inline-block h-3 w-1.5 animate-pulse bg-primary/60" />
-            )}
+          <div className="max-w-3xl whitespace-pre-wrap px-6 py-5 text-foreground text-sm leading-relaxed sm:px-6">
+            {summaryText}
           </div>
         </div>
       )}
 
-      {/* The event log re-narrates what the StoreCards already show, so it
-          stays hidden until a run starts, collapses by default, and only
-          auto-opens while a run streams. */}
+      {/* Keep diagnostic detail available without repeating the result panels. */}
       {(lines.length > 0 || phase !== "idle") && (
-        <details
-          open={phase === "running"}
+        <Collapsible
+          open={logOpen}
+          onOpenChange={setLogOpen}
           className="group border-accent-foreground border-t"
         >
-          <summary className="flex cursor-pointer list-none items-center justify-between bg-background-dimmed px-6 py-3 sm:px-8 [&::-webkit-details-marker]:hidden">
-            <div className="flex items-center gap-3">
-              <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                {translate("eventLog.title")}
-              </p>
-              {phase === "running" && (
-                <StatusPill tone="primary">
-                  {translate("eventLog.live")}
-                </StatusPill>
-              )}
-              {phase === "done" && (
-                <StatusPill tone="success">
-                  {translate("eventLog.done")}
-                </StatusPill>
-              )}
-              {phase === "error" && (
-                <StatusPill tone="error">
-                  {translate("eventLog.error")}
-                </StatusPill>
-              )}
-              <span className="text-foreground-dimmed text-xs tabular-nums">
-                {translate("eventLog.events", { count: lines.length })}
-              </span>
-            </div>
+          <div className="flex items-center justify-between border-accent-foreground border-b bg-background px-4 py-3 sm:px-6">
+            <CollapsibleTrigger className="flex flex-1 items-center text-left">
+              <div className="flex items-center gap-3">
+                <p className="font-medium text-foreground-dimmed text-sm">
+                  {translate("eventLog.title")}
+                </p>
+                {phase === "running" && (
+                  <StatusPill tone="primary">
+                    {translate("eventLog.live")}
+                  </StatusPill>
+                )}
+                {phase === "done" && (
+                  <StatusPill tone="success">
+                    {translate("eventLog.done")}
+                  </StatusPill>
+                )}
+                {phase === "error" && (
+                  <StatusPill tone="error">
+                    {translate("eventLog.error")}
+                  </StatusPill>
+                )}
+                <span className="text-foreground-dimmed text-xs tabular-nums">
+                  {translate("eventLog.events", { count: lines.length })}
+                </span>
+              </div>
+            </CollapsibleTrigger>
             {lines.length > 0 && (
-              <button
+              <Button
+                variant="soft"
+                color="neutral"
                 type="button"
                 onClick={(event) => {
                   event.preventDefault();
@@ -709,97 +612,101 @@ export const ComparisonClient = () => {
                 className="font-medium text-foreground-dimmed text-xs hover:text-foreground"
               >
                 {translate("eventLog.clear")}
-              </button>
+              </Button>
             )}
-          </summary>
+          </div>
+          <CollapsiblePanel className="bg-transparent duration-200 motion-reduce:transition-none">
+            <div
+              ref={logRef}
+              className="max-h-80 min-h-40 overflow-y-auto px-6 py-4 font-mono text-xs sm:px-6"
+            >
+              <div className="space-y-1.5 text-xs">
+                {lines.map((line) => {
+                  const lineKey = (() => {
+                    switch (line.kind) {
+                      case "search_params":
+                        return "search-params";
+                      case "store_profile":
+                        return `profile-${line.storeUrl}`;
+                      case "store_searching":
+                        return `searching-${line.storeUrl}`;
+                      case "store_result":
+                        return `result-${line.storeUrl}`;
+                      case "store_error":
+                        return `error-${line.storeUrl}`;
+                      case "error":
+                        return `fatal-${line.message}`;
+                      case "done":
+                        return "done";
+                      default:
+                        return null;
+                    }
+                  })();
 
-          <div
-            ref={logRef}
-            className="max-h-80 min-h-40 overflow-y-auto border-accent-foreground border-t px-6 py-4 font-mono text-xs sm:px-8"
-          >
-            <div className="space-y-1.5 text-xs">
-              {lines.map((line) => {
-                const lineKey = (() => {
+                  if (!lineKey) return null;
+
                   switch (line.kind) {
                     case "search_params":
-                      return "search-params";
+                      return (
+                        <p key={lineKey} className="text-info">
+                          {translate("workbench.log.parameters")} →{" "}
+                          {summarise(line.params)}
+                        </p>
+                      );
                     case "store_profile":
-                      return `profile-${line.storeUrl}`;
+                      return (
+                        <p key={lineKey} className="text-primary">
+                          {translate("workbench.log.profile")} →{" "}
+                          {line.discovery.domain} ({line.discovery.transport})
+                        </p>
+                      );
                     case "store_searching":
-                      return `searching-${line.storeUrl}`;
+                      return (
+                        <p key={lineKey} className="text-warning">
+                          {translate("workbench.log.searching")} →{" "}
+                          {line.storeUrl}
+                        </p>
+                      );
                     case "store_result":
-                      return `result-${line.storeUrl}`;
+                      return (
+                        <p key={lineKey} className="text-success">
+                          {translate("workbench.log.results", {
+                            count: (
+                              line.result as z.infer<typeof productSchema>[]
+                            ).length,
+                          })}{" "}
+                          → {line.storeUrl}
+                        </p>
+                      );
                     case "store_error":
-                      return `error-${line.storeUrl}`;
+                      return (
+                        <p key={lineKey} className="text-error">
+                          {line.storeUrl}:{" "}
+                          {translate("workbench.failure.store")}
+                        </p>
+                      );
+                    case "text":
+                      return null;
                     case "error":
-                      return `fatal-${line.message}`;
+                      return (
+                        <p key={lineKey} className="text-error">
+                          {translate("workbench.failure.description")}
+                        </p>
+                      );
                     case "done":
-                      return "done";
+                      return (
+                        <p key={lineKey} className="text-primary">
+                          {translate("eventLog.complete")}
+                        </p>
+                      );
                     default:
                       return null;
                   }
-                })();
-
-                if (!lineKey) return null;
-
-                switch (line.kind) {
-                  case "search_params":
-                    return (
-                      <p key={lineKey} className="text-info">
-                        search params → {summarise(line.params)}
-                      </p>
-                    );
-                  case "store_profile":
-                    return (
-                      <p key={lineKey} className="text-primary">
-                        profile resolved → {line.discovery.domain} (
-                        {line.discovery.transport})
-                      </p>
-                    );
-                  case "store_searching":
-                    return (
-                      <p key={lineKey} className="text-warning">
-                        searching → {line.storeUrl}
-                      </p>
-                    );
-                  case "store_result":
-                    return (
-                      <p key={lineKey} className="text-success">
-                        results → {line.storeUrl} (
-                        {
-                          (line.result as z.infer<typeof productSchema>[])
-                            .length
-                        }{" "}
-                        products)
-                      </p>
-                    );
-                  case "store_error":
-                    return (
-                      <p key={lineKey} className="text-error">
-                        error → {line.storeUrl}: {line.message}
-                      </p>
-                    );
-                  case "text":
-                    return null;
-                  case "error":
-                    return (
-                      <p key={lineKey} className="text-error">
-                        {line.message}
-                      </p>
-                    );
-                  case "done":
-                    return (
-                      <p key={lineKey} className="text-primary">
-                        {translate("eventLog.complete")}
-                      </p>
-                    );
-                  default:
-                    return null;
-                }
-              })}
+                })}
+              </div>
             </div>
-          </div>
-        </details>
+          </CollapsiblePanel>
+        </Collapsible>
       )}
     </div>
   );

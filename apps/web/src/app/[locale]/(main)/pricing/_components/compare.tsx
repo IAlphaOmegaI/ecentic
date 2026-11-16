@@ -52,10 +52,10 @@ export const Compare = async () => {
           <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
           <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[56rem] border-collapse">
+            <table className="w-full min-w-224 border-collapse">
               <thead>
                 <tr className="border-accent-foreground border-b bg-background-dimmed">
-                  <th className="w-1/3 p-4 text-left font-medium text-foreground-dimmed text-sm uppercase tracking-[0.18em]">
+                  <th className="w-1/3 p-4 text-left font-medium text-foreground-dimmed text-sm uppercase tracking-widest">
                     {translate("compare.planHeader")}
                   </th>
                   <th className="p-4 text-center font-body font-medium text-foreground text-lg">

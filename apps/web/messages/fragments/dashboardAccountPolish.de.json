@@ -1,0 +1,55 @@
+{
+  "dashboard": {
+    "reports": {
+      "unavailable": "Noch keine gespeicherten Daten"
+    },
+    "googleShopping": {
+      "workspaceTitle": "Google Shopping",
+      "workspaceDescription": "Verwalten Sie Ihre Merchant-Center-Verbindung, Produktaktualisierungen und die Checkout-Bereitschaft.",
+      "unsupportedWorkspace": {
+        "status": "Für diese Quelle nicht verfügbar",
+        "title": "Verbinden Sie einen unterstützten Katalog",
+        "description": "Google Shopping ist für verbundene Shopify-Shops verfügbar. Diese Katalogquelle kann noch nicht über ecentic mit dem Merchant Center verbunden werden. Produkte und andere Kanaleinstellungen können Sie weiterhin prüfen.",
+        "action": {
+          "primary": "Shopify verbinden",
+          "secondary": "Verbindungen ansehen"
+        }
+      }
+    },
+    "ucpPlaygroundDashboard": {
+      "composer": {
+        "remaining": "Noch {remaining, number} von {limit, number} kostenlosen {limit, plural, one {Nachricht} other {Nachrichten}} in diesem Testbereich verfügbar."
+      }
+    },
+    "agentic": {
+      "scan": {
+        "workspaceTitle": "Shop-Scan",
+        "awaitingFirst": "Noch nicht gescannt",
+        "report": "Bericht öffnen",
+        "providerNote": "Ihre Domain wird an <provider>Is Agentic</provider> gesendet. Kunden- und Bestelldaten werden nicht weitergegeben."
+      },
+      "score": {
+        "preview": {
+          "emptyTitle": "Hier beginnt Ihr erster Scan",
+          "publicTitle": "Ein öffentlicher Bericht ist verfügbar",
+          "payments": {
+            "title": "Zahlungen",
+            "description": "Unterstützung für Checkout- und Zahlungsprotokolle."
+          },
+          "discovery": {
+            "title": "Auffindbarkeit",
+            "description": "Signale, mit denen Agenten Ihren Shop finden."
+          },
+          "accessibility": {
+            "title": "Zugänglichkeit",
+            "description": "Ob Agenten Ihren Shop erreichen und lesen können."
+          },
+          "usability": {
+            "title": "Nutzbarkeit",
+            "description": "Schnittstellen, über die Agenten mit Ihrem Shop interagieren können."
+          }
+        }
+      }
+    }
+  }
+}

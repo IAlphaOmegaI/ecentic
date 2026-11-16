@@ -1,0 +1,133 @@
+{
+  "dashboard": {
+    "brand": {
+      "design": {
+        "title": "Marke",
+        "description": "Wie Ihre Marke in simulierten Einkaufsantworten erscheint.",
+        "updated": "Analysiert {time}",
+        "sample": "{count, plural, one {# Antwort in der Stichprobe} other {# Antworten in der Stichprobe}} · {engines}",
+        "scope": "Das Modell erhält Ihre Marke als Kontext für die Analyse. Dies ist eine Simulation, kein Test der spontanen Markenerinnerung und keine Aufzeichnung echter Kundengespräche.",
+        "action": {
+          "primary": "Marke analysieren",
+          "secondary": "Erneut analysieren",
+          "tertiary": "Katalog prüfen"
+        },
+        "empty": {
+          "title": "Finden Sie die blinden Flecken Ihrer Marke.",
+          "description": "Sehen Sie, ob Ihre Marke bei Einkaufsfragen auftaucht, wie sie beschrieben wird und wo klarere Informationen helfen könnten.",
+          "note": "Aus Ihrem Shop und Katalog werden 20 Fragen für ChatGPT vorbereitet. Während der Analyse können Sie weiterarbeiten.",
+          "visualTitle": "Von der Einkaufsfrage zum nächsten Schritt",
+          "steps": {
+            "questions": {
+              "title": "Nach Ihrer Kategorie fragen",
+              "description": "Fragen mit und ohne Ihren Markennamen."
+            },
+            "answers": {
+              "title": "Antworten prüfen",
+              "description": "Markennennungen, Alternativen und Zusammenfassungen der Antworten."
+            },
+            "actions": {
+              "title": "Verbesserungsmöglichkeiten erkennen",
+              "description": "Vorschläge auf Grundlage der ausgewerteten Antworten."
+            }
+          }
+        },
+        "summaryTitle": "Das sollten Sie wissen",
+        "discoveryTitle": "Markennennungen nach Fragetyp",
+        "unprompted": "Fragen ohne Ihren Markennamen",
+        "named": "Fragen mit Ihrem Markennamen",
+        "ratio": "{count} von {total} Antworten",
+        "noSample": "Keine Fragen in dieser Gruppe",
+        "overall": "In {count} von {total} ausgewerteten Antworten erwähnt.",
+        "noAnswers": "Dieser Bericht enthält keine gespeicherten Antworten. Starten Sie eine neue Analyse, um eine Datengrundlage zu erhalten.",
+        "tabs": {
+          "plan": "Nächste Schritte",
+          "answers": "Antworten",
+          "access": "Website-Prüfungen"
+        },
+        "findingsTitle": "Muster, die Aufmerksamkeit verdienen",
+        "journeyTitle": "Wo Sie ansetzen können",
+        "journeyDescription": "Vorschläge aus dieser Analyse. Prüfen Sie die Grundlage, bevor Sie Ihre Website ändern.",
+        "stage": {
+          "find": "Entdeckt werden",
+          "consider": "In die engere Auswahl kommen",
+          "evaluate": "Käufern bei der Entscheidung helfen",
+          "support": "Die Anschlussfrage beantworten"
+        },
+        "suggestions": "{count, plural, one {# Vorschlag} other {# Vorschläge}}",
+        "noSuggestions": "Für diese Phase wurden keine Änderungen vorgeschlagen.",
+        "perceptionTitle": "Wie die Antworten Ihre Marke beschreiben",
+        "strengths": "Was für Sie spricht",
+        "concerns": "Was Fragen aufwirft",
+        "alternativesTitle": "Andere Marken in den Antworten",
+        "sourcesTitle": "Vom Modell vorgeschlagene Quellen",
+        "sourcesNote": "Dies sind vom Modell genannte Domains oder Quellentypen, keine verifizierten Belege aus einer Live-Suche.",
+        "occurrences": "{count, plural, one {# Erwähnung} other {# Erwähnungen}}",
+        "accessTitle": "Können Crawler Ihre Inhalte erreichen?",
+        "accessDescription": "Eine Momentaufnahme öffentlicher Dateien zur Auffindbarkeit. Diese Prüfungen messen weder Suchindexierung noch Platzierungen oder die Bereitschaft zur Kaufabwicklung.",
+        "checks": {
+          "robots": "Crawler-Regeln",
+          "llms": "Inhaltsleitfaden für KI",
+          "engines": "Crawler-Zugriff"
+        },
+        "status": {
+          "pass": "Geprüft",
+          "warn": "Prüfen",
+          "fail": "Blockiert"
+        },
+        "robots": {
+          "pass": "Die Crawler-Regeln wurden gelesen.",
+          "warn": "Prüfen Sie die erfassten Crawler-Regeln.",
+          "fail": "Der Scan hat Crawler-Einschränkungen in robots.txt gefunden.",
+          "note": "robots.txt steuert den Zugriff je Crawler. Suche, nutzerinitiierte Anfragen und Modelltraining können unterschiedliche Crawler verwenden."
+        },
+        "llms": {
+          "pass": "Eine llms.txt-Datei war erreichbar.",
+          "warn": "Es wurde keine erreichbare llms.txt-Datei erfasst.",
+          "note": "Dieser optionale Inhaltsleitfaden garantiert nicht, dass ein KI-Dienst Ihre Marke liest, indexiert oder empfiehlt."
+        },
+        "engines": {
+          "pass": "Für die geprüften Crawler wurden keine Sperren auf der Website-Wurzelebene erkannt.",
+          "warn": "Der Zugriff konnte bei diesem Scan nicht bestätigt werden.",
+          "fail": "Für einige geprüfte Crawler bestehen Einschränkungen auf der Website-Wurzelebene.",
+          "note": "Pfadspezifische Regeln, andere Crawler und die Indexierung sind nicht Teil dieser Prüfung."
+        },
+        "failed": {
+          "title": "Die Analyse konnte nicht abgeschlossen werden",
+          "description": "Ihr letzter abgeschlossener Bericht ist unten weiterhin verfügbar. Versuchen Sie es erneut, wenn Sie bereit sind.",
+          "emptyDescription": "Es wurde kein Bericht gespeichert. Versuchen Sie es erneut, wenn Sie bereit sind."
+        },
+        "error": "Die Analyse konnte nicht gestartet werden. Bitte versuchen Sie es erneut.",
+        "running": {
+          "title": "Ihre Marke wird analysiert",
+          "description": "ChatGPT bearbeitet Ihre Einkaufsfragen. Die Ergebnisse erscheinen hier, sobald sie bereit sind.",
+          "previous": "Sie sehen den vorherigen Bericht, während die neue Analyse läuft.",
+          "steps": "Fragen vorbereiten · Antworten prüfen · Empfehlungen erstellen"
+        },
+        "loading": "Markenanalyse wird geladen",
+        "unavailable": {
+          "title": "Markendaten sind vorübergehend nicht verfügbar",
+          "description": "Ihre gespeicherte Analyse konnte nicht geladen werden. Aktualisieren Sie diesen Bereich, um es erneut zu versuchen.",
+          "action": {
+            "primary": "Erneut versuchen"
+          }
+        },
+        "noFindings": "In diesem Bericht wurden keine Muster gespeichert.",
+        "summaryAction": {
+          "primary": "Vollständige Analyse lesen",
+          "secondary": "Weniger anzeigen"
+        },
+        "method": {
+          "action": {
+            "primary": "So funktioniert es"
+          }
+        }
+      },
+      "toast": {
+        "started": {
+          "description": "Sie können weiterarbeiten. Die Ergebnisse erscheinen hier, sobald die Analyse abgeschlossen ist."
+        }
+      }
+    }
+  }
+}

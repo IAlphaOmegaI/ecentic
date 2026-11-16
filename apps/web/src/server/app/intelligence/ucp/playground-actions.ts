@@ -12,7 +12,11 @@ export const resolvePlaygroundStore = async ({ store }: { store: string }) => {
   const service = await resolveShoppingService(store);
 
   if (!service.success)
-    return { success: false as const, error: new Error(service.error) };
+    return {
+      success: false as const,
+      code: service.code,
+      error: new Error(service.error),
+    };
 
   return {
     success: true as const,

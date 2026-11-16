@@ -1,0 +1,15 @@
+{
+  "dashboard": {
+    "nav": {
+      "assistant": {
+        "chat": {
+          "heading": "Sur quoi souhaitez-vous travailler ?",
+          "placeholder": "Préparez une question pour Judy…",
+          "draftHint": "Le chat arrive bientôt. Votre brouillon reste ici tant que vous ne quittez pas cet espace de travail.",
+          "send": "Envoyer le message",
+          "close": "Réduire Judy"
+        }
+      }
+    }
+  }
+}

@@ -20,7 +20,7 @@ export const DuaDisclosures = ({ sections }: DuaDisclosures.Props) => (
         className="border-accent-foreground last:border-b-0"
       >
         <AccordionTrigger
-          className="items-center gap-6 px-7 py-9 text-[clamp(1.5rem,2.8vw,2.5rem)] text-foreground-rich leading-tight hover:bg-accent/35 max-sm:px-4 max-sm:py-7"
+          className="items-center gap-6 px-7 py-9 text-2xl lg:text-3xl xl:text-4xl text-foreground-rich leading-tight hover:bg-accent/35 max-sm:px-4 max-sm:py-7"
           classList={{
             trigger: {
               icon: "mr-0 size-5 shrink-0 transition-transform duration-160",

@@ -1,0 +1,74 @@
+{
+  "dashboard": {
+    "channels": {
+      "title": "Canaux",
+      "description": "Gardez votre catalogue connecté, vérifiez les envois et préparez votre boutique aux agents d’achat.",
+      "source": {
+        "title": "Connexion du catalogue",
+        "description": "Votre catalogue source et sa dernière importation.",
+        "synced": "Dernière importation : {date}",
+        "never": "Aucune importation enregistrée",
+        "public": "Importation du catalogue public. La publication nécessite une connexion autorisée à la boutique.",
+        "action": {
+          "primary": "Gérer la connexion"
+        }
+      },
+      "google": {
+        "title": "Envois à Google",
+        "description": "Les données enregistrées du compte et des offres de cette boutique.",
+        "action": {
+          "primary": "Ouvrir Google"
+        },
+        "pending": "En attente",
+        "verified": "Mises à jour vérifiées",
+        "issues": "À vérifier",
+        "note": "Une mise à jour vérifiée ne prouve pas que Google affiche le produit."
+      },
+      "checkout": {
+        "title": "Paiement",
+        "description": "Vérifiez votre profil de paiement et les produits qu’il propose.",
+        "action": {
+          "primary": "Ouvrir le paiement"
+        },
+        "scope": "Le profil de paiement appartient à votre compte. Les listes de produits concernent cette boutique."
+      },
+      "tools": {
+        "title": "Outils de boutique et de développement",
+        "description": "Consultez les éléments observés pour une fonction précise.",
+        "checks": "Vérifications de la boutique",
+        "access": "Accès au catalogue",
+        "webmcp": "Outils d’achat",
+        "playground": "Tester le paiement",
+        "comparison": "Comparer les profils"
+      },
+      "research": {
+        "title": "Vous cherchez le classement du catalogue ?",
+        "description": "Les requêtes du catalogue se trouvent dans Recherche. Elles mesurent un marché et une requête précis, pas la préparation de la boutique.",
+        "action": {
+          "primary": "Ouvrir le classement"
+        }
+      },
+      "status": {
+        "connected": "Connecté",
+        "syncing": "Importation en cours",
+        "disconnected": "Déconnecté",
+        "error": "À vérifier",
+        "unavailable": "Indisponible",
+        "unsupported": "Source non prise en charge",
+        "setup": "Configuration requise",
+        "notConnected": "Non connecté"
+      },
+      "error": {
+        "title": "Informations sur les canaux indisponibles",
+        "description": "Impossible de charger les connexions enregistrées. Réessayez dans un instant.",
+        "action": {
+          "primary": "Réessayer"
+        }
+      },
+      "checks": {
+        "title": "Accès au catalogue",
+        "description": "Vérifiez les fichiers publics et le flux produits accessibles aux agents d’achat."
+      }
+    }
+  }
+}

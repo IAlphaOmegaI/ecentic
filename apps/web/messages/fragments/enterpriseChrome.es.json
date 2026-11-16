@@ -49,6 +49,16 @@
       "aiInstructions": "Instrucciones para IA",
       "tools": "Herramientas gratuitas"
     },
-    "loading": "Cargando página"
+    "loading": "Cargando página",
+    "authenticated": {
+      "action": {
+        "primary": "Ir al panel"
+      },
+      "compact": {
+        "action": {
+          "primary": "Panel"
+        }
+      }
+    }
   }
 }

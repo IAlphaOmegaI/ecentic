@@ -1,0 +1,69 @@
+{
+  "dashboard": {
+    "products": {
+      "catalog": {
+        "title": "商品",
+        "description": "查找商品、查看比较结果，并补全关键信息。",
+        "tableLabel": "商品目录",
+        "columns": "显示列",
+        "resetColumns": "重置显示列",
+        "sortBy": "按{field}排序",
+        "noSku": "未设置 SKU",
+        "unmeasured": "尚未比较",
+        "rate": "AI 比较胜率：{value}%",
+        "coverage": "字段完整度：{value}%",
+        "coverageHint": "检查商品名称、描述、价格、图片、SKU 和结构化数据这六个字段是否已填写。这不是 AI 对内容质量的评估。",
+        "comparisons": "{count, plural, other {# 次比较}}",
+        "results": "商品数：{count, number}",
+        "range": "共 {total} 件，显示第 {from}–{to} 件",
+        "summary": {
+          "imported": "目录中的商品",
+          "importedHint": "所有已导入的商品",
+          "compared": "已完成 AI 比较",
+          "comparedHint": "至少有一条比较记录",
+          "incomplete": "信息不完整的商品",
+          "incompleteHint": "六个字段中至少有一个未填写",
+          "unavailable": "暂时无法获取目录统计数据，您仍可浏览下方的商品列表。"
+        },
+        "fields": {
+          "product": "商品",
+          "sku": "SKU",
+          "price": "价格",
+          "currency": "币种",
+          "winRate": "AI 比较胜率",
+          "quality": "字段完整度",
+          "updatedAt": "更新时间"
+        },
+        "selection": {
+          "all": "选择本页所有商品",
+          "product": "选择{product}",
+          "count": "本页已选择 {count, number} 件商品",
+          "hint": "选择商品后即可导出数据。"
+        },
+        "action": {
+          "add": "添加商品",
+          "clear": "清除搜索和筛选",
+          "retry": "重试",
+          "export": "导出所选商品",
+          "deselect": "取消选择",
+          "open": "打开{product}"
+        },
+        "states": {
+          "empty": {
+            "title": "从这里建立商品目录",
+            "description": "导入商品，即可集中查看商品信息和 AI 比较结果。"
+          },
+          "noMatches": {
+            "title": "没有匹配的商品",
+            "description": "请尝试其他搜索词，或移除筛选条件以查看更多商品。"
+          },
+          "error": {
+            "title": "无法加载商品",
+            "description": "您的目录数据仍然保留，请重新加载列表。"
+          }
+        },
+        "loading": "正在加载商品…"
+      }
+    }
+  }
+}

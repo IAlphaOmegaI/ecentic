@@ -1,0 +1,69 @@
+{
+  "dashboard": {
+    "products": {
+      "catalog": {
+        "title": "Produkte",
+        "description": "Finden Sie ein Produkt, prüfen Sie seine Ergebnisse und ergänzen Sie wichtige Angaben.",
+        "tableLabel": "Produktkatalog",
+        "columns": "Spalten",
+        "resetColumns": "Spalten zurücksetzen",
+        "sortBy": "Nach {field} sortieren",
+        "noSku": "Keine SKU",
+        "unmeasured": "Nicht verglichen",
+        "rate": "KI-Gewinnrate: {value} %",
+        "coverage": "Ausgefüllte Felder: {value} %",
+        "coverageHint": "Prüft sechs Katalogfelder auf vorhandene Angaben: Titel, Beschreibung, Preis, Bild, SKU und strukturierte Daten. Dies ist keine KI-Qualitätsbewertung.",
+        "comparisons": "{count, plural, one {# Vergleich} other {# Vergleiche}}",
+        "results": "Produkte: {count, number}",
+        "range": "{from}–{to} von {total}",
+        "summary": {
+          "imported": "In Ihrem Katalog",
+          "importedHint": "Alle importierten Produkte",
+          "compared": "Von KI verglichen",
+          "comparedHint": "Mindestens ein gespeicherter Vergleich",
+          "incomplete": "Unvollständige Einträge",
+          "incompleteHint": "Mindestens eines der sechs Felder fehlt",
+          "unavailable": "Die Katalogsummen sind vorübergehend nicht verfügbar. Sie können die Liste weiterhin durchsuchen."
+        },
+        "fields": {
+          "product": "Produkt",
+          "sku": "SKU",
+          "price": "Preis",
+          "currency": "Währung",
+          "winRate": "KI-Gewinnrate",
+          "quality": "Ausgefüllte Felder",
+          "updatedAt": "Aktualisiert"
+        },
+        "selection": {
+          "all": "Alle Produkte auf dieser Seite auswählen",
+          "product": "{product} auswählen",
+          "count": "{count, number} auf dieser Seite ausgewählt",
+          "hint": "Wählen Sie Produkte aus, um ihre Daten zu exportieren."
+        },
+        "action": {
+          "add": "Produkte hinzufügen",
+          "clear": "Suche und Filter zurücksetzen",
+          "retry": "Erneut versuchen",
+          "export": "Auswahl exportieren",
+          "deselect": "Auswahl aufheben",
+          "open": "{product} öffnen"
+        },
+        "states": {
+          "empty": {
+            "title": "Hier beginnt Ihr Katalog",
+            "description": "Importieren Sie Ihre Produkte, um ihre Angaben und KI-Vergleichsergebnisse an einem Ort zu sehen."
+          },
+          "noMatches": {
+            "title": "Keine passenden Produkte",
+            "description": "Ändern Sie die Suche oder entfernen Sie einen Filter, um weitere Produkte zu sehen."
+          },
+          "error": {
+            "title": "Ihre Produkte konnten nicht geladen werden",
+            "description": "Ihr Katalog ist weiterhin gespeichert. Laden Sie die Liste erneut."
+          }
+        },
+        "loading": "Produkte werden geladen…"
+      }
+    }
+  }
+}

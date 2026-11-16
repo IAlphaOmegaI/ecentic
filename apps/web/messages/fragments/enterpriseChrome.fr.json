@@ -49,6 +49,16 @@
       "aiInstructions": "Instructions IA",
       "tools": "Outils gratuits"
     },
-    "loading": "Chargement de la page"
+    "loading": "Chargement de la page",
+    "authenticated": {
+      "action": {
+        "primary": "Accéder au tableau de bord"
+      },
+      "compact": {
+        "action": {
+          "primary": "Tableau de bord"
+        }
+      }
+    }
   }
 }

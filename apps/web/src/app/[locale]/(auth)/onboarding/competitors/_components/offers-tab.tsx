@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useOnboardingError } from "@/app/[locale]/(auth)/onboarding/_components/use-onboarding-error";
+import { FeedbackState } from "@/components/feedback-state";
 import { useRouter } from "@/i18n/navigation";
 import { formatElapsed } from "@/lib/date";
 import type * as Competitor from "@/server/app/competitor";
@@ -72,6 +73,8 @@ export namespace OffersTab {
     onSuccess?: (competitors: Competitor.Type[]) => void;
     store: string;
     className?: string;
+    /** Compact, flush presentation inside the store dashboard. */
+    dashboard?: boolean;
   };
 }
 
@@ -92,6 +95,7 @@ export const OffersTab = ({
   onSuccess,
   store,
   className,
+  dashboard = false,
 }: OffersTab.Props) => {
   const locale = useLocale();
 
@@ -248,35 +252,31 @@ export const OffersTab = ({
   });
 
   return (
-    <div className={cn("relative flex h-full bg-background-dimmed", className)}>
+    <div
+      className={cn(
+        "relative flex h-full bg-background-dimmed",
+        dashboard && "h-auto min-h-64 bg-background-rich",
+        className,
+      )}
+    >
       <AnimatePresence mode="wait" initial={false}>
         {!isDiscovering && logs.length === 0 && (
-          <motion.div
-            key="idle"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="m-auto flex size-full flex-1 flex-col items-center justify-center p-4"
+          <FeedbackState
+            title={translate("title")}
+            description={translate("description")}
+            figure="rivals-balance"
+            scope="page"
           >
-            <div className="relative z-20 max-w-md">
-              <h3 className="text-center font-medium text-2xl text-foreground">
-                {translate("title")}
-              </h3>
-              <p className="mt-1 text-center text-foreground-dimmed text-lg">
-                {translate("description")}
-              </p>
-            </div>
             <Button
               color="primary"
               type="button"
               onClick={handleDiscover}
               disabled={products.length === 0}
-              className="relative z-20 mt-4"
             >
-              {translate("action")} <ShoppingCartIcon />
+              {translate("action")}{" "}
+              <ShoppingCartIcon aria-hidden className="size-4" />
             </Button>
-          </motion.div>
+          </FeedbackState>
         )}
 
         {(isDiscovering || logs.length > 0) && (
@@ -286,7 +286,10 @@ export const OffersTab = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="flex h-full max-h-full min-h-0 flex-1 flex-col"
+            className={cn(
+              "flex h-full max-h-full min-h-0 flex-1 flex-col",
+              dashboard && "h-96",
+            )}
           >
             <div
               className={cn(
@@ -306,7 +309,7 @@ export const OffersTab = ({
                     className="inline-block size-1.5 rounded-full bg-primary"
                   />
                 )}
-                <span className="font-medium text-foreground uppercase tracking-widest">
+                <span className="font-medium text-foreground text-sm">
                   {isDiscovering
                     ? translate("measuring")
                     : translate("complete")}
@@ -364,7 +367,7 @@ export const OffersTab = ({
                     elapsed: formatElapsed(elapsed, locale),
                   })}
                 </span>
-                <Button onClick={handleDiscover} color="accent">
+                <Button onClick={handleDiscover} color="neutral" variant="soft">
                   {translate("runAgain")}
                 </Button>
               </div>

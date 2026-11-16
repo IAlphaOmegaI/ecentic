@@ -2,13 +2,10 @@
 
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { Crosshair, SectionGutter, Slot } from "../../../../_components/grid";
+import { Crosshair, Slot } from "../../../../_components/grid";
 
-/**
- * The page's static frame, rendered by both `page.tsx` and `loading.tsx`. The
- * status pill and the back link are slots because each needs the store; the
- * heading needs no data and prerenders.
- */
+import { DashboardHeaderFigure } from "../../../../_components/header-figure";
+
 export const AddProductsShell = ({
   statusPill,
   action,
@@ -19,56 +16,49 @@ export const AddProductsShell = ({
   children: ReactNode;
 }) => {
   const translate = useTranslations("dashboard.products.add");
-
   return (
-    <div className="flex flex-col">
-      <div className="mx-8 border-accent-foreground border-x">
-        <div className="-mx-8 border-accent-foreground border-b">
-          <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <div>
-              <Slot>{statusPill}</Slot>
-              <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
-                {translate("title")}
-              </h1>
-              <p className="mt-1 text-foreground-dimmed text-sm">
-                {translate("description")}
-              </p>
-            </div>
-            <Slot>{action}</Slot>
+    <div className="flex min-h-full min-w-0 flex-col">
+      <header className="flex min-w-0 flex-col items-stretch justify-between gap-5 px-4 py-6 sm:flex-row sm:items-center sm:px-6">
+        <div className="flex min-w-0 flex-1 items-center gap-4">
+          <DashboardHeaderFigure subject="addProducts" />
+          <div className="min-w-0">
+            <h1 className="font-heading font-semibold text-3xl text-foreground-rich tracking-tight">
+              {translate("title")}
+            </h1>
+            <p className="mt-2 max-w-xl text-foreground-dimmed text-sm leading-6">
+              {translate("description")}
+            </p>
           </div>
         </div>
-
-        <SectionGutter />
-
-        <div className="-mx-8 border-accent-foreground border-t border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            {children}
-          </div>
-        </div>
+        <Slot>{action}</Slot>
+      </header>
+      <div className="border-accent-foreground border-t px-4 py-3 sm:px-6">
+        <Slot>{statusPill}</Slot>
       </div>
+      <section className="relative flex min-w-0 flex-1 flex-col border-accent-foreground border-y bg-background-rich">
+        <Crosshair className="top-0 right-0 -translate-y-1/2" />
+        {children}
+        <Crosshair className="bottom-0 left-0 translate-y-1/2" />
+      </section>
     </div>
   );
 };
 
-// Sized to the "Back to …" button it stands in for.
 export const BackLinkSkeleton = () => (
-  <div className="h-9 w-40 animate-pulse bg-foreground/10" />
+  <div className="h-9 w-40 animate-pulse rounded-lg bg-foreground/10 motion-reduce:animate-none" />
 );
 
 export const SourcesSkeleton = () => (
-  <div className="flex flex-col gap-6 bg-background-rich p-6">
-    <div className="flex flex-col gap-2">
-      <div className="h-3 w-28 animate-pulse bg-foreground/10" />
-      <div className="h-6 w-44 animate-pulse bg-foreground/10" />
-      <div className="h-4 w-full max-w-2xl animate-pulse bg-foreground/10" />
-      <div className="h-4 w-2/3 max-w-2xl animate-pulse bg-foreground/10" />
+  <div aria-hidden className="grid min-w-0 lg:grid-cols-2">
+    <div className="flex min-w-0 flex-col gap-4 border-accent-foreground border-b px-4 py-6 sm:px-6 lg:border-r lg:border-b-0">
+      <div className="h-7 w-44 max-w-full animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
+      <div className="h-12 w-full animate-pulse rounded-lg bg-foreground/10 motion-reduce:animate-none" />
+      <div className="mt-2 h-48 w-full animate-pulse rounded-lg bg-primary/5 motion-reduce:animate-none" />
+      <div className="h-9 w-36 animate-pulse rounded-lg bg-foreground/10 motion-reduce:animate-none" />
     </div>
-    <div className="h-9 w-32 animate-pulse bg-foreground/10" />
+    <div className="flex min-w-0 flex-col items-center justify-center gap-4 px-4 py-6 sm:px-6">
+      <div className="h-48 w-56 max-w-full animate-pulse rounded-sm bg-foreground/5 motion-reduce:animate-none" />
+      <div className="h-12 w-full animate-pulse rounded-lg bg-foreground/10 motion-reduce:animate-none" />
+    </div>
   </div>
 );

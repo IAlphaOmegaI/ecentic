@@ -1,0 +1,129 @@
+{
+  "dashboard": {
+    "overview": {
+      "description": "What needs attention, what changed and what to do next.",
+      "summary": {
+        "latestWinRate": "Latest simulated win rate",
+        "latestResult": "{wins, plural, one {# win} other {# wins}} from {total, plural, one {# comparison} other {# comparisons}}",
+        "change": "{value} percentage points",
+        "coverage": "Products compared",
+        "coverageDetail": "{count, number} of {total, plural, one {# catalog product} other {# catalog products}}",
+        "coverageHint": "Based on completed product comparisons.",
+        "noResult": "Run your first scan to see results.",
+        "topPerformer": "Strongest product",
+        "opportunity": "Product to improve",
+        "productRate": "Wins {rate} of its comparisons",
+        "updated": "Last completed scan {time}",
+        "action": {
+          "primary": "View product",
+          "secondary": "Improve this product",
+          "tertiary": "Choose products"
+        },
+        "emptyProduct": "Product results appear after your first scan."
+      },
+      "charts": {
+        "recentActivity": "Recent scans",
+        "latestScan": "Latest completed scan",
+        "action": {
+          "tertiary": "View simulations",
+          "primary": "Inspect latest scan"
+        },
+        "winRateTrend": "Win rate by scan",
+        "winRateByModel": "Average product win rate by model",
+        "modelHint": "Each model’s average across compared products.",
+        "states": {
+          "noTrend": "No completed scans yet."
+        },
+        "change": "From the previous scan",
+        "sampleNote": "Each point is a separate scan; selected products and competitors can differ."
+      },
+      "tabs": {
+        "topProducts": "Products",
+        "competitors": "Competitors",
+        "agentVisits": "AI visits"
+      },
+      "priorities": {
+        "title": "Next steps",
+        "description": "Fix missing product facts, then compare again.",
+        "fields": {
+          "description": {
+            "title": "Add missing descriptions",
+            "detail": "{count, plural, one {# product has no description.} other {# products have no description.}}"
+          },
+          "price": {
+            "title": "Add missing prices",
+            "detail": "{count, plural, one {# product has no price.} other {# products have no price.}}"
+          },
+          "sku": {
+            "title": "Add missing SKUs",
+            "detail": "{count, plural, one {# product has no SKU.} other {# products have no SKU.}}"
+          },
+          "complete": {
+            "title": "Core product fields are present",
+            "detail": "Descriptions, prices and SKUs checked."
+          }
+        },
+        "compare": {
+          "title": "Compare untested products",
+          "detail": "{count, plural, one {# product has not been compared yet.} other {# products have not been compared yet.}}",
+          "complete": {
+            "title": "Your whole catalog has been compared",
+            "detail": "{count, plural, one {# product with completed comparisons.} other {# products with completed comparisons.}}"
+          }
+        },
+        "optimize": {
+          "title": "Review listing opportunities",
+          "detail": "{count, plural, one {# product in your optimization queue.} other {# products in your optimization queue.}}",
+          "complete": {
+            "title": "No listing opportunities queued",
+            "detail": "Review your listing diagnostics after the next scan."
+          }
+        },
+        "action": {
+          "primary": "Review product details",
+          "secondary": "Choose products",
+          "tertiary": "Open Optimize",
+          "quaternary": "View comparisons"
+        }
+      },
+      "traffic": {
+        "title": "Observed AI traffic",
+        "description": "Recorded events in the last 30 days.",
+        "referrals": "AI referrals",
+        "crawlers": "Agent and crawler requests",
+        "hint": "These are recorded visits and requests, not unique shoppers or purchases.",
+        "action": {
+          "primary": "Inspect AI traffic"
+        }
+      }
+    },
+    "shared": {
+      "activity": {
+        "simulationPending": "Scan queued — {total, plural, one {# comparison} other {# comparisons}}",
+        "simulationFailed": "Scan failed — {completed, plural, one {# comparison completed} other {# comparisons completed}} out of {total, number}"
+      }
+    },
+    "nav": {
+      "assistant": {
+        "title": "Ask Judy",
+        "status": "Preview",
+        "description": "Judy is taking shape. Chat and catalog actions are not available yet; use the dashboard tools for now.",
+        "name": "Judy"
+      }
+    },
+    "products": {
+      "table": {
+        "overviewTools": {
+          "sort": "Sort",
+          "defaultOrder": "Default order",
+          "ascending": "Ascending",
+          "descending": "Descending",
+          "comparison": "Comparison status",
+          "all": "All products",
+          "compared": "Compared",
+          "notCompared": "Not compared"
+        }
+      }
+    }
+  }
+}

@@ -12,7 +12,7 @@ export const Plans = async () => {
   const translate = await getTranslations("pricing");
 
   return (
-    <section id="pricing" className="scroll-mt-[5.5rem]">
+    <section id="pricing" className="scroll-mt-22">
       <div className="relative mx-auto max-w-6xl border-accent-foreground border-x border-b">
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
         <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />

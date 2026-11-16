@@ -21,7 +21,7 @@ export const PlatformLight = () => {
       }
       viewport={{ once: true, amount: 0.5 }}
       transition={{ duration: 1.8, ease: [0.23, 1, 0.32, 1] }}
-      className="pointer-events-none absolute top-1/2 left-0 h-px w-1/4 bg-linear-to-r from-transparent via-primary-rich to-transparent opacity-0 shadow-[0_0_12px_var(--color-primary)]"
+      className="pointer-events-none absolute top-1/2 left-0 h-px w-1/4 bg-linear-to-r from-transparent via-primary-rich to-transparent opacity-0 shadow-lg shadow-primary/20"
     />
   );
 };

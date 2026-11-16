@@ -111,7 +111,7 @@ const Back = () => {
   return (
     <>
       {pending ? (
-        <LoaderIcon className="size-4 animate-spin" />
+        <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
       ) : (
         <ArrowLeftIcon className="size-4" />
       )}
@@ -128,7 +128,7 @@ const Next = () => {
     <>
       {translate("next")}
       {pending ? (
-        <LoaderIcon className="size-4 animate-spin" />
+        <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
       ) : (
         <ArrowRightIcon className="size-4" />
       )}

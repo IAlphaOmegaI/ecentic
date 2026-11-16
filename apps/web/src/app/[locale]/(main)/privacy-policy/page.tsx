@@ -138,7 +138,7 @@ export default async () => {
       <MarketingBand className="[&_.marketing-guides]:hidden">
         <header className="grid gap-8 px-8 py-12 max-sm:px-4 max-sm:py-10 lg:grid-cols-[4fr_7fr] lg:items-start lg:gap-16 lg:py-16">
           <div>
-            <h1 className="text-[clamp(2.75rem,5.2vw,4.8rem)] leading-[1.025] tracking-[-0.043em]">
+            <h1 className="text-5xl xl:text-7xl leading-none tracking-tighter">
               {translate("privacyPolicy.hero.title.primary")}{" "}
               {translate("privacyPolicy.hero.title.accent")}
             </h1>
@@ -202,7 +202,7 @@ export default async () => {
                     </span>
                     <h2
                       id={`privacy-heading-${number}`}
-                      className="text-[clamp(1.6rem,2.4vw,2.25rem)] leading-tight"
+                      className="text-2xl xl:text-3xl 2xl:text-4xl leading-tight"
                     >
                       {section.title}
                     </h2>

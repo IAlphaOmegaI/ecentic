@@ -1,0 +1,75 @@
+{
+  "dashboard": {
+    "productWorkspace": {
+      "title": "Produktdetails",
+      "description": "Sehen Sie sich die gespeicherten Produktangaben und aufgezeichneten KI-Vergleiche an.",
+      "status": {
+        "active": "Aktiv",
+        "draft": "Entwurf",
+        "archived": "Archiviert",
+        "unknown": "Status nicht verfügbar"
+      },
+      "updated": "Aktualisiert {time}",
+      "latestComparison": "Letzter Vergleich {time}",
+      "priceMissing": "Kein Preis gespeichert",
+      "metrics": {
+        "rate": "Simulierte Gewinnquote",
+        "comparisons": "Vergleiche",
+        "coverage": "Abdeckung gespeicherter Felder",
+        "wins": "{wins} von {total} gewonnen",
+        "competitors": "{count, plural, one {Gegen # Wettbewerber} other {Gegen # Wettbewerber}}"
+      },
+      "method": {
+        "title": "Zu diesen Zahlen",
+        "description": "Die Gewinnquoten basieren auf aufgezeichneten Produktvergleichen. Für Produkte und Modelle ohne Vergleiche gibt es keine gemessene Quote. Die Feldabdeckung erfasst sechs gespeicherte Felder: Titel, Beschreibung, Preis, Bild, SKU und strukturierte Daten. Sie bewertet nicht, wie überzeugend der Inhalt ist."
+      },
+      "models": {
+        "title": "Ergebnisse nach Modell",
+        "description": "Aufgezeichnete Simulationen, keine echten Besuche im Shop.",
+        "count": "{count, plural, one {# Vergleich} other {# Vergleiche}}"
+      },
+      "tabs": {
+        "overview": "Vergleiche",
+        "replay": "Entscheidungen der Agenten",
+        "battlecard": "Direktvergleich",
+        "optimize": "Produktangebot"
+      },
+      "action": {
+        "primary": "Mit KI prüfen",
+        "secondary": "Erneut versuchen",
+        "tertiary": "Katalog öffnen",
+        "quaternary": "Mehr anzeigen"
+      },
+      "navigation": {
+        "primary": "Zurück zu den Produkten",
+        "secondary": "Anstehende Optimierungen prüfen"
+      },
+      "audit": {
+        "title": "KI-Inhaltsprüfung",
+        "description": "Lassen Sie die Formulierungen, Produktangaben und Eignung für die Zielgruppe prüfen. Ihr gespeichertes Produktangebot bleibt unverändert.",
+        "running": "Produkt wird geprüft…",
+        "failed": "Die KI-Prüfung konnte nicht abgeschlossen werden. Ihre gespeicherten Produktangaben sind unverändert.",
+        "savedFields": "Gespeicherte Produktfelder",
+        "coverageDescription": "Ob die gespeicherten Felder ausgefüllt sind, wird getrennt von der KI-Inhaltsprüfung geprüft.",
+        "ready": "Prüfung abgeschlossen"
+      },
+      "unmeasured": "Nicht verglichen",
+      "noReasoning": "Für diesen Vergleich wurde keine schriftliche Begründung gespeichert.",
+      "states": {
+        "empty": {
+          "title": "Noch keine Vergleiche",
+          "description": "Für dieses Produkt wurden noch keine KI-Vergleiche aufgezeichnet. Die Gewinnquote erscheint, sobald es mit Wettbewerbern verglichen wurde."
+        },
+        "error": {
+          "title": "Dieses Produkt konnte nicht geladen werden",
+          "description": "Ihr Katalog ist weiterhin gespeichert. Versuchen Sie, dieses Produkt erneut zu laden."
+        },
+        "missing": {
+          "title": "Produkt nicht gefunden",
+          "description": "Dieses Produkt wurde möglicherweise entfernt oder gehört zu einem anderen Shop. Öffnen Sie den Katalog, um ein Produkt auszuwählen."
+        }
+      },
+      "publishDescription": "Erstellen Sie einen optimierten Titel und eine optimierte Beschreibung für {title} und veröffentlichen Sie beides im verbundenen Shop. Die aktuellen Produktdaten werden dabei ersetzt."
+    }
+  }
+}

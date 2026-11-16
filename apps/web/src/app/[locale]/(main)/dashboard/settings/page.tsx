@@ -21,7 +21,7 @@ import { PanelSkeleton, SettingsShell } from "./_components/shell";
 const requireSession = async () => {
   const account = await Authentication.getCurrentUser(Environment.SERVER);
   if (!account.success)
-    redirect({ href: "/sign-in", locale: await getLocale() });
+    return redirect({ href: "/sign-in", locale: await getLocale() });
 
   return account.data;
 };
@@ -85,12 +85,12 @@ export default () => (
         </Suspense>
       }
       integrations={
-        <Suspense fallback={<PanelSkeleton />}>
+        <Suspense fallback={<PanelSkeleton section="integrations" />}>
           <Integrations />
         </Suspense>
       }
       billing={
-        <Suspense fallback={<PanelSkeleton />}>
+        <Suspense fallback={<PanelSkeleton section="billing" />}>
           <Billing />
         </Suspense>
       }

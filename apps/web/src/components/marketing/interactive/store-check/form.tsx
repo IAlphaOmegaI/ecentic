@@ -28,7 +28,7 @@ const AddressInput = ({
     value={value ?? ""}
     onValueChange={onValueChange}
     disabled={disabled}
-    className="h-12 rounded-md border-accent-foreground bg-background text-foreground-rich"
+    className="h-12 rounded-sm border-accent-foreground bg-background text-foreground-rich"
   >
     <CommerceGlobePointerIcon
       aria-hidden

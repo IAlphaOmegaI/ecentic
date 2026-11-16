@@ -1,0 +1,16 @@
+{
+  "dashboard": {
+    "overview": {
+      "priorityChecks": {
+        "incomplete": {
+          "title": "商品情報を補完",
+          "detail": "{count, plural, other {#件の商品でカタログ情報が不足しています。}}"
+        },
+        "unavailable": {
+          "title": "改善候補を確認できません",
+          "description": "「最適化」を開いて、このストアで利用できるチェックを確認してください。"
+        }
+      }
+    }
+  }
+}

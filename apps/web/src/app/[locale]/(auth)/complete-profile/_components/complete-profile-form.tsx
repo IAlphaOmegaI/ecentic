@@ -110,7 +110,7 @@ export const CompleteProfileForm = () => {
               ? translate("states.saving")
               : translate("action.primary")}
             {isPending ? (
-              <LoaderIcon className="size-4 animate-spin" />
+              <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
             ) : (
               <ArrowRightIcon className="size-4" />
             )}

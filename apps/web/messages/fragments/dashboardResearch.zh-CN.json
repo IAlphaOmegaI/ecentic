@@ -1,0 +1,116 @@
+{
+  "dashboard": {
+    "research": {
+      "title": "AI 研究",
+      "description": "比较商品、查看已保存的回答，决定接下来测试什么。",
+      "unavailable": {
+        "title": "无法加载研究结果",
+        "description": "请重试。已保存的结果没有变化。",
+        "action": {
+          "primary": "重试"
+        }
+      },
+      "empty": {
+        "title": "从商品比较开始",
+        "description": "选择商品和真实的竞品，看看各个模型会选择哪份商品详情。完成的测试会显示在这里。"
+      },
+      "comparison": {
+        "title": "最近完成的比较",
+        "action": {
+          "primary": "设置比较",
+          "secondary": "查看结果"
+        },
+        "rate": "模拟胜率",
+        "sample": "{total} 次比较中获胜 {wins} 次",
+        "scope": "结果仅涵盖本次测试中这家店铺的商品，反映模型的选择，不代表访客数量或销量。",
+        "recent": "之前的比较",
+        "first": "这是你首次完成的比较。",
+        "cohorts": "商品、竞品或模型不同，胜率就可能变化。这些测试不能衡量修改带来的提升。"
+      },
+      "brand": {
+        "title": "已保存的品牌分析",
+        "running": "新的分析正在进行。",
+        "failed": "上次分析未完成。打开品牌分析即可重试。",
+        "empty": "还没有已完成的品牌分析。",
+        "action": {
+          "primary": "打开品牌分析"
+        },
+        "scope": "这些是向模型提供品牌背景后采集的回答样本。采取行动前，请查看原始问题和回答。"
+      },
+      "directions": {
+        "questions": {
+          "title": "探索购物问题",
+          "description": "试试消费者会问的问题，查看各个模型推荐了哪些店铺。",
+          "action": {
+            "primary": "探索问题"
+          }
+        },
+        "competitors": {
+          "title": "选择竞品",
+          "description": "检查比较中使用的竞品，并添加实际获取的商品报价。",
+          "action": {
+            "primary": "管理竞品"
+          }
+        },
+        "rank": {
+          "title": "查询目录排名",
+          "description": "指定搜索词和国家，查看店铺在 Shopify Global Catalog 中的位置。",
+          "action": {
+            "primary": "查询目录排名"
+          }
+        }
+      },
+      "rank": {
+        "title": "目录排名",
+        "description": "按指定搜索词和市场，实时查询 Shopify Global Catalog。",
+        "empty": {
+          "title": "你的店铺出现在哪里？",
+          "description": "输入购物搜索词并选择国家。这里检查的是目录返回的商品报价，并不代表 ChatGPT 或 Google 的通用排名。"
+        },
+        "checked": "Shopify Global Catalog · {country} · 查询时间：{time}。每次查询的结果可能不同。"
+      },
+      "comparisons": {
+        "title": "商品比较",
+        "description": "选择要测试的商品和竞品报价，再查看各个模型的选择。",
+        "phases": {
+          "pre": "可以开始比较",
+          "running": "正在比较商品",
+          "complete": "比较已完成"
+        },
+        "unmeasured": "此模型暂无比较结果"
+      },
+      "questions": {
+        "title": "购物问题",
+        "description": "探索模型对购物问题生成的回答。这些建议仅供研究，不是经过验证的搜索排名。"
+      },
+      "competitors": {
+        "title": "竞品",
+        "description": "管理竞品报价，查看自家商品与它们的比较结果。",
+        "action": {
+          "primary": "添加竞品",
+          "secondary": "设置比较",
+          "tertiary": "返回竞品"
+        },
+        "stats": {
+          "tracked": "已添加的品牌",
+          "tested": "已比较的品牌",
+          "comparisons": "已保存的比较"
+        },
+        "empty": {
+          "title": "选择消费者会考虑的替代商品",
+          "description": "添加带有实际价格和商品详情的竞品。设置比较时，可以选择相关的商品报价。"
+        },
+        "evidence": {
+          "title": "自家商品面对的强劲对手",
+          "description": "自家商品对各品牌的模拟胜率，按从低到高排序。仅显示已完成比较的品牌。",
+          "sample": "{count} 次比较"
+        },
+        "roster": "{total} 个竞品 · 已选 {selected} 个",
+        "updateFailed": "无法更新此竞品"
+      }
+    }
+  },
+  "commerceFigures": {
+    "comparisonStand": "并排放在比较展示架上的两张商品卡片"
+  }
+}

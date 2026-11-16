@@ -1,0 +1,116 @@
+{
+  "dashboard": {
+    "research": {
+      "title": "AIリサーチ",
+      "description": "商品を比較し、保存済みの回答を確認して、次のテストを決めます。",
+      "unavailable": {
+        "title": "リサーチ結果を読み込めませんでした",
+        "description": "もう一度お試しください。保存済みの結果は変更されていません。",
+        "action": {
+          "primary": "再試行"
+        }
+      },
+      "empty": {
+        "title": "まずは商品を比較しましょう",
+        "description": "商品と実在する競合商品を選び、各モデルがどの商品情報を選ぶか確認します。完了したテストはここに表示されます。"
+      },
+      "comparison": {
+        "title": "直近の完了した比較",
+        "action": {
+          "primary": "比較を設定",
+          "secondary": "結果を確認"
+        },
+        "rate": "シミュレーション勝率",
+        "sample": "{total}回の比較で{wins}勝",
+        "scope": "このテストに含まれる、このストアの商品が対象です。結果はモデルの選択を示すもので、訪問数や売上ではありません。",
+        "recent": "過去の比較",
+        "first": "最初の比較が完了しました。",
+        "cohorts": "商品、競合、モデルが変わると勝率も変わります。これらのテストだけでは、変更による改善効果は測定できません。"
+      },
+      "brand": {
+        "title": "保存済みのブランド分析",
+        "running": "新しい分析を実行中です。",
+        "failed": "前回の分析は完了しませんでした。ブランド分析を開いて再試行できます。",
+        "empty": "完了したブランド分析はまだありません。",
+        "action": {
+          "primary": "ブランド分析を開く"
+        },
+        "scope": "ブランドを前提情報として渡したうえで収集した、モデルの回答サンプルです。対応を決める前に、元の質問と回答を確認してください。"
+      },
+      "directions": {
+        "questions": {
+          "title": "購入時の質問を調べる",
+          "description": "買い物客が尋ねる質問を試し、各モデルが提案するストアを確認します。",
+          "action": {
+            "primary": "質問を調べる"
+          }
+        },
+        "competitors": {
+          "title": "競合を選ぶ",
+          "description": "比較対象の競合商品を確認し、実際に確認したオファーを追加します。",
+          "action": {
+            "primary": "競合を管理"
+          }
+        },
+        "rank": {
+          "title": "カタログでの掲載順位を調べる",
+          "description": "検索内容と国を指定し、Shopify Global Catalogでストアが何番目に表示されるか確認します。",
+          "action": {
+            "primary": "掲載順位を確認"
+          }
+        }
+      },
+      "rank": {
+        "title": "カタログ掲載順位",
+        "description": "検索内容と対象市場を指定して、Shopify Global Catalogにリアルタイムで問い合わせます。",
+        "empty": {
+          "title": "ストアはどこに表示されますか？",
+          "description": "商品の検索語を入力し、国を選んでください。確認するのはカタログが返すオファーであり、ChatGPTやGoogle全体での順位ではありません。"
+        },
+        "checked": "Shopify Global Catalog · {country} · 確認日時：{time}。結果は検索のたびに変わる場合があります。"
+      },
+      "comparisons": {
+        "title": "商品比較",
+        "description": "テストする商品と競合オファーを選び、各モデルの選択を確認します。",
+        "phases": {
+          "pre": "比較の準備完了",
+          "running": "商品を比較中",
+          "complete": "比較完了"
+        },
+        "unmeasured": "このモデルの比較結果はありません"
+      },
+      "questions": {
+        "title": "購入時の質問",
+        "description": "購入に関する質問へのモデル生成回答を調べます。提案はリサーチの材料であり、検証済みの検索順位ではありません。"
+      },
+      "competitors": {
+        "title": "競合",
+        "description": "競合オファーを管理し、自社商品との比較結果を確認します。",
+        "action": {
+          "primary": "競合を追加",
+          "secondary": "比較を設定",
+          "tertiary": "競合に戻る"
+        },
+        "stats": {
+          "tracked": "登録ブランド数",
+          "tested": "比較済みブランド数",
+          "comparisons": "保存済み比較数"
+        },
+        "empty": {
+          "title": "買い物客が検討する候補を選びましょう",
+          "description": "実際に確認した価格と商品情報を使って競合商品を追加します。比較を設定するときに、適切なオファーを選択できます。"
+        },
+        "evidence": {
+          "title": "自社商品にとって手強い競合",
+          "description": "ブランドごとのシミュレーション勝率を、低い順に表示しています。比較が完了したブランドのみが対象です。",
+          "sample": "比較{count}回"
+        },
+        "roster": "競合{total}件 · 選択中{selected}件",
+        "updateFailed": "競合を更新できませんでした"
+      }
+    }
+  },
+  "commerceFigures": {
+    "comparisonStand": "比較用スタンドに並んだ2枚の商品カード"
+  }
+}
