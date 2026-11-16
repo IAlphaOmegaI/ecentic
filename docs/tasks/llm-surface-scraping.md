@@ -349,3 +349,28 @@ can move.
 - Multi-geo per store; real-time anything.
 - LLM-based extraction and the report pipeline (downstream of this layer).
 - Webhook/async capture flow (ScrapeLLM doesn't offer one).
+
+## 10. Post-implementation review of `/api/dev/ai-answers` (Codex, xhigh, 13 Nov 2026)
+
+Session `01a1d66d-be40-7200-a120-d90d0ac3ca51`, on the endpoint as first
+written, before commit `dad57d3f`. Ten findings and one of lower confidence.
+All were adopted in that commit; each outcome below was checked against the
+code on 16 Nov 2026, and each named test is in
+[answer-report.test.ts](../../apps/web/src/server/spec/answer-report.test.ts).
+
+| # | Finding | What it changed |
+|---|---|---|
+| 1 | Transient failures answered 502 with `retryable: false`: `ScrapeLlm.isRetryable` used `instanceof`, which is always false for classes built by `error()` | Classified by `errorName` and status code (`scrapellm.ts`); *classifies by error name and status, not instanceof* |
+| 2 | Provider text could forge a report link (a backslash before an escaped bracket) and break out of the answer's blockquote (a bare CR) | Escaping and line splitting fixed; *provider text cannot forge a link*, *… cannot break out of the answer blockquote* |
+| 3 | Seller and publisher names matched by substring (`SNIKER Shoes`, `notnike.com` for Nike), and the publisher fallback applied when a citation's URL named another domain | Whole-word runs only (`namesStore`); a resolvable URL wins over its publisher name |
+| 4 | A shopping card's seller was counted as a prose mention | Card modules removed from prose (`proseOf`); *does not count a card's seller as a prose mention* |
+| 5 | A mistyped optional POST field silently changed the paid request | Mistyped fields are refused before any call |
+| 6 | Store input was neither validated nor canonicalised as a host | `resolveStore` requires a real host; *rejects anything that is not a host* |
+| 7 | Markdown link destinations were counted as mentions | Link text only; *reads link text, not link destinations, as mentions* |
+| 8 | A non-ASCII brand could become unsearchable | Unicode-aware words; *searches brands in scripts written without spaces* |
+| 9 | A domain mention accepted a longer, unrelated host | Host boundaries on both sides; *bounds the domain as a host* |
+| 10 | Link stripping was quadratic on unmatched `[` (1.8 s at 64 KiB) | Link text excludes `[`; *stays linear on unmatched brackets* |
+| — | *(lower confidence)* Card deduplication depended on identifier order | `gpcid` preferred over `catalogid` |
+
+**Held open:** the endpoint has no local rate, concurrency or spending limit.
+Its only bound is the access code, and one request can spend six credits.

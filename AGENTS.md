@@ -40,6 +40,7 @@ If code and docs disagree, prefer docs intent unless explicitly instructed other
 - `docs/agents/AGENTS-components.md` - React component patterns.
 - `docs/agents/AGENTS-nextjs.md` - Next.js architecture and rendering patterns.
 - `docs/agents/AGENTS-packages.md` - required use of `@zenncore/*` packages.
+- `docs/agents/review-focus.md` - what a review of a change looks for: mistakes found here more than once that no gate decides, each with the diff that should trigger the check. Every review brief names it; the file says what joins it and when an entry is deleted.
 
 ### Package Docs
 

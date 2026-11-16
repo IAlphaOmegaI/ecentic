@@ -44,16 +44,32 @@ A consultation starts one of two ways, with identical mechanics:
    alternatives you rejected; ask for flaws, risks, and better approaches
    while changing course is still cheap. A flawed plan caught in ten minutes
    saves the hours built on top of it.
-2. **After implementing, before reporting done** — send the intent and the
+2. **After implementing, before reporting done** — send the intent, the
    changed-file list (Codex reads the working tree, so uncommitted changes are
-   visible); ask for evidence-backed findings — hidden implications, gaps,
-   possible improvements — explicitly inviting low-confidence findings, since
-   coverage beats self-filtering at review time. This checkpoint exists
-   because post-implementation failures are blind spots: the uncertainty gate
-   above can never fire on them, and confidence is precisely when review
-   matters most. **One review pass per deliverable** — verify and apply the
-   resulting fixes yourself rather than re-submitting them to Codex, unless a
-   fix is itself large enough to meet the bar.
+   visible) and where the earlier rounds are recorded, by path and section
+   rather than retold, so Codex reads the record and not a summary of it: the
+   plan checkpoint's findings and what each changed, anything that departed
+   from the plan since, and what earlier reviews in the same area held open.
+   Name `docs/agents/review-focus.md` as well, and add to it by its own rule
+   when a finding qualifies. The review then attacks what is still open
+   instead of finding again what is settled. Ask for evidence-backed findings
+   — hidden implications, gaps, possible improvements — explicitly inviting
+   low-confidence findings, since coverage beats self-filtering at review
+   time. This checkpoint exists because post-implementation failures are
+   blind spots: the uncertainty gate above can never fire on them, and
+   confidence is precisely when review matters most. **One review pass per
+   deliverable** — verify and apply the resulting fixes yourself rather than
+   re-submitting them to Codex, unless a fix is itself large enough to meet
+   the bar.
+
+**Record each checkpoint** in the item's task document (`docs/tasks/<item>.md`,
+or its plan under `plans/`) once its findings are verified: the date, the
+effort and the `SESSION` id; each finding with what it changed, or why it was
+not adopted; and what was held open. Work with neither gets the record in its
+commit message. This record is what the next round is pointed at: a run's
+`ANSWER_FILE` is under `$TMPDIR` and does not last (on 16 Nov 2026, eight of
+the nine run folders there were already empty), and `llm-surface-scraping.md`
+§ 10 is the shape.
 
 **Reasoning effort** — `xhigh` is the default for every consultation, including
 both standing checkpoints. Above `xhigh`, each level buys a large latency and
@@ -222,4 +238,6 @@ Report one answer, not the negotiation:
 - Mention Codex explicitly only when it materially changed your conclusion, or
   when a disagreement remains unresolved after verification — then state both
   positions in a sentence or two so the user can decide. Codex's full answer
-  stays in the run's `ANSWER_FILE` if the user asks for it.
+  stays in the run's `ANSWER_FILE` if the user asks for it — while the run
+  directory lasts; the record in the item's task document is the copy that
+  stays.

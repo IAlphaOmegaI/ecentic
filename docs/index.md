@@ -45,6 +45,7 @@ Central navigation for product context, agent rules, and package/component docum
 - [Component patterns](./agents/AGENTS-components.md)
 - [Next.js patterns](./agents/AGENTS-nextjs.md)
 - [Package usage rules](./agents/AGENTS-packages.md)
+- [Review focus](./agents/review-focus.md) — what a review of a change looks for that no gate decides; named in every review brief
 
 ### If you are building UI
 
