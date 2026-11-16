@@ -43,10 +43,25 @@ export const ProviderArc = ({
     );
     if (!element || !hub || !ports.length) return;
     const measure = () => {
-      if (window.matchMedia("(width >= 1024px)").matches) return;
+      if (window.matchMedia("(width >= 1024px)").matches) {
+        setConnections(null);
+        return;
+      }
       const bounds = element.getBoundingClientRect();
       const center = hub.getBoundingClientRect();
-      const positions = ports.map((port) => port.getBoundingClientRect());
+      const positions = ports
+        .map((port) => port.getBoundingClientRect())
+        .filter((position) => position.width > 0 && position.height > 0);
+      if (
+        bounds.width <= 0 ||
+        bounds.height <= 0 ||
+        center.width <= 0 ||
+        center.height <= 0 ||
+        !positions.length
+      ) {
+        setConnections(null);
+        return;
+      }
       const rows = Array.from(
         new Set(positions.map((position) => position.top)),
       );
@@ -65,14 +80,24 @@ export const ProviderArc = ({
           ),
         ];
       });
-      setConnections({
-        width: bounds.width,
-        height: bounds.height,
-        paths: [
+      const uniquePaths = Array.from(
+        new Set([
           `M ${axis} ${center.bottom - bounds.top + 8} V ${Math.max(...rows) - bounds.top - 20}`,
           ...paths,
-        ],
-      });
+        ]),
+      );
+      setConnections((current) =>
+        current?.width === bounds.width &&
+        current.height === bounds.height &&
+        current.paths.length === uniquePaths.length &&
+        current.paths.every((path, index) => path === uniquePaths[index])
+          ? current
+          : {
+              width: bounds.width,
+              height: bounds.height,
+              paths: uniquePaths,
+            },
+      );
     };
     const observer = new ResizeObserver(measure);
     for (const target of [element, hub, ...ports]) observer.observe(target);

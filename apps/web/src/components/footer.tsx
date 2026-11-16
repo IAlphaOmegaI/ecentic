@@ -5,7 +5,7 @@ import { getMessages } from "next-intl/server";
 import { Suspense } from "react";
 import { CookieSettings } from "@/components/cookie-settings";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { FooterWordmark } from "@/components/marketing/ascii-wordmark";
+import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { fonts } from "@/components/marketing/fonts";
 import { FooterColumns } from "@/components/marketing/footer-columns";
 import {
@@ -158,20 +158,20 @@ export const Footer = async (_props: Footer.Props = {}) => {
             <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
             <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <FooterIdentity tagline={copy.tagline} />
-            <FooterSocial />
           </div>
         </div>
         <FooterColumns columns={columns} cookies={copy.cookies} />
         <div className="flex flex-col gap-6 border-accent-foreground border-t px-4 py-8 min-[801px]:hidden">
           <FooterIdentity tagline={copy.tagline} />
-          <FooterSocial />
         </div>
         <div className="relative border-accent-foreground border-y">
           <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
           <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <FooterWordmark />
+          <div className="relative h-48 w-full text-primary-text sm:h-72">
+            <EvolvingAscii artwork="selection" />
+          </div>
         </div>
         <div className="marketing-footer-bottom grid items-start gap-6 px-7 py-7 max-sm:px-4 md:grid-cols-[1fr_auto]">
           <div className="space-y-3 text-foreground-rich text-xs">
@@ -180,11 +180,14 @@ export const Footer = async (_props: Footer.Props = {}) => {
             </p>
             {copy.copyright && <p>{copy.copyright}</p>}
           </div>
-          <Suspense
-            fallback={<div aria-hidden className="h-10 w-24 shrink-0" />}
-          >
-            <LanguageSwitcher />
-          </Suspense>
+          <div className="flex w-full items-center justify-between gap-6 md:col-start-2 md:row-start-1 md:w-auto">
+            <Suspense
+              fallback={<div aria-hidden className="h-10 w-24 shrink-0" />}
+            >
+              <LanguageSwitcher className="w-auto shrink-0" />
+            </Suspense>
+            <FooterSocial />
+          </div>
         </div>
       </MarketingFeatureBand>
     </footer>
@@ -207,7 +210,7 @@ const FooterIdentity = ({ tagline }: { tagline: string }) => (
 );
 
 const FooterSocial = () => (
-  <div className="flex items-center gap-6">
+  <div className="flex shrink-0 items-center gap-2">
     <a
       href="https://www.linkedin.com/company/ecentic/"
       aria-label="LinkedIn"

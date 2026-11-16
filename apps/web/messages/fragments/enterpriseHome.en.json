@@ -7,15 +7,15 @@
     "hero": {
       "eyebrow": "The AI commerce layer",
       "title": "One layer between your catalog and the AI that sells it.",
-      "description": "Whether people search Google, shop on Amazon or ask a chatbot, AI now answers with a product, and every assistant has its own rules for choosing it and buying it. ecentic is one layer between your catalog and those assistants. It fixes the data they read, gets your checkout ready for them to buy, and keeps up when their rules change.",
+      "description": "Every AI channel has its own rules for choosing and buying products. ecentic improves the data they read, gets checkout ready on supported channels and helps your catalog keep up as their rules change.",
       "actions": [
-        {
-          "label": "Book a demo",
-          "href": "/demo"
-        },
         {
           "label": "Check my store free",
           "href": "/sign-up"
+        },
+        {
+          "label": "Book a demo",
+          "href": "/demo"
         }
       ],
       "facts": [
@@ -24,6 +24,9 @@
       "screenshot": {
         "alt": "ecentic win-rate overview showing explicitly labeled sample data.",
         "caption": "Product screenshot · sample data"
+      },
+      "artwork": {
+        "label": "ecentic prepares your store’s catalog for AI product comparisons."
       }
     },
     "programs": {
@@ -65,9 +68,9 @@
           "title": "Be the product the answer names.",
           "description": "DTC and consumer brands",
           "pains": [
+            "You can’t see why AI chooses competitors.",
             "AI recommends a competitor in your own category.",
-            "Retailers describe your products better than you do.",
-            "You cannot see which products assistants skip."
+            "Stores selling your products describe them more clearly than your own site."
           ],
           "href": "/solutions/brands",
           "label": "Explore brands"
@@ -122,7 +125,11 @@
           "id": "connect",
           "title": "Connect",
           "body": "Bring your catalog into one place through Shopify, WooCommerce, a supported XML or JSON feed, or a CSV.",
-          "tags": ["Shopify", "WooCommerce", "Product feeds"],
+          "tags": [
+            "Shopify",
+            "WooCommerce",
+            "Product feeds"
+          ],
           "href": "/platform/connect",
           "label": "Explore Connect"
         },
@@ -130,7 +137,11 @@
           "id": "simulate",
           "title": "Simulate",
           "body": "See which product ChatGPT, Claude and Gemini pick in a comparison, and read the reasoning behind each simulated choice.",
-          "tags": ["Win rate", "Battlecards", "Readiness audit"],
+          "tags": [
+            "Win rate",
+            "Battlecards",
+            "Readiness audit"
+          ],
           "href": "/platform/simulate",
           "label": "Explore Simulate"
         },
@@ -138,7 +149,11 @@
           "id": "fix",
           "title": "Fix",
           "body": "Apply generates and publishes titles and descriptions using existing product facts. Publish structured data and sync Merchant Center through separate controls.",
-          "tags": ["Listings", "Structured data", "Merchant Center"],
+          "tags": [
+            "Listings",
+            "Structured data",
+            "Merchant Center"
+          ],
           "href": "/platform/fix",
           "label": "Explore Fix"
         },
@@ -146,7 +161,11 @@
           "id": "sell",
           "title": "Sell",
           "body": "Connect agent checkout on WooCommerce, test the flow and keep your own payment provider. Platform eligibility and payment handoffs still apply.",
-          "tags": ["Agent checkout", "Checkout testing", "Your payments"],
+          "tags": [
+            "Agent checkout",
+            "Checkout testing",
+            "Your payments"
+          ],
           "href": "/platform/sell",
           "label": "Explore Sell"
         },
@@ -154,7 +173,11 @@
           "id": "track",
           "title": "Track",
           "body": "Follow detected AI referrals on Shopify, compare completed simulations and request a fresh scan when you want to check again.",
-          "tags": ["AI traffic", "Manual rescans", "Multiple stores"],
+          "tags": [
+            "AI traffic",
+            "Manual rescans",
+            "Multiple stores"
+          ],
           "href": "/platform/track",
           "label": "Explore Track"
         }
@@ -257,7 +280,11 @@
           "id": "simulations",
           "title": "Agent simulations",
           "body": "ChatGPT, Claude and Gemini choose between your product and a competitor's in a recorded simulation.",
-          "tags": ["Win rate", "Replay", "Battlecards"],
+          "tags": [
+            "Win rate",
+            "Replay",
+            "Battlecards"
+          ],
           "href": "/platform/simulate",
           "label": "See simulations"
         },
@@ -265,7 +292,11 @@
           "id": "readiness",
           "title": "Readiness audit",
           "body": "Check crawler rules, sampled page HTML, product identifiers and feed eligibility. Inaccessible pages are flagged for review.",
-          "tags": ["Crawlers", "Schema", "GTIN"],
+          "tags": [
+            "Crawlers",
+            "Schema",
+            "GTIN"
+          ],
           "href": "/platform/simulate#readiness",
           "label": "See the audit"
         },
@@ -273,7 +304,11 @@
           "id": "catalog",
           "title": "Catalog fixes",
           "body": "Generate and publish titles and descriptions from your existing product facts. Structured data has its own publish action.",
-          "tags": ["Listings", "Attributes", "Publish"],
+          "tags": [
+            "Listings",
+            "Attributes",
+            "Publish"
+          ],
           "href": "/platform/fix",
           "label": "See catalog fixes"
         },
@@ -281,7 +316,11 @@
           "id": "merchant-center",
           "title": "Merchant Center sync",
           "body": "Send published listing fixes and checkout attributes through a separate supplemental-feed sync for Shopify.",
-          "tags": ["Supplemental feed", "Diagnostics", "Shopify"],
+          "tags": [
+            "Supplemental feed",
+            "Diagnostics",
+            "Shopify"
+          ],
           "href": "/platform/fix#merchant-center",
           "label": "See the sync"
         },
@@ -289,7 +328,11 @@
           "id": "checkout",
           "title": "Agent checkout for WooCommerce",
           "body": "Give supported agent flows a route through your own store and payment provider, with checkout testing and configurable controls.",
-          "tags": ["Setup", "Testing", "Validator"],
+          "tags": [
+            "Setup",
+            "Testing",
+            "Validator"
+          ],
           "href": "/platform/sell",
           "label": "See agent checkout"
         },
@@ -297,7 +340,11 @@
           "id": "developers",
           "title": "API, MCP server and CLI",
           "body": "Use the published interfaces for discovery, plans, store connection and onboarding status.",
-          "tags": ["REST", "MCP", "CLI"],
+          "tags": [
+            "REST",
+            "MCP",
+            "CLI"
+          ],
           "href": "/docs",
           "label": "Open developer docs"
         }

@@ -49,10 +49,32 @@ space. The viewer should recognize a cart, bag, product or word without reading 
 - Do not repeat the same ambiguous texture across unrelated page heroes.
 - Keep texture subordinate where it shares a plane with essential information.
 
-The homepage hero, audience panel, integration arc and global closing CTA may use tonal artwork.
+The audience panel, integration arc and global closing CTA may use tonal artwork. In the latest
+15 November homepage correction, "graphics" means **custom HTML/CSS animation**, using native
+product documents and interface elements. It does not mean a generated 3D image, a Hairline
+drawing or an animated collage of sampled objects. Keep one coherent explanation and a complete
+static state; see the homepage recipe in the public-page skill. The current subject is a
+store, physical catalog and AI display connected by light and swept cables around the blue
+ecentic box. Their surfaces are white with rounded object corners. On desktop the box sits
+below a raised catalog; below `sm` the three objects stack vertically on the left and the box
+sits on the right. This supersedes the rejected headphone and interim bottle subjects.
+Use clear native silhouettes, readable provider marks and a finite illumination reveal;
+do not return to a single-product data table or elaborate CSS product perspective.
+The next correction adds a recognizable awning/window/entrance to the store. The central sheet alternates once through a
+valid JSON feed and back to the product tiles as the light appears, with no size change.
+Remove visible actor captions and the name beneath the box; keep the localized accessible
+description and blue logo anchor.
+The objects float directly on the blue hero without an enclosing panel or border. Rounded
+corners belong to the individual objects. Leave clear space around the box and aim the light
+toward the catalog in each layout. The final AI display reveals a matching catalog product as a
+selection, with the AI marks retained as compact context.
+The subsequent request replaces the abstract selected bottle with a specific product photo:
+a blue ceramic espresso cup, shared with the first catalog tile. Generate this raster product
+asset with the configured image workflow; retain the native HTML scene and its animation.
 The global closing subject is now a tonal shopping bag; it is not the former generic Hairline
-basket. The footer identity is a large **dimensional tonal-dot wordmark** with a drawing/reveal
-behavior. It remains readable before enhancement and under reduced motion.
+basket. The footer retains a small trademark and a separate **tonal product-selection graphic**
+with a finite reveal. The 15 November review replaces the repeated oversized wordmark; the
+graphic remains recognizable before enhancement and under reduced motion.
 
 Blog can pair a line-drawn book with ASCII behind it. Sector artwork can pair a relevant sampled
 product with a separate line-drawn object when they explain different things. Do not place two

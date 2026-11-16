@@ -10097,15 +10097,15 @@
     "hero": {
       "eyebrow": "Il layer per il commercio AI",
       "title": "Un layer tra il tuo catalogo e l’AI che vende i tuoi prodotti.",
-      "description": "Che le persone cerchino su Google, acquistino su Amazon o chiedano a un chatbot, oggi l’AI risponde con un prodotto, e ogni assistente ha regole proprie per sceglierlo e acquistarlo. ecentic è un layer tra il tuo catalogo e questi assistenti. Corregge i dati che leggono, prepara il tuo checkout per i loro acquisti e si aggiorna quando cambiano le loro regole.",
+      "description": "Ogni canale di IA ha regole proprie per scegliere e acquistare prodotti. ecentic migliora i dati che legge, prepara la procedura di acquisto sui canali supportati e aiuta il tuo catalogo ad adattarsi quando le regole cambiano.",
       "actions": [
-        {
-          "label": "Prenota una demo",
-          "href": "/demo"
-        },
         {
           "label": "Controlla gratis il mio store",
           "href": "/sign-up"
+        },
+        {
+          "label": "Prenota una demo",
+          "href": "/demo"
         }
       ],
       "facts": [
@@ -10114,6 +10114,9 @@
       "screenshot": {
         "alt": "Panoramica della percentuale di vittorie di ecentic con dati di esempio chiaramente etichettati.",
         "caption": "Screenshot del prodotto · dati di esempio"
+      },
+      "artwork": {
+        "label": "ecentic prepara il catalogo del tuo negozio perché l’IA possa confrontare i prodotti."
       }
     },
     "programs": {
@@ -10155,9 +10158,9 @@
           "title": "Fai in modo che la risposta nomini il tuo prodotto.",
           "description": "Brand DTC e consumer",
           "pains": [
-            "L’AI consiglia un concorrente nella tua stessa categoria.",
-            "I retailer descrivono i tuoi prodotti meglio di te.",
-            "Non puoi vedere quali prodotti gli assistenti ignorano."
+            "Non sai perché l’IA sceglie i concorrenti.",
+            "L’IA consiglia un concorrente nella tua stessa categoria.",
+            "I negozi che vendono i tuoi prodotti li descrivono più chiaramente del tuo sito."
           ],
           "href": "/solutions/brands",
           "label": "Esplora i brand"

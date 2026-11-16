@@ -66,22 +66,28 @@ export const Channels = ({ copy }: Channels.Props) => (
           <Link
             key={item.id}
             href={item.href}
-            className="group relative flex min-w-0 flex-col gap-4 border-[var(--rail-color)] border-t border-r px-6 py-8 transition-colors hover:bg-background-dimmed max-sm:border-r-0 max-sm:px-4 max-[1001px]:nth-[2n]:border-r-0 min-[1001px]:nth-[3n]:border-r-0"
+            className="group relative flex min-w-0 flex-col gap-4 border-[var(--rail-color)] border-t border-r px-6 py-8 transition-colors hover:bg-background-dimmed max-sm:grid max-sm:grid-cols-[2rem_minmax(0,1fr)_auto] max-sm:items-center max-sm:gap-y-2 max-sm:border-r-0 max-sm:px-4 max-sm:py-4 max-[1001px]:nth-[2n]:border-r-0 min-[1001px]:nth-[3n]:border-r-0"
           >
             {channel && (
-              <ProviderLogo provider={channel.key} className="mb-2 size-12" />
+              <ProviderLogo
+                provider={channel.key}
+                decorative
+                className="mb-2 size-12 max-sm:col-start-1 max-sm:row-start-1 max-sm:mb-0 max-sm:size-8"
+              />
             )}
-            <h3 className="text-3xl transition-colors group-hover:text-primary-text">
+            <h3 className="text-3xl transition-colors group-hover:text-primary-text max-sm:col-start-2 max-sm:row-start-1 max-sm:text-base max-sm:leading-snug">
               {item.title}
             </h3>
-            <p className="mb-4 text-foreground-dimmed">{item.body}</p>
-            <div className="mt-auto flex items-center justify-between gap-4">
+            <p className="mb-4 text-foreground-dimmed max-sm:col-span-2 max-sm:col-start-2 max-sm:mb-0 max-sm:text-sm max-sm:leading-relaxed">
+              {item.body}
+            </p>
+            <div className="mt-auto flex items-center justify-between gap-4 max-sm:col-start-3 max-sm:row-start-1 max-sm:mt-0 max-sm:whitespace-nowrap">
               <MarketingStatus status={channel?.status ?? "soon"}>
                 {item.statusLabel}
               </MarketingStatus>
               <ArrowRightIcon
                 aria-hidden
-                className="size-4 text-primary-text"
+                className="size-4 text-primary-text max-sm:hidden"
               />
             </div>
           </Link>

@@ -12,7 +12,7 @@ const subjects: Record<string, CommerceFigure.Props["kind"]> = {
 export const JourneyArtwork = ({ stage }: JourneyArtwork.Props) => (
   <div
     data-journey-artwork={stage}
-    className="mx-auto w-full max-w-96 py-4 max-sm:max-w-80"
+    className="mx-auto w-full max-w-96 py-4 max-sm:max-w-64 max-sm:py-0"
   >
     <CommerceFigure
       kind={subjects[stage] ?? "catalog"}

@@ -60,7 +60,6 @@ import {
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { fonts } from "@/components/marketing/fonts";
 import { IntentLink as Link } from "@/components/marketing/intent-link";
-import { MarketingStatus } from "@/components/marketing/primitives";
 import {
   type ProviderKey,
   ProviderLogo,
@@ -181,18 +180,8 @@ const NavigationWordmark = ({ dark }: { dark: boolean }) => (
   </span>
 );
 
-export const Navbar = () => {
-  const { content: contentClassName, surface: surfaceClassName } = styles;
-  const messages = useMessages();
-  const chrome = messages.enterpriseChrome;
-  const navigation = messages.enterpriseNav;
-  const pathname = usePathname();
-  const [active, setActive] = useState<string | null>(null);
-  const [mobile, setMobile] = useState(false);
-  const navigationOpen = mobile || active !== null;
-  const [tone, setTone] = useState<"light" | "dark">("light");
-  const dark = tone === "dark";
-  const toneStyle = {
+const navigationTone = (dark: boolean) =>
+  ({
     "--nav-surface": dark
       ? "var(--color-emphasis-dimmed)"
       : "var(--color-background)",
@@ -212,7 +201,24 @@ export const Navbar = () => {
       "--color-cross":
         "color-mix(in oklab, var(--color-background-rich) 30%, transparent)",
     }),
-  } as CSSProperties;
+  }) as CSSProperties;
+
+export const Navbar = () => {
+  const {
+    content: contentClassName,
+    surface: surfaceClassName,
+    scrollFade: scrollFadeClassName,
+  } = styles;
+  const messages = useMessages();
+  const chrome = messages.enterpriseChrome;
+  const navigation = messages.enterpriseNav;
+  const pathname = usePathname();
+  const [active, setActive] = useState<string | null>(null);
+  const [mobile, setMobile] = useState(false);
+  const navigationOpen = mobile || active !== null;
+  const [tone, setTone] = useState<"light" | "dark">("light");
+  const dark = tone === "dark";
+  const toneStyle = navigationTone(dark);
   useEffect(() => {
     if (!navigationOpen) return;
     const supportWindow = window as Window & {
@@ -296,14 +302,6 @@ export const Navbar = () => {
     };
   }, [navigationOpen, pathname]);
 
-  const statusLabels = {
-    live: chrome.status.live,
-    feed: chrome.status.feed,
-    soon: chrome.status.soon,
-    simulated: chrome.status.simulated,
-  };
-  const statusLabel = (status: string) =>
-    Object.entries(statusLabels).find(([key]) => key === status)?.[1] ?? status;
   const focusMenu = (menu: string) => {
     pendingFocus.current = menu;
     requestAnimationFrame(() => {
@@ -517,7 +515,7 @@ export const Navbar = () => {
                                 render={<Link href={item.href} />}
                                 onClick={() => setActive(null)}
                                 className={cn(
-                                  "marketing-desktop-nav-cell group/nav-cell relative flex min-w-0 items-start gap-3 rounded-none border-accent-foreground border-b bg-transparent px-5 xs:px-5 py-4 xs:py-4 text-sm leading-snug hover:bg-background-rich/20 hover:text-primary-text focus-visible:bg-background-rich/20 focus-visible:text-primary-text focus-visible:-outline-offset-4 [&_.marketing-status]:mt-2 [&_.marketing-status]:text-xs",
+                                  "marketing-desktop-nav-cell group/nav-cell relative flex min-w-0 items-start gap-3 rounded-none border-accent-foreground border-b bg-transparent px-5 xs:px-5 py-4 xs:py-4 text-sm leading-snug hover:bg-background-rich/20 hover:text-primary-text focus-visible:bg-background-rich/20 focus-visible:text-primary-text focus-visible:-outline-offset-4",
                                   group.id === "channels" &&
                                     itemIndex % 3 !== 0 &&
                                     "border-l",
@@ -551,11 +549,6 @@ export const Navbar = () => {
                                   <span className="marketing-mega-description mt-1.5 block text-foreground-dimmed text-xs leading-relaxed group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
                                     {item.description}
                                   </span>
-                                  {item.status && (
-                                    <MarketingStatus status={item.status}>
-                                      {statusLabel(item.status)}
-                                    </MarketingStatus>
-                                  )}
                                 </span>
                               </NavigationMenuLink>
                             );
@@ -673,37 +666,36 @@ export const Navbar = () => {
             </SheetTrigger>
             <SheetPopup
               closeLabel={chrome.menu.close}
-              data-surface-tone={tone}
-              style={toneStyle}
+              data-surface-tone="dark"
+              style={navigationTone(true)}
               className={cn(
                 fonts,
                 surfaceClassName,
                 "marketing-site marketing-grid-pattern marketing-mobile-sheet isolate z-70 h-dvh w-screen max-w-none gap-0 overflow-hidden border-0 bg-transparent font-body font-normal text-foreground [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] motion-reduce:animate-none motion-reduce:transition-none sm:max-w-none motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:transition-none",
               )}
               classList={{
-                backdrop: cn(
-                  "z-65 motion-reduce:animate-none motion-reduce:transition-none",
-                  dark ? "bg-emphasis-dimmed/40" : "bg-background/40",
-                ),
+                backdrop:
+                  "z-65 bg-emphasis-dimmed/80 backdrop-blur-md motion-reduce:animate-none motion-reduce:transition-none",
                 close: {
                   root: "marketing-sheet-close text-foreground-rich opacity-100",
                 },
               }}
             >
-              <NavigationBlur
-                dark={dark}
-                expanded
-                className="absolute inset-0 -z-1"
-              />
+              <NavigationBlur dark expanded className="absolute inset-0 -z-1" />
               <SheetHeader className="shrink-0 items-start px-6 pt-7 pb-6 text-left">
                 <SheetTitle>
-                  <NavigationWordmark dark={dark} />
+                  <NavigationWordmark dark />
                 </SheetTitle>
                 <SheetDescription className="sr-only">
                   {chrome.menu.title}
                 </SheetDescription>
               </SheetHeader>
-              <div className="marketing-mobile-menu-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-7">
+              <div
+                className={cn(
+                  "marketing-mobile-menu-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-12",
+                  scrollFadeClassName,
+                )}
+              >
                 <nav aria-label={chrome.menu.title}>
                   <Accordion
                     multiple
@@ -744,18 +736,17 @@ export const Navbar = () => {
                                       role="link"
                                       key={`${item.href}-${item.label}`}
                                       render={<Link href={item.href} />}
-                                      className="marketing-mobile-nav-cell group/nav-cell relative flex min-h-24 min-w-0 items-start gap-3 border-accent-foreground border-t bg-transparent px-4 py-4 text-sm leading-snug before:hidden hover:bg-(--nav-tint) hover:text-primary-text focus-visible:bg-(--nav-tint) focus-visible:text-primary-text focus-visible:-outline-offset-4 [&_.marketing-status]:mt-2 [&_.marketing-status]:text-xs"
+                                      className="marketing-mobile-nav-cell group/nav-cell relative flex min-h-24 min-w-0 items-start gap-3 border-accent-foreground border-t bg-transparent px-4 py-4 text-sm leading-snug before:hidden hover:bg-(--nav-tint) hover:text-primary-text focus-visible:bg-(--nav-tint) focus-visible:text-primary-text focus-visible:-outline-offset-4"
                                     >
                                       {provider && (
                                         <ProviderLogo
                                           provider={provider}
                                           className={cn(
                                             "marketing-nav-provider mt-0.5 size-6 shrink-0 object-contain",
-                                            dark &&
-                                              ["perplexity", "amazon"].includes(
-                                                provider,
-                                              ) &&
-                                              "brightness-0 invert",
+                                            provider === "chatgpt" && "invert",
+                                            ["perplexity", "amazon"].includes(
+                                              provider,
+                                            ) && "brightness-0 invert",
                                           )}
                                         />
                                       )}
@@ -766,11 +757,6 @@ export const Navbar = () => {
                                         <span className="mt-1.5 block text-foreground-dimmed text-xs leading-relaxed group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
                                           {item.description}
                                         </span>
-                                        {item.status && (
-                                          <MarketingStatus status={item.status}>
-                                            {statusLabel(item.status)}
-                                          </MarketingStatus>
-                                        )}
                                       </span>
                                     </SheetClose>
                                   );
@@ -814,7 +800,7 @@ export const Navbar = () => {
                   <div className="bg-transparent p-4 before:hidden">
                     <Button
                       variant="soft"
-                      color={dark ? "accent" : "emphasis"}
+                      color="accent"
                       className="w-full"
                       render={
                         <Link

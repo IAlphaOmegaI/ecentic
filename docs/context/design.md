@@ -299,6 +299,11 @@ vertical route and aligned branches rather than disconnected logo lists. A mobil
 must not create a second exterior rail. Its gradient covers both the text and illustration.
 Give the complete illustration enough height at compact widths; do not crop a product card to
 preserve a desktop aspect ratio.
+On phones, roadmap artwork uses a compact, contained frame with reduced vertical gutters;
+do not carry desktop-sized empty space above and below each object. Homepage channel and
+integration cards become compact rows: a small genuine logo beside the title, status aligned
+at the far side, and concise supporting content below when needed. Omit the channel arrow on
+mobile. Keep desktop card layouts and any real integration-interest actions intact.
 
 Side-by-side work areas stretch to their row's height. There should be no leftover gray strip
 under the shorter panel. Desktop sticky illustrations are bounded by their own section, clear
@@ -331,7 +336,7 @@ For light around an isolated illustration, use `IllustrationGlow`. The radial fi
 transparency before its clipping edge. Avoid a small hard rectangle of gradient behind an
 otherwise open drawing. Match Hairline occlusion plates to the local surface.
 
-The footer has **one continuous white-to-blue field** across its navigation, wordmark and legal
+The footer has **one continuous white-to-blue field** across its navigation, artwork and legal
 content. A gradient behind just the CTA or one footer cell does not fulfill that direction.
 The security data-flow review has its own whole-region gradient and actual provider marks.
 
@@ -575,7 +580,8 @@ progress. Field errors explain how to fix the input and stay associated with the
 ### Actions, icons and states
 
 **Use native shared primary/secondary/soft button variants with visible states on their actual
-surface (rule 11).** The main action uses the primary gradient. Align related CTAs and
+surface (rule 11).** The main action uses the primary gradient. Long translated button labels
+wrap within their available width while the action icon stays intact. Align related CTAs and
 price/feature/action baselines; follow the [public pricing recipe](../../.agents/skills/ecentic-public-pages/SKILL.md#pricing)
 for the three-plans-then-PAYG/Enterprise composition. Inputs use `rounded-lg`; product/blog
 thumbnails are modestly rounded squares while structural bands remain predominantly square.
@@ -622,6 +628,33 @@ Keep the original product film and genuine UI screenshots in their proof section
 replaced. Do not put a dashboard screenshot inside the blue hero as decorative filler. Show
 sample-store UI as sample-store UI, and do not suggest a merchant account was connected if it was
 not. A drawing enhances the narrative; it does not replace proof that needs to be inspected.
+The homepage film does not repeat its illustrative disclaimer below the closed preview; the
+full film retains its accessible transcript and contextual description.
+
+The homepage hero uses a native HTML/CSS illustration on the blue cutout: a storefront on one
+side, a physical catalog in the middle and an AI display on the other. Their white surfaces,
+rounded object corners and swept cables form a curved composition around the blue ecentic box.
+The storefront has an awning, display window and entrance; genuine provider marks retain their
+correct contrast on the light surfaces. Keep the original ecentic-specific headline and
+explanation. Below the `sm` breakpoint, stack the store, catalog and AI display vertically on
+the left, with the box as a connected hub on the right. Keep this mobile scene compact and all
+three subjects recognizable. On desktop the box sits below the raised catalog.
+The central sheet briefly crossfades to a valid JSON feed, then returns to product tiles when
+ecentic's light comes on. Both representations share the same dimensions. The objects float
+directly on the blue hero, with no enclosing background, border or rounded stage. Individual
+objects retain their rounded corners. Leave clear space around the box and direct the light
+and curved connections toward the catalog in each layout. When the connection reaches the AI display,
+reveal one matching catalog product as the selected result, keeping the AI marks as compact
+context. The first catalog tile and selected result share a generated product photograph of a
+blue ceramic espresso cup, replacing the abstract bottle silhouette. Keep the photo tightly
+framed and blend its backdrop into the light surface; the surrounding scene stays native HTML.
+Omit the redundant store/catalog/AI captions and the name beneath the ecentic box; retain a
+localized accessible description. This composition replaces the single-product form and
+its headphone/bottle experiments. Do not replace the whole scene with a raster illustration, Hairline figure or
+floating dashboard screenshot. Reserve every localized animation state's space so the headline
+and CTA stay still. Play once without a visible playback control, then hold the illuminated
+scene; show that complete composition immediately for reduced motion.
+The hero's demo action uses a white filled package Button beside the blue store-check button.
 
 Evidence components distinguish public studies, aggregate facts, live values and examples. Dense
 methodology can be disclosed in an accordion. Do not invent KPI definitions, remove material
@@ -686,7 +719,7 @@ They preserve factual content and apply the shared canon; dashboard and onboardi
 
 **Navigation keeps progressive blur and internal menu divisions without an opaque table-like
 outer frame (rule 12, C5).** Cutouts structure white, blue and dark section surfaces along the
-rails. The footer uses one continuous field across navigation, dimensional tonal wordmark and
+rails. The footer uses one continuous field across navigation, tonal commerce artwork and
 legal content; the treatment must not stop at one cell.
 
 Why (originally inferred; accepted via “write all”, 2026-11-12): The shell should feel continuous with the page, and cutout geometry should remain a recognizable part of ecentic beyond the navbar.
@@ -701,9 +734,13 @@ return and scrolling behavior. Under reduced motion remove scale and blur and re
 <!-- 2026-11-12 responsive review #5: “fade in from the center or blur in, not slide from the right? same for the desktpp one ideally”. -->
 
 Desktop mega menus have transparent bodies, useful internal rules and no outside table box.
-Subtle header/footer tint is allowed. Mobile navigation preserves the same transparent/internal
-rule direction rather than introducing a filled table. Keep centered geometry and sensible
-scroll limits without forcing the underlying document to jump.
+Subtle header/footer tint is allowed. The open mobile menu uses the approved black blurred
+backdrop across the entire viewport, including below short or expanded content. Internal menu
+surfaces remain transparent rather than becoming a filled table. Keep centered geometry and
+sensible scroll limits without forcing the underlying document to jump.
+The expanded mobile menu fades its scrollable text into the same lower edge as the backdrop,
+with sufficient scroll clearance to bring its last link fully into view. Redundant availability
+chips are omitted from menu links; the destination pages retain their actual statuses.
 
 The locale selector is a recognizable flag control with clear affordance, transparent chrome
 and space from Install. Keep assets under `public`, not bespoke flag React components. Mobile
@@ -711,9 +748,11 @@ menu logo remains left-aligned, with the language choice in the intended menu la
 shared variants for the bottom actions.
 
 The global closing CTA uses tonal artwork, one clear conversion hierarchy and the same geometry
-on all public pages. Footer navigation, drawn tonal wordmark and legal content share the continuous
-gradient described earlier. Keep real link groups accessible and consistently aligned; don't
-turn the wordmark into a replacement for navigation.
+on all public pages. Footer navigation, a compact tonal product-selection graphic and legal content
+share the continuous gradient described earlier. The small trademark supplies identity; do not
+repeat it as a second oversized animated wordmark. Place social links alongside a compact locale
+selector in one utility row. Inside expanded mobile footer groups, subtle inset link dividers are
+distinct from the full-width accordion boundaries. Keep real link groups accessible and aligned.
 
 ## 15. Dashboard and onboarding recipes
 
@@ -1149,7 +1188,7 @@ states which patterns to repeat.
 | A mixed-character winding path exception | Keep the recognizable route; use tonal dots; actual code/protocol text stays literal |
 | One Hairline figure per page, only on light | Meaningful figures across sections; match each actual light/dark surface |
 | Generic drawers/baskets/hubs for every concept | Match the physical object to the flow, provider or sector |
-| Outline-only footer wordmark | Dimensional tonal-dot wordmark with a finite drawing reveal |
+| Repeated oversized footer wordmark | Small trademark plus tonal product-selection artwork with a finite reveal |
 | White-only or black-only use of cutouts | Cutouts work on white, blue and dark surfaces |
 | Gradient behind one footer subsection | One continuous footer field |
 | Repeated small padded blue/black boxes | Coherent section or workbench with meaningful internal structure |

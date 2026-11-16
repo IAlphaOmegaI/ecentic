@@ -1,0 +1,26 @@
+{
+  "name": "wine-bottle",
+  "subject": "Wine and spirits",
+  "meaning": "An upright wine bottle with a seated cork, rounded glass shoulder and curved paper label.",
+  "answer": [
+    0,
+    0,
+    145
+  ],
+  "edge": [
+    0,
+    0,
+    147
+  ],
+  "scale": 1.8,
+  "figure": "/hairline/custom/wine-bottle.js",
+  "rest": "apps/web/src/components/hairline/rest/wine-bottle.json",
+  "sourceSha256": "135a49f77baeece656e7dbbe5f4499f3a4e31a64bf1da46ec8f63fce5251f59d",
+  "restSha256": "4603e437bb7fea15d26a8987d8aa49ed8d0950f583da87e608d7f4e8fe8738cf",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit areas; bounded 700ms EASE_LIFT cork lift, subtle glass lift and label peel, with 40ms distance stagger; sleep after settlement.",
+  "reducedMotion": "Complete SSR rest geometry; shared CustomHairlineFigure disables enhancement and pointer response.",
+  "validation": "output/wine-bottle-2026-11-15/validation.txt",
+  "frame": "Natural narrow bottle silhouette fills 104 by 267 of the 400 by 320 frame; complete height remains contained at both interaction limits.",
+  "review": "Replaces the exaggerated diagonal pose and disconnected cork from review round-11-15-0939 comment13."
+}

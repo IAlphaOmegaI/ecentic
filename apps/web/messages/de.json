@@ -10097,15 +10097,15 @@
     "hero": {
       "eyebrow": "Die KI-Commerce-Ebene",
       "title": "Eine Ebene zwischen Ihrem Katalog und der KI, die ihn verkauft.",
-      "description": "Ob Menschen über Google suchen, bei Amazon einkaufen oder einen Chatbot fragen: KI antwortet heute mit einem Produkt, und jeder Assistent hat eigene Regeln dafür, wie Produkte ausgewählt und gekauft werden. ecentic ist die Ebene zwischen Ihrem Katalog und diesen Assistenten. Die Plattform optimiert die Daten, die sie auslesen, macht Ihren Checkout bereit für KI-Käufe und bleibt auf dem neuesten Stand, wenn sich ihre Regeln ändern.",
+      "description": "Jeder KI-Kanal hat eigene Regeln für die Produktauswahl und den Kauf. ecentic verbessert die ausgelesenen Produktdaten, bereitet den Checkout auf unterstützten Kanälen vor und hilft Ihnen, Ihren Katalog an Regeländerungen anzupassen.",
       "actions": [
-        {
-          "label": "Demo buchen",
-          "href": "/demo"
-        },
         {
           "label": "Meinen Shop kostenlos prüfen",
           "href": "/sign-up"
+        },
+        {
+          "label": "Demo buchen",
+          "href": "/demo"
         }
       ],
       "facts": [
@@ -10114,6 +10114,9 @@
       "screenshot": {
         "alt": "ecentic-Übersicht zur Gewinnquote mit eindeutig gekennzeichneten Beispieldaten.",
         "caption": "Produkt-Screenshot · Beispieldaten"
+      },
+      "artwork": {
+        "label": "ecentic bereitet Ihren Shopkatalog für Produktvergleiche durch KI vor."
       }
     },
     "programs": {
@@ -10155,9 +10158,9 @@
           "title": "Werden Sie zum Produkt, das die Antwort nennt.",
           "description": "DTC- und Consumer-Brands",
           "pains": [
+            "Sie wissen nicht, warum die KI Ihre Konkurrenz bevorzugt.",
             "Die KI empfiehlt einen Wettbewerber aus Ihrer eigenen Kategorie.",
-            "Händler beschreiben Ihre Produkte besser als Sie selbst.",
-            "Sie sehen nicht, welche Produkte Assistenten überspringen."
+            "Shops, die Ihre Produkte verkaufen, beschreiben sie klarer als Ihre eigene Website."
           ],
           "href": "/solutions/brands",
           "label": "Marken entdecken"

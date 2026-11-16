@@ -105,8 +105,10 @@ export const MarketingActions = ({
           color={(index === 0) === (tone === "default") ? "primary" : "neutral"}
           render={<IntentLink href={action.href} />}
         >
-          {action.label}
-          <ArrowRightIcon className="size-4" />
+          <span className="min-w-0 whitespace-normal text-left">
+            {action.label}
+          </span>
+          <ArrowRightIcon aria-hidden className="size-4 shrink-0" />
         </Button>
       ))}
     </div>
@@ -142,7 +144,7 @@ export const MarketingStatus = ({
   status,
 }: MarketingStatus.Props) => (
   <span
-    className="marketing-status inline-flex items-center gap-2 font-medium text-xs text-foreground [&>span]:size-2 [&>span]:shrink-0 [&>span]:rounded-full [&>span]:bg-primary-text data-[status=not-yet]:[&>span]:border data-[status=soon]:[&>span]:border data-[status=not-yet]:[&>span]:border-current data-[status=soon]:[&>span]:border-current data-[status=feed]:[&>span]:bg-foreground-dimmed data-[status=not-yet]:[&>span]:bg-transparent data-[status=soon]:[&>span]:bg-transparent"
+    className="marketing-status inline-flex items-center gap-2 font-medium text-foreground text-xs [&>span]:size-2 [&>span]:shrink-0 [&>span]:rounded-full [&>span]:bg-primary-text data-[status=not-yet]:[&>span]:border data-[status=soon]:[&>span]:border data-[status=not-yet]:[&>span]:border-current data-[status=soon]:[&>span]:border-current data-[status=feed]:[&>span]:bg-foreground-dimmed data-[status=not-yet]:[&>span]:bg-transparent data-[status=soon]:[&>span]:bg-transparent"
     data-status={status}
   >
     <span aria-hidden="true" />
@@ -201,7 +203,7 @@ export const MarketingHero = ({
     >
       {identity && <div className="mb-8 max-sm:mb-6">{identity}</div>}
       {eyebrow && <MarketingEyebrow>{eyebrow}</MarketingEyebrow>}
-      <h1 className="max-w-230 text-5xl xl:text-7xl leading-none tracking-tighter max-sm:text-5xl max-sm:tracking-tight">
+      <h1 className="max-w-230 text-5xl leading-none tracking-tighter max-sm:text-5xl max-sm:tracking-tight xl:text-7xl">
         {title}
       </h1>
       {meta && (
@@ -300,7 +302,7 @@ export const MarketingClosing = ({
       className="pointer-events-none absolute inset-y-0 left-1/2 w-[calc(100dvw-24px)] -translate-x-1/2 bg-radial-[at_bottom_left] from-primary/30 via-primary-dimmed/10 to-transparent max-sm:w-[calc(100dvw-16px)]"
     />
     <div className="relative grid min-w-0 items-center md:grid-cols-[7fr_5fr]">
-      <div className="marketing-cell relative flex min-h-105 flex-col justify-center px-7 py-16 max-sm:min-h-0 max-sm:px-4 max-sm:pt-12 max-sm:pb-4">
+      <div className="marketing-cell relative flex min-h-105 min-w-0 flex-col justify-center px-7 py-16 max-sm:min-h-0 max-sm:px-4 max-sm:pt-12 max-sm:pb-4">
         <h2 className="relative max-w-[18ch] text-background-rich">{title}</h2>
         <p className="relative mt-4 max-w-[45ch] text-background-rich/85 text-lg leading-relaxed">
           {description}
@@ -325,7 +327,7 @@ export const MarketingScreenshot = ({
   width = 1280,
   height = 679,
 }: MarketingScreenshot.Props) => (
-  <figure className="marketing-screenshot mt-8 [&_figcaption]:mt-3 [&_figcaption]:text-xs [&_figcaption]:text-foreground-dimmed [&_img]:h-auto [&_img]:w-full [&_img]:rounded-lg [&_img]:border [&_img]:border-accent-foreground [&_img]:object-contain">
+  <figure className="marketing-screenshot mt-8 [&_figcaption]:mt-3 [&_figcaption]:text-foreground-dimmed [&_figcaption]:text-xs [&_img]:h-auto [&_img]:w-full [&_img]:rounded-lg [&_img]:border [&_img]:border-accent-foreground [&_img]:object-contain">
     <Image
       src={src}
       alt={alt}

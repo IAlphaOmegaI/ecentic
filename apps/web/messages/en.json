@@ -10097,15 +10097,15 @@
     "hero": {
       "eyebrow": "The AI commerce layer",
       "title": "One layer between your catalog and the AI that sells it.",
-      "description": "Whether people search Google, shop on Amazon or ask a chatbot, AI now answers with a product, and every assistant has its own rules for choosing it and buying it. ecentic is one layer between your catalog and those assistants. It fixes the data they read, gets your checkout ready for them to buy, and keeps up when their rules change.",
+      "description": "Every AI channel has its own rules for choosing and buying products. ecentic improves the data they read, gets checkout ready on supported channels and helps your catalog keep up as their rules change.",
       "actions": [
-        {
-          "label": "Book a demo",
-          "href": "/demo"
-        },
         {
           "label": "Check my store free",
           "href": "/sign-up"
+        },
+        {
+          "label": "Book a demo",
+          "href": "/demo"
         }
       ],
       "facts": [
@@ -10114,6 +10114,9 @@
       "screenshot": {
         "alt": "ecentic win-rate overview showing explicitly labeled sample data.",
         "caption": "Product screenshot · sample data"
+      },
+      "artwork": {
+        "label": "ecentic prepares your store’s catalog for AI product comparisons."
       }
     },
     "programs": {
@@ -10155,9 +10158,9 @@
           "title": "Be the product the answer names.",
           "description": "DTC and consumer brands",
           "pains": [
+            "You can’t see why AI chooses competitors.",
             "AI recommends a competitor in your own category.",
-            "Retailers describe your products better than you do.",
-            "You cannot see which products assistants skip."
+            "Stores selling your products describe them more clearly than your own site."
           ],
           "href": "/solutions/brands",
           "label": "Explore brands"

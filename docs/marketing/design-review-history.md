@@ -326,3 +326,63 @@ The implementation record and bounded verification are in
 `output/mobile-review-2026-11-12/`; private visual inspection stays in the delegated evidence
 folders. This follow-up does not mark the unrelated launch-content or prior design audit
 backlogs complete.
+
+## Mobile homepage follow-up — 15 November 2026
+
+Source: `later-rounds/round-11-15-0939-14-comments/comments.md` in the saved review archive,
+14 numbered comments; SHA256 `56bc3a8fda965cb15ab3f5096b466c38b8b7c8ad0da640c3829d8a8f401e90e7`.
+Screenshot inspection was split between subagents, with no images returned to the main chat.
+
+- Compact the five mobile roadmap figures and use logo/title/status rows for mobile channel
+  and integration lists. Preserve desktop cards and meaningful integration actions.
+- Lead Brands problems with not knowing why AI chooses competitors; explain stores selling
+  the same products instead of the ambiguous retailer wording. Remove the closed film's
+  redundant note, while retaining its transcript. Make the lower pricing link one full row.
+- Keep one footer trademark; replace its oversized duplicate with tonal product-selection
+  artwork. Combine compact locale and social controls, and distinguish inner link dividers
+  from accordion boundaries. Omit redundant availability chips inside navigation.
+- Replace the distorted wine bottle with a contained upright bottle and meaningful cork/label
+  interaction, including matching server-rendered rest geometry.
+- The user's immediate correction restores the specific original homepage headline and fuller
+  product explanation on the blue cutout gradient. The improvised animation of overlapping
+  ASCII objects, the Hairline scene and the generated 3D folio were rejected. The user's final
+  clarification is that their requested graphics are built in HTML with animation: native
+  product documents and interface elements that explain the work. The next correction keeps
+  that direction and requests black cards with a stronger visual composition. The open mobile
+  menu keeps its black blur across the full viewport; the text still fades at its scroll edge.
+- The subsequent three hero comments ask for more provider marks on both attached sheets,
+  a coherent three-quarter product angle and removal of the visible Replay control. The
+  short animation still runs once and settles, with a complete reduced-motion composition.
+- The user then rejected the headphone subject. A simpler blue bottle was prepared, before
+  the next comment superseded the single-product card entirely: show a store on one side,
+  the catalog in the middle and AI on the other, connected through a stage-light treatment
+  that shows ecentic's role. The new native scene uses the ecentic box below as a blue projector,
+  charcoal store/AI surfaces, a printed catalog and a finite connection/illumination reveal.
+  All seven locales use the same three labels and accessible description; old product fields
+  and the interim product helper are removed.
+- The next three comments refine this scene: make the left object more clearly a shop, swap
+  the central product tiles with a JSON feed, and round the complete illustration while
+  removing its three actor captions. The shop now has an awning, logo window and entrance.
+  The feed crossfades back to the visual catalog as ecentic illuminates it; no additional
+  controls or continuous loop are introduced. The rounded stage reuses the existing overlay
+  radius as an explicit local exception. All seven locales retain the accessible description;
+  the three obsolete caption keys are removed.
+- The following two comments remove the stage's outer border and turn the final AI display
+  into a selected-product result. It reveals the same product silhouette as the central catalog,
+  retaining compact AI marks for context and the existing finite sequence.
+- The immediate follow-up removes the remaining stage wash too: the objects float directly
+  on the blue hero. It also separates the ecentic box from the catalog with visible breathing
+  room and a short cable. This supersedes the outer rounded-stage treatment and its theme
+  exception; the individual illustrated objects keep their rounded corners.
+- The next correction changes all three illustrated objects to white surfaces and asks for a
+  more circular composition around the blue box, removing the name below it. Curved connections
+  replace the straight rail. The demo action becomes a white filled package Button. The mobile
+  follow-up places the store, catalog and AI display in a vertical stack on the left, with the
+  ecentic box on the right. Desktop keeps the raised catalog and lower hub.
+- The next comment requests a more specific product that can be photographed. The abstract
+  blue bottle is replaced with a generated blue ceramic espresso cup photograph, shared by
+  the first catalog tile and selected AI result. The scene itself stays native HTML and the
+  photograph introduces no merchant, brand or performance claims.
+
+Current rules are incorporated into the canon and public-page/art skills rather than treated
+as additional competing alternatives.

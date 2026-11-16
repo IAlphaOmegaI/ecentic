@@ -26,10 +26,43 @@ The public design audit includes every route family and both locales.
 
 ## Homepage `/`
 
-A legible large tonal commerce subject supports the hero's category statement and conversion.
+A custom HTML/CSS motion graphic leads a centered hero on the same blue gradient as the cutouts.
+The user's clarification that graphics means HTML with animation supersedes the generated
+3D image and Hairline experiments. Use the site's native product-document vocabulary, typography,
+rules and restrained depth to explain the catalog, comparison and listing work. The current
+scene has a store on one side, a physical catalog in the middle and an AI display on the other.
+The blue ecentic box acts as a hub: light illuminates the catalog as curved connections appear.
+The white illustrated objects form a curved composition around it. Below `sm`, stack the store,
+catalog and AI display vertically on the left, with the box on the right; desktop places the
+box below the raised catalog. This replaces the single-product listing and its headphone/bottle
+experiments. Keep all three subjects recognizable, with genuine provider marks suited to their
+light surfaces. Make the storefront recognizable with an awning, display window and entrance.
+Let the objects float directly on the blue hero without an enclosing background, border or
+rounded stage; individual objects keep their rounded corners. Leave clear space around the box.
+The central sheet briefly reveals a valid JSON feed,
+then returns to product tiles as the light comes on; both views occupy exactly the same space.
+Motion enhances a complete static composition. The short
+sequence plays once and settles without a visible Replay control. Reduced motion shows the
+complete illuminated catalog scene with a matching product selected on the AI display. Retain
+the AI marks as compact context around that result. Use the same generated blue ceramic espresso
+cup photograph in the first catalog tile and selected result, tightly framed against the light
+surface. This product asset does not replace the surrounding HTML composition.
+Omit the three redundant actor captions and
+the name beneath the box; translate the
+accessible figure description. JSON schema keys and sample identifiers remain code.
+Keep the specific title, "One layer between your catalog and the AI that sells it," and enough
+copy to explain product data, supported checkout and changing channel rules. A generic slogan
+does not replace that meaning. Keep the blue store-check action and a white filled demo Button;
+omit a redundant integration-fact row. This 15 November review supersedes the earlier split hero
+and its briefly tested generic headline. Lead the Brands pain list with the inability
+to see why AI chooses competitors; name stores selling the same products instead of ambiguous
+"retailers". The homepage pricing section ends in a full-width "See pricing" navigation row.
 The five-stage Connect → Simulate → Fix → Sell → Track story is a connected roadmap, with normal
 font numerals on one continuous dark section and an object that matches each stage. Use tools for fixing, money for the relevant
 selling/value story and a meaningful connection/network where the narrative asks for one.
+Mobile roadmap frames and gutters are compact. Channel and integration tiles become compact
+logo/title/status rows on phones while retaining their desktop card layout; status stays at
+the far side and the mobile channel arrow is omitted.
 
 Audience sections combine their own copy with tonal artwork. The integrations arc can have
 ASCII atmosphere while genuine provider marks stay clear. Capability cards use complete

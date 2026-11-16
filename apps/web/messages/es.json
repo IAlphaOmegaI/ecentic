@@ -10097,15 +10097,15 @@
     "hero": {
       "eyebrow": "La capa de comercio con IA",
       "title": "Una capa entre tu catálogo y la IA que vende tus productos.",
-      "description": "Ya busquen en Google, compren en Amazon o pregunten a un chatbot, la IA responde con un producto, y cada asistente tiene sus propias reglas para elegirlo y comprarlo. ecentic es una capa entre tu catálogo y esos asistentes. Corrige los datos que leen, prepara tu proceso de pago para que puedan comprar y se adapta cuando cambian sus reglas.",
+      "description": "Cada canal de IA tiene sus propias reglas para elegir y comprar productos. ecentic mejora la información que leen, prepara el proceso de pago en los canales compatibles y ayuda a adaptar tu catálogo cuando cambian sus reglas.",
       "actions": [
-        {
-          "label": "Reserva una demo",
-          "href": "/demo"
-        },
         {
           "label": "Analiza mi tienda gratis",
           "href": "/sign-up"
+        },
+        {
+          "label": "Reserva una demo",
+          "href": "/demo"
         }
       ],
       "facts": [
@@ -10114,6 +10114,9 @@
       "screenshot": {
         "alt": "Vista general de la tasa de éxito en ecentic con datos de ejemplo identificados.",
         "caption": "Captura del producto · datos de ejemplo"
+      },
+      "artwork": {
+        "label": "ecentic prepara el catálogo de tu tienda para que la IA compare tus productos."
       }
     },
     "programs": {
@@ -10155,9 +10158,9 @@
           "title": "Haz que la respuesta nombre tu producto.",
           "description": "Marcas DTC y de consumo",
           "pains": [
+            "No sabes por qué la IA elige a la competencia.",
             "La IA recomienda a un competidor en tu propia categoría.",
-            "Los distribuidores describen tus productos mejor que tú.",
-            "No sabes qué productos pasan por alto los asistentes."
+            "Las tiendas que venden tus productos los describen con más claridad que tu propia web."
           ],
           "href": "/solutions/brands",
           "label": "Para marcas"
