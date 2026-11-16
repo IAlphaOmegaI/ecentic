@@ -26,7 +26,20 @@
         "caption": "Product screenshot · sample data"
       },
       "artwork": {
-        "label": "ecentic prepares your store’s catalog for AI product comparisons."
+        "label": "Illustrative shopping journey: a shopper asks for blue sneakers, écentic prepares the product feed, AI discovers a pair, and the shopper checks out on the merchant’s store.",
+        "question": "Find me a pair of blue sneakers.",
+        "product": "Blue sneakers",
+        "feed": "Product feed",
+        "checkout": "Checkout on your store",
+        "confirmed": "Order confirmed",
+        "stages": [
+          "A shopper asks",
+          "écentic prepares the feed",
+          "AI discovers the product",
+          "The shopper chooses",
+          "Checkout on your store",
+          "Your store makes the sale"
+        ]
       }
     },
     "programs": {

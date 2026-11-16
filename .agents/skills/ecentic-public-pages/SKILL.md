@@ -29,27 +29,27 @@ The public design audit includes every route family and both locales.
 A custom HTML/CSS motion graphic leads a centered hero on the same blue gradient as the cutouts.
 The user's clarification that graphics means HTML with animation supersedes the generated
 3D image and Hairline experiments. Use the site's native product-document vocabulary, typography,
-rules and restrained depth to explain the catalog, comparison and listing work. The current
-scene has a store on one side, a physical catalog in the middle and an AI display on the other.
-The blue ecentic box acts as a hub: light illuminates the catalog as curved connections appear.
-The white illustrated objects form a curved composition around it. Below `sm`, stack the store,
-catalog and AI display vertically on the left, with the box on the right; desktop places the
-box below the raised catalog. This replaces the single-product listing and its headphone/bottle
-experiments. Keep all three subjects recognizable, with genuine provider marks suited to their
-light surfaces. Make the storefront recognizable with an awning, display window and entrance.
-Let the objects float directly on the blue hero without an enclosing background, border or
-rounded stage; individual objects keep their rounded corners. Leave clear space around the box.
-The central sheet briefly reveals a valid JSON feed,
-then returns to product tiles as the light comes on; both views occupy exactly the same space.
-Motion enhances a complete static composition. The short
-sequence plays once and settles without a visible Replay control. Reduced motion shows the
-complete illuminated catalog scene with a matching product selected on the AI display. Retain
-the AI marks as compact context around that result. Use the same generated blue ceramic espresso
-cup photograph in the first catalog tile and selected result, tightly framed against the light
-surface. This product asset does not replace the surrounding HTML composition.
-Omit the three redundant actor captions and
-the name beneath the box; translate the
-accessible figure description. JSON schema keys and sample identifiers remain code.
+rules and restrained depth to explain a complete shopping journey. The 16 November revision
+extends the approved white-object scene into six carousel steps: shopper question, écentic’s
+product feed, AI discovery, product selection, merchant-store checkout, and the store’s sale.
+Keep the feed as a distinct JSON object rather than swapping it into the discovery screen.
+Use one generated blue sneaker photograph and consistent example SKU/price/currency across
+all product scenes. Format the price for the current locale. This supersedes the cup subject,
+three-object mobile stack and finite reveal; the surrounding scene stays native HTML.
+
+White theme-rounded objects float on the blue hero without an enclosing panel or border. Keep
+the recognizable storefront and genuine provider marks. The écentic box remains a visible hub,
+with curved animated connections emphasizing the feed, discovery and checkout. Each stage has
+its own small action, and the neighboring objects move as a coherent journey. Show readable
+current content on mobile without changing the hero’s height as longer translations appear.
+The user explicitly requested automatic repeating motion with no arrows, stage dots or play/pause
+controls. The 16 November follow-up supersedes the earlier manual controls and hover/focus
+pausing. Stop autoplay when hidden or offscreen. Reduced motion retains a meaningful static
+scene and the localized description of the complete journey, without advancement or movement.
+Translate the accessible journey and stage names. Preserve sample identifiers and JSON schema
+keys as code. Do not claim
+a live purchase or show merchant checkout as if it were supported inside every AI provider.
+Omit the redundant name beneath the écentic box.
 Keep the specific title, "One layer between your catalog and the AI that sells it," and enough
 copy to explain product data, supported checkout and changing channel rules. A generic slogan
 does not replace that meaning. Keep the blue store-check action and a white filled demo Button;

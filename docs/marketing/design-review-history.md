@@ -386,3 +386,21 @@ Screenshot inspection was split between subagents, with no images returned to th
 
 Current rules are incorporated into the canon and public-page/art skills rather than treated
 as additional competing alternatives.
+
+### 16 November: shopping journey and returning visitors
+
+- Signed-in homepage visitors get a localized dashboard action in the navbar, hero and closing
+  section. Contact and pilot actions retain their original purpose; anonymous visitors keep
+  the demo action. The compact mobile header uses a short localized dashboard label.
+- The approved native white-object hero becomes a six-step carousel: shopper question, feed,
+  discovery, selection, merchant-store purchase and sale returning to the store. The feed is
+  a distinct continuous concept rather than the same view as discovery. A blue sneaker photo
+  replaces the cup. The écentic hub and animated cables show where it helps with the feed,
+  discovery and purchase. This request explicitly supersedes the earlier finite animation and
+  the three-object mobile arrangement.
+- A follow-up removes the hero’s arrows, stage dots and play/pause controls and requests automatic
+  playback. This supersedes the initial carousel’s manual controls and hover/focus pausing.
+  The sequence still pauses offscreen or in a hidden tab; reduced motion shows a meaningful
+  static scene with the localized description of the complete journey.
+- The Brand header keeps a function-specific interactive Hairline figure, regenerated with a
+  clearer megaphone silhouette and bounded aiming instead of a stretched horn.

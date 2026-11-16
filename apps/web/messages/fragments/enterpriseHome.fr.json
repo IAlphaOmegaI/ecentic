@@ -26,7 +26,20 @@
         "caption": "Capture produit · données d’exemple"
       },
       "artwork": {
-        "label": "ecentic prépare le catalogue de votre boutique pour que l’IA puisse comparer les produits."
+        "label": "Exemple de parcours d’achat : une personne cherche des baskets bleues, écentic prépare le flux de produits, l’IA trouve une paire et la personne finalise son achat dans la boutique.",
+        "question": "Trouve-moi une paire de baskets bleues.",
+        "product": "Baskets bleues",
+        "feed": "Flux de produits",
+        "checkout": "Achat dans votre boutique",
+        "confirmed": "Commande confirmée",
+        "stages": [
+          "Une personne pose sa question",
+          "écentic prépare le flux",
+          "L’IA trouve le produit",
+          "La personne fait son choix",
+          "Achat dans votre boutique",
+          "Votre boutique réalise la vente"
+        ]
       }
     },
     "programs": {

@@ -9443,7 +9443,17 @@
       "aiInstructions": "AI 指令",
       "tools": "免费工具"
     },
-    "loading": "页面加载中"
+    "loading": "页面加载中",
+    "authenticated": {
+      "action": {
+        "primary": "前往控制台"
+      },
+      "compact": {
+        "action": {
+          "primary": "控制台"
+        }
+      }
+    }
   },
   "enterpriseNav": {
     "pricing": "定价",
@@ -10116,7 +10126,20 @@
         "caption": "产品截图 · 示例数据"
       },
       "artwork": {
-        "label": "ecentic 整理店铺的商品目录，供 AI 比较商品。"
+        "label": "购物流程示例：顾客想找一双蓝色运动鞋，écentic 整理商品数据源，AI 找到合适的商品，顾客在商家店铺完成购买。",
+        "question": "帮我找一双蓝色运动鞋。",
+        "product": "蓝色运动鞋",
+        "feed": "商品数据源",
+        "checkout": "在你的店铺完成购买",
+        "confirmed": "订单已确认",
+        "stages": [
+          "顾客提问",
+          "écentic 整理数据源",
+          "AI 发现商品",
+          "顾客选定商品",
+          "在你的店铺完成购买",
+          "你的店铺获得销售收入"
+        ]
       }
     },
     "programs": {

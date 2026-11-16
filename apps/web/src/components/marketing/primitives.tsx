@@ -1,13 +1,12 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
-import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import type { HTMLAttributes, ReactNode } from "react";
 import { Plus } from "@/components/plus";
+import { MarketingActionButton } from "./action-button";
 import type { CommerceFigure } from "./commerce-figure";
 import { EvolvingAscii } from "./evolving-ascii";
 import { HeroFigure } from "./hero-figure";
-import { IntentLink } from "./intent-link";
 
 export const MarketingBand = ({
   children,
@@ -99,17 +98,17 @@ export const MarketingActions = ({
       )}
     >
       {actions.map((action, index) => (
-        <Button
+        <MarketingActionButton
           key={action.href}
           variant="default"
           color={(index === 0) === (tone === "default") ? "primary" : "neutral"}
-          render={<IntentLink href={action.href} />}
+          href={action.href}
+          label={action.label}
+          labelClassName="min-w-0 whitespace-normal text-left"
+          dashboardForMembers={action.dashboardForMembers}
         >
-          <span className="min-w-0 whitespace-normal text-left">
-            {action.label}
-          </span>
           <ArrowRightIcon aria-hidden className="size-4 shrink-0" />
-        </Button>
+        </MarketingActionButton>
       ))}
     </div>
   );
@@ -350,7 +349,11 @@ export namespace MarketingEyebrow {
 
 export namespace MarketingActions {
   export type Props = {
-    actions: readonly { label: string; href: string }[];
+    actions: readonly {
+      label: string;
+      href: string;
+      dashboardForMembers?: boolean;
+    }[];
     tone?: "default" | "inverse";
     className?: string;
   };
@@ -377,7 +380,7 @@ export namespace MarketingClosing {
   export type Props = {
     title: string;
     description: string;
-    actions: readonly { label: string; href: string }[];
+    actions: MarketingActions.Props["actions"];
   };
 }
 

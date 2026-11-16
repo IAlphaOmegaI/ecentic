@@ -9443,7 +9443,17 @@
       "aiInstructions": "KI-Anweisungen",
       "tools": "Kostenlose Tools"
     },
-    "loading": "Seite wird geladen"
+    "loading": "Seite wird geladen",
+    "authenticated": {
+      "action": {
+        "primary": "Zum Dashboard"
+      },
+      "compact": {
+        "action": {
+          "primary": "Dashboard"
+        }
+      }
+    }
   },
   "enterpriseNav": {
     "pricing": "Preise",
@@ -10116,7 +10126,20 @@
         "caption": "Produkt-Screenshot · Beispieldaten"
       },
       "artwork": {
-        "label": "ecentic bereitet Ihren Shopkatalog für Produktvergleiche durch KI vor."
+        "label": "Beispiel eines Einkaufs: Jemand sucht blaue Sneaker, écentic bereitet den Produktfeed vor, die KI findet ein Paar und der Kauf wird im Shop abgeschlossen.",
+        "question": "Finde ein Paar blaue Sneaker für mich.",
+        "product": "Blaue Sneaker",
+        "feed": "Produktfeed",
+        "checkout": "Kauf in Ihrem Shop",
+        "confirmed": "Bestellung bestätigt",
+        "stages": [
+          "Jemand stellt eine Frage",
+          "écentic bereitet den Feed vor",
+          "Die KI findet das Produkt",
+          "Die Person trifft ihre Wahl",
+          "Kauf in Ihrem Shop",
+          "Umsatz für Ihren Shop"
+        ]
       }
     },
     "programs": {

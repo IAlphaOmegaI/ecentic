@@ -1,32 +1,40 @@
 {
   "name": "brand-megaphone",
-  "subject": "brand",
-  "meaning": "A handheld megaphone: extend the bell to give the brand a clear voice.",
-  "part": "bell",
-  "answer": [
-    98,
-    34,
-    69
-  ],
-  "bounds": [
-    [
-      -1,
-      -1,
-      0
-    ],
-    [
-      132,
-      75,
-      105
-    ]
-  ],
-  "scale": 2.25,
+  "subject": "Brand diagnostics",
+  "meaning": "A handheld speaking horn with a flared bell, attached grip and rear housing; the pointer gently aims it.",
   "figure": "/hairline/custom/brand-megaphone.js",
   "rest": "apps/web/src/components/hairline/rest/brand-megaphone.json",
-  "sourceSha256": "8d450ea3fcf31798c06afc68ec3494665ef6f8599abbd74fc732c023659f3f01",
-  "restSha256": "1751fac49cb57b599752f2015b68e0ce73cb7af120bd7f46aa2fe5003d210ed7",
+  "sourceSha256": "063fb146350bc6d5676b838291ab7fc97526213530db91e150e6847d7f2e0cca",
+  "restSha256": "ac7a73ddc9092bca3ff5e272fc5e30b363625871a8c1a8433ea6a2a03c875d97",
   "engine": "Unmodified fixed Hairline kernel",
-  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
-  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
-  "validation": "output/dashboard-hairline-2026-11-14/brand-megaphone.validation.txt"
+  "camera": {
+    "azimuth": 45,
+    "elevation": 0.5,
+    "scale": 2.25
+  },
+  "answer": [
+    105,
+    34,
+    89
+  ],
+  "edge": [
+    118,
+    34,
+    115
+  ],
+  "range": [
+    3,
+    6,
+    10
+  ],
+  "interaction": "Rest-space circular hit area; bounded whole-object pitch uses the shared default spring; the shared loop sleeps after settlement and offscreen.",
+  "reducedMotion": "Complete SSR rest geometry; CustomHairlineFigure disables enhancement and pointer response under reduced motion.",
+  "consumers": [
+    "Brand header via DashboardHeaderFigure subject brand",
+    "Brand unavailable state",
+    "Brand running banner"
+  ],
+  "frame": "Rest fills263 by194 of400 by320; all tested pointer/intensity poses stay within the frame.",
+  "validation": "output/brand-megaphone-2026-11-16/validation.txt",
+  "review": "16November Brand header refresh. Replaces the extending concentric bell with a larger, quieter physical silhouette."
 }

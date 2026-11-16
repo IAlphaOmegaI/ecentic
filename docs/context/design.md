@@ -631,30 +631,37 @@ not. A drawing enhances the narrative; it does not replace proof that needs to b
 The homepage film does not repeat its illustrative disclaimer below the closed preview; the
 full film retains its accessible transcript and contextual description.
 
-The homepage hero uses a native HTML/CSS illustration on the blue cutout: a storefront on one
-side, a physical catalog in the middle and an AI display on the other. Their white surfaces,
-rounded object corners and swept cables form a curved composition around the blue ecentic box.
-The storefront has an awning, display window and entrance; genuine provider marks retain their
-correct contrast on the light surfaces. Keep the original ecentic-specific headline and
-explanation. Below the `sm` breakpoint, stack the store, catalog and AI display vertically on
-the left, with the box as a connected hub on the right. Keep this mobile scene compact and all
-three subjects recognizable. On desktop the box sits below the raised catalog.
-The central sheet briefly crossfades to a valid JSON feed, then returns to product tiles when
-ecentic's light comes on. Both representations share the same dimensions. The objects float
-directly on the blue hero, with no enclosing background, border or rounded stage. Individual
-objects retain their rounded corners. Leave clear space around the box and direct the light
-and curved connections toward the catalog in each layout. When the connection reaches the AI display,
-reveal one matching catalog product as the selected result, keeping the AI marks as compact
-context. The first catalog tile and selected result share a generated product photograph of a
-blue ceramic espresso cup, replacing the abstract bottle silhouette. Keep the photo tightly
-framed and blend its backdrop into the light surface; the surrounding scene stays native HTML.
-Omit the redundant store/catalog/AI captions and the name beneath the ecentic box; retain a
-localized accessible description. This composition replaces the single-product form and
-its headphone/bottle experiments. Do not replace the whole scene with a raster illustration, Hairline figure or
-floating dashboard screenshot. Reserve every localized animation state's space so the headline
-and CTA stay still. Play once without a visible playback control, then hold the illuminated
-scene; show that complete composition immediately for reduced motion.
+The homepage hero uses a native HTML/CSS shopping journey on the blue cutout. The six distinct
+steps are a shopper asking a question, écentic preparing the product feed, AI discovering the
+product, the shopper choosing it, checkout on the merchant’s store, and the sale returning to
+that store. The 16 November review extends the approved white-object scene into a repeating
+carousel; it replaces the finite three-object cup composition. Keep the JSON feed as its own
+step rather than swapping a feed into the discovery display. A generated blue sneaker photo
+repeats through discovery, selection, checkout and the store, with one consistent example SKU,
+price and currency. Locale-format the price; preserve JSON keys and identifiers as code.
+
+White illustrated objects with theme-rounded corners float directly on the blue hero. There is
+no enclosing stage border or panel. Keep the recognizable storefront, authentic compact provider
+marks and native product-document details. The blue écentic box stays visible below the moving
+journey, with curved connections highlighting its help with the feed, discovery and checkout.
+Show the action within each scene and animate the connecting lines. Keep the original specific
+headline and supporting copy stable while stages move. Desktop can show neighboring steps;
+mobile prioritizes a readable current object and a glimpse of what comes next.
+
+The requested carousel plays automatically without arrows, stage dots, or play/pause controls.
+The 16 November follow-up explicitly removes manual playback controls and hover/focus pausing.
+Pause automatic advancement when the document is hidden or the illustration is offscreen.
+Reduced motion disables automatic advancement and animated transitions, retaining a meaningful
+static scene and the localized description of the complete journey. Keep stage names localized.
+Do not imply live results, a guaranteed sale or checkout inside
+an AI provider that does not support it: this example completes the purchase in the merchant’s
+store. Omit the redundant name beneath the box. Do not replace the native scene with a single
+raster illustration, Hairline figure or dashboard screenshot.
 The hero's demo action uses a white filled package Button beside the blue store-check button.
+On the homepage, signed-in visitors see “Go to dashboard” in place of “Book a demo” in the
+header, hero and closing section. Keep each button's styling and localized navigation intact.
+Resolve the session on the client so the public homepage stays statically rendered; visitors
+without a confirmed session retain the demo action.
 
 Evidence components distinguish public studies, aggregate facts, live values and examples. Dense
 methodology can be disclosed in an accordion. Do not invent KPI definitions, remove material
@@ -686,6 +693,9 @@ subordinate. Avoid scroll-jacking and pointer movement that makes information ha
 
 The user explicitly asked certain simulated demonstrations to advance themselves. This applies
 to those explanatory sequences, not to real forms, billing choices or arbitrary site controls.
+The homepage shopping journey is the explicit 16 November exception to the finite-sequence and
+optional-playback-control defaults below: it repeats automatically with no visible controls,
+while retaining hidden-document, offscreen and reduced-motion safeguards.
 
 - Start only when the relevant example is visible and the visitor has not taken control.
 - Progress through a finite story and stop at the end.

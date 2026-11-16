@@ -1,58 +1,83 @@
-const { Cam, clamp, fit, proj, facing, rrect, rings, prism, hull, fillet, poly, open, seg, mk, tween, tset, tval, tdone, register, pointer, disposer } = HL;
+const { Cam, clamp, disposer, fit, hull, mk, open, pointer, poly, proj, rad, register, rrect, spring, stepS } = HL;
 
-/** A handheld megaphone: extend the bell to give the brand a clear voice. */
+/** A handheld speaking horn: the bell gently aims toward the inspecting pointer. */
 function mount({ stage, svg, read }, value) {
   const cleanup = disposer();
-  const state = { active: false, reach: value, previous: "" };
+  const state = { reach: value, active: false, last: null };
+  const pitch = spring(0);
+  const pivot = [45, 34, 40];
+  const axis = x => 74 + (x - 30) * 0.2;
+  const ring = (x, radius, steps = 64) => Array.from({ length: steps }, (_, index) => {
+    const angle = index * Math.PI * 2 / steps;
+    return [x, 34 + Math.cos(angle) * radius, axis(x) + Math.sin(angle) * radius];
+  });
+  const turn = ([x, y, z], angle) => {
+    const sine = Math.sin(rad(angle)), cosine = Math.cos(rad(angle));
+    const dx = x - pivot[0], dz = z - pivot[2];
+    return [pivot[0] + dx * cosine - dz * sine, y, pivot[2] + dx * sine + dz * cosine];
+  };
+  const frame = [...ring(4, 11), ...ring(119, 39), [29, 25, 8], [52, 43, 66]];
   const camera = Cam(45, 0.5, 2.25);
-  fit(camera, [[-1, -1, 0], [132, 75, 105]], 200, 158);
-  const P = proj(camera), front = facing(camera);
-  const group = mk("g", {}, svg);
-  const motion = tween(0), following = tween(0);
-  function geometry(amount, follow = 0) {
-    const paths = [];
-    const plate = vertices => poly(fillet(vertices, vertices.map(() => 1.5), 4));
-    const add = (paint, d) => paths.push({ class: paint, d });
-    const slab = (x0,y0,x1,y1,z0,z1,r=3,accent=null) => {
-      const shape = prism(P, front, ...rings(x0,y0,x1,y1,r,0.9), z0,z1);
-      add(accent ? 'sil hi' : 'sil', shape.sil); add('nf lo', shape.crease);
-    };
+  fit(camera, frame.flatMap(point => [-10, 0, 10].map(angle => turn(point, angle))), 200, 166);
+  const P = proj(camera);
+  const group = mk('g', {}, svg);
+  const handle = rrect(29, 8, 48, 67, 5, 10);
+  const innerHandle = rrect(31.5, 10.5, 45.5, 64.5, 3, 10);
+  const flare = [0, 0.2, 0.4, 0.6, 0.8, 1].flatMap(amount => ring(31 + amount * 85, 13 + amount ** 1.45 * 26));
 
-    add('sil',plate([P(31,29,53),P(46,29,50),P(42,29,6),P(29,29,10)]));
-    add('nf lo',seg(P(33,29,17),P(37,29,42)));
-    const rim=(x,r)=>Array.from({length:48},(_,i)=>P(x,34+Math.cos(i*Math.PI/24)*r,64+Math.sin(i*Math.PI/24)*r));
-    add('sil',plate(hull(rim(22,12).concat(rim(100+amount,34)))));
-    add('nf lo',poly(rim(29,14)));
-    add('sil hi',poly(rim(100+amount,34)));
-    add('nf lo',poly(rim(101+amount,28)));
-    add('nf lo',poly(rim(102+amount,8)));
-    add('sil',plate(hull(rim(6,8).concat(rim(23,8)))));
-    add('sil',poly(rim(6,8)));
-
-    return paths;
-  }
+  const geometry = angle => {
+    const project = point => P(...turn(point, angle));
+    const circle = (x, radius) => ring(x, radius).map(project);
+    const grip = (shape, y) => shape.map(point => project([point.u + (point.v - 8) * 0.1, y, point.v]));
+    const throat = ring(99, 7, 48).map(project);
+    return [
+      { class: 'sil', d: poly(hull([...grip(handle, 25), ...grip(handle, 43)])) },
+      { class: 'nf lo', d: open(grip(innerHandle, 43).slice(9, 30)) },
+      { class: 'sil', d: poly(hull([...circle(4, 11), ...circle(33, 14)])) },
+      { class: 'nf lo', d: open(circle(7, 9).slice(3, 35)) },
+      { class: 'sil', d: poly(hull(flare.map(project))) },
+      { class: 'nf lo', d: open(circle(35, 14).slice(4, 34)) },
+      { class: 'sil hi', d: poly(circle(119, 39)) },
+      { class: 'nf lo', d: poly(circle(119.5, 35.5)) },
+      { class: 'nf lo', d: poly(throat) },
+    ];
+  };
   const nodes = geometry(0).map(attributes => mk('path', attributes, group));
-  const draw = (amount, follow) => {
-    const signature = `${amount.toFixed(4)}:${follow.toFixed(4)}`;
-    if (signature === state.previous) return;
-    state.previous = signature;
-    geometry(amount, follow).forEach((attributes,index) => { nodes[index].setAttribute('d', attributes.d); nodes[index].setAttribute('class', attributes.class); });
+  const draw = angle => {
+    const signature = angle.toFixed(4);
+    if (signature === state.last) return;
+    state.last = signature;
+    geometry(angle).forEach((attributes, index) => nodes[index].setAttribute('d', attributes.d));
   };
-  const loop = register(stage, (_delta, now) => { draw(tval(motion,now),tval(following,now)); return !tdone(motion,now) || !tdone(following,now); });
-  const choose = active => {
-    if (active === state.active) return;
+  const clock = register(stage, delta => {
+    const moving = stepS(pitch, delta);
+    draw(pitch.x);
+    return moving;
+  });
+  const center = P(94, 34, axis(94));
+  const inspect = point => {
+    const active = point !== null && Math.hypot(point[0] - center[0], point[1] - center[1]) < 112;
     state.active = active;
-    const now = performance.now();
-    tset(motion, active ? state.reach : 0, now, 0);
-    tset(following, active ? state.reach * 0.25 : 0, now, 40);
-    read.textContent = active ? "bell" : 'rest';
-    loop.wake();
+    pitch.t = active ? state.reach * (0.4 + 0.6 * clamp((center[1] - point[1]) / 90, -1, 1)) : 0;
+    read.textContent = active ? 'bell' : 'rest';
+    clock.wake();
   };
-  const center = P(...[98, 34, 69]);
-  cleanup.add(pointer(stage, { move: point => choose(Math.hypot(point[0]-center[0],point[1]-center[1]) < 100), leave: () => choose(false) }));
+  cleanup.add(pointer(stage, { move: inspect, leave: () => inspect(null) }));
+  cleanup.add(clock.unregister);
+  cleanup.add(() => svg.replaceChildren());
   read.textContent = 'rest';
-  cleanup.add(loop.unregister); cleanup.add(() => svg.replaceChildren());
-  return { set: next => { state.reach=clamp(next,6,22); const active=state.active; state.active=!active; choose(active); }, destroy: cleanup.dispose };
+  return {
+    set: next => { state.reach = clamp(next, 3, 10); if (state.active) { pitch.t = state.reach * 0.4; clock.wake(); } },
+    destroy: cleanup.dispose,
+  };
 }
 
-hairline({ name: "brand-megaphone", means: "A handheld megaphone: extend the bell to give the brand a clear voice.", rules: [1,2,3,4,5,6,7,8,9,10], range: [6,14,22], answer: [98, 34, 69], edge: [98, 34, 69], mount });
+hairline({
+  name: 'brand-megaphone',
+  means: 'A handheld speaking horn: the bell gently aims toward the inspecting pointer.',
+  rules: [1, 3, 4, 5, 6, 7, 8, 9, 10],
+  range: [3, 6, 10],
+  answer: [105, 34, 89],
+  edge: [118, 34, 115],
+  mount,
+});

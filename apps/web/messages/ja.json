@@ -9443,7 +9443,17 @@
       "aiInstructions": "AI向け指示",
       "tools": "無料ツール"
     },
-    "loading": "ページを読み込み中"
+    "loading": "ページを読み込み中",
+    "authenticated": {
+      "action": {
+        "primary": "ダッシュボードへ"
+      },
+      "compact": {
+        "action": {
+          "primary": "ダッシュボード"
+        }
+      }
+    }
   },
   "enterpriseNav": {
     "pricing": "料金",
@@ -10116,7 +10126,20 @@
         "caption": "製品画面 · サンプルデータ"
       },
       "artwork": {
-        "label": "ecenticがAIによる商品比較に向けて、ストアの商品カタログを整えます。"
+        "label": "購入までの流れを示した例です。買い物客が青いスニーカーを探し、écenticが商品フィードを整備します。AIが商品を見つけ、買い物客がストアで購入を完了します。",
+        "question": "青いスニーカーを探して。",
+        "product": "青いスニーカー",
+        "feed": "商品フィード",
+        "checkout": "ストアで購入",
+        "confirmed": "注文が確定しました",
+        "stages": [
+          "買い物客が質問",
+          "écenticがフィードを整備",
+          "AIが商品を発見",
+          "買い物客が商品を選択",
+          "ストアで購入",
+          "ストアの売上に"
+        ]
       }
     },
     "programs": {

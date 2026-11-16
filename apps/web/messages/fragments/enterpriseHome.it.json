@@ -26,7 +26,20 @@
         "caption": "Screenshot del prodotto · dati di esempio"
       },
       "artwork": {
-        "label": "ecentic prepara il catalogo del tuo negozio perché l’IA possa confrontare i prodotti."
+        "label": "Esempio di acquisto: una persona cerca un paio di sneakers blu, écentic prepara il feed dei prodotti, l’IA trova un paio adatto e la persona completa l’acquisto nel negozio.",
+        "question": "Trovami un paio di sneakers blu.",
+        "product": "Sneakers blu",
+        "feed": "Feed dei prodotti",
+        "checkout": "Acquisto nel tuo negozio",
+        "confirmed": "Ordine confermato",
+        "stages": [
+          "Una persona fa una domanda",
+          "écentic prepara il feed",
+          "L’IA trova il prodotto",
+          "La persona sceglie",
+          "Acquisto nel tuo negozio",
+          "Il tuo negozio conclude la vendita"
+        ]
       }
     },
     "programs": {

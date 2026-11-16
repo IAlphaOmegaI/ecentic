@@ -58,6 +58,7 @@ import {
   useState,
 } from "react";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { MarketingActionButton } from "@/components/marketing/action-button";
 import { fonts } from "@/components/marketing/fonts";
 import { IntentLink as Link } from "@/components/marketing/intent-link";
 import {
@@ -646,9 +647,13 @@ export const Navbar = () => {
               {chrome.action.tertiary}
             </Button>
           </div>
-          <Button render={<Link href="/demo" />}>
-            {chrome.action.primary}
-          </Button>
+          <MarketingActionButton
+            href="/demo"
+            label={chrome.action.primary}
+            labelClassName="max-w-32 whitespace-normal text-center sm:max-w-none"
+            dashboardForMembers
+            compactOnMobile
+          />
         </div>
         <div className="marketing-mobile-nav block shrink-0 min-[1281px]:hidden">
           <Sheet open={mobile} onOpenChange={setMobile}>

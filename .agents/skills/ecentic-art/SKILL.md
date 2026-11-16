@@ -54,23 +54,23 @@ The audience panel, integration arc and global closing CTA may use tonal artwork
 product documents and interface elements. It does not mean a generated 3D image, a Hairline
 drawing or an animated collage of sampled objects. Keep one coherent explanation and a complete
 static state; see the homepage recipe in the public-page skill. The current subject is a
-store, physical catalog and AI display connected by light and swept cables around the blue
-ecentic box. Their surfaces are white with rounded object corners. On desktop the box sits
-below a raised catalog; below `sm` the three objects stack vertically on the left and the box
-sits on the right. This supersedes the rejected headphone and interim bottle subjects.
-Use clear native silhouettes, readable provider marks and a finite illumination reveal;
-do not return to a single-product data table or elaborate CSS product perspective.
-The next correction adds a recognizable awning/window/entrance to the store. The central sheet alternates once through a
-valid JSON feed and back to the product tiles as the light appears, with no size change.
-Remove visible actor captions and the name beneath the box; keep the localized accessible
-description and blue logo anchor.
-The objects float directly on the blue hero without an enclosing panel or border. Rounded
-corners belong to the individual objects. Leave clear space around the box and aim the light
-toward the catalog in each layout. The final AI display reveals a matching catalog product as a
-selection, with the AI marks retained as compact context.
-The subsequent request replaces the abstract selected bottle with a specific product photo:
-a blue ceramic espresso cup, shared with the first catalog tile. Generate this raster product
-asset with the configured image workflow; retain the native HTML scene and its animation.
+six-step shopping journey: shopper question, product feed, discovery, selection, merchant
+checkout and store sale. The 16 November revision extends the approved white-object scene into
+a repeating illustrated carousel, superseding the finite cup sequence and three-object mobile
+stack. Keep the feed as a distinct JSON object. Use a generated blue sneaker photo consistently
+through the discovery, chosen-product, checkout and storefront scenes; retain the surrounding
+native HTML and genuine provider marks. The blue écentic box remains visible as a hub, with
+curved connections highlighting its help with the feed, discovery and checkout. The individual
+objects retain their rounded corners and float directly on the blue hero, without a stage
+border or enclosing panel. Omit the redundant name beneath the box. Locale-format the shared
+sample price; preserve JSON keys and identifiers as code. Purchase happens on the merchant’s
+store in this illustrative sequence, not inside every AI provider.
+
+The 16 November follow-up requires automatic playback with no arrows, stage dots or play/pause
+controls. This supersedes the earlier manual controls and hover/focus pausing. Pause automatic
+advancement while offscreen or the document is hidden, and disable movement and advancement
+for reduced motion. Retain a meaningful static scene and the localized description of the
+complete journey. Keep the headline/CTA position stable on desktop and mobile.
 The global closing subject is now a tonal shopping bag; it is not the former generic Hairline
 basket. The footer retains a small trademark and a separate **tonal product-selection graphic**
 with a finite reveal. The 15 November review replaces the repeated oversized wordmark; the

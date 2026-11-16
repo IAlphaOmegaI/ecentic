@@ -114,7 +114,11 @@ export const Footer = async (_props: Footer.Props = {}) => {
         title={chrome.closing.title}
         description={chrome.closing.description}
         actions={[
-          { href: "/demo", label: chrome.action.primary },
+          {
+            href: "/demo",
+            label: chrome.action.primary,
+            dashboardForMembers: true,
+          },
           { href: "/sign-up", label: chrome.action.secondary },
         ]}
       />

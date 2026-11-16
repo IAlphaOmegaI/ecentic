@@ -1,7 +1,6 @@
 import { ArrowRightIcon } from "@zenncore/icons";
-import { Button } from "@zenncore/web/components/button";
 import type { AppConfig } from "next-intl";
-import { IntentLink } from "@/components/marketing/intent-link";
+import { MarketingActionButton } from "@/components/marketing/action-button";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { OverviewArtwork } from "./overview-artwork";
 
@@ -24,21 +23,21 @@ export const Overview = ({ copy }: Overview.Props) => (
       </p>
       <div className="marketing-actions mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
         {copy.actions.map((action, index) => (
-          <Button
+          <MarketingActionButton
             key={action.href}
             color={index === 0 ? "primary" : "neutral"}
-            render={<IntentLink href={action.href} />}
+            href={action.href}
+            label={action.label}
+            labelClassName="max-w-52 whitespace-normal sm:max-w-none"
+            dashboardForMembers={action.href === "/demo"}
             className={
               index === 0
                 ? undefined
                 : "border-background-rich from-background-rich to-background-rich text-primary-text hover:from-background hover:to-background focus-visible:ring-background-rich/60"
             }
           >
-            <span className="max-w-52 whitespace-normal sm:max-w-none">
-              {action.label}
-            </span>
             <ArrowRightIcon className="size-4" />
-          </Button>
+          </MarketingActionButton>
         ))}
       </div>
     </div>
