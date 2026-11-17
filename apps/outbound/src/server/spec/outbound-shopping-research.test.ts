@@ -256,6 +256,17 @@ const generated: typeof import("@/server/utils/outbound/draft").generateDraft =
     data: { messages: renderMessages(prospect, playbook), issues: [] },
   });
 
+const runReview = (
+  options: Parameters<
+    typeof import("@/server/app/outbound/automatic-draft-review").run
+  >[0] = {},
+  generate: typeof generated = generated,
+  checkMx: typeof import("@/server/utils/outbound/mx").check = async () => ({
+    success: false,
+    error: new Error("DNS disabled for this fixture"),
+  }),
+) => active().review.run(options, generate, checkMx);
+
 describe("source-bound shopping research validation", () => {
   test("accepts mixed browser/HTTP variant evidence in either source order", () => {
     expect(validateShoppingResearch(receipt(), 1, now.getTime())).toBeNull();
@@ -415,7 +426,7 @@ describe.skipIf(!endpoint)(
       await automaticFixture();
       const before = value(await store.readProspect(fixture.prospectId))!;
       const generate = mock(generated);
-      const result = value(await review.run({ maxDrafts: 2 }, generate));
+      const result = value(await runReview({ maxDrafts: 2 }, generate));
       expect(result.approved).toBe(1);
       expect(generate).not.toHaveBeenCalled();
       const after = value(await store.readProspect(fixture.prospectId))!;
@@ -427,7 +438,7 @@ describe.skipIf(!endpoint)(
       expect(await db.select().from(schema.outboundSendAttempt)).toHaveLength(
         0,
       );
-      expect(value(await review.run()).processed).toBe(0);
+      expect(value(await runReview()).processed).toBe(0);
     });
     test("writing-only edits regenerate once, preserve immutable captures and automatically reapprove", async () => {
       const { store, review, db, schema } = active();
@@ -447,8 +458,8 @@ describe.skipIf(!endpoint)(
       );
       const generate = mock(generated);
       const results = await Promise.all([
-        review.run({ maxDrafts: 1 }, generate),
-        review.run({ maxDrafts: 1 }, generate),
+        runReview({ maxDrafts: 1 }, generate),
+        runReview({ maxDrafts: 1 }, generate),
       ]);
       expect(
         results
@@ -505,16 +516,16 @@ describe.skipIf(!endpoint)(
           return generated(...arguments_);
         },
       );
-      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).approved).toBe(
         0,
       );
       const after = value(await store.readProspect(before.id))!;
       expect(after.status).toBe("held");
       expect(after.messages).toEqual(before.messages);
       expect(after.revision).toBe(before.revision);
-      expect(
-        value(await review.run({ maxDrafts: 1 }, generate)).processed,
-      ).toBe(0);
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).processed).toBe(
+        0,
+      );
       expect(generate).toHaveBeenCalledTimes(1);
     });
     test("an invented finding rolls back both refresh and approval", async () => {
@@ -539,7 +550,7 @@ describe.skipIf(!endpoint)(
           return draft;
         },
       );
-      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).approved).toBe(
         0,
       );
       const after = value(await store.readProspect(before.id))!;
@@ -564,7 +575,7 @@ describe.skipIf(!endpoint)(
         createdBy: "fixture",
       });
       const generate = mock(generated);
-      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).approved).toBe(
         0,
       );
       expect(generate).not.toHaveBeenCalled();
@@ -575,7 +586,7 @@ describe.skipIf(!endpoint)(
           researchInstructions: "Different research requirements",
         }),
       );
-      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).approved).toBe(
         0,
       );
       expect(generate).not.toHaveBeenCalled();
@@ -594,7 +605,7 @@ describe.skipIf(!endpoint)(
         }),
       );
       const generate = mock(generated);
-      const result = value(await review.run({ maxDrafts: 1 }, generate));
+      const result = value(await runReview({ maxDrafts: 1 }, generate));
       expect(result.approved).toBe(0);
       expect(generate).not.toHaveBeenCalled();
       expect(
@@ -610,7 +621,7 @@ describe.skipIf(!endpoint)(
           automationEnabled: false,
         }),
       );
-      expect(value(await review.run()).processed).toBe(0);
+      expect(value(await runReview()).processed).toBe(0);
       value(
         await store.savePlaybook("operator", {
           ...settings,
@@ -621,7 +632,7 @@ describe.skipIf(!endpoint)(
         .update(schema.outboundCampaign)
         .set({ status: "paused" })
         .where(eq(schema.outboundCampaign.id, context.campaign.id));
-      expect(value(await review.run()).processed).toBe(0);
+      expect(value(await runReview()).processed).toBe(0);
     });
     test("a lost draft provider request is marked uncertain and is never purchased again", async () => {
       const { store, review, db, schema } = active();
@@ -666,9 +677,9 @@ describe.skipIf(!endpoint)(
         })
         .returning();
       const generate = mock(generated);
-      expect(
-        value(await review.run({ maxDrafts: 1 }, generate)).processed,
-      ).toBe(0);
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).processed).toBe(
+        0,
+      );
       value(
         await store.savePlaybook("operator", {
           ...settings,
@@ -676,9 +687,9 @@ describe.skipIf(!endpoint)(
           voiceNotes: "Another voice",
         }),
       );
-      expect(
-        value(await review.run({ maxDrafts: 1 }, generate)).processed,
-      ).toBe(0);
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).processed).toBe(
+        0,
+      );
       expect(generate).not.toHaveBeenCalled();
       const [saved] = await db
         .select()
@@ -692,7 +703,7 @@ describe.skipIf(!endpoint)(
       const before = value(await store.readProspect(fixture.prospectId))!;
       const generate = mock(generated);
       setSystemTime(new Date(now.getTime() + 8 * 86_400_000));
-      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).approved).toBe(
         0,
       );
       expect(generate).not.toHaveBeenCalled();
@@ -713,7 +724,7 @@ describe.skipIf(!endpoint)(
         messageId: "<fixture@samplegoods.com>",
         contentHash: "fixture",
       });
-      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).approved).toBe(
         0,
       );
       expect(generate).not.toHaveBeenCalled();
@@ -744,7 +755,7 @@ describe.skipIf(!endpoint)(
           return generated(...arguments_);
         },
       );
-      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).approved).toBe(
         0,
       );
       expect(value(await store.readProspect(before.id))?.messages).toEqual(
@@ -760,7 +771,7 @@ describe.skipIf(!endpoint)(
       const before = value(await store.readProspect(fixture.prospectId))!;
       setSystemTime(new Date(now.getTime() + 2 * 86_400_000));
       const generate = mock(generated);
-      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).approved).toBe(
         0,
       );
       value(
@@ -774,7 +785,7 @@ describe.skipIf(!endpoint)(
       expect(value(await store.readProspect(before.id))?.revision).toBe(
         before.revision,
       );
-      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).approved).toBe(
         1,
       );
       expect(generate).not.toHaveBeenCalled();
@@ -786,7 +797,7 @@ describe.skipIf(!endpoint)(
         sql`update outbound_integration_job set status = 'failed' where provider = 'apollo'`,
       );
       const generate = mock(generated);
-      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).approved).toBe(
         0,
       );
       expect(generate).not.toHaveBeenCalled();
@@ -818,7 +829,7 @@ describe.skipIf(!endpoint)(
           return generated(...arguments_);
         },
       );
-      expect(value(await review.run({ maxDrafts: 1 }, holding)).approved).toBe(
+      expect(value(await runReview({ maxDrafts: 1 }, holding)).approved).toBe(
         0,
       );
       value(
@@ -829,9 +840,9 @@ describe.skipIf(!endpoint)(
           reason: "",
         }),
       );
-      expect(
-        value(await review.run({ maxDrafts: 1 }, generated)).approved,
-      ).toBe(1);
+      expect(value(await runReview({ maxDrafts: 1 }, generated)).approved).toBe(
+        1,
+      );
     });
     test("thrown provider errors are uncertain and do not replay after a Playbook edit", async () => {
       const { store, review, db, schema } = active();
@@ -846,7 +857,7 @@ describe.skipIf(!endpoint)(
       const generate = mock(async () => {
         throw new Error("Lost provider connection");
       });
-      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).approved).toBe(
         0,
       );
       value(
@@ -856,9 +867,9 @@ describe.skipIf(!endpoint)(
           voiceNotes: "Next voice",
         }),
       );
-      expect(
-        value(await review.run({ maxDrafts: 1 }, generate)).processed,
-      ).toBe(0);
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).processed).toBe(
+        0,
+      );
       expect(generate).toHaveBeenCalledTimes(1);
       const [job] = await db
         .select()
@@ -894,7 +905,7 @@ describe.skipIf(!endpoint)(
           return generated(...arguments_);
         },
       );
-      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).approved).toBe(
         0,
       );
       value(
@@ -904,7 +915,7 @@ describe.skipIf(!endpoint)(
           voiceNotes: "New voice",
         }),
       );
-      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).approved).toBe(
         1,
       );
       expect(generate).toHaveBeenCalledTimes(1);
@@ -971,9 +982,180 @@ describe.skipIf(!endpoint)(
       );
       value(await research.saveAndApply("operator", await input()));
       value(await store.generateDrafts("operator", { prospect: row.id }));
+      expect(value(await runReview({ maxDrafts: 1 }, generated)).approved).toBe(
+        1,
+      );
+    });
+    test("stale known MX refreshes from actual DNS before automatic approval", async () => {
+      const { store, db, schema } = active();
+      await automaticFixture();
+      const before = value(await store.readProspect(fixture.prospectId))!;
+      setSystemTime(new Date(now.getTime() + 2 * 86_400_000));
+      const checkMx = mock(async () => ({
+        success: true as const,
+        data: {
+          provider: "google" as const,
+          records: ["aspmx.l.google.com"],
+          checkedAt: new Date().toISOString(),
+        },
+      }));
+      const generate = mock(generated);
       expect(
-        value(await review.run({ maxDrafts: 1 }, generated)).approved,
+        value(await runReview({ maxDrafts: 1 }, generate, checkMx)).approved,
       ).toBe(1);
+      expect(checkMx).toHaveBeenCalledTimes(1);
+      expect(checkMx).toHaveBeenCalledWith(before.details.email);
+      expect(generate).not.toHaveBeenCalled();
+      const after = value(await store.readProspect(before.id))!;
+      expect(after.details.mxCheckedAt).toBe(new Date().toISOString());
+      expect(after.details.evidenceCheckedAt).toBe(
+        before.details.evidenceCheckedAt,
+      );
+      expect(after.revision).toBe(before.revision);
+      expect(await db.select().from(schema.outboundSendAttempt)).toHaveLength(
+        0,
+      );
+    });
+    test.each(["unknown", "microsoft"] as const)(
+      "changed MX provider %s remains held",
+      async (provider) => {
+        const { store } = active();
+        await automaticFixture();
+        setSystemTime(new Date(now.getTime() + 2 * 86_400_000));
+        const checkMx = mock(async () => ({
+          success: true as const,
+          data: {
+            provider,
+            records: [],
+            checkedAt: new Date().toISOString(),
+          },
+        }));
+        const generate = mock(generated);
+        expect(
+          value(await runReview({ maxDrafts: 1 }, generate, checkMx)).approved,
+        ).toBe(0);
+        const after = value(await store.readProspect(fixture.prospectId))!;
+        expect(after.details.mxProvider).toBe(provider);
+        expect(after.details.mxCheckedAt).toBe(new Date().toISOString());
+        expect(after.approvedAt).toBeNull();
+        expect(generate).not.toHaveBeenCalled();
+      },
+    );
+    test("a hold racing a changed-provider DNS response is preserved", async () => {
+      const { store } = active();
+      await automaticFixture();
+      const before = value(await store.readProspect(fixture.prospectId))!;
+      setSystemTime(new Date(now.getTime() + 2 * 86_400_000));
+      const checkMx = mock(async () => {
+        value(
+          await store.reviewProspect("operator", {
+            prospect: before.id,
+            revision: before.revision,
+            decision: "hold",
+            reason: "Keep this lead paused",
+          }),
+        );
+        return {
+          success: true as const,
+          data: {
+            provider: "microsoft" as const,
+            records: [],
+            checkedAt: new Date().toISOString(),
+          },
+        };
+      });
+      expect(
+        value(await runReview({ maxDrafts: 1 }, generated, checkMx)).approved,
+      ).toBe(0);
+      const after = value(await store.readProspect(before.id))!;
+      expect(after.status).toBe("held");
+      expect(after.holdReason).toBe("Keep this lead paused");
+      expect(after.details.mxProvider).toBe(before.details.mxProvider);
+      expect(after.details.mxCheckedAt).toBe(before.details.mxCheckedAt);
+      expect(after.revision).toBe(before.revision);
+    });
+    test("paused automation performs no DNS lookup and a pause during DNS discards the result", async () => {
+      const { store } = active();
+      await automaticFixture();
+      const before = value(await store.readProspect(fixture.prospectId))!;
+      setSystemTime(new Date(now.getTime() + 2 * 86_400_000));
+      value(
+        await store.savePlaybook("operator", {
+          ...settings,
+          automationEnabled: false,
+        }),
+      );
+      const checkMx = mock(async () => {
+        value(
+          await store.savePlaybook("operator", {
+            ...settings,
+            automationEnabled: false,
+          }),
+        );
+        return {
+          success: true as const,
+          data: {
+            provider: "google" as const,
+            records: [],
+            checkedAt: new Date().toISOString(),
+          },
+        };
+      });
+      expect(
+        value(await runReview({ maxDrafts: 1 }, generated, checkMx)).processed,
+      ).toBe(0);
+      expect(checkMx).not.toHaveBeenCalled();
+      value(
+        await store.savePlaybook("operator", {
+          ...settings,
+          automationEnabled: true,
+        }),
+      );
+      expect(
+        value(await runReview({ maxDrafts: 1 }, generated, checkMx)).approved,
+      ).toBe(0);
+      expect(checkMx).toHaveBeenCalledTimes(1);
+      expect(
+        value(await store.readProspect(before.id))?.details.mxCheckedAt,
+      ).toBe(before.details.mxCheckedAt);
+    });
+    test("editing a held draft or its details never resumes automatic review", async () => {
+      const { store } = active();
+      await automaticFixture();
+      const before = value(await store.readProspect(fixture.prospectId))!;
+      value(
+        await store.reviewProspect("operator", {
+          prospect: before.id,
+          revision: before.revision,
+          decision: "hold",
+          reason: "Discuss before outreach",
+        }),
+      );
+      value(
+        await store.saveDraft("operator", {
+          prospect: before.id,
+          revision: before.revision,
+          subject: before.messages[0]!.subject,
+          body: before.messages[0]!.body,
+          followupOne: before.messages[1]!.body,
+          followupTwo: before.messages[2]!.body,
+        }),
+      );
+      const edited = value(await store.readProspect(before.id))!;
+      expect(edited.status).toBe("held");
+      expect(edited.holdReason).toBe("Discuss before outreach");
+      value(
+        await store.patchProspect(
+          "operator",
+          before.id,
+          { notes: "Updated while paused" },
+          edited.revision,
+        ),
+      );
+      const detailed = value(await store.readProspect(before.id))!;
+      expect(detailed.status).toBe("held");
+      expect(detailed.holdReason).toBe("Discuss before outreach");
+      expect(value(await runReview({ maxDrafts: 1 })).processed).toBe(0);
     });
     test("ingredient-only fallback is held before template and Azure drafting", async () => {
       const { store, draft } = active();

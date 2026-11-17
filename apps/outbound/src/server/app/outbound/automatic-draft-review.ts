@@ -13,6 +13,7 @@ import { db, schema, type TransactionScope } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
 import { ConflictError, ValidationError } from "@/server/utils/error";
 import * as Draft from "@/server/utils/outbound/draft";
+import * as MX from "@/server/utils/outbound/mx";
 import { repository } from "@/server/utils/repository";
 import * as Store from "./store";
 
@@ -42,6 +43,82 @@ const lease = () => ({
   token: randomUUID(),
   expiresAt: new Date(Date.now() + 180_000).toISOString(),
 });
+
+/** Public DNS reads are harmless to repeat; claims and paid work remain separate. */
+const refreshExpiredMx = async (
+  limit: number,
+  deadline: number,
+  check: typeof MX.check,
+) => {
+  const candidates = value(
+    await transaction(async (transaction) => {
+      const policy = await Store.policy(transaction);
+      if (!policy.settings.automationEnabled) return [];
+      const prospects = value(
+        await Prospects.find(
+          Environment.SERVER,
+          {
+            where: and(
+              eq(schema.outboundProspect.status, "draft"),
+              eq(schema.outboundProspect.sentStep, 0),
+              sql`${schema.outboundProspect.holdReason} in ('', 'playbookChanged')`,
+              sql`${schema.outboundProspect.details}->>'mxProvider' in ('google', 'other')`,
+              sql`coalesce(nullif(${schema.outboundProspect.details}->>'mxCheckedAt', '')::timestamptz, 'epoch') <= ${new Date(Date.now() - 86_400_000).toISOString()}::timestamptz`,
+              sql`exists (select 1 from outbound_campaign campaign where campaign.id = ${schema.outboundProspect.campaignId} and campaign.status = 'active')`,
+              sql`not exists (select 1 from outbound_integration_job job where job.prospect_id = ${schema.outboundProspect.id} and job.provider = 'automation' and job.status in ('pending', 'starting', 'uncertain'))`,
+            ),
+            orderBy: [
+              { column: schema.outboundProspect.updatedAt, direction: "asc" },
+            ],
+            limit: 50,
+          },
+          { tx: transaction },
+        ),
+      );
+      const eligible: {
+        prospect: typeof schema.outboundProspect.$inferSelect;
+        playbookRevision: number;
+        campaignRevision: number;
+      }[] = [];
+      for (const prospect of prospects) {
+        if (eligible.length >= limit || Date.now() + 5_000 >= deadline) break;
+        const ready = await resultify(() =>
+          Store.assertAutomaticDraftReviewReady(transaction, prospect, {
+            allowExpiredMx: true,
+          }),
+        );
+        if (!ready.success || !prospect.campaignId) continue;
+        const campaign = value(
+          await Campaigns.get(Environment.SERVER, prospect.campaignId, {
+            tx: transaction,
+          }),
+        );
+        if (campaign)
+          eligible.push({
+            prospect,
+            playbookRevision: policy.revision,
+            campaignRevision: campaign.revision,
+          });
+      }
+      return eligible;
+    }),
+  );
+  for (const candidate of candidates) {
+    if (Date.now() + 5_000 >= deadline) break;
+    // Recheck the pause switch before each external read, then again atomically at application.
+    if (!(await Store.policy()).settings.automationEnabled) break;
+    const checked = await check(candidate.prospect.details.email);
+    if (!checked.success) continue;
+    await Store.applyAutomaticDraftMx({
+      prospect: candidate.prospect.id,
+      revision: candidate.prospect.revision,
+      playbookRevision: candidate.playbookRevision,
+      campaignRevision: candidate.campaignRevision,
+      previousCheckedAt: candidate.prospect.details.mxCheckedAt,
+      checked: checked.data,
+    });
+  }
+};
 
 const claim = () =>
   transaction(async (transaction) => {
@@ -271,6 +348,7 @@ const fail = (identifier: string, token: string, error: Error) =>
 export const run = (
   options: { maxDrafts?: number; deadline?: number } = {},
   generate: typeof Draft.generateDraft = Draft.generateDraft,
+  checkMx: typeof MX.check = MX.check,
 ) =>
   resultify(async () => {
     const input = z
@@ -279,6 +357,7 @@ export const run = (
         deadline: z.number().default(Date.now() + 90_000),
       })
       .parse(options);
+    await refreshExpiredMx(input.maxDrafts, input.deadline - 30_000, checkMx);
     const results: { prospect: string; status: "approved" | "held" }[] = [];
     for (const _ of Array.from({ length: input.maxDrafts })) {
       if (Date.now() + 30_000 >= input.deadline) break;

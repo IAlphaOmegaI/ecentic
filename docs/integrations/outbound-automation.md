@@ -19,6 +19,13 @@ campaign preparation. Current drafts keep their text. Drafts from an older
 Playbook get one new AI draft using the saved factual finding and current writing
 formula, followed by the same approval checks in one transaction.
 
+Before claiming a review, a bounded pass renews expired DNS observations for
+otherwise eligible drafts whose saved mail host is Google or another known host.
+It records the actual result and observation time; unknown or Microsoft results
+still fail the normal mail-host checks. DNS runs outside the transaction, and
+application rechecks active automation, campaign, revisions and explicit holds.
+This renewal does not purchase a provider request or send an email.
+
 Every pass records a `draftReview` integration job before provider work. A current
 work-email verdict must match an actual saved Apollo request, record, recipient
 and provider verification date; editable email-status labels cannot approve a
@@ -26,7 +33,9 @@ lead. A newer standalone verification may supersede the original automation
 verification when its recorded result matches the current recipient.
 
 Explicit holds, closed sequences, any earlier email/LinkedIn attempt and uncertain
-provider work are excluded. Failed checks do not starve later prospects. Updated
+provider work are excluded. Editing a held draft or its prospect details retains
+the hold and its reason; only an explicit Resume action returns it to review.
+Failed checks do not starve later prospects. Updated
 receipt timestamps or an explicit Resume action permit another known check;
 unresolved provider requests never replay after a Playbook edit or Resume. A
 pause during generation retains the checkpointed draft and applies it after

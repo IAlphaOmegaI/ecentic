@@ -1413,7 +1413,7 @@ const saveProspectWithin = async (
               existing.status,
             )
               ? existing.status
-              : existing.sentStep
+              : existing.sentStep || existing.status === "held"
                 ? "held"
                 : existing.messages.length
                   ? "draft"
@@ -1423,7 +1423,12 @@ const saveProspectWithin = async (
             approvalHash: null,
             nextSendAt: null,
             revision: existing.revision + 1,
-            holdReason: existing.sentStep ? "detailsChanged" : "",
+            holdReason:
+              existing.status === "held"
+                ? existing.holdReason
+                : existing.sentStep
+                  ? "detailsChanged"
+                  : "",
             updatedAt: new Date(),
           },
           { tx: transaction },
@@ -1739,11 +1744,11 @@ const writeMessages = async (
         messages,
         revision,
         playbookRevision: current.revision,
-        status: "draft",
+        status: prospect.status === "held" ? "held" : "draft",
         approvedAt: null,
         approvedBy: null,
         approvalHash: null,
-        holdReason: "",
+        holdReason: prospect.status === "held" ? prospect.holdReason : "",
         nextSendAt: null,
         updatedAt: new Date(),
       },
@@ -2239,6 +2244,7 @@ const assertAutomaticReviewVerification = async (
 export const assertAutomaticDraftReviewReady = async (
   transaction: TransactionScope,
   prospect: ProspectRow,
+  { allowExpiredMx = false }: { allowExpiredMx?: boolean } = {},
 ) => {
   const current = await policy(transaction);
   if (
@@ -2283,12 +2289,83 @@ export const assertAutomaticDraftReviewReady = async (
     suppressed(prospect.details, entries)
   )
     throw new ConflictError("Contact history prevents automatic draft review.");
-  const issues = prospectIssues(prospect.details, current.settings);
+  const issues = prospectIssues(prospect.details, current.settings).filter(
+    (issue) =>
+      !(
+        allowExpiredMx &&
+        issue.code === "mxUnknown" &&
+        ["google", "other"].includes(prospect.details.mxProvider)
+      ),
+  );
   if (issues.length)
     throw new ValidationError(
       `Automatic review requires current evidence: ${issues.map((issue) => issue.code).join(", ")}`,
     );
 };
+
+/** Record an actual DNS observation only if the original unsent review context is still open. */
+export const applyAutomaticDraftMx = (input: {
+  prospect: string;
+  revision: number;
+  playbookRevision: number;
+  campaignRevision: number;
+  previousCheckedAt: string;
+  checked: { provider: ProspectInput["mxProvider"]; checkedAt: string };
+}) =>
+  transaction(async (transaction) => {
+    const prospect = await findProspect(transaction, input.prospect);
+    const current = await policy(transaction);
+    const campaign = prospect.campaignId
+      ? requireData(
+          await Campaigns.get(Environment.SERVER, prospect.campaignId, {
+            tx: transaction,
+          }),
+        )
+      : null;
+    if (
+      prospect.revision !== input.revision ||
+      current.revision !== input.playbookRevision ||
+      campaign?.revision !== input.campaignRevision ||
+      prospect.details.mxCheckedAt !== input.previousCheckedAt
+    )
+      throw new ConflictError(
+        "The draft context changed during the mail-host check.",
+      );
+    await assertAutomaticDraftReviewReady(transaction, prospect, {
+      allowExpiredMx: true,
+    });
+    const checkedAt = Date.parse(input.checked.checkedAt);
+    if (
+      !Number.isFinite(checkedAt) ||
+      checkedAt > Date.now() ||
+      Date.now() - checkedAt > 60_000
+    )
+      throw new ValidationError("A fresh mail-host observation is required.");
+    const details = prospectSchema.parse({
+      ...prospect.details,
+      id: prospect.id,
+      mxProvider: input.checked.provider,
+      mxCheckedAt: input.checked.checkedAt,
+    });
+    if (details.mxProvider !== prospect.details.mxProvider)
+      return saveProspectWithin(transaction, "outbound-draft-review", details);
+    requireData(
+      await Prospects.update(
+        Environment.SERVER,
+        prospect.id,
+        { details, updatedAt: new Date() },
+        { tx: transaction },
+      ),
+    );
+    await event(
+      transaction,
+      "outbound-draft-review",
+      "evidenceRechecked",
+      "A fresh DNS check confirmed the same recipient mail host.",
+      prospect.id,
+    );
+    return { prospect: prospect.id, revision: prospect.revision };
+  });
 
 /** Apply a checkpointed automatic review and approval in one transaction. */
 export const applyAutomaticDraftReview = (input: {
