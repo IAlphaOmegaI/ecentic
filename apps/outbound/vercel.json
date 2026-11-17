@@ -1,0 +1,20 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "buildCommand": "bunx turbo run build --filter=outbound",
+  "installCommand": "bun install --frozen-lockfile",
+  "crons": [
+    {
+      "path": "/api/cron/outbound",
+      "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/cron/outbound-prepare",
+      "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/cron/outbound-linkedin",
+      "schedule": "* * * * *"
+    }
+  ]
+}

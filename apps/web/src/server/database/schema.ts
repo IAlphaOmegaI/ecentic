@@ -15,6 +15,8 @@ import type * as Agentic from "@/server/app/intelligence/agentic-contract";
 import type * as Brand from "@/server/app/intelligence/brand";
 import type * as Simulate from "@/server/app/intelligence/simulate";
 import { encryptedText } from "./encrypted-text";
+import * as Outbound from "./outbound";
+export * from "./outbound";
 
 /**
  * Better-auth core schema (compatible with drizzleAdapter).
@@ -1211,6 +1213,7 @@ export const dealRedemption = pgTable(
 
 /** Tables object for defineRelations and better-auth adapter */
 export const tables = {
+  ...Outbound,
   user,
   session,
   account,

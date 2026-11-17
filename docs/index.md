@@ -21,6 +21,20 @@ Central navigation for product context, agent rules, and package/component docum
 - [Website and blog localization](./integrations/blog-i18n.md) — seven locales, reviewed translation jobs, publication and backfill
 - [Translation workflow and quality](./integrations/translation-quality.md) — locale register, protected content, catalog generation and targeted review
 
+### If you are working on internal outbound
+
+- [Outbound app](./integrations/outbound.md) — separate `apps/outbound` staff workspace, editable playbook, prospect review, provider setup, sender pool and LinkedIn queue
+- [Outbound campaigns](./integrations/outbound-campaigns.md) — parallel campaigns, Claude criteria review and Apollo/Clay company discovery
+- [Outbound workspace](./integrations/outbound-workspace.md) — goal-focused navigation, current campaign progress and conversation activity views
+- [Outbound conversations](./integrations/outbound-conversations.md) — unified email/LinkedIn threads, exact replies and recorded meetings
+- [Outbound mailbox history](./integrations/outbound-history-sync.md) — bounded history batches, replay-safe receipts and fenced checkpoints
+- [Outbound mailbox setup test](./integrations/outbound-mailbox-test.md) — one explicit owner test, exact reply confirmation and no campaign activation
+- [Outbound shopping research](./integrations/outbound-shopping-research.md) — observed shopper queries, source-bound findings and durable drafting/delivery gates
+- [Outbound email history](./integrations/outbound-sent.md) — immutable email records within Conversations and follow-up activity
+- [Mailbox readiness and Warmbly](./integrations/outbound-warmup.md) — DNS and connection checks, capped plans and shared-network controls
+- [Claude configuration questions](./integrations/outbound-claude-questions.md) — current setup, sender identity decisions and the Clay routine specification to complete with ecentic context
+- [Outbound launch decisions](./integrations/outbound-launch-decisions.md) — November answers, implemented launch policy and remaining account/history work
+
 ### If you are writing or publishing a blog post
 
 - [Blog post format](../apps/web/content/blog/README.md) — one markdown file per post in `apps/web/content/blog`, frontmatter, body rules, `bun run blog:check`

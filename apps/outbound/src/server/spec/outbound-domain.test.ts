@@ -1,0 +1,305 @@
+import { describe, expect, test } from "bun:test";
+import {
+  defaultPlaybook,
+  deliveredBody,
+  draftSimilarityIssues,
+  inSendWindow,
+  lintMessages,
+  normalizeDomain,
+  playbookSchema,
+  prospectIssues,
+  prospectSchema,
+  renderMessages,
+  senderFor,
+  senderPool,
+  templateIssues,
+} from "@/lib/outbound";
+import {
+  legacyHistory,
+  mapLegacyProspect,
+  parseImport,
+} from "@/server/app/outbound/import";
+
+const now = new Date("2026-11-09T17:00:00Z");
+const settings = { ...defaultPlaybook, senderConfirmed: true };
+const prospect = prospectSchema.parse({
+  company: "Sample Goods",
+  domain: "samplegoods.com",
+  country: "US",
+  name: "Jane Smith",
+  first: "Jane",
+  title: "Head of Growth",
+  email: "jane@samplegoods.com",
+  emailStatus: "verified",
+  emailVerifiedAt: now.toISOString(),
+  emailSource: "provider receipt 123",
+  roleSource: "https://samplegoods.com/team",
+  roleCheckedAt: now.toISOString(),
+  timezone: "America/New_York",
+  mxProvider: "google",
+  mxCheckedAt: now.toISOString(),
+  product: "Linen tote",
+  productUrl: "https://samplegoods.com/products/tote",
+  finding: "The page lists one size, but does not give its dimensions.",
+  evidence: "Visible size options and product details inspected.",
+  evidenceCheckedAt: now.toISOString(),
+  legitEvidence:
+    "Active physical product catalogue and business identity checked.",
+});
+
+describe("outbound eligibility", () => {
+  test("qualified fresh evidence clears the review gate", () => {
+    expect(prospectIssues(prospect, settings, now)).toEqual([]);
+    expect(lintMessages(renderMessages(prospect, settings), settings)).toEqual(
+      [],
+    );
+  });
+  test("subdomains deduplicate without collapsing public suffix companies", () => {
+    expect(normalizeDomain("https://shop.example.co.uk/products/one")).toBe(
+      "example.co.uk",
+    );
+    expect(normalizeDomain("www.example.co.uk")).toBe("example.co.uk");
+    expect(normalizeDomain("another.co.uk")).not.toBe(
+      normalizeDomain("example.co.uk"),
+    );
+    expect(normalizeDomain("https://user:secret@example.com")).toBe("");
+    expect(normalizeDomain("127.0.0.1")).toBe("");
+  });
+  test("unknown, stale and guessed verification never passes", () => {
+    for (const emailStatus of [
+      "unknown",
+      "guessed",
+      "catchAll",
+      "invalid",
+      "stale",
+    ] as const)
+      expect(
+        prospectIssues({ ...prospect, emailStatus }, settings, now).some(
+          (issue) => issue.code === "emailUnverified",
+        ),
+      ).toBe(true);
+    for (const emailVerifiedAt of [
+      "",
+      "2026-10-01T00:00:00Z",
+      "2026-11-10T00:00:00Z",
+    ])
+      expect(
+        prospectIssues({ ...prospect, emailVerifiedAt }, settings, now).some(
+          (issue) => issue.code === "emailUnverified",
+        ),
+      ).toBe(true);
+  });
+  test("vendor labels without original receipt dates stay ineligible", () => {
+    const imported = mapLegacyProspect({
+      ...prospect,
+      emailVerifiedAt: "",
+      email_status: "tool-verified",
+    });
+    expect(imported.emailVerifiedAt).toBe("");
+    expect(
+      prospectIssues(imported, settings, now).map((issue) => issue.code),
+    ).toContain("emailUnverified");
+  });
+  test("country, relationship, shared inbox, excluded title and Microsoft holds remain enforced", () => {
+    const issues = prospectIssues(
+      {
+        ...prospect,
+        country: "DE",
+        relationship: "customer",
+        email: "info@samplegoods.com",
+        title: "Former Head of Growth",
+        mxProvider: "microsoft",
+      },
+      settings,
+      now,
+    ).map((issue) => issue.code);
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        "countryHeld",
+        "relationshipExcluded",
+        "sharedInbox",
+        "roleExcluded",
+        "microsoftHeld",
+      ]),
+    );
+    expect(
+      prospectIssues(
+        { ...prospect, timezone: "fake/timezone" },
+        settings,
+        now,
+      ).map((issue) => issue.code),
+    ).toContain("timezoneMissing");
+  });
+  test("only verified public web evidence URLs are accepted", () => {
+    expect(
+      prospectSchema.safeParse({
+        ...prospect,
+        roleSource: "javascript:alert(1)",
+      }).success,
+    ).toBe(false);
+  });
+});
+
+describe("outbound concrete drafts", () => {
+  test("batch review rejects duplicate subjects and personal sentences while exempting shared founder copy", () => {
+    const first = renderMessages(prospect, settings);
+    const same = draftSimilarityIssues(first, [first], settings).map(
+      (issue) => issue.code,
+    );
+    expect(same).toEqual(
+      expect.arrayContaining(["duplicateSubject", "repeatedSentence"]),
+    );
+    const second = renderMessages(
+      {
+        ...prospect,
+        product: "Ceramic tumbler",
+        finding: "I could not find its capacity on this page.",
+      },
+      settings,
+    );
+    expect(draftSimilarityIssues(second, [first], settings)).toEqual([]);
+  });
+  test("stable assignment uses all four configured inboxes regardless of list order", () => {
+    const settings = {
+      ...defaultPlaybook,
+      senderEmails:
+        "one@joinecentic.com\ntwo@joinecentic.com\nthree@joinecentic.com\nfour@joinecentic.com",
+    };
+    const reordered = {
+      ...settings,
+      senderEmails: settings.senderEmails.split("\n").reverse().join("\n"),
+    };
+    const assignments = Array.from({ length: 100 }, (_, index) =>
+      senderFor(`prospect-${index}`, settings),
+    );
+    expect(new Set(assignments).size).toBe(4);
+    expect(senderFor("prospect-17", reordered)).toBe(
+      senderFor("prospect-17", settings),
+    );
+    expect(senderPool(defaultPlaybook)).toEqual([defaultPlaybook.fromEmail]);
+  });
+  test("review and send use identical footer and quoted first-message text", () => {
+    const messages = renderMessages(prospect, settings);
+    const first = messages[0];
+    const followup = messages[1];
+    if (!first || !followup) throw new Error("Expected complete messages");
+    expect(deliveredBody(first, first, settings.postalAddress)).toBe(
+      `${first.body}\n\n${settings.postalAddress}`,
+    );
+    expect(deliveredBody(followup, first, settings.postalAddress)).toContain(
+      `> ${settings.postalAddress}`,
+    );
+    expect(deliveredBody(followup, first, settings.postalAddress)).toContain(
+      `> ${first.body.split("\n")[0]}`,
+    );
+  });
+  test("all three steps are frozen with first-send anchored day offsets", () => {
+    const messages = renderMessages(prospect, settings);
+    expect(messages.map((message) => message.afterDays)).toEqual([0, 3, 7]);
+    expect(messages[1]?.body).toBe("Bumping this!");
+    expect(messages[2]?.body).toBe("Jane?");
+    expect(renderMessages({ ...prospect, first: "" }, settings)[2]?.body).toBe(
+      "Worth a chat?",
+    );
+  });
+  test("untrusted prospect text cannot expand another template variable", () => {
+    const messages = renderMessages(
+      { ...prospect, product: "{signature}" },
+      settings,
+    );
+    expect(messages[0]?.subject).toBe("{signature}");
+    expect(
+      lintMessages(messages, settings).map((issue) => issue.code),
+    ).toContain("unresolvedVariable");
+    expect(templateIssues("Hi {first}, {unknown}")).toEqual([
+      { code: "unknownVariable", field: "unknown" },
+    ]);
+  });
+  test("copy constraints catch added links, hype punctuation and overlength subjects", () => {
+    const messages = renderMessages(prospect, settings);
+    const first = messages[0];
+    if (!first) throw new Error("Expected first draft");
+    const issues = lintMessages(
+      [
+        {
+          ...first,
+          subject: "This subject contains far too many separate words",
+          body: `${first.body}\nVisit https://example.com!`,
+        },
+      ],
+      settings,
+    ).map((issue) => issue.code);
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        "subjectLength",
+        "link",
+        "exclamation",
+        "signatureMissing",
+      ]),
+    );
+  });
+  test("new editable controls backfill old settings safely", () => {
+    const {
+      voiceNotes: _voice,
+      linkedinTemplate: _linkedin,
+      historyConfirmed: _history,
+      senderTested: _test,
+      competingSendersPaused: _paused,
+      ...old
+    } = settings;
+    const parsed = playbookSchema.parse(old);
+    expect(parsed.linkedinTemplate).toContain("{first}");
+    expect(parsed.senderTested).toBe(false);
+  });
+});
+
+describe("outbound scheduling and import", () => {
+  test("weekday and recipient-local boundaries are exact", () => {
+    expect(
+      inSendWindow("America/New_York", new Date("2026-11-09T12:59:59Z")),
+    ).toBe(false);
+    expect(
+      inSendWindow("America/New_York", new Date("2026-11-09T13:00:00Z")),
+    ).toBe(true);
+    expect(
+      inSendWindow("America/New_York", new Date("2026-11-09T19:00:00Z")),
+    ).toBe(false);
+    expect(
+      inSendWindow("America/New_York", new Date("2026-11-13T17:00:00Z")),
+    ).toBe(false);
+    expect(
+      inSendWindow("America/Los_Angeles", new Date("2026-07-06T15:00:00Z")),
+    ).toBe(true);
+  });
+  test("CSV preserves escaped commas, quoted newlines and literal formula text", () => {
+    expect(
+      parseImport(
+        'company,notes\n"Sample, Inc","First line\nSecond ""quote"""\nOther,=1+1',
+      ),
+    ).toEqual([
+      { company: "Sample, Inc", notes: 'First line\nSecond "quote"' },
+      { company: "Other", notes: "=1+1" },
+    ]);
+  });
+  test("JSON and JSONL envelopes parse without trusting imported approvals", () => {
+    expect(parseImport('{"prospects":[{"domain":"one.com"}]}')).toEqual([
+      { domain: "one.com" },
+    ]);
+    expect(
+      parseImport('{"domain":"one.com"}\n{"domain":"two.com"}'),
+    ).toHaveLength(2);
+    expect(
+      mapLegacyProspect({
+        ...prospect,
+        approved: true,
+        approvedAt: now.toISOString(),
+      }),
+    ).not.toHaveProperty("approved");
+  });
+  test("historic contact, reserved draft and bounce scopes survive import classification", () => {
+    expect(legacyHistory({ tags: "draft-not-sent" }).contacted).toBe(true);
+    expect(legacyHistory({ status: "bounced" }).bounced).toBe(true);
+    expect(legacyHistory({ status: "unsubscribed" }).suppressed).toBe(true);
+    expect(legacyHistory({ status: "draft" }).contacted).toBe(false);
+  });
+});

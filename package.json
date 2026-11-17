@@ -19,7 +19,12 @@
     "lint": "biome check --write",
     "typecheck": "turbo run typecheck",
     "outdated": "turbo run outdated && bun outdated -r",
-    "clean": "turbo run clean && rm -rf node_modules"
+    "clean": "turbo run clean && rm -rf node_modules",
+    "build:outbound": "turbo run build --filter=./apps/outbound...",
+    "dev:outbound": "turbo run dev --filter=./apps/outbound...",
+    "start:outbound": "turbo run start --filter=outbound",
+    "test:outbound": "turbo run test --filter=outbound",
+    "typecheck:outbound": "turbo run typecheck --filter=outbound"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.11",

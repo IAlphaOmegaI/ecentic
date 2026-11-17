@@ -1,0 +1,1753 @@
+{
+  "outbound": {
+    "page": {
+      "title": "Outbound",
+      "description": "Find the right stores, make a useful first impression, and keep every conversation in view.",
+      "internal": "Internal workspace"
+    },
+    "nav": {
+      "overview": "Overview",
+      "prospects": "Prospects",
+      "review": "Review",
+      "linkedin": "LinkedIn",
+      "replies": "Conversations",
+      "playbook": "Playbook",
+      "integrations": "Integrations",
+      "campaigns": "Campaigns",
+      "warmup": "Warmup",
+      "sent": "Sent"
+    },
+    "common": {
+      "saving": "Saving…",
+      "loading": "Loading…",
+      "saved": "Changes saved",
+      "error": "Couldn't save these changes. Please try again.",
+      "emptyValue": "Not provided",
+      "optional": "Optional",
+      "required": "Complete this field.",
+      "invalidEmail": "Enter a valid email address.",
+      "invalidUrl": "Enter a complete HTTPS URL.",
+      "wordCount": "{count, number} / {maximum, number} words",
+      "revision": "Version {version, number}",
+      "neverSent": "Not sent",
+      "source": "Source",
+      "lastUpdated": "Updated {date}",
+      "copySuccess": "Copied",
+      "copyError": "Couldn't copy. Select the text and copy it manually.",
+      "all": "All",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "requestError": "Couldn't complete this request. Please try again.",
+      "connecting": "Connecting…",
+      "invalidField": "Check this value.",
+      "invalidForm": "Check the form values before continuing.",
+      "savedRefreshError": "Saved, but the view could not be updated. Reload this page."
+    },
+    "status": {
+      "candidate": "Candidate",
+      "draft": "Draft",
+      "drafted": "Drafted",
+      "review": "Needs review",
+      "ready": "Ready for review",
+      "approved": "Approved",
+      "held": "On hold",
+      "hold": "On hold",
+      "suppressed": "Do not contact",
+      "skipped": "Skipped",
+      "sent": "Sent",
+      "replied": "Replied",
+      "active": "Active",
+      "completed": "Completed",
+      "pending": "Pending",
+      "verified": "Verified",
+      "invalid": "Invalid",
+      "unknown": "Unknown",
+      "stale": "Needs a fresh check",
+      "catchAll": "Catch-all",
+      "guessed": "Guessed address",
+      "unverified": "Unverified",
+      "optedOut": "Opted out",
+      "bounced": "Bounced",
+      "finished": "Finished"
+    },
+    "overview": {
+      "title": "Your next conversations",
+      "description": "A clear view of the people, drafts and follow-ups that need your attention.",
+      "metrics": {
+        "prospects": "Prospects",
+        "review": "Awaiting review",
+        "approved": "Approved emails",
+        "suppressed": "Do not contact",
+        "replies": "Replies",
+        "linkedin": "LinkedIn tasks"
+      },
+      "emptyTitle": "Start with a few good prospects.",
+      "emptyDescription": "Add a store or import your existing research. Each prospect keeps its product finding, sources and message drafts together.",
+      "target": "Weekly target",
+      "targetValue": "{count, number} first emails",
+      "activityTitle": "Recent activity",
+      "activityEmpty": "Saved changes and outreach decisions will appear here.",
+      "approvalNote": "Every email needs your approval. Changing a draft returns it to review.",
+      "sendingPaused": "Sending is paused",
+      "action": {
+        "primary": "Add a prospect",
+        "secondary": "Review messages"
+      },
+      "automaticDrafts": "Drafts",
+      "sendingSwitchOn": "Sending switch on",
+      "automaticNote": "Automatic mode checks contacts and messages against the saved Playbook. Eligible emails can send without manual approval; blocked items stay on hold."
+    },
+    "prospect": {
+      "title": "Prospects",
+      "description": "One company, one person, and one finding you can stand behind.",
+      "emptyTitle": "No prospects yet",
+      "emptyDescription": "Add a company or import the research you've already done.",
+      "newTitle": "Add a prospect",
+      "editTitle": "Prospect details",
+      "search": "Search companies or people",
+      "identityTitle": "Company and person",
+      "evidenceTitle": "Product finding",
+      "personalTitle": "Personal line",
+      "verificationTitle": "Email verification",
+      "fields": {
+        "company": "Company",
+        "domain": "Store domain",
+        "website": "Website",
+        "personName": "Full name",
+        "first": "First name",
+        "title": "Current role",
+        "email": "Work email",
+        "linkedinUrl": "LinkedIn profile URL",
+        "country": "Country code",
+        "timezone": "Time zone",
+        "product": "Product name",
+        "productUrl": "Product page URL",
+        "finding": "What you found",
+        "evidence": "Supporting evidence",
+        "personalHook": "Personal line",
+        "personalHookUrl": "Personal-line source URL",
+        "emailStatus": "Verification status",
+        "verifiedAt": "Verified at",
+        "roleSource": "Role source URL",
+        "source": "Lead source",
+        "notes": "Notes",
+        "name": "Full name",
+        "platform": "Commerce platform",
+        "relationship": "Relationship",
+        "roleCheckedAt": "Role checked at",
+        "emailVerifiedAt": "Email verified at",
+        "emailSource": "Email source",
+        "mxProvider": "Email host",
+        "mxCheckedAt": "Email host checked at",
+        "gap": "Gap type",
+        "evidenceCheckedAt": "Product evidence checked at",
+        "personalLine": "Personal line",
+        "personalSource": "Personal-line source URL",
+        "legitEvidence": "Company qualification evidence",
+        "lang": "Email language",
+        "productCategory": "Product category",
+        "reviewCount": "Visible review count",
+        "distributionSource": "Other-retailer product URL",
+        "findingReviewed": "I checked the source, rendered page and finding rules",
+        "personalPublishedAt": "Personal-line source published at",
+        "personalCheckedAt": "Personal-line source last checked at"
+      },
+      "countryHelp": "Use a two-letter code, such as US or GB.",
+      "findingHelp": "Describe what the named product page actually showed. Keep the supporting source separate from the email.",
+      "verificationHelp": "Only record a verified address when a provider has confirmed it. A public or guessed address is not a verification result.",
+      "personalHelp": "Use a true work-related detail published within nine months. Open its public source within the last day and record both dates. Leave the line blank when there is no useful detail.",
+      "action": {
+        "primary": "Save prospect",
+        "secondary": "Create drafts",
+        "tertiary": "Open product page",
+        "quaternary": "Open source"
+      },
+      "timeHelp": "Use an IANA time zone, such as America/New_York.",
+      "dateHelp": "Use an ISO date and time, including the time-zone offset.",
+      "legitHelp": "Record sourced evidence of funding, at least three real team members, or distribution through another retailer.",
+      "searchEmptyTitle": "No matching prospects",
+      "searchEmptyDescription": "Try a company, person, email address or domain.",
+      "list": {
+        "count": "{count, number} prospects",
+        "filter": "Email progress",
+        "allStatuses": "All statuses",
+        "range": "{start, number}–{end, number} of {total, number}",
+        "action": {
+          "primary": "Previous page",
+          "secondary": "Next page",
+          "tertiary": "Clear filters",
+          "quaternary": "Close import"
+        },
+        "pagination": "Prospect pages"
+      },
+      "productCategoryHelp": "Use the category stated by the product page. It fills the category placeholder.",
+      "reviewCountHelp": "Digits only, copied from this product’s visible review count. Leave blank if it cannot be confirmed.",
+      "distributionSourceHelp": "Link to the same product at another retailer. Required for the claim about matching listings across stores.",
+      "findingReviewedHelp": "Check this product’s raw and rendered data and the finding’s exceptions before confirming. Saving this check does not approve the email.",
+      "unsupportedFinding": "Other finding (review required)",
+      "noFinding": "No finding yet",
+      "progress": {
+        "emailProgress": "Email progress",
+        "allLifecycle": "All email progress",
+        "lifecycleFilter": "Email lifecycle",
+        "allLinkedin": "All LinkedIn statuses",
+        "linkedinFilter": "LinkedIn status",
+        "help": "Research includes queued and running contact preparation. Company research without a contact is shown in Campaigns. Email and LinkedIn progress are tracked separately.",
+        "error": "Progress could not be loaded. Refresh before using lifecycle filters.",
+        "lifecycle": {
+          "researching": "In research",
+          "scheduled": "Scheduled",
+          "sent": "Sent",
+          "replied": "Replied",
+          "held": "Held"
+        },
+        "action": {
+          "primary": "Refresh list",
+          "secondary": "Email history",
+          "tertiary": "Company research"
+        }
+      },
+      "summary": {
+        "description": "The contact, product insight and current sequence in one place.",
+        "preparation": "Preparation",
+        "noPreparation": "No automatic preparation recorded",
+        "emailAccepted": "{count, plural, one {# email accepted} other {# emails accepted}}",
+        "nextEmail": "Next email: {time}",
+        "noSchedule": "No email scheduled",
+        "noProfile": "No LinkedIn profile saved",
+        "profile": "Open profile",
+        "insightTitle": "Product insight",
+        "insightMissing": "No product insight saved yet.",
+        "sourceQuote": "From the product page",
+        "checkedAt": "Checked {time}",
+        "detailsTitle": "Supporting research",
+        "proposedCheck": "Proposed shopper check",
+        "needsVerification": "A fresh provider check is needed before this email can send.",
+        "issuesTitle": "{count, plural, one {# unresolved check} other {# unresolved checks}}",
+        "sequenceTitle": "Saved sequence",
+        "sequenceHelp": "Current saved messages. Conversations keeps the actual sending history.",
+        "sequenceMissing": "No sequence saved yet.",
+        "linkedinDraft": "Saved LinkedIn draft",
+        "manualTitle": "Optional edits and research tools",
+        "manualHelp": "Edit saved details or run an individual research step when needed.",
+        "action": {
+          "secondary": "Open campaign",
+          "tertiary": "Edit sequence"
+        }
+      }
+    },
+    "import": {
+      "title": "Bring your research with you",
+      "description": "Import a JSON array, JSONL or CSV from your existing outreach process. Companies are matched by domain; imports never approve messages.",
+      "fields": {
+        "content": "Prospect records"
+      },
+      "help": "Paste up to 5,000 rows (maximum 2 MB), including sources. Existing contact history and do-not-contact decisions are preserved.",
+      "result": "Imported {count, number} records.",
+      "action": {
+        "primary": "Import prospects"
+      },
+      "summary": "{imported, number} imported · {duplicate, number} already present · {suppressed, number} exclusions · {invalid, number} invalid",
+      "rowError": "Row {row, number} needs a valid company, person, country or email.",
+      "moreErrors": "Additional invalid rows: {count, number}."
+    },
+    "review": {
+      "title": "Make every email worth sending",
+      "description": "Review the recipient, the evidence and the exact messages together.",
+      "emptyTitle": "You're caught up",
+      "emptyDescription": "Create drafts from a prospect to bring them here for review.",
+      "first": "First email",
+      "followupOne": "First follow-up",
+      "followupTwo": "Second follow-up",
+      "afterDays": "Day {count, number}",
+      "fields": {
+        "subject": "Subject",
+        "body": "Email body",
+        "reason": "Reason"
+      },
+      "evidenceTitle": "Why this email fits",
+      "checksTitle": "Before approval",
+      "approvalNote": "Approval applies to these exact messages and this recipient. Editing them requires a new approval.",
+      "blocked": "Resolve these checks before approval.",
+      "ready": "Ready for your review",
+      "notSending": "Approval does not send an email immediately.",
+      "action": {
+        "primary": "Approve these emails",
+        "secondary": "Save edits",
+        "tertiary": "Hold",
+        "quaternary": "Do not contact"
+      },
+      "footerTitle": "Postal footer",
+      "quotedHistory": "Quoted first email",
+      "queue": {
+        "title": "Review queue",
+        "description": "Find a prospect, then open their emails and evidence for review.",
+        "search": "Search companies, contacts or subjects",
+        "status": "Filter by status",
+        "allStatuses": "All statuses",
+        "count": "{count, number} {count, plural, one {prospect} other {prospects}} in this queue",
+        "subject": "Subject",
+        "updated": "Last updated",
+        "range": "{start, number}–{end, number} of {total, number}",
+        "page": "Page {page, number} of {pages, number}",
+        "emptyTitle": "No matching drafts",
+        "emptyDescription": "Try a different search or status.",
+        "error": "The review queue could not be loaded. Try again.",
+        "pagination": "Review queue pages",
+        "action": {
+          "primary": "Open review",
+          "secondary": "Back to queue",
+          "tertiary": "Clear filters",
+          "quaternary": "Search"
+        },
+        "previous": "Previous page",
+        "next": "Next page",
+        "missingTitle": "Review unavailable",
+        "missingDescription": "This prospect has no saved draft to review.",
+        "discard": {
+          "title": "Discard unsaved edits?",
+          "description": "Your message edits have not been saved.",
+          "action": {
+            "primary": "Discard edits",
+            "secondary": "Keep editing"
+          }
+        },
+        "statusColumn": "Status"
+      },
+      "automaticReady": "No recorded blockers",
+      "automaticApprovalNote": "Automatic mode performs the approval checks. You can inspect, edit or hold a message here; edits must pass the checks again.",
+      "manualApproval": "Approve manually"
+    },
+    "linkedin": {
+      "title": "Keep LinkedIn personal",
+      "description": "Prepare the message here, then connect or reply from your own LinkedIn profile.",
+      "manualNote": "Connection requests and messages are sent manually on LinkedIn. This workspace keeps the draft, status and next step together.",
+      "emptyTitle": "No LinkedIn tasks yet",
+      "emptyDescription": "Add a LinkedIn profile to a prospect to prepare a personal next step.",
+      "fields": {
+        "status": "Connection status",
+        "draft": "Message draft",
+        "notes": "Conversation notes",
+        "nextDate": "Next step date"
+      },
+      "status": {
+        "notStarted": "Not started",
+        "planned": "Planned",
+        "requested": "Connection requested",
+        "connected": "Connected",
+        "messaged": "Message sent",
+        "replied": "Replied",
+        "closed": "Closed",
+        "research": "Researching",
+        "ready": "Ready",
+        "invited": "Invitation sent"
+      },
+      "action": {
+        "primary": "Save next step",
+        "secondary": "Open LinkedIn profile",
+        "tertiary": "Copy message"
+      },
+      "queue": {
+        "title": "LinkedIn contacts",
+        "description": "Find a contact, review their draft, and track the next step.",
+        "search": "Search companies or contacts",
+        "status": "Filter by status",
+        "allStatuses": "All statuses",
+        "count": "{count, plural, one {# LinkedIn contact} other {# LinkedIn contacts}}",
+        "range": "{start, number}–{end, number} of {total, number}",
+        "page": "Page {page, number} of {pages, number}",
+        "emptyTitle": "No matching LinkedIn contacts",
+        "emptyDescription": "Try another search or clear the filters.",
+        "error": "Couldn’t load LinkedIn contacts. Please try again.",
+        "pagination": "LinkedIn contacts pagination",
+        "action": {
+          "primary": "Open contact",
+          "secondary": "Back to contacts",
+          "tertiary": "Clear filters",
+          "quaternary": "Search"
+        },
+        "previous": "Previous page",
+        "next": "Next page",
+        "missingTitle": "LinkedIn task unavailable",
+        "missingDescription": "This contact no longer has a LinkedIn task. Return to the list to choose another contact.",
+        "discard": {
+          "title": "Discard unsaved edits?",
+          "description": "Your changes have not been saved.",
+          "action": {
+            "primary": "Discard edits",
+            "secondary": "Keep editing"
+          }
+        },
+        "statusColumn": "Status",
+        "draft": "Message",
+        "draftSaved": "Draft saved",
+        "draftEmpty": "No draft",
+        "nextStep": "Next step",
+        "unscheduled": "Not scheduled"
+      },
+      "missingTemplateDetails": "Some details used by this template are missing. Add them to the prospect or playbook, or write a message here."
+    },
+    "replies": {
+      "title": "Replies and outcomes",
+      "description": "Keep the conversation history and the next decision in one place.",
+      "emptyTitle": "No replies recorded",
+      "emptyDescription": "Record a reply or an outcome when a conversation moves forward.",
+      "fields": {
+        "outcome": "Outcome",
+        "note": "Reply or note"
+      },
+      "outcomes": {
+        "reply": "Reply received",
+        "positive": "Interested",
+        "negative": "Not interested",
+        "meeting": "Meeting booked",
+        "optout": "Asked not to be contacted",
+        "bounce": "Email bounced",
+        "note": "Note"
+      },
+      "manualNote": "Record the actual outcome. A request to stop contacting someone suppresses further outreach.",
+      "action": {
+        "primary": "Record outcome"
+      }
+    },
+    "playbook": {
+      "title": "A playbook that evolves with ecentic",
+      "description": "Adjust the voice, sequence and targeting in the app. New drafts use the saved version.",
+      "voiceTitle": "Sender identity",
+      "sequenceTitle": "Email sequence",
+      "targetingTitle": "Who to contact",
+      "limitsTitle": "Sending limits",
+      "fields": {
+        "name": "Playbook name",
+        "fromName": "Sender display name",
+        "signature": "Signature",
+        "subjectTemplate": "Subject template",
+        "bodyTemplate": "First-email template",
+        "followupOneTemplate": "First follow-up template",
+        "followupTwoTemplate": "Second follow-up template",
+        "linkedinTemplate": "LinkedIn message template",
+        "weeklyTarget": "First emails per week",
+        "maxWords": "Maximum body words",
+        "dailyCap": "Target maximum per inbox per day",
+        "allowedCountries": "Allowed country codes",
+        "targetRoles": "Target roles",
+        "blockedRoles": "Excluded roles",
+        "excludedDomains": "Excluded company domains",
+        "postalAddress": "Postal address",
+        "voiceNotes": "Writing instructions",
+        "bannedPhrases": "Banned words and phrases",
+        "fromEmail": "Sender email",
+        "founderLine": "Founder introduction",
+        "callToAction": "Closing question",
+        "optout": "Opt-out line",
+        "senderConfirmed": "Sender identity and claims are confirmed",
+        "sendingEnabled": "Enable sending of approved messages",
+        "maxBodyWords": "Maximum body words",
+        "verificationDays": "Product evidence validity in days",
+        "minGapMinutes": "Minimum minutes between sends",
+        "maxGapMinutes": "Maximum minutes between sends",
+        "followupOneDays": "First follow-up day",
+        "followupTwoDays": "Second follow-up day",
+        "heldCountries": "Country codes to hold",
+        "excludedRoles": "Excluded roles",
+        "historyConfirmed": "Past sends and do-not-contact records have been imported",
+        "competingSendersPaused": "Other outbound senders have been paused",
+        "senderTested": "The sender inbox has passed a controlled send and reply test",
+        "senderEmails": "Sender inboxes",
+        "sentEmailExamples": "Previously sent email examples",
+        "humanizeDrafts": "Use Humanizer for AI drafts",
+        "humanizerNotes": "Humanizer instructions",
+        "inactiveSenderEmails": "Inactive sender inboxes",
+        "emailVerificationDays": "Email verification validity in days",
+        "excludedCompanies": "Excluded company names",
+        "targetingNotes": "Targeting priorities and review notes",
+        "replyClaimNotes": "Claims permitted in replies",
+        "firstEmailBlockedClaims": "Claims blocked in first emails",
+        "barcodeObservation": "Observation",
+        "barcodeConsequence": "Possible consequence",
+        "barcodeAskAbout": "AI question topic",
+        "reviewsObservation": "Observation",
+        "reviewsConsequence": "Possible consequence",
+        "reviewsAskAbout": "AI question topic",
+        "noBarcodeObservation": "Observation",
+        "noBarcodeConsequence": "Possible consequence",
+        "noBarcodeAskAbout": "AI question topic",
+        "noProductObservation": "Observation",
+        "noProductConsequence": "Possible consequence",
+        "noProductAskAbout": "AI question topic",
+        "automationEnabled": "Enable automatic campaign preparation",
+        "productCheckIntro": "Product-check introduction",
+        "publishedProductObservation": "Observation",
+        "publishedProductConsequence": "Proposed check",
+        "publishedProductAskAbout": "Shopper question topic",
+        "linkedinAutomationEnabled": "Enable automatic LinkedIn outreach",
+        "linkedinAccountId": "LinkedIn account",
+        "linkedinDailyInvites": "Maximum invitations per day",
+        "linkedinWeeklyInvites": "Maximum invitations per week",
+        "linkedinDailyMessages": "Maximum messages per day",
+        "meetingBookingUrl": "Meeting booking link",
+        "researchInstructions": "Research instructions",
+        "requireShoppingEvidence": "Require shopping evidence before drafting"
+      },
+      "templateHelp": "Insert the supported variables shown below. They are filled from the prospect's saved details.",
+      "variablesTitle": "Available variables",
+      "listHelp": "Enter one value per line.",
+      "changeNote": "Changing templates does not approve existing messages. Review any regenerated drafts before sending.",
+      "capHelp": "The daily cap includes first emails and follow-ups.",
+      "action": {
+        "primary": "Save playbook"
+      },
+      "legalHelp": "Country settings are an eligibility control, not legal permission to contact someone. Keep unreviewed countries on hold.",
+      "sendingHelp": "Only approved messages that pass every current check can enter the sending queue.",
+      "senderHelp": "Confirm that the display name, signature and founder statements truthfully identify the sender.",
+      "validation": {
+        "gap": "The maximum gap must be at least the minimum gap.",
+        "followup": "The second follow-up must come after the first."
+      },
+      "releaseHelp": "Confirm these checks before enabling delivery. Approving messages does not enable sending.",
+      "senderPoolHelp": "These inbox addresses use the same sender name and signature above. They are aliases for one person, not separate team members.",
+      "examplesHelp": "Paste real first emails you have sent. Their voice takes priority over generic style advice. Facts and recipients stay specific to each prospect.",
+      "writingTitle": "Writing formula",
+      "writingHelp": "Templates set the first email's structure and closing. AI drafting uses your writing instructions and real examples to polish it. Follow-up and LinkedIn text comes from their saved templates.",
+      "humanizerHelp": "Polish AI drafts with Humanizer before review. New drafts keep the template's sender lines and closing.",
+      "humanizerNotesHelp": "Edit the cleanup guidance. Your sent examples guide the voice. Turning Humanizer off keeps these notes for later.",
+      "barcodeTitle": "Barcode missing from page data",
+      "reviewsTitle": "Reviews without rating data",
+      "noBarcodeTitle": "No barcode found",
+      "noProductTitle": "No product data found",
+      "inactiveSenderHelp": "Keep additional sender aliases here while their connections are pending. They can sync history when connected but cannot send until moved to the active list.",
+      "emailVerificationHelp": "Maximum age of the provider’s actual verification receipt. Fetching an older record does not renew it.",
+      "productVerificationHelp": "Maximum age of the named product’s evidence at review and sending.",
+      "excludedCompaniesHelp": "One exact company name or known alias per line. Matches company names, not website text.",
+      "targetingNotesHelp": "Priorities and review guidance for staff. These notes do not add automatic eligibility checks.",
+      "replyClaimNotesHelp": "Reference wording for replies and LinkedIn. These notes do not authorize claims in a first email.",
+      "firstEmailBlockedClaimsHelp": "One claim, company name or phrase per line. Matches block first-email approval. Percentages are also blocked.",
+      "findingRulesHelp": "These lines set the observation, proposed check and question topic. The placeholders below use saved prospect facts; productFeature is a source-matched buying detail.",
+      "barcodeHelp": "Confirm a valid store barcode is absent from raw and rendered product data, and link proof that the same product is sold elsewhere.",
+      "reviewsHelp": "Confirm the visible review count belongs to this product and rating data is absent from both the source and rendered page.",
+      "noBarcodeHelp": "Use only for packaged goods. Exclude gift cards, custom or handmade goods, bundles, digital items and samples.",
+      "noProductHelp": "Confirm product data is absent from both the source and the page after JavaScript runs.",
+      "automationTitle": "Automatic mode",
+      "automationHelp": "Active campaigns can find contacts, verify work emails, prepare messages and approve eligible emails automatically. Delivery still follows the sending switch, mailbox readiness and saved limits.",
+      "productCheckIntroHelp": "Founder introduction used only for the observed-product check angle.",
+      "publishedProductTitle": "Specific product insight",
+      "publishedProductHelp": "Use '{productFeature}' for a specific ingredient, material, design or compatibility detail found on the named product. Frame the AI question as a check we propose, never a measured result or missing-data claim.",
+      "automaticChangeNote": "Changes apply to subsequent checks and drafts. Messages that no longer match the Playbook are held.",
+      "automaticSendingHelp": "Only messages that pass automatic checks and current delivery conditions can enter the sending queue.",
+      "linkedinAutomationTitle": "LinkedIn automation",
+      "linkedinAutomationHelp": "Automatically process eligible LinkedIn contacts using the selected connected account. Email sending is controlled separately.",
+      "linkedinAccountHelp": "Choose the connected account that will send invitations and messages. No account is selected automatically.",
+      "linkedinAccountPlaceholder": "Select a connected account",
+      "linkedinAccountUnavailable": "Saved account unavailable",
+      "linkedinCapsHelp": "LinkedIn has separate limits: at most 15 invitations per day, 50 per week and 15 messages per day. These are ceilings; account state and eligibility checks can hold activity.",
+      "meetingBookingUrlHelp": "The HTTPS booking link used in replies. A link click never marks a meeting as booked.",
+      "researchTitle": "Research requirements",
+      "researchHelp": "Set what research must establish about shopper queries, competitors and the path to purchase. A UCP profile alone does not prove AI checkout is available.",
+      "researchInstructionsHelp": "Describe the shopper questions, exact variants and markets to compare, and evidence to collect from UCP, product pages or checkout. Record sources and leave untested or unavailable results unknown.",
+      "requireShoppingEvidenceHelp": "Hold drafting and approval until a supported shopping finding is recorded. An ingredient fact alone is not evidence of shopping friction.",
+      "legacyFindingsTitle": "Legacy finding formulas",
+      "legacyFindingsHelp": "Saved formulas for older product and missing-data checks. When shopping evidence is required, new drafts use the recorded shopping finding instead. These fields remain available for older workflows."
+    },
+    "integrations": {
+      "title": "Connect the right tools",
+      "description": "Connect contact data, company research and sending tools for your campaigns.",
+      "configured": "Configured",
+      "notConfigured": "Not configured",
+      "ready": "Ready",
+      "pending": "Processing",
+      "failed": "Needs attention",
+      "credentialsNote": "Credentials stay on the server. Provider access and usage depend on your account.",
+      "apollo": {
+        "title": "Apollo",
+        "description": "Find the right person at a store and check a sourced work email.",
+        "resultsTitle": "People at this company",
+        "empty": "No matching people were returned.",
+        "sourceNote": "Provider results still need a current role check and email verification.",
+        "action": {
+          "primary": "Add this person",
+          "secondary": "Get work email",
+          "tertiary": "Open profile"
+        }
+      },
+      "clay": {
+        "title": "Clay",
+        "description": "Run a configured enrichment workflow for the records that need another source.",
+        "action": {
+          "primary": "Start enrichment",
+          "secondary": "Check enrichment"
+        },
+        "fields": {
+          "runId": "Enrichment run ID",
+          "cursor": "Result cursor"
+        },
+        "resultTitle": "Enrichment results",
+        "sourceNote": "Enrichment results are evidence to review; they do not approve a contact or message.",
+        "keyVerified": "API key verified",
+        "routinePending": "Enrichment setup pending. Add a Clay routine when you’re ready.",
+        "enrichmentUnavailable": "Connect Clay and add a routine in Integrations before enriching prospects."
+      },
+      "azure": {
+        "title": "Azure",
+        "description": "Prepare drafts from the saved evidence and your current playbook."
+      },
+      "email": {
+        "title": "Email delivery",
+        "description": "Send eligible messages through connected sender mailboxes."
+      },
+      "linkedin": {
+        "title": "LinkedIn",
+        "description": "Connect your LinkedIn account through Unipile and manage its connection here.",
+        "setupHelp": "Create a Unipile V2 account, copy its API key, and save it here.",
+        "empty": "No LinkedIn account connected yet.",
+        "declined": "The LinkedIn connection was not completed. Try connecting again.",
+        "locked": "Account locked",
+        "status": {
+          "running": "Connected",
+          "errored": "Connection error",
+          "disconnected": "Disconnected",
+          "degraded": "Connection needs attention",
+          "partial": "Partially connected"
+        },
+        "action": {
+          "primary": "Connect account",
+          "secondary": "Refresh status",
+          "tertiary": "Reconnect",
+          "quaternary": "Set up Unipile"
+        },
+        "key": {
+          "label": "Unipile API key",
+          "placeholder": "Paste your Unipile API key",
+          "help": "We test the key before saving it encrypted. Saved keys are never shown again.",
+          "required": "Paste your Unipile API key.",
+          "invalid": "Enter a valid API key.",
+          "show": "Show API key",
+          "hide": "Hide API key",
+          "testing": "Testing and saving…",
+          "saved": "API key verified and saved.",
+          "action": {
+            "primary": "Save API key",
+            "secondary": "Replace API key"
+          },
+          "errors": {
+            "invalid": "The key was not accepted. Check the key from your Unipile V2 account and try again.",
+            "unavailable": "Unipile could not be reached. Try again in a moment.",
+            "encryption": "The server could not encrypt this key. Please ask an administrator to check its encryption configuration.",
+            "save": "Could not save the API key. Please try again."
+          }
+        },
+        "pricing": "View Unipile plans"
+      },
+      "fields": {
+        "domain": "Company domain",
+        "routineId": "Clay routine ID"
+      },
+      "action": {
+        "primary": "Find contacts",
+        "secondary": "Verify email",
+        "tertiary": "Run enrichment",
+        "quaternary": "Check product page"
+      },
+      "gmail": {
+        "title": "Mailboxes",
+        "description": "Connect your existing Google inboxes for approved emails and reply sync.",
+        "action": {
+          "primary": "Connect Gmail",
+          "secondary": "Sync replies",
+          "tertiary": "Disconnect",
+          "quaternary": "Save inbox"
+        },
+        "sync": {
+          "running": "Syncing replies…",
+          "stopping": "Finishing current batch…",
+          "action": {
+            "primary": "Stop after this batch"
+          },
+          "help": "Keep this page open while mailbox history is checked. You can stop and continue later.",
+          "progress": "{count, plural, one {# message checked} other {# messages checked}} this run. History checks continue automatically.",
+          "complete": "Sync complete. {count, plural, one {# message checked.} other {# messages checked.}}",
+          "stopped": "Sync stopped. {count, plural, one {# message checked.} other {# messages checked.}} Start again to continue.",
+          "error": "Sync stopped because a mailbox could not be checked. Review its connection and try again."
+        }
+      },
+      "worker": {
+        "title": "Sending worker",
+        "description": "Processes approved messages within your saved limits.",
+        "action": {
+          "primary": "Preview the queue",
+          "secondary": "Pause sending"
+        },
+        "runHelp": "This action may send eligible approved emails when sending is enabled.",
+        "previewHelp": "This check uses saved data. It does not send emails or refresh the inbox."
+      },
+      "connectionError": "The account could not be connected. Check the configuration and try again.",
+      "connected": "Connected",
+      "notConnected": "Not connected",
+      "verification": {
+        "title": "Email verification",
+        "description": "Request a fresh result, then check the job until it finishes. Pending and unknown results cannot be approved.",
+        "fields": {
+          "requestId": "Verification request ID"
+        },
+        "action": {
+          "primary": "Start verification",
+          "secondary": "Check verification"
+        },
+        "pending": "Verification is still processing.",
+        "result": "Verification result"
+      },
+      "research": {
+        "title": "Product evidence",
+        "description": "Check a public product page and save the finding with its source.",
+        "action": {
+          "primary": "Check product page",
+          "secondary": "Prepare next {count, number} prospects",
+          "tertiary": "Find a product finding"
+        },
+        "resultTitle": "Product check",
+        "summary": "{verified, number} findings verified; {held, number} held."
+      },
+      "drafting": {
+        "title": "Draft from saved evidence",
+        "description": "Use Azure to prepare messages from the saved prospect and playbook.",
+        "action": {
+          "primary": "Create AI drafts"
+        },
+        "fields": {
+          "prospect": "Prospect"
+        }
+      },
+      "provenance": "Source and checked date",
+      "mx": {
+        "action": {
+          "primary": "Check email host"
+        }
+      },
+      "credentials": {
+        "setup": {
+          "apollo": "Save the Apollo API key for your workspace here.",
+          "clay": "Save your Clay API key to connect the workspace. You can set up enrichment later.",
+          "google": "Create a Google OAuth web application, add the redirect URI below, and save its client ID and client secret. Then connect each Gmail inbox."
+        },
+        "secret": {
+          "apollo": "Apollo API key",
+          "clay": "Clay API key",
+          "google": "Google OAuth client secret"
+        },
+        "fields": {
+          "clientId": "Google OAuth client ID",
+          "routineId": "Clay routine ID (optional)",
+          "redirectUri": "Google redirect URI"
+        },
+        "redirectHelp": "Add this exact address as an authorized redirect URI in your Google OAuth client.",
+        "help": "Secrets are encrypted before storage and never shown again.",
+        "required": "Complete this field.",
+        "invalid": "Enter a valid value.",
+        "show": "Show secret",
+        "hide": "Hide secret",
+        "saving": "Saving…",
+        "testing": "Checking and saving…",
+        "saved": "Credentials saved.",
+        "action": {
+          "primary": "Save credentials",
+          "secondary": "Replace credentials"
+        },
+        "errors": {
+          "invalid": "Check the credentials and required fields, then try again.",
+          "unavailable": "The provider could not be reached. Please try again.",
+          "encryption": "The server could not encrypt these credentials. Ask an administrator to check its encryption configuration.",
+          "save": "Could not save these credentials. Please try again."
+        },
+        "links": {
+          "clayPlan": "Clay Launch",
+          "googlePlan": "Google Workspace Business Starter",
+          "googleConsole": "Google OAuth setup",
+          "googleApi": "Enable Gmail API",
+          "apolloPlan": "Apollo Basic",
+          "apolloKeys": "Apollo API keys",
+          "clayTrial": "Try Clay",
+          "clayKeys": "Clay API keys",
+          "clayWorkspace": "Open Clay",
+          "clayApiDocs": "Clay API docs"
+        },
+        "routineHelp": "Optional for connecting. Configure an enrichment routine in your Clay workspace, then paste its routine ID here.",
+        "routine": {
+          "action": {
+            "primary": "Advanced: enrichment routine"
+          }
+        },
+        "claySaved": "API key verified and saved.",
+        "claySavedPending": "API key verified and saved. Enrichment setup is still pending."
+      },
+      "mailbox": {
+        "help": "In Roger, open Manage Mailbox → Credentials and copy App Password. We check sending and reply access without sending an email.",
+        "senderHelp": "Use an address saved under Sender inboxes or Inactive sender inboxes in the Playbook. Inactive inboxes can connect and sync, but cannot send.",
+        "passwordHelp": "Paste App Password from Roger, not Password or the 2FA code. It is encrypted before storage and never shown again.",
+        "fields": {
+          "email": "Mailbox email",
+          "appPassword": "App password"
+        },
+        "invalidEmail": "Enter a valid mailbox email address.",
+        "passwordRequired": "Enter this mailbox’s app password.",
+        "invalidPassword": "Enter the 16-character app password. Spaces are allowed.",
+        "show": "Show app password",
+        "hide": "Hide app password",
+        "checking": "Checking sending and replies…",
+        "connected": "Mailbox connected. Sync replies to import its history. Inactive inboxes cannot send.",
+        "oauthHelp": "Use this alternative if you want to connect through your own Google OAuth application.",
+        "action": {
+          "primary": "Check and connect",
+          "secondary": "Advanced: Google OAuth",
+          "tertiary": "Hide Google OAuth setup"
+        },
+        "errors": {
+          "invalid": "Enter a valid mailbox address and its 16-character app password. Spaces in the app password are allowed.",
+          "authentication": "Google did not accept the connection. Check this mailbox’s app password and that mailbox access is enabled.",
+          "unavailable": "The connection to Google timed out or could not be reached. Please try again.",
+          "encryption": "The server could not encrypt the app password. Ask an administrator to check its encryption configuration.",
+          "save": "The mailbox could not be saved. Please try again.",
+          "notRegistered": "Add this address to Sender inboxes or Inactive sender inboxes in the Playbook, then connect it here.",
+          "inactive": "This mailbox is inactive in the Playbook. It can sync replies. Move it to Sender inboxes before enabling sending."
+        },
+        "maximumDailyCap": "Target maximum per inbox per day",
+        "dailyCapHelp": "The target is capped at 50 and includes first emails and follow-ups. Mailboxes start at 15 per day. The limit rises by 5 only after a completed day reaches the current limit without an observed bounce. An observed bounce returns the limit to 15. A target does not guarantee sending volume or inbox reputation."
+      }
+    },
+    "relationships": {
+      "cold": "No prior relationship",
+      "warm": "Warm contact",
+      "event": "Event contact",
+      "customer": "Customer",
+      "pilot": "Pilot",
+      "partner": "Partner",
+      "investor": "Investor",
+      "enterprise": "Enterprise account",
+      "competitor": "Competitor"
+    },
+    "platforms": {
+      "shopify": "Shopify",
+      "woocommerce": "WooCommerce",
+      "other": "Other",
+      "unknown": "Unknown"
+    },
+    "emailHosts": {
+      "google": "Google",
+      "microsoft": "Microsoft",
+      "other": "Other",
+      "unknown": "Unknown"
+    },
+    "languages": {
+      "en": "English",
+      "de": "German",
+      "es": "Spanish",
+      "it": "Italian"
+    },
+    "issues": {
+      "unknownVariable": "The template contains an unsupported variable.",
+      "emptyMessage": "The subject and email body must both be filled in.",
+      "subjectLength": "The first-email subject must contain two to five words.",
+      "wordLimit": "The first email exceeds the saved word limit.",
+      "unresolvedVariable": "Replace the remaining placeholders before approval.",
+      "dash": "Remove em dashes and en dashes.",
+      "link": "Remove links from the email.",
+      "bullet": "Remove bullet lists from the email.",
+      "emoji": "Remove emojis from the email.",
+      "bannedPhrase": "Remove words or phrases excluded by the playbook.",
+      "optoutMissing": "Include the saved opt-out line.",
+      "signatureMissing": "End the first email with the saved signature.",
+      "domainInvalid": "Enter a valid store domain.",
+      "excludedCompany": "This company is on the exclusion list.",
+      "relationshipExcluded": "This relationship is outside cold outreach.",
+      "countryHeld": "This country is not currently eligible for sending.",
+      "emailUnverified": "The work email needs a current verification result.",
+      "microsoftHeld": "Microsoft-hosted recipients are on hold.",
+      "mxUnknown": "The email host needs a current check.",
+      "roleUnverified": "Confirm the current role and its source.",
+      "roleExcluded": "This role is excluded by the playbook.",
+      "legitUnverified": "Add evidence that the company meets the qualification requirements.",
+      "evidenceMissing": "Add a named product, a finding and current supporting evidence.",
+      "personalSourceMissing": "Add the personal line’s public source, publication date and recent review date, or remove the line.",
+      "senderUnconfirmed": "Confirm the sender identity and claims in the playbook.",
+      "senderDomain": "Cold email must use a joinecentic.com sender.",
+      "timezoneMissing": "Add the recipient’s time zone.",
+      "suppressed": "This person or company must not be contacted.",
+      "alreadyContacted": "This company has already been contacted.",
+      "duplicateMessage": "This message repeats another draft.",
+      "staleRevision": "This draft changed. Reload it before reviewing.",
+      "exclamation": "Use an exclamation mark only in the opening greeting.",
+      "roleOutsideTarget": "This role does not match the playbook’s target roles.",
+      "sharedInbox": "Use a verified address for the named person, not a shared inbox.",
+      "draftMissing": "Create all three message drafts before approval.",
+      "emailDomainMismatch": "The work email must belong to this company’s domain.",
+      "productDomainMismatch": "The product page must belong to this company’s domain.",
+      "duplicateSubject": "Another approved prospect already uses this first-email subject.",
+      "repeatedSentence": "A personal sentence repeats one in another approved email.",
+      "findingCopyChanged": "The finding wording changed. Restore the entire saved finding paragraph before approval.",
+      "claimNotAllowed": "Remove claims blocked in first emails and percentage figures.",
+      "findingReviewRequired": "Review the raw and rendered product evidence, resolve the finding placeholders and add any required retail source.",
+      "templateControlsChanged": "Restore the exact saved founder introduction and closing question before approval.",
+      "platformHeld": "Select Shopify or WooCommerce for this cold campaign.",
+      "shoppingResearchRequired": "Record a supported shopping finding before drafting or approving this message."
+    },
+    "preparation": {
+      "action": {
+        "primary": "Prepare weekly research",
+        "secondary": "Stop after this batch"
+      },
+      "description": "Work toward {target, number} recent product findings using public pages, in batches of up to three. Keep this page open; each result is saved.",
+      "progress": "{processed, number} checked this run · {verified, number} / {target, number} findings ready · {held, number} held",
+      "running": "Checking public product pages…",
+      "stopping": "Finishing the current batch…",
+      "stopped": "Stopped after the current batch. Start again to continue with the remaining candidates.",
+      "complete": "Research target reached. Review the findings before drafting.",
+      "shortfall": "The target needs {remaining, number} more findings. Add eligible candidates or review held records.",
+      "empty": "No candidates without evidence are available."
+    },
+    "report": {
+      "title": "This week’s outbound",
+      "description": "Accepted email and conversation activity in the last seven days. Prospect and hold counts show the current pipeline.",
+      "fields": {
+        "source": "Source",
+        "prospects": "Prospects",
+        "held": "On hold",
+        "acceptedFirsts": "Accepted first emails",
+        "acceptedFollowups": "Accepted follow-ups",
+        "replies": "Replies",
+        "bounces": "Bounces",
+        "meetings": "Meetings",
+        "uncertain": "Uncertain outcomes"
+      },
+      "holdReasons": "Current hold reasons",
+      "empty": "No delivery or conversation activity yet.",
+      "period": "{from}–{to}"
+    },
+    "auth": {
+      "title": "Sign in to Outbound",
+      "description": "Use your existing ecentic staff email and password.",
+      "accessNote": "Access is limited to ecentic staff accounts.",
+      "error": "Could not sign in. Check your staff email and password.",
+      "denied": {
+        "title": "Staff access required",
+        "description": "This account does not have ecentic staff access. Sign out to use an authorized account."
+      },
+      "fields": {
+        "email": "Email",
+        "password": "Password"
+      },
+      "validation": {
+        "email": "Enter a valid email address.",
+        "password": "Enter your password."
+      },
+      "password": {
+        "show": "Show password",
+        "hide": "Hide password"
+      },
+      "action": {
+        "primary": "Sign in"
+      },
+      "pending": "Signing in...",
+      "home": "Outbound workspace",
+      "language": "Language",
+      "story": {
+        "label": "ecentic Outbound",
+        "title": "Good outreach starts with a real finding.",
+        "description": "Research the right stores, review every message, and keep the conversation moving.",
+        "steps": {
+          "research": "Research",
+          "review": "Review",
+          "conversation": "Conversations"
+        }
+      }
+    },
+    "account": {
+      "action": {
+        "primary": "Sign out"
+      },
+      "pending": "Signing out…",
+      "error": "Could not sign out. Please try again.",
+      "label": "Account",
+      "staff": "ecentic staff"
+    },
+    "chrome": {
+      "groups": {
+        "workspace": "Workspace",
+        "conversations": "Conversations",
+        "settings": "Settings"
+      },
+      "menu": {
+        "open": "Open navigation",
+        "close": "Close navigation"
+      },
+      "workspace": {
+        "description": "ecentic staff workspace"
+      },
+      "breadcrumb": {
+        "label": "Current page"
+      },
+      "account": {
+        "label": "Account menu"
+      }
+    },
+    "campaigns": {
+      "title": "Campaigns",
+      "newTitle": "Create campaign",
+      "description": "Find companies for each audience, then choose the right people to contact.",
+      "newDescription": "Give this audience a name. You can set its company criteria on the next page.",
+      "detailTitle": "Company discovery",
+      "detailDescription": "Refine this campaign’s criteria, review the company queue and find contacts.",
+      "name": "Campaign name",
+      "status": "Status",
+      "updated": "Updated",
+      "openCampaign": "Open {name}",
+      "criteriaMissing": "Company criteria not saved yet",
+      "search": "Search campaigns",
+      "searchAction": "Search",
+      "allStatuses": "All statuses",
+      "emptyTitle": "No campaigns found",
+      "emptyDescription": "Create a campaign to define an audience and start finding companies.",
+      "emptyFiltered": "Try another search or status filter.",
+      "pagination": "Campaign pagination",
+      "page": "Page {page, number} of {pages, number}",
+      "firstPage": "First page",
+      "previousPage": "Previous page",
+      "nextPage": "Next page",
+      "lastPage": "Last page",
+      "statuses": {
+        "draft": "Draft",
+        "active": "Active",
+        "paused": "Paused",
+        "archived": "Archived"
+      },
+      "loadError": "Couldn’t load this campaign information. Reload the page.",
+      "actionError": "Couldn’t complete this change. Check the campaign and try again.",
+      "invalidCriteria": "Check the criteria, including the minimum and maximum values.",
+      "saved": "Campaign saved",
+      "saving": "Saving…",
+      "create": {
+        "action": {
+          "primary": "Create campaign"
+        }
+      },
+      "metadataTitle": "Campaign settings",
+      "metadataHelp": "Draft and active campaigns can find companies. Activating a campaign does not enable email sending.",
+      "metadata": {
+        "action": {
+          "primary": "Save settings"
+        }
+      },
+      "criteriaTitle": "Company criteria",
+      "criteriaHelp": "These saved values define this campaign’s company search. Unknown company facts remain unknown.",
+      "criteria": {
+        "action": {
+          "primary": "Save criteria"
+        }
+      },
+      "fields": {
+        "objective": "Audience and objective",
+        "countries": "Countries",
+        "platforms": "Commerce platforms",
+        "keywords": "Company keywords",
+        "excludedKeywords": "Excluded keywords",
+        "targetRoles": "Target contact roles",
+        "excludedRoles": "Excluded contact roles",
+        "excludedDomains": "Excluded domains",
+        "teamSizeMin": "Minimum team size",
+        "teamSizeMax": "Maximum team size",
+        "annualRevenueMin": "Minimum annual revenue (USD)",
+        "annualRevenueMax": "Maximum annual revenue (USD)",
+        "qualificationNotes": "Qualification notes"
+      },
+      "listHelp": "Separate values with commas or new lines.",
+      "countryHelp": "Use two-letter country codes, such as US.",
+      "platformHelp": "Choose Shopify, WooCommerce or both.",
+      "numberHelp": "Leave blank when there is no limit.",
+      "claudeTitle": "Set criteria with Claude",
+      "claudeHelp": "Copy the questions into your Claude conversation. Paste its JSON answer here, review the fields, then save.",
+      "claude": {
+        "action": {
+          "primary": "Copy questions",
+          "secondary": "Review answers",
+          "tertiary": "Save reviewed criteria",
+          "quaternary": "Discard preview"
+        }
+      },
+      "answerLabel": "Claude’s JSON answer",
+      "answerHelp": "Only the supported criteria fields are imported. Pasted text cannot run actions or change the Playbook.",
+      "answerError": "Paste the complete JSON answer using the format in the copied questions.",
+      "previewTitle": "Review before saving",
+      "previewHelp": "Nothing has changed yet. Adjust these values and save when they are ready.",
+      "companiesTitle": "Companies",
+      "companiesCount": "{count, number} companies",
+      "companySearch": "Search this company queue",
+      "company": "Company",
+      "source": "Source",
+      "country": "Country",
+      "platform": "Platform",
+      "teamSize": "Team size",
+      "revenue": "Annual revenue",
+      "unknown": "Unknown",
+      "reason": "Review note",
+      "companyStatuses": {
+        "candidate": "Needs review",
+        "added": "Added to prospects",
+        "excluded": "Excluded"
+      },
+      "companyEmptyTitle": "No companies in this view",
+      "companyEmptyDescription": "Save your criteria and find the first page of companies.",
+      "discovery": {
+        "action": {
+          "primary": "Find companies"
+        }
+      },
+      "discoveryPaused": "Resume this campaign in its settings before finding companies.",
+      "discoveryRunning": "Finding companies…",
+      "discoveryUpdated": "Discovery updated",
+      "latestRun": "Latest discovery request",
+      "runCount": "{count, number} companies saved",
+      "runStatuses": {
+        "starting": "In progress",
+        "completed": "Completed",
+        "failed": "Failed",
+        "uncertain": "Needs a status check"
+      },
+      "criteriaVersion": "Criteria version {version, number}",
+      "openProspect": "Open prospect",
+      "contactPageTitle": "Choose a contact",
+      "contactPageDescription": "Find a person at this company and review their details before adding a prospect.",
+      "findContacts": "Find contact",
+      "chooseContact": "Choose this person",
+      "contactSearchHelp": "Apollo finds matching people. Review their current role and verify a work email before approval.",
+      "contactSearchEmpty": "No matching contacts found",
+      "manualContact": "Add contact manually",
+      "allPlatforms": "Shopify and WooCommerce",
+      "questionsCopied": "Questions copied",
+      "copyError": "Couldn’t copy the questions. Open them below and copy the text.",
+      "viewQuestions": "View questions",
+      "reviewMessages": "Review messages",
+      "linkedinQueue": "LinkedIn queue",
+      "automaticSource": "Apollo first, then Clay",
+      "discoveryExhausted": "Both sources have reached the end of these results. Adjust your criteria to start another search.",
+      "uncertainHelp": "The provider’s response is uncertain. Check this request before another batch to avoid using credits twice.",
+      "runningHelp": "A discovery request is in progress. Reload to check its result.",
+      "reviewRequired": "Review this company before continuing.",
+      "companyPagination": "Company pagination",
+      "reasons": {
+        "campaignDomainExcluded": "Excluded by this campaign’s domain list.",
+        "countryMismatch": "Country does not match this campaign.",
+        "platformMismatch": "Platform does not match this campaign.",
+        "teamSizeMismatch": "Team size is outside the saved range.",
+        "revenueMismatch": "Revenue is outside the saved range.",
+        "playbookDomainExcluded": "Domain excluded by the Playbook.",
+        "playbookCompanyExcluded": "Company excluded by the Playbook.",
+        "relationshipExcluded": "Existing relationship excluded from cold outreach.",
+        "companyContacted": "Company already contacted within the protected period.",
+        "existingProspect": "Company already has a prospect.",
+        "otherCampaign": "Company is already being researched in another campaign.",
+        "suppressed": "Company is on the shared do-not-contact list.",
+        "criteriaChanged": "Criteria changed; research this company again."
+      },
+      "errors": {
+        "provider-configuration": "Connect this provider in Integrations before searching.",
+        "provider-input": "This provider cannot use the saved criteria. Review the country, platform and numeric filters.",
+        "provider-access": "The provider rejected access. Check the API key and search access in Integrations.",
+        "provider-quota": "The provider’s credit or usage limit has been reached. Check your provider plan.",
+        "provider-rate-limit": "The provider has temporarily limited requests. Wait before starting another batch.",
+        "provider-contract": "The provider returned an unexpected response. This request needs review.",
+        "provider-uncertain": "The request may have been processed. Check its outcome before trying again.",
+        "provider-unavailable": "The provider is unavailable. Check the latest request before trying again.",
+        "campaign-criteria-changed": "Campaign criteria changed. Reload and review the current version.",
+        "campaign-paused": "Resume this campaign in its settings before searching.",
+        "campaign-run-unresolved": "An earlier request is still running or needs reconciliation. Check it before another batch.",
+        "campaign-source-exhausted": "This source has no more results for the current criteria. Choose another source or revise the criteria.",
+        "provider-plan-required": "Your Apollo plan does not include platform filters. Start an eligible trial or upgrade the plan, then retry.",
+        "provider-clay-plan-required": "Clay requires a paid plan for these company filters. Upgrade Clay before running this search.",
+        "campaign-generation-invalid": "This Claude preview is no longer available. Generate a new preview before saving.",
+        "campaign-playbook-changed": "The Playbook changed after this preview was generated. Generate a new preview before saving.",
+        "campaign-archived": "This campaign is archived. Change its status before generating criteria."
+      },
+      "objectiveHelp": "Describe the audience. Use the structured filters below for provider searches.",
+      "qualificationHelp": "A staff review checklist. Provider search does not automatically verify these requirements.",
+      "discoverySavedCriteria": "Search uses saved criteria version {version}. Save your preview or edits before searching with them.",
+      "discoverySourceHelp": {
+        "auto": "Find up to 25 companies per request. Apollo runs first; Clay continues after Apollo’s results are exhausted. Provider errors stop the search.",
+        "apollo": "Search up to 25 companies in Apollo using this campaign’s saved criteria.",
+        "clay": "Search up to 25 companies in Clay using this campaign’s saved criteria."
+      },
+      "discoveryPreviewPending": "A criteria preview is waiting for review. Save or discard it before finding companies.",
+      "companySearchFailedTitle": "The search could not run",
+      "companySearchFailedDescription": "No companies were added. Resolve the issue shown above, then retry.",
+      "manualClaude": "Use Claude manually",
+      "viewContactOptional": "View contact",
+      "automaticContactsHelp": "Active campaigns check each matched company, find and verify a contact, then draft and queue its email sequence automatically. Opening a contact is optional; delivery checks still apply."
+    },
+    "warmup": {
+      "title": "Warmup",
+      "detailTitle": "Mailbox readiness",
+      "description": "Check mailbox setup and prepare a gradual sending plan for your domains.",
+      "email": "Mailbox",
+      "senderPool": "Sender pool",
+      "active": "Active sender",
+      "inactive": "Inactive sender",
+      "connection": "Connection",
+      "connectionSaved": "Connection saved",
+      "notConnected": "Not connected",
+      "checks": "Readiness checks",
+      "unchecked": "Not checked yet",
+      "manage": "Manage mailbox",
+      "networkTitle": "Warmbly shared network",
+      "networkHelp": "Warmbly’s shared network is the selected warmup route. Connect the network before starting traffic; mailbox checks and saved plans remain available.",
+      "scopeHelp": "These checks cover DNS records, mailbox access and saved readiness confirmations. Inbox placement and reputation remain unknown.",
+      "addMailboxes": "Manage sender inboxes",
+      "connectMailboxes": "Connect inboxes",
+      "emptyTitle": "No sender inboxes saved",
+      "emptyDescription": "Add your inbox addresses to the Playbook, then connect them in Integrations.",
+      "pagination": "Mailbox pagination",
+      "page": "Page {page, number} of {pages, number}",
+      "firstPage": "First page",
+      "previousPage": "Previous page",
+      "nextPage": "Next page",
+      "lastPage": "Last page",
+      "checksTitle": "Check this mailbox",
+      "checkHelp": "Check domain records, mailbox access and synchronization. This check does not send an email.",
+      "dkimSelectors": "DKIM selectors",
+      "dkimHelp": "Use the selectors supplied by your email host, separated by commas. Leave blank to keep DKIM unknown.",
+      "checking": "Checking…",
+      "checkAction": "Run readiness check",
+      "checkedAt": "Checked {date}",
+      "uncheckedHelp": "Run a check to save the first observation for this mailbox.",
+      "dnsRecords": "DNS observations",
+      "selectorReceipt": "Selectors: {selectors}",
+      "recordDomain": "Record domain: {domain}",
+      "none": "None supplied",
+      "planTitle": "Volume plan",
+      "planHelp": "Save the starting volume, daily increase and ceiling for Warmbly. Sender and Playbook limits still apply.",
+      "initialDailyCap": "Starting messages per day",
+      "dailyIncrease": "Daily increase",
+      "maximumDailyCap": "Maximum messages per day",
+      "invalidPlan": "Use whole numbers. The maximum must be at least the starting volume and no more than 15.",
+      "saving": "Saving…",
+      "savePlan": "Save plan",
+      "planStatus": "Plan status",
+      "planningOnly": "Planning only",
+      "previewCap": "Initial capped allowance",
+      "messagesPerDay": "{count, number} messages/day",
+      "planScope": "Saving this plan does not start warmup. Warmbly manages the daily ramp and can hold or reduce volume based on its observations. This preview shows configured limits, not recorded mailbox health.",
+      "loadError": "Couldn’t load mailbox information. Reload the page.",
+      "missingMailbox": "This address is not in the Playbook’s sender inboxes.",
+      "readiness": {
+        "needsAttention": "Needs attention",
+        "needsChecks": "More checks needed",
+        "checksPassed": "Setup checks passed"
+      },
+      "states": {
+        "present": "Present",
+        "missing": "Missing",
+        "invalid": "Needs attention",
+        "unknown": "Unknown"
+      },
+      "checkLabels": {
+        "mx": "MX",
+        "spf": "SPF",
+        "dkim": "DKIM",
+        "dmarc": "DMARC",
+        "connection": "Mailbox access",
+        "sync": "Mailbox synchronization",
+        "provider": "Provider status",
+        "history": "History reconciled",
+        "test": "Send and reply test"
+      },
+      "mailboxesTitle": "Sender mailboxes"
+    },
+    "warmbly": {
+      "title": "Warmbly network",
+      "description": "Connect your Warmbly account to manage shared-network warmup here. Connect the mailboxes in Warmbly; mailbox passwords are not transferred from Outbound.",
+      "connected": "API key verified",
+      "notConnected": "Not connected",
+      "unknown": "Unknown",
+      "openWarmbly": "Open Warmbly",
+      "refresh": "Refresh status",
+      "replaceKey": "Replace API key",
+      "connectKey": "Connect Warmbly",
+      "apiKey": "Warmbly API key",
+      "keyHelp": "Use a workspace key with READ_EMAILS and WRITE_EMAILS permissions. The key is verified and stored encrypted; saved keys are never displayed.",
+      "showKey": "Show API key",
+      "hideKey": "Hide API key",
+      "invalidKey": "Enter a valid Warmbly workspace API key.",
+      "saveKey": "Save API key",
+      "updated": "Network status updated",
+      "email": "Mailbox",
+      "state": "Network status",
+      "maximum": "Daily ceiling",
+      "perDay": "{count, number}/day",
+      "mailboxChecks": "Mailbox checks",
+      "checksRequired": "Save a volume plan and pass a fresh DNS and mailbox check before starting. The mailbox must be active in Warmbly.",
+      "startHelp": "Start and Resume apply the saved volume plan before activating network warmup. Outbound delivery is held for that inbox while network warmup runs.",
+      "pendingHelp": "An earlier action needs a status check. Refresh before retrying so it is not repeated.",
+      "pending": "Needs a status check",
+      "emptyTitle": "No registered inboxes on this page",
+      "emptyDescription": "Connect inboxes in Warmbly and save the same addresses in the Playbook. If there are more pages, continue to find them.",
+      "page": "Page {page, number}",
+      "previous": "Previous",
+      "next": "Next",
+      "loadError": "Couldn’t load the Warmbly network. Check the connection and refresh.",
+      "actionError": "Couldn’t complete this action. Refresh the network and check its permissions and limits before trying again.",
+      "accessError": "Warmbly rejected access. Check the API key and its READ_EMAILS and WRITE_EMAILS permissions.",
+      "readinessError": "Run a fresh mailbox check and resolve MX, SPF, DKIM and DMARC before starting.",
+      "limitError": "The saved volume ceiling exceeds the Playbook or mailbox limit. Lower it before starting.",
+      "activeError": "Activate this mailbox in Warmbly before starting warmup.",
+      "rampError": "Warmbly has not confirmed the saved volume plan. Refresh its status before trying again.",
+      "planChangedError": "The volume plan changed during setup. Refresh before starting.",
+      "stateError": "Warmbly has not confirmed the requested state. Refresh to check the outcome before another action.",
+      "registeredError": "Save this exact mailbox address in the Playbook before managing its warmup.",
+      "states": {
+        "off": "Off",
+        "running": "Running",
+        "paused": "Paused",
+        "unknown": "Unknown"
+      },
+      "actions": {
+        "start": "Start",
+        "pause": "Pause",
+        "resume": "Resume",
+        "stop": "Stop"
+      },
+      "errors": {
+        "provider-key-invalid": "Enter a valid Warmbly workspace API key.",
+        "provider-key-unavailable": "Couldn’t load the Warmbly network. Check the connection and refresh.",
+        "provider-key-encryption": "Couldn’t complete this action. Refresh the network and check its permissions and limits before trying again.",
+        "provider-key-save-failed": "Couldn’t complete this action. Refresh the network and check its permissions and limits before trying again."
+      }
+    },
+    "claude": {
+      "title": "Claude",
+      "description": "Draft campaign criteria with Claude, then review every change before saving.",
+      "setupHelp": "Create a Claude Console API key and connect it here.",
+      "billingHelp": "API requests use your Console balance and any eligible credits. Verifying the key does not confirm the available API balance.",
+      "keyLabel": "Claude API key",
+      "keyHelp": "The key is verified and encrypted before storage. Saved keys are never shown again.",
+      "keyRequired": "Paste your Claude API key.",
+      "invalid": "Enter a valid value.",
+      "showKey": "Show API key",
+      "hideKey": "Hide API key",
+      "modelLabel": "Claude model",
+      "workspaceLabel": "Workspace ID (optional)",
+      "workspaceHelp": "Leave blank for a workspace-scoped key. Otherwise enter your Console workspace ID.",
+      "connected": "Connected",
+      "notConnected": "Not connected",
+      "unknown": "Could not read the Claude connection status.",
+      "advanced": "Model and workspace",
+      "saving": "Checking and saving…",
+      "keySaved": "Claude API key verified and saved.",
+      "saveError": "Could not save the Claude connection. Please try again.",
+      "connectHelp": "Connect your Claude API key in Integrations to draft criteria here.",
+      "generationHelp": "Claude uses this campaign’s saved criteria, your Playbook and the context below. It prepares a preview for your review; nothing is saved automatically.",
+      "contextLabel": "Additional ecentic context (optional)",
+      "contextHelp": "Describe the companies you want, constraints or changes to the saved criteria. Claude does not automatically read your Claude app conversations or memory.",
+      "contextInvalid": "Keep additional context within 50,000 characters.",
+      "generating": "Preparing a Claude preview…",
+      "previewReady": "Claude preview ready. Review the fields below before saving.",
+      "previewPending": "Save or discard the current preview before generating another.",
+      "recoveryHelp": "This browser remembers the last Claude request for this campaign. Recover preview checks it without generating again. A new generation may use more credits, even if the previous response did not arrive.",
+      "stalePreview": "The campaign criteria changed. Refresh the page and generate a new preview.",
+      "generationError": "Could not retrieve the Claude preview. Try recovering it before starting another request.",
+      "connection": {
+        "action": {
+          "primary": "Save API key",
+          "secondary": "Replace API key",
+          "tertiary": "Open Claude Console"
+        }
+      },
+      "generation": {
+        "action": {
+          "primary": "Draft criteria with Claude",
+          "secondary": "Recover preview",
+          "tertiary": "Generate again",
+          "quaternary": "Connect Claude"
+        }
+      },
+      "errors": {
+        "claude-not-configured": "Connect a Claude API key in Integrations first.",
+        "claude-access-denied": "Claude rejected access. Check the API key and workspace in Integrations.",
+        "claude-credit-required": "Claude needs available API credit. Check your Console balance and eligible credits.",
+        "claude-rate-limited": "Claude is rate limited. Wait before starting another request.",
+        "claude-model-unavailable": "This Claude model is not available to the connected key. Choose another model in Integrations.",
+        "claude-request-invalid": "Claude could not accept this request. Check the context and campaign criteria.",
+        "claude-generation-running": "Claude is still processing this request. Try recovering the preview in a moment.",
+        "claude-generation-uncertain": "The request’s outcome is uncertain. Recover the preview before considering a new generation.",
+        "claude-generation-failed": "This generation did not produce a usable preview. Review the context before generating again.",
+        "claude-generation-missing": "No saved preview was found for this request. You can explicitly start a new generation.",
+        "provider-key-invalid": "Check the credentials and required fields, then try again.",
+        "provider-key-unavailable": "The provider could not be reached. Please try again.",
+        "provider-key-encryption": "The server could not encrypt these credentials. Ask an administrator to check its encryption configuration.",
+        "provider-key-save-failed": "Could not save these credentials. Please try again.",
+        "campaign-archived": "This campaign is archived. Change its status before generating criteria.",
+        "campaign-criteria-changed": "Campaign criteria changed. Reload and review the current version."
+      },
+      "creditsHelp": "If your subscription includes API credits, claim them in Claude → Settings → Billing → API credits and link the Console organization that owns this key.",
+      "recovering": "Checking the saved preview…",
+      "storageUnavailable": "Browser storage is unavailable. Allow site storage to save and recover Claude previews. No new generation was started."
+    },
+    "automation": {
+      "title": "Automatic campaign work",
+      "help": "Active campaigns continue in the background. Run now processes the next available work.",
+      "modeOff": "Automatic mode off",
+      "campaignInactive": "No active campaign",
+      "working": "Working",
+      "waiting": "Waiting for next work",
+      "unknownStatus": "Status unavailable",
+      "unknownStage": "Stage unavailable",
+      "unknownReason": "Check this record before continuing.",
+      "company": "Company",
+      "stage": "Current step",
+      "status": "Status",
+      "reason": "Hold reason",
+      "noBlocker": "—",
+      "openProspect": "Open prospect",
+      "enableHelp": "Enable Automatic mode in the Playbook to start automatic campaign work.",
+      "previewPending": "Automatic work uses saved criteria. Save or discard the preview before starting work here.",
+      "pauseHelp": "Pausing stops new preparation steps. A request already in progress may finish.",
+      "statusError": "Status could not be refreshed. The displayed data may be out of date.",
+      "actionError": "This action could not be completed. Refresh the status and try again.",
+      "campaignStarted": "Campaign activated. Its next preparation work was checked.",
+      "campaignPaused": "Campaign paused.",
+      "runComplete": "The next available work was checked.",
+      "refreshed": "Status refreshed.",
+      "processing": "Processing…",
+      "preparedHelp": "Prepared means the contact and messages passed preparation. The delivery worker still checks each email before sending.",
+      "empty": "No preparation records yet. Activate a campaign with saved companies to begin.",
+      "deliveryTitle": "Email delivery",
+      "deliveryReady": "Setup checks passed",
+      "deliveryBlocked": "Delivery blocked",
+      "deliveryHelp": "Every email still follows live delivery checks, pacing, suppression and warmup holds.",
+      "pagination": "Automatic work pages",
+      "counts": {
+        "queued": "Queued",
+        "running": "Running",
+        "held": "Held",
+        "uncertain": "Uncertain",
+        "complete": "Prepared"
+      },
+      "statuses": {
+        "queued": "Queued",
+        "running": "Running",
+        "held": "Held",
+        "uncertain": "Uncertain",
+        "complete": "Prepared"
+      },
+      "action": {
+        "primary": "Run now",
+        "secondary": "Refresh status",
+        "tertiary": "Open Playbook",
+        "quaternary": "Manage mailboxes"
+      },
+      "campaign": {
+        "action": {
+          "primary": "Start campaign",
+          "secondary": "Pause campaign"
+        }
+      },
+      "stages": {
+        "companyFacts": "Checking company details",
+        "qualify": "Checking company and product",
+        "findContacts": "Finding contacts",
+        "selectContact": "Checking current role",
+        "promote": "Creating prospect",
+        "enrich": "Finding work email",
+        "applyEmail": "Saving work email",
+        "verify": "Verifying email",
+        "pollVerification": "Waiting for verification",
+        "applyVerification": "Saving verification",
+        "mx": "Checking email host",
+        "applyMx": "Saving email-host check",
+        "draft": "Preparing messages",
+        "applyDraft": "Saving messages",
+        "approve": "Checking eligibility",
+        "complete": "Preparation complete"
+      },
+      "reasons": {
+        "automation-disabled": "Automatic mode is off.",
+        "campaign-inactive": "The campaign is not active.",
+        "campaign-criteria-changed": "Campaign criteria changed; this work is held.",
+        "playbook-changed": "The Playbook changed; this work is held.",
+        "company-unavailable": "The company is excluded or no longer available.",
+        "qualification-held": "Company or product evidence did not pass.",
+        "contact-held": "No eligible current contact was confirmed.",
+        "email-held": "A suitable work email was not found.",
+        "verification-held": "Email verification did not pass.",
+        "mx-held": "The email host did not pass checks.",
+        "draft-held": "The draft did not pass writing checks.",
+        "approval-held": "The message did not pass final eligibility checks.",
+        "provider-input": "The provider could not process this input.",
+        "lease-expired": "An earlier request did not finish cleanly. Check its recorded outcome.",
+        "provider-configuration": "Connect this provider in Integrations before searching.",
+        "provider-access": "The provider rejected access. Check the API key and search access in Integrations.",
+        "provider-quota": "The provider’s credit or usage limit has been reached. Check your provider plan.",
+        "provider-rate-limit": "The provider has temporarily limited requests. Wait before starting another batch.",
+        "provider-uncertain": "The request may have been processed. Check its outcome before trying again."
+      },
+      "deliveryBlockers": {
+        "sendingPaused": "Sending is paused in the Playbook.",
+        "senderUnconfirmed": "Sender identity is not confirmed.",
+        "historyUnconfirmed": "Past sends and exclusions are not confirmed as imported.",
+        "competingSendersActive": "Other sending systems have not been confirmed paused.",
+        "senderUntested": "A sender test has not been confirmed.",
+        "inboxesMissing": "One or more active sender mailboxes are not connected.",
+        "inboxDisabled": "A sender mailbox is disabled or disconnected.",
+        "inboxSyncIncomplete": "Mailbox history or reply sync needs attention.",
+        "senderIdentityMismatch": "A mailbox does not match the saved sender identity."
+      },
+      "page": "Page {page, number} of {pages, number}",
+      "firstPage": "First page",
+      "previousPage": "Previous page",
+      "nextPage": "Next page",
+      "lastPage": "Last page",
+      "volumeTitle": "Mailbox volume",
+      "currentCap": "Current daily limit",
+      "targetCap": "Target maximum",
+      "rampHeld": "Increase paused",
+      "rampHelp": "Mailboxes start at 15 per day. The limit rises by 5 only after a completed day reaches the current limit without an observed bounce. An observed bounce returns the limit to 15. A target does not guarantee sending volume or inbox reputation."
+    },
+    "sent": {
+      "title": "Sent",
+      "description": "Accepted emails and sending attempts, with the saved message and follow-up history.",
+      "detailTitle": "Message and sequence",
+      "detailDescription": "The recorded content, provider result and activity for this conversation.",
+      "searchLabel": "Search sent messages",
+      "searchPlaceholder": "Recipient, company, campaign, inbox or subject",
+      "statusFilter": "Sending status",
+      "kindFilter": "Message type",
+      "allStatuses": "All statuses",
+      "allKinds": "All messages",
+      "outreach": "Outreach",
+      "test": "Test",
+      "bouncedFilter": "Bounced sequences",
+      "count": "{count, plural, one {# recorded attempt} other {# recorded attempts}}",
+      "emptyTitle": "No sending attempts yet",
+      "emptyDescription": "Messages appear here when Outbound records an attempt to send them.",
+      "noMatches": "No messages match these filters.",
+      "error": "Sent messages could not be loaded. Try again.",
+      "missing": "This sending record could not be found.",
+      "acceptanceNote": "Accepted means the email provider accepted the message. It does not confirm inbox delivery.",
+      "timezone": "Times shown in UTC.",
+      "unknown": "Not recorded",
+      "columns": {
+        "recipient": "Recipient",
+        "company": "Company",
+        "campaign": "Campaign",
+        "sender": "From inbox",
+        "subject": "Subject",
+        "step": "Step",
+        "time": "Recorded time",
+        "status": "Result"
+      },
+      "status": {
+        "accepted": "Accepted",
+        "failed": "Failed",
+        "uncertain": "Uncertain",
+        "claimed": "Preparing"
+      },
+      "step": "Email {step}",
+      "sequence": {
+        "title": "Follow-up sequence",
+        "activity": "Conversation activity",
+        "status": "Current sequence status",
+        "next": "Next eligible send: {time}",
+        "noSchedule": "No follow-up is currently scheduled.",
+        "scheduleNote": "Scheduled follow-ups still depend on the sending window and delivery checks.",
+        "bounced": "Bounce recorded for this sequence",
+        "bounceNote": "The bounce belongs to this conversation; the stored receipt does not identify a specific step.",
+        "emptyActivity": "No reply or delivery activity has been recorded yet.",
+        "limitedActivity": "Showing the latest 100 conversation events."
+      },
+      "message": {
+        "title": "Saved message",
+        "from": "From",
+        "to": "To",
+        "subject": "Subject",
+        "recorded": "Recorded",
+        "providerId": "Provider message ID",
+        "messageId": "Message ID",
+        "contentMissing": "The immutable message record is missing or its integrity check failed. Current draft text is not shown as sent content.",
+        "failed": "This attempt failed; this content is not confirmed as sent.",
+        "uncertain": "The outcome is unknown. This content may have been sent; no automatic retry is implied.",
+        "claimed": "This attempt has been prepared; provider acceptance has not been recorded.",
+        "test": "This was a test attempt."
+      },
+      "activity": {
+        "sent": "Provider accepted the message",
+        "sendFailed": "Sending failed",
+        "sendUncertain": "Sending outcome uncertain",
+        "reply": "Reply received",
+        "bounce": "Bounce received",
+        "optout": "Opt-out received",
+        "other": "Conversation updated"
+      },
+      "action": {
+        "primary": "Open message",
+        "secondary": "Back to sent",
+        "tertiary": "Clear filters",
+        "quaternary": "Search"
+      },
+      "pagination": {
+        "previous": "Previous",
+        "next": "Next",
+        "page": "Page {page} of {pages}"
+      }
+    },
+    "pipeline": {
+      "title": "From companies to conversations",
+      "description": "Find relevant companies, research a useful insight, and follow each conversation through to a meeting.",
+      "activeCampaigns": "Active campaigns",
+      "companies": "Companies in scope",
+      "insights": "Research complete",
+      "contacts": "Contacts saved",
+      "sequences": "Sequences prepared",
+      "held": "Needs attention",
+      "needsReply": "Replies to follow up",
+      "meetings": "Meetings recorded",
+      "meetingsHelp": "Meetings are counted only when explicitly recorded. A booking-link click is not a booked meeting.",
+      "campaignsTitle": "Campaign progress",
+      "scopeHelp": "Company and contact counts use active campaigns and their current saved criteria. A company in research is not yet a contact.",
+      "openCampaigns": "Open campaigns",
+      "moreCampaigns": "Showing the latest active campaigns. Open Campaigns to see them all.",
+      "emptyTitle": "Choose your next audience",
+      "emptyHelp": "Create a campaign, save its targeting criteria and find companies to start the workflow.",
+      "emptyAction": "Create campaign",
+      "workTitle": "Current work",
+      "workEmpty": "No current preparation work needs attention. Campaigns show the complete history.",
+      "setupTitle": "Setup and controls",
+      "setupReady": "Connection settings are present. Live identity, reply, pacing and delivery checks still run before each send.",
+      "activityTitle": "Accepted in the last seven days",
+      "emailAccepted": "Emails accepted",
+      "linkedinAccepted": "LinkedIn messages accepted",
+      "acceptedHelp": "Acceptance confirms the provider accepted a message; it does not prove inbox delivery.",
+      "detailsTitle": "Detailed automation",
+      "reportTitle": "Weekly activity report",
+      "refresh": "Refresh",
+      "refreshing": "Refreshing…",
+      "automationOn": "Automatic preparation is on",
+      "automationOff": "Automatic preparation is paused",
+      "linkedinOff": "LinkedIn sending is off",
+      "automationHelp": "Enable automatic mode in the Playbook to continue campaign preparation.",
+      "apolloMissing": "Connect Apollo to find companies and current contacts.",
+      "azureMissing": "Configure Azure to assess evidence and prepare messages.",
+      "linkedinMissing": "Connect the selected LinkedIn account before enabling its messages.",
+      "error": "Couldn’t load the current pipeline. Refresh to try again."
+    },
+    "conversations": {
+      "title": "Conversations",
+      "description": "Read replies, answer with context and turn interest into a meeting.",
+      "detailDescription": "The actual conversation, your reply and the next step in one place.",
+      "list": {
+        "action": {
+          "primary": "Open conversation",
+          "secondary": "All conversations"
+        }
+      },
+      "columns": {
+        "person": "Person and company",
+        "subject": "Conversation",
+        "channel": "Channel",
+        "stage": "Stage",
+        "updated": "Updated (UTC)"
+      },
+      "stage": {
+        "open": "Open",
+        "interested": "Interested",
+        "question": "Has a question",
+        "later": "Follow up later",
+        "notInterested": "Not interested",
+        "meetingBooked": "Meeting booked",
+        "meetingHeld": "Meeting held",
+        "closed": "Closed"
+      },
+      "channel": {
+        "email": "Email",
+        "linkedin": "LinkedIn"
+      },
+      "needsReply": "Needs a reply",
+      "noSubject": "Conversation",
+      "search": "Search people, companies or messages",
+      "allChannels": "All channels",
+      "allStages": "All stages",
+      "count": "{count, plural, one {# conversation} other {# conversations}}",
+      "emptyTitle": "Your conversations will appear here",
+      "emptyDescription": "Connected inbox and LinkedIn reply checks save actual messages here. Older outcome notes remain in each prospect’s activity.",
+      "noMatches": "No matching conversations",
+      "outcomeTitle": "Next step",
+      "outcome": {
+        "action": {
+          "primary": "Save stage"
+        }
+      },
+      "meetingHelp": "Mark a meeting booked only after it is confirmed, and held after it happens. Sharing the booking link does not record a booking.",
+      "booking": {
+        "action": {
+          "primary": "Open booking page"
+        }
+      },
+      "replyTitle": "Your reply",
+      "replyHelp": "Suggestions use the conversation and saved Playbook. Review the exact text, save any changes, then send from the connected account shown above.",
+      "recoveryHelp": "A suggestion was requested. Check the same request to recover a saved result without starting another generation.",
+      "recovery": {
+        "action": {
+          "primary": "Check requested suggestion"
+        }
+      },
+      "action": {
+        "primary": "Send saved reply",
+        "secondary": "Save draft",
+        "tertiary": "Suggest reply",
+        "quaternary": "Refresh"
+      },
+      "draftLabel": "Reply draft",
+      "invalidBody": "Enter a reply of 1–10,000 characters.",
+      "unsaved": "Save your changes before sending or changing the stage.",
+      "error": {
+        "changed": "The conversation changed. Reload it and review the latest message before continuing.",
+        "closed": "This conversation is closed or the recipient has been excluded from contact.",
+        "stale": "Read the latest inbound message and save a current reply before sending.",
+        "unresolved": "A previous send is still running or its outcome is unknown. Another send is blocked until its result is reconciled.",
+        "truncated": "The latest message is incomplete. Read the full message in the connected inbox before replying.",
+        "generationUncertain": "The suggestion’s result is not confirmed. Checking this request will not generate another reply.",
+        "connection": "The sending account is unavailable or needs a fresh reply sync. Check Integrations.",
+        "controls": "The suggestion did not pass the saved reply controls. Write and review the reply yourself.",
+        "generic": "We could not complete this action. Refresh the conversation and try again."
+      },
+      "newestFirst": "Newest messages first",
+      "direction": {
+        "inbound": "Received",
+        "outbound": "Sent"
+      },
+      "automated": "Automatic message",
+      "to": "To",
+      "emptyBody": "No text was included in this message.",
+      "truncated": "Only part of this message was saved. Open the full message in the connected account.",
+      "emptyMessages": "No message text has been saved yet.",
+      "attemptsTitle": "Reply sending history",
+      "send": {
+        "accepted": "Accepted by the provider",
+        "failed": "Sending failed",
+        "uncertain": "Sending outcome unknown",
+        "starting": "Sending in progress"
+      },
+      "views": {
+        "label": "Show",
+        "all": "All activity",
+        "needsReply": "Needs a reply",
+        "sent": "Sent",
+        "scheduled": "Scheduled"
+      },
+      "replyAccount": "Reply from",
+      "activity": {
+        "kind": "Message",
+        "time": "Time (UTC)",
+        "linkedinMessage": "LinkedIn message",
+        "linkedinInvite": "LinkedIn invitation",
+        "reply": "Conversation reply",
+        "scheduledHelp": "Saved email send times are shown here. Pauses, reply checks, recipient hours and inbox limits can delay them. LinkedIn actions have no fixed saved send time.",
+        "sentHelp": "Email, LinkedIn and conversation reply attempts. Accepted means the provider accepted the message; it does not prove delivery or an opened message.",
+        "empty": "No activity matches this view."
+      }
+    }
+  }
+}

@@ -74,3 +74,6 @@ claude-seo/
 /tmp/
 __pycache__/
 *.py[cod]
+
+# Generated Outbound ICU declarations
+apps/outbound/messages/*.d.json.ts

@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "facts": {
+      "type": "object",
+      "description": "Role/team research suggestions with explicit evidence and uncertainty. Nested nulls mean unknown. The Python handler validates these fields; a pass is not send approval."
+    }
+  },
+  "required": ["facts"],
+  "additionalProperties": false
+}

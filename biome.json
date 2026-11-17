@@ -66,7 +66,8 @@
       "!**/.next",
       "!**/.expo",
       "!**/.turbo",
-      "!**/.vscode"
+      "!**/.vscode",
+      "!apps/outbound/messages/*.d.json.ts"
     ]
   }
 }

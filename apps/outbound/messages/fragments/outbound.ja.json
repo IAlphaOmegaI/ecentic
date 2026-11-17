@@ -1,0 +1,1753 @@
+{
+  "outbound": {
+    "page": {
+      "title": "Outbound",
+      "description": "適切なストアを見つけ、最初の連絡から役立つ情報を届け、すべてのやり取りを把握します。",
+      "internal": "社内ワークスペース"
+    },
+    "nav": {
+      "overview": "概要",
+      "prospects": "見込み顧客",
+      "review": "レビュー",
+      "linkedin": "LinkedIn",
+      "replies": "会話",
+      "playbook": "連絡方針",
+      "integrations": "連携",
+      "campaigns": "キャンペーン",
+      "warmup": "ウォームアップ",
+      "sent": "送信履歴"
+    },
+    "common": {
+      "saving": "保存中…",
+      "loading": "読み込み中…",
+      "saved": "変更を保存しました",
+      "error": "変更を保存できませんでした。もう一度お試しください。",
+      "emptyValue": "未入力",
+      "optional": "任意",
+      "required": "この項目を入力してください。",
+      "invalidEmail": "有効なメールアドレスを入力してください。",
+      "invalidUrl": "完全なHTTPS URLを入力してください。",
+      "wordCount": "{count, number} / {maximum, number} 語",
+      "revision": "バージョン {version, number}",
+      "neverSent": "未送信",
+      "source": "情報源",
+      "lastUpdated": "更新日：{date}",
+      "copySuccess": "コピーしました",
+      "copyError": "コピーできませんでした。テキストを選択して手動でコピーしてください。",
+      "all": "すべて",
+      "enabled": "有効",
+      "disabled": "無効",
+      "requestError": "リクエストを完了できませんでした。もう一度お試しください。",
+      "connecting": "接続中…",
+      "invalidField": "この値を確認してください。",
+      "invalidForm": "続行する前に、フォームの入力内容を確認してください。",
+      "savedRefreshError": "保存しましたが、表示を更新できませんでした。このページを再読み込みしてください。"
+    },
+    "status": {
+      "candidate": "候補",
+      "draft": "下書き",
+      "drafted": "作成済み",
+      "review": "レビューが必要",
+      "ready": "レビュー待ち",
+      "approved": "承認済み",
+      "held": "保留中",
+      "hold": "保留中",
+      "suppressed": "連絡不可",
+      "skipped": "スキップ済み",
+      "sent": "送信済み",
+      "replied": "返信あり",
+      "active": "進行中",
+      "completed": "完了",
+      "pending": "処理待ち",
+      "verified": "確認済み",
+      "invalid": "無効",
+      "unknown": "不明",
+      "stale": "再確認が必要",
+      "catchAll": "すべての宛先を受信",
+      "guessed": "推測したアドレス",
+      "unverified": "未確認",
+      "optedOut": "連絡停止希望",
+      "bounced": "配信失敗",
+      "finished": "終了"
+    },
+    "overview": {
+      "title": "次のやり取り",
+      "description": "対応が必要な担当者、下書き、フォローアップをまとめて確認できます。",
+      "metrics": {
+        "prospects": "見込み顧客",
+        "review": "レビュー待ち",
+        "approved": "承認済みメール",
+        "suppressed": "連絡不可",
+        "replies": "返信",
+        "linkedin": "LinkedInのタスク"
+      },
+      "emptyTitle": "まずは適切な見込み顧客を少数追加しましょう。",
+      "emptyDescription": "ストアを追加するか、既存の調査を取り込んでください。見込み顧客ごとに商品の指摘事項、情報源、メッセージの下書きをまとめて保存します。",
+      "target": "週間目標",
+      "targetValue": "初回メール {count, number} 件",
+      "activityTitle": "最近のアクティビティ",
+      "activityEmpty": "保存した変更や連絡に関する判断がここに表示されます。",
+      "approvalNote": "すべてのメールに承認が必要です。下書きを変更すると、再びレビュー待ちになります。",
+      "sendingPaused": "送信を一時停止中",
+      "action": {
+        "primary": "見込み顧客を追加",
+        "secondary": "メッセージをレビュー"
+      },
+      "automaticDrafts": "下書き",
+      "sendingSwitchOn": "送信スイッチ有効",
+      "automaticNote": "自動モードは保存済みプレイブックに沿って連絡先とメッセージをチェックします。条件を満たすメールは手動承認なしで送信でき、問題のある項目は保留されます。"
+    },
+    "prospect": {
+      "title": "見込み顧客",
+      "description": "1社につき1人、根拠を示せる指摘を1つ。",
+      "emptyTitle": "見込み顧客はまだありません",
+      "emptyDescription": "企業を追加するか、これまでの調査を取り込んでください。",
+      "newTitle": "見込み顧客を追加",
+      "editTitle": "見込み顧客の詳細",
+      "search": "企業や担当者を検索",
+      "identityTitle": "企業と担当者",
+      "evidenceTitle": "商品の指摘事項",
+      "personalTitle": "相手に合わせた一文",
+      "verificationTitle": "メールアドレスの確認",
+      "fields": {
+        "company": "企業",
+        "domain": "ストアのドメイン",
+        "website": "ウェブサイト",
+        "personName": "氏名",
+        "first": "名",
+        "title": "現在の役職",
+        "email": "勤務先メールアドレス",
+        "linkedinUrl": "LinkedInプロフィールのURL",
+        "country": "国コード",
+        "timezone": "タイムゾーン",
+        "product": "商品名",
+        "productUrl": "商品ページのURL",
+        "finding": "確認した内容",
+        "evidence": "裏付けとなる証拠",
+        "personalHook": "相手に合わせた一文",
+        "personalHookUrl": "相手に合わせた一文の情報源URL",
+        "emailStatus": "確認状況",
+        "verifiedAt": "確認日時",
+        "roleSource": "役職の情報源URL",
+        "source": "見込み顧客の情報源",
+        "notes": "メモ",
+        "name": "氏名",
+        "platform": "ECプラットフォーム",
+        "relationship": "関係",
+        "roleCheckedAt": "役職の確認日時",
+        "emailVerifiedAt": "メールアドレスの検証日時",
+        "emailSource": "メールアドレスの情報源",
+        "mxProvider": "メール事業者",
+        "mxCheckedAt": "メール事業者の確認日時",
+        "gap": "不足の種類",
+        "evidenceCheckedAt": "商品情報の根拠を確認した日時",
+        "personalLine": "相手に合わせた一文",
+        "personalSource": "相手に合わせた一文の情報源URL",
+        "legitEvidence": "企業の選定条件を満たす根拠",
+        "lang": "メールの言語",
+        "productCategory": "商品カテゴリー",
+        "reviewCount": "表示されるレビュー件数",
+        "distributionSource": "他店の同じ商品のURL",
+        "findingReviewed": "ソース、レンダリング後のページ、指摘事項の確認ルールを確認しました",
+        "personalPublishedAt": "相手に合わせた一文の情報源の公開日時",
+        "personalCheckedAt": "相手に合わせた一文の情報源の最終確認日時"
+      },
+      "countryHelp": "USやGBなど、2文字のコードを使用してください。",
+      "findingHelp": "選んだ商品ページに実際に表示されていた内容を記入してください。根拠となる情報源はメールとは別に保存します。",
+      "verificationHelp": "プロバイダーが確認した場合に限り、アドレスを確認済みにしてください。公開されているアドレスや推測したアドレスは、確認結果にはなりません。",
+      "personalHelp": "過去9か月以内に公開された、仕事に関する事実を使ってください。過去1日以内に公開出典を開き、公開日時と確認日時を記録します。有用な情報がなければ空欄にしてください。",
+      "action": {
+        "primary": "見込み顧客を保存",
+        "secondary": "下書きを作成",
+        "tertiary": "商品ページを開く",
+        "quaternary": "情報源を開く"
+      },
+      "timeHelp": "America/New_YorkなどのIANAタイムゾーンを使用してください。",
+      "dateHelp": "タイムゾーンのオフセットを含むISO形式の日時を使用してください。",
+      "legitHelp": "資金調達、実在するチームメンバー3人以上、または他の販売店での取り扱いを示す根拠を、出典とともに記録してください。",
+      "searchEmptyTitle": "一致する見込み顧客はありません",
+      "searchEmptyDescription": "企業名、担当者名、メールアドレス、ドメインで検索してください。",
+      "list": {
+        "count": "見込み顧客 {count, number} 件",
+        "filter": "メールの進捗",
+        "allStatuses": "すべてのステータス",
+        "range": "全 {total, number} 件中 {start, number}–{end, number} 件",
+        "action": {
+          "primary": "前のページ",
+          "secondary": "次のページ",
+          "tertiary": "絞り込みを解除",
+          "quaternary": "インポートを閉じる"
+        },
+        "pagination": "見込み顧客のページ"
+      },
+      "productCategoryHelp": "商品ページに記載されたカテゴリーを使います。カテゴリープレースホルダーに入る値です。",
+      "reviewCountHelp": "対象商品の画面に表示されるレビュー件数を数字のみで入力してください。確認できない場合は空欄にします。",
+      "distributionSourceHelp": "他の販売店にある同じ商品のリンクです。店舗間の商品情報の照合について述べる場合に必要です。",
+      "findingReviewedHelp": "確認する前に、対象商品の未加工・レンダリング後のデータと指摘事項の例外条件を確認してください。この確認を保存してもメールは承認されません。",
+      "unsupportedFinding": "その他の指摘事項（要確認）",
+      "noFinding": "指摘事項はまだありません",
+      "progress": {
+        "emailProgress": "メールの進捗",
+        "allLifecycle": "メールの全進捗",
+        "lifecycleFilter": "メールのライフサイクル",
+        "allLinkedin": "LinkedInの全ステータス",
+        "linkedinFilter": "LinkedInステータス",
+        "help": "調査には、待機中または実行中の連絡先準備が含まれます。連絡先が未登録の企業調査はキャンペーンに表示されます。メールとLinkedInの進捗は個別に管理されます。",
+        "error": "進捗を読み込めませんでした。ライフサイクルで絞り込む前に一覧を更新してください。",
+        "lifecycle": {
+          "researching": "調査中",
+          "scheduled": "予定済み",
+          "sent": "送信済み",
+          "replied": "返信あり",
+          "held": "保留"
+        },
+        "action": {
+          "primary": "一覧を更新",
+          "secondary": "メール履歴",
+          "tertiary": "企業調査"
+        }
+      },
+      "summary": {
+        "description": "連絡先、商品についての発見、現在のシーケンスを一か所で確認できます。",
+        "preparation": "準備",
+        "noPreparation": "自動準備の記録はありません",
+        "emailAccepted": "{count, plural, other {メール#件をプロバイダーが受け付けました}}",
+        "nextEmail": "次のメール：{time}",
+        "noSchedule": "送信予定のメールはありません",
+        "noProfile": "LinkedInプロフィールは未保存です",
+        "profile": "プロフィールを開く",
+        "insightTitle": "商品についての発見",
+        "insightMissing": "商品についての発見はまだ保存されていません。",
+        "sourceQuote": "商品ページからの引用",
+        "checkedAt": "確認日時：{time}",
+        "detailsTitle": "根拠となる調査",
+        "proposedCheck": "購入者の視点で提案する確認",
+        "needsVerification": "送信前に、プロバイダーによるメールアドレスの再確認が必要です。",
+        "issuesTitle": "{count, plural, other {未解決の確認事項#件}}",
+        "sequenceTitle": "保存済みシーケンス",
+        "sequenceHelp": "現在保存されているメッセージです。実際の送信履歴は「会話」に記録されます。",
+        "sequenceMissing": "シーケンスはまだ保存されていません。",
+        "linkedinDraft": "保存済みLinkedIn下書き",
+        "manualTitle": "任意の編集と調査ツール",
+        "manualHelp": "必要に応じて、保存済みの情報を編集したり、個別の調査ステップを実行したりできます。",
+        "action": {
+          "secondary": "キャンペーンを開く",
+          "tertiary": "シーケンスを編集"
+        }
+      }
+    },
+    "import": {
+      "title": "これまでの調査を活用",
+      "description": "既存の連絡管理プロセスからJSON配列、JSONL、CSVを取り込めます。企業はドメインで照合されます。取り込みによってメッセージが承認されることはありません。",
+      "fields": {
+        "content": "見込み顧客のレコード"
+      },
+      "help": "情報源を含めて最大5,000行（2 MB以内）を貼り付けてください。過去の連絡履歴と連絡禁止の判断は保持されます。",
+      "result": "{count, number} 件のレコードを取り込みました。",
+      "action": {
+        "primary": "見込み顧客を取り込む"
+      },
+      "summary": "取り込み：{imported, number} 件 · 既存：{duplicate, number} 件 · 除外：{suppressed, number} 件 · 無効：{invalid, number} 件",
+      "rowError": "{row, number} 行目の企業、担当者、国、メールアドレスに有効な情報を入力してください。",
+      "moreErrors": "ほかの無効な行：{count, number} 行。"
+    },
+    "review": {
+      "title": "送る価値のあるメールに",
+      "description": "宛先、証拠、実際に送るメッセージをまとめて確認してください。",
+      "emptyTitle": "レビューは完了しています",
+      "emptyDescription": "見込み顧客の下書きを作成すると、ここでレビューできます。",
+      "first": "初回メール",
+      "followupOne": "1回目のフォローアップ",
+      "followupTwo": "2回目のフォローアップ",
+      "afterDays": "{count, number} 日目",
+      "fields": {
+        "subject": "件名",
+        "body": "メール本文",
+        "reason": "理由"
+      },
+      "evidenceTitle": "このメールを送る根拠",
+      "checksTitle": "承認前の確認",
+      "approvalNote": "承認は、この宛先に送るこの内容のメッセージにのみ適用されます。編集すると再承認が必要です。",
+      "blocked": "承認前にこれらの確認事項を解決してください。",
+      "ready": "レビュー可能",
+      "notSending": "承認してもメールは直ちに送信されません。",
+      "action": {
+        "primary": "これらのメールを承認",
+        "secondary": "編集を保存",
+        "tertiary": "保留にする",
+        "quaternary": "連絡不可"
+      },
+      "footerTitle": "郵送先住所のフッター",
+      "quotedHistory": "引用される初回メール",
+      "queue": {
+        "title": "レビュー一覧",
+        "description": "見込み顧客を検索し、メールと証拠を開いて確認できます。",
+        "search": "会社名、連絡先、件名で検索",
+        "status": "ステータスで絞り込む",
+        "allStatuses": "すべてのステータス",
+        "count": "この一覧の見込み顧客：{count, number} {count, plural, one {件} other {件}}",
+        "subject": "件名",
+        "updated": "最終更新",
+        "range": "全 {total, number} 件中 {start, number}–{end, number} 件",
+        "page": "全 {pages, number} ページ中 {page, number} ページ",
+        "emptyTitle": "該当する下書きがありません",
+        "emptyDescription": "別の検索語やステータスをお試しください。",
+        "error": "レビュー一覧を読み込めませんでした。もう一度お試しください。",
+        "pagination": "レビュー一覧のページ",
+        "action": {
+          "primary": "レビューを開く",
+          "secondary": "一覧に戻る",
+          "tertiary": "絞り込みを解除",
+          "quaternary": "検索"
+        },
+        "previous": "前のページ",
+        "next": "次のページ",
+        "missingTitle": "レビューできません",
+        "missingDescription": "この見込み顧客には、レビューできる保存済みの下書きがありません。",
+        "discard": {
+          "title": "未保存の変更を破棄しますか？",
+          "description": "メッセージの変更は保存されていません。",
+          "action": {
+            "primary": "変更を破棄",
+            "secondary": "編集を続ける"
+          }
+        },
+        "statusColumn": "ステータス"
+      },
+      "automaticReady": "記録された問題はありません",
+      "automaticApprovalNote": "自動モードで承認チェックを行います。ここでメッセージを確認、編集、保留できます。編集後は再チェックが必要です。",
+      "manualApproval": "手動で承認"
+    },
+    "linkedin": {
+      "title": "LinkedInでも相手に合わせた連絡を",
+      "description": "ここでメッセージを準備し、ご自身のLinkedInプロフィールからつながりの申請や返信を行ってください。",
+      "manualNote": "つながりの申請やメッセージはLinkedIn上で手動送信します。このワークスペースでは下書き、状況、次のステップをまとめて管理します。",
+      "emptyTitle": "LinkedInのタスクはまだありません",
+      "emptyDescription": "見込み顧客にLinkedInプロフィールを追加し、相手に合わせた次のステップを準備してください。",
+      "fields": {
+        "status": "つながりの状況",
+        "draft": "メッセージの下書き",
+        "notes": "会話のメモ",
+        "nextDate": "次のステップの日付"
+      },
+      "status": {
+        "notStarted": "未着手",
+        "planned": "予定済み",
+        "requested": "つながりを申請済み",
+        "connected": "つながり済み",
+        "messaged": "メッセージ送信済み",
+        "replied": "返信あり",
+        "closed": "終了",
+        "research": "調査中",
+        "ready": "準備完了",
+        "invited": "招待送信済み"
+      },
+      "action": {
+        "primary": "次のステップを保存",
+        "secondary": "LinkedInプロフィールを開く",
+        "tertiary": "メッセージをコピー"
+      },
+      "queue": {
+        "title": "LinkedInの連絡先",
+        "description": "連絡先を検索し、下書きを確認して、次のステップを管理します。",
+        "search": "企業や連絡先を検索",
+        "status": "ステータスで絞り込む",
+        "allStatuses": "すべてのステータス",
+        "count": "{count, plural, other {LinkedInの連絡先 # 件}}",
+        "range": "全 {total, number} 件中 {start, number}–{end, number} 件",
+        "page": "全 {pages, number} ページ中 {page, number} ページ",
+        "emptyTitle": "一致するLinkedInの連絡先はありません",
+        "emptyDescription": "別のキーワードで検索するか、フィルターを解除してください。",
+        "error": "LinkedInの連絡先を読み込めませんでした。もう一度お試しください。",
+        "pagination": "LinkedInの連絡先のページ切り替え",
+        "action": {
+          "primary": "連絡先を開く",
+          "secondary": "連絡先一覧に戻る",
+          "tertiary": "絞り込みを解除",
+          "quaternary": "検索"
+        },
+        "previous": "前のページ",
+        "next": "次のページ",
+        "missingTitle": "LinkedInタスクが見つかりません",
+        "missingDescription": "この連絡先にはLinkedInタスクがありません。一覧に戻って別の連絡先を選択してください。",
+        "discard": {
+          "title": "未保存の変更を破棄しますか？",
+          "description": "変更は保存されていません。",
+          "action": {
+            "primary": "変更を破棄",
+            "secondary": "編集を続ける"
+          }
+        },
+        "statusColumn": "ステータス",
+        "draft": "メッセージ",
+        "draftSaved": "下書き保存済み",
+        "draftEmpty": "下書きなし",
+        "nextStep": "次のステップ",
+        "unscheduled": "未定"
+      },
+      "missingTemplateDetails": "このテンプレートに必要な情報が不足しています。見込み顧客または連絡方針に情報を追加するか、ここにメッセージを入力してください。"
+    },
+    "replies": {
+      "title": "返信と結果",
+      "description": "会話の履歴と次の判断を1か所で管理します。",
+      "emptyTitle": "記録された返信はありません",
+      "emptyDescription": "会話が進んだら、返信や結果を記録してください。",
+      "fields": {
+        "outcome": "結果",
+        "note": "返信またはメモ"
+      },
+      "outcomes": {
+        "reply": "返信を受信",
+        "positive": "関心あり",
+        "negative": "関心なし",
+        "meeting": "面談予約済み",
+        "optout": "連絡停止の希望あり",
+        "bounce": "メールが配信不能",
+        "note": "メモ"
+      },
+      "manualNote": "実際の結果を記録してください。連絡停止を求められた場合、それ以降の連絡を禁止します。",
+      "action": {
+        "primary": "結果を記録"
+      }
+    },
+    "playbook": {
+      "title": "ecenticとともに進化する連絡方針",
+      "description": "文体、メールの順序、対象の条件をアプリで調整できます。新しい下書きには保存済みのバージョンが適用されます。",
+      "voiceTitle": "送信者情報",
+      "sequenceTitle": "メールの送信順序",
+      "targetingTitle": "連絡する相手",
+      "limitsTitle": "送信上限",
+      "fields": {
+        "name": "方針名",
+        "fromName": "送信者の表示名",
+        "signature": "署名",
+        "subjectTemplate": "件名テンプレート",
+        "bodyTemplate": "初回メールのテンプレート",
+        "followupOneTemplate": "1回目のフォローアップのテンプレート",
+        "followupTwoTemplate": "2回目のフォローアップのテンプレート",
+        "linkedinTemplate": "LinkedInメッセージのテンプレート",
+        "weeklyTarget": "週あたりの初回メール数",
+        "maxWords": "本文の最大語数",
+        "dailyCap": "メールボックスごとの1日目標上限",
+        "allowedCountries": "許可する国コード",
+        "targetRoles": "対象の役職",
+        "blockedRoles": "除外する役職",
+        "excludedDomains": "除外する企業ドメイン",
+        "postalAddress": "郵送先住所",
+        "voiceNotes": "文章作成の指示",
+        "bannedPhrases": "禁止する語句",
+        "fromEmail": "送信元メールアドレス",
+        "founderLine": "創業者の紹介文",
+        "callToAction": "締めくくりの質問",
+        "optout": "連絡停止を案内する一文",
+        "senderConfirmed": "送信者の身元と記載内容を確認済み",
+        "sendingEnabled": "承認済みメッセージの送信を有効にする",
+        "maxBodyWords": "本文の最大語数",
+        "verificationDays": "商品情報の根拠の有効日数",
+        "minGapMinutes": "送信間隔の下限（分）",
+        "maxGapMinutes": "送信間隔の上限（分）",
+        "followupOneDays": "1回目のフォローアップ日",
+        "followupTwoDays": "2回目のフォローアップ日",
+        "heldCountries": "保留する国コード",
+        "excludedRoles": "除外する役職",
+        "historyConfirmed": "過去の送信履歴と連絡禁止の記録を取り込み済み",
+        "competingSendersPaused": "ほかの新規開拓用の送信システムを停止済み",
+        "senderTested": "送信元メールボックスの管理下での送信・返信テストに合格済み",
+        "senderEmails": "送信元メールボックス",
+        "sentEmailExamples": "送信済みメールの例",
+        "humanizeDrafts": "AIの下書きにHumanizerを使う",
+        "humanizerNotes": "Humanizerへの指示",
+        "inactiveSenderEmails": "使用しない送信元メールボックス",
+        "emailVerificationDays": "メール検証の有効日数",
+        "excludedCompanies": "除外する会社名",
+        "targetingNotes": "対象選定の優先順位と確認メモ",
+        "replyClaimNotes": "返信で使用できる主張",
+        "firstEmailBlockedClaims": "初回メールで禁止する主張",
+        "barcodeObservation": "確認した事実",
+        "barcodeConsequence": "考えられる影響",
+        "barcodeAskAbout": "AIへの質問のテーマ",
+        "reviewsObservation": "確認した事実",
+        "reviewsConsequence": "考えられる影響",
+        "reviewsAskAbout": "AIへの質問のテーマ",
+        "noBarcodeObservation": "確認した事実",
+        "noBarcodeConsequence": "考えられる影響",
+        "noBarcodeAskAbout": "AIへの質問のテーマ",
+        "noProductObservation": "確認した事実",
+        "noProductConsequence": "考えられる影響",
+        "noProductAskAbout": "AIへの質問のテーマ",
+        "automationEnabled": "キャンペーンの自動準備を有効にする",
+        "productCheckIntro": "商品点検向けの自己紹介",
+        "publishedProductObservation": "確認した事実",
+        "publishedProductConsequence": "提案する確認",
+        "publishedProductAskAbout": "購入者の質問テーマ",
+        "linkedinAutomationEnabled": "LinkedInでの自動アプローチを有効にする",
+        "linkedinAccountId": "LinkedInアカウント",
+        "linkedinDailyInvites": "1日あたりの招待上限",
+        "linkedinWeeklyInvites": "1週間あたりの招待上限",
+        "linkedinDailyMessages": "1日あたりのメッセージ上限",
+        "meetingBookingUrl": "商談予約リンク",
+        "researchInstructions": "調査の指示",
+        "requireShoppingEvidence": "下書き前に購入体験の根拠を必須にする"
+      },
+      "templateHelp": "以下に示す対応変数を挿入してください。見込み顧客の保存済み情報が自動で入ります。",
+      "variablesTitle": "使用できる変数",
+      "listHelp": "各行に値を1つずつ入力してください。",
+      "changeNote": "テンプレートを変更しても既存のメッセージは承認されません。再生成した下書きは送信前にレビューしてください。",
+      "capHelp": "1日の上限には初回メールとフォローアップの両方が含まれます。",
+      "action": {
+        "primary": "連絡方針を保存"
+      },
+      "legalHelp": "国の設定は送信対象を絞るためのもので、連絡の法的な許可を意味するものではありません。確認が済んでいない国は保留にしてください。",
+      "sendingHelp": "承認済みで、現在のすべてのチェックを通過したメッセージだけが送信キューに入ります。",
+      "senderHelp": "表示名、署名、創業者に関する記述が、送信者を正しく表していることを確認してください。",
+      "validation": {
+        "gap": "送信間隔の上限は、下限以上にしてください。",
+        "followup": "2回目のフォローアップは、1回目より後の日にしてください。"
+      },
+      "releaseHelp": "送信を有効にする前に、これらの項目を確認してください。メッセージを承認しても送信は有効になりません。",
+      "senderPoolHelp": "これらのアドレスは、上記の同じ送信者名と署名を使用します。別々のチームメンバーではなく、1人の送信者のエイリアスです。",
+      "examplesHelp": "実際に送信した初回メールを貼り付けてください。その文体を一般的な文章の助言より優先します。事実と宛先は各見込み客の情報に基づきます。",
+      "writingTitle": "文章の作成ルール",
+      "writingHelp": "テンプレートで初回メールの構成と結びを設定します。AIは文章の指示と実際の送信例を使って文面を整えます。フォローアップとLinkedInの文面には、それぞれ保存済みのテンプレートが使われます。",
+      "humanizerHelp": "確認前にHumanizerでAIの下書きを整えます。新しい下書きでも、テンプレートの送信者紹介と結びは保持されます。",
+      "humanizerNotesHelp": "文章を整える際の指示を編集します。実際の送信例を文体の基準にします。Humanizerをオフにしても、これらのメモは保存されます。",
+      "barcodeTitle": "ページのデータにバーコードがない",
+      "reviewsTitle": "レビューはあるが評価データがない",
+      "noBarcodeTitle": "バーコードが見つからない",
+      "noProductTitle": "商品データが見つからない",
+      "inactiveSenderHelp": "接続待ちの追加エイリアスはここに保存します。接続後は履歴を同期できますが、有効な一覧に移すまで送信できません。",
+      "emailVerificationHelp": "プロバイダーが実際に検証した記録の有効期間です。古い記録を取得し直しても検証日は更新されません。",
+      "productVerificationHelp": "確認時と送信時に許容する、対象商品の根拠の経過日数です。",
+      "excludedCompaniesHelp": "正式な会社名または確認済みの別名を1行に1つ入力します。ウェブサイトの文章ではなく、会社名を照合します。",
+      "targetingNotesHelp": "担当者向けの優先順位と確認指針です。このメモによって自動の適格性チェックが追加されることはありません。",
+      "replyClaimNotesHelp": "返信とLinkedInで使う表現の参考情報です。初回メールでの使用を認めるものではありません。",
+      "firstEmailBlockedClaimsHelp": "主張、会社名、フレーズを1行に1つ入力します。一致すると初回メールを承認できません。パーセント表記も禁止されます。",
+      "findingRulesHelp": "これらの文で観察内容、提案する確認、質問のテーマを設定します。プレースホルダーには保存済みの見込み客情報を使います。productFeatureは出典で確認した購入判断に関わる詳細です。",
+      "barcodeHelp": "ストアに有効なバーコードがあり、未加工・レンダリング後の商品データのどちらにもないことを確認してください。同じ商品が他店でも販売されていることを示すリンクも必要です。",
+      "reviewsHelp": "表示されるレビュー件数が対象商品のものであり、ソースにもレンダリング後のページにも評価データがないことを確認してください。",
+      "noBarcodeHelp": "包装済みの商品にのみ使用してください。ギフトカード、特注品、手作り品、セット商品、デジタル商品、サンプルは対象外です。",
+      "noProductHelp": "ソースとJavaScript実行後のページの両方に商品データがないことを確認してください。",
+      "automationTitle": "自動モード",
+      "automationHelp": "有効なキャンペーンでは、連絡先の検索、業務用メールの検証、メッセージの作成、条件を満たすメールの承認を自動で行えます。送信には送信設定、メールボックスの準備状況、保存済みの上限が引き続き適用されます。",
+      "productCheckIntroHelp": "確認済みの商品情報を基に点検を提案する場合にのみ使用する、創業者の自己紹介です。",
+      "publishedProductTitle": "具体的な商品情報",
+      "publishedProductHelp": "'{productFeature}' には、対象商品で確認した具体的な成分、素材、デザイン、互換性の情報を使います。AIに関する質問は、提案する確認として表現し、測定済みの結果やデータ不足の断定にはしないでください。",
+      "automaticChangeNote": "変更は以降のチェックと下書きに適用されます。プレイブックに合わなくなったメッセージは保留されます。",
+      "automaticSendingHelp": "自動チェックと現在の送信条件を満たすメッセージのみが送信キューに入ります。",
+      "linkedinAutomationTitle": "LinkedInの自動化",
+      "linkedinAutomationHelp": "選択した接続済みアカウントを使って、条件を満たすLinkedIn連絡先へのアプローチを自動処理します。メール送信は別に管理されます。",
+      "linkedinAccountHelp": "招待とメッセージを送信する接続済みアカウントを選択してください。アカウントが自動選択されることはありません。",
+      "linkedinAccountPlaceholder": "接続済みアカウントを選択",
+      "linkedinAccountUnavailable": "保存済みアカウントは利用できません",
+      "linkedinCapsHelp": "LinkedInには独立した上限があります。招待は1日15件、週50件、メッセージは1日15件までです。これらは上限であり、アカウントの状態や適格性の確認により処理が保留される場合があります。",
+      "meetingBookingUrlHelp": "返信に使用するHTTPSの予約リンクです。クリックだけで商談を予約済みにすることはありません。",
+      "researchTitle": "調査の要件",
+      "researchHelp": "購入者の検索内容、競合商品、購入までの流れについて、調査で確認すべき内容を設定します。UCPプロファイルがあるだけでは、AI上で購入を完了できるとは判断できません。",
+      "researchInstructionsHelp": "購入者の質問、比較する正確なバリエーションと市場、UCP・商品ページ・購入手続きで収集する根拠を記載してください。情報源を記録し、未検証または取得できなかった結果は不明のままにします。",
+      "requireShoppingEvidenceHelp": "購入体験について根拠のある発見が記録されるまで、下書きの作成と承認を保留します。成分に関する事実だけでは、購入時の障害を示す根拠にはなりません。",
+      "legacyFindingsTitle": "従来の調査結果の定型文",
+      "legacyFindingsHelp": "従来の商品チェックやデータ欠落チェックで使う、保存済みの定型文です。購入体験の根拠が必須の場合、新しい下書きには代わりに、記録された購入体験の調査結果を使用します。従来の手順向けに、これらの項目は引き続き利用できます。"
+    },
+    "integrations": {
+      "title": "適切なツールと連携",
+      "description": "キャンペーンで使用する連絡先データ、企業調査、メール送信のツールを接続します。",
+      "configured": "設定済み",
+      "notConfigured": "未設定",
+      "ready": "準備完了",
+      "pending": "処理中",
+      "failed": "対応が必要",
+      "credentialsNote": "認証情報はサーバー上に保持されます。プロバイダーへのアクセスや利用条件はアカウントによって異なります。",
+      "apollo": {
+        "title": "Apollo",
+        "description": "ストアの適切な担当者を見つけ、情報源から取得した勤務先メールアドレスを確認します。",
+        "resultsTitle": "この企業の担当者",
+        "empty": "条件に一致する担当者は見つかりませんでした。",
+        "sourceNote": "プロバイダーの結果には、現在の役職の確認とメールアドレスの検証が引き続き必要です。",
+        "action": {
+          "primary": "この担当者を追加",
+          "secondary": "勤務先メールアドレスを取得",
+          "tertiary": "プロフィールを開く"
+        }
+      },
+      "clay": {
+        "title": "Clay",
+        "description": "別の情報源が必要なレコードに対して、設定済みの情報補完ワークフローを実行します。",
+        "action": {
+          "primary": "情報補完を開始",
+          "secondary": "情報補完を確認"
+        },
+        "fields": {
+          "runId": "情報補完の実行ID",
+          "cursor": "結果カーソル"
+        },
+        "resultTitle": "情報補完の結果",
+        "sourceNote": "情報補完の結果はレビューするための根拠です。担当者やメッセージの承認にはなりません。",
+        "keyVerified": "APIキー確認済み",
+        "routinePending": "情報補完の設定が未完了です。準備ができたらClayのルーティンを追加してください。",
+        "enrichmentUnavailable": "見込み顧客の情報を補完するには、「連携」でClayを接続し、ルーティンを追加してください。"
+      },
+      "azure": {
+        "title": "Azure",
+        "description": "保存済みの証拠と現在の連絡方針を使って下書きを準備します。"
+      },
+      "email": {
+        "title": "メール配信",
+        "description": "接続済みの送信元メールボックスから、条件を満たすメッセージを送信します。"
+      },
+      "linkedin": {
+        "title": "LinkedIn",
+        "description": "Unipileを通じてLinkedInアカウントを接続し、ここで接続を管理します。",
+        "setupHelp": "Unipile V2アカウントを作成し、APIキーをコピーしてここに保存してください。",
+        "empty": "接続済みのLinkedInアカウントはありません。",
+        "declined": "LinkedInへの接続が完了しませんでした。もう一度お試しください。",
+        "locked": "アカウントがロックされています",
+        "status": {
+          "running": "接続済み",
+          "errored": "接続エラー",
+          "disconnected": "未接続",
+          "degraded": "接続の確認が必要",
+          "partial": "一部のみ接続済み"
+        },
+        "action": {
+          "primary": "アカウントを接続",
+          "secondary": "状態を更新",
+          "tertiary": "再接続",
+          "quaternary": "Unipileを設定"
+        },
+        "key": {
+          "label": "Unipile APIキー",
+          "placeholder": "Unipile APIキーを貼り付け",
+          "help": "キーを検証してから暗号化して保存します。保存したキーが再表示されることはありません。",
+          "required": "Unipile APIキーを貼り付けてください。",
+          "invalid": "有効なAPIキーを入力してください。",
+          "show": "APIキーを表示",
+          "hide": "APIキーを非表示",
+          "testing": "検証して保存中…",
+          "saved": "APIキーを検証し、保存しました。",
+          "action": {
+            "primary": "APIキーを保存",
+            "secondary": "APIキーを置き換え"
+          },
+          "errors": {
+            "invalid": "キーが受け付けられませんでした。Unipile V2アカウントのキーを確認して、もう一度お試しください。",
+            "unavailable": "Unipileに接続できませんでした。少し待ってからもう一度お試しください。",
+            "encryption": "サーバーでこのキーを暗号化できませんでした。管理者に暗号化設定の確認を依頼してください。",
+            "save": "APIキーを保存できませんでした。もう一度お試しください。"
+          }
+        },
+        "pricing": "Unipileのプランを見る"
+      },
+      "fields": {
+        "domain": "企業ドメイン",
+        "routineId": "ClayルーチンID"
+      },
+      "action": {
+        "primary": "連絡先を検索",
+        "secondary": "メールを確認",
+        "tertiary": "情報補完を実行",
+        "quaternary": "商品ページを確認"
+      },
+      "gmail": {
+        "title": "メールボックス",
+        "description": "既存の Google メールボックスを接続して、承認済みメールを送信し、返信を同期します。",
+        "action": {
+          "primary": "Gmailを接続",
+          "secondary": "返信を同期",
+          "tertiary": "接続を解除",
+          "quaternary": "メールボックスを保存"
+        },
+        "sync": {
+          "running": "返信を同期中…",
+          "stopping": "現在の処理分を完了しています…",
+          "action": {
+            "primary": "この処理分の後に停止"
+          },
+          "help": "メールボックスの履歴を確認している間は、このページを開いたままにしてください。同期は停止して、後から再開できます。",
+          "progress": "今回の同期で{count, plural, other {# 件のメッセージを確認しました}}。履歴の確認は自動的に続行されます。",
+          "complete": "同期が完了しました。{count, plural, other {# 件のメッセージを確認しました}}。",
+          "stopped": "同期を停止しました。{count, plural, other {# 件のメッセージを確認しました}}。続行するには、同期を再開してください。",
+          "error": "メールボックスを確認できなかったため、同期を停止しました。接続を確認して、もう一度お試しください。"
+        }
+      },
+      "worker": {
+        "title": "送信処理",
+        "description": "保存された上限の範囲内で、承認済みメッセージを処理します。",
+        "action": {
+          "primary": "キューを確認",
+          "secondary": "送信を一時停止"
+        },
+        "runHelp": "送信が有効な場合、この操作で条件を満たす承認済みメールが送信されることがあります。",
+        "previewHelp": "保存済みのデータを確認します。メールの送信やメールボックスの更新は行いません。"
+      },
+      "connectionError": "アカウントを接続できませんでした。設定を確認して、もう一度お試しください。",
+      "connected": "接続済み",
+      "notConnected": "未接続",
+      "verification": {
+        "title": "メールアドレスの検証",
+        "description": "最新の結果をリクエストし、完了するまで処理状況を確認してください。処理中や不明の結果では承認できません。",
+        "fields": {
+          "requestId": "検証リクエストID"
+        },
+        "action": {
+          "primary": "検証を開始",
+          "secondary": "検証結果を確認"
+        },
+        "pending": "検証はまだ処理中です。",
+        "result": "検証結果"
+      },
+      "research": {
+        "title": "商品の根拠資料",
+        "description": "公開商品ページを確認し、確認した内容と情報源を保存します。",
+        "action": {
+          "primary": "商品ページを確認",
+          "secondary": "次の見込み顧客 {count, number} 件を準備",
+          "tertiary": "商品の指摘事項を調査"
+        },
+        "resultTitle": "商品の確認結果",
+        "summary": "確認済みの指摘事項：{verified, number} 件、保留：{held, number} 件。"
+      },
+      "drafting": {
+        "title": "保存済みの根拠から下書き作成",
+        "description": "保存済みの見込み顧客と連絡方針を使い、Azureでメッセージを準備します。",
+        "action": {
+          "primary": "AIで下書きを作成"
+        },
+        "fields": {
+          "prospect": "見込み顧客"
+        }
+      },
+      "provenance": "情報源と確認日",
+      "mx": {
+        "action": {
+          "primary": "メール事業者を確認"
+        }
+      },
+      "credentials": {
+        "setup": {
+          "apollo": "ワークスペースのApollo APIキーをここに保存してください。",
+          "clay": "ClayのAPIキーを保存してワークスペースを接続します。情報補完の設定は後から行えます。",
+          "google": "Google OAuthのウェブアプリケーションを作成し、下記のリダイレクトURIを追加して、クライアントIDとクライアントシークレットを保存してください。その後、各Gmail受信トレイを接続します。"
+        },
+        "secret": {
+          "apollo": "Apollo APIキー",
+          "clay": "Clay APIキー",
+          "google": "Google OAuthクライアントシークレット"
+        },
+        "fields": {
+          "clientId": "Google OAuthクライアントID",
+          "routineId": "ClayルーティンID（任意）",
+          "redirectUri": "GoogleリダイレクトURI"
+        },
+        "redirectHelp": "このアドレスをそのままGoogle OAuthクライアントの承認済みリダイレクトURIに追加してください。",
+        "help": "シークレットは暗号化して保存され、再表示されることはありません。",
+        "required": "この項目を入力してください。",
+        "invalid": "有効な値を入力してください。",
+        "show": "シークレットを表示",
+        "hide": "シークレットを非表示",
+        "saving": "保存中…",
+        "testing": "確認して保存中…",
+        "saved": "認証情報を保存しました。",
+        "action": {
+          "primary": "認証情報を保存",
+          "secondary": "認証情報を置き換え"
+        },
+        "errors": {
+          "invalid": "認証情報と必須項目を確認して、もう一度お試しください。",
+          "unavailable": "プロバイダーに接続できませんでした。もう一度お試しください。",
+          "encryption": "サーバーでこの認証情報を暗号化できませんでした。管理者に暗号化設定の確認を依頼してください。",
+          "save": "認証情報を保存できませんでした。もう一度お試しください。"
+        },
+        "links": {
+          "clayPlan": "Clay Launch",
+          "googlePlan": "Google Workspace Business Starter",
+          "googleConsole": "Google OAuthを設定",
+          "googleApi": "Gmail APIを有効にする",
+          "apolloPlan": "Apollo Basic",
+          "apolloKeys": "Apollo APIキー",
+          "clayTrial": "Clayを試す",
+          "clayKeys": "Clay APIキー",
+          "clayWorkspace": "Clayを開く",
+          "clayApiDocs": "Clay APIドキュメント"
+        },
+        "routineHelp": "接続時の入力は任意です。Clayのワークスペースで情報補完用のルーティンを設定し、そのIDをここに貼り付けてください。",
+        "routine": {
+          "action": {
+            "primary": "詳細設定：情報補完ルーティン"
+          }
+        },
+        "claySaved": "APIキーを確認し、保存しました。",
+        "claySavedPending": "APIキーを確認し、保存しました。情報補完の設定はまだ完了していません。"
+      },
+      "mailbox": {
+        "help": "Roger で Manage Mailbox → Credentials を開き、App Password をコピーしてください。メールを送信せずに、送信と返信へのアクセスを確認します。",
+        "senderHelp": "連絡方針の「送信元メールボックス」または「使用しない送信元メールボックス」に登録されているアドレスを使用してください。使用しないメールボックスも接続と同期はできますが、送信はできません。",
+        "passwordHelp": "Roger の App Password を貼り付けてください。Password や 2FA コードではありません。アプリパスワードは暗号化して保存され、保存後は表示されません。",
+        "fields": {
+          "email": "メールボックスのアドレス",
+          "appPassword": "アプリパスワード"
+        },
+        "invalidEmail": "有効なメールアドレスを入力してください。",
+        "passwordRequired": "このメールボックスのアプリパスワードを入力してください。",
+        "invalidPassword": "16 文字のアプリパスワードを入力してください。スペースは含めても問題ありません。",
+        "show": "アプリパスワードを表示",
+        "hide": "アプリパスワードを隠す",
+        "checking": "送信と返信へのアクセスを確認中…",
+        "connected": "メールボックスを接続しました。返信を同期して履歴を取り込んでください。使用しないメールボックスからは送信できません。",
+        "oauthHelp": "独自の Google OAuth アプリケーションで接続する場合は、こちらの方法を使用してください。",
+        "action": {
+          "primary": "確認して接続",
+          "secondary": "詳細設定：Google OAuth",
+          "tertiary": "Google OAuth の設定を閉じる"
+        },
+        "errors": {
+          "invalid": "有効なメールアドレスと、そのメールボックスの 16 文字のアプリパスワードを入力してください。パスワードにスペースを含めても問題ありません。",
+          "authentication": "Google が接続を拒否しました。アプリパスワードを確認し、このメールボックスへのアクセスが有効になっているか確認してください。",
+          "unavailable": "Google への接続がタイムアウトしたか、接続できませんでした。もう一度お試しください。",
+          "encryption": "サーバーでアプリパスワードを暗号化できませんでした。管理者に暗号化設定の確認を依頼してください。",
+          "save": "メールボックスを保存できませんでした。もう一度お試しください。",
+          "notRegistered": "このアドレスを連絡方針の「送信元メールボックス」または「使用しない送信元メールボックス」に追加してから、ここで接続してください。",
+          "inactive": "このメールボックスは連絡方針で使用しない設定になっています。返信の同期は可能です。送信を有効にする前に「送信元メールボックス」に移してください。"
+        },
+        "maximumDailyCap": "メールボックスごとの1日目標上限",
+        "dailyCapHelp": "目標上限は50通で、初回メールとフォローアップが含まれます。 メールボックスは1日15通から開始します。1日が終了し、現在の上限に達していて、バウンスが観測されなかった場合に限り、上限が5通増えます。バウンスが観測されると上限は15通に戻ります。目標値は実際の送信数やメールボックスの評価を保証しません。"
+      }
+    },
+    "relationships": {
+      "cold": "これまでの関係なし",
+      "warm": "既知の連絡先",
+      "event": "イベントの連絡先",
+      "customer": "顧客",
+      "pilot": "試験導入先",
+      "partner": "パートナー",
+      "investor": "投資家",
+      "enterprise": "大企業アカウント",
+      "competitor": "競合"
+    },
+    "platforms": {
+      "shopify": "Shopify",
+      "woocommerce": "WooCommerce",
+      "other": "その他",
+      "unknown": "不明"
+    },
+    "emailHosts": {
+      "google": "Google",
+      "microsoft": "Microsoft",
+      "other": "その他",
+      "unknown": "不明"
+    },
+    "languages": {
+      "en": "英語",
+      "de": "ドイツ語",
+      "es": "スペイン語",
+      "it": "イタリア語"
+    },
+    "issues": {
+      "unknownVariable": "テンプレートに未対応の変数が含まれています。",
+      "emptyMessage": "件名と本文の両方を入力してください。",
+      "subjectLength": "初回メールの件名は2〜5語にしてください。",
+      "wordLimit": "初回メールが保存された語数の上限を超えています。",
+      "unresolvedVariable": "承認前に、残っているプレースホルダーを置き換えてください。",
+      "dash": "emダッシュ（—）とenダッシュ（–）を削除してください。",
+      "link": "メールからリンクを削除してください。",
+      "bullet": "メールから箇条書きを削除してください。",
+      "emoji": "メールから絵文字を削除してください。",
+      "bannedPhrase": "連絡方針で除外されている単語や表現を削除してください。",
+      "optoutMissing": "保存された連絡停止の案内文を含めてください。",
+      "signatureMissing": "初回メールの末尾に保存された署名を入れてください。",
+      "domainInvalid": "有効なストアドメインを入力してください。",
+      "excludedCompany": "この企業は除外リストに登録されています。",
+      "relationshipExcluded": "この関係は新規開拓メールの対象外です。",
+      "countryHeld": "現在、この国への送信は許可されていません。",
+      "emailUnverified": "仕事用メールアドレスには、有効期限内の検証結果が必要です。",
+      "microsoftHeld": "Microsoftのメールサービスを利用する宛先は保留中です。",
+      "mxUnknown": "メール事業者の確認を更新してください。",
+      "roleUnverified": "現在の役職とその情報源を確認してください。",
+      "roleExcluded": "この役職は連絡方針で除外されています。",
+      "legitUnverified": "企業が選定条件を満たす根拠を追加してください。",
+      "evidenceMissing": "具体的な商品名、確認した内容、最新の裏付けを追加してください。",
+      "personalSourceMissing": "相手に合わせた一文の公開情報源、公開日、最近の確認日を追加するか、その一文を削除してください。",
+      "senderUnconfirmed": "連絡方針で送信者の身元と記載内容を確認してください。",
+      "senderDomain": "新規開拓メールはjoinecentic.comのアドレスから送信する必要があります。",
+      "timezoneMissing": "受信者のタイムゾーンを追加してください。",
+      "suppressed": "この人物または企業への連絡は禁止されています。",
+      "alreadyContacted": "この企業にはすでに連絡済みです。",
+      "duplicateMessage": "このメッセージは別の下書きと重複しています。",
+      "staleRevision": "この下書きは変更されています。確認する前に再読み込みしてください。",
+      "exclamation": "感嘆符は冒頭の挨拶でのみ使用してください。",
+      "roleOutsideTarget": "この役職は連絡方針で指定した対象に一致しません。",
+      "sharedInbox": "共有メールボックスではなく、指定した担当者の検証済みアドレスを使用してください。",
+      "draftMissing": "承認前に3通すべての下書きを作成してください。",
+      "emailDomainMismatch": "勤務先メールアドレスは、この企業のドメインに属している必要があります。",
+      "productDomainMismatch": "商品ページは、この企業のドメインに属している必要があります。",
+      "duplicateSubject": "別の承認済み見込み顧客の初回メールで、同じ件名が使われています。",
+      "repeatedSentence": "相手に合わせた一文が、別の承認済みメールと重複しています。",
+      "findingCopyChanged": "指摘事項の表現が変更されています。承認する前に、保存済みの指摘事項の段落全体を復元してください。",
+      "claimNotAllowed": "初回メールで禁止されている主張とパーセント表記を削除してください。",
+      "findingReviewRequired": "商品の未加工・レンダリング後の根拠を確認し、指摘事項のプレースホルダーを埋め、必要な場合は他店の出典を追加してください。",
+      "templateControlsChanged": "承認する前に、保存済みの創業者紹介と締めくくりの質問を一字一句そのまま復元してください。",
+      "platformHeld": "この新規開拓キャンペーンではShopifyまたはWooCommerceを選択してください。",
+      "shoppingResearchRequired": "このメッセージを作成または承認する前に、購入体験について根拠のある発見を記録してください。"
+    },
+    "preparation": {
+      "action": {
+        "primary": "週間調査を準備",
+        "secondary": "このバッチで停止"
+      },
+      "description": "公開ページから最新の商品の指摘事項 {target, number} 件を目指し、最大3件ずつ調査します。このページを開いたままにしてください。結果は都度保存されます。",
+      "progress": "今回の確認：{processed, number} 件 · 指摘事項：{verified, number} / {target, number} 件 · 保留：{held, number} 件",
+      "running": "公開商品ページを確認中…",
+      "stopping": "現在のバッチを完了しています…",
+      "stopped": "現在のバッチの完了後に停止しました。再開すると残りの候補から続けられます。",
+      "complete": "調査目標に達しました。下書きの作成前に指摘事項を確認してください。",
+      "shortfall": "目標まであと {remaining, number} 件の指摘事項が必要です。対象となる候補を追加するか、保留中のレコードを確認してください。",
+      "empty": "根拠資料のない候補はありません。"
+    },
+    "report": {
+      "title": "今週のOutbound",
+      "description": "過去7日間の送信受付済みメールと会話の活動です。見込み顧客数と保留数は、現在の進捗状況を示します。",
+      "fields": {
+        "source": "情報源",
+        "prospects": "見込み顧客",
+        "held": "保留",
+        "acceptedFirsts": "送信受付済みの初回メール",
+        "acceptedFollowups": "送信受付済みのフォローアップ",
+        "replies": "返信",
+        "bounces": "配信失敗",
+        "meetings": "面談",
+        "uncertain": "結果未確定"
+      },
+      "holdReasons": "現在の保留理由",
+      "empty": "送信や会話の活動はまだありません。",
+      "period": "{from}–{to}"
+    },
+    "auth": {
+      "title": "Outboundにサインイン",
+      "description": "ecenticスタッフ用アカウントのメールアドレスとパスワードを使用してください。",
+      "accessNote": "ecenticスタッフ用アカウントのみアクセスできます。",
+      "error": "サインインできませんでした。スタッフ用アカウントのメールアドレスとパスワードを確認してください。",
+      "denied": {
+        "title": "スタッフ権限が必要です",
+        "description": "このアカウントにはecenticスタッフのアクセス権限がありません。サインアウトして、権限のあるアカウントを使用してください。"
+      },
+      "fields": {
+        "email": "メールアドレス",
+        "password": "パスワード"
+      },
+      "validation": {
+        "email": "有効なメールアドレスを入力してください。",
+        "password": "パスワードを入力してください。"
+      },
+      "password": {
+        "show": "パスワードを表示",
+        "hide": "パスワードを非表示"
+      },
+      "action": {
+        "primary": "サインイン"
+      },
+      "pending": "サインイン中...",
+      "home": "Outboundワークスペース",
+      "language": "言語",
+      "story": {
+        "label": "ecentic Outbound",
+        "title": "伝わるアプローチは、確かな発見から。",
+        "description": "対象のストアを調べ、一通ずつメッセージを確認し、会話をつないでいきます。",
+        "steps": {
+          "research": "調査",
+          "review": "レビュー",
+          "conversation": "会話"
+        }
+      }
+    },
+    "account": {
+      "action": {
+        "primary": "サインアウト"
+      },
+      "pending": "サインアウト中…",
+      "error": "サインアウトできませんでした。もう一度お試しください。",
+      "label": "アカウント",
+      "staff": "ecenticスタッフ"
+    },
+    "chrome": {
+      "groups": {
+        "workspace": "ワークスペース",
+        "conversations": "会話",
+        "settings": "設定"
+      },
+      "menu": {
+        "open": "ナビゲーションを開く",
+        "close": "ナビゲーションを閉じる"
+      },
+      "workspace": {
+        "description": "ecenticスタッフ用ワークスペース"
+      },
+      "breadcrumb": {
+        "label": "現在のページ"
+      },
+      "account": {
+        "label": "アカウントメニュー"
+      }
+    },
+    "campaigns": {
+      "title": "キャンペーン",
+      "newTitle": "キャンペーンを作成",
+      "description": "対象ごとに企業を探し、連絡する相手を選びます。",
+      "newDescription": "対象に名前を付けます。次のページで企業の条件を設定できます。",
+      "detailTitle": "企業を探す",
+      "detailDescription": "キャンペーンの条件を調整し、企業一覧を確認して連絡先を探します。",
+      "name": "キャンペーン名",
+      "status": "ステータス",
+      "updated": "更新日",
+      "openCampaign": "{name}を開く",
+      "criteriaMissing": "企業条件は未保存です",
+      "search": "キャンペーンを検索",
+      "searchAction": "検索",
+      "allStatuses": "すべてのステータス",
+      "emptyTitle": "キャンペーンが見つかりません",
+      "emptyDescription": "キャンペーンを作成して対象を定め、企業の検索を始めましょう。",
+      "emptyFiltered": "検索語またはステータスを変更してください。",
+      "pagination": "キャンペーンのページ切り替え",
+      "page": "{pages, number}ページ中{page, number}ページ",
+      "firstPage": "最初のページ",
+      "previousPage": "前のページ",
+      "nextPage": "次のページ",
+      "lastPage": "最後のページ",
+      "statuses": {
+        "draft": "下書き",
+        "active": "有効",
+        "paused": "一時停止",
+        "archived": "アーカイブ済み"
+      },
+      "loadError": "キャンペーン情報を読み込めませんでした。ページを再読み込みしてください。",
+      "actionError": "変更を完了できませんでした。キャンペーンを確認して再試行してください。",
+      "invalidCriteria": "最小値と最大値を含め、条件を確認してください。",
+      "saved": "キャンペーンを保存しました",
+      "saving": "保存中…",
+      "create": {
+        "action": {
+          "primary": "キャンペーンを作成"
+        }
+      },
+      "metadataTitle": "キャンペーン設定",
+      "metadataHelp": "下書きと有効なキャンペーンで企業を検索できます。キャンペーンを有効にしてもメール送信は有効になりません。",
+      "metadata": {
+        "action": {
+          "primary": "設定を保存"
+        }
+      },
+      "criteriaTitle": "企業の条件",
+      "criteriaHelp": "保存した値に基づいて企業を検索します。不明な企業情報は不明のまま扱います。",
+      "criteria": {
+        "action": {
+          "primary": "条件を保存"
+        }
+      },
+      "fields": {
+        "objective": "対象と目的",
+        "countries": "国",
+        "platforms": "コマースプラットフォーム",
+        "keywords": "企業のキーワード",
+        "excludedKeywords": "除外キーワード",
+        "targetRoles": "対象の役職",
+        "excludedRoles": "除外する役職",
+        "excludedDomains": "除外ドメイン",
+        "teamSizeMin": "従業員数の下限",
+        "teamSizeMax": "従業員数の上限",
+        "annualRevenueMin": "年間売上高の下限（USD）",
+        "annualRevenueMax": "年間売上高の上限（USD）",
+        "qualificationNotes": "適格性の判断に関するメモ"
+      },
+      "listHelp": "値はカンマまたは改行で区切ってください。",
+      "countryHelp": "USなど、2文字の国コードを使用してください。",
+      "platformHelp": "Shopify、WooCommerce、または両方を選択してください。",
+      "numberHelp": "制限しない場合は空欄にしてください。",
+      "claudeTitle": "Claudeで条件を設定",
+      "claudeHelp": "質問をClaudeの会話にコピーしてください。JSON形式の回答をここに貼り付け、各項目を確認して保存します。",
+      "claude": {
+        "action": {
+          "primary": "質問をコピー",
+          "secondary": "回答を確認",
+          "tertiary": "確認した条件を保存",
+          "quaternary": "プレビューを破棄"
+        }
+      },
+      "answerLabel": "ClaudeのJSON回答",
+      "answerHelp": "対応する条件の項目のみを取り込みます。貼り付けたテキストが操作を実行したり、Playbookを変更したりすることはありません。",
+      "answerError": "コピーした質問の形式に従った完全なJSON回答を貼り付けてください。",
+      "previewTitle": "保存前に確認",
+      "previewHelp": "まだ変更は保存されていません。値を調整し、準備ができたら保存してください。",
+      "companiesTitle": "企業",
+      "companiesCount": "{count, number}社",
+      "companySearch": "この企業一覧を検索",
+      "company": "企業",
+      "source": "情報源",
+      "country": "国",
+      "platform": "プラットフォーム",
+      "teamSize": "従業員数",
+      "revenue": "年間売上高",
+      "unknown": "不明",
+      "reason": "確認メモ",
+      "companyStatuses": {
+        "candidate": "要確認",
+        "added": "見込み客に追加済み",
+        "excluded": "除外済み"
+      },
+      "companyEmptyTitle": "この表示には企業がありません",
+      "companyEmptyDescription": "条件を保存して、企業の最初のページを検索してください。",
+      "discovery": {
+        "action": {
+          "primary": "企業を検索"
+        }
+      },
+      "discoveryPaused": "企業を検索する前に、設定でこのキャンペーンを再開してください。",
+      "discoveryRunning": "企業を検索中…",
+      "discoveryUpdated": "検索を更新しました",
+      "latestRun": "直近の検索リクエスト",
+      "runCount": "{count, number}社を保存",
+      "runStatuses": {
+        "starting": "処理中",
+        "completed": "完了",
+        "failed": "失敗",
+        "uncertain": "ステータスの確認が必要"
+      },
+      "criteriaVersion": "条件のバージョン{version, number}",
+      "openProspect": "見込み客を開く",
+      "contactPageTitle": "連絡先を選ぶ",
+      "contactPageDescription": "この企業の担当者を探し、情報を確認してから見込み客に追加します。",
+      "findContacts": "連絡先を探す",
+      "chooseContact": "この担当者を選ぶ",
+      "contactSearchHelp": "Apolloで条件に合う担当者を探します。承認前に現在の役職と勤務先メールアドレスを確認してください。",
+      "contactSearchEmpty": "条件に合う連絡先が見つかりません",
+      "manualContact": "連絡先を手動で追加",
+      "allPlatforms": "Shopify と WooCommerce",
+      "questionsCopied": "質問をコピーしました",
+      "copyError": "質問をコピーできませんでした。下で質問を開き、テキストをコピーしてください。",
+      "viewQuestions": "質問を表示",
+      "reviewMessages": "メッセージを確認",
+      "linkedinQueue": "LinkedIn キュー",
+      "automaticSource": "Apollo、次に Clay",
+      "discoveryExhausted": "両方のソースの検索結果をすべて取得しました。条件を変更して新しい検索を開始してください。",
+      "uncertainHelp": "プロバイダーからの応答を確認できません。クレジットの二重消費を避けるため、次のバッチを開始する前にこのリクエストを確認してください。",
+      "runningHelp": "企業検索を実行中です。ページを再読み込みして結果を確認してください。",
+      "reviewRequired": "続行する前にこの企業を確認してください。",
+      "companyPagination": "企業一覧のページ移動",
+      "reasons": {
+        "campaignDomainExcluded": "このキャンペーンのドメインリストで除外されています。",
+        "countryMismatch": "国がこのキャンペーンの条件に一致しません。",
+        "platformMismatch": "プラットフォームがこのキャンペーンの条件に一致しません。",
+        "teamSizeMismatch": "チーム規模が保存済みの範囲外です。",
+        "revenueMismatch": "売上高が保存済みの範囲外です。",
+        "playbookDomainExcluded": "プレイブックで除外されたドメインです。",
+        "playbookCompanyExcluded": "プレイブックで除外された企業です。",
+        "relationshipExcluded": "既存の関係があるため、新規のコールドアプローチから除外されています。",
+        "companyContacted": "この企業には保護期間内にすでに連絡しています。",
+        "existingProspect": "この企業にはすでに見込み客が登録されています。",
+        "otherCampaign": "この企業は別のキャンペーンですでに調査中です。",
+        "suppressed": "この企業は共有の連絡禁止リストに登録されています。",
+        "criteriaChanged": "条件が変更されました。この企業を再度調査してください。"
+      },
+      "errors": {
+        "provider-configuration": "検索する前に「連携」でこのプロバイダーを接続してください。",
+        "provider-input": "このプロバイダーは保存済みの条件を使用できません。国、プラットフォーム、数値フィルターを確認してください。",
+        "provider-access": "プロバイダーがアクセスを拒否しました。「連携」で API キーと検索権限を確認してください。",
+        "provider-quota": "プロバイダーのクレジットまたは使用量の上限に達しました。契約プランを確認してください。",
+        "provider-rate-limit": "プロバイダーがリクエストを一時的に制限しています。次のバッチを開始するまでお待ちください。",
+        "provider-contract": "プロバイダーから予期しない応答が返されました。このリクエストを確認してください。",
+        "provider-uncertain": "リクエストは処理済みの可能性があります。再試行する前に結果を確認してください。",
+        "provider-unavailable": "プロバイダーを利用できません。再試行する前に最新のリクエストを確認してください。",
+        "campaign-criteria-changed": "キャンペーンの条件が変更されました。再読み込みして最新の内容を確認してください。",
+        "campaign-paused": "検索する前に、設定でこのキャンペーンを再開してください。",
+        "campaign-run-unresolved": "前のリクエストがまだ実行中、または照合が必要です。次のバッチを開始する前に確認してください。",
+        "campaign-source-exhausted": "このソースには現在の条件に一致する結果がもうありません。別のソースを選ぶか条件を変更してください。",
+        "provider-plan-required": "現在のApolloプランにはプラットフォームフィルターが含まれていません。対象のトライアルを開始するか、対応プランに変更してから再試行してください。",
+        "provider-clay-plan-required": "これらの企業フィルターには Clay の有料プランが必要です。検索を実行する前にアップグレードしてください。",
+        "campaign-generation-invalid": "このClaudeプレビューは利用できなくなりました。保存する前に新しいプレビューを生成してください。",
+        "campaign-playbook-changed": "このプレビューの生成後にプレイブックが変更されました。保存する前に新しいプレビューを生成してください。",
+        "campaign-archived": "このキャンペーンはアーカイブ済みです。条件を生成する前に状態を変更してください。"
+      },
+      "objectiveHelp": "対象を説明してください。プロバイダーでの検索には、以下の構造化されたフィルターを使用します。",
+      "qualificationHelp": "スタッフ用の確認リストです。プロバイダーの検索では、これらの要件は自動確認されません。",
+      "discoverySavedCriteria": "検索には保存済みの条件（バージョン{version}）を使用します。プレビューや編集内容で検索するには、先に保存してください。",
+      "discoverySourceHelp": {
+        "auto": "1回のリクエストで最大25社を検索します。まずApolloを使い、Apolloの結果が尽きたらClayで続けます。プロバイダーでエラーが発生すると検索は停止します。",
+        "apollo": "このキャンペーンの保存済み条件で、Apolloから最大25社を検索します。",
+        "clay": "このキャンペーンの保存済み条件で、Clayから最大25社を検索します。"
+      },
+      "discoveryPreviewPending": "条件のプレビューが確認待ちです。企業を検索する前に、保存または破棄してください。",
+      "companySearchFailedTitle": "検索を実行できませんでした",
+      "companySearchFailedDescription": "企業は追加されていません。上に表示された問題を解決してから、再試行してください。",
+      "manualClaude": "Claudeを手動で使う",
+      "viewContactOptional": "連絡先を見る",
+      "automaticContactsHelp": "有効なキャンペーンは条件に合う各企業を確認し、連絡先の検索と検証を行ってから、メールシーケンスを自動作成して送信待ちに登録します。連絡先画面を開く操作は任意です。送信前の確認は引き続き適用されます。"
+    },
+    "warmup": {
+      "title": "ウォームアップ",
+      "detailTitle": "メールボックスの準備状況",
+      "description": "メールボックスの設定を確認し、ドメインごとに段階的な送信計画を準備します。",
+      "email": "メールボックス",
+      "senderPool": "送信者プール",
+      "active": "有効な送信者",
+      "inactive": "無効な送信者",
+      "connection": "接続",
+      "connectionSaved": "接続情報を保存済み",
+      "notConnected": "未接続",
+      "checks": "準備状況の確認",
+      "unchecked": "未確認",
+      "manage": "メールボックスを管理",
+      "networkTitle": "Warmbly 共有ネットワーク",
+      "networkHelp": "ウォームアップには Warmbly の共有ネットワークを使用します。送信を開始する前にネットワークを接続してください。メールボックスの確認と計画の保存は引き続き利用できます。",
+      "scopeHelp": "確認の対象は DNS レコード、メールボックスへのアクセス、保存済みの準備確認です。受信トレイへの到達状況と評価は不明のままです。",
+      "addMailboxes": "送信用メールボックスを管理",
+      "connectMailboxes": "メールボックスを接続",
+      "emptyTitle": "送信用メールボックスが未登録です",
+      "emptyDescription": "プレイブックにメールアドレスを追加し、「連携」で接続してください。",
+      "pagination": "メールボックスのページ移動",
+      "page": "{pages, number} ページ中 {page, number} ページ",
+      "firstPage": "最初のページ",
+      "previousPage": "前のページ",
+      "nextPage": "次のページ",
+      "lastPage": "最後のページ",
+      "checksTitle": "このメールボックスを確認",
+      "checkHelp": "ドメインのレコード、メールボックスへのアクセス、同期を確認します。この確認ではメールを送信しません。",
+      "dkimSelectors": "DKIM セレクター",
+      "dkimHelp": "メールプロバイダーが指定するセレクターをカンマ区切りで入力してください。空欄の場合、DKIM は不明のままになります。",
+      "checking": "確認中…",
+      "checkAction": "準備状況を確認",
+      "checkedAt": "確認日時: {date}",
+      "uncheckedHelp": "確認を実行すると、このメールボックスの最初の観測結果が保存されます。",
+      "dnsRecords": "DNS の観測結果",
+      "selectorReceipt": "セレクター: {selectors}",
+      "recordDomain": "レコードのドメイン: {domain}",
+      "none": "未指定",
+      "planTitle": "送信量の計画",
+      "planHelp": "Warmblyの初期送信量、1日あたりの増加数、上限を保存します。送信者とプレイブックの上限は引き続き適用されます。",
+      "initialDailyCap": "開始時の1日あたりメッセージ数",
+      "dailyIncrease": "1日あたりの増加数",
+      "maximumDailyCap": "1日あたりの最大メッセージ数",
+      "invalidPlan": "整数を入力してください。最大値は開始時の送信量以上、15以下にする必要があります。",
+      "saving": "保存中…",
+      "savePlan": "計画を保存",
+      "planStatus": "計画の状態",
+      "planningOnly": "計画のみ",
+      "previewCap": "上限を適用した初期送信枠",
+      "messagesPerDay": "1日あたり {count, number} 件",
+      "planScope": "この計画を保存してもウォームアップは開始されません。送信量の段階的な増加はWarmblyが管理し、観測結果に応じて増加を保留したり、送信量を減らしたりすることがあります。このプレビューは設定済みの上限を示すもので、メールボックスの健全性を測定した結果ではありません。",
+      "loadError": "メールボックスの情報を読み込めませんでした。ページを再読み込みしてください。",
+      "missingMailbox": "このアドレスはプレイブックの送信用メールボックスに含まれていません。",
+      "readiness": {
+        "needsAttention": "対応が必要です",
+        "needsChecks": "追加確認が必要です",
+        "checksPassed": "設定の確認に合格"
+      },
+      "states": {
+        "present": "確認済み",
+        "missing": "未検出",
+        "invalid": "対応が必要",
+        "unknown": "不明"
+      },
+      "checkLabels": {
+        "mx": "MX",
+        "spf": "SPF",
+        "dkim": "DKIM",
+        "dmarc": "DMARC",
+        "connection": "メールボックスへのアクセス",
+        "sync": "メールボックスの同期",
+        "provider": "プロバイダーの状態",
+        "history": "履歴の照合",
+        "test": "送信と返信のテスト"
+      },
+      "mailboxesTitle": "送信用メールボックス"
+    },
+    "warmbly": {
+      "title": "Warmbly ネットワーク",
+      "description": "Warmbly アカウントを接続すると、共有ネットワークのウォームアップをここで管理できます。メールボックスは Warmbly で接続してください。パスワードが Outbound から転送されることはありません。",
+      "connected": "API キー確認済み",
+      "notConnected": "未接続",
+      "unknown": "不明",
+      "openWarmbly": "Warmbly を開く",
+      "refresh": "状態を更新",
+      "replaceKey": "API キーを変更",
+      "connectKey": "Warmbly を接続",
+      "apiKey": "Warmbly API キー",
+      "keyHelp": "READ_EMAILS と WRITE_EMAILS 権限のあるワークスペースキーを使用してください。キーは確認後に暗号化して保存され、保存済みのキーは表示されません。",
+      "showKey": "API キーを表示",
+      "hideKey": "API キーを隠す",
+      "invalidKey": "有効な Warmbly ワークスペース API キーを入力してください。",
+      "saveKey": "API キーを保存",
+      "updated": "ネットワークの状態を更新しました",
+      "email": "メールボックス",
+      "state": "ネットワークの状態",
+      "maximum": "1日あたりの上限",
+      "perDay": "1日あたり {count, number} 件",
+      "mailboxChecks": "メールボックスを確認",
+      "checksRequired": "開始する前に送信量の計画を保存し、最新の DNS とメールボックスの確認に合格してください。メールボックスは Warmbly で有効になっている必要があります。",
+      "startHelp": "「開始」と「再開」は、保存済みの送信量計画を適用してからネットワークのウォームアップを有効にします。ウォームアップ中、そのメールボックスからの Outbound 送信は保留されます。",
+      "pendingHelp": "前の操作の状態を確認する必要があります。操作を繰り返さないよう、再試行する前に更新してください。",
+      "pending": "状態の確認が必要です",
+      "emptyTitle": "このページに登録済みメールボックスはありません",
+      "emptyDescription": "Warmbly でメールボックスを接続し、同じアドレスをプレイブックに保存してください。次のページがある場合は続けて確認してください。",
+      "page": "{page, number} ページ",
+      "previous": "前へ",
+      "next": "次へ",
+      "loadError": "Warmbly ネットワークを読み込めませんでした。接続を確認して更新してください。",
+      "actionError": "操作を完了できませんでした。ネットワークを更新し、権限と上限を確認してから再試行してください。",
+      "accessError": "Warmbly がアクセスを拒否しました。API キーと READ_EMAILS、WRITE_EMAILS 権限を確認してください。",
+      "readinessError": "開始する前にメールボックスを再確認し、MX、SPF、DKIM、DMARC の問題を解決してください。",
+      "limitError": "保存済みの送信量上限が、プレイブックまたはメールボックスの上限を超えています。開始前に下げてください。",
+      "activeError": "ウォームアップを開始する前に、このメールボックスを Warmbly で有効にしてください。",
+      "rampError": "Warmbly が保存済みの送信量計画を確認していません。再試行する前に状態を更新してください。",
+      "planChangedError": "設定中に送信量計画が変更されました。開始前に更新してください。",
+      "stateError": "Warmbly が要求した状態を確認していません。次の操作を行う前に更新して結果を確認してください。",
+      "registeredError": "ウォームアップを管理する前に、このメールボックスの正確なアドレスをプレイブックに保存してください。",
+      "states": {
+        "off": "停止中",
+        "running": "実行中",
+        "paused": "一時停止中",
+        "unknown": "不明"
+      },
+      "actions": {
+        "start": "開始",
+        "pause": "一時停止",
+        "resume": "再開",
+        "stop": "停止"
+      },
+      "errors": {
+        "provider-key-invalid": "有効な Warmbly ワークスペース API キーを入力してください。",
+        "provider-key-unavailable": "Warmbly ネットワークを読み込めませんでした。接続を確認して更新してください。",
+        "provider-key-encryption": "操作を完了できませんでした。ネットワークを更新し、権限と上限を確認してから再試行してください。",
+        "provider-key-save-failed": "操作を完了できませんでした。ネットワークを更新し、権限と上限を確認してから再試行してください。"
+      }
+    },
+    "claude": {
+      "title": "Claude",
+      "description": "Claudeでキャンペーン条件を作成し、保存前に変更内容を確認します。",
+      "setupHelp": "Claude ConsoleでAPIキーを作成し、ここで接続してください。",
+      "billingHelp": "APIリクエストにはConsoleの残高と利用可能な対象クレジットが使われます。キーの検証では、利用可能なAPI残高までは確認しません。",
+      "keyLabel": "Claude APIキー",
+      "keyHelp": "キーは検証後に暗号化して保存されます。保存済みのキーが再表示されることはありません。",
+      "keyRequired": "Claude APIキーを貼り付けてください。",
+      "invalid": "有効な値を入力してください。",
+      "showKey": "APIキーを表示",
+      "hideKey": "APIキーを隠す",
+      "modelLabel": "Claudeモデル",
+      "workspaceLabel": "ワークスペースID（任意）",
+      "workspaceHelp": "ワークスペースに紐づくキーの場合は空欄にしてください。それ以外はConsoleのワークスペースIDを入力してください。",
+      "connected": "接続済み",
+      "notConnected": "未接続",
+      "unknown": "Claudeの接続状況を取得できませんでした。",
+      "advanced": "モデルとワークスペース",
+      "saving": "確認して保存中…",
+      "keySaved": "Claude APIキーを検証して保存しました。",
+      "saveError": "Claudeとの接続を保存できませんでした。再試行してください。",
+      "connectHelp": "ここで条件を作成するには、連携設定でClaude APIキーを接続してください。",
+      "generationHelp": "Claudeはこのキャンペーンの保存済み条件、プレイブック、以下の追加情報を使います。確認用のプレビューを作成し、自動では保存しません。",
+      "contextLabel": "ecenticの追加情報（任意）",
+      "contextHelp": "探したい企業、制約、保存済み条件への変更点を記入してください。Claudeアプリの会話やメモリが自動的に読み込まれることはありません。",
+      "contextInvalid": "追加情報は50,000文字以内にしてください。",
+      "generating": "Claudeでプレビューを作成中…",
+      "previewReady": "Claudeのプレビューができました。保存前に以下の項目を確認してください。",
+      "previewPending": "別のプレビューを作成する前に、現在のプレビューを保存または破棄してください。",
+      "recoveryHelp": "このブラウザーは、このキャンペーンの最後のClaudeリクエストを記憶します。「プレビューを復元」は再生成せずにそのリクエストを確認します。前回の応答が届かなかった場合でも、新たに生成すると追加のクレジットを消費することがあります。",
+      "stalePreview": "キャンペーン条件が変更されました。ページを更新して、新しいプレビューを作成してください。",
+      "generationError": "Claudeのプレビューを取得できませんでした。別のリクエストを開始する前に、復元を試してください。",
+      "connection": {
+        "action": {
+          "primary": "APIキーを保存",
+          "secondary": "APIキーを変更",
+          "tertiary": "Claude Consoleを開く"
+        }
+      },
+      "generation": {
+        "action": {
+          "primary": "Claudeで条件を作成",
+          "secondary": "プレビューを復元",
+          "tertiary": "再生成",
+          "quaternary": "Claudeを接続"
+        }
+      },
+      "errors": {
+        "claude-not-configured": "まず連携設定でClaude APIキーを接続してください。",
+        "claude-access-denied": "Claudeがアクセスを拒否しました。連携設定でAPIキーとワークスペースを確認してください。",
+        "claude-credit-required": "Claudeの利用にはAPIクレジットが必要です。Consoleの残高と対象クレジットを確認してください。",
+        "claude-rate-limited": "Claudeのリクエスト上限に達しました。次のリクエストまで少しお待ちください。",
+        "claude-model-unavailable": "接続したキーではこのClaudeモデルを利用できません。連携設定で別のモデルを選択してください。",
+        "claude-request-invalid": "Claudeがリクエストを受け付けられませんでした。追加情報とキャンペーン条件を確認してください。",
+        "claude-generation-running": "Claudeはまだこのリクエストを処理中です。少し待ってからプレビューの復元を試してください。",
+        "claude-generation-uncertain": "リクエストの結果を確認できていません。再生成を検討する前にプレビューを復元してください。",
+        "claude-generation-failed": "利用できるプレビューが生成されませんでした。追加情報を確認してから再生成してください。",
+        "claude-generation-missing": "このリクエストの保存済みプレビューが見つかりません。必要に応じて新しい生成を開始できます。",
+        "provider-key-invalid": "認証情報と必須項目を確認して、もう一度お試しください。",
+        "provider-key-unavailable": "プロバイダーに接続できませんでした。もう一度お試しください。",
+        "provider-key-encryption": "サーバーでこの認証情報を暗号化できませんでした。管理者に暗号化設定の確認を依頼してください。",
+        "provider-key-save-failed": "認証情報を保存できませんでした。もう一度お試しください。",
+        "campaign-archived": "このキャンペーンはアーカイブ済みです。条件を生成する前に状態を変更してください。",
+        "campaign-criteria-changed": "キャンペーンの条件が変更されました。再読み込みして最新の内容を確認してください。"
+      },
+      "creditsHelp": "ご契約にAPIクレジットが含まれる場合は、Claudeの「設定」→「請求」→「APIクレジット」で受け取り、このキーを所有するConsole組織を連携してください。",
+      "recovering": "保存済みプレビューを確認中…",
+      "storageUnavailable": "ブラウザーのストレージを利用できません。Claudeのプレビューを保存・復元するには、このサイトのストレージを許可してください。新しい生成は開始されていません。"
+    },
+    "automation": {
+      "title": "キャンペーンの自動処理",
+      "help": "有効なキャンペーンはバックグラウンドで進みます。「今すぐ実行」で次の処理対象を進められます。",
+      "modeOff": "自動モード無効",
+      "campaignInactive": "有効なキャンペーンなし",
+      "working": "処理中",
+      "waiting": "次の処理を待機中",
+      "unknownStatus": "状態を取得できません",
+      "unknownStage": "工程を取得できません",
+      "unknownReason": "続行する前にこの記録を確認してください。",
+      "company": "企業",
+      "stage": "現在の工程",
+      "status": "状態",
+      "reason": "保留理由",
+      "noBlocker": "—",
+      "openProspect": "見込み客を開く",
+      "enableHelp": "プレイブックで自動モードを有効にすると、キャンペーンの自動処理を開始できます。",
+      "previewPending": "自動処理には保存済みの条件を使います。ここで開始する前にプレビューを保存または破棄してください。",
+      "pauseHelp": "一時停止すると新しい準備工程は開始されません。実行中のリクエストは完了する場合があります。",
+      "statusError": "状態を更新できませんでした。表示中のデータは古い可能性があります。",
+      "actionError": "処理を完了できませんでした。状態を更新して再試行してください。",
+      "campaignStarted": "キャンペーンを有効にし、次の準備対象を確認しました。",
+      "campaignPaused": "キャンペーンを一時停止しました。",
+      "runComplete": "次の処理対象を確認しました。",
+      "refreshed": "状態を更新しました。",
+      "processing": "処理中…",
+      "preparedHelp": "準備済みは、連絡先とメッセージが準備工程を通過した状態です。送信処理は引き続き各メールを送信前にチェックします。",
+      "empty": "準備記録はまだありません。企業を保存したキャンペーンを有効にすると開始できます。",
+      "deliveryTitle": "メール送信",
+      "deliveryReady": "設定チェック通過",
+      "deliveryBlocked": "送信は保留中",
+      "deliveryHelp": "各メールには現在の送信チェック、送信間隔、除外、ウォームアップによる保留が引き続き適用されます。",
+      "pagination": "自動処理のページ",
+      "counts": {
+        "queued": "待機中",
+        "running": "実行中",
+        "held": "保留",
+        "uncertain": "結果未確認",
+        "complete": "準備済み"
+      },
+      "statuses": {
+        "queued": "待機中",
+        "running": "実行中",
+        "held": "保留",
+        "uncertain": "結果未確認",
+        "complete": "準備済み"
+      },
+      "action": {
+        "primary": "今すぐ実行",
+        "secondary": "状態を更新",
+        "tertiary": "プレイブックを開く",
+        "quaternary": "メールボックスを管理"
+      },
+      "campaign": {
+        "action": {
+          "primary": "キャンペーンを開始",
+          "secondary": "キャンペーンを一時停止"
+        }
+      },
+      "stages": {
+        "companyFacts": "企業情報を確認中",
+        "qualify": "企業と商品を確認中",
+        "findContacts": "連絡先を検索中",
+        "selectContact": "現在の役職を確認中",
+        "promote": "見込み客を作成中",
+        "enrich": "業務用メールを検索中",
+        "applyEmail": "業務用メールを保存中",
+        "verify": "メールを検証中",
+        "pollVerification": "検証結果を待機中",
+        "applyVerification": "検証結果を保存中",
+        "mx": "メールホストを確認中",
+        "applyMx": "ホスト確認結果を保存中",
+        "draft": "メッセージを作成中",
+        "applyDraft": "メッセージを保存中",
+        "approve": "適格性を確認中",
+        "complete": "準備完了"
+      },
+      "reasons": {
+        "automation-disabled": "自動モードは無効です。",
+        "campaign-inactive": "キャンペーンは有効ではありません。",
+        "campaign-criteria-changed": "条件が変更されたため、この処理は保留中です。",
+        "playbook-changed": "プレイブックが変更されたため、この処理は保留中です。",
+        "company-unavailable": "企業は対象外、または利用できなくなっています。",
+        "qualification-held": "企業または商品の根拠がチェックを通過しませんでした。",
+        "contact-held": "条件を満たす現在の連絡先を確認できませんでした。",
+        "email-held": "適切な業務用メールが見つかりませんでした。",
+        "verification-held": "メールの検証を通過しませんでした。",
+        "mx-held": "メールホストのチェックを通過しませんでした。",
+        "draft-held": "下書きが文章チェックを通過しませんでした。",
+        "approval-held": "メッセージが最終的な適格性チェックを通過しませんでした。",
+        "provider-input": "プロバイダーがこの入力を処理できませんでした。",
+        "lease-expired": "以前のリクエストが正常に完了していません。記録された結果を確認してください。",
+        "provider-configuration": "検索する前に「連携」でこのプロバイダーを接続してください。",
+        "provider-access": "プロバイダーがアクセスを拒否しました。「連携」で API キーと検索権限を確認してください。",
+        "provider-quota": "プロバイダーのクレジットまたは使用量の上限に達しました。契約プランを確認してください。",
+        "provider-rate-limit": "プロバイダーがリクエストを一時的に制限しています。次のバッチを開始するまでお待ちください。",
+        "provider-uncertain": "リクエストは処理済みの可能性があります。再試行する前に結果を確認してください。"
+      },
+      "deliveryBlockers": {
+        "sendingPaused": "プレイブックで送信が一時停止されています。",
+        "senderUnconfirmed": "送信者情報が未確認です。",
+        "historyUnconfirmed": "過去の送信と除外履歴の取り込みが未確認です。",
+        "competingSendersActive": "他の送信システムの停止が未確認です。",
+        "senderUntested": "送信テストが未確認です。",
+        "inboxesMissing": "有効な送信メールボックスの一部が未接続です。",
+        "inboxDisabled": "送信メールボックスが無効または切断されています。",
+        "inboxSyncIncomplete": "メール履歴または返信の同期を確認してください。",
+        "senderIdentityMismatch": "メールボックスが保存済みの送信者情報と一致しません。"
+      },
+      "page": "{pages, number}ページ中{page, number}ページ",
+      "firstPage": "最初のページ",
+      "previousPage": "前のページ",
+      "nextPage": "次のページ",
+      "lastPage": "最後のページ",
+      "volumeTitle": "メールボックスの送信数",
+      "currentCap": "現在の1日上限",
+      "targetCap": "目標上限",
+      "rampHeld": "引き上げを保留",
+      "rampHelp": "メールボックスは1日15通から開始します。1日が終了し、現在の上限に達していて、バウンスが観測されなかった場合に限り、上限が5通増えます。バウンスが観測されると上限は15通に戻ります。目標値は実際の送信数やメールボックスの評価を保証しません。"
+    },
+    "sent": {
+      "title": "送信履歴",
+      "description": "プロバイダーが受理したメールと送信試行を、保存済みメッセージやフォローアップ履歴とともに確認できます。",
+      "detailTitle": "メッセージとシーケンス",
+      "detailDescription": "この会話に記録された内容、プロバイダーの処理結果、活動履歴を確認します。",
+      "searchLabel": "送信済みメッセージを検索",
+      "searchPlaceholder": "宛先、企業、キャンペーン、メールボックス、件名",
+      "statusFilter": "送信ステータス",
+      "kindFilter": "メッセージの種類",
+      "allStatuses": "すべてのステータス",
+      "allKinds": "すべてのメッセージ",
+      "outreach": "アプローチ",
+      "test": "テスト",
+      "bouncedFilter": "バウンスがあったシーケンス",
+      "count": "{count, plural, other {#件の送信試行}}",
+      "emptyTitle": "送信試行はまだありません",
+      "emptyDescription": "Outboundが送信試行を記録すると、ここにメッセージが表示されます。",
+      "noMatches": "条件に一致するメッセージはありません。",
+      "error": "送信履歴を読み込めませんでした。もう一度お試しください。",
+      "missing": "この送信記録が見つかりませんでした。",
+      "acceptanceNote": "「受理」はメールプロバイダーがメッセージを受け付けたことを示します。受信トレイへの配信を確認するものではありません。",
+      "timezone": "時刻はUTCで表示しています。",
+      "unknown": "未記録",
+      "columns": {
+        "recipient": "宛先",
+        "company": "企業",
+        "campaign": "キャンペーン",
+        "sender": "送信元メールボックス",
+        "subject": "件名",
+        "step": "ステップ",
+        "time": "記録日時",
+        "status": "結果"
+      },
+      "status": {
+        "accepted": "受理",
+        "failed": "失敗",
+        "uncertain": "不明",
+        "claimed": "準備中"
+      },
+      "step": "メール {step}",
+      "sequence": {
+        "title": "フォローアップシーケンス",
+        "activity": "会話の活動履歴",
+        "status": "現在のシーケンスステータス",
+        "next": "次回の送信可能時刻：{time}",
+        "noSchedule": "現在、フォローアップは予定されていません。",
+        "scheduleNote": "予定済みのフォローアップにも、送信時間帯と送信前の確認が適用されます。",
+        "bounced": "このシーケンスでバウンスを記録",
+        "bounceNote": "バウンスはこの会話に紐づいています。保存済みの記録では、該当するステップを特定できません。",
+        "emptyActivity": "返信や配信に関する活動はまだ記録されていません。",
+        "limitedActivity": "直近100件の会話イベントを表示しています。"
+      },
+      "message": {
+        "title": "保存済みメッセージ",
+        "from": "差出人",
+        "to": "宛先",
+        "subject": "件名",
+        "recorded": "記録日時",
+        "providerId": "プロバイダーのメッセージID",
+        "messageId": "メッセージID",
+        "contentMissing": "変更不可のメッセージ記録が存在しないか、整合性の確認に失敗しました。現在の下書きを送信済みの内容として表示することはありません。",
+        "failed": "この送信試行は失敗しました。この内容が送信されたことは確認できていません。",
+        "uncertain": "結果は不明です。この内容は送信された可能性がありますが、自動再試行を行うという意味ではありません。",
+        "claimed": "この送信試行は準備済みです。プロバイダーによる受理はまだ記録されていません。",
+        "test": "これはテスト送信でした。"
+      },
+      "activity": {
+        "sent": "プロバイダーがメッセージを受理",
+        "sendFailed": "送信に失敗",
+        "sendUncertain": "送信結果は不明",
+        "reply": "返信を受信",
+        "bounce": "バウンスを受信",
+        "optout": "配信停止の依頼を受信",
+        "other": "会話を更新"
+      },
+      "action": {
+        "primary": "メッセージを開く",
+        "secondary": "送信履歴に戻る",
+        "tertiary": "フィルターをクリア",
+        "quaternary": "検索"
+      },
+      "pagination": {
+        "previous": "前へ",
+        "next": "次へ",
+        "page": "{pages}ページ中{page}ページ"
+      }
+    },
+    "pipeline": {
+      "title": "企業リサーチから商談へ",
+      "description": "関連する企業を見つけ、有益な切り口を調べ、各会話を商談までフォローします。",
+      "activeCampaigns": "実行中のキャンペーン",
+      "companies": "対象企業",
+      "insights": "リサーチ完了",
+      "contacts": "保存済み連絡先",
+      "sequences": "準備済みシーケンス",
+      "held": "要対応",
+      "needsReply": "フォローが必要な返信",
+      "meetings": "記録済み商談",
+      "meetingsHelp": "商談は明示的に記録された場合のみ集計されます。予約リンクのクリックは商談予約として扱いません。",
+      "campaignsTitle": "キャンペーンの進捗",
+      "scopeHelp": "企業数と連絡先数は、実行中のキャンペーンと現在保存されている条件に基づきます。調査中の企業は、まだ連絡先として数えません。",
+      "openCampaigns": "キャンペーンを開く",
+      "moreCampaigns": "最近更新された実行中のキャンペーンを表示しています。すべて表示するにはキャンペーンを開いてください。",
+      "emptyTitle": "次の対象を選ぶ",
+      "emptyHelp": "キャンペーンを作成し、対象条件を保存して企業を検索すると、ワークフローが始まります。",
+      "emptyAction": "キャンペーンを作成",
+      "workTitle": "現在の作業",
+      "workEmpty": "現在、対応が必要な準備作業はありません。全履歴はキャンペーンで確認できます。",
+      "setupTitle": "設定と制御",
+      "setupReady": "接続設定が登録されています。送信のたびに、本人情報、返信、送信間隔、送信条件を確認します。",
+      "activityTitle": "過去7日間に受け付けられたメッセージ",
+      "emailAccepted": "受け付け済みメール",
+      "linkedinAccepted": "受け付け済みLinkedInメッセージ",
+      "acceptedHelp": "受付済みはプロバイダーがメッセージを受け付けたことを示します。受信トレイへの配信を証明するものではありません。",
+      "detailsTitle": "自動化の詳細",
+      "reportTitle": "週次アクティビティレポート",
+      "refresh": "更新",
+      "refreshing": "更新中…",
+      "automationOn": "自動準備は有効です",
+      "automationOff": "自動準備は一時停止中です",
+      "linkedinOff": "LinkedIn送信は無効です",
+      "automationHelp": "キャンペーンの準備を続けるには、プレイブックで自動モードを有効にしてください。",
+      "apolloMissing": "企業と現在の連絡先を探すにはApolloを接続してください。",
+      "azureMissing": "情報の評価とメッセージ作成のためにAzureを設定してください。",
+      "linkedinMissing": "メッセージを有効にする前に、選択したLinkedInアカウントを接続してください。",
+      "error": "現在の進捗を読み込めませんでした。更新して再試行してください。"
+    },
+    "conversations": {
+      "title": "会話",
+      "description": "返信を読み、文脈に沿って回答し、関心を商談につなげます。",
+      "detailDescription": "実際の会話、返信、次のアクションを一か所で確認できます。",
+      "list": {
+        "action": {
+          "primary": "会話を開く",
+          "secondary": "すべての会話"
+        }
+      },
+      "columns": {
+        "person": "担当者・企業",
+        "subject": "会話",
+        "channel": "チャネル",
+        "stage": "ステージ",
+        "updated": "更新日時（UTC）"
+      },
+      "stage": {
+        "open": "対応中",
+        "interested": "関心あり",
+        "question": "質問あり",
+        "later": "後でフォロー",
+        "notInterested": "関心なし",
+        "meetingBooked": "商談確定",
+        "meetingHeld": "商談実施済み",
+        "closed": "終了"
+      },
+      "channel": {
+        "email": "メール",
+        "linkedin": "LinkedIn"
+      },
+      "needsReply": "要返信",
+      "noSubject": "会話",
+      "search": "担当者・企業・メッセージを検索",
+      "allChannels": "すべてのチャネル",
+      "allStages": "すべてのステージ",
+      "count": "{count, plural, one {#件の会話} other {#件の会話}}",
+      "emptyTitle": "会話はここに表示されます",
+      "emptyDescription": "接続済みの受信トレイとLinkedInの返信チェックで、実際のメッセージがここに保存されます。過去の結果メモは各見込み客のアクティビティに残ります。",
+      "noMatches": "一致する会話はありません",
+      "outcomeTitle": "次のステップ",
+      "outcome": {
+        "action": {
+          "primary": "ステージを保存"
+        }
+      },
+      "meetingHelp": "商談の確定後に「商談確定」、実施後に「商談実施済み」を選んでください。予約リンクの共有だけでは予約は記録されません。",
+      "booking": {
+        "action": {
+          "primary": "予約ページを開く"
+        }
+      },
+      "replyTitle": "返信",
+      "replyHelp": "提案には会話と保存済みのPlaybookを使用します。送信する文面を確認し、変更を保存してから、上記の接続済みアカウントで送信してください。",
+      "recoveryHelp": "返信案をリクエスト済みです。同じリクエストを確認すると、新たに生成せずに保存済みの結果を取得できます。",
+      "recovery": {
+        "action": {
+          "primary": "リクエスト済みの返信案を確認"
+        }
+      },
+      "action": {
+        "primary": "保存済みの返信を送信",
+        "secondary": "下書きを保存",
+        "tertiary": "返信案を作成",
+        "quaternary": "更新"
+      },
+      "draftLabel": "返信の下書き",
+      "invalidBody": "1〜10,000文字の返信を入力してください。",
+      "unsaved": "送信またはステージ変更の前に、変更を保存してください。",
+      "error": {
+        "changed": "会話が更新されました。再読み込みし、最新のメッセージを確認してから続けてください。",
+        "closed": "この会話は終了しているか、相手が連絡対象から除外されています。",
+        "stale": "最新の受信メッセージを読み、現在の返信を保存してから送信してください。",
+        "unresolved": "前の送信が処理中、または結果が不明です。結果が確認されるまで、追加の送信はできません。",
+        "truncated": "最新のメッセージが不完全です。返信前に、接続済みの受信トレイで全文を確認してください。",
+        "generationUncertain": "返信案の結果が確認できていません。このリクエストを確認しても、別の返信は生成されません。",
+        "connection": "送信アカウントが利用できないか、返信の再同期が必要です。「連携」を確認してください。",
+        "controls": "返信案が保存済みの返信ルールを満たしませんでした。返信を手動で作成し、確認してください。",
+        "generic": "この操作を完了できませんでした。会話を更新して再試行してください。"
+      },
+      "newestFirst": "新しいメッセージ順",
+      "direction": {
+        "inbound": "受信",
+        "outbound": "送信"
+      },
+      "automated": "自動メッセージ",
+      "to": "宛先",
+      "emptyBody": "このメッセージには本文がありません。",
+      "truncated": "メッセージの一部のみ保存されています。接続済みアカウントで全文を開いてください。",
+      "emptyMessages": "メッセージ本文はまだ保存されていません。",
+      "attemptsTitle": "返信の送信履歴",
+      "send": {
+        "accepted": "プロバイダーが受け付けました",
+        "failed": "送信失敗",
+        "uncertain": "送信結果不明",
+        "starting": "送信処理中"
+      },
+      "views": {
+        "label": "表示",
+        "all": "すべてのアクティビティ",
+        "needsReply": "要返信",
+        "sent": "送信履歴",
+        "scheduled": "送信予定"
+      },
+      "replyAccount": "返信元",
+      "activity": {
+        "kind": "メッセージ",
+        "time": "日時（UTC）",
+        "linkedinMessage": "LinkedInメッセージ",
+        "linkedinInvite": "LinkedIn招待",
+        "reply": "会話への返信",
+        "scheduledHelp": "保存済みのメール送信予定時刻を表示します。一時停止、返信チェック、相手の連絡可能時間、受信トレイの上限によって遅れる場合があります。LinkedInのアクションには固定の送信予定時刻が保存されていません。",
+        "sentHelp": "メール、LinkedIn、会話への返信の送信記録です。「受付済み」はプロバイダーによる受け付けを示し、配信や開封を証明するものではありません。",
+        "empty": "この表示条件に一致するアクティビティはありません。"
+      }
+    }
+  }
+}

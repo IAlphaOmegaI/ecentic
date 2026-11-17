@@ -1,0 +1,1753 @@
+{
+  "outbound": {
+    "page": {
+      "title": "Outbound",
+      "description": "找到合适的店铺，在首次联系时提供有用信息，并随时掌握每段对话。",
+      "internal": "内部工作区"
+    },
+    "nav": {
+      "overview": "概览",
+      "prospects": "潜在客户",
+      "review": "审核",
+      "linkedin": "LinkedIn",
+      "replies": "对话",
+      "playbook": "联系指南",
+      "integrations": "集成",
+      "campaigns": "营销活动",
+      "warmup": "邮箱预热",
+      "sent": "已发送"
+    },
+    "common": {
+      "saving": "正在保存…",
+      "loading": "正在加载…",
+      "saved": "更改已保存",
+      "error": "无法保存这些更改，请重试。",
+      "emptyValue": "未提供",
+      "optional": "选填",
+      "required": "请填写此项。",
+      "invalidEmail": "请输入有效的电子邮箱地址。",
+      "invalidUrl": "请输入完整的 HTTPS URL。",
+      "wordCount": "{count, number} / {maximum, number} 词",
+      "revision": "版本 {version, number}",
+      "neverSent": "未发送",
+      "source": "来源",
+      "lastUpdated": "更新于 {date}",
+      "copySuccess": "已复制",
+      "copyError": "无法复制。请选择文本并手动复制。",
+      "all": "全部",
+      "enabled": "已启用",
+      "disabled": "已禁用",
+      "requestError": "无法完成此请求，请重试。",
+      "connecting": "正在连接…",
+      "invalidField": "请检查此值。",
+      "invalidForm": "请先检查表单内容再继续。",
+      "savedRefreshError": "已保存，但无法更新视图。请重新加载此页面。"
+    },
+    "status": {
+      "candidate": "候选对象",
+      "draft": "草稿",
+      "drafted": "已撰写",
+      "review": "需要审核",
+      "ready": "等待审核",
+      "approved": "已批准",
+      "held": "暂缓",
+      "hold": "暂缓",
+      "suppressed": "禁止联系",
+      "skipped": "已跳过",
+      "sent": "已发送",
+      "replied": "已回复",
+      "active": "进行中",
+      "completed": "已完成",
+      "pending": "待处理",
+      "verified": "已验证",
+      "invalid": "无效",
+      "unknown": "未知",
+      "stale": "需要重新检查",
+      "catchAll": "接受所有收件地址",
+      "guessed": "推测地址",
+      "unverified": "未验证",
+      "optedOut": "已拒绝后续联系",
+      "bounced": "已退信",
+      "finished": "已结束"
+    },
+    "overview": {
+      "title": "接下来的对话",
+      "description": "清晰查看需要处理的联系人、草稿和跟进事项。",
+      "metrics": {
+        "prospects": "潜在客户",
+        "review": "等待审核",
+        "approved": "已批准的邮件",
+        "suppressed": "禁止联系",
+        "replies": "回复",
+        "linkedin": "LinkedIn 任务"
+      },
+      "emptyTitle": "先从少量合适的潜在客户开始。",
+      "emptyDescription": "添加店铺或导入已有调研。每位潜在客户的商品发现、信息来源和消息草稿都保存在一起。",
+      "target": "每周目标",
+      "targetValue": "{count, number} 封首次联系邮件",
+      "activityTitle": "最近动态",
+      "activityEmpty": "已保存的更改和联系决策会显示在这里。",
+      "approvalNote": "每封邮件都需要批准。修改草稿后，必须重新审核。",
+      "sendingPaused": "发送已暂停",
+      "action": {
+        "primary": "添加潜在客户",
+        "secondary": "审核消息"
+      },
+      "automaticDrafts": "草稿",
+      "sendingSwitchOn": "发送开关已开启",
+      "automaticNote": "自动模式根据已保存的运营手册检查联系人和消息。符合条件的邮件无需手动批准即可发送，有阻碍的项目会继续暂缓。"
+    },
+    "prospect": {
+      "title": "潜在客户",
+      "description": "一家企业、一位联系人，以及一个有据可查的发现。",
+      "emptyTitle": "暂无潜在客户",
+      "emptyDescription": "添加企业或导入已有调研。",
+      "newTitle": "添加潜在客户",
+      "editTitle": "潜在客户详情",
+      "search": "搜索企业或联系人",
+      "identityTitle": "企业与联系人",
+      "evidenceTitle": "商品发现",
+      "personalTitle": "个性化开场白",
+      "verificationTitle": "邮箱验证",
+      "fields": {
+        "company": "企业",
+        "domain": "店铺域名",
+        "website": "网站",
+        "personName": "全名",
+        "first": "名字",
+        "title": "当前职位",
+        "email": "工作邮箱",
+        "linkedinUrl": "LinkedIn 个人资料 URL",
+        "country": "国家代码",
+        "timezone": "时区",
+        "product": "商品名称",
+        "productUrl": "商品页面 URL",
+        "finding": "发现的情况",
+        "evidence": "支持证据",
+        "personalHook": "个性化开场白",
+        "personalHookUrl": "个性化开场白的来源 URL",
+        "emailStatus": "验证状态",
+        "verifiedAt": "验证时间",
+        "roleSource": "职位来源 URL",
+        "source": "潜在客户来源",
+        "notes": "备注",
+        "name": "全名",
+        "platform": "电商平台",
+        "relationship": "关系",
+        "roleCheckedAt": "职位核实时间",
+        "emailVerifiedAt": "邮箱验证时间",
+        "emailSource": "邮箱来源",
+        "mxProvider": "邮件服务商",
+        "mxCheckedAt": "邮件服务商核实时间",
+        "gap": "缺失类型",
+        "evidenceCheckedAt": "商品证据核实时间",
+        "personalLine": "个性化开场白",
+        "personalSource": "个性化开场白的来源 URL",
+        "legitEvidence": "公司符合筛选条件的证据",
+        "lang": "邮件语言",
+        "productCategory": "商品类别",
+        "reviewCount": "页面显示的评论数",
+        "distributionSource": "其他商家的同一商品 URL",
+        "findingReviewed": "我已检查源代码、渲染后的页面及发现项规则",
+        "personalPublishedAt": "个性化开场白来源的发布时间",
+        "personalCheckedAt": "个性化开场白来源的最近检查时间"
+      },
+      "countryHelp": "使用 US 或 GB 等两位字母代码。",
+      "findingHelp": "描述所选商品页面实际展示的内容。将支持信息的来源与邮件正文分开保存。",
+      "verificationHelp": "仅在服务商确认后，才将地址标为已验证。公开地址或推测地址不代表验证结果。",
+      "personalHelp": "使用过去九个月内发布的真实工作相关信息。在过去一天内打开其公开来源，并记录发布日期和检查日期。没有有用信息时请留空。",
+      "action": {
+        "primary": "保存潜在客户",
+        "secondary": "创建草稿",
+        "tertiary": "打开商品页面",
+        "quaternary": "打开来源"
+      },
+      "timeHelp": "请使用 IANA 时区，例如 America/New_York。",
+      "dateHelp": "请使用包含时区偏移量的 ISO 日期和时间。",
+      "legitHelp": "请记录有来源支持的证据，证明公司获得融资、拥有至少三名真实团队成员，或通过其他零售商销售商品。",
+      "searchEmptyTitle": "没有匹配的潜在客户",
+      "searchEmptyDescription": "请尝试搜索企业、联系人、邮箱地址或域名。",
+      "list": {
+        "count": "{count, number} 位潜在客户",
+        "filter": "邮件进度",
+        "allStatuses": "所有状态",
+        "range": "第 {start, number}–{end, number} 条，共 {total, number} 条",
+        "action": {
+          "primary": "上一页",
+          "secondary": "下一页",
+          "tertiary": "清除筛选",
+          "quaternary": "关闭导入"
+        },
+        "pagination": "潜在客户分页"
+      },
+      "productCategoryHelp": "使用商品页面标明的类别，用于填入类别占位符。",
+      "reviewCountHelp": "仅输入数字，须与该商品页面显示的评论数一致。无法确认时请留空。",
+      "distributionSourceHelp": "指向其他商家销售的同一商品的链接。声称需要匹配不同店铺的商品信息时，必须提供。",
+      "findingReviewedHelp": "确认前请检查该商品的原始数据、渲染后数据及发现项的例外条件。保存此检查不会批准邮件。",
+      "unsupportedFinding": "其他发现（需审核）",
+      "noFinding": "暂无发现",
+      "progress": {
+        "emailProgress": "邮件进度",
+        "allLifecycle": "全部邮件进度",
+        "lifecycleFilter": "邮件生命周期",
+        "allLinkedin": "全部LinkedIn状态",
+        "linkedinFilter": "LinkedIn状态",
+        "help": "研究包括排队中和进行中的联系人准备工作。尚无联系人的公司研究显示在营销活动中。邮件和LinkedIn进度分别记录。",
+        "error": "无法加载进度。请刷新后再使用生命周期筛选。",
+        "lifecycle": {
+          "researching": "研究中",
+          "scheduled": "已安排",
+          "sent": "已发送",
+          "replied": "已回复",
+          "held": "暂缓"
+        },
+        "action": {
+          "primary": "刷新列表",
+          "secondary": "邮件历史",
+          "tertiary": "公司研究"
+        }
+      },
+      "summary": {
+        "description": "在一处查看联系人、产品洞察和当前跟进序列。",
+        "preparation": "准备进度",
+        "noPreparation": "尚无自动准备记录",
+        "emailAccepted": "{count, plural, other {服务商已接受#封邮件}}",
+        "nextEmail": "下一封邮件：{time}",
+        "noSchedule": "暂无计划发送的邮件",
+        "noProfile": "尚未保存 LinkedIn 个人资料",
+        "profile": "打开个人资料",
+        "insightTitle": "产品洞察",
+        "insightMissing": "尚未保存产品洞察。",
+        "sourceQuote": "引自产品页面",
+        "checkedAt": "核查时间：{time}",
+        "detailsTitle": "支撑调研",
+        "proposedCheck": "拟从买家角度进行的检查",
+        "needsVerification": "发送前，需要服务商重新验证此邮箱地址。",
+        "issuesTitle": "{count, plural, other {#项检查尚未解决}}",
+        "sequenceTitle": "已保存的跟进序列",
+        "sequenceHelp": "此处为当前保存的消息。实际发送历史记录在“对话”中。",
+        "sequenceMissing": "尚未保存跟进序列。",
+        "linkedinDraft": "已保存的 LinkedIn 草稿",
+        "manualTitle": "可选编辑与调研工具",
+        "manualHelp": "需要时可编辑已保存的信息，或单独运行某个调研步骤。",
+        "action": {
+          "secondary": "打开营销活动",
+          "tertiary": "编辑跟进序列"
+        }
+      }
+    },
+    "import": {
+      "title": "沿用已有调研",
+      "description": "从现有联系流程中导入 JSON 数组、JSONL 或 CSV。系统按域名匹配企业；导入绝不会批准消息。",
+      "fields": {
+        "content": "潜在客户记录"
+      },
+      "help": "请粘贴不超过 5,000 行（最大 2 MB）的记录及来源。已有联系历史和禁止联系的决定会保留。",
+      "result": "已导入 {count, number} 条记录。",
+      "action": {
+        "primary": "导入潜在客户"
+      },
+      "summary": "已导入 {imported, number} 条 · 已存在 {duplicate, number} 条 · 排除 {suppressed, number} 条 · 无效 {invalid, number} 条",
+      "rowError": "第 {row, number} 行需要有效的企业、联系人、国家或邮箱信息。",
+      "moreErrors": "其他无效行：{count, number}。"
+    },
+    "review": {
+      "title": "让每封邮件都值得发送",
+      "description": "一并审核收件人、证据和实际发送的消息内容。",
+      "emptyTitle": "已全部处理",
+      "emptyDescription": "为潜在客户创建草稿后，即可在此审核。",
+      "first": "首次联系邮件",
+      "followupOne": "第一次跟进",
+      "followupTwo": "第二次跟进",
+      "afterDays": "第 {count, number} 天",
+      "fields": {
+        "subject": "主题",
+        "body": "邮件正文",
+        "reason": "原因"
+      },
+      "evidenceTitle": "这封邮件为何合适",
+      "checksTitle": "批准前检查",
+      "approvalNote": "批准仅适用于这些确切内容及该收件人。编辑后需要重新批准。",
+      "blocked": "请在批准前处理这些检查项。",
+      "ready": "可供审核",
+      "notSending": "批准后不会立即发送邮件。",
+      "action": {
+        "primary": "批准这些邮件",
+        "secondary": "保存修改",
+        "tertiary": "暂缓",
+        "quaternary": "禁止联系"
+      },
+      "footerTitle": "邮寄地址页脚",
+      "quotedHistory": "引用的首封邮件",
+      "queue": {
+        "title": "审核队列",
+        "description": "查找潜在客户，然后打开其邮件和证据进行审核。",
+        "search": "搜索公司、联系人或主题",
+        "status": "按状态筛选",
+        "allStatuses": "所有状态",
+        "count": "此队列中有 {count, number} {count, plural, one {位潜在客户} other {位潜在客户}}",
+        "subject": "主题",
+        "updated": "最后更新",
+        "range": "第 {start, number}–{end, number} 条，共 {total, number} 条",
+        "page": "第 {page, number} 页，共 {pages, number} 页",
+        "emptyTitle": "没有匹配的草稿",
+        "emptyDescription": "请尝试其他搜索词或状态。",
+        "error": "无法加载审核队列，请重试。",
+        "pagination": "审核队列分页",
+        "action": {
+          "primary": "打开审核",
+          "secondary": "返回队列",
+          "tertiary": "清除筛选",
+          "quaternary": "搜索"
+        },
+        "previous": "上一页",
+        "next": "下一页",
+        "missingTitle": "无法审核",
+        "missingDescription": "此潜在客户没有已保存的草稿可供审核。",
+        "discard": {
+          "title": "放弃未保存的修改？",
+          "description": "您对邮件的修改尚未保存。",
+          "action": {
+            "primary": "放弃修改",
+            "secondary": "继续编辑"
+          }
+        },
+        "statusColumn": "状态"
+      },
+      "automaticReady": "未记录阻碍",
+      "automaticApprovalNote": "自动模式执行批准检查。您仍可在此查看、编辑或暂缓消息；编辑后须重新通过检查。",
+      "manualApproval": "手动批准"
+    },
+    "linkedin": {
+      "title": "在 LinkedIn 保持有针对性的联系",
+      "description": "在此准备消息，然后通过自己的 LinkedIn 个人资料建立联系或回复。",
+      "manualNote": "联系人邀请和消息均在 LinkedIn 上手动发送。此工作区将草稿、状态和下一步统一管理。",
+      "emptyTitle": "暂无 LinkedIn 任务",
+      "emptyDescription": "为潜在客户添加 LinkedIn 个人资料，以准备有针对性的下一步联系。",
+      "fields": {
+        "status": "连接状态",
+        "draft": "消息草稿",
+        "notes": "对话备注",
+        "nextDate": "下一步日期"
+      },
+      "status": {
+        "notStarted": "未开始",
+        "planned": "已计划",
+        "requested": "已请求连接",
+        "connected": "已连接",
+        "messaged": "消息已发送",
+        "replied": "已回复",
+        "closed": "已关闭",
+        "research": "调研中",
+        "ready": "就绪",
+        "invited": "已发送邀请"
+      },
+      "action": {
+        "primary": "保存下一步",
+        "secondary": "打开 LinkedIn 个人资料",
+        "tertiary": "复制消息"
+      },
+      "queue": {
+        "title": "LinkedIn 联系人",
+        "description": "查找联系人、查看草稿并跟进下一步。",
+        "search": "搜索公司或联系人",
+        "status": "按状态筛选",
+        "allStatuses": "所有状态",
+        "count": "{count, plural, other {# 位 LinkedIn 联系人}}",
+        "range": "第 {start, number}–{end, number} 条，共 {total, number} 条",
+        "page": "第 {page, number} 页，共 {pages, number} 页",
+        "emptyTitle": "没有匹配的 LinkedIn 联系人",
+        "emptyDescription": "请尝试其他搜索词或清除筛选条件。",
+        "error": "无法加载 LinkedIn 联系人。请重试。",
+        "pagination": "LinkedIn 联系人分页",
+        "action": {
+          "primary": "打开联系人",
+          "secondary": "返回联系人列表",
+          "tertiary": "清除筛选",
+          "quaternary": "搜索"
+        },
+        "previous": "上一页",
+        "next": "下一页",
+        "missingTitle": "LinkedIn 任务不可用",
+        "missingDescription": "此联系人已没有 LinkedIn 任务。请返回列表选择其他联系人。",
+        "discard": {
+          "title": "放弃未保存的修改？",
+          "description": "您的修改尚未保存。",
+          "action": {
+            "primary": "放弃修改",
+            "secondary": "继续编辑"
+          }
+        },
+        "statusColumn": "状态",
+        "draft": "消息",
+        "draftSaved": "草稿已保存",
+        "draftEmpty": "无草稿",
+        "nextStep": "下一步",
+        "unscheduled": "未安排"
+      },
+      "missingTemplateDetails": "此模板所需的部分信息尚未填写。请在潜在客户资料或联系指南中补充，或在此处编写消息。"
+    },
+    "replies": {
+      "title": "回复与结果",
+      "description": "在同一处保留对话历史和下一步决策。",
+      "emptyTitle": "暂无回复记录",
+      "emptyDescription": "对话有进展时，记录回复或结果。",
+      "fields": {
+        "outcome": "结果",
+        "note": "回复或备注"
+      },
+      "outcomes": {
+        "reply": "已收到回复",
+        "positive": "有兴趣",
+        "negative": "无兴趣",
+        "meeting": "已预约会议",
+        "optout": "要求不再联系",
+        "bounce": "邮件被退回",
+        "note": "备注"
+      },
+      "manualNote": "记录实际结果。对方要求停止联系后，将禁止后续联系。",
+      "action": {
+        "primary": "记录结果"
+      }
+    },
+    "playbook": {
+      "title": "随 ecentic 发展而更新的联系指南",
+      "description": "在应用中调整语气、消息顺序和目标筛选条件。新草稿使用已保存的版本。",
+      "voiceTitle": "发件人身份",
+      "sequenceTitle": "邮件序列",
+      "targetingTitle": "联系对象",
+      "limitsTitle": "发送限制",
+      "fields": {
+        "name": "指南名称",
+        "fromName": "发件人显示名称",
+        "signature": "签名",
+        "subjectTemplate": "主题模板",
+        "bodyTemplate": "首次联系邮件模板",
+        "followupOneTemplate": "第一次跟进模板",
+        "followupTwoTemplate": "第二次跟进模板",
+        "linkedinTemplate": "LinkedIn 消息模板",
+        "weeklyTarget": "每周首次联系邮件数",
+        "maxWords": "正文最大词数",
+        "dailyCap": "每个邮箱的每日目标上限",
+        "allowedCountries": "允许的国家代码",
+        "targetRoles": "目标职位",
+        "blockedRoles": "排除的职位",
+        "excludedDomains": "排除的企业域名",
+        "postalAddress": "邮寄地址",
+        "voiceNotes": "写作说明",
+        "bannedPhrases": "禁用词语",
+        "fromEmail": "发件人邮箱",
+        "founderLine": "创始人介绍",
+        "callToAction": "结尾提问",
+        "optout": "拒绝后续联系的说明",
+        "senderConfirmed": "已确认发件人身份及所述内容",
+        "sendingEnabled": "启用已批准消息的发送",
+        "maxBodyWords": "正文最大词数",
+        "verificationDays": "商品依据有效天数",
+        "minGapMinutes": "最短发送间隔（分钟）",
+        "maxGapMinutes": "最长发送间隔（分钟）",
+        "followupOneDays": "首次跟进天数",
+        "followupTwoDays": "第二次跟进天数",
+        "heldCountries": "暂缓联系的国家代码",
+        "excludedRoles": "排除的职位",
+        "historyConfirmed": "已导入历史发送记录及禁止联系记录",
+        "competingSendersPaused": "已暂停其他主动联系发送系统",
+        "senderTested": "发件邮箱已通过受控的发送和回复测试",
+        "senderEmails": "发件邮箱",
+        "sentEmailExamples": "已发送邮件示例",
+        "humanizeDrafts": "对AI草稿使用Humanizer",
+        "humanizerNotes": "Humanizer写作要求",
+        "inactiveSenderEmails": "停用的发件邮箱",
+        "emailVerificationDays": "邮箱验证有效天数",
+        "excludedCompanies": "排除的公司名称",
+        "targetingNotes": "目标筛选优先级与审核备注",
+        "replyClaimNotes": "回复中允许使用的说法",
+        "firstEmailBlockedClaims": "首封邮件中禁止使用的说法",
+        "barcodeObservation": "观察结果",
+        "barcodeConsequence": "可能的影响",
+        "barcodeAskAbout": "向 AI 提问的主题",
+        "reviewsObservation": "观察结果",
+        "reviewsConsequence": "可能的影响",
+        "reviewsAskAbout": "向 AI 提问的主题",
+        "noBarcodeObservation": "观察结果",
+        "noBarcodeConsequence": "可能的影响",
+        "noBarcodeAskAbout": "向 AI 提问的主题",
+        "noProductObservation": "观察结果",
+        "noProductConsequence": "可能的影响",
+        "noProductAskAbout": "向 AI 提问的主题",
+        "automationEnabled": "启用活动自动准备",
+        "productCheckIntro": "商品检查介绍",
+        "publishedProductObservation": "观察结果",
+        "publishedProductConsequence": "建议检查项",
+        "publishedProductAskAbout": "买家问题主题",
+        "linkedinAutomationEnabled": "启用LinkedIn自动客户开发",
+        "linkedinAccountId": "LinkedIn账号",
+        "linkedinDailyInvites": "每日邀请上限",
+        "linkedinWeeklyInvites": "每周邀请上限",
+        "linkedinDailyMessages": "每日消息上限",
+        "meetingBookingUrl": "会议预约链接",
+        "researchInstructions": "调研说明",
+        "requireShoppingEvidence": "起草前必须具备购物体验证据"
+      },
+      "templateHelp": "插入下方列出的支持变量。变量将根据潜在客户已保存的信息填写。",
+      "variablesTitle": "可用变量",
+      "listHelp": "每行输入一个值。",
+      "changeNote": "修改模板不会批准已有消息。发送前请审核重新生成的草稿。",
+      "capHelp": "每日上限包含首次联系邮件和跟进邮件。",
+      "action": {
+        "primary": "保存指南"
+      },
+      "legalHelp": "国家设置用于筛选符合条件的联系人，并不代表已获得联系对方的法律许可。尚未审核的国家应保持暂缓状态。",
+      "sendingHelp": "只有已批准且通过全部当前检查的消息才能进入发送队列。",
+      "senderHelp": "请确认显示名称、签名及关于创始人的表述都如实体现发件人身份。",
+      "validation": {
+        "gap": "最长间隔不得小于最短间隔。",
+        "followup": "第二次跟进必须晚于首次跟进。"
+      },
+      "releaseHelp": "启用发送前，请确认这些检查项。批准消息不会启用发送。",
+      "senderPoolHelp": "这些邮箱地址使用上方相同的发件人姓名和签名。它们是同一个人的别名，并非不同团队成员。",
+      "examplesHelp": "粘贴您实际发送过的首封邮件。示例中的文风优先于通用风格建议。事实和收件人信息仍以每位潜在客户为准。",
+      "writingTitle": "写作规则",
+      "writingHelp": "模板决定首封邮件的结构和结尾。AI会根据您的写作要求和真实邮件示例润色草稿。跟进邮件和LinkedIn消息使用各自保存的模板。",
+      "humanizerHelp": "在审核前用Humanizer润色AI草稿。新草稿会保留模板中的发件人介绍和结尾。",
+      "humanizerNotesHelp": "编辑润色要求。已发送的邮件示例是文风参考。关闭Humanizer后，这些备注仍会保留，供以后使用。",
+      "barcodeTitle": "页面数据缺少条形码",
+      "reviewsTitle": "有评论但没有评分数据",
+      "noBarcodeTitle": "未找到条形码",
+      "noProductTitle": "未找到商品数据",
+      "inactiveSenderHelp": "尚未连接的其他发件人别名可保存在此处。连接后可同步历史记录，但移入启用列表前不能发送。",
+      "emailVerificationHelp": "服务商实际验证记录的最长有效期。重新获取旧记录不会更新验证日期。",
+      "productVerificationHelp": "审核和发送时，指定商品的依据自核查以来最多可经过的天数。",
+      "excludedCompaniesHelp": "每行输入一个准确的公司名称或已知别名。匹配公司名称，不匹配网站正文。",
+      "targetingNotesHelp": "供团队参考的优先级和审核指引。这些备注不会增加自动资格检查。",
+      "replyClaimNotesHelp": "供回复和 LinkedIn 使用的参考措辞。这些备注不代表允许在首封邮件中使用相关说法。",
+      "firstEmailBlockedClaimsHelp": "每行输入一个说法、公司名称或短语。匹配时会阻止首封邮件获批。百分比也会被拦截。",
+      "findingRulesHelp": "这些文案设置观察结果、建议检查项和问题主题。占位符使用已保存的潜在客户事实；productFeature 是与来源核对过的购买相关细节。",
+      "barcodeHelp": "确认店铺中有有效条形码，而原始和渲染后的商品数据中均没有该条形码，并提供链接证明其他商家也在销售同一商品。",
+      "reviewsHelp": "确认页面显示的评论数属于该商品，且源代码和渲染后的页面中均没有评分数据。",
+      "noBarcodeHelp": "仅用于包装商品。排除礼品卡、定制或手工商品、组合装、数字商品和样品。",
+      "noProductHelp": "确认源代码以及 JavaScript 执行后的页面中均没有商品数据。",
+      "automationTitle": "自动模式",
+      "automationHelp": "进行中的活动可自动查找联系人、验证工作邮箱、起草消息并批准符合条件的邮件。发送仍受发送开关、邮箱就绪状态和已保存限制的约束。",
+      "productCheckIntroHelp": "仅用于基于已观察商品信息提供检查的创始人介绍。",
+      "publishedProductTitle": "具体产品洞察",
+      "publishedProductHelp": "使用 '{productFeature}' 表示在指定产品中找到的具体成分、材料、设计或兼容性信息。将 AI 问题表述为建议开展的检查，不要说成已测得的结果或数据缺失的结论。",
+      "automaticChangeNote": "更改会应用于后续检查和草稿。不再符合运营手册的消息将被暂缓。",
+      "automaticSendingHelp": "只有通过自动检查且满足当前发送条件的消息才能进入发送队列。",
+      "linkedinAutomationTitle": "LinkedIn自动化",
+      "linkedinAutomationHelp": "使用选定的已连接账号自动处理符合条件的LinkedIn联系人。邮件发送单独控制。",
+      "linkedinAccountHelp": "选择用于发送邀请和消息的已连接账号。系统不会自动选择账号。",
+      "linkedinAccountPlaceholder": "选择已连接的账号",
+      "linkedinAccountUnavailable": "已保存的账号不可用",
+      "linkedinCapsHelp": "LinkedIn采用单独的上限：每天最多15次邀请、每周50次邀请及每天15条消息。这些是上限；账号状态和资格检查可能会暂停活动。",
+      "meetingBookingUrlHelp": "回复中使用的HTTPS预约链接。点击链接不会将会议标记为已预约。",
+      "researchTitle": "调研要求",
+      "researchHelp": "设定调研需要确认的买家问题、竞品情况和购买流程。仅有 UCP 配置文件并不能证明可以通过 AI 完成结账。",
+      "researchInstructionsHelp": "说明买家的问题、要比较的具体规格和市场，以及需从 UCP、商品页面或结账流程中收集的证据。记录来源，未经验证或无法获取的结果应保留为未知。",
+      "requireShoppingEvidenceHelp": "在记录有证据支持的购物体验发现之前，暂停起草和批准。单独的成分信息不能证明购物存在障碍。",
+      "legacyFindingsTitle": "旧版调研发现模板",
+      "legacyFindingsHelp": "用于以往商品检查和数据缺失检查的已保存模板。启用购物体验证据要求后，新草稿将改用已记录的购物体验发现。这些字段仍保留供旧版流程使用。"
+    },
+    "integrations": {
+      "title": "连接合适的工具",
+      "description": "为营销活动连接联系人数据、公司研究和邮件发送工具。",
+      "configured": "已配置",
+      "notConfigured": "未配置",
+      "ready": "就绪",
+      "pending": "处理中",
+      "failed": "需要处理",
+      "credentialsNote": "凭据保留在服务器上。服务商访问权限和使用情况取决于账户。",
+      "apollo": {
+        "title": "Apollo",
+        "description": "找到店铺中合适的联系人，并检查从来源获取的工作邮箱。",
+        "resultsTitle": "该公司的人员",
+        "empty": "未找到匹配的人员。",
+        "sourceNote": "服务商返回的结果仍需核实当前职位并验证邮箱。",
+        "action": {
+          "primary": "添加此人",
+          "secondary": "获取工作邮箱",
+          "tertiary": "打开个人资料"
+        }
+      },
+      "clay": {
+        "title": "Clay",
+        "description": "为需要其他来源的记录运行已配置的信息补全流程。",
+        "action": {
+          "primary": "开始信息补全",
+          "secondary": "查看信息补全"
+        },
+        "fields": {
+          "runId": "信息补全运行 ID",
+          "cursor": "结果游标"
+        },
+        "resultTitle": "信息补全结果",
+        "sourceNote": "信息补全结果是待审核的证据，并不代表已批准联系人或消息。",
+        "keyVerified": "API 密钥已验证",
+        "routinePending": "数据补全尚未配置。准备好后即可添加 Clay 例程。",
+        "enrichmentUnavailable": "请先在“集成”中连接 Clay 并添加例程，再补全潜在客户数据。"
+      },
+      "azure": {
+        "title": "Azure",
+        "description": "根据已保存的证据和当前指南准备草稿。"
+      },
+      "email": {
+        "title": "邮件投递",
+        "description": "通过已连接的发件邮箱发送符合条件的邮件。"
+      },
+      "linkedin": {
+        "title": "LinkedIn",
+        "description": "通过 Unipile 连接您的 LinkedIn 账户，并在此管理连接。",
+        "setupHelp": "请创建 Unipile V2 账户，复制其 API 密钥并在此保存。",
+        "empty": "尚未连接 LinkedIn 账户。",
+        "declined": "未完成 LinkedIn 连接。请重新尝试连接。",
+        "locked": "账户已锁定",
+        "status": {
+          "running": "已连接",
+          "errored": "连接错误",
+          "disconnected": "已断开",
+          "degraded": "连接需要检查",
+          "partial": "部分连接"
+        },
+        "action": {
+          "primary": "连接账户",
+          "secondary": "刷新状态",
+          "tertiary": "重新连接",
+          "quaternary": "设置 Unipile"
+        },
+        "key": {
+          "label": "Unipile API 密钥",
+          "placeholder": "粘贴您的 Unipile API 密钥",
+          "help": "我们会先验证密钥，再加密保存。已保存的密钥不会再次显示。",
+          "required": "请粘贴您的 Unipile API 密钥。",
+          "invalid": "请输入有效的 API 密钥。",
+          "show": "显示 API 密钥",
+          "hide": "隐藏 API 密钥",
+          "testing": "正在验证并保存…",
+          "saved": "API 密钥已验证并保存。",
+          "action": {
+            "primary": "保存 API 密钥",
+            "secondary": "替换 API 密钥"
+          },
+          "errors": {
+            "invalid": "密钥未被接受。请检查 Unipile V2 账户中的密钥后重试。",
+            "unavailable": "无法连接到 Unipile。请稍后重试。",
+            "encryption": "服务器无法加密此密钥。请联系管理员检查加密配置。",
+            "save": "无法保存 API 密钥。请重试。"
+          }
+        },
+        "pricing": "查看 Unipile 套餐"
+      },
+      "fields": {
+        "domain": "企业域名",
+        "routineId": "Clay 例程 ID"
+      },
+      "action": {
+        "primary": "查找联系人",
+        "secondary": "验证邮箱",
+        "tertiary": "运行信息补全",
+        "quaternary": "检查商品页面"
+      },
+      "gmail": {
+        "title": "邮箱",
+        "description": "连接现有的 Google 邮箱，以发送已批准的邮件并同步回复。",
+        "action": {
+          "primary": "连接 Gmail",
+          "secondary": "同步回复",
+          "tertiary": "断开连接",
+          "quaternary": "保存邮箱"
+        },
+        "sync": {
+          "running": "正在同步回复…",
+          "stopping": "正在完成当前批次…",
+          "action": {
+            "primary": "完成此批次后停止"
+          },
+          "help": "检查邮箱历史记录期间，请保持此页面打开。你可以停止同步，稍后继续。",
+          "progress": "本次同步已检查{count, plural, other {# 封邮件}}。历史记录检查将自动继续。",
+          "complete": "同步完成。已检查{count, plural, other {# 封邮件}}。",
+          "stopped": "同步已停止。已检查{count, plural, other {# 封邮件}}。重新开始同步即可继续。",
+          "error": "由于无法检查某个邮箱，同步已停止。请检查该邮箱的连接，然后重试。"
+        }
+      },
+      "worker": {
+        "title": "发送任务",
+        "description": "在已保存的限制范围内处理获批消息。",
+        "action": {
+          "primary": "预览队列",
+          "secondary": "暂停发送"
+        },
+        "runHelp": "启用发送后，此操作可能发送符合条件且已批准的邮件。",
+        "previewHelp": "此检查使用已保存的数据，不会发送邮件或刷新邮箱。"
+      },
+      "connectionError": "无法连接账户。请检查配置后重试。",
+      "connected": "已连接",
+      "notConnected": "未连接",
+      "verification": {
+        "title": "邮箱验证",
+        "description": "请求最新结果，然后查询任务直至完成。处理中或未知的结果不能通过批准。",
+        "fields": {
+          "requestId": "验证请求 ID"
+        },
+        "action": {
+          "primary": "开始验证",
+          "secondary": "查看验证结果"
+        },
+        "pending": "验证仍在处理中。",
+        "result": "验证结果"
+      },
+      "research": {
+        "title": "商品证据",
+        "description": "检查公开商品页面，并保存发现及其来源。",
+        "action": {
+          "primary": "检查商品页面",
+          "secondary": "准备接下来的 {count, number} 位潜在客户",
+          "tertiary": "查找商品问题"
+        },
+        "resultTitle": "商品检查结果",
+        "summary": "已核实 {verified, number} 项发现；暂缓 {held, number} 项。"
+      },
+      "drafting": {
+        "title": "根据已保存的证据起草",
+        "description": "使用 Azure 根据已保存的潜在客户和指南准备消息。",
+        "action": {
+          "primary": "用 AI 创建草稿"
+        },
+        "fields": {
+          "prospect": "潜在客户"
+        }
+      },
+      "provenance": "来源及核实日期",
+      "mx": {
+        "action": {
+          "primary": "检查邮件服务商"
+        }
+      },
+      "credentials": {
+        "setup": {
+          "apollo": "请在此保存您工作区的 Apollo API 密钥。",
+          "clay": "保存 Clay API 密钥即可连接工作区。你可以稍后配置数据补全。",
+          "google": "请创建 Google OAuth Web 应用，添加下方的重定向 URI，并保存其客户端 ID 和客户端密钥。然后连接各个 Gmail 收件箱。"
+        },
+        "secret": {
+          "apollo": "Apollo API 密钥",
+          "clay": "Clay API 密钥",
+          "google": "Google OAuth 客户端密钥"
+        },
+        "fields": {
+          "clientId": "Google OAuth 客户端 ID",
+          "routineId": "Clay 例程 ID（可选）",
+          "redirectUri": "Google 重定向 URI"
+        },
+        "redirectHelp": "请将此完整地址添加为 Google OAuth 客户端中的已获授权重定向 URI。",
+        "help": "密钥会加密保存，保存后不会再次显示。",
+        "required": "请填写此项。",
+        "invalid": "请输入有效值。",
+        "show": "显示密钥",
+        "hide": "隐藏密钥",
+        "saving": "正在保存…",
+        "testing": "正在检查并保存…",
+        "saved": "凭据已保存。",
+        "action": {
+          "primary": "保存凭据",
+          "secondary": "替换凭据"
+        },
+        "errors": {
+          "invalid": "请检查凭据和必填项后重试。",
+          "unavailable": "无法连接到服务商。请重试。",
+          "encryption": "服务器无法加密这些凭据。请联系管理员检查加密配置。",
+          "save": "无法保存这些凭据。请重试。"
+        },
+        "links": {
+          "clayPlan": "Clay Launch",
+          "googlePlan": "Google Workspace Business Starter",
+          "googleConsole": "设置 Google OAuth",
+          "googleApi": "启用 Gmail API",
+          "apolloPlan": "Apollo Basic",
+          "apolloKeys": "Apollo API 密钥",
+          "clayTrial": "试用 Clay",
+          "clayKeys": "Clay API 密钥",
+          "clayWorkspace": "打开 Clay",
+          "clayApiDocs": "Clay API 文档"
+        },
+        "routineHelp": "连接时无需填写。在 Clay 工作区中配置数据补全例程后，将其 ID 粘贴到此处。",
+        "routine": {
+          "action": {
+            "primary": "高级设置：数据补全例程"
+          }
+        },
+        "claySaved": "API 密钥已验证并保存。",
+        "claySavedPending": "API 密钥已验证并保存。数据补全尚未配置。"
+      },
+      "mailbox": {
+        "help": "在 Roger 中打开 Manage Mailbox → Credentials，然后复制 App Password。我们会检查发送和读取回复的权限，不会发送邮件。",
+        "senderHelp": "请使用联系指南中已列入“发件邮箱”或“停用的发件邮箱”的地址。停用的邮箱可以连接和同步，但不能发送邮件。",
+        "passwordHelp": "请粘贴 Roger 中的 App Password，而非 Password 或 2FA 验证码。应用专用密码会先加密再保存，保存后不会再次显示。",
+        "fields": {
+          "email": "邮箱地址",
+          "appPassword": "应用专用密码"
+        },
+        "invalidEmail": "请输入有效的邮箱地址。",
+        "passwordRequired": "请输入此邮箱的应用专用密码。",
+        "invalidPassword": "请输入 16 位应用专用密码，可以保留空格。",
+        "show": "显示应用专用密码",
+        "hide": "隐藏应用专用密码",
+        "checking": "正在检查发送和回复权限…",
+        "connected": "邮箱已连接。请同步回复以导入历史记录。停用的邮箱不能发送邮件。",
+        "oauthHelp": "如果您想通过自己的 Google OAuth 应用连接，请使用此方式。",
+        "action": {
+          "primary": "检查并连接",
+          "secondary": "高级设置：Google OAuth",
+          "tertiary": "收起 Google OAuth 设置"
+        },
+        "errors": {
+          "invalid": "请输入有效的邮箱地址及其 16 位应用专用密码。密码中的空格可以保留。",
+          "authentication": "Google 未接受连接。请检查应用专用密码，并确认已启用此邮箱的访问权限。",
+          "unavailable": "连接 Google 超时或无法建立连接，请重试。",
+          "encryption": "服务器无法加密应用专用密码。请联系管理员检查加密配置。",
+          "save": "无法保存邮箱，请重试。",
+          "notRegistered": "请先将此地址添加到联系指南中的“发件邮箱”或“停用的发件邮箱”，然后在此连接。",
+          "inactive": "此邮箱在联系指南中已停用，但可以同步回复。启用发送前，请先将其移至“发件邮箱”。"
+        },
+        "maximumDailyCap": "每个邮箱的每日目标上限",
+        "dailyCapHelp": "目标上限为50封，包含首封邮件和跟进邮件。 邮箱从每天15封开始。只有在完整的一天中达到当前上限，且未观察到退信时，上限才会增加5封。观察到退信后，上限会恢复为15封。目标并不保证实际发送量或邮箱信誉。"
+      }
+    },
+    "relationships": {
+      "cold": "此前无联系",
+      "warm": "已有联系",
+      "event": "活动联系人",
+      "customer": "客户",
+      "pilot": "试点客户",
+      "partner": "合作伙伴",
+      "investor": "投资者",
+      "enterprise": "大型企业账户",
+      "competitor": "竞争对手"
+    },
+    "platforms": {
+      "shopify": "Shopify",
+      "woocommerce": "WooCommerce",
+      "other": "其他",
+      "unknown": "未知"
+    },
+    "emailHosts": {
+      "google": "Google",
+      "microsoft": "Microsoft",
+      "other": "其他",
+      "unknown": "未知"
+    },
+    "languages": {
+      "en": "英语",
+      "de": "德语",
+      "es": "西班牙语",
+      "it": "意大利语"
+    },
+    "issues": {
+      "unknownVariable": "模板中包含不支持的变量。",
+      "emptyMessage": "请填写邮件主题和正文。",
+      "subjectLength": "首封邮件的主题必须包含两到五个单词。",
+      "wordLimit": "首封邮件超出了已保存的词数限制。",
+      "unresolvedVariable": "请在批准前替换剩余的占位符。",
+      "dash": "请移除长破折号和短破折号。",
+      "link": "请移除邮件中的链接。",
+      "bullet": "请移除邮件中的项目符号列表。",
+      "emoji": "请移除邮件中的表情符号。",
+      "bannedPhrase": "请移除联系指南中禁止使用的词语或表达。",
+      "optoutMissing": "请加入已保存的拒绝后续联系说明。",
+      "signatureMissing": "请以已保存的签名结束首封邮件。",
+      "domainInvalid": "请输入有效的店铺域名。",
+      "excludedCompany": "该公司在排除名单中。",
+      "relationshipExcluded": "此类关系不属于冷邮件联系范围。",
+      "countryHeld": "目前不符合向该国家发送邮件的条件。",
+      "emailUnverified": "工作邮箱需要有效期内的验证结果。",
+      "microsoftHeld": "使用 Microsoft 邮件服务的收件人处于暂缓状态。",
+      "mxUnknown": "请更新邮件服务商的核实结果。",
+      "roleUnverified": "请确认当前职位及其信息来源。",
+      "roleExcluded": "联系指南已排除此类职位。",
+      "legitUnverified": "请添加证据，证明该公司符合筛选条件。",
+      "evidenceMissing": "请添加具体商品、发现及最新支持证据。",
+      "personalSourceMissing": "请添加个性化开场白的公开来源、发布日期和最近审核日期，或删除该开场白。",
+      "senderUnconfirmed": "请在联系指南中确认发件人身份及所述内容。",
+      "senderDomain": "冷邮件必须使用 joinecentic.com 发件地址。",
+      "timezoneMissing": "请添加收件人的时区。",
+      "suppressed": "不得联系此人或此公司。",
+      "alreadyContacted": "此前已联系过该公司。",
+      "duplicateMessage": "此消息与另一份草稿重复。",
+      "staleRevision": "此草稿已更改。请重新加载后再审核。",
+      "exclamation": "感叹号只能用于开头的问候语。",
+      "roleOutsideTarget": "此职位与联系指南中的目标职位不符。",
+      "sharedInbox": "请使用已验证的指定联系人邮箱，而非共享邮箱。",
+      "draftMissing": "批准前请创建全部三封消息的草稿。",
+      "emailDomainMismatch": "工作邮箱必须属于该公司的域名。",
+      "productDomainMismatch": "商品页面必须属于该公司的域名。",
+      "duplicateSubject": "另一位已批准的潜在客户已使用此首封邮件主题。",
+      "repeatedSentence": "个性化语句与另一封已批准的邮件重复。",
+      "findingCopyChanged": "发现项的措辞已更改。批准前，请恢复已保存的整个发现项段落。",
+      "claimNotAllowed": "请删除首封邮件中禁止使用的说法及百分比。",
+      "findingReviewRequired": "请审核商品的原始和渲染后依据，填写发现项占位符，并在需要时添加其他商家的来源链接。",
+      "templateControlsChanged": "批准前，请将创始人介绍和结尾问题恢复为已保存的原文。",
+      "platformHeld": "请为此次陌生客户开发活动选择 Shopify 或 WooCommerce。",
+      "shoppingResearchRequired": "起草或批准此消息前，请记录有证据支持的购物体验发现。"
+    },
+    "preparation": {
+      "action": {
+        "primary": "准备每周调研",
+        "secondary": "完成本批后停止"
+      },
+      "description": "通过公开页面获取 {target, number} 项近期商品发现，每批最多三个对象。请保持此页面打开，每项结果都会保存。",
+      "progress": "本次已检查 {processed, number} 个 · 已有 {verified, number} / {target, number} 项发现 · 暂缓 {held, number} 个",
+      "running": "正在检查公开商品页面…",
+      "stopping": "正在完成当前批次…",
+      "stopped": "已在当前批次完成后停止。再次启动即可继续处理剩余候选对象。",
+      "complete": "已达到调研目标。起草前请审核发现。",
+      "shortfall": "距离目标还差 {remaining, number} 项发现。请添加符合条件的候选对象，或审核暂缓记录。",
+      "empty": "没有尚缺证据的候选对象。"
+    },
+    "report": {
+      "title": "本周主动联系",
+      "description": "过去七天已受理的邮件及对话活动。潜在客户和暂缓记录的数量反映当前进展。",
+      "fields": {
+        "source": "来源",
+        "prospects": "潜在客户",
+        "held": "暂缓",
+        "acceptedFirsts": "已受理的首封邮件",
+        "acceptedFollowups": "已受理的跟进邮件",
+        "replies": "回复",
+        "bounces": "退信",
+        "meetings": "会议",
+        "uncertain": "待确认的结果"
+      },
+      "holdReasons": "当前暂缓原因",
+      "empty": "暂无投递或对话活动。",
+      "period": "{from}–{to}"
+    },
+    "auth": {
+      "title": "登录 Outbound",
+      "description": "请使用现有 ecentic 员工账号的邮箱和密码。",
+      "accessNote": "仅限 ecentic 员工账号访问。",
+      "error": "无法登录。请检查员工账号的邮箱和密码。",
+      "denied": {
+        "title": "需要员工访问权限",
+        "description": "此账号没有 ecentic 员工访问权限。请退出登录，再使用已授权的账号。"
+      },
+      "fields": {
+        "email": "邮箱",
+        "password": "密码"
+      },
+      "validation": {
+        "email": "请输入有效的电子邮箱地址。",
+        "password": "请输入密码。"
+      },
+      "password": {
+        "show": "显示密码",
+        "hide": "隐藏密码"
+      },
+      "action": {
+        "primary": "登录"
+      },
+      "pending": "登录中...",
+      "home": "Outbound 工作区",
+      "language": "语言",
+      "story": {
+        "label": "ecentic Outbound",
+        "title": "有效的触达，始于真实的发现。",
+        "description": "研究合适的商店，审核每条消息，持续推进对话。",
+        "steps": {
+          "research": "研究",
+          "review": "审核",
+          "conversation": "对话"
+        }
+      }
+    },
+    "account": {
+      "action": {
+        "primary": "退出登录"
+      },
+      "pending": "正在退出…",
+      "error": "无法退出登录，请重试。",
+      "label": "账号",
+      "staff": "ecentic 员工"
+    },
+    "chrome": {
+      "groups": {
+        "workspace": "工作区",
+        "conversations": "对话",
+        "settings": "设置"
+      },
+      "menu": {
+        "open": "打开导航",
+        "close": "关闭导航"
+      },
+      "workspace": {
+        "description": "ecentic 员工工作区"
+      },
+      "breadcrumb": {
+        "label": "当前页面"
+      },
+      "account": {
+        "label": "账户菜单"
+      }
+    },
+    "campaigns": {
+      "title": "营销活动",
+      "newTitle": "创建活动",
+      "description": "按目标群体寻找公司，再选择合适的联系人。",
+      "newDescription": "为目标群体命名，然后在下一页设置公司筛选条件。",
+      "detailTitle": "寻找公司",
+      "detailDescription": "调整活动条件，查看公司列表并寻找联系人。",
+      "name": "活动名称",
+      "status": "状态",
+      "updated": "更新时间",
+      "openCampaign": "打开{name}",
+      "criteriaMissing": "尚未保存公司条件",
+      "search": "搜索活动",
+      "searchAction": "搜索",
+      "allStatuses": "所有状态",
+      "emptyTitle": "未找到活动",
+      "emptyDescription": "创建活动、定义目标群体，即可开始寻找公司。",
+      "emptyFiltered": "请尝试其他搜索词或状态筛选。",
+      "pagination": "活动分页",
+      "page": "第{page, number}页，共{pages, number}页",
+      "firstPage": "首页",
+      "previousPage": "上一页",
+      "nextPage": "下一页",
+      "lastPage": "末页",
+      "statuses": {
+        "draft": "草稿",
+        "active": "进行中",
+        "paused": "已暂停",
+        "archived": "已归档"
+      },
+      "loadError": "无法加载活动信息，请刷新页面。",
+      "actionError": "无法完成更改，请检查活动后重试。",
+      "invalidCriteria": "请检查条件，包括最小值和最大值。",
+      "saved": "活动已保存",
+      "saving": "正在保存…",
+      "create": {
+        "action": {
+          "primary": "创建活动"
+        }
+      },
+      "metadataTitle": "活动设置",
+      "metadataHelp": "草稿和已启用的营销活动均可搜索企业。启用营销活动不会开启邮件发送。",
+      "metadata": {
+        "action": {
+          "primary": "保存设置"
+        }
+      },
+      "criteriaTitle": "公司条件",
+      "criteriaHelp": "已保存的值用于定义此活动的公司搜索。未知的公司信息仍会标为未知。",
+      "criteria": {
+        "action": {
+          "primary": "保存条件"
+        }
+      },
+      "fields": {
+        "objective": "目标群体与目标",
+        "countries": "国家",
+        "platforms": "电商平台",
+        "keywords": "公司关键词",
+        "excludedKeywords": "排除关键词",
+        "targetRoles": "目标联系人职位",
+        "excludedRoles": "排除的联系人职位",
+        "excludedDomains": "排除的域名",
+        "teamSizeMin": "最少员工数",
+        "teamSizeMax": "最多员工数",
+        "annualRevenueMin": "最低年营收（USD）",
+        "annualRevenueMax": "最高年营收（USD）",
+        "qualificationNotes": "资质判断备注"
+      },
+      "listHelp": "用逗号或换行分隔各个值。",
+      "countryHelp": "请使用两字母国家代码，例如US。",
+      "platformHelp": "选择 Shopify、WooCommerce 或两者。",
+      "numberHelp": "不限制时请留空。",
+      "claudeTitle": "使用Claude设置条件",
+      "claudeHelp": "将问题复制到Claude对话中，再把JSON回答粘贴到这里，检查字段后保存。",
+      "claude": {
+        "action": {
+          "primary": "复制问题",
+          "secondary": "检查回答",
+          "tertiary": "保存已检查的条件",
+          "quaternary": "放弃预览"
+        }
+      },
+      "answerLabel": "Claude的JSON回答",
+      "answerHelp": "仅导入支持的条件字段。粘贴的文本无法执行操作或更改Playbook。",
+      "answerError": "请按照所复制问题中的格式，粘贴完整的JSON回答。",
+      "previewTitle": "保存前检查",
+      "previewHelp": "尚未更改任何设置。请调整这些值，确认无误后保存。",
+      "companiesTitle": "公司",
+      "companiesCount": "{count, number}家公司",
+      "companySearch": "搜索此公司列表",
+      "company": "公司",
+      "source": "来源",
+      "country": "国家",
+      "platform": "平台",
+      "teamSize": "员工数",
+      "revenue": "年营收",
+      "unknown": "未知",
+      "reason": "审核备注",
+      "companyStatuses": {
+        "candidate": "待审核",
+        "added": "已添加至潜在客户",
+        "excluded": "已排除"
+      },
+      "companyEmptyTitle": "此视图中没有公司",
+      "companyEmptyDescription": "保存条件并搜索第一页企业。",
+      "discovery": {
+        "action": {
+          "primary": "寻找公司"
+        }
+      },
+      "discoveryPaused": "请先在设置中恢复此营销活动，再搜索企业。",
+      "discoveryRunning": "正在寻找公司…",
+      "discoveryUpdated": "搜索已更新",
+      "latestRun": "最近一次搜索请求",
+      "runCount": "已保存{count, number}家公司",
+      "runStatuses": {
+        "starting": "进行中",
+        "completed": "已完成",
+        "failed": "失败",
+        "uncertain": "需要检查状态"
+      },
+      "criteriaVersion": "条件版本{version, number}",
+      "openProspect": "打开潜在客户",
+      "contactPageTitle": "选择联系人",
+      "contactPageDescription": "寻找此公司的联系人，检查其信息后再添加潜在客户。",
+      "findContacts": "寻找联系人",
+      "chooseContact": "选择此人",
+      "contactSearchHelp": "Apollo会寻找匹配的联系人。批准前，请核实其当前职位并验证工作邮箱。",
+      "contactSearchEmpty": "未找到匹配的联系人",
+      "manualContact": "手动添加联系人",
+      "allPlatforms": "Shopify 和 WooCommerce",
+      "questionsCopied": "问题已复制",
+      "copyError": "无法复制问题。请在下方展开问题并复制文本。",
+      "viewQuestions": "查看问题",
+      "reviewMessages": "审核消息",
+      "linkedinQueue": "LinkedIn 队列",
+      "automaticSource": "先用 Apollo，再用 Clay",
+      "discoveryExhausted": "两个来源的这些搜索结果均已获取完毕。请调整条件以开始新的搜索。",
+      "uncertainHelp": "供应商的响应尚未确认。为避免重复消耗积分，请先检查此请求，再开始下一批。",
+      "runningHelp": "企业搜索正在进行中。请刷新页面查看结果。",
+      "reviewRequired": "请先审核此企业再继续。",
+      "companyPagination": "企业分页",
+      "reasons": {
+        "campaignDomainExcluded": "已被此营销活动的域名列表排除。",
+        "countryMismatch": "国家不符合此营销活动的条件。",
+        "platformMismatch": "平台不符合此营销活动的条件。",
+        "teamSizeMismatch": "团队规模超出已保存的范围。",
+        "revenueMismatch": "收入超出已保存的范围。",
+        "playbookDomainExcluded": "该域名已被运营手册排除。",
+        "playbookCompanyExcluded": "该企业已被运营手册排除。",
+        "relationshipExcluded": "已有业务关系，不进行冷启动联系。",
+        "companyContacted": "已在保护期内联系过此企业。",
+        "existingProspect": "此企业已有潜在客户记录。",
+        "otherCampaign": "另一个营销活动已在调研此企业。",
+        "suppressed": "此企业已在共享的禁止联系名单中。",
+        "criteriaChanged": "条件已更改，请重新调研此企业。"
+      },
+      "errors": {
+        "provider-configuration": "请先在“集成”中连接此供应商，再进行搜索。",
+        "provider-input": "此供应商无法使用已保存的条件。请检查国家、平台和数值筛选条件。",
+        "provider-access": "供应商拒绝了访问。请在“集成”中检查 API 密钥和搜索权限。",
+        "provider-quota": "已达到供应商的积分或使用量上限。请检查您的套餐。",
+        "provider-rate-limit": "供应商暂时限制了请求。请稍候再开始下一批。",
+        "provider-contract": "供应商返回了意外响应。请检查此请求。",
+        "provider-uncertain": "此请求可能已处理。请先确认结果再重试。",
+        "provider-unavailable": "供应商暂不可用。请检查最新请求后再重试。",
+        "campaign-criteria-changed": "营销活动的条件已更改。请刷新并审核当前版本。",
+        "campaign-paused": "请先在设置中恢复此营销活动，再搜索。",
+        "campaign-run-unresolved": "先前的请求仍在执行或需要核对。请先检查，再开始下一批。",
+        "campaign-source-exhausted": "此来源已无符合当前条件的更多结果。请选择其他来源或修改条件。",
+        "provider-plan-required": "您的Apollo套餐不包含平台筛选功能。请开通包含此功能的试用或升级套餐，然后重试。",
+        "provider-clay-plan-required": "这些企业筛选条件需要 Clay 付费套餐。请升级后再运行此搜索。",
+        "campaign-generation-invalid": "此Claude预览已不可用。请先生成新的预览，再保存。",
+        "campaign-playbook-changed": "此预览生成后，运营手册已更改。请先生成新的预览，再保存。",
+        "campaign-archived": "此活动已归档。请先更改状态，再生成条件。"
+      },
+      "objectiveHelp": "描述目标受众。供应商搜索使用下方的结构化筛选条件。",
+      "qualificationHelp": "供工作人员审核的清单。供应商搜索不会自动验证这些要求。",
+      "discoverySavedCriteria": "搜索使用已保存的第 {version} 版条件。请先保存预览或修改，再使用这些条件搜索。",
+      "discoverySourceHelp": {
+        "auto": "每次请求最多搜索25家公司。先使用Apollo，Apollo的结果耗尽后再由Clay继续。提供商发生错误时，搜索会停止。",
+        "apollo": "使用此活动已保存的条件，在Apollo中搜索最多25家公司。",
+        "clay": "使用此活动已保存的条件，在Clay中搜索最多25家公司。"
+      },
+      "discoveryPreviewPending": "有一份条件预览等待审核。请先保存或放弃该预览，再搜索公司。",
+      "companySearchFailedTitle": "无法执行搜索",
+      "companySearchFailedDescription": "未添加任何公司。请先解决上方显示的问题，然后重试。",
+      "manualClaude": "手动使用Claude",
+      "viewContactOptional": "查看联系人",
+      "automaticContactsHelp": "启用的营销活动会检查每家符合条件的公司，查找并验证联系人，然后自动起草邮件序列并加入发送队列。无需逐一打开联系人；发送前仍会执行各项检查。"
+    },
+    "warmup": {
+      "title": "邮箱预热",
+      "detailTitle": "邮箱准备情况",
+      "description": "检查邮箱设置，并为您的域名制定逐步增加发送量的计划。",
+      "email": "邮箱",
+      "senderPool": "发件人池",
+      "active": "已启用的发件人",
+      "inactive": "未启用的发件人",
+      "connection": "连接",
+      "connectionSaved": "连接已保存",
+      "notConnected": "未连接",
+      "checks": "准备情况检查",
+      "unchecked": "尚未检查",
+      "manage": "管理邮箱",
+      "networkTitle": "Warmbly 共享网络",
+      "networkHelp": "已选择 Warmbly 共享网络作为预热方式。开始发送前请连接网络；邮箱检查和计划保存功能仍可使用。",
+      "scopeHelp": "这些检查涵盖 DNS 记录、邮箱访问和已保存的准备确认。收件箱投递表现和信誉仍未知。",
+      "addMailboxes": "管理发件邮箱",
+      "connectMailboxes": "连接邮箱",
+      "emptyTitle": "尚未保存发件邮箱",
+      "emptyDescription": "请将邮箱地址添加到运营手册，然后在“集成”中连接。",
+      "pagination": "邮箱分页",
+      "page": "第 {page, number} 页，共 {pages, number} 页",
+      "firstPage": "第一页",
+      "previousPage": "上一页",
+      "nextPage": "下一页",
+      "lastPage": "最后一页",
+      "checksTitle": "检查此邮箱",
+      "checkHelp": "检查域名记录、邮箱访问和同步状态。此检查不会发送邮件。",
+      "dkimSelectors": "DKIM 选择器",
+      "dkimHelp": "请输入邮件服务商提供的选择器，用逗号分隔。留空时 DKIM 状态将保持未知。",
+      "checking": "正在检查…",
+      "checkAction": "运行准备检查",
+      "checkedAt": "检查时间：{date}",
+      "uncheckedHelp": "运行检查以保存此邮箱的首次观察结果。",
+      "dnsRecords": "DNS 观察结果",
+      "selectorReceipt": "选择器：{selectors}",
+      "recordDomain": "记录域名：{domain}",
+      "none": "未提供",
+      "planTitle": "发送量计划",
+      "planHelp": "保存 Warmbly 的初始发送量、每日增加量和上限。发件人和运营手册的限制仍然适用。",
+      "initialDailyCap": "初始每日邮件数",
+      "dailyIncrease": "每日增加量",
+      "maximumDailyCap": "每日邮件数上限",
+      "invalidPlan": "请使用整数。上限必须不低于初始发送量，且不超过 15。",
+      "saving": "正在保存…",
+      "savePlan": "保存计划",
+      "planStatus": "计划状态",
+      "planningOnly": "仅作规划",
+      "previewCap": "应用上限后的初始额度",
+      "messagesPerDay": "每天 {count, number} 封邮件",
+      "planScope": "保存此计划不会启动预热。Warmbly 管理每日发送量的递增，并可根据其观测结果暂停递增或减少发送量。此预览显示已配置的上限，并非邮箱健康状况的实测记录。",
+      "loadError": "无法加载邮箱信息。请刷新页面。",
+      "missingMailbox": "此地址不在运营手册的发件邮箱列表中。",
+      "readiness": {
+        "needsAttention": "需要处理",
+        "needsChecks": "需要更多检查",
+        "checksPassed": "设置检查已通过"
+      },
+      "states": {
+        "present": "已存在",
+        "missing": "缺失",
+        "invalid": "需要处理",
+        "unknown": "未知"
+      },
+      "checkLabels": {
+        "mx": "MX",
+        "spf": "SPF",
+        "dkim": "DKIM",
+        "dmarc": "DMARC",
+        "connection": "邮箱访问",
+        "sync": "邮箱同步",
+        "provider": "供应商状态",
+        "history": "历史记录核对",
+        "test": "发送和回复测试"
+      },
+      "mailboxesTitle": "发件邮箱"
+    },
+    "warmbly": {
+      "title": "Warmbly 网络",
+      "description": "连接 Warmbly 账户后，即可在此管理共享网络预热。请在 Warmbly 中连接邮箱；Outbound 不会传输邮箱密码。",
+      "connected": "API 密钥已验证",
+      "notConnected": "未连接",
+      "unknown": "未知",
+      "openWarmbly": "打开 Warmbly",
+      "refresh": "刷新状态",
+      "replaceKey": "更换 API 密钥",
+      "connectKey": "连接 Warmbly",
+      "apiKey": "Warmbly API 密钥",
+      "keyHelp": "请使用具有 READ_EMAILS 和 WRITE_EMAILS 权限的工作区密钥。密钥经验证后加密保存，已保存的密钥不会再次显示。",
+      "showKey": "显示 API 密钥",
+      "hideKey": "隐藏 API 密钥",
+      "invalidKey": "请输入有效的 Warmbly 工作区 API 密钥。",
+      "saveKey": "保存 API 密钥",
+      "updated": "网络状态已更新",
+      "email": "邮箱",
+      "state": "网络状态",
+      "maximum": "每日上限",
+      "perDay": "每天 {count, number} 封",
+      "mailboxChecks": "邮箱检查",
+      "checksRequired": "开始前请保存发送量计划，并通过最近的 DNS 和邮箱检查。邮箱必须在 Warmbly 中处于启用状态。",
+      "startHelp": "“开始”和“恢复”会先应用已保存的发送量计划，再启用网络预热。网络预热期间，该邮箱的 Outbound 发送将暂停。",
+      "pendingHelp": "先前的操作需要检查状态。请先刷新再重试，以免重复执行。",
+      "pending": "需要检查状态",
+      "emptyTitle": "此页没有已注册的邮箱",
+      "emptyDescription": "请在 Warmbly 中连接邮箱，并在运营手册中保存相同的地址。如有更多页面，请继续查找。",
+      "page": "第 {page, number} 页",
+      "previous": "上一页",
+      "next": "下一页",
+      "loadError": "无法加载 Warmbly 网络。请检查连接并刷新。",
+      "actionError": "无法完成此操作。请刷新网络并检查权限和限制后再重试。",
+      "accessError": "Warmbly 拒绝了访问。请检查 API 密钥及其 READ_EMAILS 和 WRITE_EMAILS 权限。",
+      "readinessError": "开始前请重新检查邮箱，并解决 MX、SPF、DKIM 和 DMARC 问题。",
+      "limitError": "已保存的发送量上限超过运营手册或邮箱的限制。请先调低再开始。",
+      "activeError": "开始预热前，请先在 Warmbly 中启用此邮箱。",
+      "rampError": "Warmbly 尚未确认已保存的发送量计划。请先刷新状态再重试。",
+      "planChangedError": "设置期间发送量计划已更改。请先刷新再开始。",
+      "stateError": "Warmbly 尚未确认请求的状态。请先刷新以确认结果，再执行其他操作。",
+      "registeredError": "管理预热前，请先在运营手册中保存此邮箱的准确地址。",
+      "states": {
+        "off": "已关闭",
+        "running": "运行中",
+        "paused": "已暂停",
+        "unknown": "未知"
+      },
+      "actions": {
+        "start": "开始",
+        "pause": "暂停",
+        "resume": "恢复",
+        "stop": "停止"
+      },
+      "errors": {
+        "provider-key-invalid": "请输入有效的 Warmbly 工作区 API 密钥。",
+        "provider-key-unavailable": "无法加载 Warmbly 网络。请检查连接并刷新。",
+        "provider-key-encryption": "无法完成此操作。请刷新网络并检查权限和限制后再重试。",
+        "provider-key-save-failed": "无法完成此操作。请刷新网络并检查权限和限制后再重试。"
+      }
+    },
+    "claude": {
+      "title": "Claude",
+      "description": "使用Claude起草活动条件，保存前逐项审核更改。",
+      "setupHelp": "在Claude Console中创建API密钥，然后在此连接。",
+      "billingHelp": "API请求会使用您的Console余额及符合条件的可用额度。验证密钥不代表已确认可用的API余额。",
+      "keyLabel": "Claude API密钥",
+      "keyHelp": "密钥经过验证后加密保存。保存后的密钥不会再次显示。",
+      "keyRequired": "请粘贴您的Claude API密钥。",
+      "invalid": "请输入有效值。",
+      "showKey": "显示API密钥",
+      "hideKey": "隐藏API密钥",
+      "modelLabel": "Claude模型",
+      "workspaceLabel": "工作区ID（可选）",
+      "workspaceHelp": "如果密钥已绑定工作区，请留空；否则请输入Console工作区ID。",
+      "connected": "已连接",
+      "notConnected": "未连接",
+      "unknown": "无法读取Claude连接状态。",
+      "advanced": "模型与工作区",
+      "saving": "正在验证并保存…",
+      "keySaved": "Claude API密钥已验证并保存。",
+      "saveError": "无法保存Claude连接，请重试。",
+      "connectHelp": "请在集成设置中连接Claude API密钥，以在此起草条件。",
+      "generationHelp": "Claude会使用此活动已保存的条件、运营手册和下方补充信息，生成供您审核的预览，不会自动保存。",
+      "contextLabel": "ecentic补充信息（可选）",
+      "contextHelp": "请说明目标公司、限制或对已保存条件的修改。Claude不会自动读取您在Claude应用中的对话或记忆。",
+      "contextInvalid": "补充信息不得超过50,000个字符。",
+      "generating": "正在使用Claude生成预览…",
+      "previewReady": "Claude预览已就绪。请先审核下方字段，再保存。",
+      "previewPending": "请先保存或放弃当前预览，再生成新的预览。",
+      "recoveryHelp": "此浏览器会记住该活动最后一次Claude请求。“恢复预览”只检查该请求，不会重新生成。即使上次未收到响应，重新生成也可能消耗额外额度。",
+      "stalePreview": "活动条件已更改。请刷新页面并生成新的预览。",
+      "generationError": "无法获取Claude预览。请先尝试恢复，再发起其他请求。",
+      "connection": {
+        "action": {
+          "primary": "保存API密钥",
+          "secondary": "更换API密钥",
+          "tertiary": "打开Claude Console"
+        }
+      },
+      "generation": {
+        "action": {
+          "primary": "使用Claude起草条件",
+          "secondary": "恢复预览",
+          "tertiary": "重新生成",
+          "quaternary": "连接Claude"
+        }
+      },
+      "errors": {
+        "claude-not-configured": "请先在集成设置中连接Claude API密钥。",
+        "claude-access-denied": "Claude拒绝了访问。请在集成设置中检查API密钥和工作区。",
+        "claude-credit-required": "Claude需要可用的API额度。请检查Console余额及符合条件的额度。",
+        "claude-rate-limited": "Claude已达到请求频率限制。请稍后再发起请求。",
+        "claude-model-unavailable": "已连接的密钥无法使用此Claude模型。请在集成设置中选择其他模型。",
+        "claude-request-invalid": "Claude无法接受此请求。请检查补充信息和活动条件。",
+        "claude-generation-running": "Claude仍在处理此请求。请稍后尝试恢复预览。",
+        "claude-generation-uncertain": "此请求的结果尚不确定。请先恢复预览，再考虑重新生成。",
+        "claude-generation-failed": "此次生成未得到可用预览。请检查补充信息后再重新生成。",
+        "claude-generation-missing": "未找到此请求已保存的预览。您可以手动发起新的生成。",
+        "provider-key-invalid": "请检查凭据和必填项后重试。",
+        "provider-key-unavailable": "无法连接到服务商。请重试。",
+        "provider-key-encryption": "服务器无法加密这些凭据。请联系管理员检查加密配置。",
+        "provider-key-save-failed": "无法保存这些凭据。请重试。",
+        "campaign-archived": "此活动已归档。请先更改状态，再生成条件。",
+        "campaign-criteria-changed": "营销活动的条件已更改。请刷新并审核当前版本。"
+      },
+      "creditsHelp": "如果您的订阅包含API额度，请在Claude → 设置 → 账单 → API额度中领取，并关联拥有此密钥的Console组织。",
+      "recovering": "正在检查已保存的预览…",
+      "storageUnavailable": "浏览器存储不可用。请允许此网站存储数据，以保存和恢复Claude预览。尚未发起新的生成。"
+    },
+    "automation": {
+      "title": "活动自动处理",
+      "help": "进行中的活动会在后台继续。“立即运行”会处理下一项可用工作。",
+      "modeOff": "自动模式已关闭",
+      "campaignInactive": "没有进行中的活动",
+      "working": "正在处理",
+      "waiting": "等待下一项工作",
+      "unknownStatus": "状态不可用",
+      "unknownStage": "步骤不可用",
+      "unknownReason": "请先检查此记录，再继续。",
+      "company": "公司",
+      "stage": "当前步骤",
+      "status": "状态",
+      "reason": "暂缓原因",
+      "noBlocker": "—",
+      "openProspect": "打开潜在客户",
+      "enableHelp": "请在运营手册中启用自动模式，以开始自动处理活动。",
+      "previewPending": "自动处理使用已保存的条件。请先保存或放弃预览，再在此启动。",
+      "pauseHelp": "暂停后不会开始新的准备步骤。正在进行的请求可能仍会完成。",
+      "statusError": "无法刷新状态，显示的数据可能已过时。",
+      "actionError": "无法完成此操作。请刷新状态后重试。",
+      "campaignStarted": "活动已启动，并已检查下一项准备工作。",
+      "campaignPaused": "活动已暂停。",
+      "runComplete": "已检查下一项可用工作。",
+      "refreshed": "状态已刷新。",
+      "processing": "正在处理…",
+      "preparedHelp": "已准备表示联系人和消息已通过准备流程。发送程序仍会在发送前检查每封邮件。",
+      "empty": "尚无准备记录。请启动已保存公司的活动以开始处理。",
+      "deliveryTitle": "邮件发送",
+      "deliveryReady": "设置检查已通过",
+      "deliveryBlocked": "发送受阻",
+      "deliveryHelp": "每封邮件仍须通过实时发送检查，并遵守发送间隔、排除名单和预热限制。",
+      "pagination": "自动处理分页",
+      "counts": {
+        "queued": "排队中",
+        "running": "进行中",
+        "held": "暂缓",
+        "uncertain": "结果不确定",
+        "complete": "已准备"
+      },
+      "statuses": {
+        "queued": "排队中",
+        "running": "进行中",
+        "held": "暂缓",
+        "uncertain": "结果不确定",
+        "complete": "已准备"
+      },
+      "action": {
+        "primary": "立即运行",
+        "secondary": "刷新状态",
+        "tertiary": "打开运营手册",
+        "quaternary": "管理邮箱"
+      },
+      "campaign": {
+        "action": {
+          "primary": "启动活动",
+          "secondary": "暂停活动"
+        }
+      },
+      "stages": {
+        "companyFacts": "检查公司信息",
+        "qualify": "检查公司与商品",
+        "findContacts": "查找联系人",
+        "selectContact": "核实当前职位",
+        "promote": "创建潜在客户",
+        "enrich": "查找工作邮箱",
+        "applyEmail": "保存工作邮箱",
+        "verify": "验证邮箱",
+        "pollVerification": "等待验证结果",
+        "applyVerification": "保存验证结果",
+        "mx": "检查邮件服务商",
+        "applyMx": "保存邮件服务商检查",
+        "draft": "起草消息",
+        "applyDraft": "保存消息",
+        "approve": "检查资格",
+        "complete": "准备完成"
+      },
+      "reasons": {
+        "automation-disabled": "自动模式已关闭。",
+        "campaign-inactive": "活动未启动。",
+        "campaign-criteria-changed": "条件已更改，此工作已暂缓。",
+        "playbook-changed": "运营手册已更改，此工作已暂缓。",
+        "company-unavailable": "公司已被排除或不再可用。",
+        "qualification-held": "公司或商品证据未通过检查。",
+        "contact-held": "未确认符合条件的当前联系人。",
+        "email-held": "未找到合适的工作邮箱。",
+        "verification-held": "邮箱未通过验证。",
+        "mx-held": "邮件服务商未通过检查。",
+        "draft-held": "草稿未通过文案检查。",
+        "approval-held": "消息未通过最终资格检查。",
+        "provider-input": "提供商无法处理此输入。",
+        "lease-expired": "先前请求未正常完成，请检查已记录的结果。",
+        "provider-configuration": "请先在“集成”中连接此供应商，再进行搜索。",
+        "provider-access": "供应商拒绝了访问。请在“集成”中检查 API 密钥和搜索权限。",
+        "provider-quota": "已达到供应商的积分或使用量上限。请检查您的套餐。",
+        "provider-rate-limit": "供应商暂时限制了请求。请稍候再开始下一批。",
+        "provider-uncertain": "此请求可能已处理。请先确认结果再重试。"
+      },
+      "deliveryBlockers": {
+        "sendingPaused": "运营手册中的发送已暂停。",
+        "senderUnconfirmed": "发件人身份尚未确认。",
+        "historyUnconfirmed": "尚未确认已导入历史发送和排除记录。",
+        "competingSendersActive": "尚未确认其他发送系统已暂停。",
+        "senderUntested": "尚未确认发件测试。",
+        "inboxesMissing": "一个或多个启用的发件邮箱未连接。",
+        "inboxDisabled": "发件邮箱已停用或断开连接。",
+        "inboxSyncIncomplete": "邮箱历史或回复同步需要处理。",
+        "senderIdentityMismatch": "邮箱与已保存的发件人身份不符。"
+      },
+      "page": "第{page, number}页，共{pages, number}页",
+      "firstPage": "首页",
+      "previousPage": "上一页",
+      "nextPage": "下一页",
+      "lastPage": "末页",
+      "volumeTitle": "邮箱发送量",
+      "currentCap": "当前每日上限",
+      "targetCap": "目标上限",
+      "rampHeld": "暂停增加",
+      "rampHelp": "邮箱从每天15封开始。只有在完整的一天中达到当前上限，且未观察到退信时，上限才会增加5封。观察到退信后，上限会恢复为15封。目标并不保证实际发送量或邮箱信誉。"
+    },
+    "sent": {
+      "title": "已发送",
+      "description": "查看服务商已接受的邮件及发送尝试，包括保存的消息和跟进历史。",
+      "detailTitle": "消息与序列",
+      "detailDescription": "此会话中记录的内容、服务商处理结果和活动。",
+      "searchLabel": "搜索已发送消息",
+      "searchPlaceholder": "收件人、公司、营销活动、邮箱或主题",
+      "statusFilter": "发送状态",
+      "kindFilter": "消息类型",
+      "allStatuses": "全部状态",
+      "allKinds": "全部消息",
+      "outreach": "客户开发",
+      "test": "测试",
+      "bouncedFilter": "有退信的序列",
+      "count": "{count, plural, other {#次发送尝试}}",
+      "emptyTitle": "暂无发送尝试",
+      "emptyDescription": "Outbound记录发送尝试后，消息会显示在这里。",
+      "noMatches": "没有符合这些筛选条件的消息。",
+      "error": "无法加载已发送消息，请重试。",
+      "missing": "未找到此发送记录。",
+      "acceptanceNote": "“已接受”表示邮件服务商已接受该消息，并不代表邮件已送达收件箱。",
+      "timezone": "时间以UTC显示。",
+      "unknown": "未记录",
+      "columns": {
+        "recipient": "收件人",
+        "company": "公司",
+        "campaign": "营销活动",
+        "sender": "发件邮箱",
+        "subject": "主题",
+        "step": "步骤",
+        "time": "记录时间",
+        "status": "结果"
+      },
+      "status": {
+        "accepted": "已接受",
+        "failed": "失败",
+        "uncertain": "不确定",
+        "claimed": "准备中"
+      },
+      "step": "邮件 {step}",
+      "sequence": {
+        "title": "跟进序列",
+        "activity": "会话活动",
+        "status": "当前序列状态",
+        "next": "下次可发送时间：{time}",
+        "noSchedule": "目前没有安排跟进邮件。",
+        "scheduleNote": "已安排的跟进邮件仍受发送时段和发送检查约束。",
+        "bounced": "此序列有退信记录",
+        "bounceNote": "退信属于此会话；保存的回执未标明具体步骤。",
+        "emptyActivity": "尚未记录回复或投递活动。",
+        "limitedActivity": "显示最近100条会话事件。"
+      },
+      "message": {
+        "title": "保存的消息",
+        "from": "发件人",
+        "to": "收件人",
+        "subject": "主题",
+        "recorded": "记录时间",
+        "providerId": "服务商消息ID",
+        "messageId": "消息ID",
+        "contentMissing": "不可变消息记录缺失或完整性检查失败。不会将当前草稿显示为已发送内容。",
+        "failed": "此次尝试失败，尚未确认该内容已发送。",
+        "uncertain": "结果未知。该内容可能已发送，但这并不意味着会自动重试。",
+        "claimed": "此次尝试已准备就绪，尚未记录服务商接受结果。",
+        "test": "这是一次测试发送。"
+      },
+      "activity": {
+        "sent": "服务商已接受消息",
+        "sendFailed": "发送失败",
+        "sendUncertain": "发送结果不确定",
+        "reply": "收到回复",
+        "bounce": "收到退信",
+        "optout": "收到退订请求",
+        "other": "会话已更新"
+      },
+      "action": {
+        "primary": "打开消息",
+        "secondary": "返回已发送",
+        "tertiary": "清除筛选",
+        "quaternary": "搜索"
+      },
+      "pagination": {
+        "previous": "上一页",
+        "next": "下一页",
+        "page": "第{page}页，共{pages}页"
+      }
+    },
+    "pipeline": {
+      "title": "从企业调研到对话",
+      "description": "寻找合适的企业，调研有用的切入点，并持续跟进每段对话，直至会议。",
+      "activeCampaigns": "进行中的营销活动",
+      "companies": "目标企业",
+      "insights": "调研完成",
+      "contacts": "已保存联系人",
+      "sequences": "已准备的邮件序列",
+      "held": "需要处理",
+      "needsReply": "待跟进回复",
+      "meetings": "已记录会议",
+      "meetingsHelp": "仅统计明确记录的会议。点击预约链接不代表已预约会议。",
+      "campaignsTitle": "营销活动进度",
+      "scopeHelp": "企业和联系人数量基于进行中的营销活动及其当前保存的筛选条件。正在调研的企业尚不计为联系人。",
+      "openCampaigns": "打开营销活动",
+      "moreCampaigns": "显示最近更新的进行中营销活动。打开营销活动可查看全部。",
+      "emptyTitle": "选择下一批目标",
+      "emptyHelp": "创建营销活动、保存筛选条件并查找企业，即可启动流程。",
+      "emptyAction": "创建营销活动",
+      "workTitle": "当前工作",
+      "workEmpty": "当前没有需要处理的准备工作。完整历史记录可在营销活动中查看。",
+      "setupTitle": "设置与控制",
+      "setupReady": "连接设置已保存。每次发送前仍会检查身份、回复、发送间隔和发送条件。",
+      "activityTitle": "过去七天已接受的消息",
+      "emailAccepted": "已接受的邮件",
+      "linkedinAccepted": "已接受的LinkedIn消息",
+      "acceptedHelp": "已接受表示服务商已接受该消息，并不证明消息已送达收件箱。",
+      "detailsTitle": "自动化详情",
+      "reportTitle": "每周活动报告",
+      "refresh": "刷新",
+      "refreshing": "正在刷新…",
+      "automationOn": "自动准备已开启",
+      "automationOff": "自动准备已暂停",
+      "linkedinOff": "LinkedIn发送已关闭",
+      "automationHelp": "请在操作手册中开启自动模式，以继续准备营销活动。",
+      "apolloMissing": "连接Apollo以查找企业和当前联系人。",
+      "azureMissing": "配置Azure以评估调研信息并准备消息。",
+      "linkedinMissing": "启用消息发送前，请连接所选LinkedIn账号。",
+      "error": "无法加载当前进度。请刷新重试。"
+    },
+    "conversations": {
+      "title": "对话",
+      "description": "阅读回复，结合上下文作答，将客户兴趣转化为会议。",
+      "detailDescription": "在同一处查看真实对话、你的回复和下一步。",
+      "list": {
+        "action": {
+          "primary": "打开对话",
+          "secondary": "全部对话"
+        }
+      },
+      "columns": {
+        "person": "联系人与公司",
+        "subject": "对话",
+        "channel": "渠道",
+        "stage": "阶段",
+        "updated": "更新时间（UTC）"
+      },
+      "stage": {
+        "open": "进行中",
+        "interested": "有兴趣",
+        "question": "有疑问",
+        "later": "稍后跟进",
+        "notInterested": "不感兴趣",
+        "meetingBooked": "会议已确认",
+        "meetingHeld": "会议已举行",
+        "closed": "已关闭"
+      },
+      "channel": {
+        "email": "邮件",
+        "linkedin": "LinkedIn"
+      },
+      "needsReply": "待回复",
+      "noSubject": "对话",
+      "search": "搜索联系人、公司或消息",
+      "allChannels": "全部渠道",
+      "allStages": "全部阶段",
+      "count": "{count, plural, one {# 个对话} other {# 个对话}}",
+      "emptyTitle": "你的对话将显示在这里",
+      "emptyDescription": "已连接邮箱和 LinkedIn 的回复同步会在此保存真实消息。之前的结果备注仍保留在各潜在客户的活动记录中。",
+      "noMatches": "没有匹配的对话",
+      "outcomeTitle": "下一步",
+      "outcome": {
+        "action": {
+          "primary": "保存阶段"
+        }
+      },
+      "meetingHelp": "会议确认后再标记为“会议已确认”，举行后再标记为“会议已举行”。分享预约链接不会记录一次预约。",
+      "booking": {
+        "action": {
+          "primary": "打开预约页面"
+        }
+      },
+      "replyTitle": "你的回复",
+      "replyHelp": "回复建议使用当前对话和已保存的 Playbook。请审核准确文案、保存修改，再通过上方显示的已连接账号发送。",
+      "recoveryHelp": "已请求生成回复建议。检查同一请求可恢复已保存的结果，不会开始新的生成。",
+      "recovery": {
+        "action": {
+          "primary": "检查已请求的建议"
+        }
+      },
+      "action": {
+        "primary": "发送已保存的回复",
+        "secondary": "保存草稿",
+        "tertiary": "生成回复建议",
+        "quaternary": "刷新"
+      },
+      "draftLabel": "回复草稿",
+      "invalidBody": "请输入 1–10,000 个字符的回复。",
+      "unsaved": "发送或更改阶段前，请先保存修改。",
+      "error": {
+        "changed": "对话已更新。请重新加载并阅读最新消息后再继续。",
+        "closed": "此对话已关闭，或收件人已被排除在联系范围之外。",
+        "stale": "请阅读最新收到的消息，并在发送前保存当前回复。",
+        "unresolved": "之前的发送仍在进行中，或结果未知。确认结果前，系统会阻止再次发送。",
+        "truncated": "最新消息不完整。回复前，请到已连接的邮箱中阅读完整消息。",
+        "generationUncertain": "回复建议的结果尚未确认。检查此请求不会再次生成回复。",
+        "connection": "发送账号不可用，或需要重新同步回复。请检查“集成”。",
+        "controls": "回复建议未通过已保存的回复规则检查。请手动撰写并审核回复。",
+        "generic": "无法完成此操作。请刷新对话后重试。"
+      },
+      "newestFirst": "最新消息在前",
+      "direction": {
+        "inbound": "收到",
+        "outbound": "已发送"
+      },
+      "automated": "自动消息",
+      "to": "收件人",
+      "emptyBody": "此消息没有文本内容。",
+      "truncated": "仅保存了部分消息。请在已连接的账号中打开完整消息。",
+      "emptyMessages": "尚未保存消息文本。",
+      "attemptsTitle": "回复发送历史",
+      "send": {
+        "accepted": "服务商已接受",
+        "failed": "发送失败",
+        "uncertain": "发送结果未知",
+        "starting": "正在发送"
+      },
+      "views": {
+        "label": "显示",
+        "all": "全部活动",
+        "needsReply": "待回复",
+        "sent": "发送记录",
+        "scheduled": "已安排"
+      },
+      "replyAccount": "回复账号",
+      "activity": {
+        "kind": "消息",
+        "time": "时间（UTC）",
+        "linkedinMessage": "LinkedIn 消息",
+        "linkedinInvite": "LinkedIn 邀请",
+        "reply": "对话回复",
+        "scheduledHelp": "此处显示已保存的邮件发送时间。暂停、回复检查、收件人时段和邮箱限额可能导致延迟。LinkedIn 操作没有已保存的固定发送时间。",
+        "sentHelp": "邮件、LinkedIn 和对话回复的发送记录。“已接受”表示服务商接受了消息，并不证明已送达或已打开。",
+        "empty": "当前视图没有匹配的活动。"
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+@import "@zenncore/config/tailwind";
+@import "@zenncore/web/config/tailwind";
+
+@theme inline {
+  --font-body: var(--font-redhat-display), var(--font-cjk-fallback, sans-serif);
+  --font-heading: var(--font-lt-superior), var(--font-cjk-fallback, sans-serif);
+  --font-superior:
+    var(--font-lt-superior), var(--font-cjk-fallback, sans-serif);
+}
+
+@theme {
+  --color-cross: var(--color-foreground-dimmed);
+}
+
+html:lang(ja) {
+  --font-cjk-fallback: "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+}
+
+html:lang(zh-CN) {
+  --font-cjk-fallback: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+body {
+  @apply bg-background font-body text-foreground;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  @apply font-heading;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-foreground-dimmed) transparent;
+}
+
+button:not(:disabled),
+a,
+[role="tab"] {
+  cursor: pointer;
+}

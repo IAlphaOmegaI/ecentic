@@ -1,0 +1,1753 @@
+{
+  "outbound": {
+    "page": {
+      "title": "Outbound",
+      "description": "Trova i negozi giusti, offri valore dal primo contatto e tieni sotto controllo ogni conversazione.",
+      "internal": "Spazio di lavoro interno"
+    },
+    "nav": {
+      "overview": "Panoramica",
+      "prospects": "Potenziali clienti",
+      "review": "Revisione",
+      "linkedin": "LinkedIn",
+      "replies": "Conversazioni",
+      "playbook": "Guida ai contatti",
+      "integrations": "Integrazioni",
+      "campaigns": "Campagne",
+      "warmup": "Riscaldamento",
+      "sent": "Inviati"
+    },
+    "common": {
+      "saving": "Salvataggio…",
+      "loading": "Caricamento…",
+      "saved": "Modifiche salvate",
+      "error": "Impossibile salvare le modifiche. Riprova.",
+      "emptyValue": "Non specificato",
+      "optional": "Facoltativo",
+      "required": "Compila questo campo.",
+      "invalidEmail": "Inserisci un indirizzo email valido.",
+      "invalidUrl": "Inserisci un URL HTTPS completo.",
+      "wordCount": "{count, number} / {maximum, number} parole",
+      "revision": "Versione {version, number}",
+      "neverSent": "Non inviato",
+      "source": "Fonte",
+      "lastUpdated": "Aggiornato il {date}",
+      "copySuccess": "Copiato",
+      "copyError": "Impossibile copiare. Seleziona il testo e copialo manualmente.",
+      "all": "Tutti",
+      "enabled": "Attivato",
+      "disabled": "Disattivato",
+      "requestError": "Impossibile completare la richiesta. Riprova.",
+      "connecting": "Collegamento…",
+      "invalidField": "Controlla questo valore.",
+      "invalidForm": "Controlla i valori del modulo prima di continuare.",
+      "savedRefreshError": "Salvato, ma non è stato possibile aggiornare la vista. Ricarica questa pagina."
+    },
+    "status": {
+      "candidate": "Candidato",
+      "draft": "Bozza",
+      "drafted": "Redatto",
+      "review": "Da rivedere",
+      "ready": "Pronto per la revisione",
+      "approved": "Approvato",
+      "held": "In sospeso",
+      "hold": "In sospeso",
+      "suppressed": "Non contattare",
+      "skipped": "Ignorato",
+      "sent": "Inviato",
+      "replied": "Ha risposto",
+      "active": "Attivo",
+      "completed": "Completato",
+      "pending": "In attesa",
+      "verified": "Verificato",
+      "invalid": "Non valido",
+      "unknown": "Sconosciuto",
+      "stale": "Serve una nuova verifica",
+      "catchAll": "Accetta qualsiasi indirizzo",
+      "guessed": "Indirizzo dedotto",
+      "unverified": "Non verificato",
+      "optedOut": "Non desidera altri contatti",
+      "bounced": "Non recapitato",
+      "finished": "Terminato"
+    },
+    "overview": {
+      "title": "Le tue prossime conversazioni",
+      "description": "Una panoramica chiara delle persone, delle bozze e dei solleciti che richiedono la tua attenzione.",
+      "metrics": {
+        "prospects": "Potenziali clienti",
+        "review": "In attesa di revisione",
+        "approved": "Email approvate",
+        "suppressed": "Non contattare",
+        "replies": "Risposte",
+        "linkedin": "Attività LinkedIn"
+      },
+      "emptyTitle": "Inizia con pochi potenziali clienti adatti.",
+      "emptyDescription": "Aggiungi un negozio o importa le ricerche esistenti. Ogni potenziale cliente riunisce il riscontro sul prodotto, le fonti e le bozze dei messaggi.",
+      "target": "Obiettivo settimanale",
+      "targetValue": "{count, number} prime email",
+      "activityTitle": "Attività recenti",
+      "activityEmpty": "Qui appariranno le modifiche salvate e le decisioni sui contatti.",
+      "approvalNote": "Ogni email richiede la tua approvazione. Se modifichi una bozza, torna in revisione.",
+      "sendingPaused": "L’invio è in pausa",
+      "action": {
+        "primary": "Aggiungi un potenziale cliente",
+        "secondary": "Rivedi i messaggi"
+      },
+      "automaticDrafts": "Bozze",
+      "sendingSwitchOn": "Invio attivato nelle impostazioni",
+      "automaticNote": "La modalità automatica verifica contatti e messaggi secondo il manuale salvato. Le email idonee possono essere inviate senza approvazione manuale; gli elementi bloccati restano trattenuti."
+    },
+    "prospect": {
+      "title": "Potenziali clienti",
+      "description": "Un’azienda, una persona e un riscontro che puoi sostenere con prove.",
+      "emptyTitle": "Ancora nessun potenziale cliente",
+      "emptyDescription": "Aggiungi un’azienda o importa le ricerche che hai già svolto.",
+      "newTitle": "Aggiungi un potenziale cliente",
+      "editTitle": "Dettagli del potenziale cliente",
+      "search": "Cerca aziende o persone",
+      "identityTitle": "Azienda e persona",
+      "evidenceTitle": "Riscontro sul prodotto",
+      "personalTitle": "Frase personale",
+      "verificationTitle": "Verifica dell’email",
+      "fields": {
+        "company": "Azienda",
+        "domain": "Dominio del negozio",
+        "website": "Sito web",
+        "personName": "Nome completo",
+        "first": "Nome",
+        "title": "Ruolo attuale",
+        "email": "Email professionale",
+        "linkedinUrl": "URL del profilo LinkedIn",
+        "country": "Codice paese",
+        "timezone": "Fuso orario",
+        "product": "Nome del prodotto",
+        "productUrl": "URL della pagina prodotto",
+        "finding": "Cosa hai trovato",
+        "evidence": "Prove a supporto",
+        "personalHook": "Frase personale",
+        "personalHookUrl": "URL della fonte della frase personale",
+        "emailStatus": "Stato della verifica",
+        "verifiedAt": "Data della verifica",
+        "roleSource": "URL della fonte del ruolo",
+        "source": "Origine del contatto",
+        "notes": "Note",
+        "name": "Nome completo",
+        "platform": "Piattaforma di commercio",
+        "relationship": "Relazione",
+        "roleCheckedAt": "Data di verifica del ruolo",
+        "emailVerifiedAt": "Data di verifica dell’indirizzo email",
+        "emailSource": "Fonte dell’indirizzo email",
+        "mxProvider": "Provider di posta",
+        "mxCheckedAt": "Data di verifica del provider di posta",
+        "gap": "Tipo di carenza",
+        "evidenceCheckedAt": "Data di verifica delle prove sul prodotto",
+        "personalLine": "Frase personale",
+        "personalSource": "URL della fonte della frase personale",
+        "legitEvidence": "Prove dei requisiti dell’azienda",
+        "lang": "Lingua dell’email",
+        "productCategory": "Categoria del prodotto",
+        "reviewCount": "Numero di recensioni visibile",
+        "distributionSource": "URL del prodotto presso un altro rivenditore",
+        "findingReviewed": "Ho verificato il codice sorgente, la pagina renderizzata e le regole del riscontro",
+        "personalPublishedAt": "Pubblicazione della fonte della frase personale",
+        "personalCheckedAt": "Ultima verifica della fonte della frase personale"
+      },
+      "countryHelp": "Usa un codice di due lettere, come US o GB.",
+      "findingHelp": "Descrivi ciò che mostrava davvero la pagina del prodotto scelto. Conserva la fonte a supporto separatamente dall’email.",
+      "verificationHelp": "Segna un indirizzo come verificato solo quando un fornitore lo ha confermato. Un indirizzo pubblico o dedotto non è un risultato di verifica.",
+      "personalHelp": "Usa un dettaglio professionale reale pubblicato negli ultimi nove mesi. Apri la fonte pubblica nell’ultimo giorno e registra entrambe le date. Lascia vuota la frase se non c’è un dettaglio utile.",
+      "action": {
+        "primary": "Salva potenziale cliente",
+        "secondary": "Crea bozze",
+        "tertiary": "Apri pagina prodotto",
+        "quaternary": "Apri fonte"
+      },
+      "timeHelp": "Usa un fuso orario IANA, ad esempio America/New_York.",
+      "dateHelp": "Usa una data e un’ora in formato ISO, includendo lo scarto del fuso orario.",
+      "legitHelp": "Registra prove con fonti di un finanziamento, di almeno tre membri reali del team o della distribuzione tramite un altro rivenditore.",
+      "searchEmptyTitle": "Nessun potenziale cliente corrispondente",
+      "searchEmptyDescription": "Prova con un’azienda, una persona, un indirizzo email o un dominio.",
+      "list": {
+        "count": "{count, number} potenziali contatti",
+        "filter": "Progresso email",
+        "allStatuses": "Tutti gli stati",
+        "range": "{start, number}–{end, number} di {total, number}",
+        "action": {
+          "primary": "Pagina precedente",
+          "secondary": "Pagina successiva",
+          "tertiary": "Cancella filtri",
+          "quaternary": "Chiudi importazione"
+        },
+        "pagination": "Pagine dei potenziali contatti"
+      },
+      "productCategoryHelp": "Usa la categoria indicata nella pagina del prodotto. Compila il segnaposto della categoria.",
+      "reviewCountHelp": "Solo cifre, copiate dal numero di recensioni visibile di questo prodotto. Lascia vuoto se non è possibile confermarlo.",
+      "distributionSourceHelp": "Link allo stesso prodotto presso un altro rivenditore. Obbligatorio per l’affermazione sulla corrispondenza tra schede di negozi diversi.",
+      "findingReviewedHelp": "Prima di confermare, verifica i dati originali e renderizzati di questo prodotto e le eccezioni del riscontro. Salvare questa verifica non approva l’email.",
+      "unsupportedFinding": "Altro riscontro (richiede revisione)",
+      "noFinding": "Nessun riscontro per ora",
+      "progress": {
+        "emailProgress": "Progresso email",
+        "allLifecycle": "Tutto il progresso email",
+        "lifecycleFilter": "Ciclo email",
+        "allLinkedin": "Tutti gli stati LinkedIn",
+        "linkedinFilter": "Stato LinkedIn",
+        "help": "La ricerca comprende la preparazione dei contatti in coda e in corso. La ricerca di aziende senza contatto è mostrata in Campagne. Il progresso email e quello LinkedIn sono monitorati separatamente.",
+        "error": "Impossibile caricare il progresso. Aggiorna prima di usare i filtri del ciclo.",
+        "lifecycle": {
+          "researching": "In ricerca",
+          "scheduled": "Programmato",
+          "sent": "Inviato",
+          "replied": "Risposta ricevuta",
+          "held": "Sospeso"
+        },
+        "action": {
+          "primary": "Aggiorna elenco",
+          "secondary": "Cronologia email",
+          "tertiary": "Ricerca aziende"
+        }
+      },
+      "summary": {
+        "description": "Contatto, dettaglio del prodotto e sequenza attuale in un unico posto.",
+        "preparation": "Preparazione",
+        "noPreparation": "Nessuna preparazione automatica registrata",
+        "emailAccepted": "{count, plural, one {# email accettata} other {# email accettate}}",
+        "nextEmail": "Prossima email: {time}",
+        "noSchedule": "Nessuna email programmata",
+        "noProfile": "Nessun profilo LinkedIn salvato",
+        "profile": "Apri profilo",
+        "insightTitle": "Dettaglio del prodotto",
+        "insightMissing": "Nessun dettaglio del prodotto salvato.",
+        "sourceQuote": "Dalla pagina del prodotto",
+        "checkedAt": "Controllato: {time}",
+        "detailsTitle": "Ricerca di supporto",
+        "proposedCheck": "Verifica proposta dal punto di vista dell’acquirente",
+        "needsVerification": "Il fornitore deve verificare nuovamente questo indirizzo prima dell’invio.",
+        "issuesTitle": "{count, plural, one {# controllo da risolvere} other {# controlli da risolvere}}",
+        "sequenceTitle": "Sequenza salvata",
+        "sequenceHelp": "Messaggi attualmente salvati. Conversazioni conserva la cronologia effettiva degli invii.",
+        "sequenceMissing": "Nessuna sequenza salvata.",
+        "linkedinDraft": "Bozza LinkedIn salvata",
+        "manualTitle": "Modifiche e strumenti di ricerca facoltativi",
+        "manualHelp": "Modifica i dati salvati o esegui un singolo passaggio di ricerca quando serve.",
+        "action": {
+          "secondary": "Apri campagna",
+          "tertiary": "Modifica sequenza"
+        }
+      }
+    },
+    "import": {
+      "title": "Riutilizza le tue ricerche",
+      "description": "Importa un array JSON, JSONL o CSV dal processo di contatto esistente. Le aziende vengono associate per dominio; le importazioni non approvano mai i messaggi.",
+      "fields": {
+        "content": "Record dei potenziali clienti"
+      },
+      "help": "Incolla fino a 5.000 righe (massimo 2 MB), comprese le fonti. Lo storico dei contatti e le decisioni di non contattare esistenti vengono preservati.",
+      "result": "Importati {count, number} record.",
+      "action": {
+        "primary": "Importa potenziali clienti"
+      },
+      "summary": "{imported, number} importati · {duplicate, number} già presenti · {suppressed, number} esclusioni · {invalid, number} non validi",
+      "rowError": "La riga {row, number} richiede un’azienda, una persona, un paese o un’email validi.",
+      "moreErrors": "Altre righe non valide: {count, number}."
+    },
+    "review": {
+      "title": "Fai in modo che ogni email valga la pena di essere inviata",
+      "description": "Rivedi insieme il destinatario, le prove e il testo esatto dei messaggi.",
+      "emptyTitle": "Tutto aggiornato",
+      "emptyDescription": "Crea bozze da un potenziale cliente per rivederle qui.",
+      "first": "Prima email",
+      "followupOne": "Primo sollecito",
+      "followupTwo": "Secondo sollecito",
+      "afterDays": "Giorno {count, number}",
+      "fields": {
+        "subject": "Oggetto",
+        "body": "Corpo dell’email",
+        "reason": "Motivo"
+      },
+      "evidenceTitle": "Perché questa email è pertinente",
+      "checksTitle": "Prima dell’approvazione",
+      "approvalNote": "L’approvazione riguarda questi messaggi esatti e questo destinatario. Ogni modifica richiede una nuova approvazione.",
+      "blocked": "Risolvi questi controlli prima di approvare.",
+      "ready": "Pronto per la tua revisione",
+      "notSending": "L’approvazione non invia subito un’email.",
+      "action": {
+        "primary": "Approva queste email",
+        "secondary": "Salva modifiche",
+        "tertiary": "Metti in sospeso",
+        "quaternary": "Non contattare"
+      },
+      "footerTitle": "Piè di pagina con indirizzo postale",
+      "quotedHistory": "Prima email citata",
+      "queue": {
+        "title": "Coda di revisione",
+        "description": "Trova un potenziale cliente, poi apri le sue email e le prove per esaminarle.",
+        "search": "Cerca aziende, contatti o oggetti",
+        "status": "Filtra per stato",
+        "allStatuses": "Tutti gli stati",
+        "count": "{count, number} {count, plural, one {potenziale cliente} other {potenziali clienti}} in questa coda",
+        "subject": "Oggetto",
+        "updated": "Ultimo aggiornamento",
+        "range": "{start, number}–{end, number} di {total, number}",
+        "page": "Pagina {page, number} di {pages, number}",
+        "emptyTitle": "Nessuna bozza corrispondente",
+        "emptyDescription": "Prova un’altra ricerca o un altro stato.",
+        "error": "Impossibile caricare la coda di revisione. Riprova.",
+        "pagination": "Pagine della coda di revisione",
+        "action": {
+          "primary": "Apri revisione",
+          "secondary": "Torna alla coda",
+          "tertiary": "Cancella filtri",
+          "quaternary": "Cerca"
+        },
+        "previous": "Pagina precedente",
+        "next": "Pagina successiva",
+        "missingTitle": "Revisione non disponibile",
+        "missingDescription": "Questo potenziale cliente non ha bozze salvate da rivedere.",
+        "discard": {
+          "title": "Scartare le modifiche non salvate?",
+          "description": "Le modifiche ai tuoi messaggi non sono state salvate.",
+          "action": {
+            "primary": "Scarta modifiche",
+            "secondary": "Continua a modificare"
+          }
+        },
+        "statusColumn": "Stato"
+      },
+      "automaticReady": "Nessun blocco registrato",
+      "automaticApprovalNote": "La modalità automatica esegue le verifiche di approvazione. Qui puoi consultare, modificare o trattenere un messaggio; le modifiche devono superare nuovamente le verifiche.",
+      "manualApproval": "Approva manualmente"
+    },
+    "linkedin": {
+      "title": "Mantieni un approccio personale su LinkedIn",
+      "description": "Prepara il messaggio qui, poi collegati o rispondi dal tuo profilo LinkedIn.",
+      "manualNote": "Le richieste di collegamento e i messaggi vengono inviati manualmente su LinkedIn. Questo spazio riunisce la bozza, lo stato e il prossimo passo.",
+      "emptyTitle": "Ancora nessuna attività LinkedIn",
+      "emptyDescription": "Aggiungi un profilo LinkedIn a un potenziale cliente per preparare un prossimo passo personale.",
+      "fields": {
+        "status": "Stato del collegamento",
+        "draft": "Bozza del messaggio",
+        "notes": "Note della conversazione",
+        "nextDate": "Data del prossimo passo"
+      },
+      "status": {
+        "notStarted": "Non iniziato",
+        "planned": "Pianificato",
+        "requested": "Collegamento richiesto",
+        "connected": "Collegato",
+        "messaged": "Messaggio inviato",
+        "replied": "Ha risposto",
+        "closed": "Chiuso",
+        "research": "Ricerca in corso",
+        "ready": "Pronto",
+        "invited": "Invito inviato"
+      },
+      "action": {
+        "primary": "Salva prossimo passo",
+        "secondary": "Apri profilo LinkedIn",
+        "tertiary": "Copia messaggio"
+      },
+      "queue": {
+        "title": "Contatti LinkedIn",
+        "description": "Trova un contatto, rivedi la sua bozza e tieni traccia del prossimo passo.",
+        "search": "Cerca aziende o contatti",
+        "status": "Filtra per stato",
+        "allStatuses": "Tutti gli stati",
+        "count": "{count, plural, one {# contatto LinkedIn} other {# contatti LinkedIn}}",
+        "range": "{start, number}–{end, number} di {total, number}",
+        "page": "Pagina {page, number} di {pages, number}",
+        "emptyTitle": "Nessun contatto LinkedIn corrispondente",
+        "emptyDescription": "Prova un’altra ricerca o rimuovi i filtri.",
+        "error": "Impossibile caricare i contatti LinkedIn. Riprova.",
+        "pagination": "Paginazione dei contatti LinkedIn",
+        "action": {
+          "primary": "Apri contatto",
+          "secondary": "Torna ai contatti",
+          "tertiary": "Cancella filtri",
+          "quaternary": "Cerca"
+        },
+        "previous": "Pagina precedente",
+        "next": "Pagina successiva",
+        "missingTitle": "Attività LinkedIn non disponibile",
+        "missingDescription": "Questo contatto non ha più un’attività LinkedIn. Torna all’elenco per scegliere un altro contatto.",
+        "discard": {
+          "title": "Scartare le modifiche non salvate?",
+          "description": "Le modifiche non sono state salvate.",
+          "action": {
+            "primary": "Scarta modifiche",
+            "secondary": "Continua a modificare"
+          }
+        },
+        "statusColumn": "Stato",
+        "draft": "Messaggio",
+        "draftSaved": "Bozza salvata",
+        "draftEmpty": "Nessuna bozza",
+        "nextStep": "Prossimo passo",
+        "unscheduled": "Non programmato"
+      },
+      "missingTemplateDetails": "Mancano alcune informazioni utilizzate da questo modello. Aggiungile al potenziale cliente o alla guida ai contatti, oppure scrivi un messaggio qui."
+    },
+    "replies": {
+      "title": "Risposte e risultati",
+      "description": "Conserva lo storico della conversazione e la prossima decisione in un unico posto.",
+      "emptyTitle": "Nessuna risposta registrata",
+      "emptyDescription": "Registra una risposta o un risultato quando una conversazione avanza.",
+      "fields": {
+        "outcome": "Risultato",
+        "note": "Risposta o nota"
+      },
+      "outcomes": {
+        "reply": "Risposta ricevuta",
+        "positive": "Interessato",
+        "negative": "Non interessato",
+        "meeting": "Incontro fissato",
+        "optout": "Ha chiesto di non essere contattato",
+        "bounce": "Email non recapitata",
+        "note": "Nota"
+      },
+      "manualNote": "Registra il risultato effettivo. Se qualcuno chiede di non essere contattato, ogni ulteriore contatto viene bloccato.",
+      "action": {
+        "primary": "Registra risultato"
+      }
+    },
+    "playbook": {
+      "title": "Una guida ai contatti che evolve con ecentic",
+      "description": "Modifica il tono, la sequenza e i criteri di selezione nell’app. Le nuove bozze usano la versione salvata.",
+      "voiceTitle": "Identità del mittente",
+      "sequenceTitle": "Sequenza di email",
+      "targetingTitle": "Chi contattare",
+      "limitsTitle": "Limiti di invio",
+      "fields": {
+        "name": "Nome della guida",
+        "fromName": "Nome visualizzato del mittente",
+        "signature": "Firma",
+        "subjectTemplate": "Modello dell’oggetto",
+        "bodyTemplate": "Modello della prima email",
+        "followupOneTemplate": "Modello del primo sollecito",
+        "followupTwoTemplate": "Modello del secondo sollecito",
+        "linkedinTemplate": "Modello di messaggio LinkedIn",
+        "weeklyTarget": "Prime email a settimana",
+        "maxWords": "Numero massimo di parole nel corpo",
+        "dailyCap": "Massimo obiettivo per casella al giorno",
+        "allowedCountries": "Codici paese consentiti",
+        "targetRoles": "Ruoli di interesse",
+        "blockedRoles": "Ruoli esclusi",
+        "excludedDomains": "Domini aziendali esclusi",
+        "postalAddress": "Indirizzo postale",
+        "voiceNotes": "Istruzioni di scrittura",
+        "bannedPhrases": "Parole ed espressioni vietate",
+        "fromEmail": "Email del mittente",
+        "founderLine": "Presentazione del fondatore",
+        "callToAction": "Domanda finale",
+        "optout": "Frase per rifiutare altri contatti",
+        "senderConfirmed": "L’identità e le affermazioni del mittente sono confermate",
+        "sendingEnabled": "Attiva l’invio dei messaggi approvati",
+        "maxBodyWords": "Numero massimo di parole nel corpo",
+        "verificationDays": "Validità delle prove sul prodotto in giorni",
+        "minGapMinutes": "Minuti minimi tra gli invii",
+        "maxGapMinutes": "Minuti massimi tra gli invii",
+        "followupOneDays": "Giorno del primo sollecito",
+        "followupTwoDays": "Giorno del secondo sollecito",
+        "heldCountries": "Codici dei paesi da tenere in sospeso",
+        "excludedRoles": "Ruoli esclusi",
+        "historyConfirmed": "Sono stati importati gli invii precedenti e i record di chi non va contattato",
+        "competingSendersPaused": "Gli altri sistemi di invio per i contatti sono stati sospesi",
+        "senderTested": "La casella del mittente ha superato un test controllato di invio e risposta",
+        "senderEmails": "Caselle del mittente",
+        "sentEmailExamples": "Esempi di email già inviate",
+        "humanizeDrafts": "Usa Humanizer per le bozze dell’IA",
+        "humanizerNotes": "Istruzioni per Humanizer",
+        "inactiveSenderEmails": "Caselle mittenti inattive",
+        "emailVerificationDays": "Validità della verifica email in giorni",
+        "excludedCompanies": "Nomi delle aziende escluse",
+        "targetingNotes": "Priorità di selezione e note di revisione",
+        "replyClaimNotes": "Affermazioni consentite nelle risposte",
+        "firstEmailBlockedClaims": "Affermazioni bloccate nella prima email",
+        "barcodeObservation": "Osservazione",
+        "barcodeConsequence": "Possibile conseguenza",
+        "barcodeAskAbout": "Argomento della domanda all’IA",
+        "reviewsObservation": "Osservazione",
+        "reviewsConsequence": "Possibile conseguenza",
+        "reviewsAskAbout": "Argomento della domanda all’IA",
+        "noBarcodeObservation": "Osservazione",
+        "noBarcodeConsequence": "Possibile conseguenza",
+        "noBarcodeAskAbout": "Argomento della domanda all’IA",
+        "noProductObservation": "Osservazione",
+        "noProductConsequence": "Possibile conseguenza",
+        "noProductAskAbout": "Argomento della domanda all’IA",
+        "automationEnabled": "Attiva la preparazione automatica delle campagne",
+        "productCheckIntro": "Introduzione per la verifica prodotto",
+        "publishedProductObservation": "Osservazione",
+        "publishedProductConsequence": "Verifica proposta",
+        "publishedProductAskAbout": "Tema della domanda dell’acquirente",
+        "linkedinAutomationEnabled": "Attiva la prospezione automatica su LinkedIn",
+        "linkedinAccountId": "Account LinkedIn",
+        "linkedinDailyInvites": "Massimo di inviti al giorno",
+        "linkedinWeeklyInvites": "Massimo di inviti a settimana",
+        "linkedinDailyMessages": "Massimo di messaggi al giorno",
+        "meetingBookingUrl": "Link per prenotare incontri",
+        "researchInstructions": "Istruzioni di ricerca",
+        "requireShoppingEvidence": "Richiedi prove sull’esperienza di acquisto prima di redigere"
+      },
+      "templateHelp": "Inserisci le variabili supportate indicate sotto. Verranno compilate con i dati salvati del potenziale cliente.",
+      "variablesTitle": "Variabili disponibili",
+      "listHelp": "Inserisci un valore per riga.",
+      "changeNote": "Modificare i modelli non approva i messaggi esistenti. Rivedi le bozze rigenerate prima di inviarle.",
+      "capHelp": "Il limite giornaliero include le prime email e i solleciti.",
+      "action": {
+        "primary": "Salva guida"
+      },
+      "legalHelp": "Le impostazioni dei paesi controllano l’idoneità, ma non costituiscono un’autorizzazione legale a contattare qualcuno. Lascia in sospeso i paesi non ancora esaminati.",
+      "sendingHelp": "Solo i messaggi approvati che superano tutti i controlli attuali possono entrare nella coda di invio.",
+      "senderHelp": "Conferma che il nome visualizzato, la firma e le affermazioni sul fondatore identifichino il mittente in modo veritiero.",
+      "validation": {
+        "gap": "L’intervallo massimo deve essere maggiore o uguale a quello minimo.",
+        "followup": "Il secondo sollecito deve essere successivo al primo."
+      },
+      "releaseHelp": "Conferma questi controlli prima di attivare l’invio. Approvare i messaggi non attiva l’invio.",
+      "senderPoolHelp": "Questi indirizzi usano lo stesso nome e la stessa firma del mittente indicati sopra. Sono alias di una persona, non membri diversi del team.",
+      "examplesHelp": "Incolla prime email reali che hai inviato. Il loro tono ha la priorità sui consigli di stile generici. Fatti e destinatari restano specifici per ciascun contatto.",
+      "writingTitle": "Regole di scrittura",
+      "writingHelp": "I modelli definiscono la struttura e la chiusura della prima email. L’IA la rifinisce seguendo le tue istruzioni di scrittura e gli esempi reali. I solleciti e i messaggi LinkedIn usano i rispettivi modelli salvati.",
+      "humanizerHelp": "Rifinisci le bozze dell’IA con Humanizer prima della revisione. Le nuove bozze mantengono la presentazione del mittente e la chiusura del modello.",
+      "humanizerNotesHelp": "Modifica le indicazioni per la revisione. I tuoi esempi inviati guidano il tono. Se disattivi Humanizer, queste note restano disponibili per dopo.",
+      "barcodeTitle": "Codice a barre assente dai dati della pagina",
+      "reviewsTitle": "Recensioni senza dati sulla valutazione",
+      "noBarcodeTitle": "Nessun codice a barre trovato",
+      "noProductTitle": "Nessun dato sul prodotto trovato",
+      "inactiveSenderHelp": "Mantieni qui gli alias aggiuntivi in attesa di connessione. Una volta collegati possono sincronizzare lo storico, ma non inviare finché non vengono spostati nell’elenco attivo.",
+      "emailVerificationHelp": "Età massima della prova effettiva di verifica del fornitore. Recuperare un vecchio record non la rinnova.",
+      "productVerificationHelp": "Età massima delle prove sul prodotto indicato al momento della revisione e dell’invio.",
+      "excludedCompaniesHelp": "Un nome esatto di azienda o alias noto per riga. Il confronto riguarda i nomi delle aziende, non il testo dei siti.",
+      "targetingNotesHelp": "Priorità e indicazioni di revisione per il team. Queste note non aggiungono controlli automatici di idoneità.",
+      "replyClaimNotesHelp": "Formulazioni di riferimento per risposte e LinkedIn. Queste note non autorizzano affermazioni nella prima email.",
+      "firstEmailBlockedClaimsHelp": "Un’affermazione, un nome di azienda o una frase per riga. Le corrispondenze bloccano l’approvazione della prima email. Anche le percentuali vengono bloccate.",
+      "findingRulesHelp": "Queste righe definiscono l’osservazione, la verifica proposta e il tema della domanda. I segnaposto usano i dati salvati del contatto; productFeature è un dettaglio d’acquisto riscontrato nella fonte.",
+      "barcodeHelp": "Conferma che un codice a barre valido presente nel negozio sia assente dai dati prodotto originali e renderizzati, e aggiungi un link che dimostri che lo stesso prodotto è venduto altrove.",
+      "reviewsHelp": "Conferma che il numero di recensioni visibile riguardi questo prodotto e che i dati sulla valutazione siano assenti sia dal codice sorgente sia dalla pagina renderizzata.",
+      "noBarcodeHelp": "Usa solo per prodotti confezionati. Escludi buoni regalo, prodotti personalizzati o artigianali, set, articoli digitali e campioni.",
+      "noProductHelp": "Conferma che i dati del prodotto siano assenti sia dal codice sorgente sia dalla pagina dopo l’esecuzione di JavaScript.",
+      "automationTitle": "Modalità automatica",
+      "automationHelp": "Le campagne attive possono cercare contatti, verificare email di lavoro, preparare messaggi e approvare automaticamente le email idonee. L’invio resta soggetto alla relativa impostazione, allo stato delle caselle e ai limiti salvati.",
+      "productCheckIntroHelp": "Presentazione del fondatore usata solo per l’approccio di verifica del prodotto osservato.",
+      "publishedProductTitle": "Dettaglio specifico del prodotto",
+      "publishedProductHelp": "Usa '{productFeature}' per un ingrediente, materiale, elemento di design o dettaglio di compatibilità specifico trovato nel prodotto indicato. Presenta la domanda sull’IA come una verifica proposta, mai come un risultato misurato o un’affermazione di dati mancanti.",
+      "automaticChangeNote": "Le modifiche si applicano alle verifiche e alle bozze successive. I messaggi che non rispettano più il manuale vengono trattenuti.",
+      "automaticSendingHelp": "Solo i messaggi che superano le verifiche automatiche e le condizioni di invio attuali possono entrare nella coda di invio.",
+      "linkedinAutomationTitle": "Automazione LinkedIn",
+      "linkedinAutomationHelp": "Elabora automaticamente i contatti LinkedIn idonei con l’account collegato selezionato. L’invio delle email è controllato separatamente.",
+      "linkedinAccountHelp": "Scegli l’account collegato che invierà inviti e messaggi. Nessun account viene selezionato automaticamente.",
+      "linkedinAccountPlaceholder": "Seleziona un account collegato",
+      "linkedinAccountUnavailable": "Account salvato non disponibile",
+      "linkedinCapsHelp": "LinkedIn ha limiti separati: massimo 15 inviti al giorno, 50 a settimana e 15 messaggi al giorno. Sono limiti massimi; lo stato dell’account e i controlli di idoneità possono sospendere l’attività.",
+      "meetingBookingUrlHelp": "Il link HTTPS di prenotazione usato nelle risposte. Un clic non contrassegna mai un incontro come prenotato.",
+      "researchTitle": "Requisiti di ricerca",
+      "researchHelp": "Definisci cosa deve accertare la ricerca sulle domande degli acquirenti, sui concorrenti e sul percorso di acquisto. Un profilo UCP da solo non dimostra che sia possibile completare un acquisto tramite IA.",
+      "researchInstructionsHelp": "Descrivi le domande degli acquirenti, le varianti e i mercati esatti da confrontare e le prove da raccogliere da UCP, pagine prodotto o checkout. Registra le fonti e indica come sconosciuti i risultati non verificati o non disponibili.",
+      "requireShoppingEvidenceHelp": "Sospendi la redazione e l’approvazione finché non viene registrata un’osservazione sull’esperienza di acquisto supportata da prove. Un dato su un ingrediente non dimostra, da solo, una difficoltà di acquisto.",
+      "legacyFindingsTitle": "Formule di osservazione precedenti",
+      "legacyFindingsHelp": "Formule salvate per i precedenti controlli sui prodotti e sui dati mancanti. Quando sono richieste prove sull’esperienza di acquisto, i nuovi testi usano invece l’osservazione registrata su tale esperienza. Questi campi restano disponibili per i flussi di lavoro precedenti."
+    },
+    "integrations": {
+      "title": "Collega gli strumenti giusti",
+      "description": "Collega strumenti per dati di contatto, ricerca aziendale e invio alle tue campagne.",
+      "configured": "Configurato",
+      "notConfigured": "Non configurato",
+      "ready": "Pronto",
+      "pending": "Elaborazione in corso",
+      "failed": "Richiede attenzione",
+      "credentialsNote": "Le credenziali restano sul server. L’accesso e l’uso dei fornitori dipendono dal tuo account.",
+      "apollo": {
+        "title": "Apollo",
+        "description": "Trova la persona giusta in un negozio e verifica un’email professionale ottenuta da una fonte.",
+        "resultsTitle": "Persone in questa azienda",
+        "empty": "Non sono state trovate persone corrispondenti.",
+        "sourceNote": "I risultati del fornitore richiedono ancora un controllo del ruolo attuale e la verifica dell’email.",
+        "action": {
+          "primary": "Aggiungi questa persona",
+          "secondary": "Ottieni email professionale",
+          "tertiary": "Apri profilo"
+        }
+      },
+      "clay": {
+        "title": "Clay",
+        "description": "Esegui un flusso di arricchimento configurato per i record che richiedono un’altra fonte.",
+        "action": {
+          "primary": "Avvia arricchimento",
+          "secondary": "Controlla arricchimento"
+        },
+        "fields": {
+          "runId": "ID dell’esecuzione di arricchimento",
+          "cursor": "Cursore dei risultati"
+        },
+        "resultTitle": "Risultati dell’arricchimento",
+        "sourceNote": "I risultati dell’arricchimento sono prove da esaminare; non approvano un contatto o un messaggio.",
+        "keyVerified": "Chiave API verificata",
+        "routinePending": "Configurazione dell’arricchimento da completare. Aggiungi una routine Clay quando vuoi.",
+        "enrichmentUnavailable": "Collega Clay e aggiungi una routine in Integrazioni prima di arricchire i dati dei potenziali clienti."
+      },
+      "azure": {
+        "title": "Azure",
+        "description": "Prepara bozze dalle prove salvate e dalla tua guida attuale."
+      },
+      "email": {
+        "title": "Consegna delle email",
+        "description": "Invia i messaggi idonei dalle caselle mittente collegate."
+      },
+      "linkedin": {
+        "title": "LinkedIn",
+        "description": "Collega il tuo account LinkedIn tramite Unipile e gestisci la connessione qui.",
+        "setupHelp": "Crea un account Unipile V2, copia la sua chiave API e salvala qui.",
+        "empty": "Nessun account LinkedIn è ancora collegato.",
+        "declined": "La connessione a LinkedIn non è stata completata. Riprova.",
+        "locked": "Account bloccato",
+        "status": {
+          "running": "Collegato",
+          "errored": "Errore di connessione",
+          "disconnected": "Disconnesso",
+          "degraded": "Connessione da verificare",
+          "partial": "Connessione parziale"
+        },
+        "action": {
+          "primary": "Collega account",
+          "secondary": "Aggiorna stato",
+          "tertiary": "Ricollega",
+          "quaternary": "Configura Unipile"
+        },
+        "key": {
+          "label": "Chiave API di Unipile",
+          "placeholder": "Incolla la tua chiave API di Unipile",
+          "help": "Verifichiamo la chiave prima di salvarla in forma cifrata. Le chiavi salvate non vengono più mostrate.",
+          "required": "Incolla la tua chiave API di Unipile.",
+          "invalid": "Inserisci una chiave API valida.",
+          "show": "Mostra chiave API",
+          "hide": "Nascondi chiave API",
+          "testing": "Verifica e salvataggio…",
+          "saved": "Chiave API verificata e salvata.",
+          "action": {
+            "primary": "Salva chiave API",
+            "secondary": "Sostituisci chiave API"
+          },
+          "errors": {
+            "invalid": "La chiave non è stata accettata. Controlla la chiave del tuo account Unipile V2 e riprova.",
+            "unavailable": "Impossibile contattare Unipile. Riprova tra poco.",
+            "encryption": "Il server non ha potuto cifrare questa chiave. Chiedi a un amministratore di controllare la configurazione della cifratura.",
+            "save": "Impossibile salvare la chiave API. Riprova."
+          }
+        },
+        "pricing": "Vedi i piani Unipile"
+      },
+      "fields": {
+        "domain": "Dominio aziendale",
+        "routineId": "ID routine Clay"
+      },
+      "action": {
+        "primary": "Trova contatti",
+        "secondary": "Verifica email",
+        "tertiary": "Esegui arricchimento",
+        "quaternary": "Controlla pagina prodotto"
+      },
+      "gmail": {
+        "title": "Caselle email",
+        "description": "Collega le tue caselle Google esistenti per inviare le email approvate e sincronizzare le risposte.",
+        "action": {
+          "primary": "Collega Gmail",
+          "secondary": "Sincronizza le risposte",
+          "tertiary": "Scollega",
+          "quaternary": "Salva casella"
+        },
+        "sync": {
+          "running": "Sincronizzazione delle risposte…",
+          "stopping": "Completamento del gruppo attuale…",
+          "action": {
+            "primary": "Interrompi dopo questo gruppo"
+          },
+          "help": "Lascia aperta questa pagina mentre viene controllata la cronologia delle caselle email. Puoi interrompere la sincronizzazione e riprenderla più tardi.",
+          "progress": "{count, plural, one {# messaggio controllato} other {# messaggi controllati}} durante questa sincronizzazione. Il controllo della cronologia continua automaticamente.",
+          "complete": "Sincronizzazione completata. {count, plural, one {# messaggio controllato.} other {# messaggi controllati.}}",
+          "stopped": "Sincronizzazione interrotta. {count, plural, one {# messaggio controllato.} other {# messaggi controllati.}} Riavviala per continuare.",
+          "error": "La sincronizzazione si è interrotta perché non è stato possibile controllare una casella email. Verifica la connessione e riprova."
+        }
+      },
+      "worker": {
+        "title": "Servizio di invio",
+        "description": "Elabora i messaggi approvati entro i limiti salvati.",
+        "action": {
+          "primary": "Anteprima della coda",
+          "secondary": "Sospendi gli invii"
+        },
+        "runHelp": "Questa azione può inviare email approvate e idonee quando l’invio è attivo.",
+        "previewHelp": "Questo controllo usa i dati salvati. Non invia email e non aggiorna la casella."
+      },
+      "connectionError": "Non è stato possibile collegare l’account. Controlla la configurazione e riprova.",
+      "connected": "Collegato",
+      "notConnected": "Non collegato",
+      "verification": {
+        "title": "Verifica dell’email",
+        "description": "Richiedi un risultato aggiornato e controlla l’attività finché non è conclusa. I risultati in attesa o sconosciuti non consentono l’approvazione.",
+        "fields": {
+          "requestId": "ID della richiesta di verifica"
+        },
+        "action": {
+          "primary": "Avvia verifica",
+          "secondary": "Controlla verifica"
+        },
+        "pending": "La verifica è ancora in corso.",
+        "result": "Risultato della verifica"
+      },
+      "research": {
+        "title": "Prove sul prodotto",
+        "description": "Controlla una pagina prodotto pubblica e salva il riscontro insieme alla fonte.",
+        "action": {
+          "primary": "Controlla pagina prodotto",
+          "secondary": "Prepara i prossimi {count, number} potenziali clienti",
+          "tertiary": "Cerca un riscontro sul prodotto"
+        },
+        "resultTitle": "Controllo del prodotto",
+        "summary": "{verified, number} riscontri verificati; {held, number} in sospeso."
+      },
+      "drafting": {
+        "title": "Bozza dalle prove salvate",
+        "description": "Usa Azure per preparare messaggi dal potenziale cliente e dalla guida salvati.",
+        "action": {
+          "primary": "Crea bozze con l’IA"
+        },
+        "fields": {
+          "prospect": "Potenziale cliente"
+        }
+      },
+      "provenance": "Fonte e data del controllo",
+      "mx": {
+        "action": {
+          "primary": "Controlla provider di posta"
+        }
+      },
+      "credentials": {
+        "setup": {
+          "apollo": "Salva qui la chiave API di Apollo del tuo spazio di lavoro.",
+          "clay": "Salva la chiave API di Clay per collegare lo spazio di lavoro. Puoi configurare l’arricchimento in un secondo momento.",
+          "google": "Crea un’applicazione web OAuth di Google, aggiungi l’URI di reindirizzamento qui sotto e salva il suo ID client e client secret. Poi collega ogni casella Gmail."
+        },
+        "secret": {
+          "apollo": "Chiave API di Apollo",
+          "clay": "Chiave API di Clay",
+          "google": "Client secret OAuth di Google"
+        },
+        "fields": {
+          "clientId": "ID client OAuth di Google",
+          "routineId": "ID routine Clay (facoltativo)",
+          "redirectUri": "URI di reindirizzamento Google"
+        },
+        "redirectHelp": "Aggiungi questo indirizzo esatto come URI di reindirizzamento autorizzato nel tuo client OAuth di Google.",
+        "help": "I segreti vengono cifrati prima del salvataggio e non vengono più mostrati.",
+        "required": "Compila questo campo.",
+        "invalid": "Inserisci un valore valido.",
+        "show": "Mostra segreto",
+        "hide": "Nascondi segreto",
+        "saving": "Salvataggio…",
+        "testing": "Verifica e salvataggio…",
+        "saved": "Credenziali salvate.",
+        "action": {
+          "primary": "Salva credenziali",
+          "secondary": "Sostituisci credenziali"
+        },
+        "errors": {
+          "invalid": "Controlla le credenziali e i campi obbligatori, poi riprova.",
+          "unavailable": "Impossibile contattare il fornitore. Riprova.",
+          "encryption": "Il server non ha potuto cifrare queste credenziali. Chiedi a un amministratore di controllare la configurazione della cifratura.",
+          "save": "Impossibile salvare queste credenziali. Riprova."
+        },
+        "links": {
+          "clayPlan": "Clay Launch",
+          "googlePlan": "Google Workspace Business Starter",
+          "googleConsole": "Configura OAuth di Google",
+          "googleApi": "Abilita API Gmail",
+          "apolloPlan": "Apollo Basic",
+          "apolloKeys": "Chiavi API di Apollo",
+          "clayTrial": "Prova Clay",
+          "clayKeys": "Chiavi API di Clay",
+          "clayWorkspace": "Apri Clay",
+          "clayApiDocs": "Documentazione API di Clay"
+        },
+        "routineHelp": "Facoltativo per il collegamento. Configura una routine di arricchimento nel tuo spazio di lavoro Clay, poi incolla qui il suo ID.",
+        "routine": {
+          "action": {
+            "primary": "Avanzate: routine di arricchimento"
+          }
+        },
+        "claySaved": "Chiave API verificata e salvata.",
+        "claySavedPending": "Chiave API verificata e salvata. La configurazione dell’arricchimento è ancora da completare."
+      },
+      "mailbox": {
+        "help": "In Roger, apri Manage Mailbox → Credentials e copia App Password. Verifichiamo l’accesso per l’invio e le risposte senza inviare email.",
+        "senderHelp": "Usa un indirizzo salvato in Caselle del mittente o Caselle mittenti inattive nella guida. Le caselle inattive possono collegarsi e sincronizzarsi, ma non inviare email.",
+        "passwordHelp": "Incolla App Password da Roger, non Password o il codice 2FA. Viene crittografata prima del salvataggio e non verrà più mostrata.",
+        "fields": {
+          "email": "Indirizzo della casella",
+          "appPassword": "Password per l’app"
+        },
+        "invalidEmail": "Inserisci un indirizzo email valido.",
+        "passwordRequired": "Inserisci la password per l’app di questa casella.",
+        "invalidPassword": "Inserisci la password per l’app di 16 caratteri. Gli spazi sono consentiti.",
+        "show": "Mostra password per l’app",
+        "hide": "Nascondi password per l’app",
+        "checking": "Verifica di invio e risposte…",
+        "connected": "Casella collegata. Sincronizza le risposte per importare la cronologia. Le caselle inattive non possono inviare email.",
+        "oauthHelp": "Usa questa alternativa se vuoi collegarti tramite la tua applicazione Google OAuth.",
+        "action": {
+          "primary": "Verifica e collega",
+          "secondary": "Avanzate: Google OAuth",
+          "tertiary": "Nascondi configurazione Google OAuth"
+        },
+        "errors": {
+          "invalid": "Inserisci un indirizzo email valido e la relativa password per l’app di 16 caratteri. Gli spazi nella password sono consentiti.",
+          "authentication": "Google non ha accettato la connessione. Controlla la password per l’app e che l’accesso a questa casella sia abilitato.",
+          "unavailable": "La connessione a Google è scaduta o non è stato possibile stabilirla. Riprova.",
+          "encryption": "Il server non ha potuto crittografare la password per l’app. Chiedi a un amministratore di controllare la configurazione della crittografia.",
+          "save": "Impossibile salvare la casella. Riprova.",
+          "notRegistered": "Aggiungi questo indirizzo a Caselle del mittente o Caselle mittenti inattive nella guida, poi collegalo qui.",
+          "inactive": "Questa casella è inattiva nella guida. Può sincronizzare le risposte. Spostala in Caselle del mittente prima di attivare l’invio."
+        },
+        "maximumDailyCap": "Massimo obiettivo per casella al giorno",
+        "dailyCapHelp": "L’obiettivo è limitato a 50 e include prime email e solleciti. Le caselle iniziano con 15 al giorno. Il limite aumenta di 5 solo dopo una giornata completa in cui è stato raggiunto il limite attuale senza mancati recapiti osservati. Un mancato recapito osservato riporta il limite a 15. L’obiettivo non garantisce il volume di invio o la reputazione della casella."
+      }
+    },
+    "relationships": {
+      "cold": "Nessuna relazione precedente",
+      "warm": "Contatto conosciuto",
+      "event": "Contatto di un evento",
+      "customer": "Cliente",
+      "pilot": "Cliente pilota",
+      "partner": "Partner",
+      "investor": "Investitore",
+      "enterprise": "Account grande impresa",
+      "competitor": "Concorrente"
+    },
+    "platforms": {
+      "shopify": "Shopify",
+      "woocommerce": "WooCommerce",
+      "other": "Altro",
+      "unknown": "Sconosciuto"
+    },
+    "emailHosts": {
+      "google": "Google",
+      "microsoft": "Microsoft",
+      "other": "Altro",
+      "unknown": "Sconosciuto"
+    },
+    "languages": {
+      "en": "Inglese",
+      "de": "Tedesco",
+      "es": "Spagnolo",
+      "it": "Italiano"
+    },
+    "issues": {
+      "unknownVariable": "Il modello contiene una variabile non supportata.",
+      "emptyMessage": "Devi compilare sia l’oggetto sia il corpo dell’email.",
+      "subjectLength": "L’oggetto della prima email deve contenere da due a cinque parole.",
+      "wordLimit": "La prima email supera il limite di parole salvato.",
+      "unresolvedVariable": "Sostituisci i segnaposto rimasti prima di approvare.",
+      "dash": "Rimuovi i trattini lunghi e medi.",
+      "link": "Rimuovi i link dall’email.",
+      "bullet": "Rimuovi gli elenchi puntati dall’email.",
+      "emoji": "Rimuovi le emoji dall’email.",
+      "bannedPhrase": "Rimuovi le parole o le espressioni escluse dalla guida ai contatti.",
+      "optoutMissing": "Includi la frase salvata per rifiutare altri contatti.",
+      "signatureMissing": "Concludi la prima email con la firma salvata.",
+      "domainInvalid": "Inserisci un dominio del negozio valido.",
+      "excludedCompany": "Questa azienda è nell’elenco delle esclusioni.",
+      "relationshipExcluded": "Questa relazione non rientra nei contatti a freddo.",
+      "countryHeld": "Al momento, questo paese non è abilitato agli invii.",
+      "emailUnverified": "L’email di lavoro richiede un risultato di verifica aggiornato.",
+      "microsoftHeld": "I destinatari con caselle ospitate da Microsoft sono in sospeso.",
+      "mxUnknown": "Il provider di posta richiede un controllo aggiornato.",
+      "roleUnverified": "Conferma il ruolo attuale e la sua fonte.",
+      "roleExcluded": "Questo ruolo è escluso dalla guida ai contatti.",
+      "legitUnverified": "Aggiungi prove che l’azienda soddisfi i requisiti di qualificazione.",
+      "evidenceMissing": "Aggiungi un prodotto preciso, un riscontro e prove aggiornate a supporto.",
+      "personalSourceMissing": "Aggiungi la fonte pubblica della frase personale, la data di pubblicazione e una data di verifica recente, oppure elimina la frase.",
+      "senderUnconfirmed": "Conferma l’identità e le affermazioni del mittente nella guida ai contatti.",
+      "senderDomain": "Le email a freddo devono essere inviate da un indirizzo joinecentic.com.",
+      "timezoneMissing": "Aggiungi il fuso orario del destinatario.",
+      "suppressed": "Questa persona o azienda non deve essere contattata.",
+      "alreadyContacted": "Questa azienda è già stata contattata.",
+      "duplicateMessage": "Questo messaggio ripete un’altra bozza.",
+      "staleRevision": "Questa bozza è cambiata. Ricaricala prima di esaminarla.",
+      "exclamation": "Usa il punto esclamativo solo nel saluto iniziale.",
+      "roleOutsideTarget": "Questo ruolo non corrisponde ai ruoli di interesse della guida ai contatti.",
+      "sharedInbox": "Usa un indirizzo verificato della persona indicata, non una casella condivisa.",
+      "draftMissing": "Crea tutte e tre le bozze dei messaggi prima di approvare.",
+      "emailDomainMismatch": "L’email professionale deve appartenere al dominio di questa azienda.",
+      "productDomainMismatch": "La pagina prodotto deve appartenere al dominio di questa azienda.",
+      "duplicateSubject": "Un altro potenziale cliente approvato usa già questo oggetto nella prima email.",
+      "repeatedSentence": "Una frase personale ripete quella di un’altra email approvata.",
+      "findingCopyChanged": "La formulazione del riscontro è cambiata. Ripristina l’intero paragrafo del riscontro salvato prima dell’approvazione.",
+      "claimNotAllowed": "Rimuovi le affermazioni bloccate nelle prime email e le percentuali.",
+      "findingReviewRequired": "Verifica le prove originali e renderizzate del prodotto, compila i segnaposto del riscontro e aggiungi la fonte di un altro rivenditore quando richiesta.",
+      "templateControlsChanged": "Ripristina esattamente la presentazione del fondatore e la domanda conclusiva salvate prima dell’approvazione.",
+      "platformHeld": "Seleziona Shopify o WooCommerce per questa campagna di contatto a freddo.",
+      "shoppingResearchRequired": "Registra un’osservazione sull’esperienza di acquisto supportata da prove prima di redigere o approvare questo messaggio."
+    },
+    "preparation": {
+      "action": {
+        "primary": "Prepara la ricerca settimanale",
+        "secondary": "Ferma dopo questo gruppo"
+      },
+      "description": "Punta a {target, number} riscontri recenti sui prodotti da pagine pubbliche, in gruppi di massimo tre. Lascia aperta questa pagina; ogni risultato viene salvato.",
+      "progress": "{processed, number} controllati in questa esecuzione · {verified, number} / {target, number} riscontri pronti · {held, number} in sospeso",
+      "running": "Controllo delle pagine prodotto pubbliche…",
+      "stopping": "Completamento del gruppo corrente…",
+      "stopped": "Interrotto dopo il gruppo corrente. Avvia di nuovo per continuare con i candidati rimanenti.",
+      "complete": "Obiettivo di ricerca raggiunto. Esamina i riscontri prima di scrivere.",
+      "shortfall": "Mancano {remaining, number} riscontri all’obiettivo. Aggiungi candidati idonei o esamina i record in sospeso.",
+      "empty": "Non ci sono candidati senza prove disponibili."
+    },
+    "report": {
+      "title": "Contatti di questa settimana",
+      "description": "Email accettate e attività delle conversazioni negli ultimi sette giorni. I conteggi dei potenziali clienti e dei record in sospeso mostrano lo stato attuale del processo.",
+      "fields": {
+        "source": "Fonte",
+        "prospects": "Potenziali clienti",
+        "held": "In sospeso",
+        "acceptedFirsts": "Prime email accettate",
+        "acceptedFollowups": "Solleciti accettati",
+        "replies": "Risposte",
+        "bounces": "Email non recapitate",
+        "meetings": "Incontri",
+        "uncertain": "Esiti incerti"
+      },
+      "holdReasons": "Motivi attuali di sospensione",
+      "empty": "Ancora nessuna attività di invio o conversazione.",
+      "period": "{from}–{to}"
+    },
+    "auth": {
+      "title": "Accedi a Outbound",
+      "description": "Usa l’email e la password del tuo account esistente del personale ecentic.",
+      "accessNote": "L’accesso è riservato al personale ecentic.",
+      "error": "Accesso non riuscito. Controlla l’email e la password del tuo account del personale.",
+      "denied": {
+        "title": "È richiesto l’accesso del personale",
+        "description": "Questo account non dispone dell’accesso riservato al personale ecentic. Esci per usare un account autorizzato."
+      },
+      "fields": {
+        "email": "Email",
+        "password": "Password"
+      },
+      "validation": {
+        "email": "Inserisci un indirizzo email valido.",
+        "password": "Inserisci la password."
+      },
+      "password": {
+        "show": "Mostra password",
+        "hide": "Nascondi password"
+      },
+      "action": {
+        "primary": "Accedi"
+      },
+      "pending": "Accesso in corso...",
+      "home": "Spazio Outbound",
+      "language": "Lingua",
+      "story": {
+        "label": "ecentic Outbound",
+        "title": "Un buon contatto parte da un riscontro concreto.",
+        "description": "Cerca i negozi giusti, rivedi ogni messaggio e porta avanti la conversazione.",
+        "steps": {
+          "research": "Ricerca",
+          "review": "Revisione",
+          "conversation": "Conversazioni"
+        }
+      }
+    },
+    "account": {
+      "action": {
+        "primary": "Esci"
+      },
+      "pending": "Uscita in corso…",
+      "error": "Impossibile uscire. Riprova.",
+      "label": "Account",
+      "staff": "Team ecentic"
+    },
+    "chrome": {
+      "groups": {
+        "workspace": "Spazio di lavoro",
+        "conversations": "Conversazioni",
+        "settings": "Impostazioni"
+      },
+      "menu": {
+        "open": "Apri navigazione",
+        "close": "Chiudi navigazione"
+      },
+      "workspace": {
+        "description": "Spazio del team ecentic"
+      },
+      "breadcrumb": {
+        "label": "Pagina attuale"
+      },
+      "account": {
+        "label": "Menu account"
+      }
+    },
+    "campaigns": {
+      "title": "Campagne",
+      "newTitle": "Crea campagna",
+      "description": "Trova aziende per ogni pubblico, poi scegli le persone giuste da contattare.",
+      "newDescription": "Assegna un nome a questo pubblico. Nella pagina successiva potrai definire i criteri aziendali.",
+      "detailTitle": "Ricerca di aziende",
+      "detailDescription": "Affina i criteri della campagna, esamina le aziende e trova i contatti.",
+      "name": "Nome della campagna",
+      "status": "Stato",
+      "updated": "Aggiornata",
+      "openCampaign": "Apri {name}",
+      "criteriaMissing": "Criteri aziendali non ancora salvati",
+      "search": "Cerca campagne",
+      "searchAction": "Cerca",
+      "allStatuses": "Tutti gli stati",
+      "emptyTitle": "Nessuna campagna trovata",
+      "emptyDescription": "Crea una campagna per definire un pubblico e iniziare a cercare aziende.",
+      "emptyFiltered": "Prova un’altra ricerca o un altro filtro di stato.",
+      "pagination": "Paginazione campagne",
+      "page": "Pagina {page, number} di {pages, number}",
+      "firstPage": "Prima pagina",
+      "previousPage": "Pagina precedente",
+      "nextPage": "Pagina successiva",
+      "lastPage": "Ultima pagina",
+      "statuses": {
+        "draft": "Bozza",
+        "active": "Attiva",
+        "paused": "In pausa",
+        "archived": "Archiviata"
+      },
+      "loadError": "Impossibile caricare le informazioni della campagna. Ricarica la pagina.",
+      "actionError": "Impossibile completare la modifica. Controlla la campagna e riprova.",
+      "invalidCriteria": "Controlla i criteri, compresi i valori minimi e massimi.",
+      "saved": "Campagna salvata",
+      "saving": "Salvataggio…",
+      "create": {
+        "action": {
+          "primary": "Crea campagna"
+        }
+      },
+      "metadataTitle": "Impostazioni campagna",
+      "metadataHelp": "Le campagne attive e in bozza possono cercare aziende. Attivare una campagna non abilita l’invio di email.",
+      "metadata": {
+        "action": {
+          "primary": "Salva impostazioni"
+        }
+      },
+      "criteriaTitle": "Criteri aziendali",
+      "criteriaHelp": "Questi valori salvati definiscono la ricerca della campagna. I dati aziendali sconosciuti restano tali.",
+      "criteria": {
+        "action": {
+          "primary": "Salva criteri"
+        }
+      },
+      "fields": {
+        "objective": "Pubblico e obiettivo",
+        "countries": "Paesi",
+        "platforms": "Piattaforme di commercio",
+        "keywords": "Parole chiave aziendali",
+        "excludedKeywords": "Parole chiave escluse",
+        "targetRoles": "Ruoli dei contatti cercati",
+        "excludedRoles": "Ruoli dei contatti esclusi",
+        "excludedDomains": "Domini esclusi",
+        "teamSizeMin": "Dimensione minima del team",
+        "teamSizeMax": "Dimensione massima del team",
+        "annualRevenueMin": "Ricavi annui minimi (USD)",
+        "annualRevenueMax": "Ricavi annui massimi (USD)",
+        "qualificationNotes": "Note di qualificazione"
+      },
+      "listHelp": "Separa i valori con virgole o a capo.",
+      "countryHelp": "Usa codici paese di due lettere, come US.",
+      "platformHelp": "Scegli Shopify, WooCommerce o entrambe.",
+      "numberHelp": "Lascia vuoto se non c’è un limite.",
+      "claudeTitle": "Definisci i criteri con Claude",
+      "claudeHelp": "Copia le domande nella conversazione con Claude. Incolla qui la risposta JSON, controlla i campi e salva.",
+      "claude": {
+        "action": {
+          "primary": "Copia domande",
+          "secondary": "Rivedi risposte",
+          "tertiary": "Salva criteri verificati",
+          "quaternary": "Scarta anteprima"
+        }
+      },
+      "answerLabel": "Risposta JSON di Claude",
+      "answerHelp": "Vengono importati solo i campi supportati. Il testo incollato non può eseguire azioni o modificare il Playbook.",
+      "answerError": "Incolla la risposta JSON completa nel formato delle domande copiate.",
+      "previewTitle": "Controlla prima di salvare",
+      "previewHelp": "Non è ancora cambiato nulla. Modifica questi valori e salva quando sono pronti.",
+      "companiesTitle": "Aziende",
+      "companiesCount": "{count, number} aziende",
+      "companySearch": "Cerca in questo elenco di aziende",
+      "company": "Azienda",
+      "source": "Fonte",
+      "country": "Paese",
+      "platform": "Piattaforma",
+      "teamSize": "Dimensione del team",
+      "revenue": "Ricavi annui",
+      "unknown": "Sconosciuto",
+      "reason": "Nota di revisione",
+      "companyStatuses": {
+        "candidate": "Da verificare",
+        "added": "Aggiunta ai prospect",
+        "excluded": "Esclusa"
+      },
+      "companyEmptyTitle": "Nessuna azienda in questa vista",
+      "companyEmptyDescription": "Salva i criteri e cerca la prima pagina di aziende.",
+      "discovery": {
+        "action": {
+          "primary": "Trova aziende"
+        }
+      },
+      "discoveryPaused": "Riprendi questa campagna nelle impostazioni prima di cercare aziende.",
+      "discoveryRunning": "Ricerca aziende…",
+      "discoveryUpdated": "Ricerca aggiornata",
+      "latestRun": "Ultima richiesta di ricerca",
+      "runCount": "{count, number} aziende salvate",
+      "runStatuses": {
+        "starting": "In corso",
+        "completed": "Completata",
+        "failed": "Non riuscita",
+        "uncertain": "Stato da verificare"
+      },
+      "criteriaVersion": "Versione criteri {version, number}",
+      "openProspect": "Apri prospect",
+      "contactPageTitle": "Scegli un contatto",
+      "contactPageDescription": "Trova una persona in questa azienda e controlla i suoi dati prima di aggiungere un prospect.",
+      "findContacts": "Trova contatto",
+      "chooseContact": "Scegli questa persona",
+      "contactSearchHelp": "Apollo trova persone corrispondenti ai criteri. Controlla il ruolo attuale e verifica l’email di lavoro prima dell’approvazione.",
+      "contactSearchEmpty": "Nessun contatto corrispondente trovato",
+      "manualContact": "Aggiungi contatto manualmente",
+      "allPlatforms": "Shopify e WooCommerce",
+      "questionsCopied": "Domande copiate",
+      "copyError": "Impossibile copiare le domande. Aprile qui sotto e copia il testo.",
+      "viewQuestions": "Visualizza domande",
+      "reviewMessages": "Rivedi messaggi",
+      "linkedinQueue": "Coda LinkedIn",
+      "automaticSource": "Prima Apollo, poi Clay",
+      "discoveryExhausted": "Entrambe le fonti hanno esaurito questi risultati. Modifica i criteri per avviare un’altra ricerca.",
+      "uncertainHelp": "La risposta del fornitore non è confermata. Controlla questa richiesta prima di un altro lotto per evitare di consumare crediti due volte.",
+      "runningHelp": "È in corso una ricerca di aziende. Ricarica la pagina per controllare il risultato.",
+      "reviewRequired": "Verifica questa azienda prima di continuare.",
+      "companyPagination": "Paginazione aziende",
+      "reasons": {
+        "campaignDomainExcluded": "Esclusa dall’elenco di domini di questa campagna.",
+        "countryMismatch": "Il paese non corrisponde a questa campagna.",
+        "platformMismatch": "La piattaforma non corrisponde a questa campagna.",
+        "teamSizeMismatch": "Le dimensioni del team sono fuori dall’intervallo salvato.",
+        "revenueMismatch": "Il fatturato è fuori dall’intervallo salvato.",
+        "playbookDomainExcluded": "Dominio escluso dal manuale.",
+        "playbookCompanyExcluded": "Azienda esclusa dal manuale.",
+        "relationshipExcluded": "Relazione esistente esclusa dal contatto a freddo.",
+        "companyContacted": "Azienda già contattata durante il periodo protetto.",
+        "existingProspect": "L’azienda ha già un potenziale cliente.",
+        "otherCampaign": "Questa azienda è già oggetto di ricerca in un’altra campagna.",
+        "suppressed": "L’azienda è nell’elenco condiviso dei contatti da escludere.",
+        "criteriaChanged": "I criteri sono cambiati: verifica di nuovo questa azienda."
+      },
+      "errors": {
+        "provider-configuration": "Collega questo fornitore in Integrazioni prima di cercare.",
+        "provider-input": "Questo fornitore non può usare i criteri salvati. Controlla i filtri relativi a paese, piattaforma e valori numerici.",
+        "provider-access": "Il fornitore ha negato l’accesso. Controlla la chiave API e l’accesso alle ricerche in Integrazioni.",
+        "provider-quota": "È stato raggiunto il limite di crediti o di utilizzo del fornitore. Controlla il tuo piano.",
+        "provider-rate-limit": "Il fornitore ha temporaneamente limitato le richieste. Attendi prima di avviare un altro lotto.",
+        "provider-contract": "Il fornitore ha restituito una risposta inattesa. Questa richiesta deve essere verificata.",
+        "provider-uncertain": "La richiesta potrebbe essere stata elaborata. Controlla l’esito prima di riprovare.",
+        "provider-unavailable": "Il fornitore non è disponibile. Controlla l’ultima richiesta prima di riprovare.",
+        "campaign-criteria-changed": "I criteri della campagna sono cambiati. Ricarica e verifica la versione attuale.",
+        "campaign-paused": "Riprendi questa campagna nelle impostazioni prima di cercare.",
+        "campaign-run-unresolved": "Una richiesta precedente è ancora in corso o deve essere verificata. Controllala prima di un altro lotto.",
+        "campaign-source-exhausted": "Questa fonte non ha altri risultati per i criteri attuali. Scegli un’altra fonte o modifica i criteri.",
+        "provider-plan-required": "Il tuo piano Apollo non include i filtri per piattaforma. Avvia una prova che li includa o cambia piano, quindi riprova.",
+        "provider-clay-plan-required": "Clay richiede un piano a pagamento per questi filtri aziendali. Passa a un piano superiore prima di eseguire questa ricerca.",
+        "campaign-generation-invalid": "Questa anteprima di Claude non è più disponibile. Generane una nuova prima di salvare.",
+        "campaign-playbook-changed": "Il manuale è cambiato dopo la generazione di questa anteprima. Generane una nuova prima di salvare.",
+        "campaign-archived": "Questa campagna è archiviata. Cambia lo stato prima di generare i criteri."
+      },
+      "objectiveHelp": "Descrivi il pubblico. Usa i filtri strutturati qui sotto per le ricerche dei fornitori.",
+      "qualificationHelp": "Lista di controllo per il team. La ricerca del fornitore non verifica automaticamente questi requisiti.",
+      "discoverySavedCriteria": "La ricerca usa la versione {version} dei criteri salvati. Salva l’anteprima o le modifiche prima di usarle per la ricerca.",
+      "discoverySourceHelp": {
+        "auto": "Cerca fino a 25 aziende per richiesta. Si usa prima Apollo; Clay prosegue quando i risultati di Apollo sono esauriti. Gli errori del fornitore interrompono la ricerca.",
+        "apollo": "Cerca fino a 25 aziende in Apollo con i criteri salvati di questa campagna.",
+        "clay": "Cerca fino a 25 aziende in Clay con i criteri salvati di questa campagna."
+      },
+      "discoveryPreviewPending": "Un’anteprima dei criteri attende la tua revisione. Salvala o scartala prima di cercare aziende.",
+      "companySearchFailedTitle": "Non è stato possibile eseguire la ricerca",
+      "companySearchFailedDescription": "Nessuna azienda è stata aggiunta. Risolvi il problema indicato sopra, quindi riprova.",
+      "manualClaude": "Usa Claude manualmente",
+      "viewContactOptional": "Visualizza contatto",
+      "automaticContactsHelp": "Le campagne attive controllano ogni azienda corrispondente ai criteri, trovano e verificano un contatto, poi preparano e mettono in coda automaticamente la sequenza di email. Aprire un contatto è facoltativo; i controlli di invio restano attivi."
+    },
+    "warmup": {
+      "title": "Riscaldamento",
+      "detailTitle": "Preparazione della casella",
+      "description": "Controlla la configurazione delle caselle e prepara un piano di invio graduale per i tuoi domini.",
+      "email": "Casella email",
+      "senderPool": "Gruppo di mittenti",
+      "active": "Mittente attivo",
+      "inactive": "Mittente inattivo",
+      "connection": "Connessione",
+      "connectionSaved": "Connessione salvata",
+      "notConnected": "Non connessa",
+      "checks": "Controlli di preparazione",
+      "unchecked": "Non ancora controllata",
+      "manage": "Gestisci casella",
+      "networkTitle": "Rete condivisa Warmbly",
+      "networkHelp": "La rete condivisa di Warmbly è la soluzione di riscaldamento scelta. Collega la rete prima di avviare il traffico; i controlli delle caselle e i piani salvati restano disponibili.",
+      "scopeHelp": "Questi controlli riguardano i record DNS, l’accesso alla casella e le conferme di preparazione salvate. Il posizionamento nella posta in arrivo e la reputazione restano sconosciuti.",
+      "addMailboxes": "Gestisci caselle mittenti",
+      "connectMailboxes": "Collega caselle",
+      "emptyTitle": "Nessuna casella mittente salvata",
+      "emptyDescription": "Aggiungi gli indirizzi delle caselle al manuale, poi collegale in Integrazioni.",
+      "pagination": "Paginazione caselle",
+      "page": "Pagina {page, number} di {pages, number}",
+      "firstPage": "Prima pagina",
+      "previousPage": "Pagina precedente",
+      "nextPage": "Pagina successiva",
+      "lastPage": "Ultima pagina",
+      "checksTitle": "Controlla questa casella",
+      "checkHelp": "Controlla i record del dominio, l’accesso alla casella e la sincronizzazione. Questo controllo non invia email.",
+      "dkimSelectors": "Selettori DKIM",
+      "dkimHelp": "Usa i selettori forniti dal tuo gestore email, separati da virgole. Lascia vuoto per mantenere DKIM sconosciuto.",
+      "checking": "Controllo in corso…",
+      "checkAction": "Verifica preparazione",
+      "checkedAt": "Controllato: {date}",
+      "uncheckedHelp": "Esegui un controllo per salvare la prima osservazione di questa casella.",
+      "dnsRecords": "Osservazioni DNS",
+      "selectorReceipt": "Selettori: {selectors}",
+      "recordDomain": "Dominio del record: {domain}",
+      "none": "Nessuno indicato",
+      "planTitle": "Piano di volume",
+      "planHelp": "Salva il volume iniziale, l’aumento giornaliero e il limite massimo per Warmbly. Restano validi i limiti del mittente e del manuale.",
+      "initialDailyCap": "Messaggi giornalieri iniziali",
+      "dailyIncrease": "Aumento giornaliero",
+      "maximumDailyCap": "Massimo di messaggi al giorno",
+      "invalidPlan": "Usa numeri interi. Il massimo deve essere almeno pari al volume iniziale e non superare 15.",
+      "saving": "Salvataggio…",
+      "savePlan": "Salva piano",
+      "planStatus": "Stato del piano",
+      "planningOnly": "Solo pianificazione",
+      "previewCap": "Limite iniziale applicato",
+      "messagesPerDay": "{count, number} messaggi/giorno",
+      "planScope": "Salvare questo piano non avvia il riscaldamento. Warmbly gestisce l’aumento giornaliero e può sospenderlo o ridurre il volume in base alle proprie osservazioni. Questa anteprima mostra i limiti configurati, non lo stato di salute rilevato della casella.",
+      "loadError": "Impossibile caricare le informazioni della casella. Ricarica la pagina.",
+      "missingMailbox": "Questo indirizzo non è tra le caselle mittenti del manuale.",
+      "readiness": {
+        "needsAttention": "Richiede attenzione",
+        "needsChecks": "Servono altri controlli",
+        "checksPassed": "Configurazione verificata"
+      },
+      "states": {
+        "present": "Presente",
+        "missing": "Mancante",
+        "invalid": "Richiede attenzione",
+        "unknown": "Sconosciuto"
+      },
+      "checkLabels": {
+        "mx": "MX",
+        "spf": "SPF",
+        "dkim": "DKIM",
+        "dmarc": "DMARC",
+        "connection": "Accesso alla casella",
+        "sync": "Sincronizzazione della casella",
+        "provider": "Stato del fornitore",
+        "history": "Cronologia riconciliata",
+        "test": "Test di invio e risposta"
+      },
+      "mailboxesTitle": "Caselle mittenti"
+    },
+    "warmbly": {
+      "title": "Rete Warmbly",
+      "description": "Collega il tuo account Warmbly per gestire qui il riscaldamento nella rete condivisa. Collega le caselle in Warmbly: le password non vengono trasferite da Outbound.",
+      "connected": "Chiave API verificata",
+      "notConnected": "Non connesso",
+      "unknown": "Sconosciuto",
+      "openWarmbly": "Apri Warmbly",
+      "refresh": "Aggiorna stato",
+      "replaceKey": "Sostituisci chiave API",
+      "connectKey": "Collega Warmbly",
+      "apiKey": "Chiave API Warmbly",
+      "keyHelp": "Usa una chiave dello spazio di lavoro con autorizzazioni READ_EMAILS e WRITE_EMAILS. La chiave viene verificata e salvata cifrata; le chiavi salvate non vengono mai mostrate.",
+      "showKey": "Mostra chiave API",
+      "hideKey": "Nascondi chiave API",
+      "invalidKey": "Inserisci una chiave API valida dello spazio di lavoro Warmbly.",
+      "saveKey": "Salva chiave API",
+      "updated": "Stato della rete aggiornato",
+      "email": "Casella email",
+      "state": "Stato della rete",
+      "maximum": "Limite giornaliero",
+      "perDay": "{count, number}/giorno",
+      "mailboxChecks": "Controlli casella",
+      "checksRequired": "Salva un piano di volume e supera un controllo recente di DNS e casella prima di avviare. La casella deve essere attiva in Warmbly.",
+      "startHelp": "Avvia e Riprendi applicano il piano di volume salvato prima di attivare il riscaldamento nella rete. L’invio da Outbound resta sospeso per quella casella durante il riscaldamento.",
+      "pendingHelp": "Un’azione precedente richiede un controllo dello stato. Aggiorna prima di riprovare per non ripeterla.",
+      "pending": "Stato da controllare",
+      "emptyTitle": "Nessuna casella registrata in questa pagina",
+      "emptyDescription": "Collega le caselle in Warmbly e salva gli stessi indirizzi nel manuale. Se ci sono altre pagine, continua per trovarle.",
+      "page": "Pagina {page, number}",
+      "previous": "Precedente",
+      "next": "Successiva",
+      "loadError": "Impossibile caricare la rete Warmbly. Controlla la connessione e aggiorna.",
+      "actionError": "Impossibile completare l’azione. Aggiorna la rete e controlla autorizzazioni e limiti prima di riprovare.",
+      "accessError": "Warmbly ha negato l’accesso. Controlla la chiave API e le autorizzazioni READ_EMAILS e WRITE_EMAILS.",
+      "readinessError": "Esegui un controllo recente della casella e risolvi MX, SPF, DKIM e DMARC prima di avviare.",
+      "limitError": "Il limite di volume salvato supera quello del manuale o della casella. Riducilo prima di avviare.",
+      "activeError": "Attiva questa casella in Warmbly prima di avviare il riscaldamento.",
+      "rampError": "Warmbly non ha confermato il piano di volume salvato. Aggiorna lo stato prima di riprovare.",
+      "planChangedError": "Il piano di volume è cambiato durante la configurazione. Aggiorna prima di avviare.",
+      "stateError": "Warmbly non ha confermato lo stato richiesto. Aggiorna per controllare l’esito prima di un’altra azione.",
+      "registeredError": "Salva questo indirizzo esatto nel manuale prima di gestirne il riscaldamento.",
+      "states": {
+        "off": "Disattivato",
+        "running": "In corso",
+        "paused": "In pausa",
+        "unknown": "Sconosciuto"
+      },
+      "actions": {
+        "start": "Avvia",
+        "pause": "Pausa",
+        "resume": "Riprendi",
+        "stop": "Interrompi"
+      },
+      "errors": {
+        "provider-key-invalid": "Inserisci una chiave API valida dello spazio di lavoro Warmbly.",
+        "provider-key-unavailable": "Impossibile caricare la rete Warmbly. Controlla la connessione e aggiorna.",
+        "provider-key-encryption": "Impossibile completare l’azione. Aggiorna la rete e controlla autorizzazioni e limiti prima di riprovare.",
+        "provider-key-save-failed": "Impossibile completare l’azione. Aggiorna la rete e controlla autorizzazioni e limiti prima di riprovare."
+      }
+    },
+    "claude": {
+      "title": "Claude",
+      "description": "Prepara i criteri della campagna con Claude e controlla ogni modifica prima di salvarla.",
+      "setupHelp": "Crea una chiave API in Claude Console e collegala qui.",
+      "billingHelp": "Le richieste API usano il saldo di Console e gli eventuali crediti idonei. La verifica della chiave non conferma il saldo API disponibile.",
+      "keyLabel": "Chiave API di Claude",
+      "keyHelp": "La chiave viene verificata e crittografata prima del salvataggio. Le chiavi salvate non vengono più mostrate.",
+      "keyRequired": "Incolla la tua chiave API di Claude.",
+      "invalid": "Inserisci un valore valido.",
+      "showKey": "Mostra chiave API",
+      "hideKey": "Nascondi chiave API",
+      "modelLabel": "Modello Claude",
+      "workspaceLabel": "ID dello spazio di lavoro (facoltativo)",
+      "workspaceHelp": "Lascia vuoto se la chiave è associata a uno spazio di lavoro. Altrimenti inserisci l’ID del tuo spazio di lavoro Console.",
+      "connected": "Collegato",
+      "notConnected": "Non collegato",
+      "unknown": "Impossibile leggere lo stato della connessione a Claude.",
+      "advanced": "Modello e spazio di lavoro",
+      "saving": "Verifica e salvataggio…",
+      "keySaved": "Chiave API di Claude verificata e salvata.",
+      "saveError": "Impossibile salvare la connessione a Claude. Riprova.",
+      "connectHelp": "Collega la tua chiave API di Claude in Integrazioni per preparare i criteri qui.",
+      "generationHelp": "Claude usa i criteri salvati di questa campagna, il tuo manuale e il contesto qui sotto. Prepara un’anteprima da rivedere; nulla viene salvato automaticamente.",
+      "contextLabel": "Contesto aggiuntivo su ecentic (facoltativo)",
+      "contextHelp": "Descrivi le aziende cercate, i vincoli o le modifiche ai criteri salvati. Claude non legge automaticamente le tue conversazioni o la memoria dell’app Claude.",
+      "contextInvalid": "Limita il contesto aggiuntivo a 50.000 caratteri.",
+      "generating": "Preparazione dell’anteprima con Claude…",
+      "previewReady": "L’anteprima di Claude è pronta. Controlla i campi qui sotto prima di salvare.",
+      "previewPending": "Salva o scarta l’anteprima attuale prima di generarne un’altra.",
+      "recoveryHelp": "Questo browser ricorda l’ultima richiesta a Claude per questa campagna. Recupera anteprima la consulta senza generare di nuovo. Una nuova generazione può usare altri crediti, anche se la risposta precedente non è arrivata.",
+      "stalePreview": "I criteri della campagna sono cambiati. Aggiorna la pagina e genera una nuova anteprima.",
+      "generationError": "Impossibile ottenere l’anteprima di Claude. Prova a recuperarla prima di avviare un’altra richiesta.",
+      "connection": {
+        "action": {
+          "primary": "Salva chiave API",
+          "secondary": "Sostituisci chiave API",
+          "tertiary": "Apri Claude Console"
+        }
+      },
+      "generation": {
+        "action": {
+          "primary": "Prepara criteri con Claude",
+          "secondary": "Recupera anteprima",
+          "tertiary": "Genera di nuovo",
+          "quaternary": "Collega Claude"
+        }
+      },
+      "errors": {
+        "claude-not-configured": "Collega prima una chiave API di Claude in Integrazioni.",
+        "claude-access-denied": "Claude ha rifiutato l’accesso. Controlla la chiave API e lo spazio di lavoro in Integrazioni.",
+        "claude-credit-required": "Claude richiede credito API disponibile. Controlla il saldo di Console e i crediti idonei.",
+        "claude-rate-limited": "Claude ha raggiunto il limite di richieste. Attendi prima di avviarne un’altra.",
+        "claude-model-unavailable": "Questo modello Claude non è disponibile per la chiave collegata. Scegli un altro modello in Integrazioni.",
+        "claude-request-invalid": "Claude non ha potuto accettare la richiesta. Controlla il contesto e i criteri della campagna.",
+        "claude-generation-running": "Claude sta ancora elaborando la richiesta. Prova a recuperare l’anteprima tra poco.",
+        "claude-generation-uncertain": "L’esito della richiesta è incerto. Recupera l’anteprima prima di valutare una nuova generazione.",
+        "claude-generation-failed": "Questa generazione non ha prodotto un’anteprima utilizzabile. Controlla il contesto prima di generare di nuovo.",
+        "claude-generation-missing": "Nessuna anteprima salvata per questa richiesta. Puoi avviare esplicitamente una nuova generazione.",
+        "provider-key-invalid": "Controlla le credenziali e i campi obbligatori, poi riprova.",
+        "provider-key-unavailable": "Impossibile contattare il fornitore. Riprova.",
+        "provider-key-encryption": "Il server non ha potuto cifrare queste credenziali. Chiedi a un amministratore di controllare la configurazione della cifratura.",
+        "provider-key-save-failed": "Impossibile salvare queste credenziali. Riprova.",
+        "campaign-archived": "Questa campagna è archiviata. Cambia lo stato prima di generare i criteri.",
+        "campaign-criteria-changed": "I criteri della campagna sono cambiati. Ricarica e verifica la versione attuale."
+      },
+      "creditsHelp": "Se il tuo abbonamento include crediti API, riscattali in Claude → Impostazioni → Fatturazione → Crediti API e collega l’organizzazione Console a cui appartiene questa chiave.",
+      "recovering": "Verifica dell’anteprima salvata…",
+      "storageUnavailable": "L’archiviazione del browser non è disponibile. Consenti al sito di salvare dati per memorizzare e recuperare le anteprime di Claude. Non è stata avviata alcuna nuova generazione."
+    },
+    "automation": {
+      "title": "Elaborazione automatica delle campagne",
+      "help": "Le campagne attive proseguono in background. Esegui ora elabora il prossimo lavoro disponibile.",
+      "modeOff": "Modalità automatica disattivata",
+      "campaignInactive": "Nessuna campagna attiva",
+      "working": "In corso",
+      "waiting": "In attesa del prossimo lavoro",
+      "unknownStatus": "Stato non disponibile",
+      "unknownStage": "Passaggio non disponibile",
+      "unknownReason": "Controlla questo record prima di continuare.",
+      "company": "Azienda",
+      "stage": "Passaggio attuale",
+      "status": "Stato",
+      "reason": "Motivo del blocco",
+      "noBlocker": "—",
+      "openProspect": "Apri prospect",
+      "enableHelp": "Attiva la modalità automatica nel manuale per avviare l’elaborazione automatica delle campagne.",
+      "previewPending": "Il lavoro automatico usa i criteri salvati. Salva o scarta l’anteprima prima di avviarlo qui.",
+      "pauseHelp": "La pausa interrompe i nuovi passaggi di preparazione. Una richiesta già in corso può terminare.",
+      "statusError": "Impossibile aggiornare lo stato. I dati mostrati potrebbero non essere aggiornati.",
+      "actionError": "Impossibile completare questa azione. Aggiorna lo stato e riprova.",
+      "campaignStarted": "Campagna attivata. Il prossimo lavoro di preparazione è stato controllato.",
+      "campaignPaused": "Campagna in pausa.",
+      "runComplete": "Il prossimo lavoro disponibile è stato controllato.",
+      "refreshed": "Stato aggiornato.",
+      "processing": "Elaborazione…",
+      "preparedHelp": "Preparato significa che il contatto e i messaggi hanno superato la preparazione. Il processo di invio verifica ancora ogni email prima di inviarla.",
+      "empty": "Nessun record di preparazione. Attiva una campagna con aziende salvate per iniziare.",
+      "deliveryTitle": "Invio email",
+      "deliveryReady": "Configurazione verificata",
+      "deliveryBlocked": "Invio bloccato",
+      "deliveryHelp": "Ogni email resta soggetta alle verifiche di invio, agli intervalli, alle esclusioni e ai blocchi del riscaldamento.",
+      "pagination": "Pagine del lavoro automatico",
+      "counts": {
+        "queued": "In coda",
+        "running": "In corso",
+        "held": "Trattenuti",
+        "uncertain": "Incerti",
+        "complete": "Preparati"
+      },
+      "statuses": {
+        "queued": "In coda",
+        "running": "In corso",
+        "held": "Trattenuti",
+        "uncertain": "Incerti",
+        "complete": "Preparati"
+      },
+      "action": {
+        "primary": "Esegui ora",
+        "secondary": "Aggiorna stato",
+        "tertiary": "Apri manuale",
+        "quaternary": "Gestisci caselle"
+      },
+      "campaign": {
+        "action": {
+          "primary": "Avvia campagna",
+          "secondary": "Metti in pausa"
+        }
+      },
+      "stages": {
+        "companyFacts": "Verifica dati aziendali",
+        "qualify": "Verifica azienda e prodotto",
+        "findContacts": "Ricerca contatti",
+        "selectContact": "Verifica ruolo attuale",
+        "promote": "Creazione prospect",
+        "enrich": "Ricerca email di lavoro",
+        "applyEmail": "Salvataggio email di lavoro",
+        "verify": "Verifica email",
+        "pollVerification": "In attesa della verifica",
+        "applyVerification": "Salvataggio verifica",
+        "mx": "Controllo server email",
+        "applyMx": "Salvataggio controllo server",
+        "draft": "Preparazione messaggi",
+        "applyDraft": "Salvataggio messaggi",
+        "approve": "Verifica idoneità",
+        "complete": "Preparazione completata"
+      },
+      "reasons": {
+        "automation-disabled": "La modalità automatica è disattivata.",
+        "campaign-inactive": "La campagna non è attiva.",
+        "campaign-criteria-changed": "I criteri sono cambiati; il lavoro è trattenuto.",
+        "playbook-changed": "Il manuale è cambiato; il lavoro è trattenuto.",
+        "company-unavailable": "L’azienda è esclusa o non è più disponibile.",
+        "qualification-held": "Le prove su azienda o prodotto non hanno superato le verifiche.",
+        "contact-held": "Non è stato confermato un contatto attuale idoneo.",
+        "email-held": "Non è stata trovata un’email di lavoro adatta.",
+        "verification-held": "L’email non ha superato la verifica.",
+        "mx-held": "Il server email non ha superato i controlli.",
+        "draft-held": "La bozza non ha superato i controlli di scrittura.",
+        "approval-held": "Il messaggio non ha superato le verifiche finali di idoneità.",
+        "provider-input": "Il fornitore non ha potuto elaborare questi dati.",
+        "lease-expired": "Una richiesta precedente non si è conclusa correttamente. Controlla l’esito registrato.",
+        "provider-configuration": "Collega questo fornitore in Integrazioni prima di cercare.",
+        "provider-access": "Il fornitore ha negato l’accesso. Controlla la chiave API e l’accesso alle ricerche in Integrazioni.",
+        "provider-quota": "È stato raggiunto il limite di crediti o di utilizzo del fornitore. Controlla il tuo piano.",
+        "provider-rate-limit": "Il fornitore ha temporaneamente limitato le richieste. Attendi prima di avviare un altro lotto.",
+        "provider-uncertain": "La richiesta potrebbe essere stata elaborata. Controlla l’esito prima di riprovare."
+      },
+      "deliveryBlockers": {
+        "sendingPaused": "L’invio è in pausa nel manuale.",
+        "senderUnconfirmed": "L’identità del mittente non è confermata.",
+        "historyUnconfirmed": "L’importazione di invii precedenti ed esclusioni non è confermata.",
+        "competingSendersActive": "La pausa degli altri sistemi di invio non è confermata.",
+        "senderUntested": "Non è stato confermato un test del mittente.",
+        "inboxesMissing": "Una o più caselle mittenti attive non sono collegate.",
+        "inboxDisabled": "Una casella mittente è disattivata o scollegata.",
+        "inboxSyncIncomplete": "La cronologia o la sincronizzazione delle risposte richiede attenzione.",
+        "senderIdentityMismatch": "Una casella non corrisponde all’identità del mittente salvata."
+      },
+      "page": "Pagina {page, number} di {pages, number}",
+      "firstPage": "Prima pagina",
+      "previousPage": "Pagina precedente",
+      "nextPage": "Pagina successiva",
+      "lastPage": "Ultima pagina",
+      "volumeTitle": "Volume per casella",
+      "currentCap": "Limite giornaliero attuale",
+      "targetCap": "Massimo obiettivo",
+      "rampHeld": "Aumento in pausa",
+      "rampHelp": "Le caselle iniziano con 15 al giorno. Il limite aumenta di 5 solo dopo una giornata completa in cui è stato raggiunto il limite attuale senza mancati recapiti osservati. Un mancato recapito osservato riporta il limite a 15. L’obiettivo non garantisce il volume di invio o la reputazione della casella."
+    },
+    "sent": {
+      "title": "Inviati",
+      "description": "Email accettate e tentativi di invio, con il messaggio salvato e la cronologia dei solleciti.",
+      "detailTitle": "Messaggio e sequenza",
+      "detailDescription": "Il contenuto registrato, l’esito del provider e l’attività di questa conversazione.",
+      "searchLabel": "Cerca nei messaggi inviati",
+      "searchPlaceholder": "Destinatario, azienda, campagna, casella o oggetto",
+      "statusFilter": "Stato di invio",
+      "kindFilter": "Tipo di messaggio",
+      "allStatuses": "Tutti gli stati",
+      "allKinds": "Tutti i messaggi",
+      "outreach": "Primo contatto",
+      "test": "Test",
+      "bouncedFilter": "Sequenze con mancata consegna",
+      "count": "{count, plural, one {# tentativo registrato} other {# tentativi registrati}}",
+      "emptyTitle": "Ancora nessun tentativo di invio",
+      "emptyDescription": "I messaggi compaiono qui quando Outbound registra un tentativo di invio.",
+      "noMatches": "Nessun messaggio corrisponde a questi filtri.",
+      "error": "Impossibile caricare i messaggi inviati. Riprova.",
+      "missing": "Questo registro di invio non è stato trovato.",
+      "acceptanceNote": "Accettato significa che il provider email ha accettato il messaggio. Non conferma la consegna nella posta in arrivo.",
+      "timezone": "Gli orari sono mostrati in UTC.",
+      "unknown": "Non registrato",
+      "columns": {
+        "recipient": "Destinatario",
+        "company": "Azienda",
+        "campaign": "Campagna",
+        "sender": "Casella mittente",
+        "subject": "Oggetto",
+        "step": "Passaggio",
+        "time": "Ora di registrazione",
+        "status": "Esito"
+      },
+      "status": {
+        "accepted": "Accettato",
+        "failed": "Non riuscito",
+        "uncertain": "Incerto",
+        "claimed": "In preparazione"
+      },
+      "step": "Email {step}",
+      "sequence": {
+        "title": "Sequenza di solleciti",
+        "activity": "Attività della conversazione",
+        "status": "Stato attuale della sequenza",
+        "next": "Prossimo invio possibile: {time}",
+        "noSchedule": "Al momento non è programmato alcun sollecito.",
+        "scheduleNote": "I solleciti programmati dipendono ancora dalla fascia oraria e dai controlli di invio.",
+        "bounced": "Mancata consegna registrata per questa sequenza",
+        "bounceNote": "La mancata consegna riguarda questa conversazione; la ricevuta salvata non identifica un passaggio specifico.",
+        "emptyActivity": "Non è ancora stata registrata alcuna risposta o attività di consegna.",
+        "limitedActivity": "Sono mostrati gli ultimi 100 eventi della conversazione."
+      },
+      "message": {
+        "title": "Messaggio salvato",
+        "from": "Da",
+        "to": "A",
+        "subject": "Oggetto",
+        "recorded": "Registrato",
+        "providerId": "ID messaggio del provider",
+        "messageId": "ID messaggio",
+        "contentMissing": "Il registro immutabile del messaggio è mancante o il controllo di integrità non è riuscito. Il testo della bozza attuale non viene mostrato come contenuto inviato.",
+        "failed": "Questo tentativo non è riuscito; l’invio di questo contenuto non è confermato.",
+        "uncertain": "L’esito è sconosciuto. Questo contenuto potrebbe essere stato inviato; ciò non implica un nuovo tentativo automatico.",
+        "claimed": "Questo tentativo è stato preparato; l’accettazione del provider non è stata registrata.",
+        "test": "Questo era un tentativo di test."
+      },
+      "activity": {
+        "sent": "Il provider ha accettato il messaggio",
+        "sendFailed": "Invio non riuscito",
+        "sendUncertain": "Esito dell’invio incerto",
+        "reply": "Risposta ricevuta",
+        "bounce": "Avviso di mancata consegna ricevuto",
+        "optout": "Richiesta di disiscrizione ricevuta",
+        "other": "Conversazione aggiornata"
+      },
+      "action": {
+        "primary": "Apri messaggio",
+        "secondary": "Torna agli inviati",
+        "tertiary": "Cancella filtri",
+        "quaternary": "Cerca"
+      },
+      "pagination": {
+        "previous": "Precedente",
+        "next": "Successiva",
+        "page": "Pagina {page} di {pages}"
+      }
+    },
+    "pipeline": {
+      "title": "Dalle aziende alle conversazioni",
+      "description": "Trova aziende pertinenti, ricerca uno spunto utile e segui ogni conversazione fino a un incontro.",
+      "activeCampaigns": "Campagne attive",
+      "companies": "Aziende selezionate",
+      "insights": "Ricerca completata",
+      "contacts": "Contatti salvati",
+      "sequences": "Sequenze preparate",
+      "held": "Richiede attenzione",
+      "needsReply": "Risposte da gestire",
+      "meetings": "Incontri registrati",
+      "meetingsHelp": "Gli incontri vengono conteggiati solo quando sono registrati esplicitamente. Un clic sul link di prenotazione non equivale a un incontro prenotato.",
+      "campaignsTitle": "Avanzamento delle campagne",
+      "scopeHelp": "I conteggi di aziende e contatti si riferiscono alle campagne attive e ai criteri attualmente salvati. Un’azienda in fase di ricerca non è ancora un contatto.",
+      "openCampaigns": "Apri campagne",
+      "moreCampaigns": "Sono mostrate le campagne attive più recenti. Apri Campagne per vederle tutte.",
+      "emptyTitle": "Scegli il prossimo pubblico",
+      "emptyHelp": "Crea una campagna, salva i criteri di selezione e trova aziende per avviare il flusso.",
+      "emptyAction": "Crea campagna",
+      "workTitle": "Lavoro attuale",
+      "workEmpty": "Nessuna attività di preparazione attuale richiede attenzione. Lo storico completo è disponibile in Campagne.",
+      "setupTitle": "Configurazione e controlli",
+      "setupReady": "Le impostazioni di connessione sono presenti. Prima di ogni invio vengono comunque verificati identità, risposte, intervalli e condizioni di invio.",
+      "activityTitle": "Accettati negli ultimi sette giorni",
+      "emailAccepted": "Email accettate",
+      "linkedinAccepted": "Messaggi LinkedIn accettati",
+      "acceptedHelp": "L’accettazione conferma che il fornitore ha accettato un messaggio; non ne dimostra la consegna nella posta in arrivo.",
+      "detailsTitle": "Dettagli dell’automazione",
+      "reportTitle": "Rapporto attività settimanale",
+      "refresh": "Aggiorna",
+      "refreshing": "Aggiornamento…",
+      "automationOn": "La preparazione automatica è attiva",
+      "automationOff": "La preparazione automatica è in pausa",
+      "linkedinOff": "L’invio su LinkedIn è disattivato",
+      "automationHelp": "Attiva la modalità automatica nel Playbook per continuare la preparazione delle campagne.",
+      "apolloMissing": "Collega Apollo per trovare aziende e contatti attuali.",
+      "azureMissing": "Configura Azure per valutare le informazioni e preparare i messaggi.",
+      "linkedinMissing": "Collega l’account LinkedIn selezionato prima di abilitarne i messaggi.",
+      "error": "Impossibile caricare l’avanzamento attuale. Aggiorna per riprovare."
+    },
+    "conversations": {
+      "title": "Conversazioni",
+      "description": "Leggi le risposte, rispondi con il giusto contesto e trasforma l’interesse in un incontro.",
+      "detailDescription": "La conversazione reale, la tua risposta e il prossimo passo in un unico posto.",
+      "list": {
+        "action": {
+          "primary": "Apri conversazione",
+          "secondary": "Tutte le conversazioni"
+        }
+      },
+      "columns": {
+        "person": "Persona e azienda",
+        "subject": "Conversazione",
+        "channel": "Canale",
+        "stage": "Fase",
+        "updated": "Aggiornata (UTC)"
+      },
+      "stage": {
+        "open": "Aperta",
+        "interested": "Interessato",
+        "question": "Ha una domanda",
+        "later": "Da ricontattare",
+        "notInterested": "Non interessato",
+        "meetingBooked": "Incontro confermato",
+        "meetingHeld": "Incontro svolto",
+        "closed": "Chiusa"
+      },
+      "channel": {
+        "email": "Email",
+        "linkedin": "LinkedIn"
+      },
+      "needsReply": "In attesa di risposta",
+      "noSubject": "Conversazione",
+      "search": "Cerca persone, aziende o messaggi",
+      "allChannels": "Tutti i canali",
+      "allStages": "Tutte le fasi",
+      "count": "{count, plural, one {# conversazione} other {# conversazioni}}",
+      "emptyTitle": "Le tue conversazioni appariranno qui",
+      "emptyDescription": "La sincronizzazione delle caselle collegate e di LinkedIn salva qui i messaggi reali. Le vecchie note sui risultati restano nell’attività di ogni contatto.",
+      "noMatches": "Nessuna conversazione corrispondente",
+      "outcomeTitle": "Prossimo passo",
+      "outcome": {
+        "action": {
+          "primary": "Salva fase"
+        }
+      },
+      "meetingHelp": "Segna un incontro come confermato solo dopo la conferma e come svolto dopo che si è tenuto. Condividere il link non registra una prenotazione.",
+      "booking": {
+        "action": {
+          "primary": "Apri pagina di prenotazione"
+        }
+      },
+      "replyTitle": "La tua risposta",
+      "replyHelp": "I suggerimenti usano la conversazione e il Playbook salvato. Controlla il testo esatto, salva le modifiche e invia dall’account collegato indicato sopra.",
+      "recoveryHelp": "È stato richiesto un suggerimento. Controlla la stessa richiesta per recuperare un risultato salvato senza avviare un’altra generazione.",
+      "recovery": {
+        "action": {
+          "primary": "Controlla il suggerimento richiesto"
+        }
+      },
+      "action": {
+        "primary": "Invia risposta salvata",
+        "secondary": "Salva bozza",
+        "tertiary": "Suggerisci risposta",
+        "quaternary": "Aggiorna"
+      },
+      "draftLabel": "Bozza di risposta",
+      "invalidBody": "Inserisci una risposta da 1 a 10.000 caratteri.",
+      "unsaved": "Salva le modifiche prima di inviare o cambiare fase.",
+      "error": {
+        "changed": "La conversazione è cambiata. Ricaricala e controlla l’ultimo messaggio prima di continuare.",
+        "closed": "Questa conversazione è chiusa o il destinatario è escluso dai contatti.",
+        "stale": "Leggi l’ultimo messaggio ricevuto e salva una risposta aggiornata prima di inviare.",
+        "unresolved": "Un invio precedente è ancora in corso o il suo esito è sconosciuto. Un altro invio è bloccato finché l’esito non viene chiarito.",
+        "truncated": "L’ultimo messaggio è incompleto. Leggi il messaggio completo nella casella collegata prima di rispondere.",
+        "generationUncertain": "Il risultato del suggerimento non è confermato. Controllare questa richiesta non genererà un’altra risposta.",
+        "connection": "L’account di invio non è disponibile o richiede una nuova sincronizzazione delle risposte. Controlla Integrazioni.",
+        "controls": "Il suggerimento non ha superato i controlli di risposta salvati. Scrivi e controlla la risposta manualmente.",
+        "generic": "Non è stato possibile completare questa azione. Aggiorna la conversazione e riprova."
+      },
+      "newestFirst": "Prima i messaggi più recenti",
+      "direction": {
+        "inbound": "Ricevuto",
+        "outbound": "Inviato"
+      },
+      "automated": "Messaggio automatico",
+      "to": "A",
+      "emptyBody": "Questo messaggio non conteneva testo.",
+      "truncated": "È stata salvata solo una parte del messaggio. Apri il messaggio completo nell’account collegato.",
+      "emptyMessages": "Non è ancora stato salvato alcun testo dei messaggi.",
+      "attemptsTitle": "Cronologia degli invii delle risposte",
+      "send": {
+        "accepted": "Accettato dal provider",
+        "failed": "Invio non riuscito",
+        "uncertain": "Esito dell’invio sconosciuto",
+        "starting": "Invio in corso"
+      },
+      "views": {
+        "label": "Mostra",
+        "all": "Tutte le attività",
+        "needsReply": "In attesa di risposta",
+        "sent": "Inviati",
+        "scheduled": "Programmati"
+      },
+      "replyAccount": "Rispondi da",
+      "activity": {
+        "kind": "Messaggio",
+        "time": "Ora (UTC)",
+        "linkedinMessage": "Messaggio LinkedIn",
+        "linkedinInvite": "Invito LinkedIn",
+        "reply": "Risposta alla conversazione",
+        "scheduledHelp": "Qui sono mostrati gli orari di invio email salvati. Pause, controlli delle risposte, orari del destinatario e limiti delle caselle possono ritardarli. Le azioni LinkedIn non hanno un orario fisso salvato.",
+        "sentHelp": "Tentativi di invio email, LinkedIn e risposte alle conversazioni. Accettato significa che il provider ha accettato il messaggio; non ne dimostra la consegna o l’apertura.",
+        "empty": "Nessuna attività corrisponde a questa vista."
+      }
+    }
+  }
+}

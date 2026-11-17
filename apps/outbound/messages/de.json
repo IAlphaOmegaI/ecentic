@@ -1,0 +1,1753 @@
+{
+  "outbound": {
+    "page": {
+      "title": "Outbound",
+      "description": "Finden Sie die passenden Shops, bieten Sie schon beim ersten Kontakt einen Mehrwert und behalten Sie jedes Gespräch im Blick.",
+      "internal": "Interner Arbeitsbereich"
+    },
+    "nav": {
+      "overview": "Übersicht",
+      "prospects": "Interessenten",
+      "review": "Prüfung",
+      "linkedin": "LinkedIn",
+      "replies": "Gespräche",
+      "playbook": "Kontaktleitfaden",
+      "integrations": "Integrationen",
+      "campaigns": "Kampagnen",
+      "warmup": "Warmup",
+      "sent": "Gesendet"
+    },
+    "common": {
+      "saving": "Wird gespeichert…",
+      "loading": "Wird geladen…",
+      "saved": "Änderungen gespeichert",
+      "error": "Die Änderungen konnten nicht gespeichert werden. Versuchen Sie es erneut.",
+      "emptyValue": "Nicht angegeben",
+      "optional": "Optional",
+      "required": "Füllen Sie dieses Feld aus.",
+      "invalidEmail": "Geben Sie eine gültige E-Mail-Adresse ein.",
+      "invalidUrl": "Geben Sie eine vollständige HTTPS-URL ein.",
+      "wordCount": "{count, number} / {maximum, number} Wörter",
+      "revision": "Version {version, number}",
+      "neverSent": "Nicht gesendet",
+      "source": "Quelle",
+      "lastUpdated": "Aktualisiert am {date}",
+      "copySuccess": "Kopiert",
+      "copyError": "Kopieren fehlgeschlagen. Markieren Sie den Text und kopieren Sie ihn manuell.",
+      "all": "Alle",
+      "enabled": "Aktiviert",
+      "disabled": "Deaktiviert",
+      "requestError": "Die Anfrage konnte nicht abgeschlossen werden. Versuchen Sie es erneut.",
+      "connecting": "Verbindung wird hergestellt…",
+      "invalidField": "Prüfen Sie diesen Wert.",
+      "invalidForm": "Prüfen Sie die Formularwerte, bevor Sie fortfahren.",
+      "savedRefreshError": "Gespeichert, aber die Ansicht konnte nicht aktualisiert werden. Laden Sie diese Seite neu."
+    },
+    "status": {
+      "candidate": "Kandidat",
+      "draft": "Entwurf",
+      "drafted": "Verfasst",
+      "review": "Prüfung erforderlich",
+      "ready": "Bereit zur Prüfung",
+      "approved": "Freigegeben",
+      "held": "Zurückgestellt",
+      "hold": "Zurückgestellt",
+      "suppressed": "Nicht kontaktieren",
+      "skipped": "Übersprungen",
+      "sent": "Gesendet",
+      "replied": "Hat geantwortet",
+      "active": "Aktiv",
+      "completed": "Abgeschlossen",
+      "pending": "Ausstehend",
+      "verified": "Verifiziert",
+      "invalid": "Ungültig",
+      "unknown": "Unbekannt",
+      "stale": "Neue Prüfung erforderlich",
+      "catchAll": "Akzeptiert alle Adressen",
+      "guessed": "Abgeleitete Adresse",
+      "unverified": "Nicht verifiziert",
+      "optedOut": "Keine weiteren Kontakte gewünscht",
+      "bounced": "Unzustellbar",
+      "finished": "Beendet"
+    },
+    "overview": {
+      "title": "Ihre nächsten Gespräche",
+      "description": "Ein klarer Überblick über Personen, Entwürfe und Nachfassnachrichten, die Ihre Aufmerksamkeit benötigen.",
+      "metrics": {
+        "prospects": "Interessenten",
+        "review": "Warten auf Prüfung",
+        "approved": "Freigegebene E-Mails",
+        "suppressed": "Nicht kontaktieren",
+        "replies": "Antworten",
+        "linkedin": "LinkedIn-Aufgaben"
+      },
+      "emptyTitle": "Beginnen Sie mit einigen passenden Interessenten.",
+      "emptyDescription": "Fügen Sie einen Shop hinzu oder importieren Sie Ihre Recherche. Jeder Interessent bündelt den Produktbefund, die Quellen und die Nachrichtenentwürfe.",
+      "target": "Wochenziel",
+      "targetValue": "{count, number} Erst-E-Mails",
+      "activityTitle": "Letzte Aktivitäten",
+      "activityEmpty": "Gespeicherte Änderungen und Kontaktentscheidungen erscheinen hier.",
+      "approvalNote": "Jede E-Mail braucht Ihre Freigabe. Wenn Sie einen Entwurf ändern, muss er erneut geprüft werden.",
+      "sendingPaused": "Der Versand ist pausiert",
+      "action": {
+        "primary": "Interessenten hinzufügen",
+        "secondary": "Nachrichten prüfen"
+      },
+      "automaticDrafts": "Entwürfe",
+      "sendingSwitchOn": "Versandschalter eingeschaltet",
+      "automaticNote": "Der automatische Modus prüft Kontakte und Nachrichten anhand des gespeicherten Playbooks. Geeignete E-Mails können ohne manuelle Freigabe versendet werden; blockierte Einträge bleiben zurückgehalten."
+    },
+    "prospect": {
+      "title": "Interessenten",
+      "description": "Ein Unternehmen, eine Person und ein Befund, den Sie belegen können.",
+      "emptyTitle": "Noch keine Interessenten",
+      "emptyDescription": "Fügen Sie ein Unternehmen hinzu oder importieren Sie Ihre bisherige Recherche.",
+      "newTitle": "Interessenten hinzufügen",
+      "editTitle": "Angaben zum Interessenten",
+      "search": "Unternehmen oder Personen suchen",
+      "identityTitle": "Unternehmen und Person",
+      "evidenceTitle": "Produktbefund",
+      "personalTitle": "Persönlicher Einstieg",
+      "verificationTitle": "E-Mail-Verifizierung",
+      "fields": {
+        "company": "Unternehmen",
+        "domain": "Shop-Domain",
+        "website": "Website",
+        "personName": "Vollständiger Name",
+        "first": "Vorname",
+        "title": "Aktuelle Position",
+        "email": "Geschäftliche E-Mail",
+        "linkedinUrl": "LinkedIn-Profil-URL",
+        "country": "Ländercode",
+        "timezone": "Zeitzone",
+        "product": "Produktname",
+        "productUrl": "URL der Produktseite",
+        "finding": "Ihr Befund",
+        "evidence": "Belege",
+        "personalHook": "Persönlicher Einstieg",
+        "personalHookUrl": "Quell-URL des persönlichen Einstiegs",
+        "emailStatus": "Verifizierungsstatus",
+        "verifiedAt": "Verifiziert am",
+        "roleSource": "Quell-URL der Position",
+        "source": "Herkunft des Kontakts",
+        "notes": "Notizen",
+        "name": "Vollständiger Name",
+        "platform": "Commerce-Plattform",
+        "relationship": "Beziehung",
+        "roleCheckedAt": "Position geprüft am",
+        "emailVerifiedAt": "E-Mail-Adresse verifiziert am",
+        "emailSource": "Quelle der E-Mail-Adresse",
+        "mxProvider": "E-Mail-Anbieter",
+        "mxCheckedAt": "E-Mail-Anbieter geprüft am",
+        "gap": "Art der Lücke",
+        "evidenceCheckedAt": "Produktbelege geprüft am",
+        "personalLine": "Persönlicher Einstieg",
+        "personalSource": "Quell-URL des persönlichen Einstiegs",
+        "legitEvidence": "Belege zur Unternehmensqualifizierung",
+        "lang": "E-Mail-Sprache",
+        "productCategory": "Produktkategorie",
+        "reviewCount": "Sichtbare Anzahl von Bewertungen",
+        "distributionSource": "Produkt-URL bei einem anderen Händler",
+        "findingReviewed": "Ich habe Quelltext, gerenderte Seite und Regeln zum Befund geprüft",
+        "personalPublishedAt": "Quelle des Einstiegs veröffentlicht am",
+        "personalCheckedAt": "Quelle des Einstiegs zuletzt geprüft am"
+      },
+      "countryHelp": "Verwenden Sie einen Code aus zwei Buchstaben, etwa US oder GB.",
+      "findingHelp": "Beschreiben Sie, was die Seite des genannten Produkts tatsächlich gezeigt hat. Speichern Sie die Quelle getrennt von der E-Mail.",
+      "verificationHelp": "Kennzeichnen Sie eine Adresse nur als verifiziert, wenn ein Anbieter sie bestätigt hat. Eine öffentliche oder abgeleitete Adresse ist kein Verifizierungsergebnis.",
+      "personalHelp": "Verwenden Sie ein echtes berufliches Detail aus den letzten neun Monaten. Öffnen Sie die öffentliche Quelle innerhalb des letzten Tages und erfassen Sie beide Daten. Lassen Sie die Zeile leer, wenn kein nützliches Detail vorliegt.",
+      "action": {
+        "primary": "Interessenten speichern",
+        "secondary": "Entwürfe erstellen",
+        "tertiary": "Produktseite öffnen",
+        "quaternary": "Quelle öffnen"
+      },
+      "timeHelp": "Verwenden Sie eine IANA-Zeitzone, etwa America/New_York.",
+      "dateHelp": "Verwenden Sie Datum und Uhrzeit im ISO-Format einschließlich Zeitzonenversatz.",
+      "legitHelp": "Erfassen Sie Belege mit Quellen für eine Finanzierung, mindestens drei tatsächliche Teammitglieder oder den Vertrieb über einen anderen Händler.",
+      "searchEmptyTitle": "Keine passenden Interessenten",
+      "searchEmptyDescription": "Suchen Sie nach einem Unternehmen, einer Person, einer E-Mail-Adresse oder einer Domain.",
+      "list": {
+        "count": "{count, number} potenzielle Kontakte",
+        "filter": "E-Mail-Fortschritt",
+        "allStatuses": "Alle Status",
+        "range": "{start, number}–{end, number} von {total, number}",
+        "action": {
+          "primary": "Vorherige Seite",
+          "secondary": "Nächste Seite",
+          "tertiary": "Filter zurücksetzen",
+          "quaternary": "Import schließen"
+        },
+        "pagination": "Kontaktseiten"
+      },
+      "productCategoryHelp": "Verwenden Sie die auf der Produktseite angegebene Kategorie. Sie füllt den Kategorieplatzhalter.",
+      "reviewCountHelp": "Nur Ziffern, übernommen aus der sichtbaren Anzahl von Bewertungen dieses Produkts. Lassen Sie das Feld leer, wenn die Anzahl nicht bestätigt werden kann.",
+      "distributionSourceHelp": "Link zum selben Produkt bei einem anderen Händler. Erforderlich für die Aussage über den Abgleich von Angeboten verschiedener Shops.",
+      "findingReviewedHelp": "Prüfen Sie vor der Bestätigung die rohen und gerenderten Daten dieses Produkts sowie die Ausnahmen für den Befund. Das Speichern dieser Prüfung gibt die E-Mail nicht frei.",
+      "unsupportedFinding": "Anderer Befund (Prüfung erforderlich)",
+      "noFinding": "Noch kein Befund",
+      "progress": {
+        "emailProgress": "E-Mail-Fortschritt",
+        "allLifecycle": "Gesamter E-Mail-Fortschritt",
+        "lifecycleFilter": "E-Mail-Verlauf",
+        "allLinkedin": "Alle LinkedIn-Status",
+        "linkedinFilter": "LinkedIn-Status",
+        "help": "Recherche umfasst die wartende und laufende Kontaktvorbereitung. Unternehmensrecherche ohne Kontakt finden Sie unter Kampagnen. E-Mail- und LinkedIn-Fortschritt werden getrennt erfasst.",
+        "error": "Der Fortschritt konnte nicht geladen werden. Aktualisieren Sie die Liste, bevor Sie Verlaufsfilter verwenden.",
+        "lifecycle": {
+          "researching": "In Recherche",
+          "scheduled": "Geplant",
+          "sent": "Gesendet",
+          "replied": "Beantwortet",
+          "held": "Zurückgehalten"
+        },
+        "action": {
+          "primary": "Liste aktualisieren",
+          "secondary": "E-Mail-Verlauf",
+          "tertiary": "Unternehmensrecherche"
+        }
+      },
+      "summary": {
+        "description": "Kontakt, Produktdetail und aktuelle Sequenz an einem Ort.",
+        "preparation": "Vorbereitung",
+        "noPreparation": "Keine automatische Vorbereitung erfasst",
+        "emailAccepted": "{count, plural, one {# E-Mail angenommen} other {# E-Mails angenommen}}",
+        "nextEmail": "Nächste E-Mail: {time}",
+        "noSchedule": "Keine E-Mail geplant",
+        "noProfile": "Kein LinkedIn-Profil gespeichert",
+        "profile": "Profil öffnen",
+        "insightTitle": "Produktdetail",
+        "insightMissing": "Noch kein Produktdetail gespeichert.",
+        "sourceQuote": "Von der Produktseite",
+        "checkedAt": "Geprüft: {time}",
+        "detailsTitle": "Zugrunde liegende Recherche",
+        "proposedCheck": "Vorgeschlagene Prüfung aus Käufersicht",
+        "needsVerification": "Vor dem Versand muss der Anbieter diese Adresse erneut prüfen.",
+        "issuesTitle": "{count, plural, one {# offene Prüfung} other {# offene Prüfungen}}",
+        "sequenceTitle": "Gespeicherte Sequenz",
+        "sequenceHelp": "Aktuell gespeicherte Nachrichten. Unter Gespräche finden Sie den tatsächlichen Versandverlauf.",
+        "sequenceMissing": "Noch keine Sequenz gespeichert.",
+        "linkedinDraft": "Gespeicherter LinkedIn-Entwurf",
+        "manualTitle": "Optionale Änderungen und Recherchewerkzeuge",
+        "manualHelp": "Bearbeiten Sie gespeicherte Angaben oder führen Sie bei Bedarf einen einzelnen Rechercheschritt aus.",
+        "action": {
+          "secondary": "Kampagne öffnen",
+          "tertiary": "Sequenz bearbeiten"
+        }
+      }
+    },
+    "import": {
+      "title": "Nutzen Sie Ihre vorhandene Recherche",
+      "description": "Importieren Sie ein JSON-Array, JSONL oder CSV aus Ihrem bestehenden Kontaktprozess. Unternehmen werden über ihre Domain zugeordnet; Importe geben niemals Nachrichten frei.",
+      "fields": {
+        "content": "Interessentendatensätze"
+      },
+      "help": "Fügen Sie bis zu 5.000 Zeilen (maximal 2 MB) einschließlich Quellen ein. Bisherige Kontaktverläufe und Kontaktsperren bleiben erhalten.",
+      "result": "{count, number} Datensätze importiert.",
+      "action": {
+        "primary": "Interessenten importieren"
+      },
+      "summary": "{imported, number} importiert · {duplicate, number} bereits vorhanden · {suppressed, number} Ausschlüsse · {invalid, number} ungültig",
+      "rowError": "Zeile {row, number} benötigt gültige Angaben zu Unternehmen, Person, Land oder E-Mail-Adresse.",
+      "moreErrors": "Weitere ungültige Zeilen: {count, number}."
+    },
+    "review": {
+      "title": "Jede E-Mail sollte den Versand wert sein",
+      "description": "Prüfen Sie Empfänger, Belege und den genauen Nachrichtentext gemeinsam.",
+      "emptyTitle": "Alles erledigt",
+      "emptyDescription": "Erstellen Sie bei einem Interessenten Entwürfe, um sie hier zu prüfen.",
+      "first": "Erste E-Mail",
+      "followupOne": "Erste Nachfassnachricht",
+      "followupTwo": "Zweite Nachfassnachricht",
+      "afterDays": "Tag {count, number}",
+      "fields": {
+        "subject": "Betreff",
+        "body": "E-Mail-Text",
+        "reason": "Grund"
+      },
+      "evidenceTitle": "Warum diese E-Mail passt",
+      "checksTitle": "Vor der Freigabe",
+      "approvalNote": "Die Freigabe gilt für genau diese Nachrichten und diesen Empfänger. Änderungen erfordern eine neue Freigabe.",
+      "blocked": "Klären Sie diese Prüfpunkte vor der Freigabe.",
+      "ready": "Bereit für Ihre Prüfung",
+      "notSending": "Durch die Freigabe wird eine E-Mail nicht sofort versendet.",
+      "action": {
+        "primary": "Diese E-Mails freigeben",
+        "secondary": "Änderungen speichern",
+        "tertiary": "Zurückstellen",
+        "quaternary": "Nicht kontaktieren"
+      },
+      "footerTitle": "Fußzeile mit Postanschrift",
+      "quotedHistory": "Zitierte erste E-Mail",
+      "queue": {
+        "title": "Prüfwarteschlange",
+        "description": "Suchen Sie einen Interessenten und öffnen Sie seine E-Mails und Belege zur Prüfung.",
+        "search": "Unternehmen, Kontakte oder Betreffzeilen suchen",
+        "status": "Nach Status filtern",
+        "allStatuses": "Alle Status",
+        "count": "{count, number} {count, plural, one {Interessent} other {Interessenten}} in dieser Warteschlange",
+        "subject": "Betreff",
+        "updated": "Zuletzt aktualisiert",
+        "range": "{start, number}–{end, number} von {total, number}",
+        "page": "Seite {page, number} von {pages, number}",
+        "emptyTitle": "Keine passenden Entwürfe",
+        "emptyDescription": "Versuchen Sie eine andere Suche oder einen anderen Status.",
+        "error": "Die Prüfwarteschlange konnte nicht geladen werden. Versuchen Sie es erneut.",
+        "pagination": "Seiten der Prüfwarteschlange",
+        "action": {
+          "primary": "Prüfung öffnen",
+          "secondary": "Zurück zur Warteschlange",
+          "tertiary": "Filter zurücksetzen",
+          "quaternary": "Suchen"
+        },
+        "previous": "Vorherige Seite",
+        "next": "Nächste Seite",
+        "missingTitle": "Prüfung nicht verfügbar",
+        "missingDescription": "Für diesen Interessenten ist kein Entwurf zur Prüfung gespeichert.",
+        "discard": {
+          "title": "Ungespeicherte Änderungen verwerfen?",
+          "description": "Ihre Änderungen an den Nachrichten wurden nicht gespeichert.",
+          "action": {
+            "primary": "Änderungen verwerfen",
+            "secondary": "Weiter bearbeiten"
+          }
+        },
+        "statusColumn": "Status"
+      },
+      "automaticReady": "Keine erfassten Blockierungen",
+      "automaticApprovalNote": "Der automatische Modus führt die Freigabeprüfungen aus. Sie können hier Nachrichten prüfen, bearbeiten oder zurückhalten; Änderungen müssen die Prüfungen erneut bestehen.",
+      "manualApproval": "Manuell freigeben"
+    },
+    "linkedin": {
+      "title": "Bleiben Sie auf LinkedIn persönlich",
+      "description": "Bereiten Sie die Nachricht hier vor. Vernetzen Sie sich anschließend mit der Person oder antworten Sie über Ihr eigenes LinkedIn-Profil.",
+      "manualNote": "Kontaktanfragen und Nachrichten werden manuell auf LinkedIn gesendet. Dieser Arbeitsbereich bündelt Entwurf, Status und nächsten Schritt.",
+      "emptyTitle": "Noch keine LinkedIn-Aufgaben",
+      "emptyDescription": "Fügen Sie einem Interessenten ein LinkedIn-Profil hinzu, um den nächsten persönlichen Schritt vorzubereiten.",
+      "fields": {
+        "status": "Kontaktstatus",
+        "draft": "Nachrichtenentwurf",
+        "notes": "Gesprächsnotizen",
+        "nextDate": "Datum des nächsten Schritts"
+      },
+      "status": {
+        "notStarted": "Nicht begonnen",
+        "planned": "Geplant",
+        "requested": "Kontakt angefragt",
+        "connected": "Vernetzt",
+        "messaged": "Nachricht gesendet",
+        "replied": "Hat geantwortet",
+        "closed": "Geschlossen",
+        "research": "In Recherche",
+        "ready": "Bereit",
+        "invited": "Einladung gesendet"
+      },
+      "action": {
+        "primary": "Nächsten Schritt speichern",
+        "secondary": "LinkedIn-Profil öffnen",
+        "tertiary": "Nachricht kopieren"
+      },
+      "queue": {
+        "title": "LinkedIn-Kontakte",
+        "description": "Finden Sie einen Kontakt, prüfen Sie seinen Entwurf und verfolgen Sie den nächsten Schritt.",
+        "search": "Unternehmen oder Kontakte suchen",
+        "status": "Nach Status filtern",
+        "allStatuses": "Alle Status",
+        "count": "{count, plural, one {# LinkedIn-Kontakt} other {# LinkedIn-Kontakte}}",
+        "range": "{start, number}–{end, number} von {total, number}",
+        "page": "Seite {page, number} von {pages, number}",
+        "emptyTitle": "Keine passenden LinkedIn-Kontakte",
+        "emptyDescription": "Versuchen Sie einen anderen Suchbegriff oder setzen Sie die Filter zurück.",
+        "error": "Die LinkedIn-Kontakte konnten nicht geladen werden. Bitte versuchen Sie es erneut.",
+        "pagination": "Seitennavigation der LinkedIn-Kontakte",
+        "action": {
+          "primary": "Kontakt öffnen",
+          "secondary": "Zurück zu den Kontakten",
+          "tertiary": "Filter zurücksetzen",
+          "quaternary": "Suchen"
+        },
+        "previous": "Vorherige Seite",
+        "next": "Nächste Seite",
+        "missingTitle": "LinkedIn-Aufgabe nicht verfügbar",
+        "missingDescription": "Für diesen Kontakt gibt es keine LinkedIn-Aufgabe mehr. Kehren Sie zur Liste zurück, um einen anderen Kontakt auszuwählen.",
+        "discard": {
+          "title": "Ungespeicherte Änderungen verwerfen?",
+          "description": "Ihre Änderungen wurden nicht gespeichert.",
+          "action": {
+            "primary": "Änderungen verwerfen",
+            "secondary": "Weiter bearbeiten"
+          }
+        },
+        "statusColumn": "Status",
+        "draft": "Nachricht",
+        "draftSaved": "Entwurf gespeichert",
+        "draftEmpty": "Kein Entwurf",
+        "nextStep": "Nächster Schritt",
+        "unscheduled": "Nicht geplant"
+      },
+      "missingTemplateDetails": "Einige Angaben für diese Vorlage fehlen. Ergänzen Sie sie beim Interessenten oder im Kontaktleitfaden, oder schreiben Sie hier eine Nachricht."
+    },
+    "replies": {
+      "title": "Antworten und Ergebnisse",
+      "description": "Halten Sie den Gesprächsverlauf und die nächste Entscheidung an einem Ort fest.",
+      "emptyTitle": "Keine Antworten erfasst",
+      "emptyDescription": "Erfassen Sie eine Antwort oder ein Ergebnis, wenn ein Gespräch vorankommt.",
+      "fields": {
+        "outcome": "Ergebnis",
+        "note": "Antwort oder Notiz"
+      },
+      "outcomes": {
+        "reply": "Antwort erhalten",
+        "positive": "Interessiert",
+        "negative": "Kein Interesse",
+        "meeting": "Termin vereinbart",
+        "optout": "Möchte nicht mehr kontaktiert werden",
+        "bounce": "E-Mail unzustellbar",
+        "note": "Notiz"
+      },
+      "manualNote": "Erfassen Sie das tatsächliche Ergebnis. Der Wunsch nach einer Kontaktsperre verhindert weitere Kontaktaufnahme.",
+      "action": {
+        "primary": "Ergebnis erfassen"
+      }
+    },
+    "playbook": {
+      "title": "Ein Kontaktleitfaden, der mit ecentic wächst",
+      "description": "Passen Sie Ton, Nachrichtenfolge und Zielgruppe in der App an. Neue Entwürfe verwenden die gespeicherte Version.",
+      "voiceTitle": "Absenderidentität",
+      "sequenceTitle": "E-Mail-Sequenz",
+      "targetingTitle": "Wen kontaktieren",
+      "limitsTitle": "Versandlimits",
+      "fields": {
+        "name": "Name des Leitfadens",
+        "fromName": "Anzeigename des Absenders",
+        "signature": "Signatur",
+        "subjectTemplate": "Betreffvorlage",
+        "bodyTemplate": "Vorlage für die erste E-Mail",
+        "followupOneTemplate": "Vorlage für die erste Nachfassnachricht",
+        "followupTwoTemplate": "Vorlage für die zweite Nachfassnachricht",
+        "linkedinTemplate": "LinkedIn-Nachrichtenvorlage",
+        "weeklyTarget": "Erst-E-Mails pro Woche",
+        "maxWords": "Maximale Wortzahl des Texts",
+        "dailyCap": "Angestrebtes Maximum pro Postfach und Tag",
+        "allowedCountries": "Zugelassene Ländercodes",
+        "targetRoles": "Zielpositionen",
+        "blockedRoles": "Ausgeschlossene Positionen",
+        "excludedDomains": "Ausgeschlossene Unternehmensdomains",
+        "postalAddress": "Postanschrift",
+        "voiceNotes": "Schreibanweisungen",
+        "bannedPhrases": "Unzulässige Wörter und Formulierungen",
+        "fromEmail": "Absenderadresse",
+        "founderLine": "Vorstellung des Gründers",
+        "callToAction": "Abschließende Frage",
+        "optout": "Hinweis zum Ablehnen weiterer Kontakte",
+        "senderConfirmed": "Identität und Aussagen des Absenders sind bestätigt",
+        "sendingEnabled": "Versand freigegebener Nachrichten aktivieren",
+        "maxBodyWords": "Maximale Wortzahl des Texts",
+        "verificationDays": "Gültigkeit der Produktnachweise in Tagen",
+        "minGapMinutes": "Mindestabstand zwischen Sendungen in Minuten",
+        "maxGapMinutes": "Höchstabstand zwischen Sendungen in Minuten",
+        "followupOneDays": "Tag der ersten Nachfassnachricht",
+        "followupTwoDays": "Tag der zweiten Nachfassnachricht",
+        "heldCountries": "Ländercodes mit Versandsperre",
+        "excludedRoles": "Ausgeschlossene Positionen",
+        "historyConfirmed": "Frühere Sendungen und Kontaktsperren wurden importiert",
+        "competingSendersPaused": "Andere Versandsysteme für die Kontaktaufnahme wurden pausiert",
+        "senderTested": "Das Absenderpostfach hat einen kontrollierten Sende- und Antworttest bestanden",
+        "senderEmails": "Absenderpostfächer",
+        "sentEmailExamples": "Beispiele bereits gesendeter E-Mails",
+        "humanizeDrafts": "Humanizer für KI-Entwürfe verwenden",
+        "humanizerNotes": "Humanizer-Vorgaben",
+        "inactiveSenderEmails": "Inaktive Absenderpostfächer",
+        "emailVerificationDays": "Gültigkeit der E-Mail-Verifizierung in Tagen",
+        "excludedCompanies": "Ausgeschlossene Unternehmensnamen",
+        "targetingNotes": "Zielgruppenprioritäten und Prüfhinweise",
+        "replyClaimNotes": "Erlaubte Aussagen in Antworten",
+        "firstEmailBlockedClaims": "Gesperrte Aussagen in Erst-E-Mails",
+        "barcodeObservation": "Beobachtung",
+        "barcodeConsequence": "Mögliche Folge",
+        "barcodeAskAbout": "Thema der Frage an die KI",
+        "reviewsObservation": "Beobachtung",
+        "reviewsConsequence": "Mögliche Folge",
+        "reviewsAskAbout": "Thema der Frage an die KI",
+        "noBarcodeObservation": "Beobachtung",
+        "noBarcodeConsequence": "Mögliche Folge",
+        "noBarcodeAskAbout": "Thema der Frage an die KI",
+        "noProductObservation": "Beobachtung",
+        "noProductConsequence": "Mögliche Folge",
+        "noProductAskAbout": "Thema der Frage an die KI",
+        "automationEnabled": "Automatische Kampagnenvorbereitung aktivieren",
+        "productCheckIntro": "Einleitung zur Produktprüfung",
+        "publishedProductObservation": "Beobachtung",
+        "publishedProductConsequence": "Vorgeschlagene Prüfung",
+        "publishedProductAskAbout": "Thema der Käuferfrage",
+        "linkedinAutomationEnabled": "Automatische LinkedIn-Kontaktaufnahme aktivieren",
+        "linkedinAccountId": "LinkedIn-Konto",
+        "linkedinDailyInvites": "Maximale Einladungen pro Tag",
+        "linkedinWeeklyInvites": "Maximale Einladungen pro Woche",
+        "linkedinDailyMessages": "Maximale Nachrichten pro Tag",
+        "meetingBookingUrl": "Link zur Terminbuchung",
+        "researchInstructions": "Rechercheanweisungen",
+        "requireShoppingEvidence": "Belege zum Einkaufserlebnis vor der Texterstellung verlangen"
+      },
+      "templateHelp": "Fügen Sie die unten aufgeführten Variablen ein. Sie werden aus den gespeicherten Angaben des Interessenten ausgefüllt.",
+      "variablesTitle": "Verfügbare Variablen",
+      "listHelp": "Geben Sie einen Wert pro Zeile ein.",
+      "changeNote": "Geänderte Vorlagen geben vorhandene Nachrichten nicht frei. Prüfen Sie neu erzeugte Entwürfe vor dem Versand.",
+      "capHelp": "Das Tageslimit umfasst Erst-E-Mails und Nachfassnachrichten.",
+      "action": {
+        "primary": "Leitfaden speichern"
+      },
+      "legalHelp": "Die Ländereinstellungen steuern die Eignung, ersetzen aber keine rechtliche Erlaubnis zur Kontaktaufnahme. Lassen Sie ungeprüfte Länder gesperrt.",
+      "sendingHelp": "Nur freigegebene Nachrichten, die alle aktuellen Prüfungen bestehen, können in die Versandwarteschlange gelangen.",
+      "senderHelp": "Bestätigen Sie, dass Anzeigename, Signatur und Aussagen zur Gründerrolle den Absender wahrheitsgemäß beschreiben.",
+      "validation": {
+        "gap": "Der Höchstabstand muss mindestens so groß sein wie der Mindestabstand.",
+        "followup": "Die zweite Nachfassnachricht muss nach der ersten liegen."
+      },
+      "releaseHelp": "Bestätigen Sie diese Prüfungen, bevor Sie den Versand aktivieren. Die Freigabe von Nachrichten aktiviert den Versand nicht.",
+      "senderPoolHelp": "Diese Adressen verwenden den oben angegebenen Absendernamen und dieselbe Signatur. Sie sind Aliasse einer Person, keine unterschiedlichen Teammitglieder.",
+      "examplesHelp": "Fügen Sie echte erste E-Mails ein, die Sie gesendet haben. Ihr Ton hat Vorrang vor allgemeinen Stilhinweisen. Fakten und Empfänger bleiben auf den jeweiligen Kontakt bezogen.",
+      "writingTitle": "Schreibregeln",
+      "writingHelp": "Die Vorlagen bestimmen Aufbau und Abschluss der ersten E-Mail. Die KI verfeinert den Text anhand Ihrer Schreibvorgaben und echten Beispiele. Follow-ups und LinkedIn-Nachrichten verwenden ihre gespeicherten Vorlagen.",
+      "humanizerHelp": "Lassen Sie KI-Entwürfe vor der Prüfung mit Humanizer überarbeiten. Neue Entwürfe behalten die Absenderangaben und den Abschluss der Vorlage bei.",
+      "humanizerNotesHelp": "Bearbeiten Sie die Vorgaben für die Überarbeitung. Ihre gesendeten Beispiele geben den Ton vor. Wenn Sie Humanizer ausschalten, bleiben diese Notizen für später erhalten.",
+      "barcodeTitle": "Barcode fehlt in den Seitendaten",
+      "reviewsTitle": "Bewertungen ohne Bewertungsdaten",
+      "noBarcodeTitle": "Kein Barcode gefunden",
+      "noProductTitle": "Keine Produktdaten gefunden",
+      "inactiveSenderHelp": "Hinterlegen Sie hier weitere Absender-Aliasse, deren Verbindung noch aussteht. Nach der Verbindung können sie den Verlauf synchronisieren, aber erst nach der Aufnahme in die aktive Liste senden.",
+      "emailVerificationHelp": "Höchstalter des tatsächlichen Verifizierungsnachweises des Anbieters. Der Abruf eines älteren Datensatzes erneuert ihn nicht.",
+      "productVerificationHelp": "Höchstalter der Nachweise zum genannten Produkt bei Prüfung und Versand.",
+      "excludedCompaniesHelp": "Ein genauer Unternehmensname oder bekannter Alias pro Zeile. Verglichen werden Unternehmensnamen, nicht Website-Texte.",
+      "targetingNotesHelp": "Prioritäten und Prüfhinweise für das Team. Diese Notizen fügen keine automatischen Eignungsprüfungen hinzu.",
+      "replyClaimNotesHelp": "Referenzformulierungen für Antworten und LinkedIn. Diese Notizen erlauben keine entsprechenden Aussagen in einer Erst-E-Mail.",
+      "firstEmailBlockedClaimsHelp": "Eine Aussage, ein Unternehmensname oder eine Formulierung pro Zeile. Treffer blockieren die Freigabe der Erst-E-Mail. Prozentangaben werden ebenfalls blockiert.",
+      "findingRulesHelp": "Diese Zeilen bestimmen Beobachtung, vorgeschlagene Prüfung und Fragethema. Die Platzhalter nutzen gespeicherte Fakten zum Kontakt; productFeature ist ein durch die Quelle belegtes Kaufdetail.",
+      "barcodeHelp": "Bestätigen Sie, dass ein gültiger Barcode aus dem Shop weder in den rohen noch in den gerenderten Produktdaten steht, und verlinken Sie einen Nachweis, dass dasselbe Produkt auch anderswo verkauft wird.",
+      "reviewsHelp": "Bestätigen Sie, dass die sichtbare Anzahl von Bewertungen zu diesem Produkt gehört und Bewertungsdaten sowohl im Quelltext als auch auf der gerenderten Seite fehlen.",
+      "noBarcodeHelp": "Nur für verpackte Waren verwenden. Geschenkkarten, individuelle oder handgefertigte Waren, Sets, digitale Artikel und Muster ausschließen.",
+      "noProductHelp": "Bestätigen Sie, dass Produktdaten sowohl im Quelltext als auch auf der Seite nach Ausführung von JavaScript fehlen.",
+      "automationTitle": "Automatischer Modus",
+      "automationHelp": "Aktive Kampagnen können Kontakte suchen, geschäftliche E-Mail-Adressen prüfen, Nachrichten erstellen und geeignete E-Mails automatisch freigeben. Der Versand richtet sich weiterhin nach der Versandeinstellung, dem Postfachstatus und den gespeicherten Limits.",
+      "productCheckIntroHelp": "Gründervorstellung nur für die Prüfung beobachteter Produktinformationen.",
+      "publishedProductTitle": "Konkrete Produkterkenntnis",
+      "publishedProductHelp": "Verwenden Sie '{productFeature}' für eine konkrete Zutat, ein Material, ein Design- oder Kompatibilitätsdetail des genannten Produkts. Formulieren Sie die KI-Frage als vorgeschlagene Prüfung, niemals als Messergebnis oder Behauptung fehlender Daten.",
+      "automaticChangeNote": "Änderungen gelten für nachfolgende Prüfungen und Entwürfe. Nachrichten, die nicht mehr zum Playbook passen, werden zurückgehalten.",
+      "automaticSendingHelp": "Nur Nachrichten, die automatische Prüfungen und aktuelle Versandbedingungen erfüllen, gelangen in die Versandwarteschlange.",
+      "linkedinAutomationTitle": "LinkedIn-Automatisierung",
+      "linkedinAutomationHelp": "Verarbeiten Sie geeignete LinkedIn-Kontakte automatisch über das ausgewählte verbundene Konto. Der E-Mail-Versand wird separat gesteuert.",
+      "linkedinAccountHelp": "Wählen Sie das verbundene Konto für Einladungen und Nachrichten. Es wird kein Konto automatisch ausgewählt.",
+      "linkedinAccountPlaceholder": "Verbundenes Konto auswählen",
+      "linkedinAccountUnavailable": "Gespeichertes Konto nicht verfügbar",
+      "linkedinCapsHelp": "Für LinkedIn gelten eigene Grenzen: maximal 15 Einladungen pro Tag, 50 pro Woche und 15 Nachrichten pro Tag. Dies sind Obergrenzen; Kontostatus und Eignungsprüfungen können die Aktivität anhalten.",
+      "meetingBookingUrlHelp": "Der HTTPS-Buchungslink für Antworten. Ein Klick markiert niemals einen Termin als gebucht.",
+      "researchTitle": "Rechercheanforderungen",
+      "researchHelp": "Legen Sie fest, was die Recherche zu Käuferfragen, Wettbewerbern und dem Kaufprozess belegen muss. Ein UCP-Profil allein belegt nicht, dass ein Kauf über KI abgeschlossen werden kann.",
+      "researchInstructionsHelp": "Beschreiben Sie die Käuferfragen, die genauen Varianten und Märkte für den Vergleich sowie die Belege, die aus UCP, Produktseiten oder dem Bestellprozess erhoben werden sollen. Halten Sie Quellen fest und kennzeichnen Sie ungeprüfte oder nicht verfügbare Ergebnisse als unbekannt.",
+      "requireShoppingEvidenceHelp": "Halten Sie Texterstellung und Freigabe an, bis eine belegte Erkenntnis zum Einkaufserlebnis erfasst ist. Eine Information zu einem Inhaltsstoff allein belegt kein Kaufhindernis.",
+      "legacyFindingsTitle": "Bisherige Erkenntnisvorlagen",
+      "legacyFindingsHelp": "Gespeicherte Vorlagen für bisherige Produktprüfungen und Prüfungen auf fehlende Daten. Wenn Belege zum Einkaufserlebnis erforderlich sind, verwenden neue Entwürfe stattdessen die erfasste Erkenntnis zum Einkaufserlebnis. Diese Felder bleiben für bisherige Abläufe verfügbar."
+    },
+    "integrations": {
+      "title": "Verbinden Sie die passenden Werkzeuge",
+      "description": "Verbinden Sie Kontaktdaten, Unternehmensrecherche und Versandtools für Ihre Kampagnen.",
+      "configured": "Konfiguriert",
+      "notConfigured": "Nicht konfiguriert",
+      "ready": "Bereit",
+      "pending": "Wird verarbeitet",
+      "failed": "Handlungsbedarf",
+      "credentialsNote": "Zugangsdaten bleiben auf dem Server. Anbieterzugriff und Nutzung hängen von Ihrem Konto ab.",
+      "apollo": {
+        "title": "Apollo",
+        "description": "Finden Sie die passende Person in einem Shop und prüfen Sie eine aus einer Quelle stammende geschäftliche E-Mail-Adresse.",
+        "resultsTitle": "Personen in diesem Unternehmen",
+        "empty": "Es wurden keine passenden Personen gefunden.",
+        "sourceNote": "Bei Anbieterergebnissen müssen die aktuelle Position und die E-Mail-Adresse noch geprüft werden.",
+        "action": {
+          "primary": "Diese Person hinzufügen",
+          "secondary": "Geschäftliche E-Mail abrufen",
+          "tertiary": "Profil öffnen"
+        }
+      },
+      "clay": {
+        "title": "Clay",
+        "description": "Führen Sie einen konfigurierten Anreicherungsablauf für Datensätze aus, die eine weitere Quelle benötigen.",
+        "action": {
+          "primary": "Anreicherung starten",
+          "secondary": "Anreicherung prüfen"
+        },
+        "fields": {
+          "runId": "ID des Anreicherungslaufs",
+          "cursor": "Ergebniscursor"
+        },
+        "resultTitle": "Anreicherungsergebnisse",
+        "sourceNote": "Anreicherungsergebnisse sind zu prüfende Belege. Sie geben weder einen Kontakt noch eine Nachricht frei.",
+        "keyVerified": "API-Schlüssel geprüft",
+        "routinePending": "Einrichtung der Datenanreicherung ausstehend. Fügen Sie bei Bedarf eine Clay-Routine hinzu.",
+        "enrichmentUnavailable": "Verbinden Sie Clay und fügen Sie unter Integrationen eine Routine hinzu, bevor Sie Interessentendaten anreichern."
+      },
+      "azure": {
+        "title": "Azure",
+        "description": "Erstellen Sie Entwürfe anhand der gespeicherten Belege und Ihres aktuellen Leitfadens."
+      },
+      "email": {
+        "title": "E-Mail-Zustellung",
+        "description": "Senden Sie geeignete Nachrichten über verbundene Absenderpostfächer."
+      },
+      "linkedin": {
+        "title": "LinkedIn",
+        "description": "Verbinden Sie Ihr LinkedIn-Konto über Unipile und verwalten Sie die Verbindung hier.",
+        "setupHelp": "Erstellen Sie ein Unipile-V2-Konto, kopieren Sie dessen API-Schlüssel und speichern Sie ihn hier.",
+        "empty": "Es ist noch kein LinkedIn-Konto verbunden.",
+        "declined": "Die Verbindung zu LinkedIn wurde nicht abgeschlossen. Bitte versuchen Sie es erneut.",
+        "locked": "Konto gesperrt",
+        "status": {
+          "running": "Verbunden",
+          "errored": "Verbindungsfehler",
+          "disconnected": "Getrennt",
+          "degraded": "Verbindung prüfen",
+          "partial": "Teilweise verbunden"
+        },
+        "action": {
+          "primary": "Konto verbinden",
+          "secondary": "Status aktualisieren",
+          "tertiary": "Erneut verbinden",
+          "quaternary": "Unipile einrichten"
+        },
+        "key": {
+          "label": "Unipile-API-Schlüssel",
+          "placeholder": "Unipile-API-Schlüssel einfügen",
+          "help": "Wir prüfen den Schlüssel, bevor wir ihn verschlüsselt speichern. Gespeicherte Schlüssel werden nicht mehr angezeigt.",
+          "required": "Fügen Sie Ihren Unipile-API-Schlüssel ein.",
+          "invalid": "Geben Sie einen gültigen API-Schlüssel ein.",
+          "show": "API-Schlüssel anzeigen",
+          "hide": "API-Schlüssel verbergen",
+          "testing": "Wird geprüft und gespeichert…",
+          "saved": "API-Schlüssel geprüft und gespeichert.",
+          "action": {
+            "primary": "API-Schlüssel speichern",
+            "secondary": "API-Schlüssel ersetzen"
+          },
+          "errors": {
+            "invalid": "Der Schlüssel wurde nicht akzeptiert. Prüfen Sie den Schlüssel Ihres Unipile-V2-Kontos und versuchen Sie es erneut.",
+            "unavailable": "Unipile ist nicht erreichbar. Versuchen Sie es in Kürze erneut.",
+            "encryption": "Der Server konnte diesen Schlüssel nicht verschlüsseln. Bitten Sie einen Administrator, die Verschlüsselungskonfiguration zu prüfen.",
+            "save": "Der API-Schlüssel konnte nicht gespeichert werden. Bitte versuchen Sie es erneut."
+          }
+        },
+        "pricing": "Unipile-Tarife ansehen"
+      },
+      "fields": {
+        "domain": "Unternehmensdomain",
+        "routineId": "Clay-Routine-ID"
+      },
+      "action": {
+        "primary": "Kontakte finden",
+        "secondary": "E-Mail verifizieren",
+        "tertiary": "Daten anreichern",
+        "quaternary": "Produktseite prüfen"
+      },
+      "gmail": {
+        "title": "Postfächer",
+        "description": "Verbinde deine vorhandenen Google-Postfächer für freigegebene E-Mails und die Synchronisierung von Antworten.",
+        "action": {
+          "primary": "Gmail verbinden",
+          "secondary": "Antworten synchronisieren",
+          "tertiary": "Verbindung trennen",
+          "quaternary": "Postfach speichern"
+        },
+        "sync": {
+          "running": "Antworten werden synchronisiert…",
+          "stopping": "Aktueller Stapel wird abgeschlossen…",
+          "action": {
+            "primary": "Nach diesem Stapel stoppen"
+          },
+          "help": "Diese Seite während der Prüfung des Nachrichtenverlaufs geöffnet lassen. Die Synchronisierung kann gestoppt und später fortgesetzt werden.",
+          "progress": "In diesem Durchlauf {count, plural, one {# Nachricht geprüft} other {# Nachrichten geprüft}}. Die Prüfung des Verlaufs wird automatisch fortgesetzt.",
+          "complete": "Synchronisierung abgeschlossen. {count, plural, one {# Nachricht geprüft.} other {# Nachrichten geprüft.}}",
+          "stopped": "Synchronisierung gestoppt. {count, plural, one {# Nachricht geprüft.} other {# Nachrichten geprüft.}} Zum Fortsetzen erneut starten.",
+          "error": "Die Synchronisierung wurde gestoppt, weil ein Postfach nicht geprüft werden konnte. Die Verbindung prüfen und erneut versuchen."
+        }
+      },
+      "worker": {
+        "title": "Versanddienst",
+        "description": "Verarbeitet freigegebene Nachrichten innerhalb Ihrer gespeicherten Grenzen.",
+        "action": {
+          "primary": "Warteschlange prüfen",
+          "secondary": "Versand pausieren"
+        },
+        "runHelp": "Diese Aktion kann geeignete, freigegebene E-Mails versenden, wenn der Versand aktiviert ist.",
+        "previewHelp": "Diese Prüfung verwendet gespeicherte Daten. Sie versendet keine E-Mails und aktualisiert das Postfach nicht."
+      },
+      "connectionError": "Das Konto konnte nicht verbunden werden. Prüfen Sie die Konfiguration und versuchen Sie es erneut.",
+      "connected": "Verbunden",
+      "notConnected": "Nicht verbunden",
+      "verification": {
+        "title": "E-Mail-Verifizierung",
+        "description": "Fordern Sie ein aktuelles Ergebnis an und prüfen Sie den Auftrag, bis er abgeschlossen ist. Ausstehende oder unbekannte Ergebnisse erlauben keine Freigabe.",
+        "fields": {
+          "requestId": "ID der Verifizierungsanfrage"
+        },
+        "action": {
+          "primary": "Verifizierung starten",
+          "secondary": "Verifizierung prüfen"
+        },
+        "pending": "Die Verifizierung wird noch verarbeitet.",
+        "result": "Verifizierungsergebnis"
+      },
+      "research": {
+        "title": "Produktbelege",
+        "description": "Prüfen Sie eine öffentliche Produktseite und speichern Sie den Befund mit seiner Quelle.",
+        "action": {
+          "primary": "Produktseite prüfen",
+          "secondary": "Nächste {count, number} Interessenten vorbereiten",
+          "tertiary": "Produktbefund recherchieren"
+        },
+        "resultTitle": "Produktprüfung",
+        "summary": "{verified, number} Befunde bestätigt; {held, number} zurückgestellt."
+      },
+      "drafting": {
+        "title": "Entwurf aus gespeicherten Belegen",
+        "description": "Erstellen Sie mit Azure Nachrichten anhand des gespeicherten Interessenten und Leitfadens.",
+        "action": {
+          "primary": "KI-Entwürfe erstellen"
+        },
+        "fields": {
+          "prospect": "Interessent"
+        }
+      },
+      "provenance": "Quelle und Prüfdatum",
+      "mx": {
+        "action": {
+          "primary": "E-Mail-Anbieter prüfen"
+        }
+      },
+      "credentials": {
+        "setup": {
+          "apollo": "Speichern Sie hier den Apollo-API-Schlüssel für Ihren Arbeitsbereich.",
+          "clay": "Speichern Sie Ihren Clay-API-Schlüssel, um den Arbeitsbereich zu verbinden. Die Datenanreicherung können Sie später einrichten.",
+          "google": "Erstellen Sie eine Google-OAuth-Webanwendung, tragen Sie die unten angegebene Weiterleitungs-URI ein und speichern Sie die Client-ID und das Client-Secret. Verbinden Sie anschließend jedes Gmail-Postfach."
+        },
+        "secret": {
+          "apollo": "Apollo-API-Schlüssel",
+          "clay": "Clay-API-Schlüssel",
+          "google": "Google-OAuth-Client-Secret"
+        },
+        "fields": {
+          "clientId": "Google-OAuth-Client-ID",
+          "routineId": "Clay-Routinen-ID (optional)",
+          "redirectUri": "Google-Weiterleitungs-URI"
+        },
+        "redirectHelp": "Tragen Sie diese genaue Adresse als autorisierte Weiterleitungs-URI in Ihrem Google-OAuth-Client ein.",
+        "help": "Geheime Zugangsdaten werden vor der Speicherung verschlüsselt und nicht mehr angezeigt.",
+        "required": "Füllen Sie dieses Feld aus.",
+        "invalid": "Geben Sie einen gültigen Wert ein.",
+        "show": "Geheimen Wert anzeigen",
+        "hide": "Geheimen Wert verbergen",
+        "saving": "Wird gespeichert…",
+        "testing": "Wird geprüft und gespeichert…",
+        "saved": "Zugangsdaten gespeichert.",
+        "action": {
+          "primary": "Zugangsdaten speichern",
+          "secondary": "Zugangsdaten ersetzen"
+        },
+        "errors": {
+          "invalid": "Prüfen Sie die Zugangsdaten und Pflichtfelder und versuchen Sie es erneut.",
+          "unavailable": "Der Anbieter ist nicht erreichbar. Bitte versuchen Sie es erneut.",
+          "encryption": "Der Server konnte diese Zugangsdaten nicht verschlüsseln. Bitten Sie einen Administrator, die Verschlüsselungskonfiguration zu prüfen.",
+          "save": "Diese Zugangsdaten konnten nicht gespeichert werden. Bitte versuchen Sie es erneut."
+        },
+        "links": {
+          "clayPlan": "Clay Launch",
+          "googlePlan": "Google Workspace Business Starter",
+          "googleConsole": "Google OAuth einrichten",
+          "googleApi": "Gmail-API aktivieren",
+          "apolloPlan": "Apollo Basic",
+          "apolloKeys": "Apollo-API-Schlüssel",
+          "clayTrial": "Clay testen",
+          "clayKeys": "Clay-API-Schlüssel",
+          "clayWorkspace": "Clay öffnen",
+          "clayApiDocs": "Clay-API-Dokumentation"
+        },
+        "routineHelp": "Für die Verbindung optional. Richten Sie eine Routine zur Datenanreicherung in Ihrem Clay-Arbeitsbereich ein und fügen Sie ihre ID hier ein.",
+        "routine": {
+          "action": {
+            "primary": "Erweitert: Routine zur Datenanreicherung"
+          }
+        },
+        "claySaved": "API-Schlüssel geprüft und gespeichert.",
+        "claySavedPending": "API-Schlüssel geprüft und gespeichert. Die Datenanreicherung muss noch eingerichtet werden."
+      },
+      "mailbox": {
+        "help": "Öffne in Roger Manage Mailbox → Credentials und kopiere App Password. Wir prüfen den Versand- und Antwortzugriff, ohne eine E-Mail zu senden.",
+        "senderHelp": "Verwenden Sie eine Adresse, die im Kontaktleitfaden unter Absenderpostfächer oder Inaktive Absenderpostfächer gespeichert ist. Inaktive Postfächer können verbunden und synchronisiert werden, aber keine E-Mails senden.",
+        "passwordHelp": "Fügen Sie App Password aus Roger ein, nicht Password oder den 2FA-Code. Es wird vor dem Speichern verschlüsselt und danach nicht mehr angezeigt.",
+        "fields": {
+          "email": "E-Mail-Adresse des Postfachs",
+          "appPassword": "App-Passwort"
+        },
+        "invalidEmail": "Gib eine gültige E-Mail-Adresse ein.",
+        "passwordRequired": "Gib das App-Passwort dieses Postfachs ein.",
+        "invalidPassword": "Geben Sie das 16-stellige App-Passwort ein. Leerzeichen sind erlaubt.",
+        "show": "App-Passwort anzeigen",
+        "hide": "App-Passwort verbergen",
+        "checking": "Versand und Antworten werden geprüft…",
+        "connected": "Postfach verbunden. Synchronisieren Sie die Antworten, um den Verlauf zu importieren. Inaktive Postfächer können keine E-Mails senden.",
+        "oauthHelp": "Nutze diese Alternative, wenn du die Verbindung über deine eigene Google-OAuth-Anwendung herstellen möchtest.",
+        "action": {
+          "primary": "Prüfen und verbinden",
+          "secondary": "Erweitert: Google OAuth",
+          "tertiary": "Google-OAuth-Einrichtung ausblenden"
+        },
+        "errors": {
+          "invalid": "Geben Sie eine gültige Postfachadresse und das zugehörige 16-stellige App-Passwort ein. Leerzeichen im App-Passwort sind erlaubt.",
+          "authentication": "Google hat die Verbindung abgelehnt. Prüfe das App-Passwort und ob der Zugriff auf dieses Postfach aktiviert ist.",
+          "unavailable": "Die Verbindung zu Google hat das Zeitlimit überschritten oder konnte nicht hergestellt werden. Versuchen Sie es erneut.",
+          "encryption": "Der Server konnte das App-Passwort nicht verschlüsseln. Bitte einen Administrator, die Verschlüsselungskonfiguration zu prüfen.",
+          "save": "Das Postfach konnte nicht gespeichert werden. Versuche es erneut.",
+          "notRegistered": "Fügen Sie diese Adresse im Kontaktleitfaden unter Absenderpostfächer oder Inaktive Absenderpostfächer hinzu und verbinden Sie sie anschließend hier.",
+          "inactive": "Dieses Postfach ist im Kontaktleitfaden inaktiv. Es kann Antworten synchronisieren. Verschieben Sie es zu Absenderpostfächer, bevor Sie den Versand aktivieren."
+        },
+        "maximumDailyCap": "Angestrebtes Maximum pro Postfach und Tag",
+        "dailyCapHelp": "Das Ziel ist auf 50 begrenzt und umfasst Erstkontakte und Folge-E-Mails. Postfächer starten mit 15 pro Tag. Die Grenze steigt nur dann um 5, wenn ein abgeschlossener Tag die aktuelle Grenze ohne beobachteten Rückläufer erreicht hat. Ein beobachteter Rückläufer setzt die Grenze auf 15 zurück. Ein Ziel garantiert weder das Versandvolumen noch die Postfachreputation."
+      }
+    },
+    "relationships": {
+      "cold": "Keine vorherige Beziehung",
+      "warm": "Bekannter Kontakt",
+      "event": "Veranstaltungskontakt",
+      "customer": "Kunde",
+      "pilot": "Pilotkunde",
+      "partner": "Partner",
+      "investor": "Investor",
+      "enterprise": "Großkundenkonto",
+      "competitor": "Wettbewerber"
+    },
+    "platforms": {
+      "shopify": "Shopify",
+      "woocommerce": "WooCommerce",
+      "other": "Sonstiger",
+      "unknown": "Unbekannt"
+    },
+    "emailHosts": {
+      "google": "Google",
+      "microsoft": "Microsoft",
+      "other": "Sonstiger",
+      "unknown": "Unbekannt"
+    },
+    "languages": {
+      "en": "Englisch",
+      "de": "Deutsch",
+      "es": "Spanisch",
+      "it": "Italienisch"
+    },
+    "issues": {
+      "unknownVariable": "Die Vorlage enthält eine nicht unterstützte Variable.",
+      "emptyMessage": "Betreff und E-Mail-Text müssen beide ausgefüllt sein.",
+      "subjectLength": "Der Betreff der ersten E-Mail muss zwei bis fünf Wörter enthalten.",
+      "wordLimit": "Die erste E-Mail überschreitet das gespeicherte Wortlimit.",
+      "unresolvedVariable": "Ersetzen Sie die verbleibenden Platzhalter vor der Freigabe.",
+      "dash": "Entfernen Sie Geviert- und Halbgeviertstriche.",
+      "link": "Entfernen Sie Links aus der E-Mail.",
+      "bullet": "Entfernen Sie Aufzählungslisten aus der E-Mail.",
+      "emoji": "Entfernen Sie Emojis aus der E-Mail.",
+      "bannedPhrase": "Entfernen Sie Wörter oder Formulierungen, die der Kontaktleitfaden ausschließt.",
+      "optoutMissing": "Fügen Sie den gespeicherten Hinweis zum Ablehnen weiterer Kontakte ein.",
+      "signatureMissing": "Beenden Sie die erste E-Mail mit der gespeicherten Signatur.",
+      "domainInvalid": "Geben Sie eine gültige Shop-Domain ein.",
+      "excludedCompany": "Dieses Unternehmen steht auf der Ausschlussliste.",
+      "relationshipExcluded": "Diese Beziehung fällt nicht unter Kaltakquise.",
+      "countryHeld": "Dieses Land ist derzeit nicht für den Versand freigegeben.",
+      "emailUnverified": "Die geschäftliche E-Mail-Adresse benötigt ein aktuelles Verifizierungsergebnis.",
+      "microsoftHeld": "Empfänger mit Microsoft-Postfächern sind gesperrt.",
+      "mxUnknown": "Der E-Mail-Anbieter muss aktuell geprüft werden.",
+      "roleUnverified": "Bestätigen Sie die aktuelle Position und ihre Quelle.",
+      "roleExcluded": "Diese Position ist im Kontaktleitfaden ausgeschlossen.",
+      "legitUnverified": "Fügen Sie Belege hinzu, dass das Unternehmen die Qualifizierungskriterien erfüllt.",
+      "evidenceMissing": "Fügen Sie ein konkretes Produkt, eine Feststellung und aktuelle Belege hinzu.",
+      "personalSourceMissing": "Ergänzen Sie die öffentliche Quelle der persönlichen Zeile, ihr Veröffentlichungsdatum und ein aktuelles Prüfdatum, oder entfernen Sie die Zeile.",
+      "senderUnconfirmed": "Bestätigen Sie die Identität und die Aussagen des Absenders im Kontaktleitfaden.",
+      "senderDomain": "Kaltakquise-E-Mails müssen von einer joinecentic.com-Adresse gesendet werden.",
+      "timezoneMissing": "Ergänzen Sie die Zeitzone des Empfängers.",
+      "suppressed": "Diese Person oder dieses Unternehmen darf nicht kontaktiert werden.",
+      "alreadyContacted": "Dieses Unternehmen wurde bereits kontaktiert.",
+      "duplicateMessage": "Diese Nachricht wiederholt einen anderen Entwurf.",
+      "staleRevision": "Dieser Entwurf wurde geändert. Laden Sie ihn vor der Prüfung neu.",
+      "exclamation": "Verwenden Sie ein Ausrufezeichen nur in der Anrede am Anfang.",
+      "roleOutsideTarget": "Diese Position entspricht keiner Zielposition im Kontaktleitfaden.",
+      "sharedInbox": "Verwenden Sie eine verifizierte Adresse der genannten Person, kein gemeinsames Postfach.",
+      "draftMissing": "Erstellen Sie vor der Freigabe alle drei Nachrichtenentwürfe.",
+      "emailDomainMismatch": "Die geschäftliche E-Mail-Adresse muss zur Domain dieses Unternehmens gehören.",
+      "productDomainMismatch": "Die Produktseite muss zur Domain dieses Unternehmens gehören.",
+      "duplicateSubject": "Ein anderer freigegebener Interessent verwendet diesen Betreff bereits für die erste E-Mail.",
+      "repeatedSentence": "Ein persönlicher Satz wiederholt sich in einer anderen freigegebenen E-Mail.",
+      "findingCopyChanged": "Die Formulierung des Befunds wurde geändert. Stellen Sie vor der Freigabe den gesamten gespeicherten Absatz zum Befund wieder her.",
+      "claimNotAllowed": "Entfernen Sie in Erst-E-Mails gesperrte Aussagen und Prozentangaben.",
+      "findingReviewRequired": "Prüfen Sie die rohen und gerenderten Produktnachweise, füllen Sie die Platzhalter zum Befund aus und ergänzen Sie bei Bedarf den erforderlichen Händlernachweis.",
+      "templateControlsChanged": "Stellen Sie vor der Freigabe die gespeicherte Gründervorstellung und Abschlussfrage im genauen Wortlaut wieder her.",
+      "platformHeld": "Wählen Sie Shopify oder WooCommerce für diese Kaltakquise-Kampagne aus.",
+      "shoppingResearchRequired": "Erfassen Sie eine belegte Erkenntnis zum Einkaufserlebnis, bevor Sie diese Nachricht erstellen oder freigeben."
+    },
+    "preparation": {
+      "action": {
+        "primary": "Wochenrecherche vorbereiten",
+        "secondary": "Nach diesem Stapel stoppen"
+      },
+      "description": "Erarbeiten Sie {target, number} aktuelle Produktbefunde aus öffentlichen Seiten, in Stapeln von höchstens drei. Lassen Sie diese Seite geöffnet; jedes Ergebnis wird gespeichert.",
+      "progress": "{processed, number} in diesem Lauf geprüft · {verified, number} / {target, number} Befunde bereit · {held, number} zurückgestellt",
+      "running": "Öffentliche Produktseiten werden geprüft…",
+      "stopping": "Der aktuelle Stapel wird abgeschlossen…",
+      "stopped": "Nach dem aktuellen Stapel gestoppt. Starten Sie erneut, um mit den übrigen Kandidaten fortzufahren.",
+      "complete": "Rechercheziel erreicht. Prüfen Sie die Befunde vor dem Schreiben.",
+      "shortfall": "Zum Ziel fehlen {remaining, number} Befunde. Fügen Sie geeignete Kandidaten hinzu oder prüfen Sie zurückgestellte Datensätze.",
+      "empty": "Keine Kandidaten ohne Belege verfügbar."
+    },
+    "report": {
+      "title": "Diese Woche in Outbound",
+      "description": "Angenommene E-Mails und Gesprächsaktivitäten der letzten sieben Tage. Die Zahl der Interessenten und zurückgestellten Kontakte zeigt den aktuellen Stand.",
+      "fields": {
+        "source": "Quelle",
+        "prospects": "Interessenten",
+        "held": "Zurückgestellt",
+        "acceptedFirsts": "Angenommene Erst-E-Mails",
+        "acceptedFollowups": "Angenommene Nachfassnachrichten",
+        "replies": "Antworten",
+        "bounces": "Unzustellbare E-Mails",
+        "meetings": "Termine",
+        "uncertain": "Unklare Ergebnisse"
+      },
+      "holdReasons": "Aktuelle Gründe für Rückstellungen",
+      "empty": "Noch keine Versand- oder Gesprächsaktivitäten.",
+      "period": "{from}–{to}"
+    },
+    "auth": {
+      "title": "Bei Outbound anmelden",
+      "description": "Verwenden Sie die E-Mail-Adresse und das Passwort Ihres bestehenden ecentic-Mitarbeiterkontos.",
+      "accessNote": "Der Zugriff ist auf ecentic-Mitarbeiterkonten beschränkt.",
+      "error": "Die Anmeldung ist fehlgeschlagen. Prüfen Sie die E-Mail-Adresse und das Passwort Ihres Mitarbeiterkontos.",
+      "denied": {
+        "title": "Mitarbeiterzugriff erforderlich",
+        "description": "Dieses Konto hat keinen ecentic-Mitarbeiterzugriff. Melden Sie sich ab, um ein berechtigtes Konto zu verwenden."
+      },
+      "fields": {
+        "email": "E-Mail",
+        "password": "Passwort"
+      },
+      "validation": {
+        "email": "Geben Sie eine gültige E-Mail-Adresse ein.",
+        "password": "Geben Sie Ihr Passwort ein."
+      },
+      "password": {
+        "show": "Passwort anzeigen",
+        "hide": "Passwort verbergen"
+      },
+      "action": {
+        "primary": "Anmelden"
+      },
+      "pending": "Anmeldung läuft...",
+      "home": "Outbound-Arbeitsbereich",
+      "language": "Sprache",
+      "story": {
+        "label": "ecentic Outbound",
+        "title": "Gute Ansprache beginnt mit einem konkreten Befund.",
+        "description": "Recherchieren Sie passende Shops, prüfen Sie jede Nachricht und führen Sie das Gespräch weiter.",
+        "steps": {
+          "research": "Recherche",
+          "review": "Prüfung",
+          "conversation": "Gespräche"
+        }
+      }
+    },
+    "account": {
+      "action": {
+        "primary": "Abmelden"
+      },
+      "pending": "Abmeldung läuft…",
+      "error": "Die Abmeldung ist fehlgeschlagen. Versuchen Sie es erneut.",
+      "label": "Konto",
+      "staff": "ecentic-Team"
+    },
+    "chrome": {
+      "groups": {
+        "workspace": "Arbeitsbereich",
+        "conversations": "Gespräche",
+        "settings": "Einstellungen"
+      },
+      "menu": {
+        "open": "Navigation öffnen",
+        "close": "Navigation schließen"
+      },
+      "workspace": {
+        "description": "Arbeitsbereich für das ecentic-Team"
+      },
+      "breadcrumb": {
+        "label": "Aktuelle Seite"
+      },
+      "account": {
+        "label": "Kontomenü"
+      }
+    },
+    "campaigns": {
+      "title": "Kampagnen",
+      "newTitle": "Kampagne erstellen",
+      "description": "Finden Sie Unternehmen für jede Zielgruppe und wählen Sie passende Ansprechpartner aus.",
+      "newDescription": "Benennen Sie diese Zielgruppe. Auf der nächsten Seite legen Sie die Unternehmenskriterien fest.",
+      "detailTitle": "Unternehmenssuche",
+      "detailDescription": "Verfeinern Sie die Kriterien, prüfen Sie die Unternehmensliste und finden Sie Kontakte.",
+      "name": "Kampagnenname",
+      "status": "Status",
+      "updated": "Aktualisiert",
+      "openCampaign": "{name} öffnen",
+      "criteriaMissing": "Unternehmenskriterien noch nicht gespeichert",
+      "search": "Kampagnen suchen",
+      "searchAction": "Suchen",
+      "allStatuses": "Alle Status",
+      "emptyTitle": "Keine Kampagnen gefunden",
+      "emptyDescription": "Erstellen Sie eine Kampagne, um eine Zielgruppe festzulegen und Unternehmen zu suchen.",
+      "emptyFiltered": "Versuchen Sie einen anderen Suchbegriff oder Statusfilter.",
+      "pagination": "Kampagnenseiten",
+      "page": "Seite {page, number} von {pages, number}",
+      "firstPage": "Erste Seite",
+      "previousPage": "Vorherige Seite",
+      "nextPage": "Nächste Seite",
+      "lastPage": "Letzte Seite",
+      "statuses": {
+        "draft": "Entwurf",
+        "active": "Aktiv",
+        "paused": "Pausiert",
+        "archived": "Archiviert"
+      },
+      "loadError": "Die Kampagneninformationen konnten nicht geladen werden. Laden Sie die Seite neu.",
+      "actionError": "Die Änderung konnte nicht abgeschlossen werden. Prüfen Sie die Kampagne und versuchen Sie es erneut.",
+      "invalidCriteria": "Prüfen Sie die Kriterien, einschließlich Mindest- und Höchstwerten.",
+      "saved": "Kampagne gespeichert",
+      "saving": "Wird gespeichert…",
+      "create": {
+        "action": {
+          "primary": "Kampagne erstellen"
+        }
+      },
+      "metadataTitle": "Kampagneneinstellungen",
+      "metadataHelp": "Aktive Kampagnen und Entwürfe können Unternehmen suchen. Das Aktivieren einer Kampagne schaltet den E-Mail-Versand nicht ein.",
+      "metadata": {
+        "action": {
+          "primary": "Einstellungen speichern"
+        }
+      },
+      "criteriaTitle": "Unternehmenskriterien",
+      "criteriaHelp": "Diese gespeicherten Werte bestimmen die Unternehmenssuche. Unbekannte Unternehmensdaten bleiben unbekannt.",
+      "criteria": {
+        "action": {
+          "primary": "Kriterien speichern"
+        }
+      },
+      "fields": {
+        "objective": "Zielgruppe und Ziel",
+        "countries": "Länder",
+        "platforms": "Commerce-Plattformen",
+        "keywords": "Unternehmensschlagwörter",
+        "excludedKeywords": "Ausgeschlossene Schlagwörter",
+        "targetRoles": "Gesuchte Kontaktrollen",
+        "excludedRoles": "Ausgeschlossene Kontaktrollen",
+        "excludedDomains": "Ausgeschlossene Domains",
+        "teamSizeMin": "Mindestteamgröße",
+        "teamSizeMax": "Maximale Teamgröße",
+        "annualRevenueMin": "Mindestjahresumsatz (USD)",
+        "annualRevenueMax": "Maximaler Jahresumsatz (USD)",
+        "qualificationNotes": "Qualifizierungshinweise"
+      },
+      "listHelp": "Trennen Sie Werte durch Kommas oder Zeilenumbrüche.",
+      "countryHelp": "Verwenden Sie zweistellige Ländercodes, zum Beispiel US.",
+      "platformHelp": "Wählen Sie Shopify, WooCommerce oder beide.",
+      "numberHelp": "Leer lassen, wenn keine Grenze gilt.",
+      "claudeTitle": "Kriterien mit Claude festlegen",
+      "claudeHelp": "Kopieren Sie die Fragen in Ihren Claude-Chat. Fügen Sie die JSON-Antwort hier ein, prüfen Sie die Felder und speichern Sie sie.",
+      "claude": {
+        "action": {
+          "primary": "Fragen kopieren",
+          "secondary": "Antworten prüfen",
+          "tertiary": "Geprüfte Kriterien speichern",
+          "quaternary": "Vorschau verwerfen"
+        }
+      },
+      "answerLabel": "Claudes JSON-Antwort",
+      "answerHelp": "Nur unterstützte Kriterienfelder werden importiert. Eingefügter Text kann keine Aktionen ausführen oder das Playbook ändern.",
+      "answerError": "Fügen Sie die vollständige JSON-Antwort im Format der kopierten Fragen ein.",
+      "previewTitle": "Vor dem Speichern prüfen",
+      "previewHelp": "Es wurde noch nichts geändert. Passen Sie die Werte an und speichern Sie sie anschließend.",
+      "companiesTitle": "Unternehmen",
+      "companiesCount": "{count, number} Unternehmen",
+      "companySearch": "Diese Unternehmensliste durchsuchen",
+      "company": "Unternehmen",
+      "source": "Quelle",
+      "country": "Land",
+      "platform": "Plattform",
+      "teamSize": "Teamgröße",
+      "revenue": "Jahresumsatz",
+      "unknown": "Unbekannt",
+      "reason": "Prüfhinweis",
+      "companyStatuses": {
+        "candidate": "Zu prüfen",
+        "added": "Zu Interessenten hinzugefügt",
+        "excluded": "Ausgeschlossen"
+      },
+      "companyEmptyTitle": "Keine Unternehmen in dieser Ansicht",
+      "companyEmptyDescription": "Speichern Sie Ihre Kriterien und suchen Sie die erste Seite mit Unternehmen.",
+      "discovery": {
+        "action": {
+          "primary": "Unternehmen finden"
+        }
+      },
+      "discoveryPaused": "Setzen Sie diese Kampagne in den Einstellungen fort, bevor Sie Unternehmen suchen.",
+      "discoveryRunning": "Unternehmen werden gesucht…",
+      "discoveryUpdated": "Suche aktualisiert",
+      "latestRun": "Letzte Suchanfrage",
+      "runCount": "{count, number} Unternehmen gespeichert",
+      "runStatuses": {
+        "starting": "In Bearbeitung",
+        "completed": "Abgeschlossen",
+        "failed": "Fehlgeschlagen",
+        "uncertain": "Statusprüfung erforderlich"
+      },
+      "criteriaVersion": "Kriterienversion {version, number}",
+      "openProspect": "Interessenten öffnen",
+      "contactPageTitle": "Kontakt auswählen",
+      "contactPageDescription": "Finden Sie eine Person in diesem Unternehmen und prüfen Sie ihre Angaben, bevor Sie einen Interessenten hinzufügen.",
+      "findContacts": "Kontakt finden",
+      "chooseContact": "Diese Person auswählen",
+      "contactSearchHelp": "Apollo findet passende Personen. Prüfen Sie vor der Freigabe deren aktuelle Rolle und geschäftliche E-Mail-Adresse.",
+      "contactSearchEmpty": "Keine passenden Kontakte gefunden",
+      "manualContact": "Kontakt manuell hinzufügen",
+      "allPlatforms": "Shopify und WooCommerce",
+      "questionsCopied": "Fragen kopiert",
+      "copyError": "Die Fragen konnten nicht kopiert werden. Öffnen Sie sie unten und kopieren Sie den Text.",
+      "viewQuestions": "Fragen anzeigen",
+      "reviewMessages": "Nachrichten prüfen",
+      "linkedinQueue": "LinkedIn-Warteschlange",
+      "automaticSource": "Zuerst Apollo, dann Clay",
+      "discoveryExhausted": "Beide Quellen haben das Ende dieser Ergebnisse erreicht. Passen Sie Ihre Kriterien für eine neue Suche an.",
+      "uncertainHelp": "Die Antwort des Anbieters ist unklar. Prüfen Sie diese Anfrage vor dem nächsten Durchlauf, damit Credits nicht doppelt verbraucht werden.",
+      "runningHelp": "Eine Unternehmenssuche läuft. Laden Sie die Seite neu, um das Ergebnis zu prüfen.",
+      "reviewRequired": "Prüfen Sie dieses Unternehmen, bevor Sie fortfahren.",
+      "companyPagination": "Seitennavigation der Unternehmen",
+      "reasons": {
+        "campaignDomainExcluded": "Durch die Domain-Liste dieser Kampagne ausgeschlossen.",
+        "countryMismatch": "Das Land passt nicht zu dieser Kampagne.",
+        "platformMismatch": "Die Plattform passt nicht zu dieser Kampagne.",
+        "teamSizeMismatch": "Die Teamgröße liegt außerhalb des gespeicherten Bereichs.",
+        "revenueMismatch": "Der Umsatz liegt außerhalb des gespeicherten Bereichs.",
+        "playbookDomainExcluded": "Die Domain ist durch das Playbook ausgeschlossen.",
+        "playbookCompanyExcluded": "Das Unternehmen ist durch das Playbook ausgeschlossen.",
+        "relationshipExcluded": "Bestehende Beziehung von der Kaltakquise ausgeschlossen.",
+        "companyContacted": "Das Unternehmen wurde innerhalb der Schutzfrist bereits kontaktiert.",
+        "existingProspect": "Für dieses Unternehmen besteht bereits ein Kontakt.",
+        "otherCampaign": "Dieses Unternehmen wird bereits in einer anderen Kampagne recherchiert.",
+        "suppressed": "Dieses Unternehmen steht auf der gemeinsamen Kontaktsperrliste.",
+        "criteriaChanged": "Die Kriterien haben sich geändert; recherchieren Sie dieses Unternehmen erneut."
+      },
+      "errors": {
+        "provider-configuration": "Verbinden Sie diesen Anbieter vor der Suche unter Integrationen.",
+        "provider-input": "Dieser Anbieter kann die gespeicherten Kriterien nicht verwenden. Prüfen Sie Land, Plattform und Zahlenfilter.",
+        "provider-access": "Der Anbieter hat den Zugriff abgelehnt. Prüfen Sie den API-Schlüssel und den Suchzugriff unter Integrationen.",
+        "provider-quota": "Das Credit- oder Nutzungslimit des Anbieters wurde erreicht. Prüfen Sie Ihren Tarif.",
+        "provider-rate-limit": "Der Anbieter begrenzt Anfragen vorübergehend. Warten Sie vor dem nächsten Durchlauf.",
+        "provider-contract": "Der Anbieter hat eine unerwartete Antwort geliefert. Diese Anfrage muss geprüft werden.",
+        "provider-uncertain": "Die Anfrage wurde möglicherweise verarbeitet. Prüfen Sie das Ergebnis, bevor Sie es erneut versuchen.",
+        "provider-unavailable": "Der Anbieter ist nicht verfügbar. Prüfen Sie die letzte Anfrage, bevor Sie es erneut versuchen.",
+        "campaign-criteria-changed": "Die Kampagnenkriterien haben sich geändert. Laden Sie die Seite neu und prüfen Sie die aktuelle Version.",
+        "campaign-paused": "Setzen Sie diese Kampagne vor der Suche in den Einstellungen fort.",
+        "campaign-run-unresolved": "Eine frühere Anfrage läuft noch oder muss abgeglichen werden. Prüfen Sie sie vor dem nächsten Durchlauf.",
+        "campaign-source-exhausted": "Für die aktuellen Kriterien hat diese Quelle keine weiteren Ergebnisse. Wählen Sie eine andere Quelle oder passen Sie die Kriterien an.",
+        "provider-plan-required": "Ihr Apollo-Tarif enthält keine Plattformfilter. Starten Sie eine Testversion mit diesen Filtern oder wechseln Sie den Tarif und versuchen Sie es erneut.",
+        "provider-clay-plan-required": "Clay erfordert für diese Unternehmensfilter einen kostenpflichtigen Tarif. Aktualisieren Sie den Tarif vor dieser Suche.",
+        "campaign-generation-invalid": "Diese Claude-Vorschau ist nicht mehr verfügbar. Erstellen Sie vor dem Speichern eine neue Vorschau.",
+        "campaign-playbook-changed": "Das Playbook hat sich seit der Erstellung dieser Vorschau geändert. Erstellen Sie vor dem Speichern eine neue Vorschau.",
+        "campaign-archived": "Diese Kampagne ist archiviert. Ändern Sie den Status, bevor Sie Kriterien generieren."
+      },
+      "objectiveHelp": "Beschreiben Sie die Zielgruppe. Nutzen Sie die strukturierten Filter unten für die Anbietersuche.",
+      "qualificationHelp": "Prüfliste für das Team. Die Anbietersuche prüft diese Anforderungen nicht automatisch.",
+      "discoverySavedCriteria": "Die Suche verwendet die gespeicherten Kriterien in Version {version}. Speichern Sie Ihre Vorschau oder Änderungen, bevor Sie damit suchen.",
+      "discoverySourceHelp": {
+        "auto": "Suchen Sie bis zu 25 Unternehmen pro Anfrage. Zuerst wird Apollo genutzt, danach Clay, sobald Apollos Ergebnisse erschöpft sind. Anbieterfehler stoppen die Suche.",
+        "apollo": "Suchen Sie bis zu 25 Unternehmen in Apollo mit den gespeicherten Kriterien dieser Kampagne.",
+        "clay": "Suchen Sie bis zu 25 Unternehmen in Clay mit den gespeicherten Kriterien dieser Kampagne."
+      },
+      "discoveryPreviewPending": "Eine Kriterienvorschau wartet auf Ihre Prüfung. Speichern oder verwerfen Sie sie, bevor Sie Unternehmen suchen.",
+      "companySearchFailedTitle": "Die Suche konnte nicht ausgeführt werden",
+      "companySearchFailedDescription": "Es wurden keine Unternehmen hinzugefügt. Beheben Sie das oben angezeigte Problem und versuchen Sie es erneut.",
+      "manualClaude": "Claude manuell verwenden",
+      "viewContactOptional": "Kontakt ansehen",
+      "automaticContactsHelp": "Aktive Kampagnen prüfen jedes passende Unternehmen, finden und verifizieren einen Kontakt und erstellen anschließend automatisch dessen E-Mail-Sequenz für die Warteschlange. Die Kontaktansicht ist optional; die Versandprüfungen gelten weiterhin."
+    },
+    "warmup": {
+      "title": "Warmup",
+      "detailTitle": "Postfachbereitschaft",
+      "description": "Prüfen Sie die Postfacheinrichtung und planen Sie einen schrittweisen Versand für Ihre Domains.",
+      "email": "Postfach",
+      "senderPool": "Absenderpool",
+      "active": "Aktiver Absender",
+      "inactive": "Inaktiver Absender",
+      "connection": "Verbindung",
+      "connectionSaved": "Verbindung gespeichert",
+      "notConnected": "Nicht verbunden",
+      "checks": "Bereitschaftsprüfungen",
+      "unchecked": "Noch nicht geprüft",
+      "manage": "Postfach verwalten",
+      "networkTitle": "Gemeinsames Warmbly-Netzwerk",
+      "networkHelp": "Für das Warmup ist das gemeinsame Netzwerk von Warmbly ausgewählt. Verbinden Sie das Netzwerk, bevor Sie den Versand starten; Postfachprüfungen und gespeicherte Pläne bleiben verfügbar.",
+      "scopeHelp": "Diese Prüfungen umfassen DNS-Einträge, Postfachzugriff und gespeicherte Bereitschaftsbestätigungen. Posteingangsplatzierung und Reputation bleiben unbekannt.",
+      "addMailboxes": "Absenderpostfächer verwalten",
+      "connectMailboxes": "Postfächer verbinden",
+      "emptyTitle": "Keine Absenderpostfächer gespeichert",
+      "emptyDescription": "Fügen Sie Ihre Postfachadressen zum Playbook hinzu und verbinden Sie sie unter Integrationen.",
+      "pagination": "Seitennavigation der Postfächer",
+      "page": "Seite {page, number} von {pages, number}",
+      "firstPage": "Erste Seite",
+      "previousPage": "Vorherige Seite",
+      "nextPage": "Nächste Seite",
+      "lastPage": "Letzte Seite",
+      "checksTitle": "Dieses Postfach prüfen",
+      "checkHelp": "Prüfen Sie Domain-Einträge, Postfachzugriff und Synchronisierung. Diese Prüfung versendet keine E-Mail.",
+      "dkimSelectors": "DKIM-Selektoren",
+      "dkimHelp": "Verwenden Sie die Selektoren Ihres E-Mail-Anbieters, durch Kommas getrennt. Ohne Angabe bleibt DKIM unbekannt.",
+      "checking": "Wird geprüft…",
+      "checkAction": "Bereitschaft prüfen",
+      "checkedAt": "Geprüft: {date}",
+      "uncheckedHelp": "Führen Sie eine Prüfung durch, um die erste Beobachtung für dieses Postfach zu speichern.",
+      "dnsRecords": "DNS-Beobachtungen",
+      "selectorReceipt": "Selektoren: {selectors}",
+      "recordDomain": "Eintragsdomain: {domain}",
+      "none": "Keine angegeben",
+      "planTitle": "Volumenplan",
+      "planHelp": "Speichern Sie das Startvolumen, die tägliche Steigerung und die Obergrenze für Warmbly. Die Limits des Absenders und des Playbooks gelten weiterhin.",
+      "initialDailyCap": "Anfängliche Nachrichten pro Tag",
+      "dailyIncrease": "Tägliche Steigerung",
+      "maximumDailyCap": "Maximale Nachrichten pro Tag",
+      "invalidPlan": "Verwenden Sie ganze Zahlen. Das Maximum muss mindestens dem Startvolumen entsprechen und darf 15 nicht überschreiten.",
+      "saving": "Wird gespeichert…",
+      "savePlan": "Plan speichern",
+      "planStatus": "Planstatus",
+      "planningOnly": "Nur Planung",
+      "previewCap": "Anfänglicher begrenzter Rahmen",
+      "messagesPerDay": "{count, number} Nachrichten/Tag",
+      "planScope": "Das Speichern dieses Plans startet kein Warmup. Warmbly steuert die tägliche Steigerung und kann sie anhand seiner Beobachtungen aussetzen oder das Volumen reduzieren. Diese Vorschau zeigt konfigurierte Limits, keinen erfassten Gesundheitsstatus des Postfachs.",
+      "loadError": "Postfachinformationen konnten nicht geladen werden. Laden Sie die Seite neu.",
+      "missingMailbox": "Diese Adresse gehört nicht zu den Absenderpostfächern im Playbook.",
+      "readiness": {
+        "needsAttention": "Prüfung erforderlich",
+        "needsChecks": "Weitere Prüfungen nötig",
+        "checksPassed": "Einrichtungsprüfungen bestanden"
+      },
+      "states": {
+        "present": "Vorhanden",
+        "missing": "Fehlt",
+        "invalid": "Prüfung erforderlich",
+        "unknown": "Unbekannt"
+      },
+      "checkLabels": {
+        "mx": "MX",
+        "spf": "SPF",
+        "dkim": "DKIM",
+        "dmarc": "DMARC",
+        "connection": "Postfachzugriff",
+        "sync": "Postfachsynchronisierung",
+        "provider": "Anbieterstatus",
+        "history": "Verlauf abgeglichen",
+        "test": "Versand- und Antworttest"
+      },
+      "mailboxesTitle": "Absenderpostfächer"
+    },
+    "warmbly": {
+      "title": "Warmbly-Netzwerk",
+      "description": "Verbinden Sie Ihr Warmbly-Konto, um das Warmup im gemeinsamen Netzwerk hier zu verwalten. Verbinden Sie die Postfächer in Warmbly; Postfachpasswörter werden nicht aus Outbound übertragen.",
+      "connected": "API-Schlüssel geprüft",
+      "notConnected": "Nicht verbunden",
+      "unknown": "Unbekannt",
+      "openWarmbly": "Warmbly öffnen",
+      "refresh": "Status aktualisieren",
+      "replaceKey": "API-Schlüssel ersetzen",
+      "connectKey": "Warmbly verbinden",
+      "apiKey": "Warmbly-API-Schlüssel",
+      "keyHelp": "Verwenden Sie einen Workspace-Schlüssel mit READ_EMAILS- und WRITE_EMAILS-Berechtigungen. Der Schlüssel wird geprüft und verschlüsselt gespeichert; gespeicherte Schlüssel werden nie angezeigt.",
+      "showKey": "API-Schlüssel anzeigen",
+      "hideKey": "API-Schlüssel verbergen",
+      "invalidKey": "Geben Sie einen gültigen Warmbly-Workspace-API-Schlüssel ein.",
+      "saveKey": "API-Schlüssel speichern",
+      "updated": "Netzwerkstatus aktualisiert",
+      "email": "Postfach",
+      "state": "Netzwerkstatus",
+      "maximum": "Tagesobergrenze",
+      "perDay": "{count, number}/Tag",
+      "mailboxChecks": "Postfachprüfungen",
+      "checksRequired": "Speichern Sie einen Volumenplan und bestehen Sie eine aktuelle DNS- und Postfachprüfung, bevor Sie starten. Das Postfach muss in Warmbly aktiv sein.",
+      "startHelp": "Starten und Fortsetzen wenden den gespeicherten Volumenplan an, bevor das Netzwerk-Warmup aktiviert wird. Der Outbound-Versand für dieses Postfach bleibt während des Warmups angehalten.",
+      "pendingHelp": "Eine frühere Aktion erfordert eine Statusprüfung. Aktualisieren Sie vor einem erneuten Versuch, damit sie nicht wiederholt wird.",
+      "pending": "Statusprüfung erforderlich",
+      "emptyTitle": "Keine registrierten Postfächer auf dieser Seite",
+      "emptyDescription": "Verbinden Sie Postfächer in Warmbly und speichern Sie dieselben Adressen im Playbook. Falls weitere Seiten vorhanden sind, suchen Sie dort weiter.",
+      "page": "Seite {page, number}",
+      "previous": "Zurück",
+      "next": "Weiter",
+      "loadError": "Das Warmbly-Netzwerk konnte nicht geladen werden. Prüfen Sie die Verbindung und aktualisieren Sie.",
+      "actionError": "Die Aktion konnte nicht abgeschlossen werden. Aktualisieren Sie das Netzwerk und prüfen Sie Berechtigungen und Limits vor einem erneuten Versuch.",
+      "accessError": "Warmbly hat den Zugriff abgelehnt. Prüfen Sie den API-Schlüssel und seine READ_EMAILS- und WRITE_EMAILS-Berechtigungen.",
+      "readinessError": "Führen Sie eine aktuelle Postfachprüfung durch und beheben Sie Probleme mit MX, SPF, DKIM und DMARC vor dem Start.",
+      "limitError": "Die gespeicherte Volumenobergrenze überschreitet das Playbook- oder Postfachlimit. Senken Sie sie vor dem Start.",
+      "activeError": "Aktivieren Sie dieses Postfach in Warmbly, bevor Sie das Warmup starten.",
+      "rampError": "Warmbly hat den gespeicherten Volumenplan nicht bestätigt. Aktualisieren Sie den Status vor einem erneuten Versuch.",
+      "planChangedError": "Der Volumenplan wurde während der Einrichtung geändert. Aktualisieren Sie vor dem Start.",
+      "stateError": "Warmbly hat den angeforderten Zustand nicht bestätigt. Aktualisieren Sie, um das Ergebnis vor einer weiteren Aktion zu prüfen.",
+      "registeredError": "Speichern Sie diese genaue Postfachadresse im Playbook, bevor Sie ihr Warmup verwalten.",
+      "states": {
+        "off": "Aus",
+        "running": "Läuft",
+        "paused": "Pausiert",
+        "unknown": "Unbekannt"
+      },
+      "actions": {
+        "start": "Starten",
+        "pause": "Pausieren",
+        "resume": "Fortsetzen",
+        "stop": "Stoppen"
+      },
+      "errors": {
+        "provider-key-invalid": "Geben Sie einen gültigen Warmbly-Workspace-API-Schlüssel ein.",
+        "provider-key-unavailable": "Das Warmbly-Netzwerk konnte nicht geladen werden. Prüfen Sie die Verbindung und aktualisieren Sie.",
+        "provider-key-encryption": "Die Aktion konnte nicht abgeschlossen werden. Aktualisieren Sie das Netzwerk und prüfen Sie Berechtigungen und Limits vor einem erneuten Versuch.",
+        "provider-key-save-failed": "Die Aktion konnte nicht abgeschlossen werden. Aktualisieren Sie das Netzwerk und prüfen Sie Berechtigungen und Limits vor einem erneuten Versuch."
+      }
+    },
+    "claude": {
+      "title": "Claude",
+      "description": "Entwerfen Sie Kampagnenkriterien mit Claude und prüfen Sie jede Änderung vor dem Speichern.",
+      "setupHelp": "Erstellen Sie einen API-Schlüssel in Claude Console und verbinden Sie ihn hier.",
+      "billingHelp": "API-Anfragen nutzen Ihr Console-Guthaben und gegebenenfalls verfügbare Zusatzguthaben. Die Schlüsselprüfung bestätigt kein verfügbares API-Guthaben.",
+      "keyLabel": "Claude-API-Schlüssel",
+      "keyHelp": "Der Schlüssel wird vor dem Speichern geprüft und verschlüsselt. Gespeicherte Schlüssel werden nicht erneut angezeigt.",
+      "keyRequired": "Fügen Sie Ihren Claude-API-Schlüssel ein.",
+      "invalid": "Geben Sie einen gültigen Wert ein.",
+      "showKey": "API-Schlüssel anzeigen",
+      "hideKey": "API-Schlüssel ausblenden",
+      "modelLabel": "Claude-Modell",
+      "workspaceLabel": "Arbeitsbereich-ID (optional)",
+      "workspaceHelp": "Lassen Sie das Feld bei einem arbeitsbereichsgebundenen Schlüssel leer. Andernfalls geben Sie Ihre Console-Arbeitsbereich-ID ein.",
+      "connected": "Verbunden",
+      "notConnected": "Nicht verbunden",
+      "unknown": "Der Claude-Verbindungsstatus konnte nicht gelesen werden.",
+      "advanced": "Modell und Arbeitsbereich",
+      "saving": "Wird geprüft und gespeichert…",
+      "keySaved": "Claude-API-Schlüssel geprüft und gespeichert.",
+      "saveError": "Die Claude-Verbindung konnte nicht gespeichert werden. Versuchen Sie es erneut.",
+      "connectHelp": "Verbinden Sie Ihren Claude-API-Schlüssel unter Integrationen, um hier Kriterien zu entwerfen.",
+      "generationHelp": "Claude nutzt die gespeicherten Kriterien dieser Kampagne, Ihr Playbook und den Kontext unten. Sie erhalten eine Vorschau zur Prüfung; nichts wird automatisch gespeichert.",
+      "contextLabel": "Zusätzlicher ecentic-Kontext (optional)",
+      "contextHelp": "Beschreiben Sie gesuchte Unternehmen, Einschränkungen oder Änderungen an den gespeicherten Kriterien. Claude liest Ihre Unterhaltungen oder die Erinnerung der Claude-App nicht automatisch.",
+      "contextInvalid": "Begrenzen Sie den zusätzlichen Kontext auf 50.000 Zeichen.",
+      "generating": "Claude-Vorschau wird erstellt…",
+      "previewReady": "Die Claude-Vorschau ist bereit. Prüfen Sie die Felder unten vor dem Speichern.",
+      "previewPending": "Speichern oder verwerfen Sie die aktuelle Vorschau, bevor Sie eine neue erstellen.",
+      "recoveryHelp": "Dieser Browser merkt sich die letzte Claude-Anfrage für diese Kampagne. Vorschau wiederherstellen prüft sie ohne neue Generierung. Eine neue Generierung kann weiteres Guthaben verbrauchen, auch wenn die vorige Antwort nicht angekommen ist.",
+      "stalePreview": "Die Kampagnenkriterien haben sich geändert. Laden Sie die Seite neu und erstellen Sie eine neue Vorschau.",
+      "generationError": "Die Claude-Vorschau konnte nicht abgerufen werden. Versuchen Sie, sie wiederherzustellen, bevor Sie eine weitere Anfrage starten.",
+      "connection": {
+        "action": {
+          "primary": "API-Schlüssel speichern",
+          "secondary": "API-Schlüssel ersetzen",
+          "tertiary": "Claude Console öffnen"
+        }
+      },
+      "generation": {
+        "action": {
+          "primary": "Kriterien mit Claude entwerfen",
+          "secondary": "Vorschau wiederherstellen",
+          "tertiary": "Erneut generieren",
+          "quaternary": "Claude verbinden"
+        }
+      },
+      "errors": {
+        "claude-not-configured": "Verbinden Sie zuerst einen Claude-API-Schlüssel unter Integrationen.",
+        "claude-access-denied": "Claude hat den Zugriff abgelehnt. Prüfen Sie API-Schlüssel und Arbeitsbereich unter Integrationen.",
+        "claude-credit-required": "Claude benötigt verfügbares API-Guthaben. Prüfen Sie Ihr Console-Guthaben und verfügbare Zusatzguthaben.",
+        "claude-rate-limited": "Das Anfragelimit von Claude ist erreicht. Warten Sie vor einer weiteren Anfrage.",
+        "claude-model-unavailable": "Dieses Claude-Modell ist für den verbundenen Schlüssel nicht verfügbar. Wählen Sie unter Integrationen ein anderes Modell.",
+        "claude-request-invalid": "Claude konnte diese Anfrage nicht annehmen. Prüfen Sie Kontext und Kampagnenkriterien.",
+        "claude-generation-running": "Claude verarbeitet diese Anfrage noch. Versuchen Sie in Kürze, die Vorschau wiederherzustellen.",
+        "claude-generation-uncertain": "Das Ergebnis der Anfrage ist unklar. Stellen Sie die Vorschau wieder her, bevor Sie eine neue Generierung erwägen.",
+        "claude-generation-failed": "Diese Generierung hat keine nutzbare Vorschau geliefert. Prüfen Sie den Kontext vor einer erneuten Generierung.",
+        "claude-generation-missing": "Für diese Anfrage wurde keine gespeicherte Vorschau gefunden. Sie können ausdrücklich eine neue Generierung starten.",
+        "provider-key-invalid": "Prüfen Sie die Zugangsdaten und Pflichtfelder und versuchen Sie es erneut.",
+        "provider-key-unavailable": "Der Anbieter ist nicht erreichbar. Bitte versuchen Sie es erneut.",
+        "provider-key-encryption": "Der Server konnte diese Zugangsdaten nicht verschlüsseln. Bitten Sie einen Administrator, die Verschlüsselungskonfiguration zu prüfen.",
+        "provider-key-save-failed": "Diese Zugangsdaten konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+        "campaign-archived": "Diese Kampagne ist archiviert. Ändern Sie den Status, bevor Sie Kriterien generieren.",
+        "campaign-criteria-changed": "Die Kampagnenkriterien haben sich geändert. Laden Sie die Seite neu und prüfen Sie die aktuelle Version."
+      },
+      "creditsHelp": "Falls Ihr Abonnement API-Guthaben enthält, aktivieren Sie es unter Claude → Einstellungen → Abrechnung → API-Guthaben und verknüpfen Sie die Console-Organisation, zu der dieser Schlüssel gehört.",
+      "recovering": "Gespeicherte Vorschau wird geprüft…",
+      "storageUnavailable": "Der Browserspeicher ist nicht verfügbar. Erlauben Sie der Website das Speichern, um Claude-Vorschauen sichern und wiederherstellen zu können. Es wurde keine neue Generierung gestartet."
+    },
+    "automation": {
+      "title": "Automatische Kampagnenarbeit",
+      "help": "Aktive Kampagnen laufen im Hintergrund weiter. Jetzt ausführen verarbeitet die nächste verfügbare Aufgabe.",
+      "modeOff": "Automatischer Modus aus",
+      "campaignInactive": "Keine aktive Kampagne",
+      "working": "In Bearbeitung",
+      "waiting": "Wartet auf nächste Aufgabe",
+      "unknownStatus": "Status nicht verfügbar",
+      "unknownStage": "Schritt nicht verfügbar",
+      "unknownReason": "Prüfen Sie diesen Datensatz, bevor Sie fortfahren.",
+      "company": "Unternehmen",
+      "stage": "Aktueller Schritt",
+      "status": "Status",
+      "reason": "Grund der Zurückhaltung",
+      "noBlocker": "—",
+      "openProspect": "Interessenten öffnen",
+      "enableHelp": "Aktivieren Sie den automatischen Modus im Playbook, um die automatische Kampagnenarbeit zu starten.",
+      "previewPending": "Automatische Arbeit nutzt gespeicherte Kriterien. Speichern oder verwerfen Sie die Vorschau, bevor Sie hier starten.",
+      "pauseHelp": "Eine Pause stoppt neue Vorbereitungsschritte. Eine laufende Anfrage kann noch abgeschlossen werden.",
+      "statusError": "Der Status konnte nicht aktualisiert werden. Die angezeigten Daten sind möglicherweise veraltet.",
+      "actionError": "Diese Aktion konnte nicht abgeschlossen werden. Aktualisieren Sie den Status und versuchen Sie es erneut.",
+      "campaignStarted": "Kampagne aktiviert. Die nächste Vorbereitungsaufgabe wurde geprüft.",
+      "campaignPaused": "Kampagne pausiert.",
+      "runComplete": "Die nächste verfügbare Aufgabe wurde geprüft.",
+      "refreshed": "Status aktualisiert.",
+      "processing": "Wird verarbeitet…",
+      "preparedHelp": "Vorbereitet bedeutet, dass Kontakt und Nachrichten die Vorbereitung bestanden haben. Der Versandprozess prüft weiterhin jede E-Mail vor dem Senden.",
+      "empty": "Noch keine Vorbereitungsdatensätze. Aktivieren Sie eine Kampagne mit gespeicherten Unternehmen, um zu beginnen.",
+      "deliveryTitle": "E-Mail-Versand",
+      "deliveryReady": "Einrichtung geprüft",
+      "deliveryBlocked": "Versand blockiert",
+      "deliveryHelp": "Jede E-Mail unterliegt weiterhin aktuellen Versandprüfungen, Zeitabständen, Ausschlüssen und Warmup-Sperren.",
+      "pagination": "Seiten der automatischen Arbeit",
+      "counts": {
+        "queued": "In Warteschlange",
+        "running": "In Bearbeitung",
+        "held": "Zurückgehalten",
+        "uncertain": "Unklar",
+        "complete": "Vorbereitet"
+      },
+      "statuses": {
+        "queued": "In Warteschlange",
+        "running": "In Bearbeitung",
+        "held": "Zurückgehalten",
+        "uncertain": "Unklar",
+        "complete": "Vorbereitet"
+      },
+      "action": {
+        "primary": "Jetzt ausführen",
+        "secondary": "Status aktualisieren",
+        "tertiary": "Playbook öffnen",
+        "quaternary": "Postfächer verwalten"
+      },
+      "campaign": {
+        "action": {
+          "primary": "Kampagne starten",
+          "secondary": "Kampagne pausieren"
+        }
+      },
+      "stages": {
+        "companyFacts": "Unternehmensdaten prüfen",
+        "qualify": "Unternehmen und Produkt prüfen",
+        "findContacts": "Kontakte suchen",
+        "selectContact": "Aktuelle Position prüfen",
+        "promote": "Interessenten anlegen",
+        "enrich": "Geschäftliche E-Mail suchen",
+        "applyEmail": "E-Mail-Adresse speichern",
+        "verify": "E-Mail verifizieren",
+        "pollVerification": "Auf Verifizierung warten",
+        "applyVerification": "Verifizierung speichern",
+        "mx": "E-Mail-Host prüfen",
+        "applyMx": "Host-Prüfung speichern",
+        "draft": "Nachrichten vorbereiten",
+        "applyDraft": "Nachrichten speichern",
+        "approve": "Berechtigung prüfen",
+        "complete": "Vorbereitung abgeschlossen"
+      },
+      "reasons": {
+        "automation-disabled": "Der automatische Modus ist aus.",
+        "campaign-inactive": "Die Kampagne ist nicht aktiv.",
+        "campaign-criteria-changed": "Die Kriterien wurden geändert; diese Arbeit wird zurückgehalten.",
+        "playbook-changed": "Das Playbook wurde geändert; diese Arbeit wird zurückgehalten.",
+        "company-unavailable": "Das Unternehmen ist ausgeschlossen oder nicht mehr verfügbar.",
+        "qualification-held": "Unternehmens- oder Produktnachweise haben die Prüfung nicht bestanden.",
+        "contact-held": "Es wurde kein geeigneter aktueller Kontakt bestätigt.",
+        "email-held": "Es wurde keine geeignete geschäftliche E-Mail-Adresse gefunden.",
+        "verification-held": "Die E-Mail-Verifizierung wurde nicht bestanden.",
+        "mx-held": "Der E-Mail-Host hat die Prüfungen nicht bestanden.",
+        "draft-held": "Der Entwurf hat die Textprüfungen nicht bestanden.",
+        "approval-held": "Die Nachricht hat die abschließenden Eignungsprüfungen nicht bestanden.",
+        "provider-input": "Der Anbieter konnte diese Eingabe nicht verarbeiten.",
+        "lease-expired": "Eine frühere Anfrage wurde nicht ordnungsgemäß abgeschlossen. Prüfen Sie das gespeicherte Ergebnis.",
+        "provider-configuration": "Verbinden Sie diesen Anbieter vor der Suche unter Integrationen.",
+        "provider-access": "Der Anbieter hat den Zugriff abgelehnt. Prüfen Sie den API-Schlüssel und den Suchzugriff unter Integrationen.",
+        "provider-quota": "Das Credit- oder Nutzungslimit des Anbieters wurde erreicht. Prüfen Sie Ihren Tarif.",
+        "provider-rate-limit": "Der Anbieter begrenzt Anfragen vorübergehend. Warten Sie vor dem nächsten Durchlauf.",
+        "provider-uncertain": "Die Anfrage wurde möglicherweise verarbeitet. Prüfen Sie das Ergebnis, bevor Sie es erneut versuchen."
+      },
+      "deliveryBlockers": {
+        "sendingPaused": "Der Versand ist im Playbook pausiert.",
+        "senderUnconfirmed": "Die Absenderidentität ist nicht bestätigt.",
+        "historyUnconfirmed": "Der Import früherer Sendungen und Ausschlüsse ist nicht bestätigt.",
+        "competingSendersActive": "Die Pause anderer Versandsysteme ist nicht bestätigt.",
+        "senderUntested": "Ein Absendertest wurde nicht bestätigt.",
+        "inboxesMissing": "Mindestens ein aktives Absenderpostfach ist nicht verbunden.",
+        "inboxDisabled": "Ein Absenderpostfach ist deaktiviert oder getrennt.",
+        "inboxSyncIncomplete": "Postfachverlauf oder Antwortsynchronisierung benötigt Aufmerksamkeit.",
+        "senderIdentityMismatch": "Ein Postfach entspricht nicht der gespeicherten Absenderidentität."
+      },
+      "page": "Seite {page, number} von {pages, number}",
+      "firstPage": "Erste Seite",
+      "previousPage": "Vorherige Seite",
+      "nextPage": "Nächste Seite",
+      "lastPage": "Letzte Seite",
+      "volumeTitle": "Postfachvolumen",
+      "currentCap": "Aktuelle Tagesgrenze",
+      "targetCap": "Angestrebte Obergrenze",
+      "rampHeld": "Erhöhung pausiert",
+      "rampHelp": "Postfächer starten mit 15 pro Tag. Die Grenze steigt nur dann um 5, wenn ein abgeschlossener Tag die aktuelle Grenze ohne beobachteten Rückläufer erreicht hat. Ein beobachteter Rückläufer setzt die Grenze auf 15 zurück. Ein Ziel garantiert weder das Versandvolumen noch die Postfachreputation."
+    },
+    "sent": {
+      "title": "Gesendet",
+      "description": "Angenommene E-Mails und Versandversuche mit gespeichertem Nachrichtentext und Verlauf der Folge-E-Mails.",
+      "detailTitle": "Nachricht und Sequenz",
+      "detailDescription": "Gespeicherter Inhalt, Anbieterergebnis und Aktivitäten dieser Unterhaltung.",
+      "searchLabel": "Gesendete Nachrichten durchsuchen",
+      "searchPlaceholder": "Empfänger, Unternehmen, Kampagne, Postfach oder Betreff",
+      "statusFilter": "Versandstatus",
+      "kindFilter": "Nachrichtentyp",
+      "allStatuses": "Alle Status",
+      "allKinds": "Alle Nachrichten",
+      "outreach": "Kontaktaufnahme",
+      "test": "Test",
+      "bouncedFilter": "Sequenzen mit Rückläufer",
+      "count": "{count, plural, one {# erfasster Versuch} other {# erfasste Versuche}}",
+      "emptyTitle": "Noch keine Versandversuche",
+      "emptyDescription": "Nachrichten erscheinen hier, sobald Outbound einen Versandversuch erfasst.",
+      "noMatches": "Keine Nachrichten entsprechen diesen Filtern.",
+      "error": "Gesendete Nachrichten konnten nicht geladen werden. Versuchen Sie es erneut.",
+      "missing": "Dieser Versanddatensatz wurde nicht gefunden.",
+      "acceptanceNote": "Angenommen bedeutet, dass der E-Mail-Anbieter die Nachricht angenommen hat. Die Zustellung im Posteingang ist damit nicht bestätigt.",
+      "timezone": "Zeiten werden in UTC angezeigt.",
+      "unknown": "Nicht erfasst",
+      "columns": {
+        "recipient": "Empfänger",
+        "company": "Unternehmen",
+        "campaign": "Kampagne",
+        "sender": "Absenderpostfach",
+        "subject": "Betreff",
+        "step": "Schritt",
+        "time": "Erfasst am",
+        "status": "Ergebnis"
+      },
+      "status": {
+        "accepted": "Angenommen",
+        "failed": "Fehlgeschlagen",
+        "uncertain": "Unklar",
+        "claimed": "In Vorbereitung"
+      },
+      "step": "E-Mail {step}",
+      "sequence": {
+        "title": "Folge-E-Mail-Sequenz",
+        "activity": "Unterhaltungsaktivität",
+        "status": "Aktueller Sequenzstatus",
+        "next": "Nächster möglicher Versand: {time}",
+        "noSchedule": "Derzeit ist keine Folge-E-Mail geplant.",
+        "scheduleNote": "Geplante Folge-E-Mails unterliegen weiterhin dem Versandzeitfenster und den Versandprüfungen.",
+        "bounced": "Rückläufer für diese Sequenz erfasst",
+        "bounceNote": "Der Rückläufer gehört zu dieser Unterhaltung; der gespeicherte Beleg nennt keinen bestimmten Schritt.",
+        "emptyActivity": "Bisher wurden keine Antworten oder Zustellaktivitäten erfasst.",
+        "limitedActivity": "Die letzten 100 Ereignisse dieser Unterhaltung werden angezeigt."
+      },
+      "message": {
+        "title": "Gespeicherte Nachricht",
+        "from": "Von",
+        "to": "An",
+        "subject": "Betreff",
+        "recorded": "Erfasst",
+        "providerId": "Nachrichten-ID des Anbieters",
+        "messageId": "Nachrichten-ID",
+        "contentMissing": "Der unveränderliche Nachrichtendatensatz fehlt oder seine Integritätsprüfung ist fehlgeschlagen. Der aktuelle Entwurf wird nicht als gesendeter Inhalt angezeigt.",
+        "failed": "Dieser Versuch ist fehlgeschlagen; der Versand dieses Inhalts ist nicht bestätigt.",
+        "uncertain": "Das Ergebnis ist unbekannt. Dieser Inhalt wurde möglicherweise gesendet; daraus folgt keine automatische Wiederholung.",
+        "claimed": "Dieser Versuch wurde vorbereitet; eine Annahme durch den Anbieter wurde noch nicht erfasst.",
+        "test": "Dies war ein Testversuch."
+      },
+      "activity": {
+        "sent": "Anbieter hat die Nachricht angenommen",
+        "sendFailed": "Versand fehlgeschlagen",
+        "sendUncertain": "Versandergebnis unklar",
+        "reply": "Antwort erhalten",
+        "bounce": "Rückläufer erhalten",
+        "optout": "Abmeldung erhalten",
+        "other": "Unterhaltung aktualisiert"
+      },
+      "action": {
+        "primary": "Nachricht öffnen",
+        "secondary": "Zurück zu Gesendet",
+        "tertiary": "Filter zurücksetzen",
+        "quaternary": "Suchen"
+      },
+      "pagination": {
+        "previous": "Zurück",
+        "next": "Weiter",
+        "page": "Seite {page} von {pages}"
+      }
+    },
+    "pipeline": {
+      "title": "Von Unternehmen zu Gesprächen",
+      "description": "Finden Sie passende Unternehmen, recherchieren Sie einen hilfreichen Ansatz und begleiten Sie jedes Gespräch bis zum Termin.",
+      "activeCampaigns": "Aktive Kampagnen",
+      "companies": "Unternehmen im Zielkreis",
+      "insights": "Recherche abgeschlossen",
+      "contacts": "Gespeicherte Kontakte",
+      "sequences": "Vorbereitete Sequenzen",
+      "held": "Handlungsbedarf",
+      "needsReply": "Zu bearbeitende Antworten",
+      "meetings": "Erfasste Termine",
+      "meetingsHelp": "Termine werden nur gezählt, wenn sie ausdrücklich erfasst wurden. Ein Klick auf den Buchungslink ist kein gebuchter Termin.",
+      "campaignsTitle": "Kampagnenfortschritt",
+      "scopeHelp": "Die Unternehmens- und Kontaktzahlen beziehen sich auf aktive Kampagnen und ihre aktuell gespeicherten Kriterien. Ein Unternehmen in der Recherche ist noch kein Kontakt.",
+      "openCampaigns": "Kampagnen öffnen",
+      "moreCampaigns": "Die zuletzt aktualisierten aktiven Kampagnen werden angezeigt. Öffnen Sie Kampagnen, um alle zu sehen.",
+      "emptyTitle": "Wählen Sie Ihre nächste Zielgruppe",
+      "emptyHelp": "Erstellen Sie eine Kampagne, speichern Sie die Zielkriterien und suchen Sie Unternehmen, um den Ablauf zu starten.",
+      "emptyAction": "Kampagne erstellen",
+      "workTitle": "Aktuelle Arbeit",
+      "workEmpty": "Derzeit erfordert keine Vorbereitung Ihre Aufmerksamkeit. Den vollständigen Verlauf finden Sie unter Kampagnen.",
+      "setupTitle": "Einrichtung und Steuerung",
+      "setupReady": "Die Verbindungseinstellungen sind vorhanden. Identität, Antworten, Versandabstände und Versandbedingungen werden weiterhin vor jedem Versand geprüft.",
+      "activityTitle": "In den letzten sieben Tagen angenommen",
+      "emailAccepted": "Angenommene E-Mails",
+      "linkedinAccepted": "Angenommene LinkedIn-Nachrichten",
+      "acceptedHelp": "Die Annahme bestätigt, dass der Anbieter eine Nachricht angenommen hat. Sie belegt keine Zustellung im Posteingang.",
+      "detailsTitle": "Automatisierung im Detail",
+      "reportTitle": "Wöchentlicher Aktivitätsbericht",
+      "refresh": "Aktualisieren",
+      "refreshing": "Wird aktualisiert…",
+      "automationOn": "Automatische Vorbereitung ist aktiviert",
+      "automationOff": "Automatische Vorbereitung ist pausiert",
+      "linkedinOff": "LinkedIn-Versand ist deaktiviert",
+      "automationHelp": "Aktivieren Sie den automatischen Modus im Playbook, um die Kampagnenvorbereitung fortzusetzen.",
+      "apolloMissing": "Verbinden Sie Apollo, um Unternehmen und aktuelle Kontakte zu finden.",
+      "azureMissing": "Konfigurieren Sie Azure, um Belege auszuwerten und Nachrichten vorzubereiten.",
+      "linkedinMissing": "Verbinden Sie das ausgewählte LinkedIn-Konto, bevor Sie seine Nachrichten aktivieren.",
+      "error": "Der aktuelle Fortschritt konnte nicht geladen werden. Aktualisieren Sie die Ansicht und versuchen Sie es erneut."
+    },
+    "conversations": {
+      "title": "Gespräche",
+      "description": "Lesen Sie Antworten, reagieren Sie mit passendem Kontext und führen Sie Interesse zu einem Termin.",
+      "detailDescription": "Das tatsächliche Gespräch, Ihre Antwort und der nächste Schritt an einem Ort.",
+      "list": {
+        "action": {
+          "primary": "Gespräch öffnen",
+          "secondary": "Alle Gespräche"
+        }
+      },
+      "columns": {
+        "person": "Person und Unternehmen",
+        "subject": "Gespräch",
+        "channel": "Kanal",
+        "stage": "Phase",
+        "updated": "Aktualisiert (UTC)"
+      },
+      "stage": {
+        "open": "Offen",
+        "interested": "Interessiert",
+        "question": "Hat eine Frage",
+        "later": "Später nachfassen",
+        "notInterested": "Kein Interesse",
+        "meetingBooked": "Termin bestätigt",
+        "meetingHeld": "Termin durchgeführt",
+        "closed": "Abgeschlossen"
+      },
+      "channel": {
+        "email": "E-Mail",
+        "linkedin": "LinkedIn"
+      },
+      "needsReply": "Antwort ausstehend",
+      "noSubject": "Gespräch",
+      "search": "Personen, Unternehmen oder Nachrichten suchen",
+      "allChannels": "Alle Kanäle",
+      "allStages": "Alle Phasen",
+      "count": "{count, plural, one {# Gespräch} other {# Gespräche}}",
+      "emptyTitle": "Hier erscheinen Ihre Gespräche",
+      "emptyDescription": "Die Antwortsynchronisierung der verbundenen Postfächer und von LinkedIn speichert hier tatsächliche Nachrichten. Frühere Ergebnisnotizen bleiben im Aktivitätsverlauf des jeweiligen Kontakts.",
+      "noMatches": "Keine passenden Gespräche",
+      "outcomeTitle": "Nächster Schritt",
+      "outcome": {
+        "action": {
+          "primary": "Phase speichern"
+        }
+      },
+      "meetingHelp": "Markieren Sie einen Termin erst nach der Bestätigung als bestätigt und nach dem Gespräch als durchgeführt. Das Teilen des Buchungslinks erfasst keine Buchung.",
+      "booking": {
+        "action": {
+          "primary": "Buchungsseite öffnen"
+        }
+      },
+      "replyTitle": "Ihre Antwort",
+      "replyHelp": "Vorschläge nutzen das Gespräch und das gespeicherte Playbook. Prüfen Sie den genauen Text, speichern Sie Änderungen und senden Sie dann vom oben angezeigten verbundenen Konto.",
+      "recoveryHelp": "Ein Vorschlag wurde angefordert. Prüfen Sie dieselbe Anfrage, um ein gespeichertes Ergebnis abzurufen, ohne eine neue Generierung zu starten.",
+      "recovery": {
+        "action": {
+          "primary": "Angeforderten Vorschlag prüfen"
+        }
+      },
+      "action": {
+        "primary": "Gespeicherte Antwort senden",
+        "secondary": "Entwurf speichern",
+        "tertiary": "Antwort vorschlagen",
+        "quaternary": "Aktualisieren"
+      },
+      "draftLabel": "Antwortentwurf",
+      "invalidBody": "Geben Sie eine Antwort mit 1–10.000 Zeichen ein.",
+      "unsaved": "Speichern Sie Änderungen vor dem Senden oder einem Phasenwechsel.",
+      "error": {
+        "changed": "Das Gespräch hat sich geändert. Laden Sie es neu und prüfen Sie die letzte Nachricht, bevor Sie fortfahren.",
+        "closed": "Dieses Gespräch ist abgeschlossen oder der Empfänger wurde von der Kontaktaufnahme ausgeschlossen.",
+        "stale": "Lesen Sie die letzte eingegangene Nachricht und speichern Sie vor dem Senden eine aktuelle Antwort.",
+        "unresolved": "Ein früherer Versand läuft noch oder sein Ergebnis ist unbekannt. Ein weiterer Versand bleibt gesperrt, bis das Ergebnis geklärt ist.",
+        "truncated": "Die letzte Nachricht ist unvollständig. Lesen Sie vor dem Antworten die vollständige Nachricht im verbundenen Postfach.",
+        "generationUncertain": "Das Ergebnis des Vorschlags ist nicht bestätigt. Beim Prüfen dieser Anfrage wird keine weitere Antwort generiert.",
+        "connection": "Das Sendekonto ist nicht verfügbar oder benötigt eine neue Antwortsynchronisierung. Prüfen Sie Integrationen.",
+        "controls": "Der Vorschlag entspricht nicht den gespeicherten Antwortregeln. Verfassen und prüfen Sie die Antwort selbst.",
+        "generic": "Diese Aktion konnte nicht abgeschlossen werden. Aktualisieren Sie das Gespräch und versuchen Sie es erneut."
+      },
+      "newestFirst": "Neueste Nachrichten zuerst",
+      "direction": {
+        "inbound": "Empfangen",
+        "outbound": "Gesendet"
+      },
+      "automated": "Automatische Nachricht",
+      "to": "An",
+      "emptyBody": "Diese Nachricht enthielt keinen Text.",
+      "truncated": "Nur ein Teil dieser Nachricht wurde gespeichert. Öffnen Sie die vollständige Nachricht im verbundenen Konto.",
+      "emptyMessages": "Bisher wurde kein Nachrichtentext gespeichert.",
+      "attemptsTitle": "Antwortversandverlauf",
+      "send": {
+        "accepted": "Vom Anbieter angenommen",
+        "failed": "Versand fehlgeschlagen",
+        "uncertain": "Versandergebnis unbekannt",
+        "starting": "Versand läuft"
+      },
+      "views": {
+        "label": "Anzeigen",
+        "all": "Alle Aktivitäten",
+        "needsReply": "Antwort ausstehend",
+        "sent": "Gesendet",
+        "scheduled": "Geplant"
+      },
+      "replyAccount": "Antworten von",
+      "activity": {
+        "kind": "Nachricht",
+        "time": "Zeit (UTC)",
+        "linkedinMessage": "LinkedIn-Nachricht",
+        "linkedinInvite": "LinkedIn-Einladung",
+        "reply": "Gesprächsantwort",
+        "scheduledHelp": "Hier stehen gespeicherte E-Mail-Sendezeiten. Pausen, Antwortprüfungen, Empfängerzeiten und Postfachlimits können sie verzögern. LinkedIn-Aktionen haben keine feste gespeicherte Sendezeit.",
+        "sentHelp": "Versandversuche für E-Mails, LinkedIn und Gesprächsantworten. Angenommen bedeutet, dass der Anbieter die Nachricht angenommen hat; Zustellung oder Öffnung sind damit nicht nachgewiesen.",
+        "empty": "Keine Aktivität für diese Ansicht."
+      }
+    }
+  }
+}

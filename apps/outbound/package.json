@@ -1,0 +1,60 @@
+{
+  "name": "outbound",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "next dev --hostname localhost --port 3001",
+    "build": "next build",
+    "start": "next start --hostname localhost --port 3001",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test src",
+    "lint": "biome check .",
+    "i18n:check": "bun scripts/check-i18n.ts",
+    "outbound:import": "bun scripts/outbound/import-legacy.ts"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "4.0.48",
+    "@ai-sdk/azure": "^4.0.59",
+    "@zenncore/icons": "workspace:*",
+    "@zenncore/inferred-form": "workspace:*",
+    "@zenncore/utils": "workspace:*",
+    "@zenncore/web": "workspace:*",
+    "ai": "^7.0.90",
+    "better-auth": "^1.7.2",
+    "drizzle-orm": "^1.0.0-rc.5-ab785fc",
+    "fast-xml-parser": "^5.11.1",
+    "html-to-text": "^10.0.1",
+    "imapflow": "^2.11.0",
+    "mailparser": "^3.14.3",
+    "next": "^16.3.4",
+    "next-intl": "^4.14.2",
+    "nodemailer": "^10.5.0",
+    "parse5": "^8.0.1",
+    "postgres": "^3.4.9",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "server-only": "^0.0.1",
+    "tldts": "^7.5.2",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@formatjs/icu-messageformat-parser": "3.5.17",
+    "@next/env": "^16.3.4",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/html-to-text": "^9.0.4",
+    "@types/mailparser": "^3.9.0",
+    "@types/node": "^25.9.5",
+    "@types/nodemailer": "^8.0.2",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "@zenncore/config": "workspace:*",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "bun-types": "^1.4.0",
+    "drizzle-kit": "^1.0.0-rc.5-ab785fc",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3"
+  }
+}

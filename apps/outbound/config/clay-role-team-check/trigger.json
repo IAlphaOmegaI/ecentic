@@ -1,0 +1,16 @@
+{
+  "triggerType": "manual",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "domain": { "type": "string", "description": "Canonical store domain from Outbound." },
+      "name": { "type": "string", "description": "Apollo contact name; empty when unavailable." },
+      "linkedin_url": { "type": "string", "description": "Apollo LinkedIn profile URL; empty when unavailable." },
+      "email": { "type": "string", "description": "Optional identity hint only; never verify or guess an address." },
+      "title": { "type": "string", "description": "Apollo title to compare with current public evidence." },
+      "company": { "type": "string", "description": "Optional Apollo company name." }
+    },
+    "required": ["domain", "title"],
+    "additionalProperties": false
+  }
+}
