@@ -48,6 +48,10 @@ Central navigation for product context, agent rules, and package/component docum
 
 - [Social preview images](./tasks/social-preview-images.md) — image routing, metadata defaults, and crawler checks
 
+### If you are creating a presentation
+
+- [Presentation design](./context/design.md#19-presentations) — generic typography, surfaces, illustrations and slide compositions; deck files stay outside the codebase
+
 ### If you are working on AI-surface scraping / capture
 
 - [LLM surface scraping plan](./tasks/llm-surface-scraping.md) — ScrapeLLM adapter, capture envelope, `/dev/llm-scraping` sandbox, phased rollout to cycles + sentinel

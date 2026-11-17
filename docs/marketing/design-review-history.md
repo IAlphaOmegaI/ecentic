@@ -424,3 +424,16 @@ HTML/CSS artwork and existing assets, with no copied Naratix artwork or claims.
 The follow-up asks for a more creative treatment with Excel-like tables and richer product
 illustrations. Show the sample catalog row becoming a clearer listing, keep the product prominent,
 and reduce empty card space. This changes the explanation artwork, not supported import formats.
+
+## Presentation guidance consolidation — 17 November 2026
+
+The user approved the presentation theme, then requested generic guidance in a dedicated
+subsection of the design canon and removal of presentation files from the application codebase.
+The [presentation section](../context/design.md#19-presentations) now records the accepted
+heavier typography, tight leading, aligned evidence, purposeful illustrations, top-only cutouts
+on final sections, continuous surfaces and restrained closing identity. Event-specific copy,
+claims and contact details are not part of the reusable rules.
+
+This section supersedes the separate repository presentation guide. Decks, previews and the
+template bundle were preserved outside the repository; shared website assets remain canonical.
+These presentation conventions do not change the website or dashboard defaults.

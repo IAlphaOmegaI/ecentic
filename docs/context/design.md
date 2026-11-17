@@ -1,6 +1,6 @@
 # ecentic design system
 
-The visual and interaction system for ecentic's public site, product workspace and onboarding.
+The visual and interaction system for ecentic's public site, product workspace, onboarding and presentations.
 Consolidated from the complete 10–12 November 2026 review archive and the user's subsequent
 selections, through the [shopping-reference review](../marketing/review-16-shopping.md),
 the [integrated-surface and editorial review](../marketing/review-17-surfaces.md),
@@ -23,7 +23,7 @@ behavior and claims. A visual request does not establish a new product capabilit
 Quick navigation: [foundations](#4-color-and-typography) · [rails](#5-layout-rails-and-line-ownership) ·
 [surfaces](#6-surface-light-and-cutouts) · [ASCII](#7-tonal-ascii) ·
 [Hairline](#8-hairline-figures-and-commerce-illustrations) · [interactions](#10-reusable-interaction-patterns) ·
-[page recipes](#13-public-route-recipes) · [implementation](#16-implementation-contract) ·
+[page recipes](#13-public-route-recipes) · [presentations](#19-presentations) · [implementation](#16-implementation-contract) ·
 [retired alternatives](#17-settled-decisions-and-retired-alternatives) · [verification](#18-verification-and-delivery).
 
 ## 1. What the design should communicate
@@ -1259,3 +1259,89 @@ explicitly global request.
 Update this guide when a new direction is accepted. Put it in the relevant section, record the
 supersession in the review ledger, and remove the obsolete instruction. A future agent should be
 able to implement the current system without reconstructing the entire conversation.
+
+## 19. Presentations
+
+Use this as the default presentation style unless a brief requests a different direction.
+Adapt the story, length and slide order to the audience; the design does not prescribe an event,
+slide count, offer, claim, script or contact information. These presentation-specific rules
+apply the shared typography, surface and illustration system without changing website or
+dashboard conventions.
+
+### Typography and hierarchy
+
+Use **LT Superior SemiBold** for headlines, stage labels and the main closing line. Use
+**Red Hat Display** for body copy, sources, contacts and numeric evidence, with bold blue
+type for major values. Select the actual semibold face rather than a lightweight family default.
+Keep headline leading tight and choose deliberate, compact line breaks.
+
+For a 16:9 slide authored at 1600 × 900, use these as starting points, scaling proportionally:
+
+| Role | Approximate size | Treatment |
+| --- | --- | --- |
+| Headline | 72–76 px | Semibold, tight leading |
+| Stage heading or closing line | 44–46 px | Semibold |
+| Body | 26–30 px | Regular, short readable lines |
+| Sources and supporting text | 20–24 px | Muted, with sufficient contrast |
+| Major evidence value | 100 px | Bold, brand blue |
+
+Use sentence case and simple words. Avoid decorative eyebrows, monospaced labels, loose
+headline spacing and tiny supporting copy. Keep one clear point dominant on each slide.
+
+### Surfaces, cutouts and spacing
+
+Use the shared light canvas, white reading surfaces, dark ink and brand blue. Light editorial
+slides explain; blue can anchor a roadmap or closing narrative. Reserve charcoal for a meaningful
+demonstration. Vary compositions deliberately rather than adding unrelated colored panels.
+
+Use shallow stepped shoulders aligned with the structural rails. At 1600 px width, a useful
+reference is 18 px shoulder depth, rails at x=80 and x=1520, and 96 px text gutters. Scale the
+geometry as a system rather than changing each corner independently.
+
+- Final process and contact sections have **top cutouts and straight bottom edges**. Do not
+  repeat decorative corners at the bottom.
+- Extend the last process surface all the way to the slide's bottom edge; do not leave an
+  unintended gray strip beneath it.
+- A bounded evidence band between a heading and a takeaway may have both top and bottom shoulders.
+- Keep copy, links and QR codes clear of the cut edges. Avoid nested padded cards and one-sided borders.
+- Modest rounding may soften the outer top corners of a blue field; it is not a treatment for every panel.
+
+A process surface may use one subtle, continuous horizontal gradient: white through roughly
+42% of its width, fading to pale blue (`#E9F2FF`) at the right edge. Keep it behind the complete
+region and preserve text contrast; do not place a separate gradient box behind the figure.
+
+### Compositions
+
+| Purpose | Composition |
+| --- | --- |
+| Evidence | Open, equally spaced columns. Stack a compact icon, large blue value, source and explanation. Align corresponding baselines and left edges; place the icon above the value rather than floating beside it. |
+| Process | One large, relevant illustration on the left and a short vertical sequence on the right. Use a fine spine, small square markers, semibold labels and concise explanations. Avoid bland text-only columns and redundant arrows between labels. |
+| Roadmap | Meaningful figures above one fine horizontal route, with square milestones, phase labels and short descriptions below. Keep stations equally legible without implying measured progress or guaranteed outcomes. |
+| Closing | A blue narrative field above a white contact section with top cutouts. Prioritize the call to action, then a short explanatory line. Group identity, website/contact links and a labeled QR along the bottom. |
+
+Use only the compositions the story needs. Keep the lowercase, unaccented **ecentic** lockup
+once in the closing footer by default, rather than repeating a logo at the top of every slide.
+
+### Illustration, content and delivery
+
+Use purposeful Hairline figures and Nucleo UI outline-duo icons under the existing
+[art contract](../../.agents/skills/ecentic-art/SKILL.md). Preserve recognizable silhouettes,
+physical proportions and projection-readable strokes. An object should explain its nearby idea;
+do not add decorative merchandise merely to fill space or repeat one subject across unrelated
+phases. Tonal artwork remains available when it serves the explanation.
+
+Keep the on-slide copy sparse. Move secondary proof and operational details into optional speaker
+notes when they crowd the slide, while retaining essential qualifications and sources with the
+evidence. Preserve supplied speaking scripts and distinguish optional material from the main
+script. Populate each deck from its current brief and sources; theme reuse does not validate old
+claims or establish new product capabilities.
+
+Render changed slides and inspect font weight, line spacing, alignment, figure silhouettes,
+surface continuity and clipping. Verify new or changed contact links and QR codes. Preserve
+editable text and diagrams in the source deck and export a PDF when needed. When an SVG renderer
+does not support stylesheet classes, resolve styles to explicit primitive attributes; match
+occlusion fills to the intended surface.
+
+Keep presentation files, rendered previews, template bundles, copied fonts and one-off build
+scripts **outside the application repository**. This subsection is the reusable design source;
+shared website assets remain in their canonical locations.
