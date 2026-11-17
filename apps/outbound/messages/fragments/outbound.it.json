@@ -480,6 +480,7 @@
         "heldCountries": "Codici dei paesi da tenere in sospeso",
         "excludedRoles": "Ruoli esclusi",
         "historyConfirmed": "Sono stati importati gli invii precedenti e i record di chi non va contattato",
+        "allowIncompleteHistory": "Consenti i contatti senza lo storico completo delle campagne precedenti",
         "competingSendersPaused": "Gli altri sistemi di invio per i contatti sono stati sospesi",
         "senderTested": "La casella del mittente ha superato un test controllato di invio e risposta",
         "senderEmails": "Caselle del mittente",
@@ -575,7 +576,8 @@
       "researchInstructionsHelp": "Descrivi le domande degli acquirenti, le varianti e i mercati esatti da confrontare e le prove da raccogliere da UCP, pagine prodotto o checkout. Registra le fonti e indica come sconosciuti i risultati non verificati o non disponibili.",
       "requireShoppingEvidenceHelp": "Sospendi la redazione e l’approvazione finché non viene registrata un’osservazione sull’esperienza di acquisto supportata da prove. Un dato su un ingrediente non dimostra, da solo, una difficoltà di acquisto.",
       "legacyFindingsTitle": "Formule di osservazione precedenti",
-      "legacyFindingsHelp": "Formule salvate per i precedenti controlli sui prodotti e sui dati mancanti. Quando sono richieste prove sull’esperienza di acquisto, i nuovi testi usano invece l’osservazione registrata su tale esperienza. Questi campi restano disponibili per i flussi di lavoro precedenti."
+      "legacyFindingsHelp": "Formule salvate per i precedenti controlli sui prodotti e sui dati mancanti. Quando sono richieste prove sull’esperienza di acquisto, i nuovi testi usano invece l’osservazione registrata su tale esperienza. Questi campi restano disponibili per i flussi di lavoro precedenti.",
+      "allowIncompleteHistoryHelp": "Puoi saltare l’importazione delle campagne precedenti. Qualcuno potrebbe ricevere un altro messaggio; le rinunce al contatto, i mancati recapiti e le esclusioni registrati restano validi."
     },
     "integrations": {
       "title": "Collega gli strumenti giusti",
@@ -1284,7 +1286,8 @@
         "sync": "Sincronizzazione della casella",
         "provider": "Stato del fornitore",
         "history": "Cronologia riconciliata",
-        "test": "Test di invio e risposta"
+        "test": "Test di invio e risposta",
+        "historyOptional": "Storico delle campagne precedenti facoltativo"
       },
       "mailboxesTitle": "Caselle mittenti"
     },

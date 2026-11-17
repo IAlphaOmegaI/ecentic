@@ -18,6 +18,7 @@ import { z } from "zod";
 import {
   type Activity,
   companyExcluded,
+  contactHistoryReady,
   defaultPlaybook,
   deliveredBody,
   draftSchema,
@@ -260,7 +261,7 @@ export const automationDeliveryStatus = () =>
     const blockers = [
       ...(!settings.sendingEnabled ? ["sendingPaused"] : []),
       ...(!settings.senderConfirmed ? ["senderUnconfirmed"] : []),
-      ...(!settings.historyConfirmed ? ["historyUnconfirmed"] : []),
+      ...(!contactHistoryReady(settings) ? ["historyUnconfirmed"] : []),
       ...(!settings.competingSendersPaused ? ["competingSendersActive"] : []),
       ...(!settings.senderTested ? ["senderUntested"] : []),
       ...(inboxes.length !== pool.length || !inboxes.length
@@ -1200,6 +1201,7 @@ export const savePlaybookWithin = async (
       linkedinAutomationEnabled,
       senderConfirmed,
       historyConfirmed,
+      allowIncompleteHistory,
       competingSendersPaused,
       senderTested,
       dailyCap,
@@ -1260,6 +1262,18 @@ export const savePlaybookWithin = async (
       ),
     );
   }
+  if (
+    current.settings.allowIncompleteHistory !==
+    parsed.data.allowIncompleteHistory
+  )
+    await event(
+      transaction,
+      actor,
+      "historicalContactPolicyChanged",
+      parsed.data.allowIncompleteHistory
+        ? "Previous campaign history import made optional; repeat-contact risk accepted. Known exclusions, replies and Outbound send records remain enforced."
+        : "Previous campaign history import required again before delivery.",
+    );
   await event(
     transaction,
     actor,
@@ -3404,7 +3418,7 @@ const deliveryGates = async (
     throw new ConflictError("Automatic delivery is paused.");
   if (
     !settings.sendingEnabled ||
-    !settings.historyConfirmed ||
+    !contactHistoryReady(settings) ||
     !settings.competingSendersPaused ||
     !settings.senderTested
   )

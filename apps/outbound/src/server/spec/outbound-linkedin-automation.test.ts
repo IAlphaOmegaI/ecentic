@@ -346,6 +346,40 @@ describe.skipIf(!endpoint)(
       expect(transport.sendInvitation).toHaveBeenCalledTimes(1);
       expect(await rows()).toHaveLength(1);
     });
+    test("missing external history blocks LinkedIn unless explicitly accepted", async () => {
+      const { store, linkedin } = active();
+      const transport = provider();
+      value(
+        await store.savePlaybook("fixture", {
+          ...settings,
+          historyConfirmed: false,
+          allowIncompleteHistory: false,
+        }),
+      );
+      const result = value(await linkedin.run({}, transport));
+      expect(result.accepted).toBe(0);
+      expect(result.held[0]?.reason).toBe("linkedin-history-unconfirmed");
+      expect(transport.getAccount).not.toHaveBeenCalled();
+      expect(transport.sendInvitation).not.toHaveBeenCalled();
+    });
+    test("external history acceptance permits LinkedIn without asserting an import happened", async () => {
+      const { store, linkedin } = active();
+      const transport = provider();
+      const before = await store.policy();
+      value(
+        await store.savePlaybook("fixture", {
+          ...settings,
+          historyConfirmed: false,
+          allowIncompleteHistory: true,
+        }),
+      );
+      const policy = await store.policy();
+      expect(policy.revision).toBe(before.revision);
+      expect(policy.settings.historyConfirmed).toBe(false);
+      expect(policy.settings.allowIncompleteHistory).toBe(true);
+      expect(value(await linkedin.run({}, transport)).accepted).toBe(1);
+      expect(transport.sendInvitation).toHaveBeenCalledTimes(1);
+    });
     test("paused mode and forged qualification cannot reach Unipile", async () => {
       const transport = provider();
       const { store, linkedin, db, schema } = active();

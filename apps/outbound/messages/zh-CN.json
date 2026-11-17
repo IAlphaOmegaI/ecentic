@@ -480,6 +480,7 @@
         "heldCountries": "暂缓联系的国家代码",
         "excludedRoles": "排除的职位",
         "historyConfirmed": "已导入历史发送记录及禁止联系记录",
+        "allowIncompleteHistory": "允许在历史营销活动记录不完整时联系",
         "competingSendersPaused": "已暂停其他主动联系发送系统",
         "senderTested": "发件邮箱已通过受控的发送和回复测试",
         "senderEmails": "发件邮箱",
@@ -575,7 +576,8 @@
       "researchInstructionsHelp": "说明买家的问题、要比较的具体规格和市场，以及需从 UCP、商品页面或结账流程中收集的证据。记录来源，未经验证或无法获取的结果应保留为未知。",
       "requireShoppingEvidenceHelp": "在记录有证据支持的购物体验发现之前，暂停起草和批准。单独的成分信息不能证明购物存在障碍。",
       "legacyFindingsTitle": "旧版调研发现模板",
-      "legacyFindingsHelp": "用于以往商品检查和数据缺失检查的已保存模板。启用购物体验证据要求后，新草稿将改用已记录的购物体验发现。这些字段仍保留供旧版流程使用。"
+      "legacyFindingsHelp": "用于以往商品检查和数据缺失检查的已保存模板。启用购物体验证据要求后，新草稿将改用已记录的购物体验发现。这些字段仍保留供旧版流程使用。",
+      "allowIncompleteHistoryHelp": "可以跳过导入以往的营销活动。部分联系人可能会再次收到邮件；已记录的退订、退信和排除规则仍然有效。"
     },
     "integrations": {
       "title": "连接合适的工具",
@@ -1284,7 +1286,8 @@
         "sync": "邮箱同步",
         "provider": "供应商状态",
         "history": "历史记录核对",
-        "test": "发送和回复测试"
+        "test": "发送和回复测试",
+        "historyOptional": "以往营销活动记录为可选项"
       },
       "mailboxesTitle": "发件邮箱"
     },

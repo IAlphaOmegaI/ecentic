@@ -480,6 +480,7 @@
         "heldCountries": "Country codes to hold",
         "excludedRoles": "Excluded roles",
         "historyConfirmed": "Past sends and do-not-contact records have been imported",
+        "allowIncompleteHistory": "Allow outreach without complete past campaign history",
         "competingSendersPaused": "Other outbound senders have been paused",
         "senderTested": "The sender inbox has passed a controlled send and reply test",
         "senderEmails": "Sender inboxes",
@@ -575,7 +576,8 @@
       "researchInstructionsHelp": "Describe the shopper questions, exact variants and markets to compare, and evidence to collect from UCP, product pages or checkout. Record sources and leave untested or unavailable results unknown.",
       "requireShoppingEvidenceHelp": "Hold drafting and approval until a supported shopping finding is recorded. An ingredient fact alone is not evidence of shopping friction.",
       "legacyFindingsTitle": "Legacy finding formulas",
-      "legacyFindingsHelp": "Saved formulas for older product and missing-data checks. When shopping evidence is required, new drafts use the recorded shopping finding instead. These fields remain available for older workflows."
+      "legacyFindingsHelp": "Saved formulas for older product and missing-data checks. When shopping evidence is required, new drafts use the recorded shopping finding instead. These fields remain available for older workflows.",
+      "allowIncompleteHistoryHelp": "You can skip importing past campaigns. Someone may hear from us again; recorded opt-outs, bounces and exclusions still apply."
     },
     "integrations": {
       "title": "Connect the right tools",
@@ -1284,7 +1286,8 @@
         "sync": "Mailbox synchronization",
         "provider": "Provider status",
         "history": "History reconciled",
-        "test": "Send and reply test"
+        "test": "Send and reply test",
+        "historyOptional": "Previous campaign history optional"
       },
       "mailboxesTitle": "Sender mailboxes"
     },

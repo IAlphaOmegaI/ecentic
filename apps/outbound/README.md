@@ -92,7 +92,10 @@ Choose **Sync replies** to begin the checkpointed 180-day history import. The
 browser continues through batches with progress and a stop control; scheduled
 worker runs can also resume it. Sending stays paused until history
 and delivery checks are complete. Import older contacts and suppressions from
-Instantly separately and pause competing campaigns before cutover.
+Instantly separately, or explicitly choose to allow incomplete past campaign
+history in Playbook and accept possible repeat contact. The latter preserves
+known exclusions and current-mailbox synchronization; it never marks history
+imported. Pause competing campaigns before cutover.
 
 Google OAuth remains an advanced option with client ID and secret fields. Its
 callback is `/api/integrations/outbound/google/callback`, derived from `APP_HOST`

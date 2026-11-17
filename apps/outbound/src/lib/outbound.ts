@@ -224,6 +224,7 @@ export const playbookSchema = z
     linkedinDailyMessages: z.number().int().min(1).max(15).default(15),
     senderConfirmed: z.boolean(),
     historyConfirmed: z.boolean().default(false),
+    allowIncompleteHistory: z.boolean().default(false),
     competingSendersPaused: z.boolean().default(false),
     senderTested: z.boolean().default(false),
     sendingEnabled: z.boolean(),
@@ -268,6 +269,12 @@ export const playbookSchema = z
   });
 
 export type Playbook = z.infer<typeof playbookSchema>;
+
+/** An explicit repeat-contact decision does not claim that old history was imported. */
+export const contactHistoryReady = (settings: {
+  historyConfirmed: boolean;
+  allowIncompleteHistory?: boolean;
+}) => settings.historyConfirmed || settings.allowIncompleteHistory === true;
 export const defaultPlaybook: Playbook = {
   ...DEFAULT_FINDING_COPY,
   name: "ecentic outbound",
@@ -328,6 +335,7 @@ export const defaultPlaybook: Playbook = {
   linkedinWeeklyInvites: 50,
   linkedinDailyMessages: 15,
   historyConfirmed: false,
+  allowIncompleteHistory: false,
   competingSendersPaused: false,
   senderTested: false,
   sendingEnabled: false,

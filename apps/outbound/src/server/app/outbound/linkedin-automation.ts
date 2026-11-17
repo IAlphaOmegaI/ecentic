@@ -5,6 +5,7 @@ import { type Result, resultify } from "@zenncore/utils";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
 import {
+  contactHistoryReady,
   inSendWindow,
   normalizeDomain,
   prospectIssues,
@@ -331,7 +332,7 @@ const eligible = async (
   if (!policy.settings.linkedinAccountId)
     return hold("linkedin-account-missing");
   if (
-    !policy.settings.historyConfirmed ||
+    !contactHistoryReady(policy.settings) ||
     !policy.settings.competingSendersPaused
   )
     return hold("linkedin-history-unconfirmed");

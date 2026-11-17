@@ -480,6 +480,7 @@
         "heldCountries": "Ländercodes mit Versandsperre",
         "excludedRoles": "Ausgeschlossene Positionen",
         "historyConfirmed": "Frühere Sendungen und Kontaktsperren wurden importiert",
+        "allowIncompleteHistory": "Kontaktaufnahme ohne vollständigen Verlauf früherer Kampagnen erlauben",
         "competingSendersPaused": "Andere Versandsysteme für die Kontaktaufnahme wurden pausiert",
         "senderTested": "Das Absenderpostfach hat einen kontrollierten Sende- und Antworttest bestanden",
         "senderEmails": "Absenderpostfächer",
@@ -575,7 +576,8 @@
       "researchInstructionsHelp": "Beschreiben Sie die Käuferfragen, die genauen Varianten und Märkte für den Vergleich sowie die Belege, die aus UCP, Produktseiten oder dem Bestellprozess erhoben werden sollen. Halten Sie Quellen fest und kennzeichnen Sie ungeprüfte oder nicht verfügbare Ergebnisse als unbekannt.",
       "requireShoppingEvidenceHelp": "Halten Sie Texterstellung und Freigabe an, bis eine belegte Erkenntnis zum Einkaufserlebnis erfasst ist. Eine Information zu einem Inhaltsstoff allein belegt kein Kaufhindernis.",
       "legacyFindingsTitle": "Bisherige Erkenntnisvorlagen",
-      "legacyFindingsHelp": "Gespeicherte Vorlagen für bisherige Produktprüfungen und Prüfungen auf fehlende Daten. Wenn Belege zum Einkaufserlebnis erforderlich sind, verwenden neue Entwürfe stattdessen die erfasste Erkenntnis zum Einkaufserlebnis. Diese Felder bleiben für bisherige Abläufe verfügbar."
+      "legacyFindingsHelp": "Gespeicherte Vorlagen für bisherige Produktprüfungen und Prüfungen auf fehlende Daten. Wenn Belege zum Einkaufserlebnis erforderlich sind, verwenden neue Entwürfe stattdessen die erfasste Erkenntnis zum Einkaufserlebnis. Diese Felder bleiben für bisherige Abläufe verfügbar.",
+      "allowIncompleteHistoryHelp": "Frühere Kampagnen müssen nicht importiert werden. Manche Personen erhalten dadurch möglicherweise erneut eine Nachricht. Erfasste Abmeldungen, unzustellbare Adressen und Ausschlüsse gelten weiterhin."
     },
     "integrations": {
       "title": "Verbinden Sie die passenden Werkzeuge",
@@ -1284,7 +1286,8 @@
         "sync": "Postfachsynchronisierung",
         "provider": "Anbieterstatus",
         "history": "Verlauf abgeglichen",
-        "test": "Versand- und Antworttest"
+        "test": "Versand- und Antworttest",
+        "historyOptional": "Verlauf früherer Kampagnen optional"
       },
       "mailboxesTitle": "Absenderpostfächer"
     },

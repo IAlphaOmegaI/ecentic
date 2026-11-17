@@ -480,6 +480,7 @@
         "heldCountries": "Codes des pays à mettre en attente",
         "excludedRoles": "Postes exclus",
         "historyConfirmed": "Les envois passés et les refus de contact ont été importés",
+        "allowIncompleteHistory": "Autoriser les contacts sans l’historique complet des campagnes passées",
         "competingSendersPaused": "Les autres systèmes d’envoi de prospection ont été suspendus",
         "senderTested": "La boîte de l’expéditeur a réussi un test contrôlé d’envoi et de réponse",
         "senderEmails": "Boîtes d’envoi",
@@ -575,7 +576,8 @@
       "researchInstructionsHelp": "Décrivez les questions des acheteurs, les variantes et les marchés précis à comparer, ainsi que les preuves à recueillir dans UCP, les pages produit ou le parcours de paiement. Consignez les sources et indiquez comme inconnus les résultats non testés ou indisponibles.",
       "requireShoppingEvidenceHelp": "Bloquez la rédaction et l’approbation tant qu’un constat étayé sur le parcours d’achat n’est pas enregistré. Un simple fait sur un ingrédient ne démontre pas une difficulté d’achat.",
       "legacyFindingsTitle": "Anciennes formules de constat",
-      "legacyFindingsHelp": "Formules enregistrées pour les anciennes vérifications de produits et de données manquantes. Lorsque des preuves sur le parcours d’achat sont requises, les nouveaux brouillons utilisent le constat enregistré sur ce parcours. Ces champs restent disponibles pour les anciens processus."
+      "legacyFindingsHelp": "Formules enregistrées pour les anciennes vérifications de produits et de données manquantes. Lorsque des preuves sur le parcours d’achat sont requises, les nouveaux brouillons utilisent le constat enregistré sur ce parcours. Ces champs restent disponibles pour les anciens processus.",
+      "allowIncompleteHistoryHelp": "Vous pouvez ignorer l’import des campagnes passées. Une personne pourrait recevoir un nouveau message ; les refus de contact, les rejets et les exclusions enregistrés restent pris en compte."
     },
     "integrations": {
       "title": "Connectez les bons outils",
@@ -1284,7 +1286,8 @@
         "sync": "Synchronisation de la boîte mail",
         "provider": "État du fournisseur",
         "history": "Historique rapproché",
-        "test": "Test d’envoi et de réponse"
+        "test": "Test d’envoi et de réponse",
+        "historyOptional": "Historique des campagnes passées facultatif"
       },
       "mailboxesTitle": "Boîtes d’expédition"
     },

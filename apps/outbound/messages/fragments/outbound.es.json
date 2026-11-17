@@ -480,6 +480,7 @@
         "heldCountries": "Códigos de países que se dejan en espera",
         "excludedRoles": "Cargos excluidos",
         "historyConfirmed": "Se han importado los envíos anteriores y los registros de no contactar",
+        "allowIncompleteHistory": "Permitir contactos sin el historial completo de campañas anteriores",
         "competingSendersPaused": "Se han pausado los demás sistemas de envío de prospección",
         "senderTested": "El buzón del remitente ha superado una prueba controlada de envío y respuesta",
         "senderEmails": "Buzones de envío",
@@ -575,7 +576,8 @@
       "researchInstructionsHelp": "Describe las preguntas de los compradores, las variantes y los mercados exactos que se deben comparar, y las pruebas que se deben recopilar de UCP, las páginas de producto o el proceso de pago. Registra las fuentes y marca como desconocidos los resultados no comprobados o no disponibles.",
       "requireShoppingEvidenceHelp": "Mantén la redacción y la aprobación en espera hasta que se registre un hallazgo sobre la experiencia de compra respaldado por pruebas. Un dato sobre un ingrediente no demuestra por sí solo una dificultad en la compra.",
       "legacyFindingsTitle": "Fórmulas de hallazgos anteriores",
-      "legacyFindingsHelp": "Fórmulas guardadas para las comprobaciones anteriores de productos y datos ausentes. Cuando se exigen pruebas sobre la experiencia de compra, los nuevos borradores utilizan el hallazgo registrado sobre esa experiencia. Estos campos siguen disponibles para los flujos de trabajo anteriores."
+      "legacyFindingsHelp": "Fórmulas guardadas para las comprobaciones anteriores de productos y datos ausentes. Cuando se exigen pruebas sobre la experiencia de compra, los nuevos borradores utilizan el hallazgo registrado sobre esa experiencia. Estos campos siguen disponibles para los flujos de trabajo anteriores.",
+      "allowIncompleteHistoryHelp": "Puedes omitir la importación de campañas anteriores. Es posible que alguien vuelva a recibir un mensaje; las bajas, los rebotes y las exclusiones registrados siguen vigentes."
     },
     "integrations": {
       "title": "Conecta las herramientas adecuadas",
@@ -1284,7 +1286,8 @@
         "sync": "Sincronización del buzón",
         "provider": "Estado del proveedor",
         "history": "Historial conciliado",
-        "test": "Prueba de envío y respuesta"
+        "test": "Prueba de envío y respuesta",
+        "historyOptional": "Historial de campañas anteriores opcional"
       },
       "mailboxesTitle": "Buzones de remitentes"
     },

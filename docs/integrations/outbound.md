@@ -94,6 +94,14 @@ provider, sender and historical-import checks.
 
 ## Screens and editable policy
 
+Past campaign imports can be made optional in Playbook using
+`allowIncompleteHistory`, following the owner's 17 November 2026 decision to
+accept possible repeat contact without Instantly/Explee exports. This is an
+audited, reversible operational choice; `historyConfirmed` stays false until
+history is actually imported. Known opt-outs, bounces, replies and exclusions,
+current-mailbox sync and existing Outbound send records still apply. Mailbox
+readiness labels the choice “Previous campaign history optional.”
+
 | Screen | Purpose |
 | --- | --- |
 | Overview | Current campaign pipeline, research and sending progress, conversations, meetings and actionable connection blockers. |

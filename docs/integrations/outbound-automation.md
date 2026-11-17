@@ -11,6 +11,17 @@ false. Campaigns must also be active. `sendingEnabled` and the mailbox/history
 checks separately control delivery. The automation panel shows these states
 separately and never treats a running preparation job as proof that mail can send.
 
+On 17 November 2026 the owner accepted repeat-contact risk from missing Instantly
+and Explee history. The editable `allowIncompleteHistory` setting records that
+decision separately from `historyConfirmed`: either satisfies the past-campaign
+import gate, but a waiver never marks those records imported. It defaults to
+false, is recorded with actor/time in a `historicalContactPolicyChanged` event,
+and can be switched off again without changing the approved message revision.
+It does not enable sending or an inbox by itself. Connected-mailbox sync, known
+suppression and reply records, existing Outbound attempts, sender checks and
+limits remain enforced for email and LinkedIn. No contact or attempt ledger is
+deleted or reset.
+
 ## Existing drafts and Playbook edits
 
 The preparation cron also runs a bounded automatic review pass over unsent drafts

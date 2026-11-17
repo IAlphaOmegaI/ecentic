@@ -155,6 +155,7 @@ const groups = [
       "minGapMinutes",
       "maxGapMinutes",
       "historyConfirmed",
+      "allowIncompleteHistory",
       "competingSendersPaused",
       "senderTested",
       "sendingEnabled",
@@ -247,6 +248,7 @@ export const PlaybookEditor = ({
         sentEmailExamples: t("playbook.examplesHelp"),
         humanizeDrafts: t("playbook.humanizerHelp"),
         humanizerNotes: t("playbook.humanizerNotesHelp"),
+        allowIncompleteHistory: t("playbook.allowIncompleteHistoryHelp"),
       },
       booleans: [
         "automationEnabled",
@@ -255,6 +257,7 @@ export const PlaybookEditor = ({
         "senderConfirmed",
         "humanizeDrafts",
         "historyConfirmed",
+        "allowIncompleteHistory",
         "competingSendersPaused",
         "senderTested",
         "sendingEnabled",
