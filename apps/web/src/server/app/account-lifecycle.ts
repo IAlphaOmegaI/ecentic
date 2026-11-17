@@ -2,7 +2,7 @@
 
 import { resultify } from "@zenncore/utils";
 import { getCookies } from "better-auth/cookies";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, ne } from "drizzle-orm";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -72,6 +72,14 @@ export const disconnectStore = withAuthentication(
           googleConnected: google.length > 0,
         });
         if (reason) return blocked(reason);
+
+        const [recharge] = await transaction
+          .select({ status: schema.rechargeConnection.status })
+          .from(schema.rechargeConnection)
+          .where(eq(schema.rechargeConnection.storeId, identifier))
+          .limit(1);
+        if (recharge && recharge.status !== "disconnected")
+          return blocked("storeConnections");
 
         await transaction
           .delete(schema.store_account)
@@ -167,7 +175,7 @@ export const deleteAccount = withAuthentication(
 
         if (stores.length > 0) {
           const identifiers = stores.map((store) => store.id);
-          const [credentials, google, orders] = await Promise.all([
+          const [credentials, google, orders, recharge] = await Promise.all([
             transaction
               .select({ id: schema.store_account.id })
               .from(schema.store_account)
@@ -183,9 +191,23 @@ export const deleteAccount = withAuthentication(
               .from(schema.ucpOrder)
               .where(inArray(schema.ucpOrder.storeId, identifiers))
               .limit(1),
+            transaction
+              .select({ status: schema.rechargeConnection.status })
+              .from(schema.rechargeConnection)
+              .where(
+                and(
+                  inArray(schema.rechargeConnection.storeId, identifiers),
+                  ne(schema.rechargeConnection.status, "disconnected"),
+                ),
+              )
+              .limit(1),
           ]);
           if (orders.length > 0) return blocked("billingRecords");
-          if (credentials.length > 0 || google.length > 0)
+          if (
+            credentials.length > 0 ||
+            google.length > 0 ||
+            recharge.length > 0
+          )
             return blocked("storeConnections");
         }
         // All account-owned data uses ON DELETE CASCADE. This transaction owns

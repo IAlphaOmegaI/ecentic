@@ -2,6 +2,11 @@ import { cookies, headers } from "next/headers";
 import { type NextRequest, NextResponse as Response } from "next/server";
 import { auth } from "@/lib/auth";
 import { ENTRY_COOKIE } from "@/lib/redirect";
+import { bindPendingStore } from "@/server/app/integration/recharge/model";
+import {
+  INSTALL_COOKIE,
+  RESUME_PATH,
+} from "@/server/app/integration/recharge/types";
 import * as Shopify from "@/server/app/integration/shopify";
 import { verifyHmac } from "@/server/app/integration/shopify/hmac";
 import { Environment } from "@/server/utils/environment";
@@ -64,6 +69,21 @@ export const GET = async (request: NextRequest) => {
   // public-imported later — importing it again would duplicate the store. A
   // failed install leaves the entry alone: its public import is still wanted.
   jar.delete(ENTRY_COOKIE);
+
+  // Recharge Marketplace installs can require sign-up and a verified Shopify
+  // connection first. Redeem the server-held grant now, preserving onboarding.
+  const recharge = jar.get(INSTALL_COOKIE)?.value;
+  if (recharge) {
+    await bindPendingStore({
+      cookie: recharge,
+      store: result.data.storeId,
+      user: session.user.id,
+      returnTo: result.data.reconnected
+        ? `/dashboard/${result.data.storeId}`
+        : "/onboarding/products?connected=shopify",
+    });
+    return Response.redirect(`${process.env.APP_HOST}${RESUME_PATH}`);
+  }
 
   // A reconnect only refreshed the access tokens for a store this user already
   // onboarded. Sending them back through the onboarding product picker would let

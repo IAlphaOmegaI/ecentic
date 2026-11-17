@@ -130,6 +130,22 @@ test("does not split grouped amounts into a smaller apparent price", () => {
   ).toBe("wrong");
 });
 
+test("binds the currency to the monetary amount rather than another number", () => {
+  for (const quote of [
+    "USD 20 for an 18 pack",
+    "$18 or USD 20",
+    "18 packs for USD 20",
+    "USD 20, delivery every 18 days",
+  ])
+    expect(
+      assess({ priceEvidence: quote }, answer.replace("USD 18", quote)).status,
+    ).toBe("inconclusive");
+  for (const quote of ["USD 18.00", "18 USD", "US$18", "18 US$"])
+    expect(
+      assess({ priceEvidence: quote }, answer.replace("USD 18", quote)).status,
+    ).toBe("correct");
+});
+
 test("does not turn negated or approximate prices into an exact match", () => {
   expect(
     assess({}, answer.replace("is available", "is not available")).status,

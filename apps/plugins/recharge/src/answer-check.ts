@@ -148,24 +148,27 @@ export const assessSubscriptionAnswer = ({
       "The price and interval were not quoted from the same subscription offer.",
     );
 
-  // Keep grouping punctuation inside a token: '1,018' cannot supply '18'.
-  const prices =
-    observation.priceEvidence.match(/\d+(?:[., '\u00a0\u202f]\d+)*/g) ?? [];
-  if (
-    !prices.some(
-      (price) => quotedDecimal(price) === decimal(observation.price ?? ""),
-    )
-  )
-    return inconclusive("The extracted price is not supported by its quote.");
   const symbols: Record<string, string> = { EUR: "€", GBP: "£", USD: "US$" };
+  const currencyMarkers = [observation.currency, symbols[observation.currency]]
+    .filter((value): value is string => Boolean(value))
+    .map((value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+    .join("|");
+  // A compact monetary quote binds one amount to its currency. Pack counts,
+  // interval numbers and currencies from other prices cannot supply either.
+  // Keep grouping punctuation inside the amount: '1,018' cannot supply '18'.
+  const amount = "\\d+(?:[., '\\u00a0\\u202f]\\d+)*";
+  const monetary = new RegExp(
+    `^(?:${currencyMarkers})\\s*(${amount})$|^(${amount})\\s*(?:${currencyMarkers})$`,
+  ).exec(observation.priceEvidence.trim());
+  const quotedAmount = monetary?.[1] ?? monetary?.[2];
   if (
-    !observation.priceEvidence.includes(observation.currency) &&
-    !(
-      symbols[observation.currency] &&
-      observation.priceEvidence.includes(symbols[observation.currency] ?? "")
-    )
+    !quotedAmount ||
+    quotedDecimal(quotedAmount) === null ||
+    quotedDecimal(quotedAmount) !== decimal(observation.price)
   )
-    return inconclusive("The captured currency is ambiguous.");
+    return inconclusive(
+      "The quote does not bind the extracted price to an unambiguous currency.",
+    );
   const interval = normalized(observation.intervalEvidence);
   const frequency = observation.intervalFrequency;
   const unit = observation.intervalUnit;
