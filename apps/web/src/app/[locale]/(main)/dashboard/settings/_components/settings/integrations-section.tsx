@@ -10,10 +10,11 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { seo } from "@/lib/seo";
 import type * as GoogleMerchant from "@/server/app/integration/google-merchant";
+import type { Status as RechargeStatus } from "@/server/app/integration/recharge/types";
 import * as Store from "@/server/app/store";
 import { DashboardEmptyState } from "../../../_components/empty-state";
-
 import { StoreDisconnection } from "./lifecycle-controls";
+import { RechargeControls } from "./recharge-controls";
 
 /** Compact Google Shopping state for the store row — management lives on the
  * dedicated /dashboard/{store}/google-shopping page. Takes the translator so the
@@ -76,9 +77,11 @@ const upgradeFor = (store: Store.Type) => {
 export const IntegrationsSection = ({
   stores,
   google,
+  recharge,
 }: {
   stores: Store.Type[];
   google: Record<string, GoogleMerchant.Status | null>;
+  recharge: Record<string, RechargeStatus | null>;
 }) => {
   const translate = useTranslations("dashboard.settings.integrations");
   const toast = useToastManager();
@@ -250,6 +253,10 @@ export const IntegrationsSection = ({
                       </Link>
                     )}
                   </div>
+                  <RechargeControls
+                    store={store.id}
+                    status={recharge[store.id] ?? null}
+                  />
                 </div>
               );
             })}

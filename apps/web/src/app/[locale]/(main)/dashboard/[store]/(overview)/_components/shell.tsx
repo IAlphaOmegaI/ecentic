@@ -22,6 +22,7 @@ export const OverviewShell = ({
   performance,
   traffic,
   recent,
+  subscriptions,
   details,
 }: {
   statusPill: ReactNode;
@@ -30,6 +31,7 @@ export const OverviewShell = ({
   performance: ReactNode;
   traffic: ReactNode;
   recent: ReactNode;
+  subscriptions?: ReactNode;
   details?: ReactNode;
 }) => {
   const translate = useTranslations("dashboard.overview");
@@ -67,6 +69,7 @@ export const OverviewShell = ({
           <Slot>{traffic}</Slot>
         </div>
       </div>
+      <Slot>{subscriptions}</Slot>
       <div className="min-w-0">
         <Slot>{recent}</Slot>
       </div>

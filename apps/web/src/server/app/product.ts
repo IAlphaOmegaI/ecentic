@@ -1,6 +1,10 @@
 "use server";
 
-import { unique } from "@zenncore/utils";
+import {
+  composeSubscriptionOffers,
+  type PublishableSubscriptionOffer,
+} from "@ecentic/recharge";
+import { resultify, unique } from "@zenncore/utils";
 import {
   type AnyColumn,
   and,
@@ -78,7 +82,58 @@ const stores = repository(schema.store);
 
 const PUBLISHABLE_PLATFORMS = new Set(["shopify", "woocommerce"]);
 
-export type Type = Document<typeof schema.product>;
+export type Type = Document<typeof schema.product> & {
+  /** Read-time Recharge facts; never persisted in the ordinary price column. */
+  subscriptionOffers?: PublishableSubscriptionOffer[];
+};
+
+export const findForSimulation = async (
+  ...parameters: Parameters<typeof find>
+) => {
+  const products = await find(...parameters);
+  if (!products.success) return products;
+  const recharge = await import("./integration/recharge");
+  const stores = [...new Set(products.data.map((product) => product.storeId))];
+  const offers = await resultify(() =>
+    Promise.all(
+      stores.map((store) =>
+        recharge.listOffersForProducts({
+          store,
+          products: products.data
+            .filter((product) => product.storeId === store)
+            .map((product) => product.id),
+        }),
+      ),
+    ),
+  );
+  if (!offers.success) return offers;
+  return {
+    success: true as const,
+    data: products.data.map((product) => {
+      const subscriptionOffers = offers.data
+        .flat()
+        .filter((offer) => offer.productId === product.id);
+      const structured = resultify(() =>
+        product.structuredData
+          ? JSON.stringify(
+              composeSubscriptionOffers(
+                JSON.parse(product.structuredData),
+                subscriptionOffers,
+                { externalId: product.externalId, url: product.url },
+              ),
+            )
+          : null,
+      );
+      return {
+        ...product,
+        subscriptionOffers,
+        structuredData: structured.success
+          ? structured.data
+          : product.structuredData,
+      };
+    }),
+  };
+};
 
 export const skimForCurrentUser = withAuthentication(
   async (context, { store }: { store?: string } = {}) => {

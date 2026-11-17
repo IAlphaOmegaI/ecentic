@@ -210,7 +210,7 @@ export type ScanEvent =
 export const runScan = withAuthentication(
   async (context, { store }: { store: string }) => {
     const [products, competitors] = await Promise.all([
-      Product.find(Environment.SERVER, {
+      Product.findForSimulation(Environment.SERVER, {
         where: and(
           eq(schema.product.userId, context.session.user.id),
           eq(schema.product.storeId, store),
@@ -707,7 +707,7 @@ export const enqueueScan = withAuthentication(
     // Resolve the roster through ownership-scoped queries — ids that aren't
     // the user's (or the store's) simply drop out instead of being trusted.
     const [products, competitors] = await Promise.all([
-      Product.find(Environment.SERVER, {
+      Product.findForSimulation(Environment.SERVER, {
         where: and(
           eq(schema.product.userId, user),
           eq(schema.product.storeId, store),

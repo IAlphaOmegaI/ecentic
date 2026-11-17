@@ -6,6 +6,7 @@ import { redirect } from "@/i18n/navigation";
 import * as Authentication from "@/server/app/authentication";
 import * as PerformanceFee from "@/server/app/billing/performance-fee";
 import * as GoogleMerchant from "@/server/app/integration/google-merchant";
+import * as Recharge from "@/server/app/integration/recharge/actions";
 import * as Store from "@/server/app/store";
 import * as Subscription from "@/server/app/subscription";
 import { Environment } from "@/server/utils/environment";
@@ -50,7 +51,21 @@ const Integrations = async () => {
   );
   const google = Object.fromEntries(googleEntries);
 
-  return <IntegrationsSection stores={stores} google={google} />;
+  const rechargeEntries = await Promise.all(
+    stores.map(async (store) => {
+      const status = await Recharge.getStatus(Environment.SERVER, {
+        store: store.id,
+      });
+      return [store.id, status.success ? status.data : null] as const;
+    }),
+  );
+  return (
+    <IntegrationsSection
+      stores={stores}
+      google={google}
+      recharge={Object.fromEntries(rechargeEntries)}
+    />
+  );
 };
 
 // The slow one: `getCurrentSubscription` reconciles against Stripe and the
