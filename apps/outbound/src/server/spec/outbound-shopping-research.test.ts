@@ -16,6 +16,8 @@ import {
   prospectSchema,
   renderMessages,
 } from "@/lib/outbound";
+import { defaultCampaignCriteria } from "@/lib/outbound-campaigns";
+import { draftReviewReadinessKey } from "@/lib/outbound-draft-review";
 import {
   type ShoppingResearch,
   shoppingResearchSchema,
@@ -117,13 +119,15 @@ const modules: {
   store?: typeof import("@/server/app/outbound/store");
   research?: typeof import("@/server/app/outbound/lead-research");
   draft?: typeof import("@/server/utils/outbound/draft");
+  review?: typeof import("@/server/app/outbound/automatic-draft-review");
 } = {};
 const active = () => {
   if (
     !modules.database ||
     !modules.store ||
     !modules.research ||
-    !modules.draft
+    !modules.draft ||
+    !modules.review
   )
     throw new Error("Fixture modules missing");
   return {
@@ -131,6 +135,7 @@ const active = () => {
     store: modules.store,
     research: modules.research,
     draft: modules.draft,
+    review: modules.review,
   };
 };
 const value = <Data>(
@@ -163,6 +168,93 @@ const input = async (captured = receipt()) => {
     receipt: captured,
   };
 };
+
+const automaticFixture = async () => {
+  const { db, schema, store, research } = active();
+  const [campaign] = await db
+    .insert(schema.outboundCampaign)
+    .values({
+      name: "Fixture campaign",
+      status: "active",
+      createdBy: "fixture",
+      updatedBy: "fixture",
+      criteria: {
+        ...defaultCampaignCriteria(settings),
+        teamSizeMin: null,
+        teamSizeMax: null,
+        annualRevenueMin: null,
+        annualRevenueMax: null,
+      },
+    })
+    .returning();
+  if (!campaign) throw new Error("Missing campaign");
+  await db
+    .update(schema.outboundProspect)
+    .set({ campaignId: campaign.id })
+    .where(eq(schema.outboundProspect.id, fixture.prospectId));
+  await db.insert(schema.outboundCampaignCompany).values({
+    campaignId: campaign.id,
+    domain: "samplegoods.com",
+    name: "Sample Goods",
+    website: "https://samplegoods.com",
+    country: "US",
+    platform: "shopify",
+    source: "apollo",
+    status: "added",
+    prospectId: fixture.prospectId,
+    criteriaRevision: campaign.revision,
+  });
+  const row = value(await store.readProspect(fixture.prospectId))!;
+  const request = `fixture-verification-${randomUUID()}`;
+  await db.insert(schema.outboundIntegrationJob).values({
+    provider: "apollo",
+    prospectId: row.id,
+    requestId: request,
+    status: "complete",
+    input: {
+      operation: "verify",
+      revision: row.revision,
+      email: row.details.email,
+    },
+    output: {
+      records: [
+        { record_id: "recipient", input: { email: row.details.email } },
+      ],
+      results: [
+        {
+          recordId: "recipient",
+          email: row.details.email,
+          status: "verified",
+          verifiedAt: row.details.emailVerifiedAt,
+        },
+      ],
+    },
+  });
+  value(
+    await store.patchProspect(
+      "operator",
+      row.id,
+      { emailSource: `Apollo verification ${request}; record recipient` },
+      row.revision,
+    ),
+  );
+  const saved = value(await research.saveAndApply("operator", await input()));
+  value(
+    await store.generateDrafts("operator", { prospect: fixture.prospectId }),
+  );
+  value(
+    await store.savePlaybook("operator", {
+      ...settings,
+      automationEnabled: true,
+    }),
+  );
+  return { campaign, research: saved.researchId };
+};
+const generated: typeof import("@/server/utils/outbound/draft").generateDraft =
+  async (prospect, playbook) => ({
+    success: true as const,
+    data: { messages: renderMessages(prospect, playbook), issues: [] },
+  });
 
 describe("source-bound shopping research validation", () => {
   test("accepts mixed browser/HTTP variant evidence in either source order", () => {
@@ -257,6 +349,9 @@ describe.skipIf(!endpoint)(
       modules.store = await import("@/server/app/outbound/store");
       modules.research = await import("@/server/app/outbound/lead-research");
       modules.draft = await import("@/server/utils/outbound/draft");
+      modules.review = await import(
+        "@/server/app/outbound/automatic-draft-review"
+      );
     });
     beforeEach(async () => {
       setSystemTime(now);
@@ -315,6 +410,571 @@ describe.skipIf(!endpoint)(
       fixture.inboxId = inbox.id;
     });
     afterAll(() => setSystemTime());
+    test("automatic review approves current operator-researched drafts without redrafting or sending", async () => {
+      const { store, review, db, schema } = active();
+      await automaticFixture();
+      const before = value(await store.readProspect(fixture.prospectId))!;
+      const generate = mock(generated);
+      const result = value(await review.run({ maxDrafts: 2 }, generate));
+      expect(result.approved).toBe(1);
+      expect(generate).not.toHaveBeenCalled();
+      const after = value(await store.readProspect(fixture.prospectId))!;
+      expect(after.revision).toBe(before.revision);
+      expect(after.messages).toEqual(before.messages);
+      expect(after.approvedBy).toBe("automatic:outbound-draft-review");
+      expect(after.status).toBe("approved");
+      expect((await store.policy()).settings.sendingEnabled).toBe(false);
+      expect(await db.select().from(schema.outboundSendAttempt)).toHaveLength(
+        0,
+      );
+      expect(value(await review.run()).processed).toBe(0);
+    });
+    test("writing-only edits regenerate once, preserve immutable captures and automatically reapprove", async () => {
+      const { store, review, db, schema } = active();
+      const context = await automaticFixture();
+      const [original] = await db
+        .select()
+        .from(schema.outboundIntegrationJob)
+        .where(eq(schema.outboundIntegrationJob.id, context.research));
+      const before = value(await store.readProspect(fixture.prospectId))!;
+      value(
+        await store.savePlaybook("operator", {
+          ...settings,
+          automationEnabled: true,
+          productCheckIntro: "I'm Juri, the founder of ecentic.",
+          voiceNotes: "Make the opening friendlier.",
+        }),
+      );
+      const generate = mock(generated);
+      const results = await Promise.all([
+        review.run({ maxDrafts: 1 }, generate),
+        review.run({ maxDrafts: 1 }, generate),
+      ]);
+      expect(
+        results
+          .map(value)
+          .reduce((total, result) => total + result.approved, 0),
+      ).toBe(1);
+      expect(generate).toHaveBeenCalledTimes(1);
+      const after = value(await store.readProspect(fixture.prospectId))!;
+      expect(after.status).toBe("approved");
+      expect(after.revision).toBe(before.revision + 1);
+      expect(after.messages[0]?.body).toContain(
+        "I'm Juri, the founder of ecentic.",
+      );
+      expect(after.messages[0]?.body).toContain(receipt().selected.observation);
+      expect(after.details.shoppingResearchId).toBe(context.research);
+      const [unchanged] = await db
+        .select()
+        .from(schema.outboundIntegrationJob)
+        .where(eq(schema.outboundIntegrationJob.id, context.research));
+      expect(unchanged).toEqual(original);
+      expect(after.details.evidenceCheckedAt).toBe(
+        before.details.evidenceCheckedAt,
+      );
+      const [oldRevision] = await db
+        .select()
+        .from(schema.outboundRevision)
+        .where(eq(schema.outboundRevision.revision, before.revision));
+      expect(oldRevision?.messages).toEqual(before.messages);
+      expect(await db.select().from(schema.outboundSendAttempt)).toHaveLength(
+        0,
+      );
+    });
+    test("a hold during generation wins atomically, and explicit holds are not retried", async () => {
+      const { store, review } = active();
+      await automaticFixture();
+      value(
+        await store.savePlaybook("operator", {
+          ...settings,
+          automationEnabled: true,
+          voiceNotes: "New voice",
+        }),
+      );
+      const before = value(await store.readProspect(fixture.prospectId))!;
+      const generate = mock(
+        async (...arguments_: Parameters<typeof generated>) => {
+          value(
+            await store.reviewProspect("operator", {
+              prospect: before.id,
+              revision: before.revision,
+              decision: "hold",
+              reason: "Discuss this account first",
+            }),
+          );
+          return generated(...arguments_);
+        },
+      );
+      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+        0,
+      );
+      const after = value(await store.readProspect(before.id))!;
+      expect(after.status).toBe("held");
+      expect(after.messages).toEqual(before.messages);
+      expect(after.revision).toBe(before.revision);
+      expect(
+        value(await review.run({ maxDrafts: 1 }, generate)).processed,
+      ).toBe(0);
+      expect(generate).toHaveBeenCalledTimes(1);
+    });
+    test("an invented finding rolls back both refresh and approval", async () => {
+      const { store, review } = active();
+      await automaticFixture();
+      value(
+        await store.savePlaybook("operator", {
+          ...settings,
+          automationEnabled: true,
+          voiceNotes: "New voice",
+        }),
+      );
+      const before = value(await store.readProspect(fixture.prospectId))!;
+      const generate = mock(
+        async (...arguments_: Parameters<typeof generated>) => {
+          const draft = await generated(...arguments_);
+          if (!draft.success) return draft;
+          draft.data.messages[0]!.body = draft.data.messages[0]!.body.replace(
+            "$40",
+            "$50",
+          );
+          return draft;
+        },
+      );
+      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+        0,
+      );
+      const after = value(await store.readProspect(before.id))!;
+      expect(after.messages).toEqual(before.messages);
+      expect(after.revision).toBe(before.revision);
+      expect(after.approvedAt).toBeNull();
+    });
+    test("suppression and changed research requirements hold before paid drafting", async () => {
+      const { store, review, db, schema } = active();
+      await automaticFixture();
+      value(
+        await store.savePlaybook("operator", {
+          ...settings,
+          automationEnabled: true,
+          voiceNotes: "New voice",
+        }),
+      );
+      await db.insert(schema.outboundSuppression).values({
+        scope: "email",
+        value: "jane@samplegoods.com",
+        reason: "Opt out",
+        createdBy: "fixture",
+      });
+      const generate = mock(generated);
+      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+        0,
+      );
+      expect(generate).not.toHaveBeenCalled();
+      value(
+        await store.savePlaybook("operator", {
+          ...settings,
+          automationEnabled: true,
+          researchInstructions: "Different research requirements",
+        }),
+      );
+      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+        0,
+      );
+      expect(generate).not.toHaveBeenCalled();
+    });
+    test("older receipts without a research policy snapshot remain held across Playbook revisions", async () => {
+      const { store, review, db, schema } = active();
+      const context = await automaticFixture();
+      await db.execute(
+        sql`update outbound_integration_job set input = input - 'researchPolicyHash' where id = ${context.research}`,
+      );
+      value(
+        await store.savePlaybook("operator", {
+          ...settings,
+          automationEnabled: true,
+          voiceNotes: "New voice",
+        }),
+      );
+      const generate = mock(generated);
+      const result = value(await review.run({ maxDrafts: 1 }, generate));
+      expect(result.approved).toBe(0);
+      expect(generate).not.toHaveBeenCalled();
+      expect(
+        value(await store.readProspect(fixture.prospectId))?.approvedAt,
+      ).toBeNull();
+    });
+    test("disabled automatic mode and a paused campaign never approve drafts", async () => {
+      const { store, review, db, schema } = active();
+      const context = await automaticFixture();
+      value(
+        await store.savePlaybook("operator", {
+          ...settings,
+          automationEnabled: false,
+        }),
+      );
+      expect(value(await review.run()).processed).toBe(0);
+      value(
+        await store.savePlaybook("operator", {
+          ...settings,
+          automationEnabled: true,
+        }),
+      );
+      await db
+        .update(schema.outboundCampaign)
+        .set({ status: "paused" })
+        .where(eq(schema.outboundCampaign.id, context.campaign.id));
+      expect(value(await review.run()).processed).toBe(0);
+    });
+    test("a lost draft provider request is marked uncertain and is never purchased again", async () => {
+      const { store, review, db, schema } = active();
+      const context = await automaticFixture();
+      value(
+        await store.savePlaybook("operator", {
+          ...settings,
+          automationEnabled: true,
+          voiceNotes: "New voice",
+        }),
+      );
+      const row = value(await store.readProspect(fixture.prospectId))!;
+      const policy = await store.policy();
+      const [job] = await db
+        .insert(schema.outboundIntegrationJob)
+        .values({
+          provider: "automation",
+          prospectId: row.id,
+          status: "starting",
+          requestId: `draft-review:${row.id}:${row.revision}:${policy.revision}`,
+          input: {
+            operation: "draftReview",
+            prospectId: row.id,
+            prospectRevision: row.revision,
+            campaignId: context.campaign.id,
+            campaignRevision: context.campaign.revision,
+            playbookRevision: policy.revision,
+            regenerate: true,
+            readinessKey: draftReviewReadinessKey(
+              row.details,
+              policy.settings.senderConfirmed,
+            ),
+            resumeId: "",
+          },
+          output: {
+            stage: "draft",
+            lease: {
+              token: randomUUID(),
+              expiresAt: new Date(now.getTime() - 1).toISOString(),
+            },
+          },
+        })
+        .returning();
+      const generate = mock(generated);
+      expect(
+        value(await review.run({ maxDrafts: 1 }, generate)).processed,
+      ).toBe(0);
+      value(
+        await store.savePlaybook("operator", {
+          ...settings,
+          automationEnabled: true,
+          voiceNotes: "Another voice",
+        }),
+      );
+      expect(
+        value(await review.run({ maxDrafts: 1 }, generate)).processed,
+      ).toBe(0);
+      expect(generate).not.toHaveBeenCalled();
+      const [saved] = await db
+        .select()
+        .from(schema.outboundIntegrationJob)
+        .where(eq(schema.outboundIntegrationJob.id, job!.id));
+      expect(saved?.status).toBe("uncertain");
+    });
+    test("expiry and any earlier send attempt block automatic approval without altering draft history", async () => {
+      const { store, review, db, schema } = active();
+      await automaticFixture();
+      const before = value(await store.readProspect(fixture.prospectId))!;
+      const generate = mock(generated);
+      setSystemTime(new Date(now.getTime() + 8 * 86_400_000));
+      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+        0,
+      );
+      expect(generate).not.toHaveBeenCalled();
+      setSystemTime(now);
+      value(
+        await store.savePlaybook("operator", {
+          ...settings,
+          automationEnabled: true,
+          voiceNotes: "New voice",
+        }),
+      );
+      await db.insert(schema.outboundSendAttempt).values({
+        prospectId: before.id,
+        inboxId: fixture.inboxId,
+        revision: before.revision,
+        step: 1,
+        status: "uncertain",
+        messageId: "<fixture@samplegoods.com>",
+        contentHash: "fixture",
+      });
+      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+        0,
+      );
+      expect(generate).not.toHaveBeenCalled();
+      expect(value(await store.readProspect(before.id))?.revision).toBe(
+        before.revision,
+      );
+    });
+    test("a Playbook change during generation rejects the draft and leaves the earlier version intact", async () => {
+      const { store, review } = active();
+      await automaticFixture();
+      value(
+        await store.savePlaybook("operator", {
+          ...settings,
+          automationEnabled: true,
+          voiceNotes: "New voice",
+        }),
+      );
+      const before = value(await store.readProspect(fixture.prospectId))!;
+      const generate = mock(
+        async (...arguments_: Parameters<typeof generated>) => {
+          value(
+            await store.savePlaybook("operator", {
+              ...settings,
+              automationEnabled: true,
+              voiceNotes: "Changed during request",
+            }),
+          );
+          return generated(...arguments_);
+        },
+      );
+      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+        0,
+      );
+      expect(value(await store.readProspect(before.id))?.messages).toEqual(
+        before.messages,
+      );
+      expect(value(await store.readProspect(before.id))?.revision).toBe(
+        before.revision,
+      );
+    });
+    test("fresh receipt checks resume a failed preflight without changing the prospect revision", async () => {
+      const { store, review } = active();
+      await automaticFixture();
+      const before = value(await store.readProspect(fixture.prospectId))!;
+      setSystemTime(new Date(now.getTime() + 2 * 86_400_000));
+      const generate = mock(generated);
+      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+        0,
+      );
+      value(
+        await store.patchProspect(
+          "operator",
+          before.id,
+          { mxCheckedAt: new Date().toISOString() },
+          before.revision,
+        ),
+      );
+      expect(value(await store.readProspect(before.id))?.revision).toBe(
+        before.revision,
+      );
+      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+        1,
+      );
+      expect(generate).not.toHaveBeenCalled();
+    });
+    test("editable verified labels cannot replace the actual provider receipt", async () => {
+      const { store, review, db } = active();
+      await automaticFixture();
+      await db.execute(
+        sql`update outbound_integration_job set status = 'failed' where provider = 'apollo'`,
+      );
+      const generate = mock(generated);
+      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+        0,
+      );
+      expect(generate).not.toHaveBeenCalled();
+      expect(
+        value(await store.readProspect(fixture.prospectId))?.approvedAt,
+      ).toBeNull();
+    });
+    test("explicit resume admits a known failed review, but provider uncertainty remains a hold across edits", async () => {
+      const { store, review } = active();
+      await automaticFixture();
+      value(
+        await store.savePlaybook("operator", {
+          ...settings,
+          automationEnabled: true,
+          voiceNotes: "New voice",
+        }),
+      );
+      const before = value(await store.readProspect(fixture.prospectId))!;
+      const holding = mock(
+        async (...arguments_: Parameters<typeof generated>) => {
+          value(
+            await store.reviewProspect("operator", {
+              prospect: before.id,
+              revision: before.revision,
+              decision: "hold",
+              reason: "Pause briefly",
+            }),
+          );
+          return generated(...arguments_);
+        },
+      );
+      expect(value(await review.run({ maxDrafts: 1 }, holding)).approved).toBe(
+        0,
+      );
+      value(
+        await store.reviewProspect("operator", {
+          prospect: before.id,
+          revision: before.revision,
+          decision: "review",
+          reason: "",
+        }),
+      );
+      expect(
+        value(await review.run({ maxDrafts: 1 }, generated)).approved,
+      ).toBe(1);
+    });
+    test("thrown provider errors are uncertain and do not replay after a Playbook edit", async () => {
+      const { store, review, db, schema } = active();
+      await automaticFixture();
+      value(
+        await store.savePlaybook("operator", {
+          ...settings,
+          automationEnabled: true,
+          voiceNotes: "New voice",
+        }),
+      );
+      const generate = mock(async () => {
+        throw new Error("Lost provider connection");
+      });
+      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+        0,
+      );
+      value(
+        await store.savePlaybook("operator", {
+          ...settings,
+          automationEnabled: true,
+          voiceNotes: "Next voice",
+        }),
+      );
+      expect(
+        value(await review.run({ maxDrafts: 1 }, generate)).processed,
+      ).toBe(0);
+      expect(generate).toHaveBeenCalledTimes(1);
+      const [job] = await db
+        .select()
+        .from(schema.outboundIntegrationJob)
+        .where(eq(schema.outboundIntegrationJob.status, "uncertain"));
+      expect(job?.input["operation"]).toBe("draftReview");
+      const item = value(await store.getReviewItem({ id: fixture.prospectId }));
+      expect(
+        item?.prospect.issues.some(
+          (issue) => issue.code === "automaticReviewUncertain",
+        ),
+      ).toBe(true);
+    });
+    test("pausing during generation retains the completed draft and resumes without another provider call", async () => {
+      const { store, review } = active();
+      await automaticFixture();
+      value(
+        await store.savePlaybook("operator", {
+          ...settings,
+          automationEnabled: true,
+          voiceNotes: "New voice",
+        }),
+      );
+      const generate = mock(
+        async (...arguments_: Parameters<typeof generated>) => {
+          value(
+            await store.savePlaybook("operator", {
+              ...settings,
+              automationEnabled: false,
+              voiceNotes: "New voice",
+            }),
+          );
+          return generated(...arguments_);
+        },
+      );
+      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+        0,
+      );
+      value(
+        await store.savePlaybook("operator", {
+          ...settings,
+          automationEnabled: true,
+          voiceNotes: "New voice",
+        }),
+      );
+      expect(value(await review.run({ maxDrafts: 1 }, generate)).approved).toBe(
+        1,
+      );
+      expect(generate).toHaveBeenCalledTimes(1);
+    });
+    test("a fresh standalone verification can replace an older automation verification receipt", async () => {
+      const { store, review, research, db, schema } = active();
+      const context = await automaticFixture();
+      const row = value(await store.readProspect(fixture.prospectId))!;
+      const [original] = await db
+        .insert(schema.outboundIntegrationJob)
+        .values({
+          provider: "automation",
+          prospectId: row.id,
+          status: "complete",
+          input: {
+            operation: "campaignAutomation",
+            campaignId: context.campaign.id,
+            campaignRevision: context.campaign.revision,
+            playbookRevision: (await store.policy()).revision,
+          },
+          output: {
+            prospectId: row.id,
+            stage: "complete",
+            selection: {
+              status: "selected",
+              provisional: false,
+              person: {
+                name: row.details.name,
+                first: row.details.first,
+                title: row.details.title,
+                email: row.details.email,
+                domain: row.details.domain,
+                linkedinUrl: row.details.linkedinUrl,
+              },
+              details: {
+                roleSource: row.details.roleSource,
+                roleCheckedAt: row.details.roleCheckedAt,
+                timezone: row.details.timezone,
+              },
+            },
+            qualification: {
+              status: "qualified",
+              details: { ...row.details, gap: "product-published-data" },
+            },
+            verification: {
+              requestId: "expired-old-verification",
+              records: [],
+            },
+            verificationResult: {
+              requestId: "expired-old-verification",
+              status: "complete",
+              results: [],
+            },
+          },
+        })
+        .returning();
+      value(
+        await store.patchProspect(
+          "operator",
+          row.id,
+          { automationEvidenceId: original!.id },
+          row.revision,
+        ),
+      );
+      value(await research.saveAndApply("operator", await input()));
+      value(await store.generateDrafts("operator", { prospect: row.id }));
+      expect(
+        value(await review.run({ maxDrafts: 1 }, generated)).approved,
+      ).toBe(1);
+    });
     test("ingredient-only fallback is held before template and Azure drafting", async () => {
       const { store, draft } = active();
       const row = value(await store.readProspect(fixture.prospectId));
@@ -482,38 +1142,36 @@ describe.skipIf(!endpoint)(
       const row = value(await store.readProspect(fixture.prospectId));
       if (!row) throw new Error("Missing prospect");
       const identifier = randomUUID();
-      await db
-        .insert(schema.outboundIntegrationJob)
-        .values({
-          id: identifier,
-          provider: "automation",
+      await db.insert(schema.outboundIntegrationJob).values({
+        id: identifier,
+        provider: "automation",
+        prospectId: row.id,
+        status: "complete",
+        input: {
+          operation: "campaignAutomation",
+          campaignId: row.campaignId,
+        },
+        output: {
           prospectId: row.id,
-          status: "complete",
-          input: {
-            operation: "campaignAutomation",
-            campaignId: row.campaignId,
-          },
-          output: {
-            prospectId: row.id,
-            selection: {
-              status: "selected",
-              provisional: false,
-              person: {
-                name: row.details.name,
-                first: row.details.first,
-                title: row.details.title,
-                email: "original@samplegoods.com",
-                domain: row.details.domain,
-                linkedinUrl: row.details.linkedinUrl,
-              },
-              details: {
-                roleSource: row.details.roleSource,
-                roleCheckedAt: row.details.roleCheckedAt,
-                timezone: row.details.timezone,
-              },
+          selection: {
+            status: "selected",
+            provisional: false,
+            person: {
+              name: row.details.name,
+              first: row.details.first,
+              title: row.details.title,
+              email: "original@samplegoods.com",
+              domain: row.details.domain,
+              linkedinUrl: row.details.linkedinUrl,
+            },
+            details: {
+              roleSource: row.details.roleSource,
+              roleCheckedAt: row.details.roleCheckedAt,
+              timezone: row.details.timezone,
             },
           },
-        });
+        },
+      });
       value(
         await store.patchProspect(
           "operator",

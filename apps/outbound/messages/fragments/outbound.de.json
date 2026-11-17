@@ -316,7 +316,36 @@
       },
       "automaticReady": "Keine erfassten Blockierungen",
       "automaticApprovalNote": "Der automatische Modus führt die Freigabeprüfungen aus. Sie können hier Nachrichten prüfen, bearbeiten oder zurückhalten; Änderungen müssen die Prüfungen erneut bestehen.",
-      "manualApproval": "Manuell freigeben"
+      "manualApproval": "Manuell freigeben",
+      "panel": {
+        "automaticTitle": "Automatische Freigabe",
+        "manualTitle": "Freigabe",
+        "attention": "Handlungsbedarf",
+        "update": "Entwurf muss aktualisiert werden",
+        "held": "Sequenz pausiert",
+        "ready": "Bereit für automatische Prüfungen",
+        "approved": "Freigegeben",
+        "sent": "Sequenz abgeschlossen",
+        "evidenceTitle": "Recherche",
+        "evidenceDetails": "Belege ansehen",
+        "observation": "Beobachtung",
+        "scope": "Umfang und Grenzen",
+        "consequence": "Was das bedeutet",
+        "automaticNote": "Geeignete Entwürfe werden automatisch freigegeben. Nur Ausnahmen erfordern Ihre Aufmerksamkeit.",
+        "updateNote": "Dieser Entwurf muss dem aktuellen Playbook entsprechen, bevor er freigegeben werden kann.",
+        "sendingPaused": "Der Versand ist im Playbook pausiert.",
+        "sendingActive": "Freigegebene E-Mails werden automatisch nach Ihrem Zeitplan und innerhalb der Postfachlimits gesendet.",
+        "sendingSettings": "Versandeinstellungen",
+        "controls": "Kontaktaufnahme pausieren oder stoppen",
+        "holdDescription": "Pausieren Sie diese Sequenz, bis Sie fortfahren möchten.",
+        "systemHold": "Die Sequenz ist wegen einer gespeicherten Prüfung pausiert.",
+        "unknownIssue": "Eine gespeicherte Prüfung erfordert Ihre Aufmerksamkeit.",
+        "editsPending": "Speichern Sie Ihre Änderungen, um die Prüfungen erneut auszuführen.",
+        "playbookChanged": "Das Playbook wurde seit der Erstellung dieses Entwurfs geändert.",
+        "noEvidence": "Es wurde noch keine Produktrecherche gespeichert.",
+        "checked": "Beobachtet am {date}",
+        "resume": "Automatische Prüfungen fortsetzen"
+      }
     },
     "linkedin": {
       "title": "Bleiben Sie auf LinkedIn persönlich",
@@ -886,7 +915,9 @@
       "findingReviewRequired": "Prüfen Sie die rohen und gerenderten Produktnachweise, füllen Sie die Platzhalter zum Befund aus und ergänzen Sie bei Bedarf den erforderlichen Händlernachweis.",
       "templateControlsChanged": "Stellen Sie vor der Freigabe die gespeicherte Gründervorstellung und Abschlussfrage im genauen Wortlaut wieder her.",
       "platformHeld": "Wählen Sie Shopify oder WooCommerce für diese Kaltakquise-Kampagne aus.",
-      "shoppingResearchRequired": "Erfassen Sie eine belegte Erkenntnis zum Einkaufserlebnis, bevor Sie diese Nachricht erstellen oder freigeben."
+      "shoppingResearchRequired": "Erfassen Sie eine belegte Erkenntnis zum Einkaufserlebnis, bevor Sie diese Nachricht erstellen oder freigeben.",
+      "automaticReviewFailed": "Die automatischen Prüfungen konnten diesen Entwurf nicht freigeben. Prüfe die Belege und die Nachricht und speichere deine Korrekturen.",
+      "automaticReviewUncertain": "Eine frühere Entwurfsanfrage muss geklärt werden, bevor die automatische Prüfung fortgesetzt werden kann."
     },
     "preparation": {
       "action": {

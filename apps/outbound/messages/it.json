@@ -316,7 +316,36 @@
       },
       "automaticReady": "Nessun blocco registrato",
       "automaticApprovalNote": "La modalità automatica esegue le verifiche di approvazione. Qui puoi consultare, modificare o trattenere un messaggio; le modifiche devono superare nuovamente le verifiche.",
-      "manualApproval": "Approva manualmente"
+      "manualApproval": "Approva manualmente",
+      "panel": {
+        "automaticTitle": "Approvazione automatica",
+        "manualTitle": "Approvazione",
+        "attention": "Richiede attenzione",
+        "update": "Bozza da aggiornare",
+        "held": "Sequenza in pausa",
+        "ready": "Pronta per le verifiche automatiche",
+        "approved": "Approvata",
+        "sent": "Sequenza completata",
+        "evidenceTitle": "Ricerca",
+        "evidenceDetails": "Visualizza le prove",
+        "observation": "Osservazione",
+        "scope": "Ambito e limiti",
+        "consequence": "Cosa significa",
+        "automaticNote": "Le bozze idonee vengono approvate automaticamente. Solo le eccezioni richiedono la tua attenzione.",
+        "updateNote": "Questa bozza deve essere conforme al Playbook attuale prima di poter essere approvata.",
+        "sendingPaused": "L’invio è in pausa nel Playbook.",
+        "sendingActive": "Le email approvate vengono inviate automaticamente secondo gli orari e i limiti delle caselle impostati.",
+        "sendingSettings": "Impostazioni di invio",
+        "controls": "Sospendi o interrompi i contatti",
+        "holdDescription": "Metti in pausa questa sequenza finché non vuoi continuare.",
+        "systemHold": "La sequenza è in pausa per una verifica salvata.",
+        "unknownIssue": "Una verifica salvata richiede attenzione.",
+        "editsPending": "Salva le modifiche per ripetere le verifiche.",
+        "playbookChanged": "Il Playbook è cambiato da quando è stata preparata questa bozza.",
+        "noEvidence": "Non è stata ancora salvata alcuna ricerca sul prodotto.",
+        "checked": "Osservato il {date}",
+        "resume": "Riprendi i controlli automatici"
+      }
     },
     "linkedin": {
       "title": "Mantieni un approccio personale su LinkedIn",
@@ -886,7 +915,9 @@
       "findingReviewRequired": "Verifica le prove originali e renderizzate del prodotto, compila i segnaposto del riscontro e aggiungi la fonte di un altro rivenditore quando richiesta.",
       "templateControlsChanged": "Ripristina esattamente la presentazione del fondatore e la domanda conclusiva salvate prima dell’approvazione.",
       "platformHeld": "Seleziona Shopify o WooCommerce per questa campagna di contatto a freddo.",
-      "shoppingResearchRequired": "Registra un’osservazione sull’esperienza di acquisto supportata da prove prima di redigere o approvare questo messaggio."
+      "shoppingResearchRequired": "Registra un’osservazione sull’esperienza di acquisto supportata da prove prima di redigere o approvare questo messaggio.",
+      "automaticReviewFailed": "I controlli automatici non hanno approvato questa bozza. Verifica le prove e il messaggio, poi salva le correzioni.",
+      "automaticReviewUncertain": "Occorre verificare l’esito di una precedente richiesta di bozza prima di riprendere la revisione automatica."
     },
     "preparation": {
       "action": {

@@ -316,7 +316,36 @@
       },
       "automaticReady": "未记录阻碍",
       "automaticApprovalNote": "自动模式执行批准检查。您仍可在此查看、编辑或暂缓消息；编辑后须重新通过检查。",
-      "manualApproval": "手动批准"
+      "manualApproval": "手动批准",
+      "panel": {
+        "automaticTitle": "自动批准",
+        "manualTitle": "批准",
+        "attention": "需要处理",
+        "update": "草稿需要更新",
+        "held": "序列已暂停",
+        "ready": "已就绪，等待自动检查",
+        "approved": "已批准",
+        "sent": "序列已完成",
+        "evidenceTitle": "研究",
+        "evidenceDetails": "查看证据",
+        "observation": "观察结果",
+        "scope": "范围与局限",
+        "consequence": "这意味着什么",
+        "automaticNote": "符合条件的草稿会自动批准。只有例外情况需要您处理。",
+        "updateNote": "此草稿需要符合当前 Playbook 的要求，才能获得批准。",
+        "sendingPaused": "发送已在 Playbook 中暂停。",
+        "sendingActive": "获批邮件会按照您的日程和邮箱限额自动发送。",
+        "sendingSettings": "发送设置",
+        "controls": "暂停或停止联系",
+        "holdDescription": "暂停此序列，直到您准备好继续。",
+        "systemHold": "此序列因一项已记录的检查而暂停。",
+        "unknownIssue": "一项已记录的检查需要处理。",
+        "editsPending": "保存修改后即可重新运行检查。",
+        "playbookChanged": "此草稿准备完成后，Playbook 已发生更改。",
+        "noEvidence": "尚未保存任何产品研究。",
+        "checked": "观察时间：{date}",
+        "resume": "恢复自动检查"
+      }
     },
     "linkedin": {
       "title": "在 LinkedIn 保持有针对性的联系",
@@ -886,7 +915,9 @@
       "findingReviewRequired": "请审核商品的原始和渲染后依据，填写发现项占位符，并在需要时添加其他商家的来源链接。",
       "templateControlsChanged": "批准前，请将创始人介绍和结尾问题恢复为已保存的原文。",
       "platformHeld": "请为此次陌生客户开发活动选择 Shopify 或 WooCommerce。",
-      "shoppingResearchRequired": "起草或批准此消息前，请记录有证据支持的购物体验发现。"
+      "shoppingResearchRequired": "起草或批准此消息前，请记录有证据支持的购物体验发现。",
+      "automaticReviewFailed": "自动检查未能批准此草稿。请检查证据和消息，然后保存修改。",
+      "automaticReviewUncertain": "必须核实先前草稿请求的结果，才能恢复自动审核。"
     },
     "preparation": {
       "action": {

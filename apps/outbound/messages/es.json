@@ -316,7 +316,36 @@
       },
       "automaticReady": "Sin bloqueos registrados",
       "automaticApprovalNote": "El modo automático realiza las comprobaciones de aprobación. Aquí puede inspeccionar, editar o retener un mensaje; las modificaciones deben superar las comprobaciones de nuevo.",
-      "manualApproval": "Aprobar manualmente"
+      "manualApproval": "Aprobar manualmente",
+      "panel": {
+        "automaticTitle": "Aprobación automática",
+        "manualTitle": "Aprobación",
+        "attention": "Requiere atención",
+        "update": "Hay que actualizar el borrador",
+        "held": "Secuencia en pausa",
+        "ready": "Listo para las comprobaciones automáticas",
+        "approved": "Aprobado",
+        "sent": "Secuencia completada",
+        "evidenceTitle": "Investigación",
+        "evidenceDetails": "Ver evidencias",
+        "observation": "Observación",
+        "scope": "Alcance y límites",
+        "consequence": "Qué significa",
+        "automaticNote": "Los borradores que cumplen los requisitos se aprueban automáticamente. Solo las excepciones requieren tu atención.",
+        "updateNote": "Este borrador debe ajustarse al Playbook actual antes de poder aprobarse.",
+        "sendingPaused": "El envío está en pausa en el Playbook.",
+        "sendingActive": "Los correos aprobados se envían automáticamente según tu horario y los límites de tus buzones.",
+        "sendingSettings": "Ajustes de envío",
+        "controls": "Pausar o detener el contacto",
+        "holdDescription": "Pausa esta secuencia hasta que quieras continuar.",
+        "systemHold": "La secuencia está en pausa por una comprobación guardada.",
+        "unknownIssue": "Una comprobación guardada requiere atención.",
+        "editsPending": "Guarda los cambios para repetir las comprobaciones.",
+        "playbookChanged": "El Playbook ha cambiado desde que se preparó este borrador.",
+        "noEvidence": "Aún no se ha guardado ninguna investigación del producto.",
+        "checked": "Observado el {date}",
+        "resume": "Reanudar comprobaciones automáticas"
+      }
     },
     "linkedin": {
       "title": "Mantén el trato personal en LinkedIn",
@@ -886,7 +915,9 @@
       "findingReviewRequired": "Revisa las pruebas originales y renderizadas del producto, completa los marcadores del hallazgo y añade la fuente de otra tienda cuando sea obligatoria.",
       "templateControlsChanged": "Restaura la presentación del fundador y la pregunta de cierre exactamente como están guardadas antes de aprobar.",
       "platformHeld": "Selecciona Shopify o WooCommerce para esta campaña de prospección en frío.",
-      "shoppingResearchRequired": "Registra un hallazgo sobre la experiencia de compra respaldado por pruebas antes de redactar o aprobar este mensaje."
+      "shoppingResearchRequired": "Registra un hallazgo sobre la experiencia de compra respaldado por pruebas antes de redactar o aprobar este mensaje.",
+      "automaticReviewFailed": "Las comprobaciones automáticas no pudieron aprobar este borrador. Revisa las pruebas y el mensaje y guarda las correcciones.",
+      "automaticReviewUncertain": "Es necesario aclarar el resultado de una solicitud anterior de borrador antes de reanudar la revisión automática."
     },
     "preparation": {
       "action": {

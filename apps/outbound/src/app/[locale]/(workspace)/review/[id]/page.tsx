@@ -43,7 +43,7 @@ const ReviewDetailData = async ({ params, searchParams }: PageProps) => {
         {translate("error")}
       </p>
     );
-  if (!result.data || !result.data.prospect.messages.length)
+  if (!result.data?.prospect.messages.length)
     return (
       <Empty
         title={translate("missingTitle")}
@@ -61,7 +61,7 @@ const ReviewDetailData = async ({ params, searchParams }: PageProps) => {
     );
   return (
     <ReviewEditor
-      key={`${result.data.prospect.id}-${result.data.prospect.revision}-${result.data.prospect.updatedAt}`}
+      key={`${result.data.prospect.id}-${result.data.prospect.revision}`}
       prospect={result.data.prospect}
       playbook={result.data.playbook}
       backHref={backHref}

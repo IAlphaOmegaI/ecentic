@@ -602,11 +602,17 @@ export const lintMessages = (
         : prospect && usesFindingFormula(settings)
           ? findingCopy(prospect, settings)
           : null;
+    const rendered = prospect
+      ? (renderMessages(prospect, settings)[0]?.body ?? "")
+      : "";
     const original =
       prospect &&
       (usesFindingFormula(settings) || prospect.gap === "shopping-research")
-        ? (renderMessages(prospect, settings)[0]?.body ?? "")
+        ? rendered
         : "";
+    const greeting = prospect
+      ? rendered.match(/^[^!\n]+!/)?.[0]
+      : message.body.match(/^(?:Hi|Hallo|Hola|Ciao|Buongiorno) [^!\n]+!/)?.[0];
     return [
       ...(message.step === 1 &&
       (usesFindingFormula(settings) || prospect?.gap === "shopping-research") &&
@@ -679,7 +685,9 @@ export const lintMessages = (
         : []),
       ...(message.step === 1 &&
       /!/.test(
-        message.body.replace(/^(?:Hi|Hallo|Hola|Ciao|Buongiorno) [^!\n]+!/, ""),
+        greeting && message.body.startsWith(greeting)
+          ? message.body.slice(greeting.length)
+          : message.body,
       )
         ? [{ code: "exclamation", field }]
         : []),

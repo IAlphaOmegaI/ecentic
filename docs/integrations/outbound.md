@@ -8,8 +8,10 @@ requires explicit workspace configuration. Active campaigns now use the
 [durable automatic pipeline](./outbound-automation.md): Azure assesses sourced
 company evidence and drafts the saved formula, Apollo finds/verifies contacts,
 and exact-version machine checks authorize eligible delivery. Automatic follow-ups [renew expired source and email receipts](./outbound-sequence-refresh.md) without changing sent messages. Manual review
-remains available when automatic mode is off; historical drafts are not adopted
-into automatic mode. Source exclusions, opt-outs, identity checks and immutable
+remains available when automatic mode is off. Existing unsent drafts in active
+campaigns now enter a bounded automatic review pass only when current shopping
+research, saved provider verification and all eligibility checks match. Sent or
+explicitly held sequences are never automatically rewritten. Source exclusions, opt-outs, identity checks and immutable
 attempt records continue to apply.
 
 The primary navigation follows Overview → Campaigns → Prospects → Conversations.

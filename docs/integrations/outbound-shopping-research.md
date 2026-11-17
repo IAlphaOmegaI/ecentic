@@ -84,7 +84,7 @@ expect new voice notes to rewrite their protected finding paragraphs.
 ## Durable gates
 
 The existing integration-job table stores `provider: "automation"` and
-`input.operation: "leadResearch"`. The completed job contains the receipt,
+`input.operation: "leadResearch"`. The completed job contains the research-policy fingerprint, receipt,
 its hash, individual source hashes, applied prospect details, original
 campaign/Playbook revisions, actor and applied prospect revision. No schema
 migration is required.
@@ -92,10 +92,15 @@ migration is required.
 `assertShoppingEvidence` verifies the saved receipt, exact bound identity and
 finding fields, current policy and campaign revisions, and freshness. Manual
 draft writes, Azure drafting, manual approval and final delivery use these
-gates. A policy change or expired source requires fresh reviewed research;
+gates. A research-instruction change or expired source requires fresh reviewed research;
 changing a saved contact cannot repurpose another contact's qualification.
 Existing automatic selection checks remain in force for automatically sourced
-contacts even when their product research changes.
+contacts even when their product research changes. Newly saved receipts may survive a
+writing-only Playbook change when their research-policy fingerprint still
+matches. Validation still uses the current freshness limit and exact campaign,
+identity and source bindings. No capture time or historical job is rewritten.
+Receipts created before the fingerprint was recorded continue to require an
+explicit reviewed application after a Playbook revision change.
 
 The operator is responsible for supplying faithful captures. Hashes protect
 the saved receipt from accidental changes; they do not independently attest a

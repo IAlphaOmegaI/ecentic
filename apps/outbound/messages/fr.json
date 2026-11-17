@@ -316,7 +316,36 @@
       },
       "automaticReady": "Aucun blocage enregistré",
       "automaticApprovalNote": "Le mode automatique effectue les vérifications d’approbation. Vous pouvez consulter, modifier ou retenir un message ici ; les modifications doivent repasser les vérifications.",
-      "manualApproval": "Approuver manuellement"
+      "manualApproval": "Approuver manuellement",
+      "panel": {
+        "automaticTitle": "Approbation automatique",
+        "manualTitle": "Approbation",
+        "attention": "À vérifier",
+        "update": "Brouillon à mettre à jour",
+        "held": "Séquence en pause",
+        "ready": "Prêt pour les vérifications automatiques",
+        "approved": "Approuvé",
+        "sent": "Séquence terminée",
+        "evidenceTitle": "Recherche",
+        "evidenceDetails": "Voir les preuves",
+        "observation": "Observation",
+        "scope": "Portée et limites",
+        "consequence": "Ce que cela signifie",
+        "automaticNote": "Les brouillons admissibles sont approuvés automatiquement. Seules les exceptions nécessitent votre attention.",
+        "updateNote": "Ce brouillon doit correspondre au Playbook actuel avant de pouvoir être approuvé.",
+        "sendingPaused": "L’envoi est en pause dans le Playbook.",
+        "sendingActive": "Les e-mails approuvés sont envoyés automatiquement selon vos horaires et les limites de vos boîtes mail.",
+        "sendingSettings": "Paramètres d’envoi",
+        "controls": "Suspendre ou arrêter la prospection",
+        "holdDescription": "Mettez cette séquence en pause jusqu’à ce que vous souhaitiez continuer.",
+        "systemHold": "La séquence est en pause en raison d’une vérification enregistrée.",
+        "unknownIssue": "Une vérification enregistrée nécessite votre attention.",
+        "editsPending": "Enregistrez vos modifications pour relancer les vérifications.",
+        "playbookChanged": "Le Playbook a changé depuis la préparation de ce brouillon.",
+        "noEvidence": "Aucune recherche produit n’a encore été enregistrée.",
+        "checked": "Observé le {date}",
+        "resume": "Reprendre les vérifications automatiques"
+      }
     },
     "linkedin": {
       "title": "Gardez une approche personnelle sur LinkedIn",
@@ -886,7 +915,9 @@
       "findingReviewRequired": "Vérifiez les preuves produit brutes et rendues, renseignez les variables du constat et ajoutez la source d’un autre revendeur si elle est requise.",
       "templateControlsChanged": "Rétablissez exactement la présentation du fondateur et la question de conclusion enregistrées avant l’approbation.",
       "platformHeld": "Sélectionnez Shopify ou WooCommerce pour cette campagne de prospection à froid.",
-      "shoppingResearchRequired": "Enregistrez un constat étayé sur le parcours d’achat avant de rédiger ou d’approuver ce message."
+      "shoppingResearchRequired": "Enregistrez un constat étayé sur le parcours d’achat avant de rédiger ou d’approuver ce message.",
+      "automaticReviewFailed": "Les vérifications automatiques n’ont pas pu approuver ce brouillon. Vérifiez les preuves et le message, puis enregistrez vos corrections.",
+      "automaticReviewUncertain": "Le résultat d’une précédente demande de brouillon doit être vérifié avant de reprendre la validation automatique."
     },
     "preparation": {
       "action": {

@@ -11,6 +11,36 @@ false. Campaigns must also be active. `sendingEnabled` and the mailbox/history
 checks separately control delivery. The automation panel shows these states
 separately and never treats a running preparation job as proof that mail can send.
 
+## Existing drafts and Playbook edits
+
+The preparation cron also runs a bounded automatic review pass over unsent drafts
+in active campaigns. It covers operator-researched leads as well as completed
+campaign preparation. Current drafts keep their text. Drafts from an older
+Playbook get one new AI draft using the saved factual finding and current writing
+formula, followed by the same approval checks in one transaction.
+
+Every pass records a `draftReview` integration job before provider work. A current
+work-email verdict must match an actual saved Apollo request, record, recipient
+and provider verification date; editable email-status labels cannot approve a
+lead. A newer standalone verification may supersede the original automation
+verification when its recorded result matches the current recipient.
+
+Explicit holds, closed sequences, any earlier email/LinkedIn attempt and uncertain
+provider work are excluded. Failed checks do not starve later prospects. Updated
+receipt timestamps or an explicit Resume action permit another known check;
+unresolved provider requests never replay after a Playbook edit or Resume. A
+pause during generation retains the checkpointed draft and applies it after
+resuming without purchasing another draft. Pausing or editing while a request is
+running is rechecked at the atomic approval boundary.
+
+Shopping receipts now retain a research-policy fingerprint. Writing-only edits
+can reuse those original observations without changing their capture times,
+source hashes or research job. Changed research instructions, changed campaign
+criteria, changed identities, expired evidence and legacy receipts without that
+fingerprint still need research review. Approvals always bind the current
+Playbook and exact current message version. No draft-review operation sends mail;
+delivery continues through the existing sending, mailbox, history and rate gates.
+
 ## Processing
 
 The worker calls `Automation.run` without a browser session. The staff action

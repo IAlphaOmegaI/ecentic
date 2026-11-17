@@ -316,7 +316,36 @@
       },
       "automaticReady": "記録された問題はありません",
       "automaticApprovalNote": "自動モードで承認チェックを行います。ここでメッセージを確認、編集、保留できます。編集後は再チェックが必要です。",
-      "manualApproval": "手動で承認"
+      "manualApproval": "手動で承認",
+      "panel": {
+        "automaticTitle": "自動承認",
+        "manualTitle": "承認",
+        "attention": "要確認",
+        "update": "下書きの更新が必要",
+        "held": "シーケンスを保留中",
+        "ready": "自動チェックの準備完了",
+        "approved": "承認済み",
+        "sent": "シーケンス完了",
+        "evidenceTitle": "調査",
+        "evidenceDetails": "根拠を見る",
+        "observation": "観察内容",
+        "scope": "範囲と限界",
+        "consequence": "この結果が意味すること",
+        "automaticNote": "条件を満たす下書きは自動で承認されます。例外がある場合のみ確認が必要です。",
+        "updateNote": "承認するには、この下書きを現在のプレイブックに合わせる必要があります。",
+        "sendingPaused": "プレイブックで送信が一時停止されています。",
+        "sendingActive": "承認済みのメールは、設定されたスケジュールとメールボックスの上限に従って自動送信されます。",
+        "sendingSettings": "送信設定",
+        "controls": "連絡を一時停止・終了する",
+        "holdDescription": "再開する準備ができるまで、このシーケンスを保留にします。",
+        "systemHold": "記録されたチェックにより、シーケンスが保留になっています。",
+        "unknownIssue": "記録されたチェックの確認が必要です。",
+        "editsPending": "変更を保存して、チェックを再実行してください。",
+        "playbookChanged": "この下書きの作成後にプレイブックが変更されました。",
+        "noEvidence": "商品調査はまだ保存されていません。",
+        "checked": "観察日：{date}",
+        "resume": "自動チェックを再開"
+      }
     },
     "linkedin": {
       "title": "LinkedInでも相手に合わせた連絡を",
@@ -886,7 +915,9 @@
       "findingReviewRequired": "商品の未加工・レンダリング後の根拠を確認し、指摘事項のプレースホルダーを埋め、必要な場合は他店の出典を追加してください。",
       "templateControlsChanged": "承認する前に、保存済みの創業者紹介と締めくくりの質問を一字一句そのまま復元してください。",
       "platformHeld": "この新規開拓キャンペーンではShopifyまたはWooCommerceを選択してください。",
-      "shoppingResearchRequired": "このメッセージを作成または承認する前に、購入体験について根拠のある発見を記録してください。"
+      "shoppingResearchRequired": "このメッセージを作成または承認する前に、購入体験について根拠のある発見を記録してください。",
+      "automaticReviewFailed": "自動チェックでこの下書きを承認できませんでした。根拠とメッセージを確認し、修正を保存してください。",
+      "automaticReviewUncertain": "自動レビューを再開するには、以前の下書き作成リクエストの結果を確認する必要があります。"
     },
     "preparation": {
       "action": {

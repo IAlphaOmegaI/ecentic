@@ -316,7 +316,36 @@
       },
       "automaticReady": "No recorded blockers",
       "automaticApprovalNote": "Automatic mode performs the approval checks. You can inspect, edit or hold a message here; edits must pass the checks again.",
-      "manualApproval": "Approve manually"
+      "manualApproval": "Approve manually",
+      "panel": {
+        "automaticTitle": "Automatic approval",
+        "manualTitle": "Approval",
+        "attention": "Needs attention",
+        "update": "Draft needs updating",
+        "held": "Sequence on hold",
+        "ready": "Ready for automatic checks",
+        "approved": "Approved",
+        "sent": "Sequence complete",
+        "evidenceTitle": "Research",
+        "evidenceDetails": "View evidence",
+        "observation": "Observation",
+        "scope": "Scope and limits",
+        "consequence": "What it means",
+        "automaticNote": "Eligible drafts are approved automatically. Only exceptions need your attention.",
+        "updateNote": "This draft needs to match the current Playbook before it can be approved.",
+        "sendingPaused": "Sending is paused in the Playbook.",
+        "sendingActive": "Approved emails send automatically within your schedule and inbox limits.",
+        "sendingSettings": "Sending settings",
+        "controls": "Pause or stop outreach",
+        "holdDescription": "Pause this sequence until you are ready to continue.",
+        "systemHold": "The sequence is paused for a saved check.",
+        "unknownIssue": "A saved check needs attention.",
+        "editsPending": "Save your edits to run the checks again.",
+        "playbookChanged": "The Playbook changed since this draft was prepared.",
+        "noEvidence": "No product research has been saved yet.",
+        "checked": "Observed {date}",
+        "resume": "Resume automatic checks"
+      }
     },
     "linkedin": {
       "title": "Keep LinkedIn personal",
@@ -886,7 +915,9 @@
       "findingReviewRequired": "Review the raw and rendered product evidence, resolve the finding placeholders and add any required retail source.",
       "templateControlsChanged": "Restore the exact saved founder introduction and closing question before approval.",
       "platformHeld": "Select Shopify or WooCommerce for this cold campaign.",
-      "shoppingResearchRequired": "Record a supported shopping finding before drafting or approving this message."
+      "shoppingResearchRequired": "Record a supported shopping finding before drafting or approving this message.",
+      "automaticReviewFailed": "Automatic checks could not approve this draft. Check the evidence and message, then save your corrections.",
+      "automaticReviewUncertain": "An earlier draft request needs reconciliation before automatic review can resume."
     },
     "preparation": {
       "action": {

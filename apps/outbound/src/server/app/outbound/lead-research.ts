@@ -15,6 +15,7 @@ import { ConflictError, ValidationError } from "@/server/utils/error";
 import {
   researchHash,
   researchJobInputSchema,
+  researchPolicyHash,
 } from "@/server/utils/outbound/shopping-research";
 import { repository } from "@/server/utils/repository";
 import * as Store from "./store";
@@ -194,6 +195,7 @@ export const saveAndApply = (
               campaignId: prospect.campaignId,
               campaignRevision: campaign?.revision ?? null,
               receiptHash,
+              researchPolicyHash: researchPolicyHash(policy.settings),
             }),
             output: {
               receipt: parsed.receipt,
