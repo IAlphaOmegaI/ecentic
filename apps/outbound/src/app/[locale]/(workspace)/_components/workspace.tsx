@@ -105,6 +105,25 @@ const WorkspaceData = async ({
 }) => {
   const t = await getTranslations("outbound");
   if (section === "overview") return <PipelineOverview />;
+  if (section === "playbook") {
+    const [policy, accounts] = await Promise.all([
+      Outbound.getPlaybook(Environment.SERVER),
+      LinkedInAccounts.list(),
+    ]);
+    if (!policy.success)
+      return (
+        <div role="alert" className="px-4 py-8 text-error text-sm sm:px-6">
+          {t("common.error")}
+        </div>
+      );
+    return (
+      <PlaybookEditor
+        value={policy.data.settings}
+        revision={policy.data.revision}
+        linkedinAccounts={accounts.success ? accounts.data : []}
+      />
+    );
+  }
   const result = await Outbound.getWorkspace(Environment.SERVER);
   if (!result.success)
     return (
@@ -157,16 +176,6 @@ const WorkspaceData = async ({
       return (
         <Replies prospects={workspace.prospects} events={workspace.events} />
       );
-    case "playbook": {
-      const accounts = await LinkedInAccounts.list();
-      return (
-        <PlaybookEditor
-          value={workspace.playbook}
-          revision={workspace.playbookRevision}
-          linkedinAccounts={accounts.success ? accounts.data : []}
-        />
-      );
-    }
     case "integrations": {
       const [status, claude] = await Promise.all([
         Connections.getStatus(Environment.SERVER),

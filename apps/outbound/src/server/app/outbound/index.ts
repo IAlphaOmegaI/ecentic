@@ -53,6 +53,12 @@ export const getWorkspace = withAuthorization(
   "Outbound.getWorkspace",
 );
 
+export const getPlaybook = withAuthorization(
+  [UserRole.STAFF],
+  async () => ({ success: true as const, data: await Store.policy() }),
+  "Outbound.getPlaybook",
+);
+
 export const savePlaybook = withAuthorization(
   [UserRole.STAFF],
   async (context, input: Playbook) =>
@@ -67,8 +73,10 @@ export const saveProspect = withAuthorization(
 );
 export const saveCampaignProspect = withAuthorization(
   [UserRole.STAFF],
-  async (context, input: { company: string; revision: number; prospect: ProspectInput }) =>
-    Store.saveCampaignProspect(context.session.user.id, input),
+  async (
+    context,
+    input: { company: string; revision: number; prospect: ProspectInput },
+  ) => Store.saveCampaignProspect(context.session.user.id, input),
   "Outbound.saveCampaignProspect",
 );
 export const importProspects = withAuthorization(
