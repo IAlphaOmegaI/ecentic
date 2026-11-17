@@ -280,7 +280,7 @@
         "assurances": [
           "HTTP streamable",
           "JSON-RPC 2.0",
-          "7 outils"
+          "8 outils"
         ],
         "art": {
           "alt": "Illustration ASCII d’un robot"
@@ -313,6 +313,7 @@
           "summary": "Fonction"
         },
         "items": {
+          "createShopifyCheckout": "Crée un panier Shopify pour une boutique appartenant à l’utilisateur authentifié, avec un forfait d’abonnement Recharge facultatif. L’acheteur finalise le paiement sur Shopify.",
           "listPlans": "Renvoie le catalogue public des offres avec les prix, le mode de facturation et les conditions des frais de performance.",
           "createApiKey": "Génère une clé API pour agent longue durée sur le compte de l’appelant. Affichée une seule fois.",
           "createCheckout": "Ouvre une session de paiement Stripe pour une offre par abonnement.",

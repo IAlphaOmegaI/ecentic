@@ -1,0 +1,45 @@
+{
+  "dashboard": {
+    "recharge": {
+      "title": "Rechargeの定期購入",
+      "description": "AIアシスタントで開始された初回注文を定期購入と照合します。",
+      "offers": "検出された定期購入オファー",
+      "firstOrders": "AIで開始された初回注文",
+      "converted": "定期購入につながった注文",
+      "active": "継続中の定期購入：{count}件",
+      "answers": "AIの回答に含まれる定期購入オファー",
+      "notChecked": "確定した確認結果はまだありません。",
+      "coverage": "現在の{total}件のオファーのうち{checked}件を確認済みです。",
+      "findings": "誤り：{wrong}件・記載なし：{missing}件",
+      "inconclusive": "判定不能または失敗：{count}件",
+      "checkedAt": "最終確認：{date}",
+      "scope": "結果は、ChatGPTとGoogle AI Modeで取得した質問、商品、米国市場を対象としています。すべてのAIの回答を示すものではありません。",
+      "synced": "同期日時：{date}",
+      "unavailable": "ステータスを取得できません",
+      "notConfigured": "Recharge接続はまだ設定されていません。",
+      "actionFailed": "操作を完了できませんでした。もう一度お試しください。",
+      "disconnectTitle": "Rechargeとの接続を解除しますか？",
+      "disconnectDescription": "Rechargeの認証情報と定期購入の詳細が削除されます。集計済みの指標は保持されます。",
+      "cancel": "キャンセル",
+      "checking": "確認処理を待機中",
+      "checkCost": "有料の回答取得を使い、ChatGPTとGoogle AI Modeで最大5件のオファーを確認します。UTC基準で毎日最大10回取得できます。",
+      "checksNotConfigured": "AIの回答取得はまだ設定されていません。",
+      "queued": "回答の確認をキューに追加しました。処理が完了すると結果が表示されます。",
+      "limit": "新しい確認は追加されませんでした。同期状況を確認するか、明日もう一度お試しください。",
+      "action": {
+        "primary": "Rechargeに接続",
+        "secondary": "オファーを同期",
+        "tertiary": "接続を解除",
+        "quaternary": "AIの回答を確認"
+      },
+      "status": {
+        "not_connected": "未接続",
+        "connected": "接続済み",
+        "syncing": "同期中",
+        "reconnect_required": "再接続が必要",
+        "disconnected": "接続解除済み",
+        "error": "接続エラー"
+      }
+    }
+  }
+}

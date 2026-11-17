@@ -280,7 +280,7 @@
         "assurances": [
           "Streamable HTTP",
           "JSON-RPC 2.0",
-          "7 tools"
+          "8 tools"
         ],
         "art": {
           "alt": "ASCII-art illustration of a robot"
@@ -313,6 +313,7 @@
           "summary": "What it does"
         },
         "items": {
+          "createShopifyCheckout": "Creates a Shopify cart for a store owned by the authenticated caller, optionally using a Recharge subscription plan. The buyer completes payment on Shopify.",
           "listPlans": "Returns the public plan catalog with prices, billing mode, and performance-fee terms.",
           "createApiKey": "Mints a long-lived agent API key on the caller's account. Shown once.",
           "createCheckout": "Opens a Stripe checkout session for a subscription plan.",

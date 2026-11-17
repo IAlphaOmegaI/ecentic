@@ -4040,6 +4040,47 @@
         "roster": "{total} Wettbewerber · {selected} ausgewählt",
         "updateFailed": "Wettbewerber konnte nicht aktualisiert werden"
       }
+    },
+    "recharge": {
+      "title": "Abonnements mit Recharge",
+      "description": "Ordnen Sie Erstbestellungen aus KI-Assistenten den Abonnements zu.",
+      "offers": "Gefundene Abo-Angebote",
+      "firstOrders": "Mit KI gestartete Erstbestellungen",
+      "converted": "Bestellungen, aus denen Abonnements wurden",
+      "active": "Weiterhin aktive Abonnements: {count}",
+      "answers": "Abo-Angebote in KI-Antworten",
+      "notChecked": "Noch keine eindeutigen Prüfergebnisse.",
+      "coverage": "{checked} von {total} aktuellen Angeboten geprüft.",
+      "findings": "Fehlerhaft: {wrong} · Fehlend: {missing}",
+      "inconclusive": "Nicht eindeutig oder fehlgeschlagen: {count}",
+      "checkedAt": "Zuletzt geprüft: {date}",
+      "scope": "Die Ergebnisse gelten für die erfassten Anfragen, Produkte und den US-Markt auf ChatGPT und Google AI Mode. Sie beschreiben nicht jede KI-Antwort.",
+      "synced": "Synchronisiert: {date}",
+      "unavailable": "Status nicht verfügbar",
+      "notConfigured": "Die Verbindung mit Recharge ist noch nicht eingerichtet.",
+      "actionFailed": "Die Aktion konnte nicht abgeschlossen werden. Bitte versuchen Sie es erneut.",
+      "disconnectTitle": "Recharge trennen?",
+      "disconnectDescription": "Die Zugangsdaten für Recharge und die Abonnementdetails werden gelöscht. Zusammengefasste Kennzahlen bleiben erhalten.",
+      "cancel": "Abbrechen",
+      "checking": "Prüfungen eingereiht",
+      "checkCost": "Prüft bis zu 5 Angebote auf ChatGPT und Google AI Mode mit kostenpflichtigen Erfassungen. Maximal 10 Erfassungen pro UTC-Tag.",
+      "checksNotConfigured": "Die Erfassung von KI-Antworten ist noch nicht eingerichtet.",
+      "queued": "Antwortprüfungen eingereiht. Die Ergebnisse erscheinen nach Abschluss der Verarbeitung.",
+      "limit": "Keine neuen Prüfungen eingereiht. Prüfen Sie den Synchronisierungsstatus oder versuchen Sie es morgen erneut.",
+      "action": {
+        "primary": "Recharge verbinden",
+        "secondary": "Angebote synchronisieren",
+        "tertiary": "Trennen",
+        "quaternary": "KI-Antworten prüfen"
+      },
+      "status": {
+        "not_connected": "Nicht verbunden",
+        "connected": "Verbunden",
+        "syncing": "Synchronisierung läuft",
+        "reconnect_required": "Erneute Verbindung erforderlich",
+        "disconnected": "Getrennt",
+        "error": "Verbindungsfehler"
+      }
     }
   },
   "blog": {
@@ -8799,7 +8840,7 @@
         "assurances": [
           "Streamable HTTP",
           "JSON-RPC 2.0",
-          "7 Tools"
+          "8 Tools"
         ],
         "art": {
           "alt": "ASCII-Art-Illustration eines Roboters"
@@ -8838,7 +8879,8 @@
           "connectShopify": "Startet die Shopify-OAuth-Installation für eine Shop-Domain.",
           "connectWooCommerce": "Verbindet einen WooCommerce-Store mit REST-Consumer-Zugangsdaten.",
           "connectFeed": "Verbindet einen Produkt-Feed per URL und erkennt XML oder JSON automatisch.",
-          "getOnboardingStatus": "Zeigt an, welche Onboarding-Schritte das Konto abgeschlossen hat."
+          "getOnboardingStatus": "Zeigt an, welche Onboarding-Schritte das Konto abgeschlossen hat.",
+          "createShopifyCheckout": "Erstellt einen Shopify-Warenkorb für einen Shop des authentifizierten Nutzers, optional mit einem Recharge-Abonnement. Der Käufer schließt die Zahlung bei Shopify ab."
         },
         "none": "keine",
         "bearer": "Bearer"

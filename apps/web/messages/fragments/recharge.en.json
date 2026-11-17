@@ -1,0 +1,45 @@
+{
+  "dashboard": {
+    "recharge": {
+      "title": "Subscriptions with Recharge",
+      "description": "Match first orders from AI assistants to subscriptions.",
+      "offers": "Subscription offers found",
+      "firstOrders": "AI-started first orders",
+      "converted": "Orders that became subscriptions",
+      "active": "Subscriptions still active: {count}",
+      "answers": "Subscription offers in AI answers",
+      "notChecked": "No conclusive answer checks yet.",
+      "coverage": "{checked} of {total} current offers checked.",
+      "findings": "Incorrect: {wrong} · Missing: {missing}",
+      "inconclusive": "Inconclusive or failed: {count}",
+      "checkedAt": "Last checked: {date}",
+      "scope": "Results cover the captured prompts, products and US market on ChatGPT and Google AI Mode. They do not describe every AI answer.",
+      "synced": "Synced: {date}",
+      "unavailable": "Status unavailable",
+      "notConfigured": "Recharge connection is not configured yet.",
+      "actionFailed": "The action could not be completed. Please try again.",
+      "disconnectTitle": "Disconnect Recharge?",
+      "disconnectDescription": "This removes Recharge credentials and subscription details. Aggregated metrics are retained.",
+      "cancel": "Cancel",
+      "checking": "Checks queued",
+      "checkCost": "Checks up to 5 offers on ChatGPT and Google AI Mode using paid captures. Maximum 10 captures per UTC day.",
+      "checksNotConfigured": "AI answer captures are not configured yet.",
+      "queued": "Answer checks queued. Results appear when processing finishes.",
+      "limit": "No new checks queued. Check the sync status or try again tomorrow.",
+      "action": {
+        "primary": "Connect Recharge",
+        "secondary": "Sync offers",
+        "tertiary": "Disconnect",
+        "quaternary": "Check AI answers"
+      },
+      "status": {
+        "not_connected": "Not connected",
+        "connected": "Connected",
+        "syncing": "Syncing",
+        "reconnect_required": "Reconnect required",
+        "disconnected": "Disconnected",
+        "error": "Connection error"
+      }
+    }
+  }
+}

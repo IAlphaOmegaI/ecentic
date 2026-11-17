@@ -1,0 +1,45 @@
+{
+  "dashboard": {
+    "recharge": {
+      "title": "Abbonamenti con Recharge",
+      "description": "Collega i primi ordini avviati negli assistenti IA agli abbonamenti.",
+      "offers": "Offerte in abbonamento trovate",
+      "firstOrders": "Primi ordini avviati con IA",
+      "converted": "Ordini diventati abbonamenti",
+      "active": "Abbonamenti ancora attivi: {count}",
+      "answers": "Offerte in abbonamento nelle risposte IA",
+      "notChecked": "Nessuna verifica conclusiva per il momento.",
+      "coverage": "Verificate {checked} offerte attuali su {total}.",
+      "findings": "Errate: {wrong} · Mancanti: {missing}",
+      "inconclusive": "Non conclusive o non riuscite: {count}",
+      "checkedAt": "Ultima verifica: {date}",
+      "scope": "I risultati riguardano le richieste, i prodotti e il mercato statunitense acquisiti su ChatGPT e Google AI Mode. Non descrivono tutte le risposte IA.",
+      "synced": "Sincronizzato: {date}",
+      "unavailable": "Stato non disponibile",
+      "notConfigured": "La connessione a Recharge non è ancora configurata.",
+      "actionFailed": "Impossibile completare l’azione. Riprova.",
+      "disconnectTitle": "Disconnettere Recharge?",
+      "disconnectDescription": "Verranno rimossi le credenziali di Recharge e i dettagli degli abbonamenti. Le metriche aggregate saranno conservate.",
+      "cancel": "Annulla",
+      "checking": "Verifiche in coda",
+      "checkCost": "Verifica fino a 5 offerte su ChatGPT e Google AI Mode tramite acquisizioni a pagamento. Massimo 10 acquisizioni per giorno UTC.",
+      "checksNotConfigured": "Le acquisizioni delle risposte IA non sono ancora configurate.",
+      "queued": "Verifiche delle risposte in coda. I risultati appariranno al termine dell’elaborazione.",
+      "limit": "Nessuna nuova verifica in coda. Controlla lo stato della sincronizzazione o riprova domani.",
+      "action": {
+        "primary": "Connetti Recharge",
+        "secondary": "Sincronizza offerte",
+        "tertiary": "Disconnetti",
+        "quaternary": "Verifica risposte IA"
+      },
+      "status": {
+        "not_connected": "Non connesso",
+        "connected": "Connesso",
+        "syncing": "Sincronizzazione in corso",
+        "reconnect_required": "Riconnessione necessaria",
+        "disconnected": "Disconnesso",
+        "error": "Errore di connessione"
+      }
+    }
+  }
+}

@@ -4,7 +4,7 @@ import { type NextRequest, NextResponse as Response } from "next/server";
 import { resolveAdminHost } from "@/server/app/integration/shopify/domain";
 
 const SCOPES =
-  "read_products,write_products,write_script_tags,read_script_tags";
+  "read_products,write_products,write_script_tags,read_script_tags,read_orders";
 
 export const GET = async (request: NextRequest) => {
   const { SHOPIFY_API_KEY, APP_HOST } = process.env;

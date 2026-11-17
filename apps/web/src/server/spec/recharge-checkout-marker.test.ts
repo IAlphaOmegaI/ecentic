@@ -1,10 +1,25 @@
 import { describe, expect, test } from "bun:test";
-import { createCheckoutMarker, verifyCheckoutMarker } from "../app/integration/shopify/checkout-marker";
+import {
+  createCheckoutMarker,
+  verifyCheckoutMarker,
+} from "../app/integration/shopify/checkout-marker";
 
 const now = new Date("2026-11-17T12:00:00Z");
-const options = { store: "store-a", reference: "e43c2ebf-ea01-4266-8b4e-9ae194139cd8", secret: "test-only-shopify-secret", now };
+const options = {
+  store: "store-a",
+  reference: "e43c2ebf-ea01-4266-8b4e-9ae194139cd8",
+  secret: "test-only-shopify-secret",
+  now,
+};
 const marker = createCheckoutMarker(options);
-const verify = (overrides = {}) => verifyCheckoutMarker({ marker, store: options.store, secret: options.secret, at: now, ...overrides });
+const verify = (overrides = {}) =>
+  verifyCheckoutMarker({
+    marker,
+    store: options.store,
+    secret: options.secret,
+    at: now,
+    ...overrides,
+  });
 
 describe("AI-started Shopify checkout receipts", () => {
   test("validates the exact issuing store and receipt", () => {

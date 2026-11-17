@@ -280,7 +280,7 @@
         "assurances": [
           "Streamable HTTP",
           "JSON-RPC 2.0",
-          "7つのツール"
+          "8つのツール"
         ],
         "art": {
           "alt": "ロボットのASCIIアートイラスト"
@@ -313,6 +313,7 @@
           "summary": "機能"
         },
         "items": {
+          "createShopifyCheckout": "認証済みユーザーが所有するストアのShopifyカートを作成します。Rechargeのサブスクリプションプランも指定できます。購入者はShopifyで支払いを完了します。",
           "listPlans": "価格、請求方式、成果報酬条件を含む公開プランカタログを返します。",
           "createApiKey": "呼び出し元アカウントに長期利用可能なエージェントAPIキーを発行します。一度だけ表示されます。",
           "createCheckout": "サブスクリプションプラン用のStripe Checkoutセッションを開始します。",

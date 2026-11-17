@@ -280,7 +280,7 @@
         "assurances": [
           "流式 HTTP",
           "JSON-RPC 2.0",
-          "7 个工具"
+          "8 个工具"
         ],
         "art": {
           "alt": "机器人的 ASCII 艺术插图"
@@ -313,6 +313,7 @@
           "summary": "功能说明"
         },
         "items": {
+          "createShopifyCheckout": "为已认证用户拥有的商店创建 Shopify 购物车，可选择 Recharge 订阅方案。买家在 Shopify 完成付款。",
           "listPlans": "返回公开套餐目录，包括价格、计费方式和绩效费用条款。",
           "createApiKey": "为调用方账户生成长期有效的智能体 API key。仅显示一次。",
           "createCheckout": "为订阅套餐创建 Stripe checkout session。",

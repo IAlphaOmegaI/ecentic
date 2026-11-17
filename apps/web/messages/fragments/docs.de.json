@@ -280,7 +280,7 @@
         "assurances": [
           "Streamable HTTP",
           "JSON-RPC 2.0",
-          "7 Tools"
+          "8 Tools"
         ],
         "art": {
           "alt": "ASCII-Art-Illustration eines Roboters"
@@ -313,6 +313,7 @@
           "summary": "Funktion"
         },
         "items": {
+          "createShopifyCheckout": "Erstellt einen Shopify-Warenkorb für einen Shop des authentifizierten Nutzers, optional mit einem Recharge-Abonnement. Der Käufer schließt die Zahlung bei Shopify ab.",
           "listPlans": "Gibt den öffentlichen Plankatalog mit Preisen, Abrechnungsmodell und Bedingungen für Performance-Gebühren zurück.",
           "createApiKey": "Erstellt einen langlebigen Agent-API-Schlüssel für das Konto des Aufrufers. Wird nur einmal angezeigt.",
           "createCheckout": "Öffnet eine Stripe-Checkout-Sitzung für einen Abonnementplan.",
