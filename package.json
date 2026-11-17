@@ -15,7 +15,7 @@
     "dev:web": "turbo run dev --filter=./apps/web...",
     "dev:mobile": "turbo run dev --filter=./apps/mobile...",
     "dev:packages": "turbo dev --filter=@zenncore/*",
-    "test": "bun run --filter='./apps/*' test",
+    "test": "bun run --filter='./apps/*' --filter='./apps/plugins/*' test",
     "lint": "biome check --write",
     "typecheck": "turbo run typecheck",
     "outdated": "turbo run outdated && bun outdated -r",
@@ -42,6 +42,7 @@
   "workspaces": {
     "packages": [
       "apps/*",
+      "apps/plugins/*",
       "packages/*",
       "packages/shared/*"
     ],

@@ -70,6 +70,18 @@
         "typescript": "^6.0.3",
       },
     },
+    "apps/plugins/recharge": {
+      "name": "@ecentic/recharge",
+      "version": "0.1.0",
+      "dependencies": {
+        "@zenncore/utils": "workspace:*",
+      },
+      "devDependencies": {
+        "@types/node": "catalog:",
+        "bun-types": "^1.4.0",
+        "typescript": "catalog:",
+      },
+    },
     "apps/web": {
       "name": "web",
       "version": "0.1.0",
@@ -83,6 +95,7 @@
         "@ai-sdk/react": "^4.0.93",
         "@ai-sdk/rsc": "^3.0.90",
         "@calcom/embed-react": "^1.5.3",
+        "@ecentic/recharge": "workspace:*",
         "@formatjs/icu-messageformat-parser": "3.5.17",
         "@hookform/resolvers": "^5.9.1",
         "@lucasmarkes/hairline": "^0.5.1",
@@ -418,6 +431,8 @@
     "@drizzle-team/brocli": ["@drizzle-team/brocli@0.12.0", "", {}, "sha512-mlUE+rZ8CatQekLhnaiN91Iemdd+e2gFKooGlnRB3oPTL3VghLfX24dx7HrzMNeC1JrIB/0kpsfyty3f5HNfxQ=="],
 
     "@ecentic/cli": ["@ecentic/cli@workspace:apps/cli"],
+
+    "@ecentic/recharge": ["@ecentic/recharge@workspace:apps/plugins/recharge"],
 
     "@effect/platform": ["@effect/platform@0.90.3", "", { "dependencies": { "@opentelemetry/semantic-conventions": "^1.33.0", "find-my-way-ts": "^0.1.6", "msgpackr": "^1.11.4", "multipasta": "^0.2.7" }, "peerDependencies": { "effect": "^3.17.7" } }, "sha512-XvQ37yzWQKih4Du2CYladd1i/MzqtgkTPNCaN6Ku6No4CK83hDtXIV/rP03nEoBg2R3Pqgz6gGWmE2id2G81HA=="],
 
