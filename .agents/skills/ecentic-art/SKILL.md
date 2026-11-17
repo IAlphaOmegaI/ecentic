@@ -53,24 +53,23 @@ The audience panel, integration arc and global closing CTA may use tonal artwork
 15 November homepage correction, "graphics" means **custom HTML/CSS animation**, using native
 product documents and interface elements. It does not mean a generated 3D image, a Hairline
 drawing or an animated collage of sampled objects. Keep one coherent explanation and a complete
-static state; see the homepage recipe in the public-page skill. The current subject is a
-six-step shopping journey: shopper question, product feed, discovery, selection, merchant
-checkout and store sale. The 16 November revision extends the approved white-object scene into
-a repeating illustrated carousel, superseding the finite cup sequence and three-object mobile
-stack. Keep the feed as a distinct JSON object. Use a generated blue sneaker photo consistently
-through the discovery, chosen-product, checkout and storefront scenes; retain the surrounding
-native HTML and genuine provider marks. The blue écentic box remains visible as a hub, with
-curved connections highlighting its help with the feed, discovery and checkout. The individual
-objects retain their rounded corners and float directly on the blue hero, without a stage
-border or enclosing panel. Omit the redundant name beneath the box. Locale-format the shared
-sample price; preserve JSON keys and identifiers as code. Purchase happens on the merchant’s
-store in this illustrative sequence, not inside every AI provider.
+static state; see the homepage recipe in the public-page skill. The 16 November Naratix reference
+review replaces the six-card carousel with an anchored store → écentic workbench → AI-channel
+system. Small feed records move through curved connections while one blue sneaker remains the
+subject. White native objects float directly on the blue hero, with the blue box as the hub.
+The workbench shows the imported facts, a simulated comparison, a title clarified from those
+facts, supported publication/merchant checkout, and separate comparison/referral observations.
+Build the catalog as a recognizable spreadsheet with column letters, row numbers and a highlighted
+product row. Follow it with dimensional product/listing paperwork and a prominent product image.
+Avoid a plain UI-demo card with an undersized product stranded in empty space.
+Use no fabricated measurements or unsupported channel claims. The product is an illustrative
+example, not a live result. Keep all visible copy localized and JSON identifiers as code.
 
-The 16 November follow-up requires automatic playback with no arrows, stage dots or play/pause
-controls. This supersedes the earlier manual controls and hover/focus pausing. Pause automatic
-advancement while offscreen or the document is hidden, and disable movement and advancement
-for reduced motion. Retain a meaningful static scene and the localized description of the
-complete journey. Keep the headline/CTA position stable on desktop and mobile.
+The hero advances automatically while visible and pauses offscreen or in a hidden document.
+Reduced motion shows the complete static system without advancement. Keep the headline and CTA
+stable, and omit playback controls. The deeper homepage roadmap reuses this product workbench:
+scroll-linked beside the narrative on desktop, static chapter examples in mobile document flow.
+This local composition change does not retire the site's Hairline or tonal ASCII treatments.
 The global closing subject is now a tonal shopping bag; it is not the former generic Hairline
 basket. The footer retains a small trademark and a separate **tonal product-selection graphic**
 with a finite reveal. The 15 November review replaces the repeated oversized wordmark; the

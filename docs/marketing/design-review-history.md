@@ -404,3 +404,23 @@ as additional competing alternatives.
   static scene with the localized description of the complete journey.
 - The Brand header keeps a function-specific interactive Hairline figure, regenerated with a
   clearer megaphone silhouette and bounded aiming instead of a stretched horn.
+
+### 16 November: connected explanation reference
+
+The user requested a more detailed homepage animation inspired by https://naratix.ai/.
+Private visual inspection identified two useful mechanisms: an anchored connected hero and a
+separate scroll-led story following one product. The new écentic composition uses original
+HTML/CSS artwork and existing assets, with no copied Naratix artwork or claims.
+
+- Replace the six sliding hero cards with a persistent store, central écentic workbench and AI
+  destination connected by curved paths and moving product records.
+- Follow one sneaker through imported facts, a simulated comparison, a clearer title, supported
+  publication and separate comparison/referral checks. Retain the original headline and CTAs.
+- Reuse the workbench in the detailed Connect → Simulate → Fix → Sell → Track roadmap. Desktop
+  follows the reader's scroll; mobile examples remain in normal document flow.
+- Preserve reduced-motion content, hidden/offscreen pausing, seven-locale copy, theme values and
+  the distinction between illustrative behavior and actual product capabilities.
+
+The follow-up asks for a more creative treatment with Excel-like tables and richer product
+illustrations. Show the sample catalog row becoming a clearer listing, keep the product prominent,
+and reduce empty card space. This changes the explanation artwork, not supported import formats.

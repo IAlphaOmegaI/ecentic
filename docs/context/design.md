@@ -631,32 +631,34 @@ not. A drawing enhances the narrative; it does not replace proof that needs to b
 The homepage film does not repeat its illustrative disclaimer below the closed preview; the
 full film retains its accessible transcript and contextual description.
 
-The homepage hero uses a native HTML/CSS shopping journey on the blue cutout. The six distinct
-steps are a shopper asking a question, écentic preparing the product feed, AI discovering the
-product, the shopper choosing it, checkout on the merchant’s store, and the sale returning to
-that store. The 16 November review extends the approved white-object scene into a repeating
-carousel; it replaces the finite three-object cup composition. Keep the JSON feed as its own
-step rather than swapping a feed into the discovery display. A generated blue sneaker photo
-repeats through discovery, selection, checkout and the store, with one consistent example SKU,
-price and currency. Locale-format the price; preserve JSON keys and identifiers as code.
+The homepage hero uses one connected native HTML/CSS system on the blue cutout: a recognizable
+store, the écentic product workbench and AI channels remain in place while a product record moves
+through the work. The Naratix reference review on 16 November replaces the sliding six-card
+carousel with this anchored composition. Use its principle of a visible connected process, not
+its factory assets or product claims. A blue sneaker photograph and one example SKU persist
+through catalog import, simulated comparison, a clearer title, supported publication and rechecking.
+The source description supplies the facts used in the rewritten title; never invent specifications
+or imply that a generated rewrite can be previewed before Apply publishes it. The follow-up
+asks for richer native illustrations and recognizable spreadsheet structure: column letters, row
+numbers and a highlighted product record, followed by dimensional product/listing paperwork.
+This is illustrative catalog data, not a new Excel integration claim. Avoid a plain UI-demo card
+with a small product stranded in empty space.
 
-White illustrated objects with theme-rounded corners float directly on the blue hero. There is
-no enclosing stage border or panel. Keep the recognizable storefront, authentic compact provider
-marks and native product-document details. The blue écentic box stays visible below the moving
-journey, with curved connections highlighting its help with the feed, discovery and checkout.
-Show the action within each scene and animate the connecting lines. Keep the original specific
-headline and supporting copy stable while stages move. Desktop can show neighboring steps;
-mobile prioritizes a readable current object and a glimpse of what comes next.
+White illustrated surfaces with theme-rounded corners float directly on the blue hero. There is
+no enclosing stage border or panel. Keep genuine provider marks and the blue écentic box visible,
+with curved connections and moving records showing the relationship. The main title and conversion
+row remain stable while short explanations change with the workbench. The visual is labeled as an
+illustrative example. AI comparisons and detected referrals are separate observations; do not show
+fabricated performance totals, guaranteed selection or checkout inside unsupported AI providers.
 
-The requested carousel plays automatically without arrows, stage dots, or play/pause controls.
-The 16 November follow-up explicitly removes manual playback controls and hover/focus pausing.
-Pause automatic advancement when the document is hidden or the illustration is offscreen.
-Reduced motion disables automatic advancement and animated transitions, retaining a meaningful
-static scene and the localized description of the complete journey. Keep stage names localized.
-Do not imply live results, a guaranteed sale or checkout inside
-an AI provider that does not support it: this example completes the purchase in the merchant’s
-store. Omit the redundant name beneath the box. Do not replace the native scene with a single
-raster illustration, Hairline figure or dashboard screenshot.
+The hero advances automatically while visible, with enough time to read each phase and no arrows,
+stage dots or playback controls. Pause when hidden or offscreen. Reduced motion shows a complete
+static relationship and a meaningful listing state, with no automatic advancement. Below the hero,
+the five-stage Connect → Simulate → Fix → Sell → Track explanation follows the same product. On
+desktop its workbench stays alongside the narrative and advances as the reader scrolls. On mobile,
+each chapter has its own static example so nothing is trapped behind a sticky overlay. Keep the
+existing platform links and precise feature qualifications. This deeper story replaces disconnected
+Hairline props only in this homepage section; it does not retire Hairline elsewhere.
 The hero's demo action uses a white filled package Button beside the blue store-check button.
 On the homepage, signed-in visitors see “Go to dashboard” in place of “Book a demo” in the
 header, hero and closing section. Keep each button's styling and localized navigation intact.

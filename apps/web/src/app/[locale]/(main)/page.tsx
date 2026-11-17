@@ -52,7 +52,7 @@ export default async () => {
           ]}
         />
         <Overview copy={copy.hero} />
-        <Journey copy={copy.loop} />
+        <Journey copy={copy.loop} artwork={copy.hero.artwork} />
         <Programs copy={copy.programs} />
         <SectionGutter />
         <CommerceLayer />

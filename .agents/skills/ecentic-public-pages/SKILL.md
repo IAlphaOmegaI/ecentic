@@ -26,30 +26,31 @@ The public design audit includes every route family and both locales.
 
 ## Homepage `/`
 
-A custom HTML/CSS motion graphic leads a centered hero on the same blue gradient as the cutouts.
-The user's clarification that graphics means HTML with animation supersedes the generated
-3D image and Hairline experiments. Use the site's native product-document vocabulary, typography,
-rules and restrained depth to explain a complete shopping journey. The 16 November revision
-extends the approved white-object scene into six carousel steps: shopper question, écentic’s
-product feed, AI discovery, product selection, merchant-store checkout, and the store’s sale.
-Keep the feed as a distinct JSON object rather than swapping it into the discovery screen.
-Use one generated blue sneaker photograph and consistent example SKU/price/currency across
-all product scenes. Format the price for the current locale. This supersedes the cup subject,
-three-object mobile stack and finite reveal; the surrounding scene stays native HTML.
+A custom HTML/CSS motion graphic leads the centered blue hero. The 16 November Naratix
+reference review replaces the six-card sneaker carousel with one anchored connected system:
+store/catalog source, écentic workbench and AI channels. Keep all three visible while records
+travel through connections and the workbench reveals catalog import, simulated comparison,
+a clearer listing title, supported publication and separate rechecks. Use the existing blue
+sneaker photograph and one example SKU throughout. The rewritten title uses only the source
+product facts. Label the product as an illustrative example; do not imply a live AI ranking,
+a guaranteed sale or a pre-publication rewrite-preview capability.
 
-White theme-rounded objects float on the blue hero without an enclosing panel or border. Keep
-the recognizable storefront and genuine provider marks. The écentic box remains a visible hub,
-with curved animated connections emphasizing the feed, discovery and checkout. Each stage has
-its own small action, and the neighboring objects move as a coherent journey. Show readable
-current content on mobile without changing the hero’s height as longer translations appear.
-The user explicitly requested automatic repeating motion with no arrows, stage dots or play/pause
-controls. The 16 November follow-up supersedes the earlier manual controls and hover/focus
-pausing. Stop autoplay when hidden or offscreen. Reduced motion retains a meaningful static
-scene and the localized description of the complete journey, without advancement or movement.
-Translate the accessible journey and stage names. Preserve sample identifiers and JSON schema
-keys as code. Do not claim
-a live purchase or show merchant checkout as if it were supported inside every AI provider.
-Omit the redundant name beneath the écentic box.
+White theme-rounded objects float on the blue hero without an enclosing panel. Preserve genuine
+provider marks, the blue écentic box, curved connections and native product-record details.
+Keep the headline/CTA position stable. The hero plays automatically while visible without player
+controls; pause offscreen and in hidden documents. Reduced motion retains a complete static
+relationship and meaningful listing state. Translate all prose and accessibility text while
+preserving JSON keys and identifiers. AI comparisons, supported channel publishing, merchant
+checkout and detected referrals must stay distinct.
+
+Use recognizable spreadsheet rows and columns, layered product/listing papers and a prominent
+product image so the work reads as an illustrated transformation, not a plain dashboard demo.
+The spreadsheet is an example of catalog data, not a claim of native Excel integration.
+
+The deeper five-stage explanation follows the same product. On desktop, a workbench stays beside
+the narrative and changes with the reader's scroll. Mobile exposes each chapter's static example
+in the normal document flow. Keep the existing platform links and detailed capability wording;
+the animation does not replace the merchant controls or factual qualifications.
 Keep the specific title, "One layer between your catalog and the AI that sells it," and enough
 copy to explain product data, supported checkout and changing channel rules. A generic slogan
 does not replace that meaning. Keep the blue store-check action and a white filled demo Button;
@@ -57,10 +58,9 @@ omit a redundant integration-fact row. This 15 November review supersedes the ea
 and its briefly tested generic headline. Lead the Brands pain list with the inability
 to see why AI chooses competitors; name stores selling the same products instead of ambiguous
 "retailers". The homepage pricing section ends in a full-width "See pricing" navigation row.
-The five-stage Connect → Simulate → Fix → Sell → Track story is a connected roadmap, with normal
-font numerals on one continuous dark section and an object that matches each stage. Use tools for fixing, money for the relevant
-selling/value story and a meaningful connection/network where the narrative asks for one.
-Mobile roadmap frames and gutters are compact. Channel and integration tiles become compact
+The five-stage Connect → Simulate → Fix → Sell → Track story remains a connected roadmap, with
+normal font numerals on one continuous dark section. The shared product record supplies its
+visual continuity. Keep mobile chapter spacing compact. Channel and integration tiles become compact
 logo/title/status rows on phones while retaining their desktop card layout; status stays at
 the far side and the mobile channel arrow is omitted.
 

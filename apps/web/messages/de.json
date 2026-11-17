@@ -10126,20 +10126,49 @@
         "caption": "Produkt-Screenshot · Beispieldaten"
       },
       "artwork": {
-        "label": "Beispiel eines Einkaufs: Jemand sucht blaue Sneaker, écentic bereitet den Produktfeed vor, die KI findet ein Paar und der Kauf wird im Shop abgeschlossen.",
-        "question": "Finde ein Paar blaue Sneaker für mich.",
+        "label": "Beispielhafter Ablauf mit écentic: Produktkatalog anbinden, KI-Vergleiche simulieren, das Produktangebot klarer formulieren, auf unterstützten Kanälen veröffentlichen und Vergleiche sowie erkannte Zugriffe über KI getrennt prüfen.",
+        "question": "Finde blaue Sneaker mit Schnürung.",
         "product": "Blaue Sneaker",
+        "description": "Blaues Mesh-Obermaterial. Schnürverschluss.",
+        "updatedProduct": "Blaue Mesh-Sneaker mit Schnürung",
         "feed": "Produktfeed",
-        "checkout": "Kauf in Ihrem Shop",
+        "checkout": "Kaufabschluss in Ihrem Shop",
         "confirmed": "Bestellung bestätigt",
         "stages": [
-          "Jemand stellt eine Frage",
-          "écentic bereitet den Feed vor",
-          "Die KI findet das Produkt",
-          "Die Person trifft ihre Wahl",
-          "Kauf in Ihrem Shop",
-          "Umsatz für Ihren Shop"
-        ]
+          "Katalog anbinden",
+          "KI-Auswahl verstehen",
+          "Produktangebot klarer formulieren",
+          "Unterstützte Kanäle erreichen",
+          "Änderungen prüfen"
+        ],
+        "descriptions": [
+          "Binden Sie Produktinhalte aus Ihrem Shop oder einem unterstützten Feed an.",
+          "Sehen Sie, wie KI-Modelle Ihr Produktangebot mit Angeboten von Wettbewerbern vergleichen.",
+          "Formulieren Sie mit den vorhandenen Fakten klarere Titel und Beschreibungen.",
+          "Veröffentlichen Sie auf unterstützten Kanälen. Käufer schließen diesen Kauf in Ihrem Shop ab.",
+          "Starten Sie einen neuen Vergleich und prüfen Sie erkannte Zugriffe über KI getrennt davon."
+        ],
+        "labels": {
+          "title": "Titel",
+          "description": "Beschreibung",
+          "imported": "Importiert",
+          "simulation": "Simulation",
+          "finding": "Im Titel fehlt der Hinweis auf die Schnürung.",
+          "updatedTitle": "Aktualisierter Titel",
+          "supportedChannels": "Unterstützte Kanäle",
+          "referrals": "Erkannte Zugriffe über KI",
+          "comparison": "Neuer Vergleich",
+          "example": "Anschauliches Beispiel",
+          "match": "Die Fakten passen zur Suchanfrage",
+          "notMeasured": "Getrennt erfasst",
+          "published": "Veröffentlichtes Produktangebot",
+          "yourListing": "Ihr Produktangebot",
+          "competingListing": "Angebot eines Wettbewerbers",
+          "material": "Material",
+          "closure": "Verschluss"
+        },
+        "material": "Blaues Mesh",
+        "closure": "Schnürung"
       }
     },
     "programs": {

@@ -10126,20 +10126,49 @@
         "caption": "产品截图 · 示例数据"
       },
       "artwork": {
-        "label": "购物流程示例：顾客想找一双蓝色运动鞋，écentic 整理商品数据源，AI 找到合适的商品，顾客在商家店铺完成购买。",
-        "question": "帮我找一双蓝色运动鞋。",
+        "label": "écentic 工作流程示例：连接商品目录，模拟 AI 比较，完善商品信息表述，发布到支持的目标渠道，并分别查看比较结果与检测到的 AI 引荐流量。",
+        "question": "找一双蓝色系带运动鞋。",
         "product": "蓝色运动鞋",
+        "description": "蓝色网布鞋面。系带设计。",
+        "updatedProduct": "蓝色网布系带运动鞋",
         "feed": "商品数据源",
-        "checkout": "在你的店铺完成购买",
+        "checkout": "在您的店铺结账",
         "confirmed": "订单已确认",
         "stages": [
-          "顾客提问",
-          "écentic 整理数据源",
-          "AI 发现商品",
-          "顾客选定商品",
-          "在你的店铺完成购买",
-          "你的店铺获得销售收入"
-        ]
+          "连接商品目录",
+          "了解 AI 选择的原因",
+          "让商品信息更清晰",
+          "触达支持的渠道",
+          "查看变化"
+        ],
+        "descriptions": [
+          "从店铺或支持的数据源接入商品内容。",
+          "查看 AI 模型如何将您的商品信息与竞品进行比较。",
+          "根据已有事实，优化标题和描述，让表述更清晰。",
+          "发布到支持的目标渠道。买家在您的店铺完成这次购买。",
+          "再次运行比较，并单独查看检测到的 AI 引荐流量。"
+        ],
+        "labels": {
+          "title": "标题",
+          "description": "描述",
+          "imported": "已导入",
+          "simulation": "模拟",
+          "finding": "标题未说明系带设计。",
+          "updatedTitle": "更新后的标题",
+          "supportedChannels": "支持的渠道",
+          "referrals": "检测到的 AI 引荐流量",
+          "comparison": "新一轮比较",
+          "example": "示例演示",
+          "match": "商品信息符合搜索要求",
+          "notMeasured": "单独跟踪",
+          "published": "已发布的商品信息",
+          "yourListing": "您的商品信息",
+          "competingListing": "竞品信息",
+          "material": "材质",
+          "closure": "闭合方式"
+        },
+        "material": "蓝色网布",
+        "closure": "系带"
       }
     },
     "programs": {

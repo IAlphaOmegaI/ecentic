@@ -26,20 +26,49 @@
         "caption": "Screenshot del prodotto · dati di esempio"
       },
       "artwork": {
-        "label": "Esempio di acquisto: una persona cerca un paio di sneakers blu, écentic prepara il feed dei prodotti, l’IA trova un paio adatto e la persona completa l’acquisto nel negozio.",
-        "question": "Trovami un paio di sneakers blu.",
+        "label": "Esempio del flusso di lavoro di écentic: collega un catalogo prodotti, simula i confronti dell’IA, rendi più chiara la scheda prodotto, pubblica nelle destinazioni supportate e consulta separatamente i confronti e le visite rilevate provenienti dall’IA.",
+        "question": "Trova sneakers blu con lacci.",
         "product": "Sneakers blu",
+        "description": "Tomaia blu in mesh. Chiusura con lacci.",
+        "updatedProduct": "Sneakers blu in mesh con lacci",
         "feed": "Feed dei prodotti",
         "checkout": "Acquisto nel tuo negozio",
         "confirmed": "Ordine confermato",
         "stages": [
-          "Una persona fa una domanda",
-          "écentic prepara il feed",
-          "L’IA trova il prodotto",
-          "La persona sceglie",
-          "Acquisto nel tuo negozio",
-          "Il tuo negozio conclude la vendita"
-        ]
+          "Collega il catalogo",
+          "Scopri perché l’IA sceglie",
+          "Rendi più chiara la scheda",
+          "Raggiungi i canali supportati",
+          "Verifica cosa è cambiato"
+        ],
+        "descriptions": [
+          "Collega i contenuti dei prodotti dal tuo negozio o da un feed supportato.",
+          "Scopri come i modelli di IA confrontano la tua scheda prodotto con le offerte concorrenti.",
+          "Trasforma i dati che hai già in titoli e descrizioni più chiari.",
+          "Pubblica nelle destinazioni supportate. Gli acquirenti completano questo acquisto nel tuo negozio.",
+          "Esegui un nuovo confronto ed esamina separatamente le visite rilevate provenienti dall’IA."
+        ],
+        "labels": {
+          "title": "Titolo",
+          "description": "Descrizione",
+          "imported": "Importato",
+          "simulation": "Simulazione",
+          "finding": "Nel titolo mancano i dettagli sulla chiusura con lacci.",
+          "updatedTitle": "Titolo aggiornato",
+          "supportedChannels": "Canali supportati",
+          "referrals": "Visite rilevate provenienti dall’IA",
+          "comparison": "Nuovo confronto",
+          "example": "Esempio illustrativo",
+          "match": "I dati corrispondono alla richiesta",
+          "notMeasured": "Monitoraggio separato",
+          "published": "Scheda pubblicata",
+          "yourListing": "La tua scheda",
+          "competingListing": "Offerta concorrente",
+          "material": "Materiale",
+          "closure": "Chiusura"
+        },
+        "material": "Mesh blu",
+        "closure": "Con lacci"
       }
     },
     "programs": {

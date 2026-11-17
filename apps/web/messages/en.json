@@ -10126,20 +10126,49 @@
         "caption": "Product screenshot · sample data"
       },
       "artwork": {
-        "label": "Illustrative shopping journey: a shopper asks for blue sneakers, écentic prepares the product feed, AI discovers a pair, and the shopper checks out on the merchant’s store.",
-        "question": "Find me a pair of blue sneakers.",
+        "label": "Illustrative écentic workflow: connect a product catalog, simulate AI comparisons, clarify the listing, publish to supported destinations, and check comparisons and detected AI referrals separately.",
+        "question": "Find blue lace-up sneakers.",
         "product": "Blue sneakers",
+        "description": "Blue mesh upper. Lace-up closure.",
+        "updatedProduct": "Blue mesh lace-up sneakers",
         "feed": "Product feed",
         "checkout": "Checkout on your store",
         "confirmed": "Order confirmed",
         "stages": [
-          "A shopper asks",
-          "écentic prepares the feed",
-          "AI discovers the product",
-          "The shopper chooses",
-          "Checkout on your store",
-          "Your store makes the sale"
-        ]
+          "Connect your catalog",
+          "See why AI chooses",
+          "Make the listing clearer",
+          "Reach supported channels",
+          "Check what changed"
+        ],
+        "descriptions": [
+          "Connect product content from your store or a supported feed.",
+          "See how AI models compare your listing with competing offers.",
+          "Turn the facts you already have into clearer titles and descriptions.",
+          "Publish to supported destinations. Buyers complete this purchase on your store.",
+          "Run another comparison and inspect detected AI referrals separately."
+        ],
+        "labels": {
+          "title": "Title",
+          "description": "Description",
+          "imported": "Imported",
+          "simulation": "Simulation",
+          "finding": "Lace-up details are missing from the title.",
+          "updatedTitle": "Updated title",
+          "supportedChannels": "Supported channels",
+          "referrals": "Detected AI referrals",
+          "comparison": "Fresh comparison",
+          "example": "Illustrative example",
+          "match": "Facts match the question",
+          "notMeasured": "Tracked separately",
+          "published": "Published listing",
+          "yourListing": "Your listing",
+          "competingListing": "Competing offer",
+          "material": "Material",
+          "closure": "Closure"
+        },
+        "material": "Blue mesh",
+        "closure": "Lace-up"
       }
     },
     "programs": {

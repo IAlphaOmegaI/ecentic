@@ -26,20 +26,49 @@
         "caption": "Capture produit · données d’exemple"
       },
       "artwork": {
-        "label": "Exemple de parcours d’achat : une personne cherche des baskets bleues, écentic prépare le flux de produits, l’IA trouve une paire et la personne finalise son achat dans la boutique.",
-        "question": "Trouve-moi une paire de baskets bleues.",
+        "label": "Exemple de fonctionnement d’écentic : connecter un catalogue de produits, simuler des comparaisons par l’IA, clarifier la fiche produit, publier vers des destinations compatibles et consulter séparément les comparaisons et les visites détectées via l’IA.",
+        "question": "Trouve des baskets bleues à lacets.",
         "product": "Baskets bleues",
+        "description": "Tige bleue en mesh. Fermeture à lacets.",
+        "updatedProduct": "Baskets bleues en mesh à lacets",
         "feed": "Flux de produits",
-        "checkout": "Achat dans votre boutique",
+        "checkout": "Paiement dans votre boutique",
         "confirmed": "Commande confirmée",
         "stages": [
-          "Une personne pose sa question",
-          "écentic prépare le flux",
-          "L’IA trouve le produit",
-          "La personne fait son choix",
-          "Achat dans votre boutique",
-          "Votre boutique réalise la vente"
-        ]
+          "Connecter votre catalogue",
+          "Comprendre les choix de l’IA",
+          "Clarifier la fiche produit",
+          "Atteindre les canaux compatibles",
+          "Vérifier les changements"
+        ],
+        "descriptions": [
+          "Connectez les contenus de vos produits depuis votre boutique ou un flux compatible.",
+          "Découvrez comment les modèles d’IA comparent votre fiche produit aux offres concurrentes.",
+          "Transformez les informations dont vous disposez déjà en titres et descriptions plus clairs.",
+          "Publiez vers des destinations compatibles. Les acheteurs finalisent cet achat dans votre boutique.",
+          "Lancez une nouvelle comparaison et examinez séparément les visites détectées via l’IA."
+        ],
+        "labels": {
+          "title": "Titre",
+          "description": "Description",
+          "imported": "Importé",
+          "simulation": "Simulation",
+          "finding": "Le titre ne mentionne pas les lacets.",
+          "updatedTitle": "Titre mis à jour",
+          "supportedChannels": "Canaux compatibles",
+          "referrals": "Visites détectées via l’IA",
+          "comparison": "Nouvelle comparaison",
+          "example": "Exemple illustratif",
+          "match": "Les caractéristiques correspondent à la recherche",
+          "notMeasured": "Suivi séparé",
+          "published": "Fiche publiée",
+          "yourListing": "Votre fiche produit",
+          "competingListing": "Offre concurrente",
+          "material": "Matière",
+          "closure": "Fermeture"
+        },
+        "material": "Mesh bleu",
+        "closure": "À lacets"
       }
     },
     "programs": {
