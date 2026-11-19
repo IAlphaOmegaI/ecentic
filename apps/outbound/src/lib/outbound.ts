@@ -676,7 +676,8 @@ export const lintMessages = (
         ? [{ code: "link", field }]
         : []),
       ...(/^\s*[-*•]\s/m.test(message.body) ? [{ code: "bullet", field }] : []),
-      ...(/\p{Extended_Pictographic}/u.test(content)
+      // Text-style legal marks occur in product names; emoji presentation remains disallowed.
+      ...(/(?:[©®™]\uFE0F|(?![©®™])\p{Extended_Pictographic})/u.test(content)
         ? [{ code: "emoji", field }]
         : []),
       ...(splitList(settings.bannedPhrases).some((phrase) =>

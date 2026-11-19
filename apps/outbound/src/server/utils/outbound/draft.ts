@@ -1,5 +1,4 @@
 import { resultify } from "@zenncore/utils";
-import { z } from "zod";
 import {
   lintMessages,
   type Playbook,
@@ -8,8 +7,10 @@ import {
   renderMessages,
 } from "@/lib/outbound";
 import {
+  applyDraftEdits,
   buildDraftPrompt,
-  preservesDraftControls,
+  draftBodyIssues,
+  draftEditsSchema,
 } from "@/lib/outbound-writing";
 import * as AI from "@/server/utils/ai";
 import { ValidationError } from "@/server/utils/error";
@@ -43,33 +44,25 @@ export const generateDraft = async (
       success: false as const,
       error: new ValidationError("The first-message template is missing."),
     };
+  if (draftBodyIssues(rendered, settings, prospect).length)
+    return {
+      success: true as const,
+      data: {
+        messages: rendered,
+        issues: lintMessages(rendered, settings, prospect),
+      },
+    };
   const generated = await resultify(() =>
     AI.generate({
       model: "gpt",
       label: "outbound-draft",
-      output: z.object({ subject: z.string(), body: z.string() }),
+      output: draftEditsSchema(prospect, settings),
       ...buildDraftPrompt(prospect, settings, research.data),
     }),
   );
   if (!generated.success) return generated;
-  if (
-    !preservesDraftControls(generated.data.body, first.body, settings, prospect)
-  )
-    return {
-      success: false as const,
-      error: new ValidationError(
-        "The generated draft changed a protected template line. Try drafting again or edit the message manually.",
-      ),
-    };
-  const messages = [
-    { ...first, ...generated.data },
-    ...rendered.slice(1).map((message) => ({
-      ...message,
-      subject: `Re: ${generated.data.subject}`,
-    })),
-  ];
   return {
     success: true as const,
-    data: { messages, issues: lintMessages(messages, settings, prospect) },
+    data: applyDraftEdits(prospect, settings, generated.data),
   };
 };

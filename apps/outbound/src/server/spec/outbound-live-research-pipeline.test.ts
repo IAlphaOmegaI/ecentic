@@ -574,6 +574,111 @@ describe.skipIf(!endpoint)(
       expect(await db.select().from(schema.outboundProspect)).toHaveLength(0);
       expect((await advance()).processed).toBe(0);
     });
+    test.each(["scrapellm", "firecrawl"] as const)(
+      "saved shopping captures can be assessed during a %s cooldown",
+      async (provider) => {
+        const { readiness, assessment, capture, providers } = active();
+        await advance();
+        expect((await advance(2)).results.at(-1)?.stage).toBe("assessShopping");
+        const captured = await currentJob();
+        expect(captured.output?.["shoppingReceipt"]).toBeUndefined();
+        spyOn(readiness, "getStatus").mockResolvedValue({
+          success: true,
+          data: {
+            required: true,
+            ready: false,
+            missing: [],
+            blocked: [provider],
+          },
+        });
+        const result = await advance(1);
+        expect(result.processed).toBe(1);
+        expect(result.results.at(-1)?.stage).toBe("findContacts");
+        const assessed = await currentJob();
+        expect(assessed.output?.["shoppingReceipt"]).toMatchObject({ product });
+        expect(assessed.output?.["shoppingAnswer"]).toEqual(
+          captured.output?.["shoppingAnswer"],
+        );
+        expect(assessed.output?.["shoppingBrowser"]).toEqual(
+          captured.output?.["shoppingBrowser"],
+        );
+        expect(assessment.assess).toHaveBeenCalledTimes(1);
+        expect(capture.startQuery).toHaveBeenCalledTimes(1);
+        expect(capture.pollQuery).toHaveBeenCalledTimes(1);
+        expect(capture.inspectPages).toHaveBeenCalledTimes(1);
+        expect(providers.searchApolloPeople).not.toHaveBeenCalled();
+      },
+    );
+    test.each([
+      "startShoppingQuery",
+      "pollShoppingQuery",
+      "browseShopping",
+    ] as const)(
+      "cooldown leaves queued %s capture work unclaimed",
+      async (stage) => {
+        const { automation, readiness, assessment, capture } = active();
+        if (stage === "startShoppingQuery") await advance(3);
+        else {
+          await advance();
+          if (stage === "browseShopping") await advance(1);
+        }
+        const queued = await currentJob();
+        expect(queued.output?.["stage"]).toBe(stage);
+        spyOn(readiness, "getStatus").mockResolvedValue({
+          success: true,
+          data: {
+            required: true,
+            ready: false,
+            missing: [],
+            blocked: ["scrapellm", "firecrawl"],
+          },
+        });
+        const result = value(
+          await automation.run({
+            campaignId: fixture.campaignId,
+            maxSteps: 20,
+          }),
+        );
+        expect(result.processed).toBe(0);
+        expect(await currentJob()).toEqual(queued);
+        expect(capture.startQuery).toHaveBeenCalledTimes(
+          stage === "startShoppingQuery" ? 0 : 1,
+        );
+        expect(capture.pollQuery).toHaveBeenCalledTimes(
+          stage === "browseShopping" ? 1 : 0,
+        );
+        expect(capture.inspectPages).not.toHaveBeenCalled();
+        expect(assessment.assess).not.toHaveBeenCalled();
+      },
+    );
+    test("a cooldown appearing after claim delays capture execution without submitting", async () => {
+      const { readiness, capture } = active();
+      expect((await advance(3)).results.at(-1)?.stage).toBe(
+        "startShoppingQuery",
+      );
+      let checks = 0;
+      spyOn(readiness, "getStatus").mockImplementation(async () => {
+        const ready = checks++ === 0;
+        return {
+          success: true,
+          data: {
+            required: true,
+            ready,
+            missing: [],
+            blocked: ready ? [] : ["firecrawl"],
+          },
+        };
+      });
+      const result = await advance(1);
+      expect(result.processed).toBe(1);
+      expect(result.results.at(-1)?.stage).toBe("startShoppingQuery");
+      expect(result.results.at(-1)?.status).toBe("queued");
+      expect((await currentJob()).output?.["availableAt"]).toBe(
+        new Date(now.getTime() + 60_000).toISOString(),
+      );
+      expect(capture.startQuery).not.toHaveBeenCalled();
+      expect(capture.inspectPages).not.toHaveBeenCalled();
+    });
     test.each(["unavailable", "rate-limit"] as const)(
       "transient %s polling retries the same job within its delay and forty-poll budget",
       async (code) => {

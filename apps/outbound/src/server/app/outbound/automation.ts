@@ -274,7 +274,8 @@ const claim = (campaignId?: string, jobId?: string, researchReady = true) =>
       if (
         policy.settings.requireShoppingEvidence &&
         !researchReady &&
-        !state["shoppingReceipt"]
+        !state["shoppingReceipt"] &&
+        state.stage !== "assessShopping"
       )
         continue;
       const context = await current(input, transaction);

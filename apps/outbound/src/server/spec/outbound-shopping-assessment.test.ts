@@ -1,5 +1,6 @@
 import { describe, expect, mock, test } from "bun:test";
 import { createHash, randomUUID } from "node:crypto";
+import { defaultPlaybook } from "@/lib/outbound";
 import type { ShoppingResearch } from "@/lib/outbound-shopping-research";
 import type {
   AiCapture,
@@ -15,6 +16,7 @@ const {
   createAssessmentCatalog,
   assessmentWireSchema,
   projectAssessment,
+  assessmentCopyBudget,
 } = await import("@/server/utils/outbound/shopping-assessment");
 
 const fixture = () => {
@@ -46,11 +48,11 @@ const fixture = () => {
   });
   const answerRaw = raw(
     "https://www.google.com/search?q=large+linen+tote",
-    "Sample Goods Linen tote costs $30 for the large variant.",
+    "Sample Goods Linen tote costs $30 for the large variant. USD, one-time purchase.",
   );
   const productRaw = raw(
     product.url,
-    "Linen tote Large $25.00. Small is a separate option.",
+    "Linen tote Large $25.00. USD, one-time purchase.\nSmall is a separate option.",
   );
   const ucpRaw = raw(
     "https://samplegoods.com/.well-known/ucp",
@@ -232,6 +234,32 @@ const selectionFixture = () => {
       observation: receipt.selected.observation,
       consequence: receipt.selected.consequence,
       askAbout: receipt.selected.askAbout,
+      priceComparison: {
+        answer: {
+          quoteId: catalog.quotes.find((quote) => quote.sourceId === "answer")!
+            .id,
+          offer: evidence.answer.source.content,
+          variant: "large",
+          price: "$30",
+          currency: "USD",
+          currencyAnchor: "USD",
+          condition: "one-time",
+          conditionAnchor: "one-time purchase",
+          marketAnchor: null,
+        },
+        page: {
+          quoteId: catalog.quotes.find((quote) => quote.sourceId === "product")!
+            .id,
+          offer: evidence.browser.sources[0]!.content.split("\n")[0]!,
+          variant: "Large",
+          price: "$25.00",
+          currency: "USD",
+          currencyAnchor: "USD",
+          condition: "one-time",
+          conditionAnchor: "one-time purchase",
+          marketAnchor: null,
+        },
+      },
       quoteIds: catalog.quotes
         .filter((quote) => ["answer", "product"].includes(quote.sourceId))
         .map((quote) => quote.id),
@@ -443,5 +471,356 @@ describe("assessment selects exact captured excerpts", () => {
     expect(() => createAssessmentCatalog(evidence)).toThrow(
       "Captured source IDs must be unique",
     );
+  });
+});
+
+const pricedOffer = (
+  variant: string,
+  price: number,
+  currency = "USD",
+  condition = "one-time purchase",
+  market = "",
+) => ({
+  quoteId: "",
+  offer: `Body Oil. Variant: ${variant}. Current price: ${currency} ${price}. ${condition}.${market ? ` Market: ${market}.` : ""}`,
+  variant,
+  price: `${currency} ${price}`,
+  currency,
+  currencyAnchor: currency,
+  condition: condition === "one-time purchase" ? "one-time" : condition,
+  conditionAnchor: condition,
+  marketAnchor: market || null,
+});
+const priceScenario = (
+  answerOffer = pricedOffer("5 fl oz", 52),
+  pageOffer = pricedOffer("5 fl oz", 48),
+  rest = "",
+) => {
+  const { evidence, output } = selectionFixture();
+  evidence.answer.source.content = `${answerOffer.offer}${rest ? `\n\n${rest}` : ""}`;
+  evidence.answer.answer = evidence.answer.source.content;
+  evidence.browser.sources[0]!.content = pageOffer.offer;
+  const catalog = createAssessmentCatalog(evidence);
+  const answerId = catalog.quotes.find(
+    (quote) => quote.sourceId === "answer",
+  )!.id;
+  const pageId = catalog.quotes.find(
+    (quote) => quote.sourceId === "product",
+  )!.id;
+  return {
+    catalog,
+    output: {
+      ...output,
+      selected: {
+        ...output.selected,
+        observation: `I checked the ${answerOffer.variant} option. The answer showed ${answerOffer.price}, while your page showed ${pageOffer.price}.`,
+        consequence: "Those are different prices for that option.",
+        quoteIds: [answerId, pageId],
+        priceComparison: {
+          answer: { ...answerOffer, quoteId: answerId },
+          page: { ...pageOffer, quoteId: pageId },
+        },
+      },
+    },
+  };
+};
+
+describe("automatic price findings compare the same local offer", () => {
+  test("accepts explicit same-variant currency and purchase terms without inventing a market", () => {
+    const { catalog, output } = priceScenario();
+    expect(projectAssessment(catalog, output)).toMatchObject({
+      decision: "supported",
+    });
+  });
+
+  test("holds the OSEA standard 5 fl oz versus jumbo 9.6 fl oz comparison", () => {
+    const { catalog, output } = priceScenario(
+      pricedOffer("5 fl oz", 52),
+      pricedOffer("9.6 fl oz", 84),
+    );
+    expect(projectAssessment(catalog, output)).toMatchObject({
+      decision: "hold",
+      reason: expect.stringContaining("different variants"),
+    });
+  });
+
+  test("holds an answer's identical 9.6 fl oz $84 sale price against the same page offer", () => {
+    const offer = pricedOffer("9.6 fl oz", 84);
+    const sale = {
+      ...offer,
+      offer:
+        "Body Oil. Variant: 9.6 fl oz. Original price, USD 100. Sale price, USD 84. one-time purchase.",
+    };
+    const { catalog, output } = priceScenario(sale, sale);
+    expect(projectAssessment(catalog, output)).toMatchObject({
+      decision: "hold",
+      reason: expect.stringContaining("same current price"),
+    });
+  });
+
+  test("checks the complete answer when the matching jumbo offer is outside the chosen quote", () => {
+    const answer = pricedOffer("9.6 fl oz", 100);
+    const page = pricedOffer("9.6 fl oz", 84);
+    const rest = `${"Other shopping context. ".repeat(90)}\n\n**Standard Size (5 fl oz).** Currently priced at **$52** at Ulta Beauty and Credo Beauty.\n\n**Jumbo Refill/Pump Size (9.6 fl oz).** Currently priced at **$84** (on sale from $100) directly at [OSEA Malibu](https://oseamalibu.com/products/undaria-algae-oil) and **$84** at Credo Beauty.`;
+    const { catalog, output } = priceScenario(answer, page, rest);
+    expect(
+      catalog.quotes.filter((quote) => quote.sourceId === "answer").length,
+    ).toBeGreaterThan(1);
+    expect(projectAssessment(catalog, output)).toMatchObject({
+      decision: "hold",
+      reason: expect.stringContaining("complete answer already includes"),
+    });
+  });
+
+  test("checks a matching offer even in a long paragraph spanning multiple excerpts", () => {
+    const rest = `${"Other shopping context. ".repeat(120)}The jumbo 9.6 fl oz Body Oil currently costs USD 84 for a one-time purchase.`;
+    const { catalog, output } = priceScenario(
+      pricedOffer("9.6 fl oz", 90),
+      pricedOffer("9.6 fl oz", 84),
+      rest,
+    );
+    expect(projectAssessment(catalog, output)).toMatchObject({
+      decision: "hold",
+      reason: expect.stringContaining("complete answer already includes"),
+    });
+  });
+
+  test.each([
+    { name: "currency", page: pricedOffer("5 fl oz", 48, "CAD") },
+    {
+      name: "subscription",
+      page: pricedOffer("5 fl oz", 48, "USD", "subscription"),
+    },
+    {
+      name: "market",
+      page: pricedOffer("5 fl oz", 48, "USD", "one-time purchase", "UK"),
+    },
+  ])("holds incompatible $name", ({ page }) => {
+    const { catalog, output } = priceScenario(
+      pricedOffer("5 fl oz", 52, "USD", "one-time purchase", "US"),
+      page,
+    );
+    expect(projectAssessment(catalog, output)).toMatchObject({
+      decision: "hold",
+      reason: expect.stringContaining(
+        "different variants, currencies, purchase terms or markets",
+      ),
+    });
+  });
+
+  test("rejects a bare dollar symbol presented as proof of USD", () => {
+    const offer = pricedOffer("5 fl oz", 52);
+    const { catalog, output } = priceScenario({
+      ...offer,
+      offer: offer.offer.replace("USD", "$"),
+      price: "$ 52",
+      currencyAnchor: "$",
+    });
+    expect(projectAssessment(catalog, output)).toMatchObject({
+      decision: "hold",
+      reason: expect.stringContaining("ambiguous"),
+    });
+  });
+
+  test("rejects a price whose currency conflicts with another local currency anchor", () => {
+    const page = pricedOffer("9.6 fl oz", 84);
+    const { catalog, output } = priceScenario(pricedOffer("9.6 fl oz", 90), {
+      ...page,
+      offer:
+        "Body Oil. Variant: 9.6 fl oz. Current price: GBP £84; USD pricing unavailable. one-time purchase.",
+      price: "£84",
+    });
+    expect(projectAssessment(catalog, output)).toMatchObject({
+      decision: "hold",
+      reason: expect.stringContaining("ambiguous"),
+    });
+  });
+
+  test("rejects mixing sizes and prices within one excerpt or clipping an offer line", () => {
+    const offer = pricedOffer("5 fl oz", 52);
+    const page = pricedOffer("5 fl oz", 48);
+    const mixed = priceScenario(
+      { ...offer, offer: `${offer.offer}\nJumbo 9.6 fl oz costs USD 84.` },
+      page,
+    );
+    expect(projectAssessment(mixed.catalog, mixed.output)).toMatchObject({
+      decision: "hold",
+      reason: expect.stringContaining("ambiguous"),
+    });
+    const clipped = priceScenario(
+      { ...offer, offer: `Subscription alternative. ${offer.offer}` },
+      page,
+    );
+    clipped.output.selected.priceComparison.answer.offer = offer.offer;
+    expect(projectAssessment(clipped.catalog, clipped.output)).toMatchObject({
+      decision: "hold",
+      reason: expect.stringContaining("ambiguous"),
+    });
+  });
+
+  test("does not accept an unanchored price or compare an original price to a sale price", () => {
+    const { catalog, output } = priceScenario();
+    output.selected.priceComparison.answer.price = "USD 999";
+    expect(projectAssessment(catalog, output)).toMatchObject({
+      decision: "hold",
+    });
+    const offer = pricedOffer("5 fl oz", 52);
+    const sale = priceScenario({
+      ...offer,
+      offer:
+        "Body Oil. Variant: 5 fl oz. Original price, USD 52. Sale price, USD 48. one-time purchase.",
+    });
+    expect(projectAssessment(sale.catalog, sale.output)).toMatchObject({
+      decision: "hold",
+      reason: expect.stringContaining("ambiguous"),
+    });
+  });
+
+  test("cannot select an original price just because an earlier current label is nearby", () => {
+    const page = pricedOffer("9.6 fl oz", 104);
+    const { catalog, output } = priceScenario(pricedOffer("9.6 fl oz", 90), {
+      ...page,
+      offer:
+        "Body Oil. 9.6 fl oz USD current $84 original $104 one-time purchase.",
+      price: "$104",
+    });
+    expect(projectAssessment(catalog, output)).toMatchObject({
+      decision: "hold",
+      reason: expect.stringContaining("ambiguous"),
+    });
+  });
+
+  test.each([
+    "Discount code SAVE20 required.",
+    "Discount applied in cart.",
+    "Minimum purchase USD 100 required.",
+  ])("holds unmodelled offer condition: %s", (qualifier) => {
+    const page = pricedOffer("9.6 fl oz", 84);
+    const { catalog, output } = priceScenario(pricedOffer("9.6 fl oz", 90), {
+      ...page,
+      offer: `${page.offer} ${qualifier}`,
+    });
+    expect(projectAssessment(catalog, output)).toMatchObject({
+      decision: "hold",
+      reason: expect.stringContaining("ambiguous"),
+    });
+  });
+
+  test("the hold scan includes full saved answers beyond the bounded model excerpt", () => {
+    const { catalog, output } = priceScenario(
+      pricedOffer("9.6 fl oz", 90),
+      pricedOffer("9.6 fl oz", 84),
+    );
+    catalog.answerText +=
+      "\n\nThe 9.6 fl oz option also currently costs USD 84.";
+    expect(projectAssessment(catalog, output)).toMatchObject({
+      decision: "hold",
+      reason: expect.stringContaining("complete answer already includes"),
+    });
+  });
+
+  test("cannot bypass proof by changing the finding kind or omitting numeric prices", () => {
+    const { catalog, output } = priceScenario();
+    expect(
+      projectAssessment(catalog, {
+        ...output,
+        selected: {
+          ...output.selected,
+          priceComparison: null,
+          observation: "The answer missed your current promotion.",
+        },
+      }),
+    ).toMatchObject({
+      decision: "hold",
+      reason: expect.stringContaining("needs comparable local offer"),
+    });
+  });
+
+  test("preserves qualitative comparisons between different brands without price proof", () => {
+    const { evidence, output } = selectionFixture();
+    evidence.browser.candidates = [
+      {
+        name: "Other Brand",
+        product: "Synthetic tote",
+        url: "https://otherbrand.com/tote",
+        sourceIds: ["product"],
+      },
+    ];
+    const catalog = createAssessmentCatalog(evidence);
+    const projected = projectAssessment(catalog, {
+      ...output,
+      selected: {
+        ...output.selected,
+        kind: "query-comparison",
+        observation:
+          "I asked for a linen tote, and the answer recommended a synthetic one. Your page describes a linen tote.",
+        consequence:
+          "That recommendation doesn't meet the material I asked for.",
+        priceComparison: null,
+      },
+      competitors: [
+        {
+          candidateId: catalog.candidates[0]!.id,
+          comparison:
+            "The named material differs from the shopper's requested linen.",
+        },
+      ],
+    });
+    expect(projected.decision).toBe("supported");
+  });
+});
+
+describe("finding copy fits its email without dropping qualifications", () => {
+  test("derives a conservative budget from the fixed first-email text", () => {
+    const playbook = {
+      ...defaultPlaybook,
+      maxBodyWords: 40,
+      bodyTemplate:
+        "Hey {first}! {finding} {consequence} {founderLine} {callToAction} {optout} {signature}",
+      productCheckIntro: "I'm Iseld, a founder of ecentic.",
+      callToAction: "Worth a chat?",
+      optout: "Reply no to opt out.",
+      signature: "Iseld",
+    };
+    expect(assessmentCopyBudget(playbook, "Body Oil")).toBe(20);
+    expect(
+      assessmentCopyBudget({ ...playbook, maxBodyWords: 99 }, "Body Oil"),
+    ).toBe(45);
+    expect(
+      assessmentCopyBudget({ ...playbook, maxBodyWords: 10 }, "Body Oil"),
+    ).toBe(0);
+  });
+
+  test("holds long or technical finding prose instead of truncating it", () => {
+    const { catalog, output } = priceScenario();
+    const long = {
+      ...output,
+      selected: {
+        ...output.selected,
+        consequence: "Only this specific answer and page were checked. ".repeat(
+          10,
+        ),
+      },
+    };
+    expect(projectAssessment(catalog, long)).toMatchObject({
+      decision: "hold",
+      reason: expect.stringContaining("more words"),
+    });
+    expect(projectAssessment(catalog, output, 10)).toMatchObject({
+      decision: "hold",
+      reason: expect.stringContaining("more words"),
+    });
+    expect(
+      projectAssessment(catalog, {
+        ...output,
+        selected: {
+          ...output.selected,
+          observation: "The captured answer differs from the rendered page.",
+        },
+      }),
+    ).toMatchObject({
+      decision: "hold",
+      reason: expect.stringContaining("internal research terms"),
+    });
   });
 });

@@ -78,7 +78,9 @@ before any new company enrichment or contact work is admitted. The campaign pane
 shows missing connections or provider cooldowns separately from delivery readiness.
 Known account/quota errors pause new research for 24 hours, rate limits for 15
 minutes; saving a replacement key permits another attempt. Existing source-backed
-drafts may continue through review and delivery.
+drafts may continue through review and delivery. A saved `assessShopping` stage
+can also proceed during a capture-provider cooldown: it uses existing captures
+and does not submit or browse again. New capture work remains paused.
 
 The worker calls `Automation.run` without a browser session. The staff action
 `automation-actions.run({campaignId?})` runs at most three stages. The internal
@@ -107,7 +109,7 @@ policy edit. Expired worker leases become uncertain.
 | Email verification | One verification request is retained, then the same request is polled at bounded intervals. Exactly one returned email/record pair must match, with a current provider verification date. |
 | Mail host | A fresh MX check holds unknown and Microsoft-hosted recipients according to the Playbook. |
 | Apply shopping research | The completed receipt is bound to the verified contact under the same active lease, campaign and Playbook. An explicit hold or changed prospect prevents application. |
-| Draft | One bounded Azure draft call is saved before the separate draft-write stage. Protected copy and lint rules still apply. |
+| Draft | Invalid protected body copy is held with its lint issues before another model call. Otherwise, one bounded Azure call selects the subject and optional opening; code preserves all original body paragraphs, then saves the checked result before the separate draft-write stage. |
 | Approval | `Store.approveAutomatically` validates the current campaign, Playbook, prospect revision and durable source facts, then the existing worker can deliver within its normal gates. |
 
 Provider outputs checkpoint before subsequent prospect mutations. Safe provider

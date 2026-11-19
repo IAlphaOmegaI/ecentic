@@ -8,7 +8,11 @@ import {
   renderMessages,
 } from "@/lib/outbound";
 import {
+  applyDraftEdits,
   buildDraftPrompt,
+  draftBodyIssues,
+  draftEditsSchema,
+  draftOpeningBudget,
   preservesDraftControls,
 } from "@/lib/outbound-writing";
 
@@ -25,6 +29,118 @@ const prospect = prospectSchema.parse({
 });
 
 describe("saved writing formula", () => {
+  test("editable fragments preserve every rendered paragraph, follow-up and meeting control", () => {
+    const settings = {
+      ...defaultPlaybook,
+      subjectTemplate: "Linen tote question",
+      maxBodyWords: 200,
+    };
+    const original = renderMessages(prospect, settings);
+    const edited = applyDraftEdits(prospect, settings, {
+      subject: "Linen tote details",
+      opening: "Your linen tote caught my eye.",
+    });
+    expect(edited.issues).toEqual([]);
+    expect(
+      edited.messages[0]!.body.replace(
+        "Your linen tote caught my eye.\n\n",
+        "",
+      ),
+    ).toBe(original[0]!.body);
+    expect(edited.messages.slice(1).map((message) => message.body)).toEqual(
+      original.slice(1).map((message) => message.body),
+    );
+    expect(
+      edited.messages.every((message) =>
+        message.subject.includes("Linen tote details"),
+      ),
+    ).toBe(true);
+    expect(
+      preservesDraftControls(
+        edited.messages[0]!.body,
+        original[0]!.body,
+        settings,
+        prospect,
+      ),
+    ).toBe(true);
+    expect(
+      draftEditsSchema(prospect, settings).safeParse({
+        subject: "Linen tote details",
+        opening: "",
+        body: "Replacement facts",
+      }).success,
+    ).toBe(false);
+  });
+
+  test("unsafe or oversized optional openings leave the independently valid saved body intact", () => {
+    const settings = {
+      ...defaultPlaybook,
+      subjectTemplate: "Linen tote question",
+      maxBodyWords: 200,
+    };
+    const original = renderMessages(prospect, settings)[0]!.body;
+    for (const opening of [
+      "Visit https://example.com",
+      "More words ".repeat(30),
+      "First paragraph\n\nA replacement paragraph",
+    ])
+      expect(
+        applyDraftEdits(prospect, settings, {
+          subject: "Linen tote details",
+          opening,
+        }),
+      ).toMatchObject({ messages: [{ body: original }, {}, {}], issues: [] });
+  });
+
+  test("an unsafe generated subject falls back only to a subject that passes checks", () => {
+    const settings = {
+      ...defaultPlaybook,
+      subjectTemplate: "Linen tote question",
+      maxBodyWords: 200,
+    };
+    expect(
+      applyDraftEdits(prospect, settings, {
+        subject: "https://example.com",
+        opening: "",
+      }),
+    ).toMatchObject({
+      messages: [{ subject: "Linen tote question" }, {}, {}],
+      issues: [],
+    });
+    const invalid = applyDraftEdits(
+      prospect,
+      { ...settings, subjectTemplate: "Tote" },
+      { subject: "https://example.com", opening: "" },
+    );
+    expect(invalid.issues.map((issue) => issue.code)).toContain(
+      "subjectLength",
+    );
+    expect(invalid.messages[0]!.subject).toBe("Tote");
+  });
+
+  test("long protected copy remains held and never gains a fabricated compact replacement", () => {
+    const long = {
+      ...prospect,
+      finding: "Saved product observation ".repeat(80),
+    };
+    const original = renderMessages(long, defaultPlaybook);
+    expect(
+      draftBodyIssues(original, defaultPlaybook, long).map(
+        (issue) => issue.code,
+      ),
+    ).toContain("wordLimit");
+    expect(draftOpeningBudget(long, defaultPlaybook)).toBe(0);
+    const edited = applyDraftEdits(long, defaultPlaybook, {
+      subject: "Linen tote question",
+      opening: "A shorter made-up finding.",
+    });
+    expect(edited.messages).toEqual(original);
+    expect(edited.issues.map((issue) => issue.code)).toContain("wordLimit");
+    expect(buildDraftPrompt(long, defaultPlaybook).instructions).toContain(
+      "at most 0 words",
+    );
+  });
+
   test("existing playbooks receive Humanizer defaults without losing templates", () => {
     const { humanizeDrafts, humanizerNotes, ...existing } = defaultPlaybook;
     const settings = playbookSchema.parse(existing);

@@ -212,6 +212,7 @@ export const execute = async (
   if (
     playbook.requireShoppingEvidence &&
     !state["shoppingReceipt"] &&
+    state.stage !== "assessShopping" &&
     !value(await ResearchReadiness.getStatus(playbook)).ready
   )
     return { stage: state.stage, delayMs: 60_000 };

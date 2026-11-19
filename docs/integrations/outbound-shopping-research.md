@@ -45,6 +45,19 @@ duplicate selections and uninspected competitor IDs hold. Without an inspected
 competitor, the output schema permits only a contrast with the merchant's own
 product. The model cannot paraphrase a quote or invent observation metadata.
 
+Price claims additionally need exact local offer blocks from the answer and
+merchant page. The server checks matching variant, explicit currency and
+purchase terms, rejects conflicting known markets, and distinguishes current
+prices from original prices. Different sizes are not a discrepancy. A matching
+variant and current price elsewhere in the complete answer blocks an omission
+claim. Ambiguous or conditional offers stay held. This comparison proof is a
+wire-only assessment input; the durable receipt format is unchanged.
+
+Selected email copy must fit a budget derived from the template's fixed wording,
+up to 45 words for the observation and consequence. The assessor cannot discard
+evidence qualifiers to make it fit. Recipient-facing copy uses ordinary words;
+capture and receipt terminology stays in the supporting research.
+
 `saveAutomaticAndApply` shares the operator receipt validator but additionally
 checks the current automation lease, exact captured receipt, policy fingerprint,
 active campaign and unheld prospect in one transaction. Captures are identified
@@ -100,10 +113,15 @@ The complete bounded schema is `lib/outbound-shopping-research.ts`:
 
 The selected `observation` fills `{finding}`, `consequence` fills
 `{consequence}`, and `askAbout` fills `{askAbout}` in the editable body template.
-Only fields used in that template need to appear in the draft. Azure can edit
-the surrounding language but must preserve these source-bound paragraphs and
-the existing sender, call-to-action and opt-out controls. Subjects remain
-editable under the normal word and claim checks.
+Only fields used in that template need to appear in the draft. Azure returns an
+editable subject and optional short opening; server code keeps every rendered
+body paragraph unchanged, including source-bound text, sender, call-to-action,
+opt-out and signature. An existing verified personal line leaves no room for a
+second generated opening. The opening's budget is the remaining word allowance,
+up to 24 words. Invalid or oversized opening edits are omitted only when the
+original sequence passes all checks. An invalid protected body is returned with
+its actual issues before another model call; it cannot be rescued by silently
+rewriting the evidence. Subjects remain editable under word and claim checks.
 
 UCP presence does not prove successful AI checkout. A product's public data can
 be compared with its rendered page without claiming a checkout failed. A sale
