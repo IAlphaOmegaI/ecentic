@@ -39,6 +39,12 @@ contact lookup. Requested routing country does not establish result market,
 interface locale or signed-in state; these remain unknown. HTTP product evidence
 alone never satisfies this automatic path.
 
+The model selects stable IDs from a bounded catalog of unchanged source excerpts;
+server code supplies the exact quotations and captured scope. Unknown IDs,
+duplicate selections and uninspected competitor IDs hold. Without an inspected
+competitor, the output schema permits only a contrast with the merchant's own
+product. The model cannot paraphrase a quote or invent observation metadata.
+
 `saveAutomaticAndApply` shares the operator receipt validator but additionally
 checks the current automation lease, exact captured receipt, policy fingerprint,
 active campaign and unheld prospect in one transaction. Captures are identified

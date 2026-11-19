@@ -2,7 +2,7 @@ import "server-only";
 
 import { randomUUID } from "node:crypto";
 import { type Result, resultify } from "@zenncore/utils";
-import { and, eq, sql } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { prospectSchema } from "@/lib/outbound";
 import {
@@ -20,7 +20,7 @@ import { ConflictError } from "@/server/utils/error";
 import { sourceReceiptSchema } from "@/server/utils/outbound/automation-qualification";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import { productCategoryCorrection } from "@/server/utils/outbound/product-category";
-import { repository } from "@/server/utils/repository";
+import { repository, resultifyRead } from "@/server/utils/repository";
 import * as Steps from "./automation-steps";
 import * as ResearchReadiness from "./research-readiness";
 import * as Store from "./store";
@@ -47,7 +47,12 @@ const transaction = <Data>(
       return operation(transaction);
     }),
   );
-const view = (job: Job): AutomationJobSummary => {
+const view = (
+  job: Pick<
+    Job,
+    "id" | "input" | "output" | "status" | "error" | "prospectId" | "updatedAt"
+  >,
+): AutomationJobSummary => {
   const input = automationInputSchema.parse(job.input);
   const state = automationStateSchema.parse(job.output);
   return {
@@ -878,16 +883,26 @@ export const getStatus = (
             : undefined,
         ),
       ),
-      Jobs.find(Environment.SERVER, {
-        where: scoped(parsed.campaignId),
-        orderBy: [
-          {
-            column: schema.outboundIntegrationJob.updatedAt,
-            direction: "desc",
-          },
-        ],
-        limit: 50,
-      }),
+      // Browser/raw captures can be large. The status panel only needs the stage,
+      // never screenshots, full provider responses or private research content.
+      resultifyRead(() =>
+        db
+          .select({
+            id: schema.outboundIntegrationJob.id,
+            input: schema.outboundIntegrationJob.input,
+            output: sql<
+              Record<string, unknown>
+            >`jsonb_build_object('stage', output->'stage', 'availableAt', output->'availableAt', 'lease', output->'lease')`,
+            status: schema.outboundIntegrationJob.status,
+            error: schema.outboundIntegrationJob.error,
+            prospectId: schema.outboundIntegrationJob.prospectId,
+            updatedAt: schema.outboundIntegrationJob.updatedAt,
+          })
+          .from(schema.outboundIntegrationJob)
+          .where(scoped(parsed.campaignId))
+          .orderBy(desc(schema.outboundIntegrationJob.updatedAt))
+          .limit(50),
+      ),
       Store.automationDeliveryStatus(),
       Promise.all(
         (
