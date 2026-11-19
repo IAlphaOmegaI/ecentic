@@ -1140,6 +1140,44 @@ const revoke = async (
     );
 };
 
+/** Pause both cold sequences under the caller's workspace lock, without inventing a reply or opt-out. */
+export const pauseColdOutreachWithin = async (
+  transaction: TransactionScope,
+  actor: string,
+  input: { prospect: string; reason: string },
+) => {
+  const prospect = await findProspect(transaction, input.prospect);
+  const stopped = [
+    "held",
+    "optedOut",
+    "bounced",
+    "replied",
+    "skipped",
+    "finished",
+  ].includes(prospect.status);
+  await revoke(transaction, prospect, input.reason);
+  requireData(
+    await Prospects.update(
+      Environment.SERVER,
+      prospect.id,
+      {
+        status: stopped ? prospect.status : "held",
+        holdReason: stopped ? prospect.holdReason : input.reason,
+        approvedAt: null,
+        approvedBy: null,
+        approvalHash: null,
+        nextSendAt: null,
+        linkedinStatus:
+          prospect.linkedinStatus === "replied" ? "replied" : "closed",
+        linkedinNextActionAt: null,
+        updatedAt: new Date(),
+      },
+      { tx: transaction },
+    ),
+  );
+  await event(transaction, actor, "hold", input.reason, prospect.id);
+};
+
 export const savePlaybookWithin = async (
   transaction: TransactionScope,
   actor: string,

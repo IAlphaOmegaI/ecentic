@@ -30,6 +30,54 @@ bun run typecheck:outbound
 bun run test:outbound
 ```
 
+## Core smoke tests
+
+From the repository root, run:
+
+```sh
+bun run test:outbound:smoke
+```
+
+This runs the browser-to-server action transport contract, conversation editor,
+conversation reading/stages/drafts, campaign criteria and filters, review and hold
+rules, staff authorization, and credential success/error paths. Provider replies,
+draft generation and delivery are fixtures: it does not call paid providers or
+send real messages. Each suite uses a separate Bun process to avoid shared mocks.
+The test environment excludes application credentials, disables `.env` loading
+including in fixture subprocesses, and blocks live HTTP and non-test Node TCP
+connections. A skipped test, missing test file, empty report or failing assertion
+fails the command. The ordinary `test:outbound` command still permits optional
+database tests to skip; use the smoke command for this core regression gate.
+
+The `outbound-basics` CI job runs this same gate for Outbound, shared-package and
+test-workflow changes, using its own PostgreSQL service. Per-suite JUnit reports
+and logs are uploaded even when a test fails.
+
+The smoke command requires **disposable PostgreSQL on `127.0.0.1:55432`** with
+permission to create databases. It creates a new `outbound_smoke_<random>` database,
+builds its schema from the current Outbound projection, then removes that database
+on completion. It never uses `DATABASE_URL` or modifies existing databases. The
+default PostgreSQL user is the current OS user; use `OUTBOUND_SMOKE_PG_USER` and
+`OUTBOUND_SMOKE_PG_PASSWORD` only if the disposable server needs them.
+
+If that dedicated server is not already running, start a new local cluster using
+an installed PostgreSQL distribution (`pg_config` must be on PATH):
+
+```sh
+OUTBOUND_PG_BIN="$(pg_config --bindir)"
+OUTBOUND_PG_DIRECTORY="$(mktemp -d /tmp/ecentic-outbound-smoke.XXXXXX)"
+"$OUTBOUND_PG_BIN/initdb" -D "$OUTBOUND_PG_DIRECTORY" --auth=trust --no-locale
+"$OUTBOUND_PG_BIN/pg_ctl" -D "$OUTBOUND_PG_DIRECTORY" -l "$OUTBOUND_PG_DIRECTORY/server.log" -o "-h 127.0.0.1 -p 55432" -w start
+bun run test:outbound:smoke
+"$OUTBOUND_PG_BIN/pg_ctl" -D "$OUTBOUND_PG_DIRECTORY" -m fast -w stop
+```
+
+JUnit reports and per-suite logs are saved under the ignored
+`output/outbound-smoke/` directory. `summary.json` records whether the temporary
+database was removed. This gate tests the current schema and application behavior;
+it does not verify production migration history, provider availability, browser
+layout or a complete logged-in Next.js navigation flow.
+
 Deploy `apps/outbound` as its own project. Configure its environment and authorized host independently. Its email, preparation and LinkedIn workers require `CRON_SECRET`; keep only this deployment's outbound schedules active.
 
 Production is [outbound.ecentic.ai](https://outbound.ecentic.ai), hosted by

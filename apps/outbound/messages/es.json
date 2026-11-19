@@ -1227,7 +1227,11 @@
       "companySearchFailedDescription": "No se ha añadido ninguna empresa. Resuelva el problema indicado arriba y vuelva a intentarlo.",
       "manualClaude": "Usar Claude manualmente",
       "viewContactOptional": "Ver contacto",
-      "automaticContactsHelp": "Las campañas activas comprueban cada empresa que coincide con los criterios, buscan y verifican un contacto y después redactan y ponen en cola su secuencia de correos automáticamente. Abrir un contacto es opcional; las comprobaciones de envío siguen aplicándose."
+      "automaticContactsHelp": "Las campañas activas comprueban cada empresa que coincide con los criterios, buscan y verifican un contacto y después redactan y ponen en cola su secuencia de correos automáticamente. Abrir un contacto es opcional; las comprobaciones de envío siguen aplicándose.",
+      "forms": {
+        "changed": "Esta campaña ha cambiado. Tus valores se conservan. Carga los valores guardados antes de continuar.",
+        "loadSaved": "Descartar cambios y cargar valores guardados"
+      }
     },
     "warmup": {
       "title": "Calentamiento",
@@ -1770,7 +1774,7 @@
       },
       "draftLabel": "Borrador de respuesta",
       "invalidBody": "Escribe una respuesta de entre 1 y 10.000 caracteres.",
-      "unsaved": "Guarda los cambios antes de enviar o cambiar la etapa.",
+      "unsaved": "Guarda los cambios de tu respuesta antes de enviarla.",
       "error": {
         "changed": "La conversación ha cambiado. Recárgala y revisa el último mensaje antes de continuar.",
         "closed": "Esta conversación está cerrada o el destinatario está excluido de las comunicaciones.",
@@ -1780,7 +1784,8 @@
         "generationUncertain": "El resultado de la sugerencia no está confirmado. Consultar esta solicitud no generará otra respuesta.",
         "connection": "La cuenta de envío no está disponible o necesita sincronizar las respuestas. Revisa Integraciones.",
         "controls": "La sugerencia no ha superado los controles de respuesta guardados. Redacta y revisa la respuesta manualmente.",
-        "generic": "No hemos podido completar esta acción. Actualiza la conversación e inténtalo de nuevo."
+        "generic": "No hemos podido completar esta acción. Actualiza la conversación e inténtalo de nuevo.",
+        "authentication": "Tu sesión caducó. Inicia sesión en la nueva pestaña y vuelve a intentarlo aquí. Tus cambios se conservan."
       },
       "newestFirst": "Mensajes más recientes primero",
       "direction": {
@@ -1816,6 +1821,19 @@
         "scheduledHelp": "Aquí se muestran las horas de envío de correo guardadas. Las pausas, las comprobaciones de respuestas, el horario del destinatario y los límites de las bandejas pueden retrasarlas. Las acciones de LinkedIn no tienen una hora fija guardada.",
         "sentHelp": "Intentos de envío de correo, LinkedIn y respuestas. Aceptado significa que el proveedor aceptó el mensaje; no confirma la entrega ni la apertura.",
         "empty": "No hay actividad que coincida con esta vista."
+      },
+      "editor": {
+        "changed": "La conversación cambió. Conservamos tus cambios. Revisa los mensajes actuales antes de continuar.",
+        "continue": "Continuar con mis cambios",
+        "refreshing": "Actualizando conversación…",
+        "savingStage": "Guardando etapa…",
+        "stageSaved": "Etapa guardada.",
+        "savingDraft": "Guardando borrador…",
+        "draftSaved": "Borrador guardado.",
+        "generating": "Preparando sugerencia…",
+        "sending": "Enviando…",
+        "signIn": "Volver a iniciar sesión",
+        "followUpsPaused": "Guardar esta etapa pausa los contactos automáticos por email y LinkedIn con esta persona. Reabrir la conversación no los reanuda."
       }
     }
   }

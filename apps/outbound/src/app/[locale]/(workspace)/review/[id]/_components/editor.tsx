@@ -89,6 +89,17 @@ export const ReviewEditor = ({
     prospect.shoppingFinding?.checkedAt ?? prospect.evidenceCheckedAt ?? "",
   );
   const mutation = useMutation();
+  const [noticeLocation, setNoticeLocation] = useState<
+    "draft" | "review" | "controls"
+  >("draft");
+  const runAt = (
+    location: typeof noticeLocation,
+    operation: Parameters<typeof mutation.run>[0],
+  ) =>
+    mutation.run(() => {
+      setNoticeLocation(location);
+      return operation();
+    });
   const router = useRouter();
   const [leaving, setLeaving] = useState(false);
   const [dirty, setDirty] = useState(false);
@@ -205,7 +216,7 @@ export const ReviewEditor = ({
             setPreviewBody(values.body ?? "");
           }}
           onSubmit={(values) =>
-            mutation.run(() =>
+            runAt("draft", () =>
               Outbound.saveDraft({
                 prospect: prospect.id,
                 revision: prospect.revision,
@@ -272,7 +283,7 @@ export const ReviewEditor = ({
           <Submit pending={mutation.pending}>
             {t("review.action.secondary")}
           </Submit>
-          <Notice value={mutation.notice} />
+          <Notice value={noticeLocation === "draft" ? mutation.notice : null} />
         </InferredForm>
         <aside className="min-w-0 border-accent-foreground border-t bg-background/50 xl:border-t-0 xl:border-l">
           <section
@@ -357,7 +368,7 @@ export const ReviewEditor = ({
                     mutation.pending || dirty || prospect.issues.length > 0
                   }
                   onClick={() =>
-                    mutation.run(() =>
+                    runAt("review", () =>
                       Outbound.reviewProspect({
                         prospect: prospect.id,
                         decision: "approve",
@@ -377,7 +388,7 @@ export const ReviewEditor = ({
                   variant="soft"
                   disabled={mutation.pending || dirty}
                   onClick={() =>
-                    mutation.run(() =>
+                    runAt("review", () =>
                       Outbound.reviewProspect({
                         prospect: prospect.id,
                         revision: prospect.revision,
@@ -390,6 +401,9 @@ export const ReviewEditor = ({
                   {t("review.panel.resume")}
                 </Button>
               )}
+            <Notice
+              value={noticeLocation === "review" ? mutation.notice : null}
+            />
             <div className="space-y-2 border-accent-foreground border-t pt-4">
               <p className="text-foreground-dimmed text-xs leading-5">
                 {t(
@@ -541,7 +555,7 @@ export const ReviewEditor = ({
                       }}
                       defaultValues={{ reason: "" }}
                       onSubmit={({ reason }) =>
-                        mutation.run(() =>
+                        runAt("controls", () =>
                           Outbound.reviewProspect({
                             prospect: prospect.id,
                             decision: "hold",
@@ -567,7 +581,7 @@ export const ReviewEditor = ({
                       color="error"
                       disabled={mutation.pending}
                       onClick={() =>
-                        mutation.run(() =>
+                        runAt("controls", () =>
                           Outbound.recordOutcome({
                             prospect: prospect.id,
                             kind: "optout",
@@ -579,6 +593,11 @@ export const ReviewEditor = ({
                       <BanIcon aria-hidden className="size-4" />
                       {t("review.action.quaternary")}
                     </Button>
+                    <Notice
+                      value={
+                        noticeLocation === "controls" ? mutation.notice : null
+                      }
+                    />
                   </div>
                 </AccordionPanel>
               </AccordionItem>

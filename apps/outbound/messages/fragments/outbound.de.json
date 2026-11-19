@@ -1227,7 +1227,11 @@
       "companySearchFailedDescription": "Es wurden keine Unternehmen hinzugefügt. Beheben Sie das oben angezeigte Problem und versuchen Sie es erneut.",
       "manualClaude": "Claude manuell verwenden",
       "viewContactOptional": "Kontakt ansehen",
-      "automaticContactsHelp": "Aktive Kampagnen prüfen jedes passende Unternehmen, finden und verifizieren einen Kontakt und erstellen anschließend automatisch dessen E-Mail-Sequenz für die Warteschlange. Die Kontaktansicht ist optional; die Versandprüfungen gelten weiterhin."
+      "automaticContactsHelp": "Aktive Kampagnen prüfen jedes passende Unternehmen, finden und verifizieren einen Kontakt und erstellen anschließend automatisch dessen E-Mail-Sequenz für die Warteschlange. Die Kontaktansicht ist optional; die Versandprüfungen gelten weiterhin.",
+      "forms": {
+        "changed": "Diese Kampagne wurde geändert. Deine Werte bleiben erhalten. Lade die gespeicherten Werte, bevor du fortfährst.",
+        "loadSaved": "Änderungen verwerfen und gespeicherte Werte laden"
+      }
     },
     "warmup": {
       "title": "Warmup",
@@ -1770,7 +1774,7 @@
       },
       "draftLabel": "Antwortentwurf",
       "invalidBody": "Geben Sie eine Antwort mit 1–10.000 Zeichen ein.",
-      "unsaved": "Speichern Sie Änderungen vor dem Senden oder einem Phasenwechsel.",
+      "unsaved": "Speichere deine Änderungen an der Antwort vor dem Senden.",
       "error": {
         "changed": "Das Gespräch hat sich geändert. Laden Sie es neu und prüfen Sie die letzte Nachricht, bevor Sie fortfahren.",
         "closed": "Dieses Gespräch ist abgeschlossen oder der Empfänger wurde von der Kontaktaufnahme ausgeschlossen.",
@@ -1780,7 +1784,8 @@
         "generationUncertain": "Das Ergebnis des Vorschlags ist nicht bestätigt. Beim Prüfen dieser Anfrage wird keine weitere Antwort generiert.",
         "connection": "Das Sendekonto ist nicht verfügbar oder benötigt eine neue Antwortsynchronisierung. Prüfen Sie Integrationen.",
         "controls": "Der Vorschlag entspricht nicht den gespeicherten Antwortregeln. Verfassen und prüfen Sie die Antwort selbst.",
-        "generic": "Diese Aktion konnte nicht abgeschlossen werden. Aktualisieren Sie das Gespräch und versuchen Sie es erneut."
+        "generic": "Diese Aktion konnte nicht abgeschlossen werden. Aktualisieren Sie das Gespräch und versuchen Sie es erneut.",
+        "authentication": "Deine Sitzung ist abgelaufen. Melde dich im neuen Tab an und versuche es hier erneut. Deine Änderungen bleiben erhalten."
       },
       "newestFirst": "Neueste Nachrichten zuerst",
       "direction": {
@@ -1816,6 +1821,19 @@
         "scheduledHelp": "Hier stehen gespeicherte E-Mail-Sendezeiten. Pausen, Antwortprüfungen, Empfängerzeiten und Postfachlimits können sie verzögern. LinkedIn-Aktionen haben keine feste gespeicherte Sendezeit.",
         "sentHelp": "Versandversuche für E-Mails, LinkedIn und Gesprächsantworten. Angenommen bedeutet, dass der Anbieter die Nachricht angenommen hat; Zustellung oder Öffnung sind damit nicht nachgewiesen.",
         "empty": "Keine Aktivität für diese Ansicht."
+      },
+      "editor": {
+        "changed": "Die Unterhaltung hat sich geändert. Deine Änderungen bleiben erhalten. Prüfe die aktuellen Nachrichten, bevor du fortfährst.",
+        "continue": "Mit meinen Änderungen fortfahren",
+        "refreshing": "Unterhaltung wird aktualisiert…",
+        "savingStage": "Status wird gespeichert…",
+        "stageSaved": "Status gespeichert.",
+        "savingDraft": "Entwurf wird gespeichert…",
+        "draftSaved": "Entwurf gespeichert.",
+        "generating": "Vorschlag wird vorbereitet…",
+        "sending": "Wird gesendet…",
+        "signIn": "Erneut anmelden",
+        "followUpsPaused": "Beim Speichern dieses Status wird die automatische Kontaktaufnahme per E-Mail und LinkedIn für diese Person pausiert. Erneutes Öffnen startet sie nicht wieder."
       }
     }
   }

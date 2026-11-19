@@ -1227,7 +1227,11 @@
       "companySearchFailedDescription": "Aucune entreprise n’a été ajoutée. Résolvez le problème indiqué ci-dessus, puis réessayez.",
       "manualClaude": "Utiliser Claude manuellement",
       "viewContactOptional": "Voir le contact",
-      "automaticContactsHelp": "Les campagnes actives vérifient chaque entreprise correspondant aux critères, trouvent et vérifient un contact, puis rédigent et mettent automatiquement sa séquence d’e-mails en file d’attente. Consulter un contact est facultatif ; les vérifications avant envoi restent applicables."
+      "automaticContactsHelp": "Les campagnes actives vérifient chaque entreprise correspondant aux critères, trouvent et vérifient un contact, puis rédigent et mettent automatiquement sa séquence d’e-mails en file d’attente. Consulter un contact est facultatif ; les vérifications avant envoi restent applicables.",
+      "forms": {
+        "changed": "Cette campagne a changé. Vos valeurs sont conservées. Chargez les valeurs enregistrées avant de continuer.",
+        "loadSaved": "Abandonner les modifications et charger les valeurs enregistrées"
+      }
     },
     "warmup": {
       "title": "Préchauffage",
@@ -1770,7 +1774,7 @@
       },
       "draftLabel": "Brouillon de réponse",
       "invalidBody": "Saisissez une réponse de 1 à 10 000 caractères.",
-      "unsaved": "Enregistrez vos modifications avant d’envoyer ou de changer d’étape.",
+      "unsaved": "Enregistrez les modifications de votre réponse avant de l’envoyer.",
       "error": {
         "changed": "La conversation a changé. Rechargez-la et relisez le dernier message avant de continuer.",
         "closed": "Cette conversation est clôturée ou le destinataire est exclu des communications.",
@@ -1780,7 +1784,8 @@
         "generationUncertain": "Le résultat de la suggestion n’est pas confirmé. Vérifier cette demande ne générera pas une autre réponse.",
         "connection": "Le compte d’envoi est indisponible ou doit synchroniser ses réponses. Consultez Intégrations.",
         "controls": "La suggestion n’a pas respecté les règles de réponse enregistrées. Rédigez et relisez vous-même la réponse.",
-        "generic": "Cette action n’a pas pu être effectuée. Actualisez la conversation et réessayez."
+        "generic": "Cette action n’a pas pu être effectuée. Actualisez la conversation et réessayez.",
+        "authentication": "Votre session a expiré. Connectez-vous dans le nouvel onglet, puis réessayez ici. Vos modifications sont conservées."
       },
       "newestFirst": "Messages les plus récents en premier",
       "direction": {
@@ -1816,6 +1821,19 @@
         "scheduledHelp": "Les heures d’envoi d’e-mails enregistrées figurent ici. Les pauses, la vérification des réponses, les horaires du destinataire et les limites des boîtes peuvent les retarder. Les actions LinkedIn n’ont pas d’heure d’envoi fixe enregistrée.",
         "sentHelp": "Tentatives d’envoi par e-mail, sur LinkedIn et réponses aux conversations. Accepté signifie que le fournisseur a accepté le message ; cela ne prouve ni sa réception ni son ouverture.",
         "empty": "Aucune activité ne correspond à cette vue."
+      },
+      "editor": {
+        "changed": "La conversation a changé. Vos modifications sont conservées. Vérifiez les messages actuels avant de continuer.",
+        "continue": "Continuer avec mes modifications",
+        "refreshing": "Actualisation de la conversation…",
+        "savingStage": "Enregistrement de l’étape…",
+        "stageSaved": "Étape enregistrée.",
+        "savingDraft": "Enregistrement du brouillon…",
+        "draftSaved": "Brouillon enregistré.",
+        "generating": "Préparation de la suggestion…",
+        "sending": "Envoi en cours…",
+        "signIn": "Se reconnecter",
+        "followUpsPaused": "Enregistrer cette étape met en pause la prospection automatique par email et LinkedIn pour cette personne. Rouvrir la conversation ne la relance pas."
       }
     }
   }

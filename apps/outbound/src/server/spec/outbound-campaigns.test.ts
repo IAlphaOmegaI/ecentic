@@ -9,6 +9,7 @@ import {
 } from "@/lib/outbound-campaigns";
 import type * as Providers from "@/server/utils/outbound/company-discovery";
 import { IntegrationError } from "@/server/utils/outbound/http";
+import { requireTestDatabase } from "./helpers/database";
 
 const actor = "campaign-fixture-staff";
 const endpoint = process.env.OUTBOUND_TEST_DATABASE_URL;
@@ -177,15 +178,7 @@ describe("campaign criteria handoff", () => {
 
 describe.skipIf(!endpoint)("campaign service on isolated Postgres", () => {
   beforeAll(async () => {
-    if (!endpoint) throw new Error("OUTBOUND_TEST_DATABASE_URL required.");
-    const url = new URL(endpoint);
-    if (
-      !["127.0.0.1", "localhost"].includes(url.hostname) ||
-      url.pathname !== "/outbound_test"
-    )
-      throw new Error(
-        "Only the isolated local outbound_test database is allowed.",
-      );
+    requireTestDatabase(endpoint);
     Object.assign(process.env, {
       DATABASE_URL: endpoint,
       CREDENTIAL_ENCRYPTION_KEY: Buffer.alloc(32, 19).toString("base64"),
@@ -292,7 +285,10 @@ describe.skipIf(!endpoint)("campaign service on isolated Postgres", () => {
       ),
     );
     expect(result.run.status).toBe("uncertain");
-    const [saved] = await db.select({ output: schema.outboundCampaignRun.output }).from(schema.outboundCampaignRun).where(eq(schema.outboundCampaignRun.id, result.run.id));
+    const [saved] = await db
+      .select({ output: schema.outboundCampaignRun.output })
+      .from(schema.outboundCampaignRun)
+      .where(eq(schema.outboundCampaignRun.id, result.run.id));
     expect(saved?.output).toEqual({ receipt });
     expect(value(await campaigns.get({ id })).companies.total).toBe(0);
     expect(

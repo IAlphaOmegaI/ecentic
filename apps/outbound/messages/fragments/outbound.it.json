@@ -1227,7 +1227,11 @@
       "companySearchFailedDescription": "Nessuna azienda è stata aggiunta. Risolvi il problema indicato sopra, quindi riprova.",
       "manualClaude": "Usa Claude manualmente",
       "viewContactOptional": "Visualizza contatto",
-      "automaticContactsHelp": "Le campagne attive controllano ogni azienda corrispondente ai criteri, trovano e verificano un contatto, poi preparano e mettono in coda automaticamente la sequenza di email. Aprire un contatto è facoltativo; i controlli di invio restano attivi."
+      "automaticContactsHelp": "Le campagne attive controllano ogni azienda corrispondente ai criteri, trovano e verificano un contatto, poi preparano e mettono in coda automaticamente la sequenza di email. Aprire un contatto è facoltativo; i controlli di invio restano attivi.",
+      "forms": {
+        "changed": "Questa campagna è cambiata. I tuoi valori sono conservati. Carica i valori salvati prima di continuare.",
+        "loadSaved": "Annulla le modifiche e carica i valori salvati"
+      }
     },
     "warmup": {
       "title": "Riscaldamento",
@@ -1770,7 +1774,7 @@
       },
       "draftLabel": "Bozza di risposta",
       "invalidBody": "Inserisci una risposta da 1 a 10.000 caratteri.",
-      "unsaved": "Salva le modifiche prima di inviare o cambiare fase.",
+      "unsaved": "Salva le modifiche alla risposta prima di inviarla.",
       "error": {
         "changed": "La conversazione è cambiata. Ricaricala e controlla l’ultimo messaggio prima di continuare.",
         "closed": "Questa conversazione è chiusa o il destinatario è escluso dai contatti.",
@@ -1780,7 +1784,8 @@
         "generationUncertain": "Il risultato del suggerimento non è confermato. Controllare questa richiesta non genererà un’altra risposta.",
         "connection": "L’account di invio non è disponibile o richiede una nuova sincronizzazione delle risposte. Controlla Integrazioni.",
         "controls": "Il suggerimento non ha superato i controlli di risposta salvati. Scrivi e controlla la risposta manualmente.",
-        "generic": "Non è stato possibile completare questa azione. Aggiorna la conversazione e riprova."
+        "generic": "Non è stato possibile completare questa azione. Aggiorna la conversazione e riprova.",
+        "authentication": "La sessione è scaduta. Accedi nella nuova scheda, poi riprova qui. Le tue modifiche sono conservate."
       },
       "newestFirst": "Prima i messaggi più recenti",
       "direction": {
@@ -1816,6 +1821,19 @@
         "scheduledHelp": "Qui sono mostrati gli orari di invio email salvati. Pause, controlli delle risposte, orari del destinatario e limiti delle caselle possono ritardarli. Le azioni LinkedIn non hanno un orario fisso salvato.",
         "sentHelp": "Tentativi di invio email, LinkedIn e risposte alle conversazioni. Accettato significa che il provider ha accettato il messaggio; non ne dimostra la consegna o l’apertura.",
         "empty": "Nessuna attività corrisponde a questa vista."
+      },
+      "editor": {
+        "changed": "La conversazione è cambiata. Le tue modifiche sono conservate. Controlla i messaggi attuali prima di continuare.",
+        "continue": "Continua con le mie modifiche",
+        "refreshing": "Aggiornamento della conversazione…",
+        "savingStage": "Salvataggio della fase…",
+        "stageSaved": "Fase salvata.",
+        "savingDraft": "Salvataggio della bozza…",
+        "draftSaved": "Bozza salvata.",
+        "generating": "Preparazione del suggerimento…",
+        "sending": "Invio in corso…",
+        "signIn": "Accedi di nuovo",
+        "followUpsPaused": "Salvando questa fase, i contatti automatici via email e LinkedIn con questa persona vengono sospesi. Riaprire la conversazione non li riavvia."
       }
     }
   }

@@ -170,10 +170,7 @@ export const ConversationDetailView = async ({
           )}
         </div>
         <aside className="min-w-0 border-accent-foreground border-t px-4 py-6 sm:px-6 xl:border-t-0 xl:border-l">
-          <ConversationEditor
-            key={`${detail.thread.id}:${detail.thread.revision}`}
-            detail={detail}
-          />
+          <ConversationEditor key={detail.thread.id} detail={detail} />
         </aside>
       </div>
     </div>

@@ -577,6 +577,18 @@ button row above the same form. Avoid a gray calculator-style box around a simpl
 Validate real input and preserve the address through the existing handoff. Do not show fake scan
 progress. Field errors explain how to fix the input and stay associated with their field.
 
+Operational forms show saving, saved and failed states beside the action that produced them.
+Keep a stage update separate from reply-draft feedback; a stage error must not appear below an
+unrelated composer. Disable unchanged saves and duplicate submissions, and keep the pending
+state until the saved record is reflected in the interface. Ordinary Save and Refresh actions
+use the shared soft treatment; the primary treatment identifies the consequential next action.
+
+Background refreshes preserve unsaved text and selections. A changed record explains what needs
+review and offers a local refresh/recovery action without silently discarding the user's work.
+Do not present a generic retry as the solution to an expired sign-in, a concurrent edit or an
+unconfirmed send. An uncertain send remains blocked until its result is known.
+<!-- 2026-11-19 Outbound conversation review: requested stage-save repair, basic workflow regression coverage and a living design canon. -->
+
 ### Actions, icons and states
 
 **Use native shared primary/secondary/soft button variants with visible states on their actual

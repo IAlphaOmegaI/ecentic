@@ -24,6 +24,7 @@
     "dev:outbound": "turbo run dev --filter=./apps/outbound...",
     "start:outbound": "turbo run start --filter=outbound",
     "test:outbound": "turbo run test --filter=outbound",
+    "test:outbound:smoke": "bun run --cwd apps/outbound test:smoke",
     "typecheck:outbound": "turbo run typecheck --filter=outbound"
   },
   "devDependencies": {

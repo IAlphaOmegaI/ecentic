@@ -1227,7 +1227,11 @@
       "companySearchFailedDescription": "No companies were added. Resolve the issue shown above, then retry.",
       "manualClaude": "Use Claude manually",
       "viewContactOptional": "View contact",
-      "automaticContactsHelp": "Active campaigns check each matched company, find and verify a contact, then draft and queue its email sequence automatically. Opening a contact is optional; delivery checks still apply."
+      "automaticContactsHelp": "Active campaigns check each matched company, find and verify a contact, then draft and queue its email sequence automatically. Opening a contact is optional; delivery checks still apply.",
+      "forms": {
+        "changed": "This campaign changed. Your values are kept. Load the saved values before continuing.",
+        "loadSaved": "Discard edits and load saved values"
+      }
     },
     "warmup": {
       "title": "Warmup",
@@ -1770,7 +1774,7 @@
       },
       "draftLabel": "Reply draft",
       "invalidBody": "Enter a reply of 1–10,000 characters.",
-      "unsaved": "Save your changes before sending or changing the stage.",
+      "unsaved": "Save your reply edits before sending.",
       "error": {
         "changed": "The conversation changed. Reload it and review the latest message before continuing.",
         "closed": "This conversation is closed or the recipient has been excluded from contact.",
@@ -1780,7 +1784,8 @@
         "generationUncertain": "The suggestion’s result is not confirmed. Checking this request will not generate another reply.",
         "connection": "The sending account is unavailable or needs a fresh reply sync. Check Integrations.",
         "controls": "The suggestion did not pass the saved reply controls. Write and review the reply yourself.",
-        "generic": "We could not complete this action. Refresh the conversation and try again."
+        "generic": "We could not complete this action. Refresh the conversation and try again.",
+        "authentication": "Your session expired. Sign in again in the new tab, then retry here. Your edits are kept."
       },
       "newestFirst": "Newest messages first",
       "direction": {
@@ -1816,6 +1821,19 @@
         "scheduledHelp": "Saved email send times are shown here. Pauses, reply checks, recipient hours and inbox limits can delay them. LinkedIn actions have no fixed saved send time.",
         "sentHelp": "Email, LinkedIn and conversation reply attempts. Accepted means the provider accepted the message; it does not prove delivery or an opened message.",
         "empty": "No activity matches this view."
+      },
+      "editor": {
+        "changed": "The conversation changed. Your edits are kept. Review the current messages before continuing.",
+        "continue": "Continue with my edits",
+        "refreshing": "Refreshing conversation…",
+        "savingStage": "Saving stage…",
+        "stageSaved": "Stage saved.",
+        "savingDraft": "Saving draft…",
+        "draftSaved": "Draft saved.",
+        "generating": "Preparing suggestion…",
+        "sending": "Sending…",
+        "signIn": "Sign in again",
+        "followUpsPaused": "Saving this stage pauses automatic email and LinkedIn outreach to this person. Reopening does not restart it."
       }
     }
   }
