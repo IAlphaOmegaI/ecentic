@@ -173,7 +173,7 @@
             "Flux produit"
           ],
           "href": "/platform/connect",
-          "label": "Découvrir la connexion du catalogue"
+          "label": "Voir les connexions du catalogue"
         },
         {
           "id": "simulate",
@@ -185,19 +185,19 @@
             "Audit de préparation"
           ],
           "href": "/platform/simulate",
-          "label": "Découvrir les simulations"
+          "label": "Voir les comparaisons de produits"
         },
         {
           "id": "fix",
           "title": "Corriger",
-          "body": "Apply génère et publie des titres et descriptions à partir des informations produit existantes. Publiez des données structurées et synchronisez Merchant Center via des contrôles distincts.",
+          "body": "Clarifiez les titres et descriptions à partir de vos informations produit existantes. Sélectionnez « Appliquer » pour générer et publier les modifications. Les données structurées et la synchronisation avec Merchant Center se gèrent via des commandes distinctes.",
           "tags": [
             "Fiches produit",
             "Données structurées",
             "Merchant Center"
           ],
           "href": "/platform/fix",
-          "label": "Découvrir la correction des fiches"
+          "label": "Voir les corrections des fiches"
         },
         {
           "id": "sell",
@@ -209,7 +209,7 @@
             "Vos paiements"
           ],
           "href": "/platform/sell",
-          "label": "Découvrir la vente par IA"
+          "label": "Voir le paiement sur WooCommerce"
         },
         {
           "id": "track",
@@ -221,7 +221,7 @@
             "Plusieurs boutiques"
           ],
           "href": "/platform/track",
-          "label": "Découvrir le suivi"
+          "label": "Voir le suivi du trafic référent sur Shopify"
         }
       ]
     },
@@ -233,6 +233,10 @@
       "action": {
         "primary": "Voir la vidéo"
       }
+    },
+    "connections": {
+      "title": "Votre catalogue. Les exigences de chaque canal.",
+      "description": "Connectez votre catalogue existant, puis vérifiez ce qu’ecentic prend en charge sur chaque canal IA. La disponibilité des simulations, des flux et du paiement varie."
     },
     "channels": {
       "eyebrow": "05 · Canaux IA",

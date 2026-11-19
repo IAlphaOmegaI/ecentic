@@ -86,6 +86,7 @@ export const Journey = ({ copy, artwork }: Journey.Props) => {
                 <div className="mt-6 flex flex-wrap">
                   <Button
                     variant="soft"
+                    tone="inverse"
                     className="max-w-full whitespace-normal text-left"
                     render={<Link href={step.href} />}
                   >

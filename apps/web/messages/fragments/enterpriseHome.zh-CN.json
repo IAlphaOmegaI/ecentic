@@ -173,7 +173,7 @@
             "商品数据源"
           ],
           "href": "/platform/connect",
-          "label": "查看连接"
+          "label": "查看商品目录连接方式"
         },
         {
           "id": "simulate",
@@ -185,19 +185,19 @@
             "准备度检测"
           ],
           "href": "/platform/simulate",
-          "label": "查看模拟"
+          "label": "查看商品对比"
         },
         {
           "id": "fix",
           "title": "修复",
-          "body": "Apply 会基于现有商品事实生成并发布标题和描述。结构化数据发布与 Merchant Center 同步通过单独的控制项完成。",
+          "body": "利用现有商品信息，让标题和描述更清晰。选择“应用”即可生成并发布更改。结构化数据和 Merchant Center 同步通过各自的控件管理。",
           "tags": [
             "商品信息",
             "结构化数据",
             "Merchant Center"
           ],
           "href": "/platform/fix",
-          "label": "查看修复"
+          "label": "查看商品信息优化"
         },
         {
           "id": "sell",
@@ -209,7 +209,7 @@
             "您的支付"
           ],
           "href": "/platform/sell",
-          "label": "查看销售"
+          "label": "查看 WooCommerce 结账"
         },
         {
           "id": "track",
@@ -221,7 +221,7 @@
             "多店铺"
           ],
           "href": "/platform/track",
-          "label": "查看追踪"
+          "label": "查看 Shopify 引荐流量追踪"
         }
       ]
     },
@@ -233,6 +233,10 @@
       "action": {
         "primary": "观看视频"
       }
+    },
+    "connections": {
+      "title": "您的商品目录，各个渠道的要求。",
+      "description": "连接现有商品目录，了解 ecentic 在各个 AI 渠道支持哪些功能。模拟、数据源和结账的可用情况各不相同。"
     },
     "channels": {
       "eyebrow": "05 · AI 渠道",

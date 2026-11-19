@@ -10273,7 +10273,7 @@
             "商品フィード"
           ],
           "href": "/platform/connect",
-          "label": "接続を見る"
+          "label": "カタログの接続方法を見る"
         },
         {
           "id": "simulate",
@@ -10285,19 +10285,19 @@
             "対応状況監査"
           ],
           "href": "/platform/simulate",
-          "label": "シミュレーションを見る"
+          "label": "商品比較を見る"
         },
         {
           "id": "fix",
           "title": "改善",
-          "body": "Applyでは既存の商品情報をもとにタイトルと説明文を生成・公開します。構造化データの公開とMerchant Center同期は別操作で行います。",
+          "body": "既存の商品情報をもとにタイトルと説明文を分かりやすく改善します。「適用」を選択すると、変更内容が生成・公開されます。構造化データとMerchant Centerとの同期は、別の操作で管理します。",
           "tags": [
             "商品情報",
             "構造化データ",
             "Merchant Center"
           ],
           "href": "/platform/fix",
-          "label": "改善を見る"
+          "label": "商品情報の改善を見る"
         },
         {
           "id": "sell",
@@ -10309,7 +10309,7 @@
             "利用中の決済方法"
           ],
           "href": "/platform/sell",
-          "label": "販売を見る"
+          "label": "WooCommerceの購入手続きを見る"
         },
         {
           "id": "track",
@@ -10321,7 +10321,7 @@
             "複数ストア"
           ],
           "href": "/platform/track",
-          "label": "計測を見る"
+          "label": "Shopifyの参照アクセス計測を見る"
         }
       ]
     },
@@ -10333,6 +10333,10 @@
       "action": {
         "primary": "動画を見る"
       }
+    },
+    "connections": {
+      "title": "カタログと、各チャネルの要件。",
+      "description": "既存のカタログを接続して、AIチャネルごとにecenticの対応範囲を確認できます。シミュレーション、フィード、購入手続きの対応状況は、それぞれ異なります。"
     },
     "channels": {
       "eyebrow": "05 · AIチャネル",

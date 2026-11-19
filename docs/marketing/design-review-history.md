@@ -437,3 +437,26 @@ claims and contact details are not part of the reusable rules.
 This section supersedes the separate repository presentation guide. Decks, previews and the
 template bundle were preserved outside the repository; shared website assets remain canonical.
 These presentation conventions do not change the website or dashboard defaults.
+
+## Independent homepage review — 19 November 2026
+
+The user shared https://slop.ooo/ecentic.ai, asked for an independent selection of useful fixes,
+and explicitly protected the header. They approved the selected changes with “make them”.
+The report's simulated reviewers are not endorsements or reviews by the named real experts.
+
+- Preserve the approved header, hero animation and five-stage illustrated walkthrough. Reported
+  overlapping captions and repeated chapter scenes were not reproducible in live desktop,
+  mobile or reduced-motion checks; do not redesign them from a captured report image alone.
+- Correct the dark walkthrough links' measured 2.77:1 text contrast with an opt-in inverse soft
+  Button tone. Give the five links descriptive destinations in all seven published locales.
+- Clarify that Apply generates and publishes listing changes. Structured data and Merchant
+  Center sync retain separate controls; do not imply an unimplemented preview step.
+- Replace repeated homepage source/channel explanations with one concise directory. Keep the
+  detailed channel timeline and matrix on the AI channels page, reached from that directory.
+- Move existing qualified DUA pilot evidence and the product film immediately after the
+  walkthrough. Keep publication gates, the combined AI/direct-visits metric, period, caveat
+  and source links. Remove the late duplicate pilot block.
+- Correct duplicated terminal brand suffixes in Open Graph and Twitter titles while preserving
+  page titles and explicit social-title overrides.
+
+Visual checks stay in subagent contexts; no screenshots are reattached to the main conversation.

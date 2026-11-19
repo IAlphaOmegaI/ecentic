@@ -23,8 +23,7 @@ import { CommerceLayer } from "./_components/enterprise/layer";
 import { Overview } from "./_components/enterprise/overview";
 import {
   Businesses,
-  Channels,
-  Integrations,
+  PilotProof,
   ProductFilm,
 } from "./_components/enterprise/sections";
 import { Programs } from "./_components/enterprise/shared";
@@ -36,11 +35,7 @@ export const generateMetadata = async () => {
 };
 
 export default async () => {
-  const {
-    enterpriseHome: copy,
-    enterpriseIntegrations,
-    pricing,
-  } = await getMessages();
+  const { enterpriseHome: copy, pricing } = await getMessages();
   return (
     <ClientMessages scope="home">
       <MarketingShell>
@@ -53,17 +48,13 @@ export default async () => {
         />
         <Overview copy={copy.hero} />
         <Journey copy={copy.loop} artwork={copy.hero.artwork} />
+        <PilotProof />
+        <ProductFilm copy={copy.film} />
         <Programs copy={copy.programs} />
         <SectionGutter />
         <CommerceLayer />
         <SectionGutter />
         <Businesses copy={copy.businesses} />
-        <ProductFilm copy={copy.film} />
-        <Channels copy={copy.channels} />
-        <Integrations
-          copy={copy.integration}
-          directory={enterpriseIntegrations}
-        />
         <SectionGutter />
         <Capabilities copy={copy.mechanisms} />
         <Findings copy={copy.proof} />

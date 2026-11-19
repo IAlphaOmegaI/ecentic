@@ -11,7 +11,6 @@ import type { AppConfig } from "next-intl";
 import { Suspense } from "react";
 import {
   CatalogFindings,
-  DuaEvidence,
   SimulationEvidence,
 } from "@/components/marketing/measured-evidence";
 import {
@@ -44,7 +43,6 @@ export const Findings = ({ copy }: Findings.Props) => (
       <SimulationEvidence collapsible />
       <CatalogFindings collapsible />
     </div>
-    <DuaEvidence />
   </MarketingBand>
 );
 

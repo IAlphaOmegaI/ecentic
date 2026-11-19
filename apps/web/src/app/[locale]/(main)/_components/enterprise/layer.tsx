@@ -4,12 +4,7 @@ import {
   CommerceFilePenIcon,
 } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import Image from "next/image";
 import { getMessages } from "next-intl/server";
-import {
-  ChannelComparison,
-  CommerceTimeline,
-} from "@/components/marketing/channels";
 import {
   MarketingBand,
   MarketingHeading,
@@ -17,140 +12,163 @@ import {
 } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { aiChannels } from "@/content/ai-channels";
+import { integrations } from "@/content/integrations";
 import { Link } from "@/i18n/navigation";
-import { CommerceDiagram } from "./commerce-diagram";
 
-const StackMark = ({ index }: { index: number }) => {
-  switch (index) {
-    case 0:
-      return (
-        <ProviderLogo provider="shopify" className="h-8 w-10" decorative />
-      );
-    case 1:
-      return (
-        <ProviderLogo provider="woocommerce" className="h-8 w-16" decorative />
-      );
-    case 2:
-      return (
-        <CommerceFilePenIcon aria-hidden className="size-8 text-primary" />
-      );
-    case 3:
-      return <CommerceCode_3Icon aria-hidden className="size-8 text-primary" />;
-    default:
-      return (
-        <ProviderLogo provider="googleMerchant" className="size-8" decorative />
-      );
-  }
-};
+const sourceKeys = [
+  "shopify",
+  "woocommerce",
+  "productFeeds",
+  "csv",
+  "adobe",
+  "wix",
+] as const;
 
 export const CommerceLayer = async () => {
-  const { enterpriseLayer: copy, enterpriseChannels: channels } =
-    await getMessages();
+  const {
+    enterpriseHome: home,
+    enterpriseLayer: copy,
+    enterpriseIntegrations: directory,
+  } = await getMessages();
+  const sources = sourceKeys.flatMap((key) => {
+    const source = integrations.find((entry) => entry.key === key);
+    return source ? [source] : [];
+  });
+
   return (
-    <>
-      <MarketingBand id="how-it-fits" className="enterprise-layer">
-        <div className="marketing-cell relative min-w-0 px-7 py-16 max-sm:px-4 max-sm:py-12">
-          <MarketingHeading
-            className="p-0 max-sm:p-0"
-            eyebrow={copy.eyebrow}
-            title={copy.title}
-            description={copy.description}
-          />
-          <CommerceDiagram label={copy.diagram}>
-            <div className="relative grid gap-10 lg:grid-cols-[minmax(0,1fr)_18rem_minmax(0,1fr)] lg:items-center lg:gap-12">
-              <div className="min-w-0 pl-8 lg:flex lg:w-fit lg:max-w-full lg:flex-col lg:self-stretch lg:justify-self-center lg:pl-0">
-                <h3 className="mb-6 font-heading text-2xl">{copy.stack}</h3>
-                <ul className="grid gap-6 lg:flex-1 lg:content-center">
-                  {copy.inputs.map((input, index) => (
-                    <li
-                      key={input}
-                      data-diagram-port="input"
-                      className="flex min-h-10 items-center gap-4"
-                    >
-                      <span className="flex h-10 w-16 shrink-0 items-center">
-                        <StackMark index={index} />
-                      </span>
-                      <span className="text-base text-foreground">{input}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div
-                data-diagram-hub
-                className="relative flex min-h-96 flex-col items-center justify-center px-8 py-10 text-center before:pointer-events-none before:absolute before:inset-x-0 before:inset-y-0 before:bg-linear-to-r before:from-transparent before:via-primary/20 before:to-transparent lg:min-h-110 lg:before:-inset-x-12 before:[mask-image:linear-gradient(180deg,transparent,black_18%,black_82%,transparent)]"
-              >
-                <Image
-                  src="/images/trademark.svg"
-                  alt="ecentic"
-                  width={180}
-                  height={46}
-                  className="relative h-auto w-44"
-                />
-                <p className="relative mt-4 text-primary-text text-sm">
-                  {copy.layer}
-                </p>
-                <ol className="relative mt-8 w-full max-w-48 divide-y divide-primary/15">
-                  {copy.stages.map((stage) => (
-                    <li
-                      key={stage}
-                      className="py-4 font-heading text-2xl text-foreground-rich"
-                    >
-                      {stage}
-                    </li>
-                  ))}
-                </ol>
-              </div>
-              <div className="min-w-0 pl-8 lg:flex lg:w-fit lg:max-w-full lg:flex-col lg:self-stretch lg:justify-self-center lg:pl-0">
-                <h3 className="mb-6 font-heading text-2xl">{copy.channels}</h3>
-                <ul className="grid gap-4 lg:flex-1 lg:content-center">
-                  {aiChannels.map((channel) => (
-                    <li
-                      key={channel.key}
-                      data-diagram-port="output"
-                      data-pending={channel.status === "soon"}
-                      className="flex min-h-12 items-center gap-4"
-                    >
-                      <span className="flex h-10 w-16 shrink-0 items-center">
-                        <ProviderLogo
-                          provider={channel.key}
-                          className="size-8"
-                          decorative
+    <MarketingBand id="how-it-fits" className="enterprise-connections">
+      <MarketingHeading
+        title={home.connections.title}
+        description={home.connections.description}
+      />
+      <div
+        className="marketing-grid marketing-section-grid grid border-accent-foreground border-t md:grid-cols-2"
+        data-columns="2"
+      >
+        <section
+          id="integrations"
+          aria-labelledby="homepage-sources-title"
+          className="relative flex min-w-0 flex-col bg-background-dimmed"
+        >
+          <h3
+            id="homepage-sources-title"
+            className="px-7 py-6 text-2xl max-sm:px-4"
+          >
+            {copy.stack}
+          </h3>
+          <ul className="flex-1 divide-y divide-accent-foreground border-accent-foreground border-t">
+            {sources.map((source) => {
+              const Icon =
+                source.key === "productFeeds"
+                  ? CommerceFilePenIcon
+                  : source.key === "csv"
+                    ? CommerceCode_3Icon
+                    : null;
+              return (
+                <li key={source.key}>
+                  <Link
+                    href={source.href}
+                    className="group flex min-w-0 items-start gap-4 px-7 py-5 transition-colors hover:bg-background max-sm:gap-3 max-sm:px-4"
+                  >
+                    <span className="flex size-9 shrink-0 items-center justify-center">
+                      {Icon ? (
+                        <Icon
+                          aria-hidden
+                          className="size-8 text-primary-text"
                         />
-                      </span>
-                      <div className="min-w-0 space-y-1">
-                        <p className="font-medium text-base text-foreground-rich">
-                          {channel.key === "google"
-                            ? copy.google
-                            : channels.names[channel.key]}
-                        </p>
-                        <MarketingStatus status={channel.status}>
-                          {channels.statuses[channel.status]}
+                      ) : (
+                        <ProviderLogo
+                          provider={source.key}
+                          decorative
+                          className="max-h-9 w-9"
+                        />
+                      )}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                        <span className="font-medium text-base text-foreground-rich group-hover:text-primary-text">
+                          {directory.entries[source.key].name}
+                        </span>
+                        <MarketingStatus status={source.status}>
+                          {directory.statuses[source.status]}
                         </MarketingStatus>
                       </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </CommerceDiagram>
-          <div className="mt-10">
-            <Button render={<Link href="/ai-channels" />}>
+                      <p className="mt-1 text-foreground-dimmed text-sm leading-relaxed">
+                        {directory.entries[source.key].description}
+                      </p>
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+          <div className="border-accent-foreground border-t px-7 py-5 max-sm:px-4">
+            <Button
+              variant="soft"
+              color="neutral"
+              render={<Link href="/integrations" />}
+            >
+              {home.integration.links[0]?.label}
+              <ArrowRightIcon aria-hidden className="size-4" />
+            </Button>
+          </div>
+        </section>
+        <section
+          id="channels"
+          aria-labelledby="homepage-channels-title"
+          className="relative flex min-w-0 flex-col border-accent-foreground border-t bg-background md:border-t-0 md:border-l"
+        >
+          <h3
+            id="homepage-channels-title"
+            className="px-7 py-6 text-2xl max-sm:px-4"
+          >
+            {copy.channels}
+          </h3>
+          <ul className="flex-1 divide-y divide-accent-foreground border-accent-foreground border-t">
+            {home.channels.items.map((item) => {
+              const channel = aiChannels.find((entry) => entry.key === item.id);
+              if (!channel) return null;
+              return (
+                <li key={channel.key}>
+                  <Link
+                    href={channel.href}
+                    className="group flex min-w-0 items-start gap-4 px-7 py-5 transition-colors hover:bg-background-dimmed max-sm:gap-3 max-sm:px-4"
+                  >
+                    <ProviderLogo
+                      provider={channel.key}
+                      decorative
+                      className="size-9 shrink-0"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                        <span className="font-medium text-base text-foreground-rich group-hover:text-primary-text">
+                          {item.title}
+                        </span>
+                        <MarketingStatus status={channel.status}>
+                          {item.statusLabel}
+                        </MarketingStatus>
+                      </div>
+                      <p className="mt-1 text-foreground-dimmed text-sm leading-relaxed">
+                        {item.body}
+                      </p>
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+          <div className="border-accent-foreground border-t px-7 py-5 max-sm:px-4">
+            <Button
+              variant="soft"
+              color="neutral"
+              render={<Link href="/ai-channels" />}
+            >
               {copy.action}
               <ArrowRightIcon aria-hidden className="size-4" />
             </Button>
           </div>
-        </div>
-      </MarketingBand>
-      <MarketingBand className="enterprise-timeline [&>.marketing-rail>.marketing-guides]:[mask-image:linear-gradient(180deg,black,transparent_96px)]">
-        <div className="marketing-cell relative min-w-0 px-7 py-16 max-sm:px-4 max-sm:py-12">
-          <CommerceTimeline />
-        </div>
-      </MarketingBand>
-      <MarketingBand className="enterprise-comparison [&>.marketing-rail>.marketing-guides]:hidden">
-        <div className="marketing-cell relative min-w-0 px-7 py-16 max-sm:px-4 max-sm:py-12">
-          <ChannelComparison />
-        </div>
-      </MarketingBand>
-    </>
+        </section>
+      </div>
+    </MarketingBand>
   );
 };

@@ -71,6 +71,18 @@ above them. An arc of provider logos alone does not replace those cards. Remove 
 tag strips and accidental edge clipping.
 Dense catalog findings belong behind supporting disclosure. Keep the original proof media.
 
+The 19 November review keeps the approved header, hero and five-stage walkthrough. Follow the
+walkthrough with compact, publication-gated DUA evidence and the existing product film so readers
+can inspect evidence before the longer capability sections. Preserve the traffic metric's scope,
+period, attribution caveat and source links; do not repeat the same pilot result later.
+Use one homepage directory for catalog sources and AI channels, with genuine marks, current
+statuses and links to their detailed pages. The channel timeline and comparison matrix remain
+on the AI channels page instead of repeating that explanation on the homepage. This directory
+supersedes the separate homepage channel grid and integrations accordion described above.
+Dark walkthrough links use the package soft Button's inverse tone for readable text and focus.
+Give each link a descriptive destination label and keep Apply's generation/publication behavior
+explicit in the Fix paragraph.
+
 ## Platform overview and stage pages
 
 The overview's five-stage explanation can be a dark connected workbench. Each stage has its own

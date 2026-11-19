@@ -10273,7 +10273,7 @@
             "Product feeds"
           ],
           "href": "/platform/connect",
-          "label": "Explore Connect"
+          "label": "See catalog connections"
         },
         {
           "id": "simulate",
@@ -10285,19 +10285,19 @@
             "Readiness audit"
           ],
           "href": "/platform/simulate",
-          "label": "Explore Simulate"
+          "label": "See product comparisons"
         },
         {
           "id": "fix",
           "title": "Fix",
-          "body": "Apply generates and publishes titles and descriptions using existing product facts. Publish structured data and sync Merchant Center through separate controls.",
+          "body": "Make titles and descriptions clearer using your existing product facts. Select Apply to generate and publish the changes. Structured data and Merchant Center sync have separate controls.",
           "tags": [
             "Listings",
             "Structured data",
             "Merchant Center"
           ],
           "href": "/platform/fix",
-          "label": "Explore Fix"
+          "label": "See listing fixes"
         },
         {
           "id": "sell",
@@ -10309,7 +10309,7 @@
             "Your payments"
           ],
           "href": "/platform/sell",
-          "label": "Explore Sell"
+          "label": "See WooCommerce checkout"
         },
         {
           "id": "track",
@@ -10321,7 +10321,7 @@
             "Multiple stores"
           ],
           "href": "/platform/track",
-          "label": "Explore Track"
+          "label": "See Shopify referral tracking"
         }
       ]
     },
@@ -10333,6 +10333,10 @@
       "action": {
         "primary": "Watch the film"
       }
+    },
+    "connections": {
+      "title": "Your catalog. Every channel’s requirements.",
+      "description": "Connect your existing catalog, then check what ecentic supports for each AI channel. Simulations, feeds and checkout have different availability."
     },
     "channels": {
       "eyebrow": "05 · AI channels",

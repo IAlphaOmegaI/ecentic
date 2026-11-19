@@ -173,7 +173,7 @@
             "Feed prodotto"
           ],
           "href": "/platform/connect",
-          "label": "Scopri come collegare il catalogo"
+          "label": "Vedi come collegare il catalogo"
         },
         {
           "id": "simulate",
@@ -185,19 +185,19 @@
             "Audit di preparazione"
           ],
           "href": "/platform/simulate",
-          "label": "Scopri le simulazioni"
+          "label": "Vedi i confronti tra prodotti"
         },
         {
           "id": "fix",
           "title": "Correggi",
-          "body": "Apply genera e pubblica titoli e descrizioni usando le informazioni prodotto esistenti. Pubblica dati strutturati e sincronizza Merchant Center tramite controlli separati.",
+          "body": "Rendi più chiari titoli e descrizioni usando le informazioni sui prodotti già disponibili. Seleziona «Applica» per generare e pubblicare le modifiche. I dati strutturati e la sincronizzazione con Merchant Center si gestiscono con comandi separati.",
           "tags": [
             "Schede prodotto",
             "Dati strutturati",
             "Merchant Center"
           ],
           "href": "/platform/fix",
-          "label": "Scopri come correggere le schede"
+          "label": "Vedi le correzioni delle schede"
         },
         {
           "id": "sell",
@@ -209,7 +209,7 @@
             "I tuoi pagamenti"
           ],
           "href": "/platform/sell",
-          "label": "Scopri come vendere tramite AI"
+          "label": "Vedi il checkout di WooCommerce"
         },
         {
           "id": "track",
@@ -221,7 +221,7 @@
             "Store multipli"
           ],
           "href": "/platform/track",
-          "label": "Scopri il monitoraggio"
+          "label": "Vedi il monitoraggio dei referral su Shopify"
         }
       ]
     },
@@ -233,6 +233,10 @@
       "action": {
         "primary": "Guarda il video"
       }
+    },
+    "connections": {
+      "title": "Il tuo catalogo. I requisiti di ogni canale.",
+      "description": "Collega il catalogo che già usi e scopri cosa supporta ecentic su ciascun canale AI. La disponibilità di simulazioni, feed e checkout varia in base al canale."
     },
     "channels": {
       "eyebrow": "05 · Canali AI",

@@ -669,6 +669,14 @@ Evidence components distinguish public studies, aggregate facts, live values and
 methodology can be disclosed in an accordion. Do not invent KPI definitions, remove material
 qualifications or use a dramatic graphic to blur simulation and observed traffic.
 
+The 19 November homepage review retains the approved header, hero and five-stage illustrated
+walkthrough. Compact, publication-gated DUA evidence and the original product film follow the
+walkthrough. The pilot appears once, with its combined AI/direct-visits metric, measurement
+period, attribution caveat and sources intact. One source/channel directory replaces the
+homepage's repeated connection diagram, timeline, matrix, channel grid and integration accordion;
+the detailed channel timeline and matrix remain on the AI channels page. Use descriptive
+walkthrough links with the package soft Button's inverse tone against the dark surface.
+
 ## 12. Motion and accessibility
 
 ### Purpose and implementation

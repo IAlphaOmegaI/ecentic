@@ -43,6 +43,7 @@ import { Button, buttonVariants } from '@zenncore/web';
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `variant` | `"default" \| "soft" \| "outline" \| "ghost" \| "flat"` | `"default"` | Button style |
+| `tone` | `"default" \| "inverse"` | `"default"` | Light text and focus ring for soft buttons on dark surfaces; other variants are unchanged |
 | `color` | Color options | `"primary"` | Button color |
 | `size` | `"icon"` | - | Icon-only size |
 | `disabled` | `boolean` | `false` | Disabled state |
@@ -73,6 +74,16 @@ import { Button, buttonVariants } from '@zenncore/web';
   <PlusIcon className="size-4" />
 </Button>
 ```
+
+### On a dark surface
+
+```tsx
+<Button variant="soft" tone="inverse">Explore the platform</Button>
+```
+
+The inverse tone keeps the selected color's soft fill and hover treatment. It
+uses the shared inverse text and focus-ring tokens instead of text colors
+designed for a light canvas. Opt in only when the surrounding surface is dark.
 
 ### Using buttonVariants (CVA)
 

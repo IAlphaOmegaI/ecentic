@@ -151,6 +151,7 @@ export namespace CatalogFindings {
 
 export const DuaEvidence = async ({
   id = "dua-pilot-evidence",
+  compact = false,
 }: DuaEvidence.Props) => {
   if (!canPublishEvidence(duaEvidence.status)) return null;
 
@@ -162,6 +163,64 @@ export const DuaEvidence = async ({
     percentage: String(duaEvidence.changePercent),
   });
   const source = copy.sources[duaEvidence.sourceKey];
+
+  if (compact) {
+    return (
+      <section
+        id={id}
+        aria-labelledby={`${id}-title`}
+        className="marketing-grid marketing-section-grid relative grid md:grid-cols-3"
+        data-columns="3"
+      >
+        <div className="relative flex min-w-0 flex-col items-start gap-4 px-7 py-7 max-sm:px-4">
+          <Image
+            src={DuaLogo}
+            alt="DUA Flavours"
+            className="h-10 w-auto max-w-full object-contain object-left"
+          />
+          <h3 id={`${id}-title`} className="text-2xl">
+            {copy.dua.title}
+          </h3>
+          <p className="flex items-center gap-2 text-foreground-dimmed text-sm">
+            <CheckIcon aria-hidden className="size-4 shrink-0 text-success" />
+            {copy.dua.permission}
+          </p>
+          <Button
+            variant="soft"
+            color="neutral"
+            render={<Link href={duaEvidence.href} />}
+          >
+            {copy.dua.action.primary}
+            <ArrowRightIcon aria-hidden className="size-4" />
+          </Button>
+        </div>
+        <div className="relative min-w-0 border-accent-foreground border-t bg-background-dimmed px-7 py-7 max-sm:px-4 md:col-span-2 md:border-t-0 md:border-l">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+            <p className="whitespace-nowrap font-body font-medium text-6xl text-primary proportional-nums leading-none tracking-tighter sm:text-7xl">
+              {figure}
+            </p>
+            <div className="min-w-0 flex-1 basis-48">
+              <p className="font-medium text-foreground text-lg leading-snug">
+                {copy.dua.metric}
+              </p>
+              <p className="mt-2 text-foreground-dimmed text-sm">
+                {copy.dua.period}
+              </p>
+            </div>
+          </div>
+          <p className="mt-5 text-foreground text-sm leading-relaxed">
+            {copy.dua.note}
+          </p>
+          <Link
+            href={evidenceSources.duaPilot.href}
+            className="mt-3 inline-block text-foreground-dimmed text-xs leading-relaxed underline decoration-accent-dimmed underline-offset-4 hover:text-primary-text"
+          >
+            {source}
+          </Link>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -214,7 +273,7 @@ export const DuaEvidence = async ({
 };
 
 export namespace DuaEvidence {
-  export type Props = { id?: string };
+  export type Props = { id?: string; compact?: boolean };
 }
 
 /** No primary market statistic is verified yet, including in review mode. */

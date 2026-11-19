@@ -173,7 +173,7 @@
             "Produkt-Feeds"
           ],
           "href": "/platform/connect",
-          "label": "Connect entdecken"
+          "label": "Kataloganbindungen ansehen"
         },
         {
           "id": "simulate",
@@ -185,19 +185,19 @@
             "Bereitschaftsprüfung"
           ],
           "href": "/platform/simulate",
-          "label": "Simulate entdecken"
+          "label": "Produktvergleiche ansehen"
         },
         {
           "id": "fix",
           "title": "Korrigieren",
-          "body": "Apply erstellt und veröffentlicht Titel und Beschreibungen auf Basis bestehender Produktfakten. Strukturierte Daten veröffentlichen und Merchant Center synchronisieren Sie über separate Bedienelemente.",
+          "body": "Formulieren Sie Titel und Beschreibungen anhand Ihrer vorhandenen Produktinformationen klarer. Wählen Sie „Anwenden“, um die Änderungen zu erstellen und zu veröffentlichen. Strukturierte Daten und die Synchronisierung mit Merchant Center steuern Sie separat.",
           "tags": [
             "Produktangebote",
             "Strukturierte Daten",
             "Merchant Center"
           ],
           "href": "/platform/fix",
-          "label": "Fix entdecken"
+          "label": "Korrekturen an Angeboten ansehen"
         },
         {
           "id": "sell",
@@ -209,7 +209,7 @@
             "Ihre Zahlungsabwicklung"
           ],
           "href": "/platform/sell",
-          "label": "Sell entdecken"
+          "label": "WooCommerce-Checkout ansehen"
         },
         {
           "id": "track",
@@ -221,7 +221,7 @@
             "Mehrere Shops"
           ],
           "href": "/platform/track",
-          "label": "Track entdecken"
+          "label": "Verweis-Tracking in Shopify ansehen"
         }
       ]
     },
@@ -233,6 +233,10 @@
       "action": {
         "primary": "Film ansehen"
       }
+    },
+    "connections": {
+      "title": "Ihr Katalog. Die Anforderungen jedes Kanals.",
+      "description": "Verbinden Sie Ihren bestehenden Katalog und prüfen Sie, was ecentic für den jeweiligen KI-Kanal unterstützt. Die Verfügbarkeit von Simulationen, Feeds und Checkout unterscheidet sich je nach Kanal."
     },
     "channels": {
       "eyebrow": "05 · KI-Kanäle",
