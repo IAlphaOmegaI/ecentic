@@ -38,6 +38,11 @@ From the repository root, run:
 bun run test:outbound:smoke
 ```
 
+The root command first builds Outbound's shared workspace dependencies, so it
+works after a fresh `bun install` without existing `dist` outputs. It does not
+build the Next.js app. Running `test:smoke` directly inside `apps/outbound` assumes
+those shared dependencies have already been built.
+
 This runs the browser-to-server action transport contract, conversation editor,
 conversation reading/stages/drafts, campaign criteria and filters, review and hold
 rules, staff authorization, and credential success/error paths. Provider replies,
