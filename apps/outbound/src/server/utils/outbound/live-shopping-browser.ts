@@ -69,7 +69,15 @@ await page.route("**/*", async (route) => {
 });
 if (typeof page.routeWebSocket === "function") await page.routeWebSocket(/.*/, (socket) => socket.close());
 await page.setViewportSize({ width: 1365, height: 900 });
-const response = await page.goto(target, { waitUntil: "domcontentloaded", timeout: 18000 });
+const navigationDeadline = Date.now() + 18000;
+const navigationFailures = [];
+const navigate = () => page.goto(target, { waitUntil: "domcontentloaded", timeout: Math.max(1, navigationDeadline - Date.now()) });
+const response = await navigate().catch(async (error) => {
+  if (!String(error).includes("net::ERR_NETWORK_CHANGED") || Date.now() + 1500 >= navigationDeadline) throw error;
+  navigationFailures.push("net::ERR_NETWORK_CHANGED");
+  await page.waitForTimeout(300);
+  return navigate();
+});
 await page.waitForTimeout(1200);
 const observed = await page.evaluate(() => ({
   title: document.title.slice(0, 1000),
@@ -80,7 +88,7 @@ const observed = await page.evaluate(() => ({
   locale: navigator.language.slice(0, 100)
 }));
 const screenshot = (await page.screenshot({ type: "jpeg", quality: 35, fullPage: false, timeout: 5000 })).toString("base64");
-console.log(JSON.stringify({ ...observed, url: page.url(), status: response?.status() || 0, checkedAt: new Date().toISOString(), screenshot }));
+console.log(JSON.stringify({ ...observed, url: page.url(), status: response?.status() || 0, checkedAt: new Date().toISOString(), navigationFailures, screenshot }));
 `;
 
 const normalize = (value: string) =>

@@ -212,6 +212,15 @@ const answerLinks = (
   ].slice(0, 50);
 };
 
+// AI Mode embeds product photos as base64 HTML inside its Markdown. Keep the
+// complete original in answer/raw, but do not let image bytes crowd exact text
+// quotes out of the bounded source excerpt sent to the assessment model.
+const sourceText = (answer: string) =>
+  answer
+    .replace(/<img\b[^>]*\bsrc=["']data:image\/[^"']+["'][^>]*>/gi, "")
+    .replace(/!\[[^\]]*\]\(data:image\/[^)]+\)/gi, "")
+    .slice(0, 18000);
+
 export const pollQuery = async (
   {
     apiKey,
@@ -366,7 +375,7 @@ export const pollQuery = async (
       capture: "provider",
       url: observedUrl,
       checkedAt: new Date(executed).toISOString(),
-      content: answer.slice(0, 18000),
+      content: sourceText(answer),
       artifact: `sha256:${sourceRaw.sha256}`,
     },
     links: answerLinks(payload.data, answer),

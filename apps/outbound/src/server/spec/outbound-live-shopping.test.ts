@@ -255,6 +255,28 @@ describe("live shopper query adapters", () => {
     expect(observed.success).toBe(true);
     expect(pages).toEqual([]);
   });
+
+  test("embedded image bytes stay in raw capture without crowding out quoted answer text", async () => {
+    const markdown = `Trail Tote $40. <img src="data:image/png;base64,${"a".repeat(18000)}" /> Carry Tote $35.`;
+    const checked = value(
+      await Shopping.pollQuery(
+        { apiKey, job: job() },
+        {
+          now,
+          request: async () =>
+            provider({
+              ...completed(),
+              result: { ...completed().result, result_markdown: markdown },
+            }),
+        },
+      ),
+    );
+    if (checked.status !== "captured") throw new Error("Expected capture");
+    expect(checked.capture.answer).toBe(markdown);
+    expect(checked.capture.raw[0]?.body).toContain("data:image/png;base64");
+    expect(checked.capture.source.content).toContain("Carry Tote $35.");
+    expect(checked.capture.source.content).not.toContain("data:image");
+  });
 });
 
 const rendered = (url: string) => ({
@@ -520,5 +542,41 @@ describe("rendered browser research", () => {
       text: "Trail Tote Large $40.00 USD",
       screenshot: Buffer.from("fixture screenshot").toString("base64"),
     });
+  });
+
+  test("a known browser network change retries only that failed navigation once", async () => {
+    const attempts: string[] = [];
+    const output: string[] = [];
+    const AsyncFunction = Object.getPrototypeOf(async () => {}).constructor;
+    const execute = new AsyncFunction(
+      "page",
+      "console",
+      browserInspectionCode(product.url),
+    );
+    await execute(
+      {
+        route: async () => undefined,
+        setViewportSize: async () => undefined,
+        goto: async (url: string) => {
+          attempts.push(url);
+          if (attempts.length === 1)
+            throw new Error("net::ERR_NETWORK_CHANGED");
+          return { status: () => 200 };
+        },
+        waitForTimeout: async () => undefined,
+        evaluate: async () => rendered(product.url),
+        screenshot: async () => Buffer.from("fixture screenshot"),
+        url: () => product.url,
+      },
+      {
+        log: (text: string) => {
+          output.push(text);
+        },
+      },
+    );
+    expect(attempts).toEqual([product.url, product.url]);
+    expect(JSON.parse(output[0] ?? "").navigationFailures).toEqual([
+      "net::ERR_NETWORK_CHANGED",
+    ]);
   });
 });
