@@ -1,5 +1,6 @@
 import "server-only";
 
+import { randomUUID } from "node:crypto";
 import type { Result } from "@zenncore/utils";
 import { z } from "zod";
 import { normalizeDomain, prospectSchema, splitList } from "@/lib/outbound";
@@ -9,15 +10,22 @@ import {
   type ContactAttempt,
   contactAttemptsSchema,
 } from "@/lib/outbound-automation";
+import { shoppingResearchSchema } from "@/lib/outbound-shopping-research";
 import { ConflictError, ValidationError } from "@/server/utils/error";
 import * as Qualification from "@/server/utils/outbound/automation-qualification";
 import type { CompanyCandidate } from "@/server/utils/outbound/company-discovery";
 import * as Draft from "@/server/utils/outbound/draft";
+import * as Capture from "@/server/utils/outbound/live-shopping";
 import * as MX from "@/server/utils/outbound/mx";
 import { productCategoryCorrection } from "@/server/utils/outbound/product-category";
 import * as Providers from "@/server/utils/outbound/providers";
+import * as ShoppingAssessment from "@/server/utils/outbound/shopping-assessment";
+import { researchPolicyHash } from "@/server/utils/outbound/shopping-research";
 import type { AutomationClaim } from "./automation";
 import * as Campaigns from "./campaigns";
+import * as LeadResearch from "./lead-research";
+import * as Credentials from "./provider-credentials";
+import * as ResearchReadiness from "./research-readiness";
 import * as Store from "./store";
 
 export type Transition = {
@@ -154,11 +162,44 @@ const currentProspect = async (claimed: AutomationClaim) => {
     row.campaignId !== claimed.campaign.id ||
     row.revision !== revision ||
     row.sentStep ||
-    !["candidate", "draft", "held"].includes(row.status) ||
+    !["candidate", "draft"].includes(row.status) ||
+    row.holdReason ||
     row.details.automationEvidenceId !== claimed.job.id
   )
     throw new ConflictError("The automation prospect changed.");
   return row;
+};
+const shoppingEvidence = (claimed: AutomationClaim) => {
+  const answer = Capture.aiCaptureSchema.parse(claimed.state["shoppingAnswer"]);
+  const browser = Capture.browserResearchSchema.parse(
+    claimed.state["shoppingBrowser"],
+  );
+  if (
+    browser.status !== "captured" ||
+    claimed.state["shoppingPolicyHash"] !== researchPolicyHash(claimed.playbook)
+  )
+    throw new ValidationError(
+      "The shopping research no longer matches the Playbook.",
+    );
+  return { answer, browser };
+};
+const shoppingReceipt = (claimed: AutomationClaim) => {
+  const receipt = shoppingResearchSchema.parse(
+    claimed.state["shoppingReceipt"],
+  );
+  const problem = ShoppingAssessment.validateAutomaticResearch(
+    shoppingEvidence(claimed),
+    receipt,
+    claimed.playbook.verificationDays,
+  );
+  if (problem) throw new ValidationError(problem);
+  return receipt;
+};
+const requiredKey = async (provider: "scrapellm" | "firecrawl") => {
+  const key = value(await Credentials.resolveKey(provider));
+  if (!key)
+    throw new ValidationError("Live shopping research is not configured.");
+  return key;
 };
 
 /** Each invocation owns one durable, leased stage. Provider results are saved before mutation stages run. */
@@ -168,6 +209,12 @@ export const execute = async (
 ): Promise<Transition> => {
   const { state, campaign, company, playbook, input } = claimed;
   const actor = input.actor;
+  if (
+    playbook.requireShoppingEvidence &&
+    !state["shoppingReceipt"] &&
+    !value(await ResearchReadiness.getStatus(playbook)).ready
+  )
+    return { stage: state.stage, delayMs: 60_000 };
   switch (state.stage) {
     case "companyFacts": {
       value(
@@ -228,18 +275,11 @@ export const execute = async (
               },
             }
           : qualification;
-      if (
-        qualification.status === "qualified" &&
-        playbook.requireShoppingEvidence
-      )
-        return {
-          stage: "qualify",
-          reason: "shopping-research-required",
-          output: { qualification: qualified },
-        };
       return qualification.status === "qualified"
         ? {
-            stage: "findContacts",
+            stage: playbook.requireShoppingEvidence
+              ? "researchQuery"
+              : "findContacts",
             output: {
               qualification: qualified,
               ...(correction
@@ -273,7 +313,157 @@ export const execute = async (
             output: { qualification },
           };
     }
+    case "researchQuery": {
+      const qualification = qualificationSchema.parse(state["qualification"]);
+      const product = z
+        .object({
+          product: z.string().min(1),
+          productUrl: z.url(),
+          productCategory: z.string().min(1),
+        })
+        .parse(qualification.details);
+      const query = value(
+        Capture.prepareQuery({
+          product: { name: product.product, url: product.productUrl },
+          category: product.productCategory,
+          country: company.country ?? "US",
+          surface: "google_ai_mode",
+        }),
+      );
+      return {
+        stage: "startShoppingQuery",
+        output: {
+          shoppingQuery: query,
+          shoppingPolicyHash: researchPolicyHash(playbook),
+          shoppingRequestId: randomUUID(),
+          shoppingPolls: 0,
+        },
+      };
+    }
+    case "startShoppingQuery": {
+      value(
+        await Campaigns.researchContext({
+          campaign: campaign.id,
+          company: company.id,
+        }),
+      );
+      const query = Capture.preparedQuerySchema.parse(state["shoppingQuery"]);
+      if (
+        query.product.url !==
+          qualificationSchema.parse(state["qualification"]).details
+            .productUrl ||
+        state["shoppingPolicyHash"] !== researchPolicyHash(playbook)
+      )
+        throw new ConflictError("The research plan changed before submission.");
+      const job = value(
+        await Capture.startQuery({
+          apiKey: await requiredKey("scrapellm"),
+          query,
+          deadline,
+        }),
+      );
+      return {
+        stage: "pollShoppingQuery",
+        output: { shoppingJob: job },
+        delayMs: 30_000,
+      };
+    }
+    case "pollShoppingQuery": {
+      const job = Capture.aiJobSchema.parse(state["shoppingJob"]);
+      const polls = z
+        .number()
+        .int()
+        .nonnegative()
+        .parse(state["shoppingPolls"]);
+      if (polls >= 40 || !fresh(job.submittedAt, 1))
+        return {
+          stage: "pollShoppingQuery",
+          reason: "shopping-research-expired",
+        };
+      const response = await Capture.pollQuery({
+        apiKey: await requiredKey("scrapellm"),
+        job,
+        deadline,
+      });
+      if (
+        !response.success &&
+        ["unavailable", "rate-limit"].includes(response.error.code)
+      )
+        return {
+          stage: "pollShoppingQuery",
+          delayMs: Math.min(
+            300_000,
+            Math.max(60_000, (response.error.retryAfterSeconds ?? 60) * 1000),
+          ),
+          output: {
+            shoppingPolls: polls + 1,
+            shoppingPollError: response.error.code,
+          },
+        };
+      const result = value(response);
+      return result.status === "pending"
+        ? {
+            stage: "pollShoppingQuery",
+            delayMs: 60_000,
+            output: { shoppingPolls: polls + 1 },
+          }
+        : {
+            stage: "browseShopping",
+            output: {
+              shoppingAnswer: result.capture,
+              shoppingPolls: polls + 1,
+            },
+          };
+    }
+    case "browseShopping": {
+      value(
+        await Campaigns.researchContext({
+          campaign: campaign.id,
+          company: company.id,
+        }),
+      );
+      const answer = Capture.aiCaptureSchema.parse(state["shoppingAnswer"]);
+      const browser = value(
+        await Capture.inspectPages({
+          apiKey: await requiredKey("firecrawl"),
+          product: answer.job.query.product,
+          answer,
+          country: answer.job.query.country,
+          deadline,
+        }),
+      );
+      return browser.status === "captured"
+        ? { stage: "assessShopping", output: { shoppingBrowser: browser } }
+        : {
+            stage: "browseShopping",
+            reason: "shopping-research-held",
+            output: { shoppingBrowser: browser },
+          };
+    }
+    case "assessShopping": {
+      const assessment = value(
+        await ShoppingAssessment.assess({
+          ...shoppingEvidence(claimed),
+          playbook,
+          deadline,
+        }),
+      );
+      return assessment.status === "researched"
+        ? {
+            stage: "findContacts",
+            output: {
+              shoppingReceipt: assessment.receipt,
+              shoppingAssessment: assessment,
+            },
+          }
+        : {
+            stage: "assessShopping",
+            reason: "shopping-research-held",
+            output: { shoppingAssessment: assessment },
+          };
+    }
     case "findContacts": {
+      if (playbook.requireShoppingEvidence) shoppingReceipt(claimed);
       value(
         await Campaigns.researchContext({
           campaign: campaign.id,
@@ -624,10 +814,34 @@ export const execute = async (
         ),
       );
       return {
-        stage: "draft",
+        stage: playbook.requireShoppingEvidence ? "applyShopping" : "draft",
         output: {
           prospectId: saved.prospect,
           prospectRevision: saved.revision,
+        },
+      };
+    }
+    case "applyShopping": {
+      const row = await currentProspect(claimed);
+      const receipt = shoppingReceipt(claimed);
+      const saved = value(
+        await LeadResearch.saveAutomaticAndApply(
+          actor,
+          {
+            requestId: z.string().uuid().parse(state["shoppingRequestId"]),
+            prospectId: row.id,
+            expectedRevision: row.revision,
+            expectedPlaybookRevision: input.playbookRevision,
+            receipt,
+          },
+          { jobId: claimed.job.id, leaseToken: claimed.state.lease.token },
+        ),
+      );
+      return {
+        stage: "draft",
+        output: {
+          prospectRevision: saved.revision,
+          shoppingResearchId: saved.researchId,
         },
       };
     }

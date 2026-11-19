@@ -22,6 +22,7 @@ import { IntegrationError } from "@/server/utils/outbound/http";
 import { productCategoryCorrection } from "@/server/utils/outbound/product-category";
 import { repository } from "@/server/utils/repository";
 import * as Steps from "./automation-steps";
+import * as ResearchReadiness from "./research-readiness";
 import * as Store from "./store";
 
 const Jobs = repository(schema.outboundIntegrationJob);
@@ -201,7 +202,7 @@ const current = async (
   return { policy, campaign, company, reason };
 };
 
-const claim = (campaignId?: string, jobId?: string) =>
+const claim = (campaignId?: string, jobId?: string, researchReady = true) =>
   transaction(async (transaction) => {
     const policy = await Store.policy(transaction);
     if (!policy.settings.automationEnabled) return null;
@@ -264,6 +265,13 @@ const claim = (campaignId?: string, jobId?: string) =>
       const input = automationInputSchema.parse(job.input);
       const state = automationStateSchema.parse(job.output);
       if (Date.parse(state.availableAt) > Date.now()) continue;
+      // Missing capture services must not burn company/contact credits or discard queued work.
+      if (
+        policy.settings.requireShoppingEvidence &&
+        !researchReady &&
+        !state["shoppingReceipt"]
+      )
+        continue;
       const context = await current(input, transaction);
       if (context.reason === "campaign-inactive") continue;
       if (context.reason) {
@@ -548,6 +556,9 @@ const fail = (claimed: AutomationClaim, error: Error) =>
           output: {
             ...state,
             lease: null,
+            ...(error instanceof IntegrationError
+              ? { failureProvider: error.provider }
+              : {}),
             ...(error instanceof IntegrationError && error.receipt
               ? { failureReceipt: error.receipt }
               : {}),
@@ -818,13 +829,17 @@ export const run = (
         deadline: z.number().default(Date.now() + 180000),
       })
       .parse(options);
-    const enabled = (await Store.policy()).settings.automationEnabled;
+    const policy = await Store.policy();
+    const enabled = policy.settings.automationEnabled;
     if (!enabled) return { enabled: false, processed: 0, results: [] };
-    if (!input.jobId) value(await enqueue(input.campaignId));
+    const research = value(await ResearchReadiness.getStatus(policy.settings));
+    if (!input.jobId && research.ready) value(await enqueue(input.campaignId));
     const results: AutomationJobSummary[] = [];
     for (const _ of Array.from({ length: input.maxSteps })) {
       if (Date.now() + 15000 >= input.deadline) break;
-      const claimed = value(await claim(input.campaignId, input.jobId));
+      const claimed = value(
+        await claim(input.campaignId, input.jobId, research.ready),
+      );
       if (!claimed) break;
       const executed = await resultify(() =>
         execute(claimed, Math.min(input.deadline, Date.now() + 100000)),
@@ -837,7 +852,12 @@ export const run = (
         : await fail(claimed, settled.error);
       results.push(view(value(saved)));
     }
-    return { enabled: true, processed: results.length, results };
+    return {
+      enabled: true,
+      processed: results.length,
+      results,
+      blockers: research.ready ? [] : ["research-not-configured"],
+    };
   });
 
 export const getStatus = (
@@ -901,6 +921,7 @@ export const getStatus = (
     for (const total of totals) counts[total.status] = value(total.result);
     return {
       enabled: policy.settings.automationEnabled,
+      research: value(await ResearchReadiness.getStatus(policy.settings)),
       activeCampaigns: value(campaigns),
       counts,
       jobs: rows,

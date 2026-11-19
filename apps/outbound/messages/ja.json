@@ -757,12 +757,16 @@
         "setup": {
           "apollo": "ワークスペースのApollo APIキーをここに保存してください。",
           "clay": "ClayのAPIキーを保存してワークスペースを接続します。情報補完の設定は後から行えます。",
-          "google": "Google OAuthのウェブアプリケーションを作成し、下記のリダイレクトURIを追加して、クライアントIDとクライアントシークレットを保存してください。その後、各Gmail受信トレイを接続します。"
+          "google": "Google OAuthのウェブアプリケーションを作成し、下記のリダイレクトURIを追加して、クライアントIDとクライアントシークレットを保存してください。その後、各Gmail受信トレイを接続します。",
+          "scrapellm": "ScrapeLLMで実際の購入者の検索クエリと表示された回答を取得します。",
+          "firecrawl": "Firecrawlで描画された商品ページを確認し、裏付けとなる情報を記録します。"
         },
         "secret": {
           "apollo": "Apollo APIキー",
           "clay": "Clay APIキー",
-          "google": "Google OAuthクライアントシークレット"
+          "google": "Google OAuthクライアントシークレット",
+          "scrapellm": "ScrapeLLM APIキー",
+          "firecrawl": "Firecrawl APIキー"
         },
         "fields": {
           "clientId": "Google OAuthクライアントID",
@@ -798,7 +802,9 @@
           "clayTrial": "Clayを試す",
           "clayKeys": "Clay APIキー",
           "clayWorkspace": "Clayを開く",
-          "clayApiDocs": "Clay APIドキュメント"
+          "clayApiDocs": "Clay APIドキュメント",
+          "scrapellmAccount": "ScrapeLLMを開く",
+          "firecrawlAccount": "Firecrawlを開く"
         },
         "routineHelp": "接続時の入力は任意です。Clayのワークスペースで情報補完用のルーティンを設定し、そのIDをここに貼り付けてください。",
         "routine": {
@@ -807,7 +813,8 @@
           }
         },
         "claySaved": "APIキーを確認し、保存しました。",
-        "claySavedPending": "APIキーを確認し、保存しました。情報補完の設定はまだ完了していません。"
+        "claySavedPending": "APIキーを確認し、保存しました。情報補完の設定はまだ完了していません。",
+        "savedUnchecked": "キーを保存しました。アクセスは最初の調査リクエストの実行時に確認します。"
       },
       "mailbox": {
         "help": "Roger で Manage Mailbox → Credentials を開き、App Password をコピーしてください。メールを送信せずに、送信と返信へのアクセスを確認します。",
@@ -841,6 +848,16 @@
         },
         "maximumDailyCap": "メールボックスごとの1日目標上限",
         "dailyCapHelp": "目標上限は50通で、初回メールとフォローアップが含まれます。 メールボックスは1日15通から開始します。1日が終了し、現在の上限に達していて、バウンスが観測されなかった場合に限り、上限が5通増えます。バウンスが観測されると上限は15通に戻ります。目標値は実際の送信数やメールボックスの評価を保証しません。"
+      },
+      "liveResearch": {
+        "title": "リアルタイムの購入調査",
+        "description": "両方のサービスを接続して、購入者の検索結果と商品ページを確認してから下書きを作成します。",
+        "configured": "調査用の認証情報を保存しました",
+        "missing": "両方の接続が必要です",
+        "saved": "キーを保存しました",
+        "verified": "APIキーを確認しました",
+        "environment": "サーバーキー設定済み",
+        "savedHelp": "ScrapeLLMへのアクセスは調査の実行時に確認します。キーを保存しても有料検索は実行されません。"
       }
     },
     "relationships": {
@@ -1495,7 +1512,13 @@
         "draft": "メッセージを作成中",
         "applyDraft": "メッセージを保存中",
         "approve": "適格性を確認中",
-        "complete": "準備完了"
+        "complete": "準備完了",
+        "researchQuery": "購入者の検索クエリを準備中",
+        "startShoppingQuery": "購入者の検索を開始中",
+        "pollShoppingQuery": "検索の回答を待機中",
+        "browseShopping": "商品ページを確認中",
+        "assessShopping": "購入調査の根拠を確認中",
+        "applyShopping": "購入調査を保存中"
       },
       "reasons": {
         "automation-disabled": "自動モードは無効です。",
@@ -1516,7 +1539,10 @@
         "provider-access": "プロバイダーがアクセスを拒否しました。「連携」で API キーと検索権限を確認してください。",
         "provider-quota": "プロバイダーのクレジットまたは使用量の上限に達しました。契約プランを確認してください。",
         "provider-rate-limit": "プロバイダーがリクエストを一時的に制限しています。次のバッチを開始するまでお待ちください。",
-        "provider-uncertain": "リクエストは処理済みの可能性があります。再試行する前に結果を確認してください。"
+        "provider-uncertain": "リクエストは処理済みの可能性があります。再試行する前に結果を確認してください。",
+        "research-not-configured": "「連携」で購入調査サービスを接続してください。",
+        "shopping-research-held": "購入調査では、裏付けのある発見が得られませんでした。",
+        "shopping-research-expired": "購入調査の根拠が期限切れです。再取得してください。"
       },
       "deliveryBlockers": {
         "sendingPaused": "プレイブックで送信が一時停止されています。",
@@ -1538,7 +1564,16 @@
       "currentCap": "現在の1日上限",
       "targetCap": "目標上限",
       "rampHeld": "引き上げを保留",
-      "rampHelp": "メールボックスは1日15通から開始します。1日が終了し、現在の上限に達していて、バウンスが観測されなかった場合に限り、上限が5通増えます。バウンスが観測されると上限は15通に戻ります。目標値は実際の送信数やメールボックスの評価を保証しません。"
+      "rampHelp": "メールボックスは1日15通から開始します。1日が終了し、現在の上限に達していて、バウンスが観測されなかった場合に限り、上限が5通増えます。バウンスが観測されると上限は15通に戻ります。目標値は実際の送信数やメールボックスの評価を保証しません。",
+      "research": {
+        "missingTitle": "購入調査にはサービスの接続が必要です",
+        "missingHelp": "「連携」で{providers}を接続すると、実際に確認した購入情報に基づいて新しい見込み客を準備できます。",
+        "action": "調査サービスを接続",
+        "unknownProvider": "調査サービス",
+        "blockedTitle": "購入調査の接続を確認してください",
+        "blockedHelp": "{providers}のAPIアクセスと利用可能なクレジットを確認してください。この接続の問題が解決するまで、調査を一時停止しています。",
+        "reviewAction": "調査の接続を確認"
+      }
     },
     "sent": {
       "title": "送信履歴",

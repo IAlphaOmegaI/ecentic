@@ -757,12 +757,16 @@
         "setup": {
           "apollo": "Speichern Sie hier den Apollo-API-Schlüssel für Ihren Arbeitsbereich.",
           "clay": "Speichern Sie Ihren Clay-API-Schlüssel, um den Arbeitsbereich zu verbinden. Die Datenanreicherung können Sie später einrichten.",
-          "google": "Erstellen Sie eine Google-OAuth-Webanwendung, tragen Sie die unten angegebene Weiterleitungs-URI ein und speichern Sie die Client-ID und das Client-Secret. Verbinden Sie anschließend jedes Gmail-Postfach."
+          "google": "Erstellen Sie eine Google-OAuth-Webanwendung, tragen Sie die unten angegebene Weiterleitungs-URI ein und speichern Sie die Client-ID und das Client-Secret. Verbinden Sie anschließend jedes Gmail-Postfach.",
+          "scrapellm": "Mit ScrapeLLM erfassen Sie tatsächliche Suchanfragen von Käufern und die angezeigten Antworten.",
+          "firecrawl": "Mit Firecrawl prüfen Sie gerenderte Produktseiten und speichern unterstützende Belege."
         },
         "secret": {
           "apollo": "Apollo-API-Schlüssel",
           "clay": "Clay-API-Schlüssel",
-          "google": "Google-OAuth-Client-Secret"
+          "google": "Google-OAuth-Client-Secret",
+          "scrapellm": "ScrapeLLM-API-Schlüssel",
+          "firecrawl": "Firecrawl-API-Schlüssel"
         },
         "fields": {
           "clientId": "Google-OAuth-Client-ID",
@@ -798,7 +802,9 @@
           "clayTrial": "Clay testen",
           "clayKeys": "Clay-API-Schlüssel",
           "clayWorkspace": "Clay öffnen",
-          "clayApiDocs": "Clay-API-Dokumentation"
+          "clayApiDocs": "Clay-API-Dokumentation",
+          "scrapellmAccount": "ScrapeLLM öffnen",
+          "firecrawlAccount": "Firecrawl öffnen"
         },
         "routineHelp": "Für die Verbindung optional. Richten Sie eine Routine zur Datenanreicherung in Ihrem Clay-Arbeitsbereich ein und fügen Sie ihre ID hier ein.",
         "routine": {
@@ -807,7 +813,8 @@
           }
         },
         "claySaved": "API-Schlüssel geprüft und gespeichert.",
-        "claySavedPending": "API-Schlüssel geprüft und gespeichert. Die Datenanreicherung muss noch eingerichtet werden."
+        "claySavedPending": "API-Schlüssel geprüft und gespeichert. Die Datenanreicherung muss noch eingerichtet werden.",
+        "savedUnchecked": "Schlüssel gespeichert. Der Zugriff wird bei der ersten Rechercheanfrage geprüft."
       },
       "mailbox": {
         "help": "Öffne in Roger Manage Mailbox → Credentials und kopiere App Password. Wir prüfen den Versand- und Antwortzugriff, ohne eine E-Mail zu senden.",
@@ -841,6 +848,16 @@
         },
         "maximumDailyCap": "Angestrebtes Maximum pro Postfach und Tag",
         "dailyCapHelp": "Das Ziel ist auf 50 begrenzt und umfasst Erstkontakte und Folge-E-Mails. Postfächer starten mit 15 pro Tag. Die Grenze steigt nur dann um 5, wenn ein abgeschlossener Tag die aktuelle Grenze ohne beobachteten Rückläufer erreicht hat. Ein beobachteter Rückläufer setzt die Grenze auf 15 zurück. Ein Ziel garantiert weder das Versandvolumen noch die Postfachreputation."
+      },
+      "liveResearch": {
+        "title": "Live-Recherche zum Einkauf",
+        "description": "Verbinden Sie beide Dienste, um Suchanfragen von Käufern zu beobachten und Produktseiten vor dem Verfassen zu prüfen.",
+        "configured": "Zugangsdaten für die Recherche gespeichert",
+        "missing": "Beide Verbindungen erforderlich",
+        "saved": "Schlüssel gespeichert",
+        "verified": "API-Schlüssel überprüft",
+        "environment": "Serverschlüssel konfiguriert",
+        "savedHelp": "Der Zugriff auf ScrapeLLM wird beim Start der Recherche geprüft. Das Speichern des Schlüssels startet keine kostenpflichtige Suche."
       }
     },
     "relationships": {
@@ -1495,7 +1512,13 @@
         "draft": "Nachrichten vorbereiten",
         "applyDraft": "Nachrichten speichern",
         "approve": "Berechtigung prüfen",
-        "complete": "Vorbereitung abgeschlossen"
+        "complete": "Vorbereitung abgeschlossen",
+        "researchQuery": "Suchanfrage wird vorbereitet",
+        "startShoppingQuery": "Einkaufssuche wird gestartet",
+        "pollShoppingQuery": "Warten auf die Antwort zur Einkaufssuche",
+        "browseShopping": "Produktseiten werden geprüft",
+        "assessShopping": "Recherchebelege werden geprüft",
+        "applyShopping": "Einkaufsrecherche wird gespeichert"
       },
       "reasons": {
         "automation-disabled": "Der automatische Modus ist aus.",
@@ -1516,7 +1539,10 @@
         "provider-access": "Der Anbieter hat den Zugriff abgelehnt. Prüfen Sie den API-Schlüssel und den Suchzugriff unter Integrationen.",
         "provider-quota": "Das Credit- oder Nutzungslimit des Anbieters wurde erreicht. Prüfen Sie Ihren Tarif.",
         "provider-rate-limit": "Der Anbieter begrenzt Anfragen vorübergehend. Warten Sie vor dem nächsten Durchlauf.",
-        "provider-uncertain": "Die Anfrage wurde möglicherweise verarbeitet. Prüfen Sie das Ergebnis, bevor Sie es erneut versuchen."
+        "provider-uncertain": "Die Anfrage wurde möglicherweise verarbeitet. Prüfen Sie das Ergebnis, bevor Sie es erneut versuchen.",
+        "research-not-configured": "Verbinden Sie die Dienste für die Einkaufsrecherche unter Integrationen.",
+        "shopping-research-held": "Die Einkaufsrecherche hat keinen ausreichend belegten Befund ergeben.",
+        "shopping-research-expired": "Die Belege der Einkaufsrecherche sind abgelaufen. Erfassen Sie sie erneut."
       },
       "deliveryBlockers": {
         "sendingPaused": "Der Versand ist im Playbook pausiert.",
@@ -1538,7 +1564,16 @@
       "currentCap": "Aktuelle Tagesgrenze",
       "targetCap": "Angestrebte Obergrenze",
       "rampHeld": "Erhöhung pausiert",
-      "rampHelp": "Postfächer starten mit 15 pro Tag. Die Grenze steigt nur dann um 5, wenn ein abgeschlossener Tag die aktuelle Grenze ohne beobachteten Rückläufer erreicht hat. Ein beobachteter Rückläufer setzt die Grenze auf 15 zurück. Ein Ziel garantiert weder das Versandvolumen noch die Postfachreputation."
+      "rampHelp": "Postfächer starten mit 15 pro Tag. Die Grenze steigt nur dann um 5, wenn ein abgeschlossener Tag die aktuelle Grenze ohne beobachteten Rückläufer erreicht hat. Ein beobachteter Rückläufer setzt die Grenze auf 15 zurück. Ein Ziel garantiert weder das Versandvolumen noch die Postfachreputation.",
+      "research": {
+        "missingTitle": "Für die Einkaufsrecherche fehlt eine Verbindung",
+        "missingHelp": "Verbinden Sie {providers} unter Integrationen, um neue Interessenten anhand beobachteter Einkaufsdaten vorzubereiten.",
+        "action": "Recherchedienste verbinden",
+        "unknownProvider": "einen Recherchedienst",
+        "blockedTitle": "Die Einkaufsrecherche benötigt Ihre Aufmerksamkeit",
+        "blockedHelp": "Prüfen Sie den API-Zugriff und das verfügbare Guthaben für {providers}. Die Recherche ist pausiert, bis diese Verbindung wieder einsatzbereit ist.",
+        "reviewAction": "Rechercheverbindungen prüfen"
+      }
     },
     "sent": {
       "title": "Gesendet",

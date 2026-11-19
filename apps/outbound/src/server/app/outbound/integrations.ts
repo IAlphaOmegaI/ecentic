@@ -151,13 +151,15 @@ export const saveProviderCredentials = withAuthorization(
   async (
     context,
     input: {
-      provider: "apollo" | "clay" | "google";
+      provider: "apollo" | "clay" | "google" | "scrapellm" | "firecrawl";
       apiKey: string;
       configuration?: { routineId?: string; clientId?: string };
     },
   ) => {
     if (
-      !z.enum(["apollo", "clay", "google"]).safeParse(input?.provider).success
+      !z
+        .enum(["apollo", "clay", "google", "scrapellm", "firecrawl"])
+        .safeParse(input?.provider).success
     )
       return {
         success: false as const,

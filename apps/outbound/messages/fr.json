@@ -757,12 +757,16 @@
         "setup": {
           "apollo": "Enregistrez ici la clé API Apollo de votre espace de travail.",
           "clay": "Enregistrez votre clé API Clay pour connecter l’espace de travail. Vous pourrez configurer l’enrichissement plus tard.",
-          "google": "Créez une application Web OAuth Google, ajoutez l’URI de redirection ci-dessous, puis enregistrez son identifiant et son secret client. Connectez ensuite chaque boîte Gmail."
+          "google": "Créez une application Web OAuth Google, ajoutez l’URI de redirection ci-dessous, puis enregistrez son identifiant et son secret client. Connectez ensuite chaque boîte Gmail.",
+          "scrapellm": "Utilisez ScrapeLLM pour capturer les requêtes réelles des acheteurs et les réponses affichées.",
+          "firecrawl": "Utilisez Firecrawl pour inspecter les pages produit rendues et enregistrer les éléments de preuve."
         },
         "secret": {
           "apollo": "Clé API Apollo",
           "clay": "Clé API Clay",
-          "google": "Secret client OAuth Google"
+          "google": "Secret client OAuth Google",
+          "scrapellm": "Clé API ScrapeLLM",
+          "firecrawl": "Clé API Firecrawl"
         },
         "fields": {
           "clientId": "Identifiant client OAuth Google",
@@ -798,7 +802,9 @@
           "clayTrial": "Essayer Clay",
           "clayKeys": "Clés API Clay",
           "clayWorkspace": "Ouvrir Clay",
-          "clayApiDocs": "Documentation de l’API Clay"
+          "clayApiDocs": "Documentation de l’API Clay",
+          "scrapellmAccount": "Ouvrir ScrapeLLM",
+          "firecrawlAccount": "Ouvrir Firecrawl"
         },
         "routineHelp": "Facultatif pour la connexion. Configurez une routine d’enrichissement dans votre espace de travail Clay, puis collez son ID ici.",
         "routine": {
@@ -807,7 +813,8 @@
           }
         },
         "claySaved": "Clé API vérifiée et enregistrée.",
-        "claySavedPending": "Clé API vérifiée et enregistrée. La configuration de l’enrichissement reste à terminer."
+        "claySavedPending": "Clé API vérifiée et enregistrée. La configuration de l’enrichissement reste à terminer.",
+        "savedUnchecked": "Clé enregistrée. L’accès sera vérifié lors de la première demande de recherche."
       },
       "mailbox": {
         "help": "Dans Roger, ouvrez Manage Mailbox → Credentials et copiez App Password. Nous vérifions les accès à l’envoi et aux réponses sans envoyer d’e-mail.",
@@ -841,6 +848,16 @@
         },
         "maximumDailyCap": "Maximum visé par boîte et par jour",
         "dailyCapHelp": "L’objectif est plafonné à 50 et inclut les premiers e-mails et les relances. Les boîtes commencent à 15 par jour. La limite augmente de 5 uniquement après une journée complète ayant atteint la limite actuelle sans rebond observé. Un rebond observé ramène la limite à 15. Un objectif ne garantit ni le volume d’envoi ni la réputation de la boîte."
+      },
+      "liveResearch": {
+        "title": "Recherche d’achat en direct",
+        "description": "Connectez les deux services pour observer les recherches des acheteurs et inspecter les pages produit avant la rédaction.",
+        "configured": "Identifiants de recherche enregistrés",
+        "missing": "Les deux connexions sont nécessaires",
+        "saved": "Clé enregistrée",
+        "verified": "Clé API vérifiée",
+        "environment": "Clé du serveur configurée",
+        "savedHelp": "L’accès à ScrapeLLM est vérifié lors de la recherche. Enregistrer sa clé ne lance pas de recherche payante."
       }
     },
     "relationships": {
@@ -1495,7 +1512,13 @@
         "draft": "Préparation des messages",
         "applyDraft": "Enregistrement des messages",
         "approve": "Vérification de l’admissibilité",
-        "complete": "Préparation terminée"
+        "complete": "Préparation terminée",
+        "researchQuery": "Préparation de la requête d’achat",
+        "startShoppingQuery": "Démarrage de la recherche d’achat",
+        "pollShoppingQuery": "En attente de la réponse à la recherche",
+        "browseShopping": "Inspection des pages produit",
+        "assessShopping": "Vérification des observations d’achat",
+        "applyShopping": "Enregistrement de la recherche d’achat"
       },
       "reasons": {
         "automation-disabled": "Le mode automatique est désactivé.",
@@ -1516,7 +1539,10 @@
         "provider-access": "Le fournisseur a refusé l’accès. Vérifiez la clé API et l’accès aux recherches dans Intégrations.",
         "provider-quota": "La limite de crédits ou d’utilisation du fournisseur est atteinte. Vérifiez votre forfait.",
         "provider-rate-limit": "Le fournisseur limite temporairement les demandes. Patientez avant de lancer un autre lot.",
-        "provider-uncertain": "La demande a peut-être été traitée. Vérifiez son résultat avant de réessayer."
+        "provider-uncertain": "La demande a peut-être été traitée. Vérifiez son résultat avant de réessayer.",
+        "research-not-configured": "Connectez les services de recherche d’achat dans Intégrations.",
+        "shopping-research-held": "La recherche d’achat n’a pas établi de constat suffisamment étayé.",
+        "shopping-research-expired": "Les éléments observés lors de la recherche d’achat ont expiré ; recueillez-les à nouveau."
       },
       "deliveryBlockers": {
         "sendingPaused": "L’envoi est en pause dans le guide.",
@@ -1538,7 +1564,16 @@
       "currentCap": "Limite quotidienne actuelle",
       "targetCap": "Maximum visé",
       "rampHeld": "Augmentation suspendue",
-      "rampHelp": "Les boîtes commencent à 15 par jour. La limite augmente de 5 uniquement après une journée complète ayant atteint la limite actuelle sans rebond observé. Un rebond observé ramène la limite à 15. Un objectif ne garantit ni le volume d’envoi ni la réputation de la boîte."
+      "rampHelp": "Les boîtes commencent à 15 par jour. La limite augmente de 5 uniquement après une journée complète ayant atteint la limite actuelle sans rebond observé. Un rebond observé ramène la limite à 15. Un objectif ne garantit ni le volume d’envoi ni la réputation de la boîte.",
+      "research": {
+        "missingTitle": "La recherche d’achat nécessite une connexion",
+        "missingHelp": "Connectez {providers} dans Intégrations pour préparer de nouveaux prospects à partir d’observations faites lors de recherches d’achat.",
+        "action": "Connecter les services de recherche",
+        "unknownProvider": "un service de recherche",
+        "blockedTitle": "La recherche d’achat nécessite votre attention",
+        "blockedHelp": "Vérifiez l’accès API et les crédits disponibles pour {providers}. La recherche est suspendue tant que cette connexion nécessite votre attention.",
+        "reviewAction": "Vérifier les connexions de recherche"
+      }
     },
     "sent": {
       "title": "Envoyés",

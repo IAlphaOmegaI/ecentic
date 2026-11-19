@@ -59,6 +59,18 @@ assert.equal(
   false,
 );
 assert.equal(save.mock.calls.length, 0);
+for (const provider of ["scrapellm", "firecrawl"] as const) {
+  assert.equal(
+    (
+      await Actions.saveProviderCredentials({
+        provider,
+        apiKey: "synthetic-key",
+      })
+    ).success,
+    false,
+  );
+}
+assert.equal(save.mock.calls.length, 0);
 state.role = "staff";
 assert.deepEqual(await Actions.saveUnipileKey({ apiKey: "synthetic-key" }), {
   success: true,
@@ -79,6 +91,17 @@ await Actions.saveUnipileKey({
   provider: "apollo",
 } as never);
 assert.equal(save.mock.calls[2]?.[1]?.provider, "unipile");
+for (const provider of ["scrapellm", "firecrawl"] as const) {
+  assert.deepEqual(
+    await Actions.saveProviderCredentials({
+      provider,
+      apiKey: "synthetic-key",
+    }),
+    { success: true, data: { configured: true } },
+  );
+  assert.equal(save.mock.lastCall?.[0], "staff-fixture");
+  assert.equal(save.mock.lastCall?.[1]?.provider, provider);
+}
 save.mockResolvedValue({
   success: false,
   error: new ValidationError("provider-key-save-failed"),

@@ -7,6 +7,48 @@ An ingredient detail or a proposed check cannot satisfy that requirement.
 Automatic company qualification can still establish business fit, but holds the
 lead before contact enrichment until actual shopping research is recorded.
 
+## Automatic live captures
+
+The Integrations page has a **Live shopping research** section for encrypted
+ScrapeLLM and Firecrawl keys. Environment fallbacks are
+`OUTBOUND_SCRAPELLM_API_KEY` and `OUTBOUND_FIRECRAWL_API_KEY`. Firecrawl is verified
+through its credit-usage endpoint without starting a scrape. ScrapeLLM has no
+documented non-billable key-validation endpoint, so its status is honestly
+**saved**, with account access checked by the first actual research job.
+
+`live-shopping.ts` submits an asynchronous live Google AI Mode query, persists its
+job ID, and polls that same job. Cached, mismatched or undated answers are held;
+the original timestamp is never replaced with the poll time. Transient polling
+errors retry only the known GET job within a bounded poll count. An uncertain
+submission never purchases a replacement automatically. Provider responses and
+their SHA256 digests are checkpointed before later stages.
+
+Firecrawl Interact opens a fresh short-lived browser, records rendered product
+text, selected options, structured offers and a screenshot, then deletes the
+session. A 120-second TTL backs up cleanup. URLs are checked, robots rules are
+respected, and a fixed read-only program permits only HTTPS GET/HEAD requests,
+with public-address checks and no cross-origin navigation. It does not add items
+to a cart, buy anything or bypass access restrictions. Missing content under
+these limits is not a merchant defect. Checkout remains `notTested`.
+
+Only direct answer citations can supply competitor URLs. The automatic assessor
+must quote both the actual answer and rendered merchant page, plus a rendered
+competitor source for any comparison. It can select a specific price, variant,
+link or promotion contrast; unsupported or ambiguous differences hold before
+contact lookup. Requested routing country does not establish result market,
+interface locale or signed-in state; these remain unknown. HTTP product evidence
+alone never satisfies this automatic path.
+
+`saveAutomaticAndApply` shares the operator receipt validator but additionally
+checks the current automation lease, exact captured receipt, policy fingerprint,
+active campaign and unheld prospect in one transaction. Captures are identified
+as `provider-observed`, not operator observations. The same selected-contact
+lineage remains required.
+
+Provider contracts: [ScrapeLLM async submission](https://docs.scrapellm.com/api-reference/endpoint/create-async-job),
+[polling](https://docs.scrapellm.com/api-reference/endpoint/get-job-status),
+[Firecrawl browser execution](https://docs.firecrawl.dev/api-reference/endpoint/browser-execute).
+
 ## Operator application
 
 `server/app/outbound/lead-research.ts` exports the server-only operation:

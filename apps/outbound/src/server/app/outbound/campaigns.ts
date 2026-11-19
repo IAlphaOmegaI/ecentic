@@ -448,13 +448,23 @@ const runInputSchema = z.strictObject({
 });
 type RunInput = z.input<typeof runInputSchema>;
 
-const reserve = (actor: string, input: RunInput) =>
+export type DiscoveryOptions = {
+  /** Internal scheduler guard; evaluated with the durable reservation under the workspace lock. */
+  guard?: (transaction: TransactionScope, campaign: CampaignRow) => Promise<void>;
+  singleOperation?: boolean;
+  deadline?: number;
+};
+
+const reserve = (actor: string, input: RunInput, options: DiscoveryOptions = {}) =>
   transaction(async (transaction) => {
     const parsed = runInputSchema.parse(input);
     const campaign = await readWithin(parsed.id, transaction);
     checkRevision(campaign, parsed.expectedRevision);
     if (!["draft", "active"].includes(campaign.status))
       throw new ConflictError("campaign-paused");
+    if (options.deadline !== undefined && Date.now() >= options.deadline - 25_000)
+      throw new ConflictError("campaign-discovery-deadline");
+    await options.guard?.(transaction, campaign);
     const pending = value(
       await Runs.find(
         Environment.SERVER,
@@ -752,9 +762,10 @@ export const discover = (
     typeof Providers,
     "searchApolloCompanies" | "startClayCompanySearch" | "nextClayCompanies"
   > = Providers,
+  options: DiscoveryOptions = {},
 ) =>
   resultify(async () => {
-    const reserved = value(await reserve(actor, input));
+    const reserved = value(await reserve(actor, input, options));
     const execute = async (run: RunRow) => {
       switch (run.operation) {
         case "apolloPage": {
@@ -809,11 +820,12 @@ export const discover = (
       return value(await failure(reserved, executed.error));
     if (
       reserved.operation !== "clayStart" ||
+      options.singleOperation ||
       executed.data.run.status !== "completed" ||
       executed.data.run.error
     )
       return executed.data;
-    const page = value(await reserve(actor, { ...input, provider: "clay" }));
+    const page = value(await reserve(actor, { ...input, provider: "clay" }, options));
     const completed = await resultify(() => execute(page));
     return completed.success
       ? completed.data

@@ -757,12 +757,16 @@
         "setup": {
           "apollo": "Guarda aquí la clave de API de Apollo de tu espacio de trabajo.",
           "clay": "Guarda tu clave API de Clay para conectar el espacio de trabajo. Puedes configurar el enriquecimiento más adelante.",
-          "google": "Crea una aplicación web OAuth de Google, añade el URI de redirección de abajo y guarda su ID y secreto de cliente. Después, conecta cada buzón de Gmail."
+          "google": "Crea una aplicación web OAuth de Google, añade el URI de redirección de abajo y guarda su ID y secreto de cliente. Después, conecta cada buzón de Gmail.",
+          "scrapellm": "Usa ScrapeLLM para capturar consultas reales de compradores y las respuestas que se muestran.",
+          "firecrawl": "Usa Firecrawl para inspeccionar páginas de productos renderizadas y registrar pruebas de respaldo."
         },
         "secret": {
           "apollo": "Clave de API de Apollo",
           "clay": "Clave de API de Clay",
-          "google": "Secreto de cliente OAuth de Google"
+          "google": "Secreto de cliente OAuth de Google",
+          "scrapellm": "Clave API de ScrapeLLM",
+          "firecrawl": "Clave API de Firecrawl"
         },
         "fields": {
           "clientId": "ID de cliente OAuth de Google",
@@ -798,7 +802,9 @@
           "clayTrial": "Probar Clay",
           "clayKeys": "Claves de API de Clay",
           "clayWorkspace": "Abrir Clay",
-          "clayApiDocs": "Documentación de la API de Clay"
+          "clayApiDocs": "Documentación de la API de Clay",
+          "scrapellmAccount": "Abrir ScrapeLLM",
+          "firecrawlAccount": "Abrir Firecrawl"
         },
         "routineHelp": "Opcional para conectar. Configura una rutina de enriquecimiento en tu espacio de trabajo de Clay y pega aquí su ID.",
         "routine": {
@@ -807,7 +813,8 @@
           }
         },
         "claySaved": "Clave API verificada y guardada.",
-        "claySavedPending": "Clave API verificada y guardada. La configuración del enriquecimiento sigue pendiente."
+        "claySavedPending": "Clave API verificada y guardada. La configuración del enriquecimiento sigue pendiente.",
+        "savedUnchecked": "Clave guardada. El acceso se comprobará al ejecutar la primera solicitud de investigación."
       },
       "mailbox": {
         "help": "En Roger, abre Manage Mailbox → Credentials y copia App Password. Comprobamos el acceso para enviar y recibir sin enviar ningún correo.",
@@ -841,6 +848,16 @@
         },
         "maximumDailyCap": "Máximo objetivo por buzón al día",
         "dailyCapHelp": "El objetivo tiene un máximo de 50 e incluye los primeros correos y los seguimientos. Los buzones empiezan con 15 al día. El límite solo aumenta en 5 cuando un día completo alcanza el límite actual sin ningún rebote observado. Un rebote observado devuelve el límite a 15. El objetivo no garantiza el volumen de envío ni la reputación del buzón."
+      },
+      "liveResearch": {
+        "title": "Investigación de compras en vivo",
+        "description": "Conecta ambos servicios para observar búsquedas de compradores e inspeccionar páginas de productos antes de redactar.",
+        "configured": "Credenciales de investigación guardadas",
+        "missing": "Se necesitan ambas conexiones",
+        "saved": "Clave guardada",
+        "verified": "Clave API verificada",
+        "environment": "Clave del servidor configurada",
+        "savedHelp": "El acceso a ScrapeLLM se comprueba al ejecutar la investigación. Guardar la clave no inicia una búsqueda de pago."
       }
     },
     "relationships": {
@@ -1495,7 +1512,13 @@
         "draft": "Preparando mensajes",
         "applyDraft": "Guardando mensajes",
         "approve": "Comprobando elegibilidad",
-        "complete": "Preparación completada"
+        "complete": "Preparación completada",
+        "researchQuery": "Preparando la consulta del comprador",
+        "startShoppingQuery": "Iniciando la búsqueda de compra",
+        "pollShoppingQuery": "Esperando la respuesta de la búsqueda",
+        "browseShopping": "Inspeccionando páginas de productos",
+        "assessShopping": "Comprobando la información de la búsqueda",
+        "applyShopping": "Guardando la investigación de compras"
       },
       "reasons": {
         "automation-disabled": "El modo automático está desactivado.",
@@ -1516,7 +1539,10 @@
         "provider-access": "El proveedor ha rechazado el acceso. Compruebe la clave API y el acceso a búsquedas en Integraciones.",
         "provider-quota": "Se ha alcanzado el límite de créditos o de uso del proveedor. Revise su plan.",
         "provider-rate-limit": "El proveedor ha limitado temporalmente las solicitudes. Espere antes de iniciar otro lote.",
-        "provider-uncertain": "Es posible que la solicitud se haya procesado. Compruebe el resultado antes de reintentarlo."
+        "provider-uncertain": "Es posible que la solicitud se haya procesado. Compruebe el resultado antes de reintentarlo.",
+        "research-not-configured": "Conecta los servicios de investigación de compras en Integraciones.",
+        "shopping-research-held": "La investigación de compras no estableció un hallazgo respaldado por pruebas.",
+        "shopping-research-expired": "La información de la búsqueda ha caducado; vuelve a recopilarla."
       },
       "deliveryBlockers": {
         "sendingPaused": "El envío está pausado en el manual.",
@@ -1538,7 +1564,16 @@
       "currentCap": "Límite diario actual",
       "targetCap": "Máximo objetivo",
       "rampHeld": "Aumento en pausa",
-      "rampHelp": "Los buzones empiezan con 15 al día. El límite solo aumenta en 5 cuando un día completo alcanza el límite actual sin ningún rebote observado. Un rebote observado devuelve el límite a 15. El objetivo no garantiza el volumen de envío ni la reputación del buzón."
+      "rampHelp": "Los buzones empiezan con 15 al día. El límite solo aumenta en 5 cuando un día completo alcanza el límite actual sin ningún rebote observado. Un rebote observado devuelve el límite a 15. El objetivo no garantiza el volumen de envío ni la reputación del buzón.",
+      "research": {
+        "missingTitle": "La investigación de compras necesita una conexión",
+        "missingHelp": "Conecta {providers} en Integraciones para preparar nuevos prospectos con datos observados en búsquedas de compra.",
+        "action": "Conectar servicios de investigación",
+        "unknownProvider": "un servicio de investigación",
+        "blockedTitle": "La investigación de compras necesita atención",
+        "blockedHelp": "Comprueba el acceso a la API y los créditos disponibles para {providers}. La investigación está pausada mientras esta conexión necesita atención.",
+        "reviewAction": "Revisar conexiones de investigación"
+      }
     },
     "sent": {
       "title": "Enviados",

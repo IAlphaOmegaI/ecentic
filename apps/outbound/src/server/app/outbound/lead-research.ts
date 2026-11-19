@@ -5,6 +5,10 @@ import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { normalizeDomain, prospectSchema } from "@/lib/outbound";
 import {
+  automationInputSchema,
+  automationStateSchema,
+} from "@/lib/outbound-automation";
+import {
   shoppingFinding,
   shoppingResearchSchema,
   validateShoppingResearch,
@@ -40,9 +44,10 @@ export const saveResearchSchema = z
   .strict();
 
 /** Persist an operator's actual captures and apply them atomically. No provider or sending operation. */
-export const saveAndApply = (
+const save = (
   actor: string,
   input: z.infer<typeof saveResearchSchema>,
+  automatic?: { jobId: string; leaseToken: string },
 ) =>
   resultify(async () => {
     const parsed = saveResearchSchema.parse(input);
@@ -147,6 +152,43 @@ export const saveAndApply = (
         : null;
       if (prospect.campaignId && (!campaign || campaign.status === "archived"))
         throw new ConflictError("The campaign is unavailable for research.");
+      if (automatic) {
+        const job = value(
+          await Jobs.get(Environment.SERVER, automatic.jobId, {
+            tx: transaction,
+          }),
+        );
+        const claim = automationInputSchema.safeParse(job?.input);
+        const state = automationStateSchema.safeParse(job?.output);
+        if (
+          !claim.success ||
+          !state.success ||
+          job?.status !== "starting" ||
+          job.provider !== "automation" ||
+          job.prospectId !== prospect.id ||
+          state.data.stage !== "applyShopping" ||
+          state.data.lease?.token !== automatic.leaseToken ||
+          Date.parse(state.data.lease.expiresAt) <= Date.now() ||
+          state.data["prospectRevision"] !== prospect.revision ||
+          state.data["shoppingRequestId"] !== parsed.requestId ||
+          researchHash(
+            shoppingResearchSchema.parse(state.data["shoppingReceipt"]),
+          ) !== receiptHash ||
+          state.data["shoppingPolicyHash"] !==
+            researchPolicyHash(policy.settings) ||
+          claim.data.playbookRevision !== policy.revision ||
+          claim.data.campaignId !== campaign?.id ||
+          claim.data.campaignRevision !== campaign?.revision ||
+          campaign?.status !== "active" ||
+          !policy.settings.automationEnabled ||
+          !["candidate", "draft"].includes(prospect.status) ||
+          prospect.holdReason ||
+          prospect.details.automationEvidenceId !== job.id
+        )
+          throw new ConflictError(
+            "The automatic research claim changed or the prospect was held.",
+          );
+      }
       if (
         normalizeDomain(parsed.receipt.product.url) !==
         normalizeDomain(prospect.details.domain)
@@ -208,7 +250,8 @@ export const saveAndApply = (
                 ]),
               ),
               capturedBy: actor,
-              provenance: "operator-observed",
+              provenance: automatic ? "provider-observed" : "operator-observed",
+              ...(automatic ? { automationJobId: automatic.jobId } : {}),
               appliedAt: new Date().toISOString(),
             },
           },
@@ -236,3 +279,14 @@ export const saveAndApply = (
       };
     });
   });
+
+/** Explicit operator input and automatic provider captures share the same evidence validator. */
+export const saveAndApply = (
+  actor: string,
+  input: z.infer<typeof saveResearchSchema>,
+) => save(actor, input);
+export const saveAutomaticAndApply = (
+  actor: string,
+  input: z.infer<typeof saveResearchSchema>,
+  claim: { jobId: string; leaseToken: string },
+) => save(actor, input, claim);

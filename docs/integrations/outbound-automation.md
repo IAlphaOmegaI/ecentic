@@ -63,6 +63,23 @@ delivery continues through the existing sending, mailbox, history and rate gates
 
 ## Processing
 
+Since 19 November 2026, the preparation cron replenishes active campaigns through
+`automatic-company-discovery.ts` before preparation. It buys at most two provider
+operations per tick within a 40-second budget, with campaign-specific low-water
+targets derived from inbox capacity, a rolling daily operation limit, fair campaign
+rotation and cooldowns. Apollo runs first; Clay starts only after Apollo is
+exhausted. Existing attempts, uncertain domains, usable unattempted companies,
+pending jobs and approved unsent prospects determine demand. An atomic reservation
+guard prevents concurrent ticks from buying the same page. Provider errors do not
+silently change source; missing keys and unresolved outcomes hold acquisition.
+
+When shopping evidence is required, ScrapeLLM and Firecrawl must both be connected
+before any new company enrichment or contact work is admitted. The campaign panel
+shows missing connections or provider cooldowns separately from delivery readiness.
+Known account/quota errors pause new research for 24 hours, rate limits for 15
+minutes; saving a replacement key permits another attempt. Existing source-backed
+drafts may continue through review and delivery.
+
 The worker calls `Automation.run` without a browser session. The staff action
 `automation-actions.run({campaignId?})` runs at most three stages. The internal
 service accepts `maxSteps` from 1 to 20 and a deadline; its default is three stages
@@ -83,11 +100,13 @@ policy edit. Expired worker leases become uncertain.
 | --- | --- |
 | Company details | One Apollo organization enrichment records actual country, size and other available source facts. Search filter values are not facts. |
 | Qualification | Bounded permitted public pages establish a named own-brand product and priced offer; one Azure assessment evaluates saved criteria and a specific buying detail using quoted evidence. |
+| Live shopping research | A concrete query is saved before one ScrapeLLM submission. The same job is polled; Firecrawl captures rendered merchant and cited competitor pages. An Azure assessment can select only an exact-quoted material contrast. No angle holds before contact spending. |
 | Contact search | One page of up to 25 Apollo people is retained before deterministic selection. |
 | Contact enrichment | Each provisional match is reserved before enrichment. Actual employer domain, identity, role and sourced address must match before promotion. A completed missing-email or unsuitable-role result advances to the next eligible saved search record, up to three distinct enrichments per company run. |
 | Promotion | The company is atomically attached to one prospect, retaining the automation evidence job ID. |
 | Email verification | One verification request is retained, then the same request is polled at bounded intervals. Exactly one returned email/record pair must match, with a current provider verification date. |
 | Mail host | A fresh MX check holds unknown and Microsoft-hosted recipients according to the Playbook. |
+| Apply shopping research | The completed receipt is bound to the verified contact under the same active lease, campaign and Playbook. An explicit hold or changed prospect prevents application. |
 | Draft | One bounded Azure draft call is saved before the separate draft-write stage. Protected copy and lint rules still apply. |
 | Approval | `Store.approveAutomatically` validates the current campaign, Playbook, prospect revision and durable source facts, then the existing worker can deliver within its normal gates. |
 
@@ -143,9 +162,9 @@ details and provider payloads are available internally; the status action expose
 only safe job metadata and stable reason codes.
 
 `getStatus({campaignId?})` returns mode, active campaign count, all scoped job
-counts, the latest 50 jobs and separate delivery readiness. The pipeline consumes
-already discovered campaign companies; it does not autonomously buy additional
-company-discovery pages, configure inboxes or change sender limits. It does not
+counts, the latest 50 jobs, research readiness and separate delivery readiness.
+The preparation stages consume campaign companies; the bounded discovery pass
+supplies more when needed. Neither configures inboxes nor changes sender limits. It does not
 send LinkedIn messages itself. A separate LinkedIn worker handles that channel.
 
 ## LinkedIn delivery
@@ -169,6 +188,13 @@ LinkedIn connection. Actual email and LinkedIn attempts enforce a 24-hour gap
 between outreach channels. Shared account caps cover cold LinkedIn messages and
 manual conversation replies, and unresolved sends hold the account regardless
 of their age. Only provider-accepted receipts set invited/messaged state.
+
+Shopping-research prospects retain the original qualified company and selected
+contact evidence while using their separately validated current research receipt.
+They no longer require the original prospect/Playbook revision to equal the newer
+receipt's revision. Legacy published-data prospects retain the original strict
+revision checks. Changed identity, campaign criteria, research instructions and
+expired evidence still prevent dispatch.
 
 Reply synchronization runs independently of the sending switch. It stores actual
 messages in the unified conversation timeline and records shared reply/opt-out

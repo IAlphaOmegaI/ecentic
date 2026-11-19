@@ -757,12 +757,16 @@
         "setup": {
           "apollo": "Salva qui la chiave API di Apollo del tuo spazio di lavoro.",
           "clay": "Salva la chiave API di Clay per collegare lo spazio di lavoro. Puoi configurare l’arricchimento in un secondo momento.",
-          "google": "Crea un’applicazione web OAuth di Google, aggiungi l’URI di reindirizzamento qui sotto e salva il suo ID client e client secret. Poi collega ogni casella Gmail."
+          "google": "Crea un’applicazione web OAuth di Google, aggiungi l’URI di reindirizzamento qui sotto e salva il suo ID client e client secret. Poi collega ogni casella Gmail.",
+          "scrapellm": "Usa ScrapeLLM per acquisire le ricerche reali degli acquirenti e le risposte mostrate.",
+          "firecrawl": "Usa Firecrawl per analizzare le pagine prodotto renderizzate e registrare le prove a supporto."
         },
         "secret": {
           "apollo": "Chiave API di Apollo",
           "clay": "Chiave API di Clay",
-          "google": "Client secret OAuth di Google"
+          "google": "Client secret OAuth di Google",
+          "scrapellm": "Chiave API ScrapeLLM",
+          "firecrawl": "Chiave API Firecrawl"
         },
         "fields": {
           "clientId": "ID client OAuth di Google",
@@ -798,7 +802,9 @@
           "clayTrial": "Prova Clay",
           "clayKeys": "Chiavi API di Clay",
           "clayWorkspace": "Apri Clay",
-          "clayApiDocs": "Documentazione API di Clay"
+          "clayApiDocs": "Documentazione API di Clay",
+          "scrapellmAccount": "Apri ScrapeLLM",
+          "firecrawlAccount": "Apri Firecrawl"
         },
         "routineHelp": "Facoltativo per il collegamento. Configura una routine di arricchimento nel tuo spazio di lavoro Clay, poi incolla qui il suo ID.",
         "routine": {
@@ -807,7 +813,8 @@
           }
         },
         "claySaved": "Chiave API verificata e salvata.",
-        "claySavedPending": "Chiave API verificata e salvata. La configurazione dell’arricchimento è ancora da completare."
+        "claySavedPending": "Chiave API verificata e salvata. La configurazione dell’arricchimento è ancora da completare.",
+        "savedUnchecked": "Chiave salvata. L’accesso sarà verificato alla prima richiesta di ricerca."
       },
       "mailbox": {
         "help": "In Roger, apri Manage Mailbox → Credentials e copia App Password. Verifichiamo l’accesso per l’invio e le risposte senza inviare email.",
@@ -841,6 +848,16 @@
         },
         "maximumDailyCap": "Massimo obiettivo per casella al giorno",
         "dailyCapHelp": "L’obiettivo è limitato a 50 e include prime email e solleciti. Le caselle iniziano con 15 al giorno. Il limite aumenta di 5 solo dopo una giornata completa in cui è stato raggiunto il limite attuale senza mancati recapiti osservati. Un mancato recapito osservato riporta il limite a 15. L’obiettivo non garantisce il volume di invio o la reputazione della casella."
+      },
+      "liveResearch": {
+        "title": "Ricerca acquisti in tempo reale",
+        "description": "Collega entrambi i servizi per osservare le ricerche degli acquirenti e analizzare le pagine prodotto prima di scrivere.",
+        "configured": "Credenziali di ricerca salvate",
+        "missing": "Servono entrambe le connessioni",
+        "saved": "Chiave salvata",
+        "verified": "Chiave API verificata",
+        "environment": "Chiave del server configurata",
+        "savedHelp": "L’accesso a ScrapeLLM viene verificato quando si esegue la ricerca. Salvare la chiave non avvia una ricerca a pagamento."
       }
     },
     "relationships": {
@@ -1495,7 +1512,13 @@
         "draft": "Preparazione messaggi",
         "applyDraft": "Salvataggio messaggi",
         "approve": "Verifica idoneità",
-        "complete": "Preparazione completata"
+        "complete": "Preparazione completata",
+        "researchQuery": "Preparazione della ricerca dell’acquirente",
+        "startShoppingQuery": "Avvio della ricerca di acquisto",
+        "pollShoppingQuery": "In attesa della risposta alla ricerca",
+        "browseShopping": "Analisi delle pagine prodotto",
+        "assessShopping": "Verifica delle evidenze raccolte",
+        "applyShopping": "Salvataggio della ricerca acquisti"
       },
       "reasons": {
         "automation-disabled": "La modalità automatica è disattivata.",
@@ -1516,7 +1539,10 @@
         "provider-access": "Il fornitore ha negato l’accesso. Controlla la chiave API e l’accesso alle ricerche in Integrazioni.",
         "provider-quota": "È stato raggiunto il limite di crediti o di utilizzo del fornitore. Controlla il tuo piano.",
         "provider-rate-limit": "Il fornitore ha temporaneamente limitato le richieste. Attendi prima di avviare un altro lotto.",
-        "provider-uncertain": "La richiesta potrebbe essere stata elaborata. Controlla l’esito prima di riprovare."
+        "provider-uncertain": "La richiesta potrebbe essere stata elaborata. Controlla l’esito prima di riprovare.",
+        "research-not-configured": "Collega i servizi di ricerca acquisti in Integrazioni.",
+        "shopping-research-held": "La ricerca acquisti non ha individuato un risultato supportato da prove.",
+        "shopping-research-expired": "Le evidenze della ricerca acquisti sono scadute; acquisiscile di nuovo."
       },
       "deliveryBlockers": {
         "sendingPaused": "L’invio è in pausa nel manuale.",
@@ -1538,7 +1564,16 @@
       "currentCap": "Limite giornaliero attuale",
       "targetCap": "Massimo obiettivo",
       "rampHeld": "Aumento in pausa",
-      "rampHelp": "Le caselle iniziano con 15 al giorno. Il limite aumenta di 5 solo dopo una giornata completa in cui è stato raggiunto il limite attuale senza mancati recapiti osservati. Un mancato recapito osservato riporta il limite a 15. L’obiettivo non garantisce il volume di invio o la reputazione della casella."
+      "rampHelp": "Le caselle iniziano con 15 al giorno. Il limite aumenta di 5 solo dopo una giornata completa in cui è stato raggiunto il limite attuale senza mancati recapiti osservati. Un mancato recapito osservato riporta il limite a 15. L’obiettivo non garantisce il volume di invio o la reputazione della casella.",
+      "research": {
+        "missingTitle": "La ricerca acquisti richiede una connessione",
+        "missingHelp": "Collega {providers} in Integrazioni per preparare nuovi potenziali clienti con evidenze osservate durante le ricerche di acquisto.",
+        "action": "Collega i servizi di ricerca",
+        "unknownProvider": "un servizio di ricerca",
+        "blockedTitle": "La ricerca acquisti richiede attenzione",
+        "blockedHelp": "Controlla l’accesso API e i crediti disponibili per {providers}. La ricerca è sospesa finché questa connessione richiede attenzione.",
+        "reviewAction": "Controlla le connessioni di ricerca"
+      }
     },
     "sent": {
       "title": "Inviati",

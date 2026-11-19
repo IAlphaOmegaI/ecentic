@@ -15,6 +15,8 @@ const original = {
   fallback: process.env.OUTBOUND_UNIPILE_API_KEY,
   clayKey: process.env.OUTBOUND_CLAY_API_KEY,
   clayRoutine: process.env.OUTBOUND_CLAY_ROUTINE_ID,
+  scrapellm: process.env["OUTBOUND_SCRAPELLM_API_KEY"],
+  firecrawl: process.env["OUTBOUND_FIRECRAWL_API_KEY"],
 };
 const encryption = Buffer.alloc(32, 17).toString("base64");
 const records = new Map<
@@ -105,6 +107,8 @@ afterEach(() => {
   for (const [key, value] of [
     ["OUTBOUND_CLAY_API_KEY", original.clayKey],
     ["OUTBOUND_CLAY_ROUTINE_ID", original.clayRoutine],
+    ["OUTBOUND_SCRAPELLM_API_KEY", original.scrapellm],
+    ["OUTBOUND_FIRECRAWL_API_KEY", original.firecrawl],
   ] as const) {
     if (value === undefined) Reflect.deleteProperty(process.env, key);
     else Object.assign(process.env, { [key]: value });
@@ -244,6 +248,84 @@ describe("encrypted Unipile key settings", () => {
 });
 
 describe("provider settings", () => {
+  test.each(["scrapellm", "firecrawl"] as const)(
+    "%s keys are encrypted with truthful verification metadata",
+    async (provider) => {
+      expect(
+        await credentials.save("staff-fixture", {
+          provider,
+          apiKey: `${provider}-fixture-key`,
+        }),
+      ).toMatchObject({ success: true });
+      expect(state.probes).toBe(1);
+      expect(
+        isEncryptedCredential(records.get(provider)?.ciphertext ?? ""),
+      ).toBe(true);
+      expect(await credentials.metadata(provider)).toEqual({
+        success: true,
+        data: {
+          configured: true,
+          configuration: {},
+          credentialStatus: provider === "scrapellm" ? "saved" : "verified",
+        },
+      });
+      expect(state.reads).toBe(0);
+      expect(await credentials.resolveKey(provider)).toEqual({
+        success: true,
+        data: `${provider}-fixture-key`,
+      });
+    },
+  );
+  test.each([
+    ["scrapellm", "OUTBOUND_SCRAPELLM_API_KEY"],
+    ["firecrawl", "OUTBOUND_FIRECRAWL_API_KEY"],
+  ] as const)(
+    "%s environment configuration does not claim a verified key",
+    async (provider, variable) => {
+      Reflect.deleteProperty(process.env, variable);
+      expect(await credentials.metadata(provider)).toMatchObject({
+        data: { configured: false, credentialStatus: "missing" },
+      });
+      Object.assign(process.env, {
+        [variable]: ` ${provider}-environment-key `,
+      });
+      expect(await credentials.metadata(provider)).toMatchObject({
+        data: { configured: true, credentialStatus: "environment" },
+      });
+      expect(await credentials.resolveKey(provider)).toEqual({
+        success: true,
+        data: `${provider}-environment-key`,
+      });
+      expect(state.probes).toBe(0);
+      expect(state.writes).toBe(0);
+    },
+  );
+  test.each(["scrapellm", "firecrawl"] as const)(
+    "%s invalid replacements preserve the working key without returning provider details",
+    async (provider) => {
+      await credentials.save("staff-fixture", {
+        provider,
+        apiKey: "previous-fixture-key",
+      });
+      const previous = records.get(provider)?.ciphertext;
+      state.failure = new IntegrationError(
+        provider,
+        "input",
+        "Invalid candidate-private-key",
+      );
+      const result = await credentials.save("staff-fixture", {
+        provider,
+        apiKey: "candidate-private-key",
+      });
+      expect(result).toMatchObject({
+        success: false,
+        error: { message: "provider-key-invalid" },
+      });
+      expect(JSON.stringify(result)).not.toContain("candidate-private-key");
+      expect(records.get(provider)?.ciphertext).toBe(previous);
+      expect(state.writes).toBe(1);
+    },
+  );
   test("Apollo and Clay validate before saving; Google saves without a token exchange", async () => {
     expect(
       (

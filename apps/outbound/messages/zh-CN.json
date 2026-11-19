@@ -757,12 +757,16 @@
         "setup": {
           "apollo": "请在此保存您工作区的 Apollo API 密钥。",
           "clay": "保存 Clay API 密钥即可连接工作区。你可以稍后配置数据补全。",
-          "google": "请创建 Google OAuth Web 应用，添加下方的重定向 URI，并保存其客户端 ID 和客户端密钥。然后连接各个 Gmail 收件箱。"
+          "google": "请创建 Google OAuth Web 应用，添加下方的重定向 URI，并保存其客户端 ID 和客户端密钥。然后连接各个 Gmail 收件箱。",
+          "scrapellm": "使用 ScrapeLLM 获取真实的购物搜索查询及其显示的回答。",
+          "firecrawl": "使用 Firecrawl 检查渲染后的商品页面，并记录支持证据。"
         },
         "secret": {
           "apollo": "Apollo API 密钥",
           "clay": "Clay API 密钥",
-          "google": "Google OAuth 客户端密钥"
+          "google": "Google OAuth 客户端密钥",
+          "scrapellm": "ScrapeLLM API 密钥",
+          "firecrawl": "Firecrawl API 密钥"
         },
         "fields": {
           "clientId": "Google OAuth 客户端 ID",
@@ -798,7 +802,9 @@
           "clayTrial": "试用 Clay",
           "clayKeys": "Clay API 密钥",
           "clayWorkspace": "打开 Clay",
-          "clayApiDocs": "Clay API 文档"
+          "clayApiDocs": "Clay API 文档",
+          "scrapellmAccount": "打开 ScrapeLLM",
+          "firecrawlAccount": "打开 Firecrawl"
         },
         "routineHelp": "连接时无需填写。在 Clay 工作区中配置数据补全例程后，将其 ID 粘贴到此处。",
         "routine": {
@@ -807,7 +813,8 @@
           }
         },
         "claySaved": "API 密钥已验证并保存。",
-        "claySavedPending": "API 密钥已验证并保存。数据补全尚未配置。"
+        "claySavedPending": "API 密钥已验证并保存。数据补全尚未配置。",
+        "savedUnchecked": "密钥已保存。首次运行调研请求时将检查访问权限。"
       },
       "mailbox": {
         "help": "在 Roger 中打开 Manage Mailbox → Credentials，然后复制 App Password。我们会检查发送和读取回复的权限，不会发送邮件。",
@@ -841,6 +848,16 @@
         },
         "maximumDailyCap": "每个邮箱的每日目标上限",
         "dailyCapHelp": "目标上限为50封，包含首封邮件和跟进邮件。 邮箱从每天15封开始。只有在完整的一天中达到当前上限，且未观察到退信时，上限才会增加5封。观察到退信后，上限会恢复为15封。目标并不保证实际发送量或邮箱信誉。"
+      },
+      "liveResearch": {
+        "title": "实时购物调研",
+        "description": "连接这两项服务，在起草前查看购物者的搜索结果并检查商品页面。",
+        "configured": "调研凭据已保存",
+        "missing": "需要连接两项服务",
+        "saved": "密钥已保存",
+        "verified": "API 密钥已验证",
+        "environment": "服务器密钥已配置",
+        "savedHelp": "运行调研时会检查 ScrapeLLM 访问权限。保存密钥不会发起付费搜索。"
       }
     },
     "relationships": {
@@ -1495,7 +1512,13 @@
         "draft": "起草消息",
         "applyDraft": "保存消息",
         "approve": "检查资格",
-        "complete": "准备完成"
+        "complete": "准备完成",
+        "researchQuery": "正在准备购物查询",
+        "startShoppingQuery": "正在开始购物搜索",
+        "pollShoppingQuery": "正在等待搜索回答",
+        "browseShopping": "正在检查商品页面",
+        "assessShopping": "正在核查购物证据",
+        "applyShopping": "正在保存购物调研"
       },
       "reasons": {
         "automation-disabled": "自动模式已关闭。",
@@ -1516,7 +1539,10 @@
         "provider-access": "供应商拒绝了访问。请在“集成”中检查 API 密钥和搜索权限。",
         "provider-quota": "已达到供应商的积分或使用量上限。请检查您的套餐。",
         "provider-rate-limit": "供应商暂时限制了请求。请稍候再开始下一批。",
-        "provider-uncertain": "此请求可能已处理。请先确认结果再重试。"
+        "provider-uncertain": "此请求可能已处理。请先确认结果再重试。",
+        "research-not-configured": "请在“集成”中连接购物调研服务。",
+        "shopping-research-held": "购物调研未获得有充分证据支持的发现。",
+        "shopping-research-expired": "购物证据已过期，请重新获取。"
       },
       "deliveryBlockers": {
         "sendingPaused": "运营手册中的发送已暂停。",
@@ -1538,7 +1564,16 @@
       "currentCap": "当前每日上限",
       "targetCap": "目标上限",
       "rampHeld": "暂停增加",
-      "rampHelp": "邮箱从每天15封开始。只有在完整的一天中达到当前上限，且未观察到退信时，上限才会增加5封。观察到退信后，上限会恢复为15封。目标并不保证实际发送量或邮箱信誉。"
+      "rampHelp": "邮箱从每天15封开始。只有在完整的一天中达到当前上限，且未观察到退信时，上限才会增加5封。观察到退信后，上限会恢复为15封。目标并不保证实际发送量或邮箱信誉。",
+      "research": {
+        "missingTitle": "购物调研需要连接服务",
+        "missingHelp": "在“集成”中连接 {providers}，即可根据实际观察到的购物证据准备新的潜在客户。",
+        "action": "连接调研服务",
+        "unknownProvider": "一项调研服务",
+        "blockedTitle": "购物调研需要处理",
+        "blockedHelp": "请检查 {providers} 的 API 访问权限和可用额度。此连接的问题解决前，调研将暂停。",
+        "reviewAction": "检查调研连接"
+      }
     },
     "sent": {
       "title": "已发送",

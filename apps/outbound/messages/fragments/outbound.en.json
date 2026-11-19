@@ -757,12 +757,16 @@
         "setup": {
           "apollo": "Save the Apollo API key for your workspace here.",
           "clay": "Save your Clay API key to connect the workspace. You can set up enrichment later.",
-          "google": "Create a Google OAuth web application, add the redirect URI below, and save its client ID and client secret. Then connect each Gmail inbox."
+          "google": "Create a Google OAuth web application, add the redirect URI below, and save its client ID and client secret. Then connect each Gmail inbox.",
+          "scrapellm": "Use ScrapeLLM to capture actual shopper queries and the answers shown.",
+          "firecrawl": "Use Firecrawl to inspect rendered product pages and record supporting evidence."
         },
         "secret": {
           "apollo": "Apollo API key",
           "clay": "Clay API key",
-          "google": "Google OAuth client secret"
+          "google": "Google OAuth client secret",
+          "scrapellm": "ScrapeLLM API key",
+          "firecrawl": "Firecrawl API key"
         },
         "fields": {
           "clientId": "Google OAuth client ID",
@@ -798,7 +802,9 @@
           "clayTrial": "Try Clay",
           "clayKeys": "Clay API keys",
           "clayWorkspace": "Open Clay",
-          "clayApiDocs": "Clay API docs"
+          "clayApiDocs": "Clay API docs",
+          "scrapellmAccount": "Open ScrapeLLM",
+          "firecrawlAccount": "Open Firecrawl"
         },
         "routineHelp": "Optional for connecting. Configure an enrichment routine in your Clay workspace, then paste its routine ID here.",
         "routine": {
@@ -807,7 +813,8 @@
           }
         },
         "claySaved": "API key verified and saved.",
-        "claySavedPending": "API key verified and saved. Enrichment setup is still pending."
+        "claySavedPending": "API key verified and saved. Enrichment setup is still pending.",
+        "savedUnchecked": "Key saved. Access will be checked when the first research request runs."
       },
       "mailbox": {
         "help": "In Roger, open Manage Mailbox → Credentials and copy App Password. We check sending and reply access without sending an email.",
@@ -841,6 +848,16 @@
         },
         "maximumDailyCap": "Target maximum per inbox per day",
         "dailyCapHelp": "The target is capped at 50 and includes first emails and follow-ups. Mailboxes start at 15 per day. The limit rises by 5 only after a completed day reaches the current limit without an observed bounce. An observed bounce returns the limit to 15. A target does not guarantee sending volume or inbox reputation."
+      },
+      "liveResearch": {
+        "title": "Live shopping research",
+        "description": "Connect both services to observe shopper searches and inspect product pages before drafting.",
+        "configured": "Research credentials saved",
+        "missing": "Both connections needed",
+        "saved": "Key saved",
+        "verified": "API key verified",
+        "environment": "Server key configured",
+        "savedHelp": "ScrapeLLM access is checked when research runs. Saving its key does not run a paid search."
       }
     },
     "relationships": {
@@ -1495,7 +1512,13 @@
         "draft": "Preparing messages",
         "applyDraft": "Saving messages",
         "approve": "Checking eligibility",
-        "complete": "Preparation complete"
+        "complete": "Preparation complete",
+        "researchQuery": "Preparing shopper query",
+        "startShoppingQuery": "Starting shopper search",
+        "pollShoppingQuery": "Waiting for shopper answer",
+        "browseShopping": "Inspecting product pages",
+        "assessShopping": "Checking shopping evidence",
+        "applyShopping": "Saving shopping research"
       },
       "reasons": {
         "automation-disabled": "Automatic mode is off.",
@@ -1516,7 +1539,10 @@
         "provider-access": "The provider rejected access. Check the API key and search access in Integrations.",
         "provider-quota": "The provider’s credit or usage limit has been reached. Check your provider plan.",
         "provider-rate-limit": "The provider has temporarily limited requests. Wait before starting another batch.",
-        "provider-uncertain": "The request may have been processed. Check its outcome before trying again."
+        "provider-uncertain": "The request may have been processed. Check its outcome before trying again.",
+        "research-not-configured": "Connect the shopping research services in Integrations.",
+        "shopping-research-held": "Shopping research did not establish a supported finding.",
+        "shopping-research-expired": "Shopping evidence has expired; capture it again."
       },
       "deliveryBlockers": {
         "sendingPaused": "Sending is paused in the Playbook.",
@@ -1538,7 +1564,16 @@
       "currentCap": "Current daily limit",
       "targetCap": "Target maximum",
       "rampHeld": "Increase paused",
-      "rampHelp": "Mailboxes start at 15 per day. The limit rises by 5 only after a completed day reaches the current limit without an observed bounce. An observed bounce returns the limit to 15. A target does not guarantee sending volume or inbox reputation."
+      "rampHelp": "Mailboxes start at 15 per day. The limit rises by 5 only after a completed day reaches the current limit without an observed bounce. An observed bounce returns the limit to 15. A target does not guarantee sending volume or inbox reputation.",
+      "research": {
+        "missingTitle": "Shopping research needs a connection",
+        "missingHelp": "Connect {providers} in Integrations to prepare new prospects with observed shopping evidence.",
+        "action": "Connect research services",
+        "unknownProvider": "a research service",
+        "blockedTitle": "Shopping research needs attention",
+        "blockedHelp": "Check API access and available credits for {providers}. Research is paused while this connection needs attention.",
+        "reviewAction": "Review research connections"
+      }
     },
     "sent": {
       "title": "Sent",
