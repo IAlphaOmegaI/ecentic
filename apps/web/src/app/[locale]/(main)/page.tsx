@@ -46,8 +46,9 @@ export default async () => {
             createSoftwareApplicationSchema(pricing.schema.plans),
           ]}
         />
-        <Overview copy={copy.hero} />
-        <Journey copy={copy.loop} artwork={copy.hero.artwork} />
+        <Overview copy={copy.hero}>
+          <Journey copy={copy.loop} artwork={copy.hero.artwork} />
+        </Overview>
         <PilotProof />
         <ProductFilm copy={copy.film} />
         <Programs copy={copy.programs} />

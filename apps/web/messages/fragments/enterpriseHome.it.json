@@ -5,11 +5,6 @@
       "description": "Il layer per il commercio AI: correggi i dati prodotto letti dagli assistenti AI, prepara il checkout per gli acquisti AI e resta al passo quando cambiano le loro regole."
     },
     "hero": {
-      "spotlight": {
-        "title": "Aiuta l’IA a scegliere più facilmente i tuoi prodotti.",
-        "description": "ecentic confronta i tuoi prodotti con quelli della concorrenza, migliora le schede lette dall’IA e integra la procedura d’acquisto sui canali supportati.",
-        "label": "Illustrazione di una scheda prodotto sospesa sopra una griglia. Muovi il puntatore per esaminare la scheda."
-      },
       "eyebrow": "Il layer per il commercio AI",
       "title": "Un layer tra il tuo catalogo e l’AI che vende i tuoi prodotti.",
       "description": "Ogni canale di IA ha regole proprie per scegliere e acquistare prodotti. ecentic migliora i dati che legge, prepara la procedura di acquisto sui canali supportati e aiuta il tuo catalogo ad adattarsi quando le regole cambiano.",

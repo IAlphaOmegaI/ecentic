@@ -5,15 +5,16 @@ import { useInteractive } from "@/components/marketing/interactive/use-interacti
 import { useDocument } from "@/hooks/use-document";
 
 /** Give each part of the connected workflow time to read while it is visible. */
-export const useHeroJourney = (length: number) => {
+export const useHeroJourney = (length: number, interval = 4800) => {
   const container = useRef<HTMLDivElement>(null);
   const { document, window } = useDocument();
   const { ready, reduced } = useInteractive();
   const [active, setActive] = useState(0);
   const [visible, setVisible] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [paused, setPaused] = useState(false);
   const enhanced = ready && !reduced;
-  const playing = enhanced && visible && !hidden;
+  const playing = enhanced && visible && !hidden && !paused;
 
   useEffect(() => {
     if (!enhanced || !container.current) return;
@@ -37,14 +38,16 @@ export const useHeroJourney = (length: number) => {
     if (!playing || !window) return;
     const timer = window.setTimeout(() => {
       setActive((active + 1) % length);
-    }, 4800);
+    }, interval);
     return () => window.clearTimeout(timer);
-  }, [active, length, playing, window]);
+  }, [active, interval, length, playing, window]);
 
   return {
     container,
     active,
     enhanced,
     playing,
+    pause: () => setPaused(true),
+    resume: () => setPaused(false),
   };
 };

@@ -26,33 +26,31 @@ The public design audit includes every route family and both locales.
 
 ## Homepage `/`
 
-The 20 November floating-grid reference supersedes the connected hero on the homepage.
-Use a light, centered hero: specific commerce copy and the existing store-check/demo actions
-above one floating product folio. The dimensional tile field recedes beneath it, with a local
-red light pool and fine structural strokes. The red is decorative illustration light, not a
-product score or an error state. Use the existing semantic error foundation for that light and
-primary blue for commerce identity; do not introduce a new palette or copy the reference's
-financial branding or typography.
+The latest 20 November direction merges the homepage banner and five-stage explanation into
+one continuous blue opening composition. Restore the original `enterpriseHome.hero.title` and
+`description`, with the existing store-check/demo actions: the shorter experimental title lost
+important product positioning. Preserve the key information from the walkthrough as well.
+Do not restore the retired shoe/card or 3D box, or introduce a second feature illustration.
 
-`CommerceHeroScene` owns the CSS perspective, Hairline product geometry and bounded pointer
-banking. Native 3D CSS and shared Motion are sufficient; no WebGL dependency is required for
-this scene. Retain the complete server-rendered rest pose. Disable floating/tilt under reduced
-motion and pause when hidden or offscreen. Keep the object readable and contained on phones.
-The title and supporting copy live in `enterpriseHome.hero.spotlight`; keep all prose localized.
+Below the main message, reuse the complete original connected scene: store sources, central
+product workbench, écentic and AI channels. Keep exactly the five stages and their order:
+Connect → Simulate → Fix → Sell → Track. The current scene stays synchronized with its relevant
+existing description/destination link. Use one coherent illustration rather
+than five repeated isolated workbench cards or long padded scroll chapters. The native
+spreadsheet, sample product, comparison, listing changes, supported publication and separate
+recheck scenes remain intact.
+
+The user explicitly requests autoplay on a loop and removed the numbered selector strip and
+visible Pause control. Let the scene and its changing explanation carry the progression. Pause
+while hidden/offscreen or while the reader focuses its link, resume on blur, and respect reduced
+motion. Keep all five descriptions available in the unanimated presentation. Stabilize the
+illustration's position across short/long descriptions, and use shared Motion primitives.
 
 The previous connected blue banner is deliberately retained as `ConnectedOverview`, using
-`copy={messages.enterpriseHome.hero}`. Its `OverviewArtwork`, original title/description, CTA
-behavior and connected animation stay available for another page. Do not delete it as unused
-or replace its copy with the new spotlight copy. It still distinguishes illustrative AI
-comparisons, supported publication, merchant checkout and detected referrals.
-
-The deeper Connect → Simulate → Fix → Sell → Track walkthrough remains below the new hero.
-A recognizable sample sneaker, spreadsheet and listing paperwork supply its visual continuity.
-On desktop, the workbench changes beside the narrative as the reader scrolls. On mobile, each
-chapter's static example stays in normal document flow. Preserve descriptive platform links,
-inverse soft-button contrast and accurate Apply behavior. This is the detailed explanation;
-do not repeat it in the new hero. No artwork implies a native Excel integration, a live AI
-ranking, a guaranteed sale or an unimplemented pre-publication preview.
+`copy={messages.enterpriseHome.hero}`. Preserve its original title/description, actions and
+animation for reuse; do not delete it as unused. Preserve descriptive platform links,
+inverse soft-button contrast and accurate Apply behavior. No artwork implies a native Excel
+integration, a live AI ranking, a guaranteed sale or an unimplemented pre-publication preview.
 
 Keep mobile chapter spacing compact. Lead the Brands pain list with the inability to see why
 AI chooses competitors; name stores selling the same products instead of ambiguous “retailers”.

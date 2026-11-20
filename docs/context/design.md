@@ -631,37 +631,40 @@ not. A drawing enhances the narrative; it does not replace proof that needs to b
 The homepage film does not repeat its illustrative disclaimer below the closed preview; the
 full film retains its accessible transcript and contextual description.
 
-The 20 November homepage hero is a distinct, light composition: centered commerce copy and
-conversion controls sit above one floating product folio and a receding dimensional tile grid.
-Fine edges, the Hairline product drawing, the real écentic mark and restrained primary blue keep
-the commerce identity clear. A localized red light pool follows the reference's staging; it is
-an illustration light using the existing error-color foundation, not a measured outcome or UI
-error. This scoped art direction does not change status colors elsewhere or add a new palette.
-Use native CSS perspective and shared Motion for the floating object and bounded pointer tilt.
-Keep a complete server-rendered rest state, no motion-producing interaction under reduced
-motion, and sleep while hidden or offscreen. Give the object its own space below the copy;
-never obscure the heading or the CTAs. Mobile keeps the product readable without a miniature
-desktop arrangement.
+The latest 20 November direction merges the homepage banner and connected walkthrough into
+one continuous blue opening composition. Restore the original full `enterpriseHome.hero.title`
+and `description` above the existing conversion controls: the shorter experimental copy removed
+important product positioning. Retain the key information from both sections. Do not restore
+the retired shoe/card or Three.js box, or add another standalone featured object.
+
+The merged opening section uses the complete original connected illustration: store sources,
+central catalog/workbench, écentic and AI destinations. Keep exactly the same Connect → Simulate
+→ Fix → Sell → Track sequence, including spreadsheet rows, simulated comparisons, listing
+improvements, supported publication and separate rechecks. The active scene drives the relevant
+existing description and descriptive destination link.
+Use one coherent scene rather than repeated isolated cards or long padded scroll chapters.
+
+Autoplay runs on a loop, as the user explicitly requested. The subsequent review removes the
+numbered selector strip and visible Pause button: the scene and current explanation carry the
+progression. Stop while hidden/offscreen, while the reader focuses a stage link, and under
+reduced motion; resume when focus leaves. Keep all five descriptions available without animation
+and keep the illustration's position stable across descriptions of different lengths. Use
+shared Motion components and package links/buttons.
 
 The previous connected blue banner is preserved for reuse as `ConnectedOverview` in the
 homepage's enterprise components. Pass the original `enterpriseHome.hero` copy; its title,
-description, artwork, session-aware actions and animation remain intact. `OverviewArtwork`
-continues to show a store, central workbench and AI channels connected by product records.
-The new hero uses `hero.spotlight` copy and `CommerceHeroScene` instead of deleting or
-repainting that earlier component.
+description, artwork, session-aware actions and animation stay available.
 
-The five-stage explanation below the hero keeps its connected product workbench, spreadsheet
-rows, simulated comparison, clearer listing, supported publication and separate rechecks.
-Desktop follows the reader's scroll; mobile exposes each chapter's static example in normal
-flow. Keep the sneaker and source product facts consistent. The spreadsheet is illustrative
-catalog data, not a new Excel integration. Never imply a guaranteed selection, a live ranking,
-checkout inside unsupported providers or a rewrite preview before Apply publishes it.
+Keep the sample sneaker and source product facts consistent within this explanation. The
+spreadsheet is illustrative catalog data, not a new Excel integration. Never imply a guaranteed
+selection, a live ranking, checkout inside unsupported providers or a rewrite preview before
+Apply publishes it.
 
 On the homepage, signed-in visitors see “Go to dashboard” in place of “Book a demo” in the
 header, hero and closing section. Keep localized navigation intact. Resolve the session on the
 client so the public homepage stays statically rendered; unconfirmed sessions keep the demo
-action. The active light hero uses a primary store-check Button and a neutral soft secondary
-Button; the saved connected banner keeps its original inverse button treatment.
+action. The merged blue hero uses a primary store-check Button and a neutral inverse soft secondary
+Button; the saved connected banner keeps its original button treatment.
 
 Evidence components distinguish public studies, aggregate facts, live values and examples. Dense
 methodology can be disclosed in an accordion. Do not invent KPI definitions, remove material

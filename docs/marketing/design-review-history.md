@@ -484,3 +484,47 @@ and then explicitly requested that the existing component be saved for reuse.
 Reuse the retained banner from
 `apps/web/src/app/[locale]/(main)/_components/enterprise/connected-overview.tsx` with
 `<ConnectedOverview copy={messages.enterpriseHome.hero} />`.
+
+### Follow-up: change the object, use blue and real 3D
+
+The next two comments reject the shoe and the entire listing-card composition (“something else
+entirely”), request blue instead of red, and explicitly require actual 3D. They supersede the
+initial folio/CSS3D treatment above. Replace it with a real Three.js open commerce box above
+beveled grid tiles, with theme-blue lighting and cast shadows. Preserve the headline/actions,
+the detailed walkthrough and the saved `ConnectedOverview`.
+
+Load WebGL progressively over a complete static open-box illustration. Reduced motion shows a
+resting scene, hidden/offscreen rendering stops, repeated tiles are instanced and pixel density
+is bounded. A Three.js animation loop is authorized only for this scene; dispose its resources
+and keep ordinary controls on the shared Motion/package components.
+
+### Final follow-up: remove the header experiment and reuse the connected explanation
+
+The user then canceled the header work: “undo the header thing, just fix the bottom thing,
+ill find something better for the header.” This supersedes both object experiments above,
+including the request to refine the box's proportions. Keep the current headline, supporting
+copy and CTAs without the experimental illustration. Remove its renderer and dependencies.
+
+The selected “From product feed to AI checkout” section must use the old connected header
+component, with all its exact steps and relevant descriptions. Reuse the full store/catalog/AI
+composition and five scenes in one explanatory section with a visible stage progression and
+synchronized descriptions. Retain manual access, finite/pauseable animation and reduced-motion
+behavior. The saved `ConnectedOverview` and its original copy remain available for reuse.
+
+### Latest direction: merge the opening sections and loop the story
+
+The user clarified that the shortened main title lost needed information and requested merging
+the banner and second section while keeping the key information from both. Restore the original
+“one layer” positioning and supporting copy. Combine that message, the existing CTAs and the
+full connected five-stage explanation in one continuous blue opening composition, with no
+separate experimental object. Autoplay must run on a loop; retain pause, manual inspection,
+visibility safeguards and reduced-motion behavior. This supersedes the temporary text-only
+header and finite-playback arrangement immediately above.
+
+### Remove redundant stage chrome
+
+The follow-up selected the numbered Connect/Simulate/Fix/Sell/Track tab strip and asked whether
+it was needed, then explicitly requested removal of the Pause button. Remove both controls;
+the connected scene and synchronized stage explanation carry the looping story. Preserve the
+full headline, supporting copy and CTAs. Focused links, offscreen/hidden state and reduced-motion
+preferences still suspend movement, and the unanimated presentation retains all five descriptions.

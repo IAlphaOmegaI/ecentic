@@ -50,19 +50,21 @@ space. The viewer should recognize a cart, bag, product or word without reading 
 - Keep texture subordinate where it shares a plane with essential information.
 
 The audience panel, integration arc and global closing CTA may use tonal artwork.
-The 20 November homepage hero uses a floating product folio above a receding tile grid,
-with a Hairline product drawing on its face and localized red illustration light beneath it.
-`CommerceHeroScene` uses native CSS perspective and shared Motion; the card, fine edges and
-shadow remain visible before enhancement. Pointer banking is bounded, touch scroll remains
-native, and reduced motion/hidden/offscreen states stop movement. Color derives from semantic
-foundations; the red light is a local illustration treatment, not a UI status or new palette.
+The latest 20 November direction retires the homepage shoe/card and 3D open-box experiments
+and merges the banner with the connected walkthrough. Restore the full original product
+positioning above the complete HTML/CSS source → product workbench → AI composition. One
+continuous blue opening field contains the title, supporting copy, CTAs and five-stage story.
+Do not create another replacement object or repeat the same illustration in two sections.
 
-The earlier HTML/CSS connected hero remains intact in `ConnectedOverview` / `OverviewArtwork`
-for future reuse. Its native spreadsheet, product record and supported commerce stages remain
-the basis of the detailed homepage walkthrough. A moving record does not establish an AI
-ranking or checkout support. Preserve the blue sneaker/source facts, truthful labels and
-localized original copy. The new hero is an independent object study and must not become a
-second step-by-step process diagram.
+The earlier connected hero remains available in `ConnectedOverview` / `OverviewArtwork`.
+Reuse its five exact scenes and consistent sample product facts in the merged opening section.
+Synchronize the illustration with the current stage name and relevant explanation. The spreadsheet
+is illustrative catalog data; moving records do not establish live AI rankings or unsupported
+checkout capability. Preserve original localized copy and the saved banner API. The sequence
+autoplays on a loop, as explicitly requested. The numbered selector strip and visible Pause
+button were removed in the next review. Hidden, offscreen, focused-link and reduced-motion
+states stop movement; resume after focus leaves. Keep all five descriptions available without
+animation and keep the illustration stable while explanations change.
 
 The global closing subject is now a tonal shopping bag; it is not the former generic Hairline
 basket. The footer retains a small trademark and a separate **tonal product-selection graphic**

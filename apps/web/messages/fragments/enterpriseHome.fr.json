@@ -5,11 +5,6 @@
       "description": "La couche commerce IA : corrigez les données produit lues par les assistants IA, préparez votre paiement pour les achats par IA et adaptez-vous à l’évolution de leurs règles."
     },
     "hero": {
-      "spotlight": {
-        "title": "Aidez l’IA à choisir vos produits plus facilement.",
-        "description": "ecentic compare vos produits aux offres concurrentes, améliore les fiches lues par l’IA et intègre le paiement sur les canaux compatibles.",
-        "label": "Illustration d’une fiche produit flottant au-dessus d’une grille. Déplacez le pointeur pour examiner la carte."
-      },
       "eyebrow": "La couche commerce IA",
       "title": "Une couche entre votre catalogue et l’IA qui le vend.",
       "description": "Chaque canal d’IA a ses propres règles pour choisir et acheter des produits. ecentic améliore les données lues par l’IA, prépare le paiement sur les canaux compatibles et aide votre catalogue à suivre l’évolution de leurs règles.",

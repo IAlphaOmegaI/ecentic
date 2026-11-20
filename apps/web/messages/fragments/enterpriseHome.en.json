@@ -5,11 +5,6 @@
       "description": "The AI commerce layer: fix the product data AI assistants read, get checkout ready for AI to buy, and keep up when their rules change."
     },
     "hero": {
-      "spotlight": {
-        "title": "Make your products easier for AI to choose.",
-        "description": "ecentic compares your products with competitors, improves the listings AI reads, and connects checkout where it’s supported.",
-        "label": "Illustration of a product listing floating above a grid. Move your pointer to inspect the card."
-      },
       "eyebrow": "The AI commerce layer",
       "title": "One layer between your catalog and the AI that sells it.",
       "description": "Every AI channel has its own rules for choosing and buying products. ecentic improves the data they read, gets checkout ready on supported channels and helps your catalog keep up as their rules change.",
