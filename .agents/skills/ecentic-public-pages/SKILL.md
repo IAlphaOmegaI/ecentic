@@ -26,43 +26,37 @@ The public design audit includes every route family and both locales.
 
 ## Homepage `/`
 
-A custom HTML/CSS motion graphic leads the centered blue hero. The 16 November Naratix
-reference review replaces the six-card sneaker carousel with one anchored connected system:
-store/catalog source, écentic workbench and AI channels. Keep all three visible while records
-travel through connections and the workbench reveals catalog import, simulated comparison,
-a clearer listing title, supported publication and separate rechecks. Use the existing blue
-sneaker photograph and one example SKU throughout. The rewritten title uses only the source
-product facts. Label the product as an illustrative example; do not imply a live AI ranking,
-a guaranteed sale or a pre-publication rewrite-preview capability.
+The 20 November floating-grid reference supersedes the connected hero on the homepage.
+Use a light, centered hero: specific commerce copy and the existing store-check/demo actions
+above one floating product folio. The dimensional tile field recedes beneath it, with a local
+red light pool and fine structural strokes. The red is decorative illustration light, not a
+product score or an error state. Use the existing semantic error foundation for that light and
+primary blue for commerce identity; do not introduce a new palette or copy the reference's
+financial branding or typography.
 
-White theme-rounded objects float on the blue hero without an enclosing panel. Preserve genuine
-provider marks, the blue écentic box, curved connections and native product-record details.
-Keep the headline/CTA position stable. The hero plays automatically while visible without player
-controls; pause offscreen and in hidden documents. Reduced motion retains a complete static
-relationship and meaningful listing state. Translate all prose and accessibility text while
-preserving JSON keys and identifiers. AI comparisons, supported channel publishing, merchant
-checkout and detected referrals must stay distinct.
+`CommerceHeroScene` owns the CSS perspective, Hairline product geometry and bounded pointer
+banking. Native 3D CSS and shared Motion are sufficient; no WebGL dependency is required for
+this scene. Retain the complete server-rendered rest pose. Disable floating/tilt under reduced
+motion and pause when hidden or offscreen. Keep the object readable and contained on phones.
+The title and supporting copy live in `enterpriseHome.hero.spotlight`; keep all prose localized.
 
-Use recognizable spreadsheet rows and columns, layered product/listing papers and a prominent
-product image so the work reads as an illustrated transformation, not a plain dashboard demo.
-The spreadsheet is an example of catalog data, not a claim of native Excel integration.
+The previous connected blue banner is deliberately retained as `ConnectedOverview`, using
+`copy={messages.enterpriseHome.hero}`. Its `OverviewArtwork`, original title/description, CTA
+behavior and connected animation stay available for another page. Do not delete it as unused
+or replace its copy with the new spotlight copy. It still distinguishes illustrative AI
+comparisons, supported publication, merchant checkout and detected referrals.
 
-The deeper five-stage explanation follows the same product. On desktop, a workbench stays beside
-the narrative and changes with the reader's scroll. Mobile exposes each chapter's static example
-in the normal document flow. Keep the existing platform links and detailed capability wording;
-the animation does not replace the merchant controls or factual qualifications.
-Keep the specific title, "One layer between your catalog and the AI that sells it," and enough
-copy to explain product data, supported checkout and changing channel rules. A generic slogan
-does not replace that meaning. Keep the blue store-check action and a white filled demo Button;
-omit a redundant integration-fact row. This 15 November review supersedes the earlier split hero
-and its briefly tested generic headline. Lead the Brands pain list with the inability
-to see why AI chooses competitors; name stores selling the same products instead of ambiguous
-"retailers". The homepage pricing section ends in a full-width "See pricing" navigation row.
-The five-stage Connect → Simulate → Fix → Sell → Track story remains a connected roadmap, with
-normal font numerals on one continuous dark section. The shared product record supplies its
-visual continuity. Keep mobile chapter spacing compact. Channel and integration tiles become compact
-logo/title/status rows on phones while retaining their desktop card layout; status stays at
-the far side and the mobile channel arrow is omitted.
+The deeper Connect → Simulate → Fix → Sell → Track walkthrough remains below the new hero.
+A recognizable sample sneaker, spreadsheet and listing paperwork supply its visual continuity.
+On desktop, the workbench changes beside the narrative as the reader scrolls. On mobile, each
+chapter's static example stays in normal document flow. Preserve descriptive platform links,
+inverse soft-button contrast and accurate Apply behavior. This is the detailed explanation;
+do not repeat it in the new hero. No artwork implies a native Excel integration, a live AI
+ranking, a guaranteed sale or an unimplemented pre-publication preview.
+
+Keep mobile chapter spacing compact. Lead the Brands pain list with the inability to see why
+AI chooses competitors; name stores selling the same products instead of ambiguous “retailers”.
+The homepage pricing section ends in a full-width “See pricing” navigation row.
 
 Audience sections combine their own copy with tonal artwork. The integrations arc can have
 ASCII atmosphere while genuine provider marks stay clear. Capability cards use complete
@@ -71,7 +65,7 @@ above them. An arc of provider logos alone does not replace those cards. Remove 
 tag strips and accidental edge clipping.
 Dense catalog findings belong behind supporting disclosure. Keep the original proof media.
 
-The 19 November review keeps the approved header, hero and five-stage walkthrough. Follow the
+The 19 November review retains the five-stage walkthrough and shorter page structure. Follow the
 walkthrough with compact, publication-gated DUA evidence and the existing product film so readers
 can inspect evidence before the longer capability sections. Preserve the traffic metric's scope,
 period, attribution caveat and source links; do not repeat the same pilot result later.

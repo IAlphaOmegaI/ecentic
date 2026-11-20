@@ -460,3 +460,27 @@ The report's simulated reviewers are not endorsements or reviews by the named re
   page titles and explicit social-title overrides.
 
 Visual checks stay in subagent contexts; no screenshots are reattached to the main conversation.
+
+## Floating commerce hero — 20 November 2026
+
+The user found the connected hero too similar to the detailed walkthrough and supplied a
+reference with one tilted object above a receding tile field and localized red light. They asked
+for a commerce-focused interpretation in écentic's design language, with a new title/subtitle,
+and then explicitly requested that the existing component be saved for reuse.
+
+- The active homepage hero becomes a floating product folio over a dimensional grid. Use
+  fine strokes, a Hairline product drawing, the genuine écentic mark and semantic theme colors.
+  The red pool is decorative light confined to this illustration, not a UI error state.
+- Keep the new title, description and accessible illustration label in `hero.spotlight` across
+  all seven locales. The copy describes product comparisons, listing improvements and supported
+  checkout without making ranking or sales guarantees.
+- Preserve the old banner as `ConnectedOverview` and its original `enterpriseHome.hero` copy,
+  `OverviewArtwork` animation and session-aware CTAs. The deeper five-stage walkthrough stays
+  in place; this request supersedes the 19 November instruction to keep the hero unchanged.
+- Native CSS3D and shared Motion supply the requested perspective and interaction without a
+  new rendering dependency. The complete rest pose renders on the server; reduced motion,
+  offscreen and hidden-document states stop movement.
+
+Reuse the retained banner from
+`apps/web/src/app/[locale]/(main)/_components/enterprise/connected-overview.tsx` with
+`<ConnectedOverview copy={messages.enterpriseHome.hero} />`.

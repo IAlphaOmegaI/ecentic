@@ -1,0 +1,409 @@
+/* Illustration geometry only. All paint and corner treatments use the shared theme. */
+.commerce-hero-scene {
+  height: calc(var(--spacing) * 116);
+  contain: layout style;
+}
+.commerce-hero-world {
+  overflow: hidden;
+  perspective: calc(var(--spacing) * 260);
+  perspective-origin: 50% 34%;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 9%,
+    black 88%,
+    transparent
+  );
+}
+.commerce-hero-floor {
+  position: absolute;
+  top: calc(var(--spacing) * 4);
+  left: 50%;
+  width: calc(var(--spacing) * 376);
+  height: calc(var(--spacing) * 264);
+  transform: translateX(-50%) rotateX(66deg)
+    translateY(calc(var(--spacing) * -80));
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
+  mask-image: radial-gradient(ellipse at 50% 48%, black 14%, transparent 68%);
+}
+.commerce-hero-light {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 55%,
+    var(--color-error) 0%,
+    color-mix(in srgb, var(--color-error) 75%, transparent) 9%,
+    color-mix(in srgb, var(--color-error) 28%, transparent) 24%,
+    transparent 46%
+  );
+  opacity: 0.9;
+}
+.commerce-hero-tiles {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(21, 1fr);
+  grid-template-rows: repeat(17, 1fr);
+  gap: calc(var(--spacing) * 1.5);
+  transform: translateZ(1px);
+}
+.commerce-hero-tiles > span {
+  border: 1px solid
+    color-mix(in srgb, var(--color-foreground-rich) 15%, transparent);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-background-rich) 45%, transparent);
+  box-shadow:
+    0 var(--spacing) 0
+    color-mix(in srgb, var(--color-foreground-rich) 20%, transparent),
+    inset 0 1px 0 var(--color-background-rich);
+}
+.commerce-hero-shadow {
+  position: absolute;
+  top: 88%;
+  left: 37%;
+  width: 31%;
+  height: 6%;
+  border-radius: var(--radius-full);
+  background: var(--color-foreground-rich);
+  filter: blur(calc(var(--spacing) * 2));
+}
+.commerce-hero-grid-cross {
+  position: absolute;
+  z-index: 1;
+  top: 53%;
+  width: calc(var(--spacing) * 8);
+  height: calc(var(--spacing) * 8);
+  color: var(--color-foreground-dimmed);
+  transform: translateZ(3px);
+}
+.commerce-hero-grid-cross::before,
+.commerce-hero-grid-cross::after {
+  position: absolute;
+  content: "";
+  background: currentColor;
+}
+.commerce-hero-grid-cross::before {
+  width: 100%;
+  height: 1px;
+  top: 50%;
+}
+.commerce-hero-grid-cross::after {
+  width: 1px;
+  height: 100%;
+  left: 50%;
+}
+.commerce-hero-grid-cross-left {
+  left: 21%;
+}
+.commerce-hero-grid-cross-right {
+  right: 21%;
+}
+.commerce-hero-object {
+  position: absolute;
+  top: 19%;
+  left: 50%;
+  width: calc(var(--spacing) * 116);
+  aspect-ratio: 1.7;
+  transform: translateX(-50%);
+  perspective: calc(var(--spacing) * 220);
+}
+.commerce-hero-float,
+.commerce-hero-bank {
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+.commerce-hero-folio {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform: rotateX(20deg) rotateY(-16deg) rotateZ(-9deg);
+  transform-style: preserve-3d;
+}
+.commerce-hero-paper,
+.commerce-hero-cover {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  border: 1px solid
+    color-mix(in srgb, var(--color-foreground-rich) 45%, transparent);
+}
+.commerce-hero-paper-back {
+  background: var(--color-primary-dimmed);
+  transform: translateZ(-12px) translateY(7px);
+}
+.commerce-hero-paper-middle {
+  background: var(--color-background-rich);
+  transform: translateZ(-6px) translateY(3px);
+}
+.commerce-hero-spine {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-primary);
+  transform: translateZ(-15px) translateX(-7px) translateY(11px);
+}
+.commerce-hero-cover {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    var(--color-background-rich),
+    var(--color-background) 60%,
+    var(--color-background-dimmed)
+  );
+  box-shadow:
+    0 1px 1px color-mix(in srgb, var(--color-background-rich) 80%, transparent)
+    inset,
+    0 calc(var(--spacing) * 2) calc(var(--spacing) * 6)
+    color-mix(in srgb, var(--color-foreground-rich) 8%, transparent);
+}
+.commerce-hero-cover-top {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 3);
+  padding: calc(var(--spacing) * 4) calc(var(--spacing) * 5)
+    calc(var(--spacing) * 3);
+  border-bottom: 1px solid var(--color-accent-foreground);
+}
+.commerce-hero-top-rule {
+  width: calc(var(--spacing) * 22);
+  height: calc(var(--spacing) * 1.5);
+  background: var(--color-foreground-rich);
+  border-radius: var(--radius-full);
+}
+.commerce-hero-corner-mark {
+  width: calc(var(--spacing) * 2);
+  height: calc(var(--spacing) * 2);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  margin-left: auto;
+}
+.commerce-hero-product {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  flex: 1;
+  min-height: 0;
+}
+.commerce-hero-shoe {
+  display: grid;
+  place-items: center;
+  position: relative;
+  min-width: 0;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-primary) 9%, var(--color-background-rich)),
+    color-mix(in srgb, var(--color-primary) 3%, var(--color-background-rich))
+  );
+  border-right: 1px solid var(--color-accent-foreground);
+}
+.commerce-hero-shoe > svg {
+  width: 100%;
+  height: 100%;
+}
+.commerce-hero-shoe :is(path, polygon, ellipse, line) {
+  fill: color-mix(
+    in srgb,
+    var(--color-primary) 6%,
+    var(--color-background-rich)
+  );
+  stroke: var(--color-primary-text);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.commerce-hero-shoe .nf {
+  fill: none;
+}
+.commerce-hero-shoe .lo {
+  stroke: var(--color-primary-rich);
+}
+.commerce-hero-shoe .fo {
+  stroke: none;
+}
+.commerce-hero-shoe .hi {
+  stroke: var(--color-primary);
+  stroke-width: 1.5;
+}
+.commerce-hero-facts {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(var(--spacing) * 4);
+  padding: calc(var(--spacing) * 5);
+}
+.commerce-hero-label-lines,
+.commerce-hero-detail-lines {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 1.5);
+}
+.commerce-hero-label-lines span {
+  height: calc(var(--spacing) * 1.5);
+  width: 90%;
+  background: var(--color-foreground-rich);
+  border-radius: var(--radius-full);
+}
+.commerce-hero-label-lines span:last-child {
+  width: 63%;
+}
+.commerce-hero-detail-lines span {
+  height: var(--spacing);
+  background: var(--color-accent-foreground);
+  border-radius: var(--radius-full);
+}
+.commerce-hero-detail-lines span:nth-child(2) {
+  width: 88%;
+}
+.commerce-hero-detail-lines span:nth-child(3) {
+  width: 68%;
+}
+.commerce-hero-swatches {
+  display: flex;
+  gap: calc(var(--spacing) * 2);
+}
+.commerce-hero-swatches i {
+  width: calc(var(--spacing) * 3.5);
+  height: calc(var(--spacing) * 3.5);
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  border: 1px solid var(--color-primary-text);
+}
+.commerce-hero-swatches i:nth-child(2) {
+  background: var(--color-background-rich);
+  border-color: var(--color-accent-foreground);
+}
+.commerce-hero-swatches i:nth-child(3) {
+  background: var(--color-foreground-rich);
+  border-color: var(--color-foreground-rich);
+}
+.commerce-hero-barcode {
+  display: flex;
+  align-items: stretch;
+  gap: calc(var(--spacing) * 0.5);
+  height: calc(var(--spacing) * 5);
+}
+.commerce-hero-barcode span {
+  width: 1px;
+  background: var(--color-foreground-dimmed);
+}
+.commerce-hero-barcode span:nth-child(3n) {
+  width: var(--spacing);
+}
+.commerce-hero-barcode span:nth-child(5n) {
+  margin-right: calc(var(--spacing) * 0.5);
+}
+.commerce-hero-cover-bottom {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2.5);
+  padding: calc(var(--spacing) * 3) calc(var(--spacing) * 5);
+  border-top: 1px solid var(--color-accent-foreground);
+}
+.commerce-hero-bottom-rule {
+  width: calc(var(--spacing) * 12);
+  height: calc(var(--spacing) * 1);
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+}
+.commerce-hero-bottom-rule-short {
+  width: calc(var(--spacing) * 6);
+  height: calc(var(--spacing) * 1);
+  border-radius: var(--radius-full);
+  background: var(--color-accent-foreground);
+}
+.commerce-hero-registration {
+  margin-left: auto;
+  font-size: var(--text-xl);
+  line-height: 1;
+  color: var(--color-foreground-dimmed);
+}
+@media (width < 640px) {
+  .commerce-hero-scene {
+    height: calc(var(--spacing) * 84);
+  }
+  .commerce-hero-world {
+    perspective: calc(var(--spacing) * 176);
+  }
+  .commerce-hero-object {
+    top: 18%;
+    width: min(calc(var(--spacing) * 84), 74%);
+    aspect-ratio: 1.5;
+  }
+  .commerce-hero-floor {
+    top: 0;
+    width: calc(var(--spacing) * 260);
+    height: calc(var(--spacing) * 200);
+    transform: translateX(-50%) rotateX(68deg)
+      translateY(calc(var(--spacing) * -60));
+  }
+  .commerce-hero-shadow {
+    top: 76%;
+    left: 23%;
+    width: 58%;
+    height: 5%;
+  }
+  .commerce-hero-cover-top {
+    padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 3);
+  }
+  .commerce-hero-cover-top img {
+    width: calc(var(--spacing) * 5);
+    height: calc(var(--spacing) * 5);
+  }
+  .commerce-hero-top-rule {
+    width: calc(var(--spacing) * 15);
+    height: calc(var(--spacing) * 1);
+  }
+  .commerce-hero-facts {
+    gap: calc(var(--spacing) * 1.5);
+    padding: calc(var(--spacing) * 2.5);
+  }
+  .commerce-hero-label-lines span {
+    height: calc(var(--spacing) * 1.5);
+  }
+  .commerce-hero-detail-lines {
+    gap: calc(var(--spacing) * 1);
+  }
+  .commerce-hero-detail-lines span {
+    height: calc(var(--spacing) * 0.5);
+  }
+  .commerce-hero-swatches i {
+    width: calc(var(--spacing) * 2.5);
+    height: calc(var(--spacing) * 2.5);
+  }
+  .commerce-hero-barcode {
+    height: calc(var(--spacing) * 3);
+    gap: calc(var(--spacing) * 0.5);
+  }
+  .commerce-hero-barcode span:nth-child(3n) {
+    width: calc(var(--spacing) * 0.5);
+  }
+  .commerce-hero-cover-bottom {
+    padding: var(--spacing) calc(var(--spacing) * 3);
+  }
+  .commerce-hero-detail-lines span:nth-child(3) {
+    display: none;
+  }
+  .commerce-hero-registration {
+    font-size: var(--text-base);
+  }
+}
+@media (width >= 640px) and (height <= 850px) {
+  .commerce-hero-scene {
+    height: calc(var(--spacing) * 96);
+  }
+  .commerce-hero-object {
+    top: 22%;
+    width: calc(var(--spacing) * 100);
+  }
+  .commerce-hero-shadow {
+    top: 90%;
+    height: 5%;
+  }
+  .commerce-hero-floor {
+    top: calc(var(--spacing) * -8);
+  }
+}

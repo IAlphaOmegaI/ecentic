@@ -631,46 +631,45 @@ not. A drawing enhances the narrative; it does not replace proof that needs to b
 The homepage film does not repeat its illustrative disclaimer below the closed preview; the
 full film retains its accessible transcript and contextual description.
 
-The homepage hero uses one connected native HTML/CSS system on the blue cutout: a recognizable
-store, the écentic product workbench and AI channels remain in place while a product record moves
-through the work. The Naratix reference review on 16 November replaces the sliding six-card
-carousel with this anchored composition. Use its principle of a visible connected process, not
-its factory assets or product claims. A blue sneaker photograph and one example SKU persist
-through catalog import, simulated comparison, a clearer title, supported publication and rechecking.
-The source description supplies the facts used in the rewritten title; never invent specifications
-or imply that a generated rewrite can be previewed before Apply publishes it. The follow-up
-asks for richer native illustrations and recognizable spreadsheet structure: column letters, row
-numbers and a highlighted product record, followed by dimensional product/listing paperwork.
-This is illustrative catalog data, not a new Excel integration claim. Avoid a plain UI-demo card
-with a small product stranded in empty space.
+The 20 November homepage hero is a distinct, light composition: centered commerce copy and
+conversion controls sit above one floating product folio and a receding dimensional tile grid.
+Fine edges, the Hairline product drawing, the real écentic mark and restrained primary blue keep
+the commerce identity clear. A localized red light pool follows the reference's staging; it is
+an illustration light using the existing error-color foundation, not a measured outcome or UI
+error. This scoped art direction does not change status colors elsewhere or add a new palette.
+Use native CSS perspective and shared Motion for the floating object and bounded pointer tilt.
+Keep a complete server-rendered rest state, no motion-producing interaction under reduced
+motion, and sleep while hidden or offscreen. Give the object its own space below the copy;
+never obscure the heading or the CTAs. Mobile keeps the product readable without a miniature
+desktop arrangement.
 
-White illustrated surfaces with theme-rounded corners float directly on the blue hero. There is
-no enclosing stage border or panel. Keep genuine provider marks and the blue écentic box visible,
-with curved connections and moving records showing the relationship. The main title and conversion
-row remain stable while short explanations change with the workbench. The visual is labeled as an
-illustrative example. AI comparisons and detected referrals are separate observations; do not show
-fabricated performance totals, guaranteed selection or checkout inside unsupported AI providers.
+The previous connected blue banner is preserved for reuse as `ConnectedOverview` in the
+homepage's enterprise components. Pass the original `enterpriseHome.hero` copy; its title,
+description, artwork, session-aware actions and animation remain intact. `OverviewArtwork`
+continues to show a store, central workbench and AI channels connected by product records.
+The new hero uses `hero.spotlight` copy and `CommerceHeroScene` instead of deleting or
+repainting that earlier component.
 
-The hero advances automatically while visible, with enough time to read each phase and no arrows,
-stage dots or playback controls. Pause when hidden or offscreen. Reduced motion shows a complete
-static relationship and a meaningful listing state, with no automatic advancement. Below the hero,
-the five-stage Connect → Simulate → Fix → Sell → Track explanation follows the same product. On
-desktop its workbench stays alongside the narrative and advances as the reader scrolls. On mobile,
-each chapter has its own static example so nothing is trapped behind a sticky overlay. Keep the
-existing platform links and precise feature qualifications. This deeper story replaces disconnected
-Hairline props only in this homepage section; it does not retire Hairline elsewhere.
-The hero's demo action uses a white filled package Button beside the blue store-check button.
+The five-stage explanation below the hero keeps its connected product workbench, spreadsheet
+rows, simulated comparison, clearer listing, supported publication and separate rechecks.
+Desktop follows the reader's scroll; mobile exposes each chapter's static example in normal
+flow. Keep the sneaker and source product facts consistent. The spreadsheet is illustrative
+catalog data, not a new Excel integration. Never imply a guaranteed selection, a live ranking,
+checkout inside unsupported providers or a rewrite preview before Apply publishes it.
+
 On the homepage, signed-in visitors see “Go to dashboard” in place of “Book a demo” in the
-header, hero and closing section. Keep each button's styling and localized navigation intact.
-Resolve the session on the client so the public homepage stays statically rendered; visitors
-without a confirmed session retain the demo action.
+header, hero and closing section. Keep localized navigation intact. Resolve the session on the
+client so the public homepage stays statically rendered; unconfirmed sessions keep the demo
+action. The active light hero uses a primary store-check Button and a neutral soft secondary
+Button; the saved connected banner keeps its original inverse button treatment.
 
 Evidence components distinguish public studies, aggregate facts, live values and examples. Dense
 methodology can be disclosed in an accordion. Do not invent KPI definitions, remove material
 qualifications or use a dramatic graphic to blur simulation and observed traffic.
 
-The 19 November homepage review retains the approved header, hero and five-stage illustrated
-walkthrough. Compact, publication-gated DUA evidence and the original product film follow the
+The 19 November homepage review retains the five-stage illustrated walkthrough; the hero is
+separately updated by the 20 November reference above. Compact, publication-gated DUA evidence
+and the original product film follow the
 walkthrough. The pilot appears once, with its combined AI/direct-visits metric, measurement
 period, attribution caveat and sources intact. One source/channel directory replaces the
 homepage's repeated connection diagram, timeline, matrix, channel grid and integration accordion;

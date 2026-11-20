@@ -5,6 +5,11 @@
       "description": "La capa de comercio con IA: corrige los datos de producto que leen los asistentes, prepara el pago para que la IA pueda comprar y adáptate a sus reglas."
     },
     "hero": {
+      "spotlight": {
+        "title": "Facilita que la IA elija tus productos.",
+        "description": "ecentic compara tus productos con los de la competencia, mejora las fichas que lee la IA e integra el proceso de pago en los canales compatibles.",
+        "label": "Ilustración de una ficha de producto flotando sobre una cuadrícula. Mueve el puntero para examinar la tarjeta."
+      },
       "eyebrow": "La capa de comercio con IA",
       "title": "Una capa entre tu catálogo y la IA que vende tus productos.",
       "description": "Cada canal de IA tiene sus propias reglas para elegir y comprar productos. ecentic mejora la información que leen, prepara el proceso de pago en los canales compatibles y ayuda a adaptar tu catálogo cuando cambian sus reglas.",
