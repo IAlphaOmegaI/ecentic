@@ -178,7 +178,13 @@
           "tertiary": "Clear filters",
           "quaternary": "Close import"
         },
-        "pagination": "Prospect pages"
+        "pagination": "Prospect pages",
+        "toolbar": {
+          "filters": "Filters",
+          "more": "More",
+          "pipelineStatus": "Pipeline status",
+          "refreshing": "Refreshing…"
+        }
       },
       "productCategoryHelp": "Use the category stated by the product page. It fills the category placeholder.",
       "reviewCountHelp": "Digits only, copied from this product’s visible review count. Leave blank if it cannot be confirmed.",

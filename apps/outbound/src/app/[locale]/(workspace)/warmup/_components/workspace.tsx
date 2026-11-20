@@ -151,7 +151,7 @@ export const MailboxList = ({
           </DataTable>
         </div>
         {mailboxes.length > 25 && (
-          <div className="border-accent-foreground border-t px-4 py-4 sm:px-6">
+          <div className="px-4 py-4 sm:px-6">
             <DataTablePagination
               variant="soft"
               labels={{

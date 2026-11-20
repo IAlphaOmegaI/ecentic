@@ -178,7 +178,13 @@
           "tertiary": "Effacer les filtres",
           "quaternary": "Fermer l’importation"
         },
-        "pagination": "Pages de prospects"
+        "pagination": "Pages de prospects",
+        "toolbar": {
+          "filters": "Filtres",
+          "more": "Plus",
+          "pipelineStatus": "État du processus",
+          "refreshing": "Actualisation…"
+        }
       },
       "productCategoryHelp": "Utilisez la catégorie indiquée sur la page produit. Elle remplit la variable de catégorie.",
       "reviewCountHelp": "Chiffres uniquement, repris du nombre d’avis affiché pour ce produit. Laissez vide si ce nombre ne peut pas être confirmé.",

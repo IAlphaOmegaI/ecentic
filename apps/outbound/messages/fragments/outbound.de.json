@@ -178,7 +178,13 @@
           "tertiary": "Filter zurücksetzen",
           "quaternary": "Import schließen"
         },
-        "pagination": "Kontaktseiten"
+        "pagination": "Kontaktseiten",
+        "toolbar": {
+          "filters": "Filter",
+          "more": "Mehr",
+          "pipelineStatus": "Pipeline-Status",
+          "refreshing": "Wird aktualisiert…"
+        }
       },
       "productCategoryHelp": "Verwenden Sie die auf der Produktseite angegebene Kategorie. Sie füllt den Kategorieplatzhalter.",
       "reviewCountHelp": "Nur Ziffern, übernommen aus der sichtbaren Anzahl von Bewertungen dieses Produkts. Lassen Sie das Feld leer, wenn die Anzahl nicht bestätigt werden kann.",

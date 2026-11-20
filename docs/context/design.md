@@ -995,6 +995,13 @@ Retain search/filter recovery, a friendly retry with pending feedback, and match
 skeletons. Each toolbar, missing-field row, selection row and table/footer seam has one border
 owner, with only a few crosses at true workspace edges.
 
+On Outbound’s Prospects list, keep search directly visible and group secondary filters behind one
+Filters control with an active count. Import, refresh and related destinations belong in
+More instead of a second navigation band. Keep the primary Add action visible. A table and
+its adjacent section or pagination footer must not both draw the same outside edge; check
+populated, empty, loading and stacked layouts when choosing the border owner.
+<!-- 2026-11-20: Outbound border cleanup and simpler Prospects controls requested in browser review. -->
+
 Keep pagination compact and sentence case, with the range and page actions in one useful
 footer. Avoid duplicate full-width count/pager rows, tracked uppercase labels and redundant
 bottom padding. The workspace supplies clearance for Judy; the catalog must not add a second

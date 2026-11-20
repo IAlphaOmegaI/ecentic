@@ -321,7 +321,7 @@ export const LinkedInQueueTable = ({
           inert={pending}
         >
           <DataTable
-            className="w-full table-fixed"
+            className="w-full table-fixed border-b-0"
             classList={{
               "header-cell":
                 "h-10 bg-background-dimmed/50 px-4 font-medium text-xs normal-case tracking-normal",

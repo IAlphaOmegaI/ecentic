@@ -178,7 +178,13 @@
           "tertiary": "Cancella filtri",
           "quaternary": "Chiudi importazione"
         },
-        "pagination": "Pagine dei potenziali contatti"
+        "pagination": "Pagine dei potenziali contatti",
+        "toolbar": {
+          "filters": "Filtri",
+          "more": "Altro",
+          "pipelineStatus": "Stato del processo",
+          "refreshing": "Aggiornamento…"
+        }
       },
       "productCategoryHelp": "Usa la categoria indicata nella pagina del prodotto. Compila il segnaposto della categoria.",
       "reviewCountHelp": "Solo cifre, copiate dal numero di recensioni visibile di questo prodotto. Lascia vuoto se non è possibile confermarlo.",

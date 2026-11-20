@@ -201,7 +201,7 @@ export const AccountControl = () => {
       <DropdownMenuContent
         align="end"
         sideOffset={10}
-        className="w-64 border border-accent-foreground bg-background-rich p-1 font-normal"
+        className="w-64 bg-background-rich p-1 font-normal"
       >
         <div className="px-2 py-2.5">
           <p className="truncate font-semibold text-foreground-rich text-sm">

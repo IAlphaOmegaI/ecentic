@@ -178,7 +178,13 @@
           "tertiary": "絞り込みを解除",
           "quaternary": "インポートを閉じる"
         },
-        "pagination": "見込み顧客のページ"
+        "pagination": "見込み顧客のページ",
+        "toolbar": {
+          "filters": "絞り込み",
+          "more": "その他",
+          "pipelineStatus": "進捗状況",
+          "refreshing": "更新中…"
+        }
       },
       "productCategoryHelp": "商品ページに記載されたカテゴリーを使います。カテゴリープレースホルダーに入る値です。",
       "reviewCountHelp": "対象商品の画面に表示されるレビュー件数を数字のみで入力してください。確認できない場合は空欄にします。",

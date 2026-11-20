@@ -178,7 +178,13 @@
           "tertiary": "清除筛选",
           "quaternary": "关闭导入"
         },
-        "pagination": "潜在客户分页"
+        "pagination": "潜在客户分页",
+        "toolbar": {
+          "filters": "筛选",
+          "more": "更多",
+          "pipelineStatus": "流程状态",
+          "refreshing": "刷新中…"
+        }
       },
       "productCategoryHelp": "使用商品页面标明的类别，用于填入类别占位符。",
       "reviewCountHelp": "仅输入数字，须与该商品页面显示的评论数一致。无法确认时请留空。",

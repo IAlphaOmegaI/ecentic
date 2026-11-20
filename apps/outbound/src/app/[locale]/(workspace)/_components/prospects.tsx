@@ -3,10 +3,12 @@
 import {
   ArrowRightIcon,
   CheckBadgeIcon,
+  ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   FileSearchIcon,
   FilterIcon,
+  LoaderIcon,
   OfficeIcon,
   PlusIcon,
   QuoteIcon,
@@ -23,13 +25,26 @@ import {
   DialogDescription,
   DialogPopup,
   DialogTitle,
-  DialogTrigger,
 } from "@zenncore/web/components/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@zenncore/web/components/dropdown-menu";
 import {
   field,
   InferredForm,
   InferredFormField,
 } from "@zenncore/web/components/inferred-form";
+import {
+  Popover,
+  PopoverPopup,
+  PopoverPositioner,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@zenncore/web/components/popover";
 import {
   Select,
   SelectItem,
@@ -48,7 +63,7 @@ import {
 } from "@zenncore/web/components/table";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useMessages, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import { z } from "zod";
 import { Link, useRouter } from "@/i18n/navigation";
 import {
@@ -373,6 +388,12 @@ export const ProspectList = ({
   const [lifecycle, setLifecycle] = useState("all");
   const [linkedin, setLinkedin] = useState("all");
   const [page, setPage] = useState(0);
+  const [importOpen, setImportOpen] = useState(false);
+  const [refreshing, startRefresh] = useTransition();
+  const actionsTrigger = useRef<HTMLButtonElement>(null);
+  const filterCount = [status, lifecycle, linkedin].filter(
+    (value) => value !== "all",
+  ).length;
   const filtered = prospects.filter(
     (prospect) =>
       (status === "all" || prospect.status === status) &&
@@ -431,184 +452,211 @@ export const ProspectList = ({
   };
   return (
     <>
-      <div className="flex flex-wrap items-center justify-between gap-3 border-accent-foreground border-b px-4 py-4 sm:px-6">
-        <p className="font-medium text-foreground-rich text-sm tabular-nums">
-          {t("prospect.list.count", { count: prospects.length })}
-        </p>
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            variant="soft"
-            color="neutral"
-            onClick={() => router.refresh()}
+      <div className="space-y-4 border-accent-foreground border-b px-4 py-4 sm:px-6">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <p
+            className="flex items-center gap-2 font-medium text-foreground-rich text-sm tabular-nums"
+            role="status"
           >
-            {t("prospect.progress.action.primary")}
-          </Button>
-          <Button variant="soft" color="neutral" render={<Link href="/sent" />}>
-            {t("nav.sent")}
-          </Button>
-          <Dialog>
-            <DialogTrigger render={<Button variant="soft" color="neutral" />}>
-              <UploadIcon aria-hidden className="size-4" />
-              {t("import.action.primary")}
-            </DialogTrigger>
-            <DialogPopup
-              className="z-50 mt-0 max-h-[85dvh] w-2xl overflow-y-auto bg-background-rich p-0"
-              classList={{ backdrop: "z-50" }}
-            >
-              <div className="flex items-start gap-4 border-accent-foreground border-b p-6">
-                <div className="min-w-0 flex-1">
-                  <DialogTitle className="m-0 font-semibold text-xl">
-                    {t("import.title")}
-                  </DialogTitle>
-                  <DialogDescription className="mt-2 mb-0 text-sm leading-6">
-                    {t("import.description")}
-                  </DialogDescription>
-                </div>
-                <DialogClose
-                  render={
-                    <Button variant="ghost" color="neutral" size="icon" />
-                  }
-                  aria-label={t("prospect.list.action.quaternary")}
+            {refreshing ? (
+              <>
+                <LoaderIcon
+                  aria-hidden
+                  className="size-4 animate-spin motion-reduce:animate-none"
+                />
+                {t("prospect.list.toolbar.refreshing")}
+              </>
+            ) : (
+              t("prospect.list.count", { count: prospects.length })
+            )}
+          </p>
+          <div className="flex items-center gap-2">
+            <Button render={<Link href="/prospects/new" />}>
+              <PlusIcon aria-hidden className="size-4" />
+              {t("prospect.newTitle")}
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                ref={actionsTrigger}
+                render={<Button variant="soft" color="neutral" />}
+              >
+                {t("prospect.list.toolbar.more")}
+                <ChevronDownIcon aria-hidden className="size-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-60">
+                <DropdownMenuItem onClick={() => setImportOpen(true)}>
+                  <UploadIcon aria-hidden className="size-4" />
+                  {t("import.action.primary")}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  disabled={refreshing}
+                  onClick={() => startRefresh(() => router.refresh())}
                 >
-                  <XIcon aria-hidden className="size-4" />
-                </DialogClose>
-              </div>
-              <ImportForm />
-            </DialogPopup>
-          </Dialog>
-          <Button render={<Link href="/prospects/new" />}>
-            <PlusIcon aria-hidden className="size-4" />
-            {t("prospect.newTitle")}
-          </Button>
+                  {t("prospect.progress.action.primary")}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem render={<Link href="/sent" />}>
+                  {t("nav.sent")}
+                </DropdownMenuItem>
+                <DropdownMenuItem render={<Link href="/campaigns" />}>
+                  {t("prospect.progress.action.tertiary")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
-        {!automationEnabled && (
-          <PreparationBatch prospects={prospects} target={target} />
-        )}
-      </div>
-      <div className="space-y-2 border-accent-foreground border-b px-4 py-3 sm:px-6">
-        <p className="max-w-3xl text-foreground-dimmed text-sm leading-6">
-          {t("prospect.progress.help")}
-        </p>
-        <Button
-          variant="soft"
-          color="neutral"
-          render={<Link href="/campaigns" />}
-        >
-          {t("prospect.progress.action.tertiary")}
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="min-w-40 flex-1">
+            <TextField
+              value={search}
+              onValueChange={(value) => {
+                setSearch(value);
+                setPage(0);
+              }}
+            >
+              <SearchIcon
+                aria-hidden
+                className="ml-4 size-4 shrink-0 text-foreground-dimmed"
+              />
+              <TextFieldInput
+                aria-label={t("prospect.search")}
+                placeholder={t("prospect.search")}
+                className="text-sm"
+              />
+            </TextField>
+          </div>
+          <Popover>
+            <PopoverTrigger
+              render={({ className: _className, ...props }) => (
+                <Button {...props} variant="soft" color="neutral" />
+              )}
+            >
+              <FilterIcon aria-hidden className="size-4" />
+              {t("prospect.list.toolbar.filters")}
+              {filterCount > 0 && (
+                <span className="tabular-nums">({filterCount})</span>
+              )}
+            </PopoverTrigger>
+            <PopoverPositioner align="end" className="z-40">
+              <PopoverPopup className="w-80 max-w-[calc(100vw-2rem)] space-y-4 bg-background-rich p-4 motion-reduce:transition-none">
+                <PopoverTitle>
+                  {t("prospect.list.toolbar.filters")}
+                </PopoverTitle>
+                {[
+                  {
+                    key: "status",
+                    value: status,
+                    setter: setStatus,
+                    items: statusItems,
+                    label: t("prospect.list.toolbar.pipelineStatus"),
+                  },
+                  {
+                    key: "lifecycle",
+                    value: lifecycle,
+                    setter: setLifecycle,
+                    items: lifecycleItems,
+                    label: t("prospect.progress.lifecycleFilter"),
+                  },
+                  {
+                    key: "linkedin",
+                    value: linkedin,
+                    setter: setLinkedin,
+                    items: linkedinItems,
+                    label: t("prospect.progress.linkedinFilter"),
+                  },
+                ].map((filter) => (
+                  <div key={filter.key} className="space-y-2">
+                    <p className="text-foreground-dimmed text-xs">
+                      {filter.label}
+                    </p>
+                    <Select
+                      items={filter.items}
+                      value={filter.value}
+                      onValueChange={(value) => {
+                        filter.setter(value ?? "all");
+                        setPage(0);
+                      }}
+                    >
+                      <SelectTrigger
+                        aria-label={filter.label}
+                        className="w-full text-sm"
+                        disabled={
+                          filter.key === "lifecycle" && progress === null
+                        }
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectPositioner align="start" className="z-50">
+                        <SelectPopup className="min-w-48 bg-background-rich">
+                          {filter.items.map((item) => (
+                            <SelectItem
+                              key={item.value}
+                              value={item.value}
+                              className="text-sm"
+                            >
+                              {item.label}
+                            </SelectItem>
+                          ))}
+                        </SelectPopup>
+                      </SelectPositioner>
+                    </Select>
+                  </div>
+                ))}
+                <p className="text-foreground-dimmed text-xs leading-5">
+                  {t("prospect.progress.help")}
+                </p>
+                {filterCount > 0 && (
+                  <Button variant="soft" color="neutral" onClick={clear}>
+                    {t("prospect.list.action.tertiary")}
+                  </Button>
+                )}
+              </PopoverPopup>
+            </PopoverPositioner>
+          </Popover>
+          {activeFilter && (
+            <Button variant="soft" color="neutral" onClick={clear}>
+              <XIcon aria-hidden className="size-4" />
+              {t("prospect.list.action.tertiary")}
+            </Button>
+          )}
+        </div>
         {progress === null && (
           <p role="alert" className="text-error text-sm">
             {t("prospect.progress.error")}
           </p>
         )}
-      </div>
-      <div className="flex flex-wrap items-center gap-3 border-accent-foreground border-b px-4 py-3 sm:px-6">
-        <div className="min-w-48 max-w-sm flex-1">
-          <TextField
-            value={search}
-            onValueChange={(value) => {
-              setSearch(value);
-              setPage(0);
-            }}
-          >
-            <SearchIcon
-              aria-hidden
-              className="ml-3 size-4 shrink-0 text-foreground-dimmed"
-            />
-            <TextFieldInput
-              aria-label={t("prospect.search")}
-              placeholder={t("prospect.search")}
-              className="text-sm"
-            />
-          </TextField>
-        </div>
-        <Select
-          items={statusItems}
-          value={status}
-          onValueChange={(value) => {
-            setStatus(value ?? "all");
-            setPage(0);
-          }}
-        >
-          <SelectTrigger
-            aria-label={t("prospect.list.filter")}
-            className="min-w-44 text-sm"
-            classList={{ icon: { icon: "size-4" } }}
-          >
-            <FilterIcon aria-hidden className="size-4 text-foreground-dimmed" />
-            <SelectValue />
-          </SelectTrigger>
-          <SelectPositioner align="start" className="z-40">
-            <SelectPopup className="min-w-48">
-              {statusItems.map((item) => (
-                <SelectItem
-                  key={item.value}
-                  value={item.value}
-                  className="text-sm"
-                >
-                  {item.label}
-                </SelectItem>
-              ))}
-            </SelectPopup>
-          </SelectPositioner>
-        </Select>
-        {[
-          {
-            key: "lifecycle",
-            value: lifecycle,
-            setter: setLifecycle,
-            items: lifecycleItems,
-            label: t("prospect.progress.lifecycleFilter"),
-          },
-          {
-            key: "linkedin",
-            value: linkedin,
-            setter: setLinkedin,
-            items: linkedinItems,
-            label: t("prospect.progress.linkedinFilter"),
-          },
-        ].map((filter) => (
-          <Select
-            key={filter.key}
-            items={filter.items}
-            value={filter.value}
-            onValueChange={(value) => {
-              filter.setter(value ?? "all");
-              setPage(0);
-            }}
-          >
-            <SelectTrigger
-              aria-label={filter.label}
-              className="min-w-44 text-sm"
-              disabled={filter.key === "lifecycle" && progress === null}
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectPositioner align="start" className="z-40">
-              <SelectPopup className="min-w-48">
-                {filter.items.map((item) => (
-                  <SelectItem
-                    key={item.value}
-                    value={item.value}
-                    className="text-sm"
-                  >
-                    {item.label}
-                  </SelectItem>
-                ))}
-              </SelectPopup>
-            </SelectPositioner>
-          </Select>
-        ))}
-        {activeFilter && (
-          <Button variant="soft" color="neutral" onClick={clear}>
-            <XIcon aria-hidden className="size-3.5" />
-            {t("prospect.list.action.tertiary")}
-          </Button>
+        {!automationEnabled && (
+          <PreparationBatch prospects={prospects} target={target} />
         )}
       </div>
+      <Dialog open={importOpen} onOpenChange={setImportOpen}>
+        <DialogPopup
+          finalFocus={actionsTrigger}
+          className="z-50 mt-0 max-h-[85dvh] w-2xl overflow-y-auto bg-background-rich p-0"
+          classList={{ backdrop: "z-50" }}
+        >
+          <div className="flex items-start gap-4 border-accent-foreground border-b p-6">
+            <div className="min-w-0 flex-1">
+              <DialogTitle className="m-0 font-semibold text-xl">
+                {t("import.title")}
+              </DialogTitle>
+              <DialogDescription className="mt-2 mb-0 text-sm leading-6">
+                {t("import.description")}
+              </DialogDescription>
+            </div>
+            <DialogClose
+              render={<Button variant="ghost" color="neutral" size="icon" />}
+              aria-label={t("prospect.list.action.quaternary")}
+            >
+              <XIcon aria-hidden className="size-4" />
+            </DialogClose>
+          </div>
+          <ImportForm />
+        </DialogPopup>
+      </Dialog>
       {rows.length ? (
         <div className="max-w-full overflow-x-auto">
-          <Table className="min-w-240 table-fixed [&_td]:font-normal">
+          <Table className="min-w-240 table-fixed border-b-0 [&_td]:font-normal">
             <TableHeader>
               <TableRow>
                 {[
