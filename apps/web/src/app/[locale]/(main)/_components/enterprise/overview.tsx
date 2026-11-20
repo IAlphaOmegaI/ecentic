@@ -10,7 +10,8 @@ export const Overview = ({ copy, children }: Overview.Props) => (
     data-home-hero
     className="marketing-dark enterprise-blue enterprise-journey mx-2 -mt-18 mb-2 overflow-hidden rounded-lg border-0 bg-linear-to-br from-primary-dimmed via-primary-text to-primary text-background-rich sm:mx-3 sm:-mt-17 sm:mb-3 [&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:border-x-background-rich/15 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden"
   >
-    <div className="relative z-2 flex flex-col items-center px-4 pt-28 pb-10 text-center sm:px-8 sm:pt-28 sm:pb-12">
+    <div className="relative w-full pt-24 sm:pt-28">{children}</div>
+    <div className="relative z-2 flex flex-col items-center px-4 pt-8 pb-12 text-center sm:px-8 sm:pt-10 sm:pb-16">
       <p className="font-medium text-background-rich/85 text-sm">
         {copy.eyebrow}
       </p>
@@ -37,7 +38,6 @@ export const Overview = ({ copy, children }: Overview.Props) => (
         ))}
       </div>
     </div>
-    {children}
   </MarketingBand>
 );
 

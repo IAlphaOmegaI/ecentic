@@ -528,3 +528,12 @@ it was needed, then explicitly requested removal of the Pause button. Remove bot
 the connected scene and synchronized stage explanation carry the looping story. Preserve the
 full headline, supporting copy and CTAs. Focused links, offscreen/hidden state and reduced-motion
 preferences still suspend movement, and the unanimated presentation retains all five descriptions.
+
+### Center the connected illustration above the main message
+
+The next two comments removed the “Connect, compare, improve…” recap and asked to move the
+illustration to the top while centering it again and retaining its needed information. The
+opening now leads with the full-width centered scene and its centered synchronized explanation,
+then the original full headline, supporting copy and CTAs. Remove the extra secondary header
+band and desktop description sidebar. Preserve all five details/links, stable caption height,
+eight-second looping and the saved original `ConnectedOverview` component.

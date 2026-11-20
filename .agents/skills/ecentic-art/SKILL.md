@@ -51,9 +51,10 @@ space. The viewer should recognize a cart, bag, product or word without reading 
 
 The audience panel, integration arc and global closing CTA may use tonal artwork.
 The latest 20 November direction retires the homepage shoe/card and 3D open-box experiments
-and merges the banner with the connected walkthrough. Restore the full original product
-positioning above the complete HTML/CSS source → product workbench → AI composition. One
-continuous blue opening field contains the title, supporting copy, CTAs and five-stage story.
+and merges the banner with the connected walkthrough. Lead with the centered HTML/CSS
+source → product workbench → AI composition and its centered changing explanation, then the
+full original product positioning and CTAs. One continuous blue opening field contains the
+title, supporting copy, CTAs and five-stage story.
 Do not create another replacement object or repeat the same illustration in two sections.
 
 The earlier connected hero remains available in `ConnectedOverview` / `OverviewArtwork`.

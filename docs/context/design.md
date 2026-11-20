@@ -633,7 +633,7 @@ full film retains its accessible transcript and contextual description.
 
 The latest 20 November direction merges the homepage banner and connected walkthrough into
 one continuous blue opening composition. Restore the original full `enterpriseHome.hero.title`
-and `description` above the existing conversion controls: the shorter experimental copy removed
+and `description` with the existing conversion controls: the shorter experimental copy removed
 important product positioning. Retain the key information from both sections. Do not restore
 the retired shoe/card or Three.js box, or add another standalone featured object.
 
@@ -643,6 +643,11 @@ central catalog/workbench, écentic and AI destinations. Keep exactly the same C
 improvements, supported publication and separate rechecks. The active scene drives the relevant
 existing description and descriptive destination link.
 Use one coherent scene rather than repeated isolated cards or long padded scroll chapters.
+
+The following review centers the full illustration at the very top of the opening, with its
+current-step explanation centered below. Keep the original full headline, supporting copy and
+CTAs together after that block. Remove the redundant secondary header/recap and the description
+sidebar; retain all five detailed explanations and their links in the synchronized caption.
 
 Autoplay runs on a loop, as the user explicitly requested. The subsequent review removes the
 numbered selector strip and visible Pause button: the scene and current explanation carry the

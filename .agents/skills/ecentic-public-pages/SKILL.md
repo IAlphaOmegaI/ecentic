@@ -32,13 +32,18 @@ one continuous blue opening composition. Restore the original `enterpriseHome.he
 important product positioning. Preserve the key information from the walkthrough as well.
 Do not restore the retired shoe/card or 3D box, or introduce a second feature illustration.
 
-Below the main message, reuse the complete original connected scene: store sources, central
+Lead the opening with the complete original connected scene: store sources, central
 product workbench, écentic and AI channels. Keep exactly the five stages and their order:
 Connect → Simulate → Fix → Sell → Track. The current scene stays synchronized with its relevant
 existing description/destination link. Use one coherent illustration rather
 than five repeated isolated workbench cards or long padded scroll chapters. The native
 spreadsheet, sample product, comparison, listing changes, supported publication and separate
 recheck scenes remain intact.
+
+Center the illustration at full width with a restrained, centered current-step explanation
+beneath it. Follow that block with the original full headline, supporting copy and CTAs.
+The extra “From product feed” header band and “Connect, compare…” recap were removed; do not
+recreate the sidebar or repeat a second section introduction.
 
 The user explicitly requests autoplay on a loop and removed the numbered selector strip and
 visible Pause control. Let the scene and its changing explanation carry the progression. Pause
