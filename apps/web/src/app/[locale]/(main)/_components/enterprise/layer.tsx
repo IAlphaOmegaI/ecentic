@@ -1,8 +1,4 @@
-import {
-  ArrowRightIcon,
-  CommerceCode_3Icon,
-  CommerceFilePenIcon,
-} from "@zenncore/icons";
+import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { getMessages } from "next-intl/server";
 import {
@@ -10,19 +6,12 @@ import {
   MarketingHeading,
   MarketingStatus,
 } from "@/components/marketing/primitives";
+import { ProviderArc } from "@/components/marketing/provider-arc";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { aiChannels } from "@/content/ai-channels";
-import { integrations } from "@/content/integrations";
+import { catalogConnections } from "@/content/integrations";
 import { Link } from "@/i18n/navigation";
-
-const sourceKeys = [
-  "shopify",
-  "woocommerce",
-  "productFeeds",
-  "csv",
-  "adobe",
-  "wix",
-] as const;
+import { IntegrationsPreview } from "./integrations-preview";
 
 export const CommerceLayer = async () => {
   const {
@@ -30,20 +19,20 @@ export const CommerceLayer = async () => {
     enterpriseLayer: copy,
     enterpriseIntegrations: directory,
   } = await getMessages();
-  const sources = sourceKeys.flatMap((key) => {
-    const source = integrations.find((entry) => entry.key === key);
-    return source ? [source] : [];
-  });
-
   return (
     <MarketingBand id="how-it-fits" className="enterprise-connections">
       <MarketingHeading
         title={home.connections.title}
         description={home.connections.description}
       />
+      <ProviderArc
+        artwork="catalog"
+        items={catalogConnections}
+        label={home.integration.title}
+      />
       <div
-        className="marketing-grid marketing-section-grid grid border-accent-foreground border-t md:grid-cols-2"
-        data-columns="2"
+        className="marketing-grid marketing-section-grid grid border-accent-foreground border-t"
+        data-columns="1"
       >
         <section
           id="integrations"
@@ -56,53 +45,12 @@ export const CommerceLayer = async () => {
           >
             {copy.stack}
           </h3>
-          <ul className="flex-1 divide-y divide-accent-foreground border-accent-foreground border-t">
-            {sources.map((source) => {
-              const Icon =
-                source.key === "productFeeds"
-                  ? CommerceFilePenIcon
-                  : source.key === "csv"
-                    ? CommerceCode_3Icon
-                    : null;
-              return (
-                <li key={source.key}>
-                  <Link
-                    href={source.href}
-                    className="group flex min-w-0 items-start gap-4 px-7 py-5 transition-colors hover:bg-background max-sm:gap-3 max-sm:px-4"
-                  >
-                    <span className="flex size-9 shrink-0 items-center justify-center">
-                      {Icon ? (
-                        <Icon
-                          aria-hidden
-                          className="size-8 text-primary-text"
-                        />
-                      ) : (
-                        <ProviderLogo
-                          provider={source.key}
-                          decorative
-                          className="max-h-9 w-9"
-                        />
-                      )}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-                        <span className="font-medium text-base text-foreground-rich group-hover:text-primary-text">
-                          {directory.entries[source.key].name}
-                        </span>
-                        <MarketingStatus status={source.status}>
-                          {directory.statuses[source.status]}
-                        </MarketingStatus>
-                      </div>
-                      <p className="mt-1 text-foreground-dimmed text-sm leading-relaxed">
-                        {directory.entries[source.key].description}
-                      </p>
-                    </div>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-          <div className="border-accent-foreground border-t px-7 py-5 max-sm:px-4">
+          <IntegrationsPreview
+            copy={directory}
+            categories={["commerce", "feeds", "payments", "pim"]}
+            layout="rows"
+          />
+          <div className="px-7 py-5 max-sm:px-4">
             <Button
               variant="soft"
               color="neutral"
@@ -116,7 +64,7 @@ export const CommerceLayer = async () => {
         <section
           id="channels"
           aria-labelledby="homepage-channels-title"
-          className="relative flex min-w-0 flex-col border-accent-foreground border-t bg-background md:border-t-0 md:border-l"
+          className="relative flex min-w-0 flex-col border-accent-foreground border-t bg-background"
         >
           <h3
             id="homepage-channels-title"
@@ -124,7 +72,7 @@ export const CommerceLayer = async () => {
           >
             {copy.channels}
           </h3>
-          <ul className="flex-1 divide-y divide-accent-foreground border-accent-foreground border-t">
+          <ul className="divide-y divide-accent-foreground border-accent-foreground border-t bg-background">
             {home.channels.items.map((item) => {
               const channel = aiChannels.find((entry) => entry.key === item.id);
               if (!channel) return null;
@@ -132,26 +80,26 @@ export const CommerceLayer = async () => {
                 <li key={channel.key}>
                   <Link
                     href={channel.href}
-                    className="group flex min-w-0 items-start gap-4 px-7 py-5 transition-colors hover:bg-background-dimmed max-sm:gap-3 max-sm:px-4"
+                    className="group grid min-w-0 grid-cols-6 items-center gap-x-4 gap-y-2 px-7 py-4 transition-colors hover:bg-background-dimmed focus-visible:outline-primary-text focus-visible:-outline-offset-2 max-sm:flex max-sm:flex-wrap max-sm:gap-x-3 max-sm:px-4 md:grid-cols-12"
                   >
-                    <ProviderLogo
-                      provider={channel.key}
-                      decorative
-                      className="size-9 shrink-0"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-                        <span className="font-medium text-base text-foreground-rich group-hover:text-primary-text">
-                          {item.title}
-                        </span>
-                        <MarketingStatus status={channel.status}>
-                          {item.statusLabel}
-                        </MarketingStatus>
-                      </div>
-                      <p className="mt-1 text-foreground-dimmed text-sm leading-relaxed">
-                        {item.body}
-                      </p>
-                    </div>
+                    <span className="col-span-4 flex min-w-0 items-center gap-3 max-sm:order-1 max-sm:flex-1 max-sm:gap-2">
+                      <ProviderLogo
+                        provider={channel.key}
+                        decorative
+                        className="size-9 shrink-0 max-sm:size-8"
+                      />
+                      <span className="wrap-anywhere min-w-0 font-medium text-base text-foreground-rich group-hover:text-primary-text max-sm:text-sm">
+                        {item.title}
+                      </span>
+                    </span>
+                    <p className="col-span-full col-start-1 row-start-2 min-w-0 pl-12 text-foreground-dimmed text-sm leading-relaxed max-sm:order-3 max-sm:basis-full max-sm:pl-10 md:col-span-6 md:col-start-5 md:row-start-1 md:pl-0">
+                      {item.body}
+                    </p>
+                    <span className="wrap-anywhere max-sm:wrap-normal col-span-2 col-start-5 row-start-1 min-w-0 justify-self-end text-right max-sm:order-2 max-sm:max-w-28 max-sm:shrink-0 md:col-start-11">
+                      <MarketingStatus status={channel.status}>
+                        {item.statusLabel}
+                      </MarketingStatus>
+                    </span>
                   </Link>
                 </li>
               );

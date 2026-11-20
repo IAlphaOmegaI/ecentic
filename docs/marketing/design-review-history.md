@@ -537,3 +537,44 @@ opening now leads with the full-width centered scene and its centered synchroniz
 then the original full headline, supporting copy and CTAs. Remove the extra secondary header
 band and desktop description sidebar. Preserve all five details/links, stable caption height,
 eight-second looping and the saved original `ConnectedOverview` component.
+
+### One black story cutout, and consult before structural consolidation
+
+The user first requested differentiation for the current-step explanation, then clarified that
+the full animation and explanation should share one black cutout on a blue background. Use one
+integrated surface with stepped shoulders and a fine translucent edge, not a nested caption card.
+The main headline and CTAs remain on blue.
+
+The user also questioned the static connection directory and missing motion, and asked to be
+consulted before section changes made to reduce scrolling. History confirms that 80be82cb
+replaced the connected source/channel diagram, timeline and matrix with the directory and removed
+the separate Channels and Integrations mounts. Audience tabs were unchanged by that cleanup.
+Further restoration or consolidation of those areas requires agreeing on the specific scope;
+this review does not itself approve a wholesale homepage restoration.
+
+After consultation, the user chose “Restore the animated integration illustration alongside
+the current directory.” Restore the existing `ProviderArc` with its catalog reveal and logo
+interactions, preserving the source/channel rows, statuses, links and audience tabs. The original
+connected diagram was responsive rather than looping; the lost visual motion came from the
+integration artwork. Do not restore the entire older section stack under this approval.
+
+### Restore useful integration groups; prioritize comprehension
+
+The user supplied the former connection map, timeline, channel comparison and integration
+accordion, questioned repetition, and emphasized that the site must be easy to understand.
+Review distinguished their jobs: the opening animation explains the workflow; compatibility
+answers what connects and what each AI channel supports; the timeline supplies market context.
+The removed dropdowns organized useful information rather than merely hiding repeated logos.
+
+The user explicitly chose “Use grouped dropdowns with a separate AI-channel list.” Keep the
+restored provider illustration, replace the flat source list with the original commerce,
+feeds/data, payments/checkout and PIM groups, and retain their descriptions/statuses/actions.
+Keep one separate AI-channel list; do not duplicate its category in the source accordion.
+The full timeline/comparison stay on the detail page and the old central process map stays off
+the homepage. This supersedes the immediately preceding instruction to preserve the flat source
+rows. No unrelated sections or audience tabs are part of this change.
+
+The following correction removes homepage “Notify me” controls and requires horizontal/vertical
+alignment like a table. Use consistent listing rows and shared column alignment for sources and
+AI channels, with safe mobile wrapping. This supersedes retaining interest actions in the
+homepage rows; the default integration cards on other routes remain unchanged.

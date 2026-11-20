@@ -45,6 +45,11 @@ beneath it. Follow that block with the original full headline, supporting copy a
 The extra “From product feed” header band and “Connect, compare…” recap were removed; do not
 recreate the sidebar or repeat a second section introduction.
 
+The whole illustration and its current explanation share one black cutout on the blue hero
+background. Use the approved stepped shoulder geometry, a fine translucent edge and theme
+colors. Keep the caption integrated into this surface, not boxed inside a second dark card.
+The main headline, supporting copy and CTAs remain on blue below it.
+
 The user explicitly requests autoplay on a loop and removed the numbered selector strip and
 visible Pause control. Let the scene and its changing explanation carry the progression. Pause
 while hidden/offscreen or while the reader focuses its link, resume on blur, and respect reduced
@@ -68,17 +73,28 @@ above them. An arc of provider logos alone does not replace those cards. Remove 
 tag strips and accidental edge clipping.
 Dense catalog findings belong behind supporting disclosure. Keep the original proof media.
 
-The 19 November review retains the five-stage walkthrough and shorter page structure. Follow the
-walkthrough with compact, publication-gated DUA evidence and the existing product film so readers
-can inspect evidence before the longer capability sections. Preserve the traffic metric's scope,
+Follow the five-stage walkthrough with compact, publication-gated DUA evidence and the existing
+product film so readers can inspect evidence before the longer capability sections. Preserve the traffic metric's scope,
 period, attribution caveat and source links; do not repeat the same pilot result later.
-Use one homepage directory for catalog sources and AI channels, with genuine marks, current
-statuses and links to their detailed pages. The channel timeline and comparison matrix remain
-on the AI channels page instead of repeating that explanation on the homepage. This directory
-supersedes the separate homepage channel grid and integrations accordion described above.
+Use one compatibility section with distinct questions: what the merchant connects, and what
+écentic supports on each AI channel. Keep the restored `ProviderArc` catalog illustration with
+its reveal/hover interactions. Under it, use grouped integration accordions for commerce
+platforms, feeds/data, payments/checkout and PIM, with useful descriptions and current statuses.
+Preserve the full entries, descriptions and links, but omit homepage “Notify me” actions. Align
+listing rows consistently across provider, details and status, rather than independent columns
+with mismatched heights or a final spanning card. Keep AI channels in one separate concise list
+with availability and descriptive links; omit the duplicate channels group from the accordion.
+This replaces the six-row flat source list, following the user's explicit 20 November choice.
+The full timeline and technical comparison stay on the AI-channels page. Do not also restore the
+old source → écentic → AI process map, which repeats the opening animation. Audience tabs stay
+unchanged. Prioritize understanding over minimum page length.
 Dark walkthrough links use the package soft Button's inverse tone for readable text and focus.
 Give each link a descriptive destination label and keep Apply's generation/publication behavior
 explicit in the Fix paragraph.
+
+Do not remove or consolidate homepage sections, or replace their animations with a shorter
+directory, merely to reduce page length without first consulting the user. This does not block
+visual edits the user has explicitly requested, including the combined opening section.
 
 ## Platform overview and stage pages
 

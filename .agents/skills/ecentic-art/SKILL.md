@@ -54,7 +54,8 @@ The latest 20 November direction retires the homepage shoe/card and 3D open-box 
 and merges the banner with the connected walkthrough. Lead with the centered HTML/CSS
 source → product workbench → AI composition and its centered changing explanation, then the
 full original product positioning and CTAs. One continuous blue opening field contains the
-title, supporting copy, CTAs and five-stage story.
+title, supporting copy, CTAs and five-stage story. The complete scene and its explanation sit
+in one black cutout on that blue background; the caption does not receive a second nested card.
 Do not create another replacement object or repeat the same illustration in two sections.
 
 The earlier connected hero remains available in `ConnectedOverview` / `OverviewArtwork`.

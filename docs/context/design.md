@@ -649,6 +649,11 @@ current-step explanation centered below. Keep the original full headline, suppor
 CTAs together after that block. Remove the redundant secondary header/recap and the description
 sidebar; retain all five detailed explanations and their links in the synchronized caption.
 
+Differentiate the entire animated story and its explanation with one black cutout on the blue
+hero canvas. Reuse the stepped shoulder shape with spacing-token geometry and a thin translucent
+edge. Do not nest a separate caption card inside it. Keep the main headline, supporting copy and
+CTAs on the surrounding blue field.
+
 Autoplay runs on a loop, as the user explicitly requested. The subsequent review removes the
 numbered selector strip and visible Pause button: the scene and current explanation carry the
 progression. Stop while hidden/offscreen, while the reader focuses a stage link, and under
@@ -675,14 +680,26 @@ Evidence components distinguish public studies, aggregate facts, live values and
 methodology can be disclosed in an accordion. Do not invent KPI definitions, remove material
 qualifications or use a dramatic graphic to blur simulation and observed traffic.
 
-The 19 November homepage review retains the five-stage illustrated walkthrough; the hero is
-separately updated by the 20 November reference above. Compact, publication-gated DUA evidence
-and the original product film follow the
+Consult the user before removing or consolidating homepage sections, or replacing animated
+sections with a shorter directory solely to reduce page length. Explain the concrete sections
+and interactions affected first. Explicitly requested visual changes remain authorized.
+
+Compact, publication-gated DUA evidence and the original product film follow the five-stage
 walkthrough. The pilot appears once, with its combined AI/direct-visits metric, measurement
-period, attribution caveat and sources intact. One source/channel directory replaces the
-homepage's repeated connection diagram, timeline, matrix, channel grid and integration accordion;
-the detailed channel timeline and matrix remain on the AI channels page. Use descriptive
-walkthrough links with the package soft Button's inverse tone against the dark surface.
+period, attribution caveat and sources intact.
+
+The compatibility section answers what a merchant connects and what écentic supports on each
+AI channel. After consultation on 20 November, retain the restored `ProviderArc` catalog
+illustration and replace the flat catalog list with grouped accordions for commerce platforms,
+feeds/data, payments/checkout and PIM. Preserve their entries, descriptions, current statuses
+and links. Omit homepage “Notify me” actions. Source and AI listings use consistent table-like
+rows with aligned provider, details and status columns; avoid independent columns with mismatched
+row boundaries or a final spanning card. Keep AI channels in a separate concise capability/status list and omit
+the duplicate channels accordion group. Keep the full timeline and technical comparison on
+`/ai-channels`; do not repeat the hero's process explanation with another connection map.
+Audience tabs stay unchanged. Ease of understanding takes priority over simply shortening the
+page. Use descriptive walkthrough links with the package soft Button's inverse tone against
+the dark surface.
 
 ## 12. Motion and accessibility
 
