@@ -18,6 +18,11 @@ import { db, schema, type TransactionScope } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
 import { ConflictError } from "@/server/utils/error";
 import { sourceReceiptSchema } from "@/server/utils/outbound/automation-qualification";
+import {
+  researchRecoveryState,
+  researchRecoveryVersion,
+  researchStateHash,
+} from "@/server/utils/outbound/automation-recovery";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import { productCategoryCorrection } from "@/server/utils/outbound/product-category";
 import { repository, resultifyRead } from "@/server/utils/repository";
@@ -815,6 +820,125 @@ export const resumeVerificationDateCheck = (
     );
     if (!saved) throw new ConflictError("automation-job-missing");
     return view(saved);
+  });
+
+/** Internal, explicit one-time recovery of completed research holds; no provider work or sending. */
+export const resumeResearchReview = (
+  actor: string,
+  input: {
+    jobId: string;
+    expectedStateHash: string;
+    expectedInputHash: string;
+    dryRun?: boolean;
+  },
+) =>
+  transaction(async (transaction) => {
+    const parsed = z
+      .object({
+        jobId: z.string().uuid(),
+        expectedStateHash: z.string().regex(/^[a-f0-9]{64}$/),
+        expectedInputHash: z.string().regex(/^[a-f0-9]{64}$/),
+        dryRun: z.boolean().default(false),
+      })
+      .parse(input);
+    const job = value(
+      await Jobs.get(Environment.SERVER, parsed.jobId, { tx: transaction }),
+    );
+    if (
+      !job ||
+      job.provider !== "automation" ||
+      job.prospectId ||
+      researchStateHash(job.input) !== parsed.expectedInputHash
+    )
+      throw new ConflictError("research-review-recovery-unavailable");
+    const savedInput = automationInputSchema.parse(job.input);
+    const state = automationStateSchema.parse(job.output);
+    const previous = z
+      .object({
+        version: z.literal(researchRecoveryVersion),
+        sourceStateHash: z.string(),
+      })
+      .safeParse(state["researchReviewRecovery"]);
+    if (
+      previous.success &&
+      previous.data.sourceStateHash === parsed.expectedStateHash
+    )
+      return { job: view(job), repeated: true, dryRun: parsed.dryRun };
+    if (
+      job.status !== "failed" ||
+      researchStateHash(job.output) !== parsed.expectedStateHash
+    )
+      throw new ConflictError("research-review-recovery-unavailable");
+    const context = await current(savedInput, transaction);
+    if (
+      context.reason ||
+      !context.company ||
+      !context.campaign ||
+      context.company.status !== "candidate" ||
+      context.company.prospectId ||
+      context.company.domain !== savedInput.companyDomain
+    )
+      throw new ConflictError(
+        context.reason ?? "research-review-recovery-unavailable",
+      );
+    const competing = value(
+      await Jobs.find(
+        Environment.SERVER,
+        {
+          where: and(
+            scoped(),
+            sql`${schema.outboundIntegrationJob.id} <> ${job.id}`,
+            sql`${schema.outboundIntegrationJob.input}->>'companyDomain' = ${savedInput.companyDomain}`,
+            sql`${schema.outboundIntegrationJob.status} in ('pending','starting','uncertain')`,
+          ),
+          limit: 1,
+        },
+        { tx: transaction },
+      ),
+    );
+    if (competing.length)
+      throw new ConflictError("research-review-recovery-unavailable");
+    const recovery = researchRecoveryState({
+      state,
+      error: job.error,
+      playbook: context.policy.settings,
+      domain: context.company.domain,
+      platforms: context.campaign.criteria.platforms,
+    });
+    if (parsed.dryRun) return { job: view(job), repeated: false, dryRun: true };
+    const now = new Date();
+    const saved = value(
+      await Jobs.update(
+        Environment.SERVER,
+        job.id,
+        {
+          status: "pending",
+          error: null,
+          updatedAt: now,
+          output: {
+            ...state,
+            availableAt: now.toISOString(),
+            lease: null,
+            ...(recovery.kind === "qualification"
+              ? { qualificationReplayEvidence: recovery.evidence }
+              : {}),
+            researchReviewRecovery: {
+              version: researchRecoveryVersion,
+              kind: recovery.kind,
+              actor,
+              requestedAt: now.toISOString(),
+              sourceStateHash: parsed.expectedStateHash,
+              sourceInputHash: parsed.expectedInputHash,
+              previousReason: job.error,
+              previousAssessment: recovery.previous,
+            },
+          },
+        },
+        { tx: transaction },
+      ),
+    );
+    if (!saved) throw new ConflictError("automation-job-missing");
+    return { job: view(saved), repeated: false, dryRun: false };
   });
 
 export const run = (

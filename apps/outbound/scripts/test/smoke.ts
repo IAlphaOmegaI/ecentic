@@ -28,6 +28,10 @@ export const smokeSuites = [
   "src/server/spec/outbound-store.test.ts",
   "src/server/spec/outbound-campaigns.test.ts",
   "src/server/spec/outbound-conversations.test.ts",
+  "src/server/spec/outbound-automation-qualification.test.ts",
+  "src/server/spec/outbound-shopping-assessment.test.ts",
+  "src/server/spec/outbound-automation-recovery.test.ts",
+  "src/server/spec/outbound-automation-store.test.ts",
 ] as const;
 
 export const smokeEnvironment = (

@@ -17,6 +17,9 @@ import { schema, type TransactionScope } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
 import { ValidationError } from "@/server/utils/error";
 import { repository } from "@/server/utils/repository";
+import { researchPolicyHash } from "./shopping-policy";
+
+export { researchPolicyHash } from "./shopping-policy";
 
 const Jobs = repository(schema.outboundIntegrationJob);
 const Prospects = repository(schema.outboundProspect);
@@ -39,12 +42,6 @@ export const researchJobInputSchema = z.object({
   receiptHash: z.string().length(64),
   researchPolicyHash: z.string().length(64).optional(),
 });
-/** Wording and delivery settings do not change what was actually observed. */
-export const researchPolicyHash = (settings: Playbook) =>
-  researchHash({
-    instructions: settings.researchInstructions,
-    required: settings.requireShoppingEvidence,
-  });
 
 const boundFields = [
   "company",

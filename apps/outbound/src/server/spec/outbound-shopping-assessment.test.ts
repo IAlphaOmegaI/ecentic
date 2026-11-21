@@ -1,6 +1,13 @@
 import { describe, expect, mock, test } from "bun:test";
 import { createHash, randomUUID } from "node:crypto";
-import { defaultPlaybook } from "@/lib/outbound";
+import { resolve } from "node:path";
+import {
+  countWords,
+  defaultPlaybook,
+  lintMessages,
+  prospectSchema,
+  renderMessages,
+} from "@/lib/outbound";
 import type { ShoppingResearch } from "@/lib/outbound-shopping-research";
 import type {
   AiCapture,
@@ -785,10 +792,100 @@ describe("finding copy fits its email without dropping qualifications", () => {
     expect(assessmentCopyBudget(playbook, "Body Oil")).toBe(20);
     expect(
       assessmentCopyBudget({ ...playbook, maxBodyWords: 99 }, "Body Oil"),
-    ).toBe(45);
+    ).toBe(79);
     expect(
       assessmentCopyBudget({ ...playbook, maxBodyWords: 10 }, "Body Oil"),
     ).toBe(0);
+  });
+
+  test("uses available space above 45 words without changing fixed copy or the final body limit", () => {
+    const { catalog, output } = priceScenario();
+    const playbook = {
+      ...defaultPlaybook,
+      subjectTemplate: "Body Oil question",
+      bodyTemplate:
+        "Hey {first}!\n\n{finding} {consequence}\n\n{founderLine} {callToAction}\n\n{optout}\n\n{signature}",
+      productCheckIntro: "I'm Iseld, a founder of ecentic.",
+      callToAction: "Worth a chat?",
+      optout: "Reply no to opt out.",
+      signature: "Iseld",
+    };
+    const qualified = {
+      ...output,
+      selected: {
+        ...output.selected,
+        consequence:
+          "Those are different prices for that option. I checked only this answer against this page. The comparison is for a one-time purchase, and the market remains unknown. I did not test checkout or establish whether other answers show the same difference.",
+      },
+    };
+    expect(
+      countWords(
+        `${qualified.selected.observation} ${qualified.selected.consequence}`,
+      ),
+    ).toBeGreaterThan(45);
+    const assessed = projectAssessment(
+      catalog,
+      qualified,
+      assessmentCopyBudget(playbook, "Body Oil"),
+    );
+    expect(assessed.decision).toBe("supported");
+    const prospect = prospectSchema.parse({
+      company: "Sample Goods",
+      domain: "samplegoods.com",
+      country: "US",
+      name: "Alex",
+      first: "Alex",
+      product: "Body Oil",
+      gap: "shopping-research",
+      shoppingResearchId: randomUUID(),
+      shoppingFinding: {
+        ...assessed.selected,
+        checkedAt: new Date().toISOString(),
+      },
+    });
+    const messages = renderMessages(prospect, playbook);
+    const first = messages[0];
+    if (!first) throw new Error("Expected a first-email fixture");
+    expect(first.body).toContain(qualified.selected.consequence);
+    expect(first.body).toContain(
+      `${playbook.productCheckIntro} ${playbook.callToAction}`,
+    );
+    expect(first.body).toContain(playbook.optout);
+    expect(countWords(first.body)).toBeLessThanOrEqual(99);
+    expect(
+      lintMessages(messages, playbook, prospect).some(
+        (issue) => issue.code === "wordLimit",
+      ),
+    ).toBe(false);
+    const oversized = messages.map((message) =>
+      message.step === 1
+        ? { ...message, body: `${message.body} ${"extra ".repeat(100)}` }
+        : message,
+    );
+    expect(lintMessages(oversized, playbook, prospect)).toContainEqual({
+      code: "wordLimit",
+      field: "message1",
+    });
+  });
+
+  test("counts repeated finding slots and fixed product wording against the body allowance", () => {
+    const playbook = {
+      ...defaultPlaybook,
+      maxBodyWords: 99,
+      bodyTemplate:
+        "Hi {first}! {product}. {finding} {consequence} Again: {finding} {consequence}",
+    };
+    const budget = assessmentCopyBudget(
+      playbook,
+      "A long product name with several words",
+    );
+    expect(budget).toBe(43);
+    expect(
+      assessmentCopyBudget(
+        { ...playbook, maxBodyWords: 20 },
+        "A long product name with several words",
+      ),
+    ).toBe(3);
   });
 
   test("holds long or technical finding prose instead of truncating it", () => {
@@ -824,3 +921,33 @@ describe("finding copy fits its email without dropping qualifications", () => {
     });
   });
 });
+
+test("assessment copy recovery keeps exact evidence and bounded Azure requests", async () => {
+  const execution = Bun.spawn(
+    [
+      process.execPath,
+      "--no-env-file",
+      "run",
+      resolve(
+        import.meta.dir,
+        "fixtures/outbound-shopping-assessment-wire.fixture.ts",
+      ),
+    ],
+    {
+      env: {
+        ...process.env,
+        DATABASE_URL: "postgres://fixture:fixture@127.0.0.1:1/never_connect",
+      },
+      stdout: "pipe",
+      stderr: "pipe",
+    },
+  );
+  const [status, output, error] = await Promise.all([
+    execution.exited,
+    new Response(execution.stdout).text(),
+    new Response(execution.stderr).text(),
+  ]);
+  expect(error).toBe("");
+  expect(status).toBe(0);
+  expect(output).toContain("Shopping assessment copy contracts passed");
+}, 30000);

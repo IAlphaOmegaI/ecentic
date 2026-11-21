@@ -255,12 +255,22 @@ export const execute = async (
         }),
       );
       const qualification = value(
-        await Qualification.qualifyCompany({
-          campaign,
-          company,
-          playbook,
-          deadline,
-        }),
+        await (state["qualificationReplayEvidence"]
+          ? Qualification.qualifyCompanyEvidence({
+              campaign,
+              company,
+              playbook,
+              deadline,
+              evidence: Qualification.companyEvidenceSchema.parse(
+                state["qualificationReplayEvidence"],
+              ),
+            })
+          : Qualification.qualifyCompany({
+              campaign,
+              company,
+              playbook,
+              deadline,
+            })),
       );
       const correction =
         qualification.status === "qualified"

@@ -112,6 +112,29 @@ policy edit. Expired worker leases become uncertain.
 | Draft | Invalid protected body copy is held with its lint issues before another model call. Otherwise, one bounded Azure call selects the subject and optional opening; code preserves all original body paragraphs, then saves the checked result before the separate draft-write stage. |
 | Approval | `Store.approveAutomatically` validates the current campaign, Playbook, prospect revision and durable source facts, then the existing worker can deliver within its normal gates. |
 
+In live-shopping mode, qualification evaluates all company-fit constraints;
+campaign requirements for a verified product-data gap or shopping finding are
+deferred to the shopping stage. They still must pass before contact enrichment,
+drafting, approval or delivery. Qualification does not manufacture a finding.
+
+`resumeResearchReview` is an internal, explicitly scoped recovery operation for
+completed holds affected by the research-sequence/copy correction. It checks
+exact original input/state hashes, active campaign and Playbook revisions,
+candidate status, absence of contact work, lease and competing domain jobs, and
+fresh saved evidence under the workspace transaction. A dry run writes nothing.
+A versioned marker permits only one recovery and retains the actor, original
+assessment, reason and hashes; repeated identical requests do not requeue again.
+Uncertain jobs, skipped companies and existing prospect holds cannot use it.
+
+An old copy-budget hold reruns the full assessor against the same live/browser
+captures, because older workers discarded the oversized wire selection; it is
+not assumed to be a valid finding. Saved capture hashes, product binding and
+research policy must still match. A company-fit hold can reuse its original
+product/receipts only when a hash-verified provider observation established its
+platform. `qualifyCompanyEvidence` rechecks current targeting, source binding and
+freshness without recrawling or changing observation dates. Normal leased stages
+then advance; all later evidence and delivery gates remain in effect.
+
 Provider outputs checkpoint before subsequent prospect mutations. Safe provider
 receipts, qualification sources, selected identity, verification request/record
 IDs and the current prospect revision live in `outbound_integration_job` JSON.

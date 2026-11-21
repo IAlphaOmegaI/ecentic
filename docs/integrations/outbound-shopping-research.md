@@ -53,10 +53,16 @@ variant and current price elsewhere in the complete answer blocks an omission
 claim. Ambiguous or conditional offers stay held. This comparison proof is a
 wire-only assessment input; the durable receipt format is unchanged.
 
-Selected email copy must fit a budget derived from the template's fixed wording,
-up to 45 words for the observation and consequence. The assessor cannot discard
-evidence qualifiers to make it fit. Recipient-facing copy uses ordinary words;
-capture and receipt terminology stays in the supporting research.
+Selected email copy must fit the space remaining after the template's fixed
+wording, a small identity allowance, and repeated finding/consequence slots.
+There is no separate 45-word ceiling; the saved full-email limit still applies.
+A completed, factually valid assessment that exceeds the remaining budget gets
+at most one copy revision within the original assessment deadline. That revision
+cannot change the selected quotes, products, offer comparison or conditions, and
+must pass the same factual and copy checks again. Interrupted provider outcomes
+are never retried. Both completed request IDs and combined usage are retained.
+The assessor cannot discard evidence qualifiers to make it fit. Recipient-facing
+copy uses ordinary words; capture terminology stays in the supporting research.
 
 `saveAutomaticAndApply` shares the operator receipt validator but additionally
 checks the current automation lease, exact captured receipt, policy fingerprint,

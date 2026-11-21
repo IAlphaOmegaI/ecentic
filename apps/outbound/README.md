@@ -45,7 +45,9 @@ those shared dependencies have already been built.
 
 This runs the browser-to-server action transport contract, conversation editor,
 conversation reading/stages/drafts, campaign criteria and filters, review and hold
-rules, staff authorization, and credential success/error paths. Provider replies,
+rules, staff authorization, credential success/error paths, company qualification,
+shopping-assessment budgets and evidence checks, and one-time research recovery.
+Provider replies,
 draft generation and delivery are fixtures: it does not call paid providers or
 send real messages. Each suite uses a separate Bun process to avoid shared mocks.
 The test environment excludes application credentials, disables `.env` loading
