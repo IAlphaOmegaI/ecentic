@@ -8,10 +8,10 @@ export const Overview = ({ copy, children }: Overview.Props) => (
   <MarketingBand
     data-nav-tone="dark"
     data-home-hero
-    className="marketing-dark enterprise-blue enterprise-journey mx-2 -mt-18 mb-2 rounded-lg border-0 bg-linear-to-br from-primary-dimmed via-primary-text to-primary text-background-rich sm:mx-3 sm:-mt-17 sm:mb-3 [&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:border-x-background-rich/15 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden"
+    className="marketing-dark enterprise-blue enterprise-journey mx-2 -mt-18 mb-2 rounded-lg border-0 bg-linear-to-br from-primary-dimmed via-primary-text to-primary text-background-rich sm:mx-3 sm:-mt-17 sm:mb-3 [&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:border-x-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden"
   >
-    <div className="relative w-full pt-24 sm:pt-28">{children}</div>
-    <div className="relative z-2 flex flex-col items-center px-4 pt-8 pb-12 text-center sm:px-8 sm:pt-10 sm:pb-16">
+    <div className="relative w-full">{children}</div>
+    <div className="relative z-2 flex flex-col items-center border-background-rich/15 border-x px-4 pt-8 pb-12 text-center sm:px-8 sm:pt-10 sm:pb-16">
       <p className="font-medium text-background-rich/85 text-sm">
         {copy.eyebrow}
       </p>

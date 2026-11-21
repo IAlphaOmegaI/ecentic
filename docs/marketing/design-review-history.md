@@ -605,3 +605,14 @@ At compact tablet widths, the next review asks for the right column of the conne
 to align with the right edge. Mirror those identities and their status text toward the outer
 rail, with connector endpoints measured from the visible nodes. Keep the wide three-column
 composition and narrow mobile layout unchanged.
+
+### Match the header cutout and soften the compatibility glow
+
+The next correction asks the black header to match the other cutouts, removes the blue strip
+and upper notch, and extends black to the top behind navigation. Reuse the feature bands'
+responsive shoulder/depth for the bottom transition, with a single solid fill. Remove the
+pale inset outline and keep the blue block's rail borders out of the black area. Preserve the
+workbench's position, content and loop. This supersedes the previous thin-perimeter treatment.
+
+The compatibility map's bounded rounded glow is replaced by a soft blue gradient fading into
+the surrounding canvas. The écentic identity, labels, links and connector geometry stay intact.

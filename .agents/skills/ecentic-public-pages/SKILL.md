@@ -48,7 +48,9 @@ recreate the sidebar or repeat a second section introduction.
 The whole illustration and its current explanation share one black cutout on the blue hero
 background. Its decorative fill reaches both viewport edges, as the other full-width cutouts
 do; keep the illustration and caption centered within their reading widths. Use the approved
-stepped shoulder geometry, a fine translucent edge and theme colors. Keep the caption integrated into this surface, not boxed inside a second dark card.
+responsive feature-cutout geometry at the bottom only. Black extends to the top behind
+navigation; remove the upper blue strip/notch and the pale perimeter. Keep rail borders on the
+blue copy area rather than over the black fill. Keep the caption integrated into this surface, not boxed inside a second dark card.
 The main headline, supporting copy and CTAs remain on blue below it.
 
 The user explicitly requests autoplay on a loop and removed the numbered selector strip and
@@ -85,7 +87,8 @@ Use one compatibility section with distinct questions: what the merchant connect
 écentic supports on each AI channel. The 21 November request incorporates the old connection
 graph into the existing illustration slot, replacing the homepage `ProviderArc` without adding
 another section. Connect source categories through the écentic hub to six AI marks, preserving
-the compact footprint and planned-channel distinction. Leave shared arc consumers on other
+the compact footprint and planned-channel distinction. Behind the hub, use a soft blue gradient
+that fades into the canvas rather than a bounded rounded glow. Leave shared arc consumers on other
 routes unchanged. Under this graphic, use grouped integration accordions for commerce
 platforms, feeds/data, payments/checkout and PIM, with useful descriptions and current statuses.
 Preserve the full entries, descriptions and links, but omit homepage “Notify me” actions. Align

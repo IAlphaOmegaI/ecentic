@@ -651,8 +651,10 @@ sidebar; retain all five detailed explanations and their links in the synchroniz
 
 Differentiate the entire animated story and its explanation with one black cutout on the blue
 hero canvas. Its decorative fill extends to both viewport edges like the shared feature cutouts;
-keep the illustration and caption within centered reading widths. Reuse the stepped shoulder
-shape with spacing-token geometry and a thin translucent edge. Do not nest a separate caption card inside it. Keep the main headline, supporting copy and
+keep the illustration and caption within centered reading widths. The 21 November correction
+extends black to the top behind navigation, with no blue strip or upper notch. Use the shared
+feature cutout's responsive shoulder/depth at the bottom only, with one solid fill and no pale
+perimeter. Rail borders belong to the blue copy block, not across the black area. Do not nest a separate caption card inside it. Keep the main headline, supporting copy and
 CTAs on the surrounding blue field.
 
 Autoplay runs on a loop, as the user explicitly requested. The subsequent review removes the
@@ -695,7 +697,8 @@ The compatibility section answers what a merchant connects and what écentic sup
 AI channel. The 21 November follow-up incorporates the old connection graph in the existing
 illustration slot: source categories converge through écentic and branch to the six AI channels.
 Replace the homepage provider arc rather than adding another block; preserve the compact
-footprint, genuine provider marks and planned-channel distinction. Omit the old central stage
+footprint, genuine provider marks and planned-channel distinction. The central brand sits over
+a soft blue gradient fading into the canvas, without a visible pill-shaped boundary. Omit the old central stage
 list, which repeats the opening walkthrough. Keep the grouped accordions approved on 20 November
 for commerce platforms, feeds/data, payments/checkout and PIM. Preserve their entries, descriptions, current statuses
 and links. Omit homepage “Notify me” actions. Source and AI listings use consistent table-like

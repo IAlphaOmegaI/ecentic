@@ -5,6 +5,7 @@ import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import type { AppConfig } from "next-intl";
 import type { ReactNode } from "react";
+import { MarketingCutout } from "@/components/marketing/primitives";
 import { Motion } from "@/components/motion";
 import { Link } from "@/i18n/navigation";
 import { ConnectedWorkflow } from "./overview-artwork";
@@ -47,15 +48,9 @@ export const Journey = ({ copy, artwork }: Journey.Props) => {
   return (
     <section
       aria-label={copy.title}
-      className="relative isolate w-full py-8 text-center text-background-rich [--cutout-depth:calc(var(--spacing)*4)] [--cutout-shoulder:calc(var(--spacing)*12)] sm:py-12"
+      className="relative isolate w-full pt-32 pb-8 text-center text-background-rich sm:pt-40 sm:pb-12"
     >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-1/2 -z-1 w-dvw -translate-x-1/2 [&>div]:[clip-path:polygon(0_var(--cutout-depth),calc(var(--cutout-shoulder)_-_var(--cutout-depth))_var(--cutout-depth),var(--cutout-shoulder)_0,calc(100%_-_var(--cutout-shoulder))_0,calc(100%_-_var(--cutout-shoulder)_+_var(--cutout-depth))_var(--cutout-depth),100%_var(--cutout-depth),100%_calc(100%_-_var(--cutout-depth)),calc(100%_-_var(--cutout-shoulder)_+_var(--cutout-depth))_calc(100%_-_var(--cutout-depth)),calc(100%_-_var(--cutout-shoulder))_100%,var(--cutout-shoulder)_100%,calc(var(--cutout-shoulder)_-_var(--cutout-depth))_calc(100%_-_var(--cutout-depth)),0_calc(100%_-_var(--cutout-depth)))]"
-      >
-        <div className="absolute inset-0 bg-background-rich/20" />
-        <div className="absolute inset-px bg-emphasis-dimmed" />
-      </div>
+      <MarketingCutout edges="bottom" className="bg-emphasis-dimmed" />
       <div data-home-product-story data-story-stage={journey.active}>
         <div className="relative">
           <div

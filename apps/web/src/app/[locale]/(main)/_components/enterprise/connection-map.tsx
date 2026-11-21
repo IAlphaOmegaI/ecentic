@@ -77,7 +77,7 @@ export const ConnectionMap = ({
         >
           <div
             aria-hidden
-            className="pointer-events-none absolute -inset-4 -z-1 rounded-full bg-radial from-primary/15 via-primary/5 to-transparent lg:-inset-12"
+            className="pointer-events-none absolute -inset-x-12 -inset-y-8 -z-1 bg-radial from-primary/20 via-primary/5 to-transparent blur-xl lg:-inset-x-20 lg:-inset-y-12"
           />
           <Image
             src="/images/trademark.svg"
