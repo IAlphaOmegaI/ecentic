@@ -6,7 +6,7 @@ import { Progress, ProgressLabel } from "@zenncore/web/components/progress";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "@/i18n/navigation";
-import type { Prospect } from "@/lib/outbound";
+import * as Outbound from "@/server/app/outbound";
 import * as Connections from "@/server/app/outbound/integrations";
 import { Notice, useMutation } from "./common";
 
@@ -24,27 +24,15 @@ type PreparationProgress = {
     | "error";
 };
 
-export const PreparationBatch = ({
-  prospects,
-  target,
-}: {
-  prospects: Prospect[];
-  target: number;
-}) => {
+export const PreparationBatch = ({ target }: { target: number }) => {
   const t = useTranslations("outbound.preparation");
   const router = useRouter();
   const mutation = useMutation();
   const control = useRef({ running: false, stop: false, mounted: true });
   const visited = useRef(new Set<string>());
   const verified = useRef(new Set<string>());
-  const [completed, setCompleted] = useState(() => new Set<string>());
+  const [remaining, setRemaining] = useState<number | null>(null);
   const [progress, setProgress] = useState<PreparationProgress | null>(null);
-  const candidates = prospects.filter(
-    (prospect) =>
-      prospect.status === "candidate" &&
-      !prospect.evidence.trim() &&
-      !completed.has(prospect.id),
-  );
   const running =
     progress?.status === "running" || progress?.status === "stopping";
 
@@ -60,40 +48,57 @@ export const PreparationBatch = ({
     if (control.current.running) return;
     control.current.running = true;
     control.current.stop = false;
-    const now = Date.now();
-    const existing = prospects.filter((prospect) => {
-      const checked = Date.parse(prospect.evidenceCheckedAt);
-      return (
-        ["candidate", "draft", "approved"].includes(prospect.status) &&
-        prospect.relationship === "cold" &&
-        prospect.evidence &&
-        prospect.gap &&
-        prospect.finding &&
-        prospect.productUrl &&
-        checked <= now &&
-        now - checked < 86_400_000
-      );
+    const summary = {
+      candidates: [] as string[],
+      verified: [] as string[],
+      target,
+      received: false,
+    };
+    setProgress({
+      processed: 0,
+      verified: verified.current.size,
+      held: 0,
+      target,
+      status: "running",
     });
-    const findings = new Set([
-      ...existing.map((prospect) => prospect.id),
-      ...verified.current,
-    ]);
-    const queue = candidates
-      .filter((prospect) => !visited.current.has(prospect.id))
-      .map((prospect) => prospect.id);
-    const totals = { processed: 0, verified: findings.size, held: 0, target };
+    await mutation.run(Outbound.getPreparationSummary, (result) => {
+      if (result) Object.assign(summary, result, { received: true });
+    });
+    if (!control.current.mounted) {
+      control.current.running = false;
+      return;
+    }
+    if (!summary.received) {
+      control.current.running = false;
+      setProgress((current) =>
+        current ? { ...current, status: "error" } : current,
+      );
+      return;
+    }
+    const findings = new Set([...summary.verified, ...verified.current]);
+    const queue = summary.candidates.filter((id) => !visited.current.has(id));
+    const totals = {
+      processed: 0,
+      verified: findings.size,
+      held: 0,
+      target: summary.target,
+    };
     const state = { cursor: 0, failed: false };
-    setProgress({ ...totals, status: "running" });
+    setRemaining(queue.length);
+    setProgress({
+      ...totals,
+      status: control.current.stop ? "stopping" : "running",
+    });
 
     while (
       !control.current.stop &&
       control.current.mounted &&
       state.cursor < queue.length &&
-      totals.verified < target
+      totals.verified < totals.target
     ) {
       const batch = queue.slice(
         state.cursor,
-        state.cursor + Math.min(3, target - totals.verified),
+        state.cursor + Math.min(3, totals.target - totals.verified),
       );
       const response = { received: false };
       await mutation.run(
@@ -113,7 +118,7 @@ export const PreparationBatch = ({
           }
           totals.verified = findings.size;
           if (control.current.mounted) {
-            setCompleted(new Set(visited.current));
+            setRemaining(queue.filter((id) => !visited.current.has(id)).length);
             setProgress({
               ...totals,
               status: control.current.stop ? "stopping" : "running",
@@ -133,7 +138,7 @@ export const PreparationBatch = ({
       switch (true) {
         case state.failed:
           return "error" as const;
-        case totals.verified >= target:
+        case totals.verified >= totals.target:
           return "complete" as const;
         case Boolean(control.current.stop):
           return "stopped" as const;
@@ -151,7 +156,7 @@ export const PreparationBatch = ({
         <Button
           variant="soft"
           color="neutral"
-          disabled={running || !candidates.length}
+          disabled={running}
           onClick={start}
         >
           {running ? (
@@ -222,7 +227,7 @@ export const PreparationBatch = ({
           {progress.status === "error" && <Notice value={mutation.notice} />}
         </div>
       )}
-      {!progress && !candidates.length && (
+      {!running && remaining === 0 && (
         <p className="text-foreground-dimmed text-sm">{t("empty")}</p>
       )}
     </div>

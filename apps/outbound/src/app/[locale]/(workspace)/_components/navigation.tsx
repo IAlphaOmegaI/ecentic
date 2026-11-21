@@ -26,7 +26,7 @@ import {
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Suspense, useState } from "react";
-import { AccountControl } from "@/components/authentication";
+import { AccountControl } from "@/components/account-control";
 import { Link, usePathname } from "@/i18n/navigation";
 
 export const sections = [

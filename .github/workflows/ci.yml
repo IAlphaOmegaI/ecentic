@@ -15,6 +15,56 @@ jobs:
       # - run: cd apps/web && bun run typecheck
       # - run: bunx biome ci apps/web/src
       # - run: cd apps/web && bun test src
+  outbound-basics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: outbound_test_only
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: changes
+        env:
+          BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || github.event.before }}
+        run: |
+          if ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            echo "outbound=true" >> "$GITHUB_OUTPUT"
+          else
+            git diff --name-only "$BASE...HEAD" > "$RUNNER_TEMP/outbound-basics-changes.txt"
+            if grep -qE '^(apps/outbound/|packages/(shared|web)/|patches/|bunfig\.toml$|bun\.lock$|package\.json$|\.github/workflows/ci\.yml$)' "$RUNNER_TEMP/outbound-basics-changes.txt"; then
+              echo "outbound=true" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+      - if: steps.changes.outputs.outbound == 'true'
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.4
+      - if: steps.changes.outputs.outbound == 'true'
+        run: bun install --frozen-lockfile
+      - if: steps.changes.outputs.outbound == 'true'
+        env:
+          OUTBOUND_SMOKE_PG_USER: postgres
+          OUTBOUND_SMOKE_PG_PASSWORD: outbound_test_only
+        run: bun run test:outbound:smoke
+      - if: always() && steps.changes.outputs.outbound == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: outbound-smoke-results
+          path: output/outbound-smoke/
+          if-no-files-found: warn
+          retention-days: 7
   # Posts in apps/web/content/blog publish on merge, so their checks gate the
   # PR, and run again on main for work pushed there directly. A job-level
   # filter rather than `paths:`, which would also skip `verify`; a change that

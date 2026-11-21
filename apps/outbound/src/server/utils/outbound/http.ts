@@ -2,7 +2,16 @@ import { type Result, resultify } from "@zenncore/utils";
 import { z } from "zod";
 import * as HTTP from "@/server/utils/http";
 
-export type Provider = "azure" | "apollo" | "clay" | "google" | "unipile" | "warmbly" | "claude";
+export type Provider =
+  | "azure"
+  | "apollo"
+  | "clay"
+  | "google"
+  | "unipile"
+  | "warmbly"
+  | "claude"
+  | "scrapellm"
+  | "firecrawl";
 
 export class IntegrationError extends Error {
   override name = "outbound-integration-error";

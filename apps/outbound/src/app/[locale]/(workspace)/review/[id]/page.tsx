@@ -10,7 +10,7 @@ import {
 } from "@/lib/outbound-review";
 import * as Outbound from "@/server/app/outbound";
 import { Environment } from "@/server/utils/environment";
-import { Empty } from "../../_components/common";
+import { Empty } from "../../_components/status";
 import { ReviewShell } from "../_components/shell";
 import { ReviewDetailSkeleton } from "../_components/skeletons";
 import { ReviewEditor } from "./_components/editor";
@@ -43,7 +43,7 @@ const ReviewDetailData = async ({ params, searchParams }: PageProps) => {
         {translate("error")}
       </p>
     );
-  if (!result.data || !result.data.prospect.messages.length)
+  if (!result.data?.prospect.messages.length)
     return (
       <Empty
         title={translate("missingTitle")}
@@ -61,7 +61,7 @@ const ReviewDetailData = async ({ params, searchParams }: PageProps) => {
     );
   return (
     <ReviewEditor
-      key={`${result.data.prospect.id}-${result.data.prospect.revision}-${result.data.prospect.updatedAt}`}
+      key={`${result.data.prospect.id}-${result.data.prospect.revision}`}
       prospect={result.data.prospect}
       playbook={result.data.playbook}
       backHref={backHref}

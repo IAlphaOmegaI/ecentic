@@ -40,6 +40,24 @@ export const getReviewItem = withAuthorization(
   "Outbound.getReviewItem",
 );
 
+export const getProspectItem = withAuthorization(
+  [UserRole.STAFF],
+  async (_, input: { id: string }) => Store.getProspectItem(input),
+  "Outbound.getProspectItem",
+);
+
+export const getInboxSummaries = withAuthorization(
+  [UserRole.STAFF],
+  async () => Store.getInboxSummaries(),
+  "Outbound.getInboxSummaries",
+);
+
+export const getPreparationSummary = withAuthorization(
+  [UserRole.STAFF],
+  async () => Store.getPreparationSummary(),
+  "Outbound.getPreparationSummary",
+);
+
 export const getWorkspace = withAuthorization(
   [UserRole.STAFF],
   async () => {
@@ -51,6 +69,12 @@ export const getWorkspace = withAuthorization(
     };
   },
   "Outbound.getWorkspace",
+);
+
+export const getPlaybook = withAuthorization(
+  [UserRole.STAFF],
+  async () => ({ success: true as const, data: await Store.policy() }),
+  "Outbound.getPlaybook",
 );
 
 export const savePlaybook = withAuthorization(
@@ -67,8 +91,10 @@ export const saveProspect = withAuthorization(
 );
 export const saveCampaignProspect = withAuthorization(
   [UserRole.STAFF],
-  async (context, input: { company: string; revision: number; prospect: ProspectInput }) =>
-    Store.saveCampaignProspect(context.session.user.id, input),
+  async (
+    context,
+    input: { company: string; revision: number; prospect: ProspectInput },
+  ) => Store.saveCampaignProspect(context.session.user.id, input),
   "Outbound.saveCampaignProspect",
 );
 export const importProspects = withAuthorization(

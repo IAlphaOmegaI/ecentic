@@ -31,6 +31,14 @@ attempts always belong to the selected real thread, never an inferred account.
 held meetings and the union of recorded meetings. A booking link is not a
 booking event. `meetingBooked` and `meetingHeld` are explicit staff stage changes.
 
+Saving `notInterested`, `closed`, `meetingBooked` or `meetingHeld` also pauses the
+linked prospect's cold email and LinkedIn sequence in the same transaction.
+Existing replies, opt-outs, bounces and stronger holds are preserved. This does
+not fabricate an inbound message or add domain-wide suppression. Reopening the
+conversation does not silently restart the stopped cold sequence. A send already
+accepted by its provider cannot be recalled; its receipt is recorded while the
+pause remains in force.
+
 ## Reply drafting
 
 The staff actions are `listConversations`, `getConversation`,
@@ -38,6 +46,14 @@ The staff actions are `listConversations`, `getConversation`,
 `saveConversationReply` and `sendConversationReply`. Mutations require the
 selected thread ID and its current revision. Each inbound human message marks
 attention and invalidates drafts tied to an older inbound message.
+
+Client actions use a serializable environment marker: local JavaScript symbols
+do not retain their identity through React Flight. Transport regression tests
+exercise the installed Next.js encoder/decoder as well as authenticated stage
+writes. Stage and reply forms show separate pending/success/error feedback.
+Same-thread refreshes retain unsaved replies and stage selections, while changed
+server data requires review before another write. Unknown reply-send results
+remain blocked until reconciliation.
 
 Azure suggestions reserve an immutable generation UUID before one bounded call
 with no automatic paid retry. They use actual correspondence and saved factual
@@ -86,3 +102,10 @@ recovery, uncertainty and Sent reconciliation, shared capacity and channel
 identity. Provider fixtures cover Gmail HTML-only messages, attachment exclusion
 and incomplete-body flags. These checks use mocked providers and do not send
 live messages.
+
+Run `bun run test:outbound:smoke` from the repository root for the core regression
+gate. It provisions and removes a unique database on the dedicated local test
+server, uses offline provider fixtures, and fails on skipped or missing tests.
+CI runs the same command for Outbound and shared-package changes. See
+[the app README](../../apps/outbound/README.md#core-smoke-tests) for setup and
+coverage limits.

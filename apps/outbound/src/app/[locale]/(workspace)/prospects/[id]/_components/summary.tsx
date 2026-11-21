@@ -14,12 +14,10 @@ import {
   type ProspectProgress,
   prospectLifecycles,
 } from "@/lib/outbound-prospect-progress";
-import { Status } from "../../../_components/common";
-import { ProspectTools } from "../../../_components/integrations";
-import {
-  ProspectEditor,
-  ProspectEmailProgress,
-} from "../../../_components/prospects";
+import type { ProspectTools } from "../../../_components/integrations";
+import { ProspectEmailProgress } from "../../../_components/prospect-progress";
+import { Status } from "../../../_components/status";
+import { ProspectEditorPanel } from "./editor";
 
 export const ProspectSummary = async ({
   prospect,
@@ -362,24 +360,7 @@ export const ProspectSummary = async ({
         )}
       </section>
 
-      <Accordion>
-        <AccordionItem className="border-b-0">
-          <AccordionTrigger className="px-4 py-5 sm:px-6">
-            <span>
-              <span className="block text-sm">
-                {t("prospect.summary.manualTitle")}
-              </span>
-              <span className="mt-1 block font-normal text-foreground-dimmed text-xs leading-5">
-                {t("prospect.summary.manualHelp")}
-              </span>
-            </span>
-          </AccordionTrigger>
-          <AccordionPanel keepMounted>
-            <ProspectTools prospect={prospect} clay={clay} />
-            <ProspectEditor prospect={prospect} />
-          </AccordionPanel>
-        </AccordionItem>
-      </Accordion>
+      <ProspectEditorPanel prospect={prospect} clay={clay} />
     </div>
   );
 };

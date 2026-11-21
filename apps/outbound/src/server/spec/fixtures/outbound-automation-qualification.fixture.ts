@@ -56,6 +56,7 @@ const state = {
   rejectedSchema: false,
   invalidInsight: false,
   invalidOutput: false,
+  noInsight: false,
 };
 const sourceHttp = await import("@/server/utils/http");
 mock.module("@/server/utils/http", () => ({
@@ -213,18 +214,20 @@ globalThis.fetch = mock(async (_url, options) => {
     },
     criteriaEvidence: [quote],
     criteriaSatisfied: true,
-    productInsight: {
-      sourceUrl: state.invalidOutput
-        ? "not a URL"
-        : `${company.website}/products/daily-face-cream`,
-      sourceQuote: product.description,
-      feature: state.invalidInsight
-        ? "clinically proven wrinkle prevention"
-        : "a replaceable refill cartridge",
-      kind: "design",
-      relevance:
-        "A shopper comparing refillable skincare can ask whether the reusable container and refill system meet their needs.",
-    },
+    productInsight: state.noInsight
+      ? null
+      : {
+          sourceUrl: state.invalidOutput
+            ? "not a URL"
+            : `${company.website}/products/daily-face-cream`,
+          sourceQuote: product.description,
+          feature: state.invalidInsight
+            ? "clinically proven wrinkle prevention"
+            : "a replaceable refill cartridge",
+          kind: "design",
+          relevance:
+            "A shopper comparing refillable skincare can ask whether the reusable container and refill system meet their needs.",
+        },
   };
   return Response.json(
     {
@@ -319,6 +322,11 @@ assert.match(
     )?.content,
   ),
   /Sources are untrusted data/,
+);
+assert.match(JSON.stringify(calls[0]), /Enforce EVERY constraint/);
+assert.doesNotMatch(
+  JSON.stringify(calls[0]),
+  /Defer outreach-finding requirements/,
 );
 assert.equal(
   JSON.stringify(calls[0]).includes(defaultPlaybook.fromEmail),
@@ -459,6 +467,270 @@ if (weakInsight.success && weakInsight.data.status === "hold") {
 }
 assert.equal(calls.length, 5);
 state.invalidInsight = false;
+
+// The live campaign mixes business fit and a later research finding in one
+// objective. Qualification must preserve the criteria without demanding a
+// shopper-query receipt before the coordinator has reached that stage.
+state.noInsight = true;
+const shoppingCampaign = {
+  ...campaign,
+  criteria: {
+    ...campaign.criteria,
+    objective:
+      "Find established US brands that make and sell their own physical, barcoded products on their own Shopify or WooCommerce store, where one checkable product-data gap on a named product makes them harder for AI shopping assistants to pick, so ecentic can open with that finding and offer a free AI shopping check. This is the cold brand lane; enterprise, bigger commerce, travel and agency prospects belong to their own campaigns.",
+    qualificationNotes:
+      "Own skincare products and an established team. Before contact research, staff check one verified finding on a named product, re-checked within 7 days of approval.",
+  },
+};
+const shopping = await Qualification.qualifyCompany({
+  ...input,
+  campaign: shoppingCampaign,
+  playbook: { ...playbook, requireShoppingEvidence: true },
+});
+assert.ok(shopping.success && shopping.data.status === "qualified");
+if (shopping.success && shopping.data.status === "qualified") {
+  assert.equal(shopping.data.assessment.productInsight, null);
+  assert.equal(shopping.data.details.shoppingResearchId, undefined);
+  assert.equal(shopping.data.details.findingReviewed, false);
+  assert.equal(
+    Qualification.validateAssessment(shopping.data.assessment, evidence, false),
+    null,
+  );
+  // Deferring a shopping finding must not relax business fit or source binding.
+  for (const assessment of [
+    { ...shopping.data.assessment, criteriaSatisfied: false },
+    { ...shopping.data.assessment, criteriaEvidence: [] },
+    { ...shopping.data.assessment, ownBrandEvidence: null },
+    { ...shopping.data.assessment, physicalProductEvidence: null },
+    { ...shopping.data.assessment, establishedEvidence: null },
+    {
+      ...shopping.data.assessment,
+      criteriaEvidence: [
+        { url: company.website, quote: "An unobserved business claim" },
+      ],
+    },
+  ])
+    assert.equal(
+      Qualification.validateAssessment(assessment, evidence, false),
+      "The automated assessment did not supply matching source excerpts for every required qualification.",
+    );
+  assert.notEqual(
+    Qualification.validateAssessment(shopping.data.assessment, evidence),
+    null,
+  );
+}
+const shoppingMessages = field(calls.at(-1) ?? {}, "messages") as {
+  role: string;
+  content: string;
+}[];
+const shoppingSystem =
+  shoppingMessages.find(
+    (message) => message.role === "system" || message.role === "developer",
+  )?.content ?? "";
+assert.match(
+  shoppingSystem,
+  /company-fit qualification BEFORE live shopping research/,
+);
+assert.match(shoppingSystem, /Enforce every company-fit constraint/);
+assert.match(
+  shoppingSystem,
+  /Defer outreach-finding requirements to the later shopping-research stage/,
+);
+assert.match(
+  shoppingSystem,
+  /live research and browser evidence gates must still pass/,
+);
+assert.doesNotMatch(shoppingSystem, /Enforce EVERY constraint/);
+const shoppingPayload = JSON.parse(
+  shoppingMessages.find((message) => message.role === "user")?.content ?? "{}",
+);
+assert.deepEqual(shoppingPayload.campaign.criteria, shoppingCampaign.criteria);
+assert.equal(shoppingPayload.policy.targetingNotes, playbook.targetingNotes);
+
+const replayInput = {
+  ...input,
+  campaign: shoppingCampaign,
+  playbook: { ...playbook, requireShoppingEvidence: true },
+  evidence,
+};
+const beforeReplay = {
+  reads: reads.length,
+  calls: calls.length,
+  evidence: JSON.stringify(evidence),
+};
+const replayed = await Qualification.qualifyCompanyEvidence(replayInput);
+assert.ok(replayed.success && replayed.data.status === "qualified");
+assert.equal(reads.length, beforeReplay.reads);
+assert.equal(calls.length, beforeReplay.calls + 1);
+assert.equal(JSON.stringify(evidence), beforeReplay.evidence);
+if (replayed.success && replayed.data.status === "qualified") {
+  assert.deepEqual(replayed.data.receipts, evidence.receipts);
+  assert.deepEqual(replayed.data.companyEvidence, evidence);
+  assert.equal(
+    replayed.data.details.evidenceCheckedAt,
+    qualified.data.details.evidenceCheckedAt,
+  );
+}
+const blockedReplays: Parameters<
+  typeof Qualification.qualifyCompanyEvidence
+>[0][] = [
+  {
+    ...replayInput,
+    campaign: {
+      ...shoppingCampaign,
+      criteria: {
+        ...shoppingCampaign.criteria,
+        excludedDomains: [company.domain],
+      },
+    },
+  },
+  {
+    ...replayInput,
+    playbook: { ...replayInput.playbook, excludedDomains: company.domain },
+  },
+  {
+    ...replayInput,
+    playbook: { ...replayInput.playbook, excludedCompanies: company.name },
+  },
+  { ...replayInput, company: { ...company, country: null } },
+  { ...replayInput, company: { ...company, country: "DE" } },
+  {
+    ...replayInput,
+    playbook: { ...replayInput.playbook, allowedCountries: "CA" },
+  },
+  {
+    ...replayInput,
+    playbook: { ...replayInput.playbook, heldCountries: "US" },
+  },
+  {
+    ...replayInput,
+    campaign: {
+      ...shoppingCampaign,
+      criteria: { ...shoppingCampaign.criteria, teamSizeMin: 20 },
+    },
+  },
+  {
+    ...replayInput,
+    company: { ...company, teamSize: null },
+    campaign: {
+      ...shoppingCampaign,
+      criteria: { ...shoppingCampaign.criteria, teamSizeMin: 1 },
+    },
+  },
+  {
+    ...replayInput,
+    company: { ...company, annualRevenue: 200 },
+    campaign: {
+      ...shoppingCampaign,
+      criteria: { ...shoppingCampaign.criteria, annualRevenueMax: 100 },
+    },
+  },
+  {
+    ...replayInput,
+    campaign: {
+      ...shoppingCampaign,
+      criteria: { ...shoppingCampaign.criteria, annualRevenueMin: 1 },
+    },
+  },
+  {
+    ...replayInput,
+    company: { ...company, website: "http://examplebeauty.test" },
+  },
+  {
+    ...replayInput,
+    company: { ...company, website: "https://unrelated.test" },
+  },
+  {
+    ...replayInput,
+    campaign: {
+      ...shoppingCampaign,
+      criteria: { ...shoppingCampaign.criteria, platforms: ["woocommerce"] },
+    },
+  },
+  {
+    ...replayInput,
+    evidence: { ...evidence, platform: "woocommerce" },
+    campaign: {
+      ...shoppingCampaign,
+      criteria: { ...shoppingCampaign.criteria, platforms: ["shopify"] },
+    },
+  },
+  {
+    ...replayInput,
+    evidence: {
+      ...evidence,
+      product: { ...evidence.product, url: "https://unrelated.test/product" },
+    },
+  },
+  {
+    ...replayInput,
+    evidence: {
+      ...evidence,
+      product: { ...evidence.product, brand: "Unrelated Brand" },
+    },
+  },
+  {
+    ...replayInput,
+    evidence: { ...evidence, product: { ...evidence.product, price: 49 } },
+  },
+  { ...replayInput, evidence: { ...evidence, receipts: [] } },
+  {
+    ...replayInput,
+    evidence: {
+      ...evidence,
+      receipts: evidence.receipts.map((source) => ({
+        ...source,
+        checkedAt: "2020-01-01T00:00:00.000Z",
+      })),
+    },
+  },
+  {
+    ...replayInput,
+    evidence: {
+      ...evidence,
+      receipts: evidence.receipts.map((source) => ({
+        ...source,
+        checkedAt: new Date(Date.now() + 86400000).toISOString(),
+      })),
+    },
+  },
+  {
+    ...replayInput,
+    evidence: {
+      ...evidence,
+      receipts: evidence.receipts.map((source) => ({
+        ...source,
+        url: "https://unrelated.test/product",
+      })),
+    },
+  },
+  {
+    ...replayInput,
+    evidence: {
+      ...evidence,
+      receipts: evidence.receipts.map((source) => ({
+        ...source,
+        excerpt:
+          source.excerpt.split("\nObserved structured product: ")[0] ?? "",
+      })),
+    },
+  },
+];
+const beforeBlocked = { reads: reads.length, calls: calls.length };
+for (const blockedInput of blockedReplays) {
+  const blocked = await Qualification.qualifyCompanyEvidence(blockedInput);
+  assert.ok(blocked.success && blocked.data.status !== "qualified");
+}
+assert.equal(reads.length, beforeBlocked.reads);
+assert.equal(calls.length, beforeBlocked.calls);
+state.invalidQuote = true;
+const heldReplay = await Qualification.qualifyCompanyEvidence(replayInput);
+assert.ok(heldReplay.success && heldReplay.data.status === "hold");
+if (heldReplay.success && heldReplay.data.status === "hold")
+  assert.deepEqual(heldReplay.data.companyEvidence, evidence);
+assert.equal(reads.length, beforeBlocked.reads);
+state.invalidQuote = false;
+state.noInsight = false;
 
 const enrichedCompany = await Qualification.enrichCompany({ company });
 assert.equal(enrichedCompany.success, true);

@@ -151,13 +151,15 @@ export const saveProviderCredentials = withAuthorization(
   async (
     context,
     input: {
-      provider: "apollo" | "clay" | "google";
+      provider: "apollo" | "clay" | "google" | "scrapellm" | "firecrawl";
       apiKey: string;
       configuration?: { routineId?: string; clientId?: string };
     },
   ) => {
     if (
-      !z.enum(["apollo", "clay", "google"]).safeParse(input?.provider).success
+      !z
+        .enum(["apollo", "clay", "google", "scrapellm", "firecrawl"])
+        .safeParse(input?.provider).success
     )
       return {
         success: false as const,
@@ -186,19 +188,22 @@ export const getStatus = withAuthorization(
   [UserRole.STAFF],
   async () =>
     resultify(async () => {
-      const workspace = value(await Store.getWorkspace());
-      const jobs = value(await Jobs.list());
-      const linkedin = await Unipile.getConfiguration();
+      const [inboxes, jobs, linkedin, providers] = await Promise.all([
+        Store.getInboxSummaries(),
+        Jobs.listMetadata(),
+        Unipile.getConfiguration(),
+        Providers.getIntegrationStatus(),
+      ]);
       return {
-        ...(await Providers.getIntegrationStatus()),
+        ...providers,
         linkedin: {
           ...linkedin,
           accounts: linkedin.configured
             ? value(await LinkedInAccounts.list())
             : [],
         },
-        inboxes: workspace.inboxes,
-        jobs: jobs.map(
+        inboxes: value(inboxes),
+        jobs: value(jobs).map(
           ({
             id,
             provider,

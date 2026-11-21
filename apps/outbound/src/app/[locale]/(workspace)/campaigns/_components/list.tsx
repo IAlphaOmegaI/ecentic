@@ -23,7 +23,7 @@ import { useTransition } from "react";
 import { z } from "zod";
 import { Link, useRouter } from "@/i18n/navigation";
 import type { Campaign } from "@/lib/outbound-campaigns";
-import { Empty } from "../../_components/common";
+import { Empty } from "../../_components/status";
 import { campaignListHref, type campaignQuery } from "./query";
 
 type Row = Campaign & { _id: string };

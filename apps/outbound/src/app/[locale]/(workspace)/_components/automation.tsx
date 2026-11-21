@@ -24,7 +24,7 @@ import type { AutomationStatus } from "@/lib/outbound-automation";
 import type { Campaign } from "@/lib/outbound-campaigns";
 import * as Automation from "@/server/app/outbound/automation-actions";
 import * as Campaigns from "@/server/app/outbound/campaign-actions";
-import { Notice } from "./common";
+import { Notice } from "./status";
 
 export type AutomationSnapshot = AutomationStatus;
 type AutomationRow = AutomationSnapshot["jobs"][number] & { _id: string };
@@ -183,6 +183,10 @@ export const AutomationPanel = ({
   const active = campaign
     ? campaign.status === "active"
     : Boolean(snapshot?.activeCampaigns);
+  const researchBlocked = Boolean(snapshot?.research.blocked?.length);
+  const researchProviders = researchBlocked
+    ? (snapshot?.research.blocked ?? [])
+    : (snapshot?.research.missing ?? []);
   return (
     <section
       className="w-full min-w-0 max-w-full border-accent-foreground border-b"
@@ -265,6 +269,47 @@ export const AutomationPanel = ({
         </div>
         {snapshot && !snapshot.enabled && (
           <p className="text-foreground-dimmed text-sm">{t("enableHelp")}</p>
+        )}
+        {snapshot?.research.required && !snapshot.research.ready && (
+          <div
+            className="space-y-3 border-accent-foreground border-t pt-4"
+            role="status"
+          >
+            <div>
+              <h3 className="font-medium text-foreground-rich text-sm">
+                {t(
+                  researchBlocked
+                    ? "research.blockedTitle"
+                    : "research.missingTitle",
+                )}
+              </h3>
+              <p className="mt-1 max-w-3xl text-foreground-dimmed text-sm leading-6">
+                {t(
+                  researchBlocked
+                    ? "research.blockedHelp"
+                    : "research.missingHelp",
+                  {
+                    providers: format.list(
+                      researchProviders.map((provider) =>
+                        provider === "scrapellm"
+                          ? "ScrapeLLM"
+                          : provider === "firecrawl"
+                            ? "Firecrawl"
+                            : t("research.unknownProvider"),
+                      ),
+                    ),
+                  },
+                )}
+              </p>
+            </div>
+            <Button
+              variant="soft"
+              color="neutral"
+              render={<Link href="/integrations#shopping-research" />}
+            >
+              {t(researchBlocked ? "research.reviewAction" : "research.action")}
+            </Button>
+          </div>
         )}
         {hasCriteriaPreview && (
           <p className="text-foreground-dimmed text-sm">

@@ -7,7 +7,7 @@ import { Environment } from "@/server/utils/environment";
 
 export const CampaignContext = async ({ campaign }: { campaign?: string }) => {
   if (!campaign) return null;
-  const result = await Campaigns.getCampaign(Environment.SERVER, {
+  const result = await Campaigns.getCampaignSummary(Environment.SERVER, {
     id: campaign,
   });
   const t = await getTranslations("outbound");
@@ -25,7 +25,7 @@ export const CampaignContext = async ({ campaign }: { campaign?: string }) => {
         render={<Link href={`/campaigns/${campaign}`} />}
       >
         <ArrowLeftIcon aria-hidden className="size-4" />
-        {result.data.campaign.name}
+        {result.data.name}
       </Button>
     </div>
   );

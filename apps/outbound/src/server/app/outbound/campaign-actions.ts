@@ -22,6 +22,11 @@ export const getCampaign = withAuthorization(
   async (_, input: { id: string; page?: number }) => Campaigns.get(input),
   "Outbound.getCampaign",
 );
+export const getCampaignSummary = withAuthorization(
+  [UserRole.STAFF],
+  async (_, input: { id: string }) => Campaigns.getSummary(input),
+  "Outbound.getCampaignSummary",
+);
 export const createCampaign = withAuthorization(
   [UserRole.STAFF],
   async (context, input: { name: string }) =>

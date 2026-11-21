@@ -18,6 +18,7 @@ import { z } from "zod";
 import {
   type Activity,
   companyExcluded,
+  contactHistoryReady,
   defaultPlaybook,
   deliveredBody,
   draftSchema,
@@ -52,6 +53,12 @@ import {
   companyQualificationIssues,
 } from "@/lib/outbound-campaigns";
 import { sendingCapacity } from "@/lib/outbound-capacity";
+import {
+  canReviewDraftAutomatically,
+  draftReviewInputSchema,
+  draftReviewOutputSchema,
+  draftReviewReadinessKey,
+} from "@/lib/outbound-draft-review";
 import {
   LINKEDIN_PAGE_SIZE,
   type LinkedInQueue,
@@ -254,7 +261,7 @@ export const automationDeliveryStatus = () =>
     const blockers = [
       ...(!settings.sendingEnabled ? ["sendingPaused"] : []),
       ...(!settings.senderConfirmed ? ["senderUnconfirmed"] : []),
-      ...(!settings.historyConfirmed ? ["historyUnconfirmed"] : []),
+      ...(!contactHistoryReady(settings) ? ["historyUnconfirmed"] : []),
       ...(!settings.competingSendersPaused ? ["competingSendersActive"] : []),
       ...(!settings.senderTested ? ["senderUntested"] : []),
       ...(inboxes.length !== pool.length || !inboxes.length
@@ -925,7 +932,8 @@ const prospectItem = (
           email.split("@")[1] ?? "",
         ]),
       ];
-      const [suppressions, firsts] = await Promise.all([
+      const resumeId = await latestDraftReviewRequest(undefined, row.id);
+      const [suppressions, firsts, reviews, research] = await Promise.all([
         Suppressions.find(Environment.SERVER, {
           where: or(
             and(
@@ -946,6 +954,31 @@ const prospectItem = (
           ),
           limit: 1,
         }),
+        IntegrationJobs.find(Environment.SERVER, {
+          where: and(
+            eq(schema.outboundIntegrationJob.provider, "automation"),
+            eq(schema.outboundIntegrationJob.prospectId, row.id),
+            sql`${schema.outboundIntegrationJob.input}->>'operation' = 'draftReview'`,
+            or(
+              eq(schema.outboundIntegrationJob.status, "uncertain"),
+              and(
+                eq(schema.outboundIntegrationJob.status, "failed"),
+                sql`${schema.outboundIntegrationJob.input}->>'prospectRevision' = ${String(row.revision)}`,
+                sql`${schema.outboundIntegrationJob.input}->>'playbookRevision' = ${String(configuration.revision)}`,
+                sql`${schema.outboundIntegrationJob.input}->>'readinessKey' = ${draftReviewReadinessKey(row.details, configuration.settings.senderConfirmed)}`,
+                sql`${schema.outboundIntegrationJob.input}->>'resumeId' = ${resumeId}`,
+              ),
+            ),
+          ),
+          limit: 1,
+          orderBy: [
+            {
+              column: schema.outboundIntegrationJob.updatedAt,
+              direction: "desc",
+            },
+          ],
+        }),
+        resultify(() => assertShoppingEvidence(undefined, row, configuration)),
       ]);
       const first = requireData(firsts)[0];
       const original = first
@@ -959,20 +992,43 @@ const prospectItem = (
             }),
           )[0]
         : undefined;
-      return {
-        prospect: view(
-          row,
-          configuration.settings,
-          requireData(suppressions),
-          original,
-        ),
-        playbook: configuration.settings,
-      };
+      const prospect = view(
+        row,
+        configuration.settings,
+        requireData(suppressions),
+        original,
+      );
+      const review = requireData(reviews)[0];
+      if (
+        !research.success &&
+        research.error.name === ValidationError.errorName
+      )
+        prospect.issues.push({
+          code: "shoppingResearchRequired",
+          field: "evidence",
+        });
+      if (
+        !research.success &&
+        research.error.name !== ValidationError.errorName
+      )
+        throw research.error;
+      if (review)
+        prospect.issues.push({
+          code:
+            review.status === "uncertain"
+              ? "automaticReviewUncertain"
+              : "automaticReviewFailed",
+          field: "messages",
+        });
+      return { prospect, playbook: configuration.settings };
     },
   );
 
 export const getReviewItem = (input: { id: string }) =>
   prospectItem(input, (row) => row.messages.length > 0);
+
+export const getProspectItem = (input: { id: string }) =>
+  prospectItem(input, () => true);
 
 export const getLinkedInItem = (input: { id: string }) =>
   prospectItem(
@@ -981,6 +1037,78 @@ export const getLinkedInItem = (input: { id: string }) =>
       Boolean(row.details.linkedinUrl.trim()) &&
       !["optedOut", "bounced", "skipped"].includes(row.status),
   );
+
+/** Public mailbox metadata only; never load or decrypt transport credentials for a page. */
+export const getInboxSummaries = () =>
+  resultify(async (): Promise<Inbox[]> => {
+    const rows = requireData(
+      await resultifyRead(() =>
+        db
+          .select({
+            id: schema.outboundInbox.id,
+            email: schema.outboundInbox.email,
+            fromName: schema.outboundInbox.fromName,
+            signer: schema.outboundInbox.signer,
+            enabled: schema.outboundInbox.enabled,
+            transport: schema.outboundInbox.transport,
+            connected: sql<boolean>`case when ${schema.outboundInbox.transport} = 'google-app-password'
+          then coalesce(${schema.outboundInbox.appPassword} <> '', false)
+          else coalesce(${schema.outboundInbox.refreshToken} <> '', false) end`,
+            lastSyncedAt: schema.outboundInbox.lastSyncedAt,
+            error: schema.outboundInbox.error,
+            dailyCap: schema.outboundInbox.dailyCap,
+            nextSendAt: schema.outboundInbox.nextSendAt,
+          })
+          .from(schema.outboundInbox),
+      ),
+    );
+    return rows.map((row) => ({
+      ...row,
+      lastSyncedAt: row.lastSyncedAt?.toISOString() ?? null,
+      nextSendAt: row.nextSendAt?.toISOString() ?? null,
+    }));
+  });
+
+/** The optional manual batch loads IDs on demand, with the same ordering and evidence rules. */
+export const getPreparationSummary = () =>
+  resultify(async () => {
+    const prospect = schema.outboundProspect;
+    // Match String.trim(), which the original client queue used for empty evidence.
+    const whitespace =
+      "\u0009\u000a\u000b\u000c\u000d\u0020\u00a0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000\ufeff";
+    const [configuration, records] = await Promise.all([
+      policy(),
+      resultifyRead(() =>
+        db
+          .select({
+            id: prospect.id,
+            candidate: sql<boolean>`${prospect.status} = 'candidate' and btrim(coalesce(${prospect.details}->>'evidence', ''), ${whitespace}) = ''`,
+            verified: sql<boolean>`${prospect.status} in ('candidate','draft','approved')
+          and ${prospect.details}->>'relationship' = 'cold'
+          and coalesce(${prospect.details}->>'evidence', '') <> ''
+          and coalesce(${prospect.details}->>'gap', '') <> ''
+          and coalesce(${prospect.details}->>'finding', '') <> ''
+          and coalesce(${prospect.details}->>'productUrl', '') <> ''`,
+            checkedAt: sql<string>`coalesce(${prospect.details}->>'evidenceCheckedAt', '')`,
+          })
+          .from(prospect)
+          .orderBy(desc(prospect.updatedAt))
+          .limit(5000),
+      ),
+    ]);
+    const rows = requireData(records);
+    const now = Date.now();
+    return {
+      candidates: rows.filter((row) => row.candidate).map((row) => row.id),
+      verified: rows
+        .filter((row) => {
+          const checked = Date.parse(row.checkedAt);
+          return row.verified && checked <= now && now - checked < 86_400_000;
+        })
+        .map((row) => row.id),
+      target: configuration.settings.weeklyTarget,
+    };
+  });
 
 export const getWorkspace = () =>
   resultify(async (): Promise<Workspace> => {
@@ -1087,6 +1215,44 @@ const revoke = async (
     );
 };
 
+/** Pause both cold sequences under the caller's workspace lock, without inventing a reply or opt-out. */
+export const pauseColdOutreachWithin = async (
+  transaction: TransactionScope,
+  actor: string,
+  input: { prospect: string; reason: string },
+) => {
+  const prospect = await findProspect(transaction, input.prospect);
+  const stopped = [
+    "held",
+    "optedOut",
+    "bounced",
+    "replied",
+    "skipped",
+    "finished",
+  ].includes(prospect.status);
+  await revoke(transaction, prospect, input.reason);
+  requireData(
+    await Prospects.update(
+      Environment.SERVER,
+      prospect.id,
+      {
+        status: stopped ? prospect.status : "held",
+        holdReason: stopped ? prospect.holdReason : input.reason,
+        approvedAt: null,
+        approvedBy: null,
+        approvalHash: null,
+        nextSendAt: null,
+        linkedinStatus:
+          prospect.linkedinStatus === "replied" ? "replied" : "closed",
+        linkedinNextActionAt: null,
+        updatedAt: new Date(),
+      },
+      { tx: transaction },
+    ),
+  );
+  await event(transaction, actor, "hold", input.reason, prospect.id);
+};
+
 export const savePlaybookWithin = async (
   transaction: TransactionScope,
   actor: string,
@@ -1148,6 +1314,7 @@ export const savePlaybookWithin = async (
       linkedinAutomationEnabled,
       senderConfirmed,
       historyConfirmed,
+      allowIncompleteHistory,
       competingSendersPaused,
       senderTested,
       dailyCap,
@@ -1208,6 +1375,18 @@ export const savePlaybookWithin = async (
       ),
     );
   }
+  if (
+    current.settings.allowIncompleteHistory !==
+    parsed.data.allowIncompleteHistory
+  )
+    await event(
+      transaction,
+      actor,
+      "historicalContactPolicyChanged",
+      parsed.data.allowIncompleteHistory
+        ? "Previous campaign history import made optional; repeat-contact risk accepted. Known exclusions, replies and Outbound send records remain enforced."
+        : "Previous campaign history import required again before delivery.",
+    );
   await event(
     transaction,
     actor,
@@ -1361,7 +1540,7 @@ const saveProspectWithin = async (
               existing.status,
             )
               ? existing.status
-              : existing.sentStep
+              : existing.sentStep || existing.status === "held"
                 ? "held"
                 : existing.messages.length
                   ? "draft"
@@ -1371,7 +1550,12 @@ const saveProspectWithin = async (
             approvalHash: null,
             nextSendAt: null,
             revision: existing.revision + 1,
-            holdReason: existing.sentStep ? "detailsChanged" : "",
+            holdReason:
+              existing.status === "held"
+                ? existing.holdReason
+                : existing.sentStep
+                  ? "detailsChanged"
+                  : "",
             updatedAt: new Date(),
           },
           { tx: transaction },
@@ -1620,7 +1804,7 @@ export const patchProspect = (
     const unchanged = Object.entries(parsed.data).every(
       ([key, value]) =>
         receipts.has(key) ||
-        prospect.details[key as keyof ProspectInput] === value,
+        isDeepStrictEqual(prospect.details[key as keyof ProspectInput], value),
     );
     if (unchanged) {
       requireData(
@@ -1687,11 +1871,11 @@ const writeMessages = async (
         messages,
         revision,
         playbookRevision: current.revision,
-        status: "draft",
+        status: prospect.status === "held" ? "held" : "draft",
         approvedAt: null,
         approvedBy: null,
         approvalHash: null,
-        holdReason: "",
+        holdReason: prospect.status === "held" ? prospect.holdReason : "",
         nextSendAt: null,
         updatedAt: new Date(),
       },
@@ -1782,257 +1966,257 @@ export const saveDraft = (actor: string, input: unknown) =>
     ]);
   });
 
-export const reviewProspect = (
+type AutomaticApproval =
+  | { automationJobId: string; reviewJobId?: never }
+  | { reviewJobId: string; automationJobId?: never };
+
+const reviewProspectWithin = async (
+  transaction: TransactionScope,
   actor: string,
   input: unknown,
-  automatic?: { automationJobId: string },
-) =>
-  transaction(async (transaction) => {
-    const parsed = reviewSchema.safeParse(input);
-    if (!parsed.success) throw new ValidationError("Invalid review decision.");
-    const prospect = await findProspect(transaction, parsed.data.prospect);
-    if (prospect.revision !== parsed.data.revision)
-      throw new ConflictError(
-        "This draft changed in another session. Review the current version.",
-      );
-    if (
-      ["optedOut", "bounced", "replied", "finished"].includes(prospect.status)
-    )
-      throw new ConflictError(
-        "This sequence is closed and cannot be reactivated.",
-      );
-    const current = await policy(transaction);
-    if (parsed.data.decision === "approve") {
-      await assertCampaignActive(transaction, prospect);
-      if (automatic) {
-        const identifier = z
-          .string()
-          .uuid()
-          .safeParse(automatic.automationJobId);
-        if (
-          !current.settings.automationEnabled ||
-          !prospect.campaignId ||
-          !identifier.success
-        )
-          throw new ConflictError(
-            "Automatic mode is not enabled for this campaign.",
-          );
-        const [job, campaign] = await Promise.all([
-          IntegrationJobs.get(Environment.SERVER, identifier.data, {
-            tx: transaction,
-          }),
-          Campaigns.get(Environment.SERVER, prospect.campaignId, {
-            tx: transaction,
-          }),
-        ]);
-        const source = requireData(job);
-        const target = requireData(campaign);
-        const selection = z
-          .object({ status: z.literal("selected") })
-          .safeParse(source?.output?.["selection"]);
-        if (
-          target?.status !== "active" ||
-          source?.provider !== "automation" ||
-          source.status !== "starting" ||
+  automatic?: AutomaticApproval,
+) => {
+  const parsed = reviewSchema.safeParse(input);
+  if (!parsed.success) throw new ValidationError("Invalid review decision.");
+  const prospect = await findProspect(transaction, parsed.data.prospect);
+  if (prospect.revision !== parsed.data.revision)
+    throw new ConflictError(
+      "This draft changed in another session. Review the current version.",
+    );
+  if (["optedOut", "bounced", "replied", "finished"].includes(prospect.status))
+    throw new ConflictError(
+      "This sequence is closed and cannot be reactivated.",
+    );
+  const current = await policy(transaction);
+  if (parsed.data.decision === "approve") {
+    await assertCampaignActive(transaction, prospect);
+    if (automatic) {
+      const identifier = z
+        .string()
+        .uuid()
+        .safeParse(automatic.reviewJobId ?? automatic.automationJobId);
+      if (
+        !current.settings.automationEnabled ||
+        !prospect.campaignId ||
+        !identifier.success
+      )
+        throw new ConflictError(
+          "Automatic mode is not enabled for this campaign.",
+        );
+      const reviewJob = automatic.reviewJobId
+        ? requireData(
+            await IntegrationJobs.get(Environment.SERVER, identifier.data, {
+              tx: transaction,
+            }),
+          )
+        : null;
+      if (
+        automatic.reviewJobId &&
+        (reviewJob?.provider !== "automation" ||
+          reviewJob.status !== "starting" ||
+          reviewJob.input["operation"] !== "draftReview" ||
+          reviewJob.prospectId !== prospect.id ||
+          reviewJob.input["playbookRevision"] !== current.revision ||
+          reviewJob.output?.["appliedProspectRevision"] !== prospect.revision)
+      )
+        throw new ConflictError(
+          "The automatic review no longer matches this draft.",
+        );
+      const evidenceId = automatic.reviewJobId
+        ? prospect.details.automationEvidenceId
+        : identifier.data;
+      const [job, campaign] = await Promise.all([
+        evidenceId
+          ? IntegrationJobs.get(Environment.SERVER, evidenceId, {
+              tx: transaction,
+            })
+          : Promise.resolve({ success: true as const, data: null }),
+        Campaigns.get(Environment.SERVER, prospect.campaignId, {
+          tx: transaction,
+        }),
+      ]);
+      const source = requireData(job);
+      const target = requireData(campaign);
+      const selection = z
+        .object({ status: z.literal("selected") })
+        .safeParse(source?.output?.["selection"]);
+      if (target?.status !== "active")
+        throw new ConflictError("The campaign is not active.");
+      if (
+        evidenceId &&
+        (source?.provider !== "automation" ||
+          (automatic.reviewJobId
+            ? !["complete", "failed"].includes(source.status)
+            : source.status !== "starting") ||
           prospect.details.automationEvidenceId !== source.id ||
           source.input["operation"] !== "campaignAutomation" ||
           source.input["campaignId"] !== target.id ||
           source.input["campaignRevision"] !== target.revision ||
-          source.input["playbookRevision"] !== current.revision ||
-          source.output?.["stage"] !== "approve" ||
+          (!automatic.reviewJobId &&
+            source.input["playbookRevision"] !== current.revision) ||
+          (!automatic.reviewJobId && source.output?.["stage"] !== "approve") ||
           source.output?.["prospectId"] !== prospect.id ||
-          source.output?.["prospectRevision"] !== prospect.revision ||
+          (!automatic.reviewJobId &&
+            source.output?.["prospectRevision"] !== prospect.revision) ||
           !selection.success ||
           !qualifiedProductSchema.safeParse(source.output?.["qualification"])
-            .success
-        )
-          throw new ConflictError(
-            "The automatic checks no longer match this campaign or draft.",
-          );
-        const request = z
-          .object({
-            requestId: z.string(),
-            records: z.array(
-              z.object({
-                record_id: z.string(),
-                input: z.object({ email: z.string() }),
-              }),
-            ),
-          })
-          .parse(source.output?.["verification"]);
-        const verified = z
-          .object({
-            requestId: z.string(),
-            status: z.literal("complete"),
-            results: z.array(
-              z.object({
-                email: z.string(),
-                status: z.string(),
-                recordId: z.string(),
-                verifiedAt: z.string().nullable(),
-              }),
-            ),
-          })
-          .parse(source.output?.["verificationResult"]);
-        const matches = verified.results.filter(
-          (record) =>
-            record.email.toLowerCase() ===
-              prospect.details.email.toLowerCase() &&
-            request.records.some(
-              (input) =>
-                input.record_id === record.recordId &&
-                input.input.email.toLowerCase() === record.email.toLowerCase(),
-            ),
+            .success)
+      )
+        throw new ConflictError(
+          "The automatic checks no longer match this campaign or draft.",
         );
-        if (
-          verified.requestId !== request.requestId ||
-          matches.length !== 1 ||
-          matches[0]?.status !== "verified" ||
-          matches[0].verifiedAt !== prospect.details.emailVerifiedAt ||
-          prospect.details.emailSource !==
-            `Apollo verification ${request.requestId}; record ${matches[0].recordId}`
-        )
-          throw new ValidationError(
-            "The live verification receipt does not match this recipient.",
-          );
-      }
-      await assertAutomaticEvidence(transaction, prospect);
-      const entries = requireData(
-        await Suppressions.find(Environment.SERVER, {}, { tx: transaction }),
-      );
-      const issues = issuesFor(prospect, current.settings, entries);
-      const peers = requireData(
-        await Prospects.find(
-          Environment.SERVER,
-          {
-            where: inArray(schema.outboundProspect.status, [
-              "approved",
-              "active",
-            ]),
-          },
-          { tx: transaction },
-        ),
-      );
-      issues.push(
-        ...draftSimilarityIssues(
-          prospect.messages,
-          peers
-            .filter((peer) => peer.id !== prospect.id)
-            .map((peer) => peer.messages),
-          current.settings,
-        ),
-      );
-      if (issues.length)
+      if (!source && !prospect.details.shoppingResearchId)
         throw new ValidationError(
-          `Resolve the review checks before approving: ${issues.map((issue) => issue.code).join(", ")}`,
+          "Saved shopping research is required for automatic review.",
         );
-      if (prospect.playbookRevision !== current.revision)
-        throw new ConflictError(
-          "The playbook changed. Save or regenerate the draft before approval.",
-        );
-      const revisions = requireData(
-        await Revisions.find(
-          Environment.SERVER,
-          {
-            where: and(
-              eq(schema.outboundRevision.prospectId, prospect.id),
-              eq(schema.outboundRevision.revision, prospect.revision),
-            ),
-            limit: 1,
-          },
-          { tx: transaction },
-        ),
-      );
-      const revision = revisions[0];
-      const hash = contentHash(
-        prospect.messages,
-        approvalManifest(prospect, current.settings, current.revision),
-      );
-      if (!revision || revision.contentHash !== hash)
-        throw new ConflictError(
-          "The draft evidence changed. Save a new draft version before approval.",
-        );
-      const now = new Date();
-      const approvalActor = automatic ? `automatic:${actor}` : actor;
-      requireData(
-        await Revisions.update(
-          Environment.SERVER,
-          revision.id,
-          {
-            approvedBy: approvalActor,
-            approvedAt: now,
-            revokedAt: null,
-            revokeReason: null,
-          },
-          { tx: transaction },
-        ),
-      );
-      requireData(
-        await Prospects.update(
-          Environment.SERVER,
-          prospect.id,
-          {
-            status: prospect.sentStep ? "active" : "approved",
-            approvedBy: approvalActor,
-            approvedAt: now,
-            approvalHash: hash,
-            holdReason: "",
-            nextSendAt: prospect.firstSentAt
-              ? new Date(
-                  Math.max(
-                    prospect.firstSentAt.getTime() +
-                      (prospect.messages.find(
-                        (message) => message.step === prospect.sentStep + 1,
-                      )?.afterDays ?? 0) *
-                        86_400_000,
-                    (prospect.lastSentAt?.getTime() ?? 0) + 86_400_000,
-                  ),
-                )
-              : now,
-            updatedAt: now,
-          },
-          { tx: transaction },
-        ),
-      );
-    } else {
-      await revoke(
-        transaction,
-        prospect,
-        parsed.data.reason || parsed.data.decision,
-      );
-      requireData(
-        await Prospects.update(
-          Environment.SERVER,
-          prospect.id,
-          {
-            status:
-              parsed.data.decision === "hold"
-                ? "held"
-                : parsed.data.decision === "skip"
-                  ? "skipped"
-                  : "draft",
-            approvedAt: null,
-            approvedBy: null,
-            approvalHash: null,
-            nextSendAt: null,
-            holdReason: parsed.data.reason,
-            updatedAt: new Date(),
-          },
-          { tx: transaction },
-        ),
-      );
+      await assertAutomaticReviewVerification(transaction, prospect);
     }
-    await event(
-      transaction,
-      actor,
-      automatic ? "automaticApproval" : parsed.data.decision,
-      automatic
-        ? `Automatic checks passed for revision ${prospect.revision}; evidence job ${automatic.automationJobId}.`
-        : parsed.data.reason || `Sequence ${parsed.data.decision}`,
-      prospect.id,
+    await assertAutomaticEvidence(transaction, prospect);
+    const entries = requireData(
+      await Suppressions.find(Environment.SERVER, {}, { tx: transaction }),
     );
-    return { prospect: prospect.id };
-  });
+    const issues = issuesFor(prospect, current.settings, entries);
+    const peers = requireData(
+      await Prospects.find(
+        Environment.SERVER,
+        {
+          where: inArray(schema.outboundProspect.status, [
+            "approved",
+            "active",
+          ]),
+        },
+        { tx: transaction },
+      ),
+    );
+    issues.push(
+      ...draftSimilarityIssues(
+        prospect.messages,
+        peers
+          .filter((peer) => peer.id !== prospect.id)
+          .map((peer) => peer.messages),
+        current.settings,
+      ),
+    );
+    if (issues.length)
+      throw new ValidationError(
+        `Resolve the review checks before approving: ${issues.map((issue) => issue.code).join(", ")}`,
+      );
+    if (prospect.playbookRevision !== current.revision)
+      throw new ConflictError(
+        "The playbook changed. Save or regenerate the draft before approval.",
+      );
+    const revisions = requireData(
+      await Revisions.find(
+        Environment.SERVER,
+        {
+          where: and(
+            eq(schema.outboundRevision.prospectId, prospect.id),
+            eq(schema.outboundRevision.revision, prospect.revision),
+          ),
+          limit: 1,
+        },
+        { tx: transaction },
+      ),
+    );
+    const revision = revisions[0];
+    const hash = contentHash(
+      prospect.messages,
+      approvalManifest(prospect, current.settings, current.revision),
+    );
+    if (!revision || revision.contentHash !== hash)
+      throw new ConflictError(
+        "The draft evidence changed. Save a new draft version before approval.",
+      );
+    const now = new Date();
+    const approvalActor = automatic ? `automatic:${actor}` : actor;
+    requireData(
+      await Revisions.update(
+        Environment.SERVER,
+        revision.id,
+        {
+          approvedBy: approvalActor,
+          approvedAt: now,
+          revokedAt: null,
+          revokeReason: null,
+        },
+        { tx: transaction },
+      ),
+    );
+    requireData(
+      await Prospects.update(
+        Environment.SERVER,
+        prospect.id,
+        {
+          status: prospect.sentStep ? "active" : "approved",
+          approvedBy: approvalActor,
+          approvedAt: now,
+          approvalHash: hash,
+          holdReason: "",
+          nextSendAt: prospect.firstSentAt
+            ? new Date(
+                Math.max(
+                  prospect.firstSentAt.getTime() +
+                    (prospect.messages.find(
+                      (message) => message.step === prospect.sentStep + 1,
+                    )?.afterDays ?? 0) *
+                      86_400_000,
+                  (prospect.lastSentAt?.getTime() ?? 0) + 86_400_000,
+                ),
+              )
+            : now,
+          updatedAt: now,
+        },
+        { tx: transaction },
+      ),
+    );
+  } else {
+    await revoke(
+      transaction,
+      prospect,
+      parsed.data.reason || parsed.data.decision,
+    );
+    requireData(
+      await Prospects.update(
+        Environment.SERVER,
+        prospect.id,
+        {
+          status:
+            parsed.data.decision === "hold"
+              ? "held"
+              : parsed.data.decision === "skip"
+                ? "skipped"
+                : "draft",
+          approvedAt: null,
+          approvedBy: null,
+          approvalHash: null,
+          nextSendAt: null,
+          holdReason: parsed.data.reason,
+          updatedAt: new Date(),
+        },
+        { tx: transaction },
+      ),
+    );
+  }
+  await event(
+    transaction,
+    actor,
+    automatic ? "automaticApproval" : parsed.data.decision,
+    automatic
+      ? `Automatic checks passed for revision ${prospect.revision}; evidence job ${automatic.reviewJobId ?? automatic.automationJobId}.`
+      : parsed.data.reason || `Sequence ${parsed.data.decision}`,
+    prospect.id,
+  );
+  return { prospect: prospect.id };
+};
+
+export const reviewProspect = (
+  actor: string,
+  input: unknown,
+  automatic?: AutomaticApproval,
+) =>
+  transaction((transaction) =>
+    reviewProspectWithin(transaction, actor, input, automatic),
+  );
 
 export const approveAutomatically = (
   actor: string,
@@ -2048,6 +2232,388 @@ export const approveAutomatically = (
     },
     { automationJobId: input.automationJobId },
   );
+
+export const latestDraftReviewRequest = async (
+  transaction: TransactionScope | undefined,
+  prospect: string,
+) =>
+  requireData(
+    await Events.find(
+      Environment.SERVER,
+      {
+        where: and(
+          eq(schema.outboundEvent.prospectId, prospect),
+          eq(schema.outboundEvent.kind, "review"),
+        ),
+        orderBy: [
+          { column: schema.outboundEvent.createdAt, direction: "desc" },
+          { column: schema.outboundEvent.id, direction: "desc" },
+        ],
+        limit: 1,
+      },
+      { tx: transaction },
+    ),
+  )[0]?.id ?? "";
+
+/** Editable email labels are not a verification receipt. Correlate the saved provider request. */
+const assertAutomaticReviewVerification = async (
+  transaction: TransactionScope,
+  prospect: ProspectRow,
+) => {
+  const match = /^Apollo verification (.+); record (.+)$/.exec(
+    prospect.details.emailSource,
+  );
+  if (!match)
+    throw new ValidationError(
+      "A saved email verification receipt is required for automatic review.",
+    );
+  const verified = requireData(
+    await IntegrationJobs.find(
+      Environment.SERVER,
+      {
+        where: and(
+          eq(schema.outboundIntegrationJob.provider, "apollo"),
+          eq(schema.outboundIntegrationJob.prospectId, prospect.id),
+          eq(schema.outboundIntegrationJob.requestId, match[1]!),
+        ),
+        limit: 1,
+      },
+      { tx: transaction },
+    ),
+  )[0];
+  const source =
+    verified ??
+    (prospect.details.automationEvidenceId
+      ? requireData(
+          await IntegrationJobs.get(
+            Environment.SERVER,
+            prospect.details.automationEvidenceId,
+            { tx: transaction },
+          ),
+        )
+      : null);
+  const automatic = !verified && Boolean(prospect.details.automationEvidenceId);
+  const request = automatic
+    ? source?.output?.["verification"]
+    : {
+        requestId: source?.requestId,
+        records: source?.output?.["records"],
+      };
+  const response = automatic
+    ? source?.output?.["verificationResult"]
+    : {
+        requestId: source?.requestId,
+        status: source?.status,
+        results: source?.output?.["results"],
+      };
+  const verification = z
+    .object({
+      requestId: z.string(),
+      records: z.array(
+        z.object({
+          record_id: z.string(),
+          input: z.object({ email: z.string() }),
+        }),
+      ),
+    })
+    .safeParse(request);
+  const result = z
+    .object({
+      requestId: z.string(),
+      status: z.literal("complete"),
+      results: z.array(
+        z.object({
+          recordId: z.string(),
+          email: z.string(),
+          status: z.string(),
+          verifiedAt: z.string().nullable(),
+        }),
+      ),
+    })
+    .safeParse(response);
+  if (
+    !source ||
+    (automatic
+      ? !["starting", "complete", "failed"].includes(source.status)
+      : source.status !== "complete" ||
+        source.input["operation"] !== "verify" ||
+        String(source.input["email"]).toLowerCase() !==
+          prospect.details.email.toLowerCase()) ||
+    !verification.success ||
+    !result.success ||
+    verification.data.requestId !== match[1] ||
+    result.data.requestId !== match[1]
+  )
+    throw new ValidationError(
+      "The saved email verification request does not match this recipient.",
+    );
+  const matches = result.data.results.filter(
+    (record) =>
+      record.email.toLowerCase() === prospect.details.email.toLowerCase() &&
+      record.recordId === match[2] &&
+      verification.data.records.some(
+        (input) =>
+          input.record_id === record.recordId &&
+          input.input.email.toLowerCase() === record.email.toLowerCase(),
+      ),
+  );
+  if (
+    matches.length !== 1 ||
+    matches[0]?.status !== "verified" ||
+    matches[0].verifiedAt !== prospect.details.emailVerifiedAt
+  )
+    throw new ValidationError(
+      "The saved email verification result does not match this recipient.",
+    );
+};
+
+/** Shared preflight prevents provider work for opted-out, attempted or ineligible contacts. */
+export const assertAutomaticDraftReviewReady = async (
+  transaction: TransactionScope,
+  prospect: ProspectRow,
+  { allowExpiredMx = false }: { allowExpiredMx?: boolean } = {},
+) => {
+  const current = await policy(transaction);
+  if (
+    !current.settings.automationEnabled ||
+    !canReviewDraftAutomatically(prospect)
+  )
+    throw new ConflictError(
+      "This draft is not available for automatic review.",
+    );
+  await assertCampaignActive(transaction, prospect);
+  await assertAutomaticEvidence(transaction, prospect);
+  await assertAutomaticReviewVerification(transaction, prospect);
+  const attempts = requireData(
+    await Attempts.find(
+      Environment.SERVER,
+      {
+        where: eq(schema.outboundSendAttempt.prospectId, prospect.id),
+        limit: 1,
+      },
+      { tx: transaction },
+    ),
+  );
+  const linkedin = requireData(
+    await IntegrationJobs.find(
+      Environment.SERVER,
+      {
+        where: and(
+          eq(schema.outboundIntegrationJob.prospectId, prospect.id),
+          eq(schema.outboundIntegrationJob.provider, "linkedin"),
+        ),
+        limit: 1,
+      },
+      { tx: transaction },
+    ),
+  );
+  const entries = requireData(
+    await Suppressions.find(Environment.SERVER, {}, { tx: transaction }),
+  );
+  if (
+    attempts.length ||
+    linkedin.length ||
+    suppressed(prospect.details, entries)
+  )
+    throw new ConflictError("Contact history prevents automatic draft review.");
+  const issues = prospectIssues(prospect.details, current.settings).filter(
+    (issue) =>
+      !(
+        allowExpiredMx &&
+        issue.code === "mxUnknown" &&
+        ["google", "other"].includes(prospect.details.mxProvider)
+      ),
+  );
+  if (issues.length)
+    throw new ValidationError(
+      `Automatic review requires current evidence: ${issues.map((issue) => issue.code).join(", ")}`,
+    );
+};
+
+/** Record an actual DNS observation only if the original unsent review context is still open. */
+export const applyAutomaticDraftMx = (input: {
+  prospect: string;
+  revision: number;
+  playbookRevision: number;
+  campaignRevision: number;
+  previousCheckedAt: string;
+  checked: { provider: ProspectInput["mxProvider"]; checkedAt: string };
+}) =>
+  transaction(async (transaction) => {
+    const prospect = await findProspect(transaction, input.prospect);
+    const current = await policy(transaction);
+    const campaign = prospect.campaignId
+      ? requireData(
+          await Campaigns.get(Environment.SERVER, prospect.campaignId, {
+            tx: transaction,
+          }),
+        )
+      : null;
+    if (
+      prospect.revision !== input.revision ||
+      current.revision !== input.playbookRevision ||
+      campaign?.revision !== input.campaignRevision ||
+      prospect.details.mxCheckedAt !== input.previousCheckedAt
+    )
+      throw new ConflictError(
+        "The draft context changed during the mail-host check.",
+      );
+    await assertAutomaticDraftReviewReady(transaction, prospect, {
+      allowExpiredMx: true,
+    });
+    const checkedAt = Date.parse(input.checked.checkedAt);
+    if (
+      !Number.isFinite(checkedAt) ||
+      checkedAt > Date.now() ||
+      Date.now() - checkedAt > 60_000
+    )
+      throw new ValidationError("A fresh mail-host observation is required.");
+    const details = prospectSchema.parse({
+      ...prospect.details,
+      id: prospect.id,
+      mxProvider: input.checked.provider,
+      mxCheckedAt: input.checked.checkedAt,
+    });
+    if (details.mxProvider !== prospect.details.mxProvider)
+      return saveProspectWithin(transaction, "outbound-draft-review", details);
+    requireData(
+      await Prospects.update(
+        Environment.SERVER,
+        prospect.id,
+        { details, updatedAt: new Date() },
+        { tx: transaction },
+      ),
+    );
+    await event(
+      transaction,
+      "outbound-draft-review",
+      "evidenceRechecked",
+      "A fresh DNS check confirmed the same recipient mail host.",
+      prospect.id,
+    );
+    return { prospect: prospect.id, revision: prospect.revision };
+  });
+
+/** Apply a checkpointed automatic review and approval in one transaction. */
+export const applyAutomaticDraftReview = (input: {
+  job: string;
+  token: string;
+}) =>
+  transaction(async (transaction) => {
+    const job = requireData(
+      await IntegrationJobs.get(Environment.SERVER, input.job, {
+        tx: transaction,
+      }),
+    );
+    const scope = draftReviewInputSchema.parse(job?.input);
+    const output = draftReviewOutputSchema.parse(job?.output);
+    const current = await policy(transaction);
+    const prospect = await findProspect(transaction, scope.prospectId);
+    const campaign = requireData(
+      await Campaigns.get(Environment.SERVER, scope.campaignId, {
+        tx: transaction,
+      }),
+    );
+    if (
+      job?.provider !== "automation" ||
+      job.status !== "starting" ||
+      job.prospectId !== prospect.id ||
+      output.stage !== "apply" ||
+      output.lease.token !== input.token ||
+      Date.parse(output.lease.expiresAt) <= Date.now() ||
+      !current.settings.automationEnabled ||
+      current.revision !== scope.playbookRevision ||
+      !canReviewDraftAutomatically(prospect) ||
+      prospect.revision !== scope.prospectRevision ||
+      draftReviewReadinessKey(
+        prospect.details,
+        current.settings.senderConfirmed,
+      ) !== scope.readinessKey ||
+      (await latestDraftReviewRequest(transaction, prospect.id)) !==
+        scope.resumeId ||
+      prospect.campaignId !== scope.campaignId ||
+      campaign?.revision !== scope.campaignRevision ||
+      campaign.status !== "active"
+    )
+      throw new ConflictError(
+        "The prospect, campaign or Playbook changed during automatic review.",
+      );
+    const attempts = requireData(
+      await Attempts.find(
+        Environment.SERVER,
+        {
+          where: eq(schema.outboundSendAttempt.prospectId, prospect.id),
+          limit: 1,
+        },
+        { tx: transaction },
+      ),
+    );
+    const linkedin = requireData(
+      await IntegrationJobs.find(
+        Environment.SERVER,
+        {
+          where: and(
+            eq(schema.outboundIntegrationJob.prospectId, prospect.id),
+            eq(schema.outboundIntegrationJob.provider, "linkedin"),
+          ),
+          limit: 1,
+        },
+        { tx: transaction },
+      ),
+    );
+    if (attempts.length || linkedin.length)
+      throw new ConflictError(
+        "An existing outreach attempt prevents automatic draft changes.",
+      );
+    if (scope.regenerate && !output.messages)
+      throw new ValidationError("The refreshed draft is missing.");
+    const saved = scope.regenerate
+      ? await writeMessages(
+          transaction,
+          "outbound-draft-review",
+          prospect,
+          output.messages!,
+        )
+      : { revision: prospect.revision };
+    requireData(
+      await IntegrationJobs.update(
+        Environment.SERVER,
+        job.id,
+        {
+          output: { ...job.output, appliedProspectRevision: saved.revision },
+        },
+        { tx: transaction },
+      ),
+    );
+    await reviewProspectWithin(
+      transaction,
+      "outbound-draft-review",
+      {
+        prospect: prospect.id,
+        revision: saved.revision,
+        decision: "approve",
+        reason: "",
+      },
+      { reviewJobId: job.id },
+    );
+    requireData(
+      await IntegrationJobs.update(
+        Environment.SERVER,
+        job.id,
+        {
+          status: "complete",
+          output: {
+            ...job.output,
+            appliedProspectRevision: saved.revision,
+            approvedAt: new Date().toISOString(),
+          },
+          updatedAt: new Date(),
+        },
+        { tx: transaction },
+      ),
+    );
+    return { prospect: prospect.id, revision: saved.revision };
+  });
 
 export const updateLinkedIn = (actor: string, input: unknown) =>
   transaction(async (transaction) => {
@@ -2965,7 +3531,7 @@ const deliveryGates = async (
     throw new ConflictError("Automatic delivery is paused.");
   if (
     !settings.sendingEnabled ||
-    !settings.historyConfirmed ||
+    !contactHistoryReady(settings) ||
     !settings.competingSendersPaused ||
     !settings.senderTested
   )

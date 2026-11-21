@@ -178,7 +178,13 @@
           "tertiary": "Effacer les filtres",
           "quaternary": "Fermer l’importation"
         },
-        "pagination": "Pages de prospects"
+        "pagination": "Pages de prospects",
+        "toolbar": {
+          "filters": "Filtres",
+          "more": "Plus",
+          "pipelineStatus": "État du processus",
+          "refreshing": "Actualisation…"
+        }
       },
       "productCategoryHelp": "Utilisez la catégorie indiquée sur la page produit. Elle remplit la variable de catégorie.",
       "reviewCountHelp": "Chiffres uniquement, repris du nombre d’avis affiché pour ce produit. Laissez vide si ce nombre ne peut pas être confirmé.",
@@ -316,7 +322,36 @@
       },
       "automaticReady": "Aucun blocage enregistré",
       "automaticApprovalNote": "Le mode automatique effectue les vérifications d’approbation. Vous pouvez consulter, modifier ou retenir un message ici ; les modifications doivent repasser les vérifications.",
-      "manualApproval": "Approuver manuellement"
+      "manualApproval": "Approuver manuellement",
+      "panel": {
+        "automaticTitle": "Approbation automatique",
+        "manualTitle": "Approbation",
+        "attention": "À vérifier",
+        "update": "Brouillon à mettre à jour",
+        "held": "Séquence en pause",
+        "ready": "Prêt pour les vérifications automatiques",
+        "approved": "Approuvé",
+        "sent": "Séquence terminée",
+        "evidenceTitle": "Recherche",
+        "evidenceDetails": "Voir les preuves",
+        "observation": "Observation",
+        "scope": "Portée et limites",
+        "consequence": "Ce que cela signifie",
+        "automaticNote": "Les brouillons admissibles sont approuvés automatiquement. Seules les exceptions nécessitent votre attention.",
+        "updateNote": "Ce brouillon doit correspondre au Playbook actuel avant de pouvoir être approuvé.",
+        "sendingPaused": "L’envoi est en pause dans le Playbook.",
+        "sendingActive": "Les e-mails approuvés sont envoyés automatiquement selon vos horaires et les limites de vos boîtes mail.",
+        "sendingSettings": "Paramètres d’envoi",
+        "controls": "Suspendre ou arrêter la prospection",
+        "holdDescription": "Mettez cette séquence en pause jusqu’à ce que vous souhaitiez continuer.",
+        "systemHold": "La séquence est en pause en raison d’une vérification enregistrée.",
+        "unknownIssue": "Une vérification enregistrée nécessite votre attention.",
+        "editsPending": "Enregistrez vos modifications pour relancer les vérifications.",
+        "playbookChanged": "Le Playbook a changé depuis la préparation de ce brouillon.",
+        "noEvidence": "Aucune recherche produit n’a encore été enregistrée.",
+        "checked": "Observé le {date}",
+        "resume": "Reprendre les vérifications automatiques"
+      }
     },
     "linkedin": {
       "title": "Gardez une approche personnelle sur LinkedIn",
@@ -451,6 +486,7 @@
         "heldCountries": "Codes des pays à mettre en attente",
         "excludedRoles": "Postes exclus",
         "historyConfirmed": "Les envois passés et les refus de contact ont été importés",
+        "allowIncompleteHistory": "Autoriser les contacts sans l’historique complet des campagnes passées",
         "competingSendersPaused": "Les autres systèmes d’envoi de prospection ont été suspendus",
         "senderTested": "La boîte de l’expéditeur a réussi un test contrôlé d’envoi et de réponse",
         "senderEmails": "Boîtes d’envoi",
@@ -546,7 +582,8 @@
       "researchInstructionsHelp": "Décrivez les questions des acheteurs, les variantes et les marchés précis à comparer, ainsi que les preuves à recueillir dans UCP, les pages produit ou le parcours de paiement. Consignez les sources et indiquez comme inconnus les résultats non testés ou indisponibles.",
       "requireShoppingEvidenceHelp": "Bloquez la rédaction et l’approbation tant qu’un constat étayé sur le parcours d’achat n’est pas enregistré. Un simple fait sur un ingrédient ne démontre pas une difficulté d’achat.",
       "legacyFindingsTitle": "Anciennes formules de constat",
-      "legacyFindingsHelp": "Formules enregistrées pour les anciennes vérifications de produits et de données manquantes. Lorsque des preuves sur le parcours d’achat sont requises, les nouveaux brouillons utilisent le constat enregistré sur ce parcours. Ces champs restent disponibles pour les anciens processus."
+      "legacyFindingsHelp": "Formules enregistrées pour les anciennes vérifications de produits et de données manquantes. Lorsque des preuves sur le parcours d’achat sont requises, les nouveaux brouillons utilisent le constat enregistré sur ce parcours. Ces champs restent disponibles pour les anciens processus.",
+      "allowIncompleteHistoryHelp": "Vous pouvez ignorer l’import des campagnes passées. Une personne pourrait recevoir un nouveau message ; les refus de contact, les rejets et les exclusions enregistrés restent pris en compte."
     },
     "integrations": {
       "title": "Connectez les bons outils",
@@ -726,12 +763,16 @@
         "setup": {
           "apollo": "Enregistrez ici la clé API Apollo de votre espace de travail.",
           "clay": "Enregistrez votre clé API Clay pour connecter l’espace de travail. Vous pourrez configurer l’enrichissement plus tard.",
-          "google": "Créez une application Web OAuth Google, ajoutez l’URI de redirection ci-dessous, puis enregistrez son identifiant et son secret client. Connectez ensuite chaque boîte Gmail."
+          "google": "Créez une application Web OAuth Google, ajoutez l’URI de redirection ci-dessous, puis enregistrez son identifiant et son secret client. Connectez ensuite chaque boîte Gmail.",
+          "scrapellm": "Utilisez ScrapeLLM pour capturer les requêtes réelles des acheteurs et les réponses affichées.",
+          "firecrawl": "Utilisez Firecrawl pour inspecter les pages produit rendues et enregistrer les éléments de preuve."
         },
         "secret": {
           "apollo": "Clé API Apollo",
           "clay": "Clé API Clay",
-          "google": "Secret client OAuth Google"
+          "google": "Secret client OAuth Google",
+          "scrapellm": "Clé API ScrapeLLM",
+          "firecrawl": "Clé API Firecrawl"
         },
         "fields": {
           "clientId": "Identifiant client OAuth Google",
@@ -767,7 +808,9 @@
           "clayTrial": "Essayer Clay",
           "clayKeys": "Clés API Clay",
           "clayWorkspace": "Ouvrir Clay",
-          "clayApiDocs": "Documentation de l’API Clay"
+          "clayApiDocs": "Documentation de l’API Clay",
+          "scrapellmAccount": "Ouvrir ScrapeLLM",
+          "firecrawlAccount": "Ouvrir Firecrawl"
         },
         "routineHelp": "Facultatif pour la connexion. Configurez une routine d’enrichissement dans votre espace de travail Clay, puis collez son ID ici.",
         "routine": {
@@ -776,7 +819,8 @@
           }
         },
         "claySaved": "Clé API vérifiée et enregistrée.",
-        "claySavedPending": "Clé API vérifiée et enregistrée. La configuration de l’enrichissement reste à terminer."
+        "claySavedPending": "Clé API vérifiée et enregistrée. La configuration de l’enrichissement reste à terminer.",
+        "savedUnchecked": "Clé enregistrée. L’accès sera vérifié lors de la première demande de recherche."
       },
       "mailbox": {
         "help": "Dans Roger, ouvrez Manage Mailbox → Credentials et copiez App Password. Nous vérifions les accès à l’envoi et aux réponses sans envoyer d’e-mail.",
@@ -810,6 +854,16 @@
         },
         "maximumDailyCap": "Maximum visé par boîte et par jour",
         "dailyCapHelp": "L’objectif est plafonné à 50 et inclut les premiers e-mails et les relances. Les boîtes commencent à 15 par jour. La limite augmente de 5 uniquement après une journée complète ayant atteint la limite actuelle sans rebond observé. Un rebond observé ramène la limite à 15. Un objectif ne garantit ni le volume d’envoi ni la réputation de la boîte."
+      },
+      "liveResearch": {
+        "title": "Recherche d’achat en direct",
+        "description": "Connectez les deux services pour observer les recherches des acheteurs et inspecter les pages produit avant la rédaction.",
+        "configured": "Identifiants de recherche enregistrés",
+        "missing": "Les deux connexions sont nécessaires",
+        "saved": "Clé enregistrée",
+        "verified": "Clé API vérifiée",
+        "environment": "Clé du serveur configurée",
+        "savedHelp": "L’accès à ScrapeLLM est vérifié lors de la recherche. Enregistrer sa clé ne lance pas de recherche payante."
       }
     },
     "relationships": {
@@ -886,7 +940,9 @@
       "findingReviewRequired": "Vérifiez les preuves produit brutes et rendues, renseignez les variables du constat et ajoutez la source d’un autre revendeur si elle est requise.",
       "templateControlsChanged": "Rétablissez exactement la présentation du fondateur et la question de conclusion enregistrées avant l’approbation.",
       "platformHeld": "Sélectionnez Shopify ou WooCommerce pour cette campagne de prospection à froid.",
-      "shoppingResearchRequired": "Enregistrez un constat étayé sur le parcours d’achat avant de rédiger ou d’approuver ce message."
+      "shoppingResearchRequired": "Enregistrez un constat étayé sur le parcours d’achat avant de rédiger ou d’approuver ce message.",
+      "automaticReviewFailed": "Les vérifications automatiques n’ont pas pu approuver ce brouillon. Vérifiez les preuves et le message, puis enregistrez vos corrections.",
+      "automaticReviewUncertain": "Le résultat d’une précédente demande de brouillon doit être vérifié avant de reprendre la validation automatique."
     },
     "preparation": {
       "action": {
@@ -1177,7 +1233,11 @@
       "companySearchFailedDescription": "Aucune entreprise n’a été ajoutée. Résolvez le problème indiqué ci-dessus, puis réessayez.",
       "manualClaude": "Utiliser Claude manuellement",
       "viewContactOptional": "Voir le contact",
-      "automaticContactsHelp": "Les campagnes actives vérifient chaque entreprise correspondant aux critères, trouvent et vérifient un contact, puis rédigent et mettent automatiquement sa séquence d’e-mails en file d’attente. Consulter un contact est facultatif ; les vérifications avant envoi restent applicables."
+      "automaticContactsHelp": "Les campagnes actives vérifient chaque entreprise correspondant aux critères, trouvent et vérifient un contact, puis rédigent et mettent automatiquement sa séquence d’e-mails en file d’attente. Consulter un contact est facultatif ; les vérifications avant envoi restent applicables.",
+      "forms": {
+        "changed": "Cette campagne a changé. Vos valeurs sont conservées. Chargez les valeurs enregistrées avant de continuer.",
+        "loadSaved": "Abandonner les modifications et charger les valeurs enregistrées"
+      }
     },
     "warmup": {
       "title": "Préchauffage",
@@ -1253,7 +1313,8 @@
         "sync": "Synchronisation de la boîte mail",
         "provider": "État du fournisseur",
         "history": "Historique rapproché",
-        "test": "Test d’envoi et de réponse"
+        "test": "Test d’envoi et de réponse",
+        "historyOptional": "Historique des campagnes passées facultatif"
       },
       "mailboxesTitle": "Boîtes d’expédition"
     },
@@ -1461,7 +1522,13 @@
         "draft": "Préparation des messages",
         "applyDraft": "Enregistrement des messages",
         "approve": "Vérification de l’admissibilité",
-        "complete": "Préparation terminée"
+        "complete": "Préparation terminée",
+        "researchQuery": "Préparation de la requête d’achat",
+        "startShoppingQuery": "Démarrage de la recherche d’achat",
+        "pollShoppingQuery": "En attente de la réponse à la recherche",
+        "browseShopping": "Inspection des pages produit",
+        "assessShopping": "Vérification des observations d’achat",
+        "applyShopping": "Enregistrement de la recherche d’achat"
       },
       "reasons": {
         "automation-disabled": "Le mode automatique est désactivé.",
@@ -1482,7 +1549,10 @@
         "provider-access": "Le fournisseur a refusé l’accès. Vérifiez la clé API et l’accès aux recherches dans Intégrations.",
         "provider-quota": "La limite de crédits ou d’utilisation du fournisseur est atteinte. Vérifiez votre forfait.",
         "provider-rate-limit": "Le fournisseur limite temporairement les demandes. Patientez avant de lancer un autre lot.",
-        "provider-uncertain": "La demande a peut-être été traitée. Vérifiez son résultat avant de réessayer."
+        "provider-uncertain": "La demande a peut-être été traitée. Vérifiez son résultat avant de réessayer.",
+        "research-not-configured": "Connectez les services de recherche d’achat dans Intégrations.",
+        "shopping-research-held": "La recherche d’achat n’a pas établi de constat suffisamment étayé.",
+        "shopping-research-expired": "Les éléments observés lors de la recherche d’achat ont expiré ; recueillez-les à nouveau."
       },
       "deliveryBlockers": {
         "sendingPaused": "L’envoi est en pause dans le guide.",
@@ -1504,7 +1574,16 @@
       "currentCap": "Limite quotidienne actuelle",
       "targetCap": "Maximum visé",
       "rampHeld": "Augmentation suspendue",
-      "rampHelp": "Les boîtes commencent à 15 par jour. La limite augmente de 5 uniquement après une journée complète ayant atteint la limite actuelle sans rebond observé. Un rebond observé ramène la limite à 15. Un objectif ne garantit ni le volume d’envoi ni la réputation de la boîte."
+      "rampHelp": "Les boîtes commencent à 15 par jour. La limite augmente de 5 uniquement après une journée complète ayant atteint la limite actuelle sans rebond observé. Un rebond observé ramène la limite à 15. Un objectif ne garantit ni le volume d’envoi ni la réputation de la boîte.",
+      "research": {
+        "missingTitle": "La recherche d’achat nécessite une connexion",
+        "missingHelp": "Connectez {providers} dans Intégrations pour préparer de nouveaux prospects à partir d’observations faites lors de recherches d’achat.",
+        "action": "Connecter les services de recherche",
+        "unknownProvider": "un service de recherche",
+        "blockedTitle": "La recherche d’achat nécessite votre attention",
+        "blockedHelp": "Vérifiez l’accès API et les crédits disponibles pour {providers}. La recherche est suspendue tant que cette connexion nécessite votre attention.",
+        "reviewAction": "Vérifier les connexions de recherche"
+      }
     },
     "sent": {
       "title": "Envoyés",
@@ -1701,7 +1780,7 @@
       },
       "draftLabel": "Brouillon de réponse",
       "invalidBody": "Saisissez une réponse de 1 à 10 000 caractères.",
-      "unsaved": "Enregistrez vos modifications avant d’envoyer ou de changer d’étape.",
+      "unsaved": "Enregistrez les modifications de votre réponse avant de l’envoyer.",
       "error": {
         "changed": "La conversation a changé. Rechargez-la et relisez le dernier message avant de continuer.",
         "closed": "Cette conversation est clôturée ou le destinataire est exclu des communications.",
@@ -1711,7 +1790,8 @@
         "generationUncertain": "Le résultat de la suggestion n’est pas confirmé. Vérifier cette demande ne générera pas une autre réponse.",
         "connection": "Le compte d’envoi est indisponible ou doit synchroniser ses réponses. Consultez Intégrations.",
         "controls": "La suggestion n’a pas respecté les règles de réponse enregistrées. Rédigez et relisez vous-même la réponse.",
-        "generic": "Cette action n’a pas pu être effectuée. Actualisez la conversation et réessayez."
+        "generic": "Cette action n’a pas pu être effectuée. Actualisez la conversation et réessayez.",
+        "authentication": "Votre session a expiré. Connectez-vous dans le nouvel onglet, puis réessayez ici. Vos modifications sont conservées."
       },
       "newestFirst": "Messages les plus récents en premier",
       "direction": {
@@ -1747,6 +1827,19 @@
         "scheduledHelp": "Les heures d’envoi d’e-mails enregistrées figurent ici. Les pauses, la vérification des réponses, les horaires du destinataire et les limites des boîtes peuvent les retarder. Les actions LinkedIn n’ont pas d’heure d’envoi fixe enregistrée.",
         "sentHelp": "Tentatives d’envoi par e-mail, sur LinkedIn et réponses aux conversations. Accepté signifie que le fournisseur a accepté le message ; cela ne prouve ni sa réception ni son ouverture.",
         "empty": "Aucune activité ne correspond à cette vue."
+      },
+      "editor": {
+        "changed": "La conversation a changé. Vos modifications sont conservées. Vérifiez les messages actuels avant de continuer.",
+        "continue": "Continuer avec mes modifications",
+        "refreshing": "Actualisation de la conversation…",
+        "savingStage": "Enregistrement de l’étape…",
+        "stageSaved": "Étape enregistrée.",
+        "savingDraft": "Enregistrement du brouillon…",
+        "draftSaved": "Brouillon enregistré.",
+        "generating": "Préparation de la suggestion…",
+        "sending": "Envoi en cours…",
+        "signIn": "Se reconnecter",
+        "followUpsPaused": "Enregistrer cette étape met en pause la prospection automatique par email et LinkedIn pour cette personne. Rouvrir la conversation ne la relance pas."
       }
     }
   }

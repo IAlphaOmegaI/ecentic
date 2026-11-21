@@ -11,6 +11,7 @@ import {
 import { randomUUID } from "node:crypto";
 import { eq, sql } from "drizzle-orm";
 import { defaultPlaybook, prospectSchema } from "@/lib/outbound";
+import { shoppingResearchSchema } from "@/lib/outbound-shopping-research";
 import { IntegrationError } from "@/server/utils/outbound/http";
 
 const endpoint = process.env.OUTBOUND_TEST_DATABASE_URL;
@@ -20,6 +21,7 @@ const modules: {
   store?: typeof import("@/server/app/outbound/store");
   campaigns?: typeof import("@/server/app/outbound/campaigns");
   linkedin?: typeof import("@/server/app/outbound/linkedin-automation");
+  research?: typeof import("@/server/app/outbound/lead-research");
   ledger?: typeof import("@/server/utils/outbound/linkedin-ledger");
 } = {};
 const active = () => {
@@ -28,6 +30,7 @@ const active = () => {
     !modules.store ||
     !modules.campaigns ||
     !modules.linkedin ||
+    !modules.research ||
     !modules.ledger
   )
     throw new Error("Fixture not loaded");
@@ -36,6 +39,7 @@ const active = () => {
     store: modules.store,
     campaigns: modules.campaigns,
     linkedin: modules.linkedin,
+    research: modules.research,
     ledger: modules.ledger,
   };
 };
@@ -131,6 +135,117 @@ const resetDue = async () =>
     .db.update(active().schema.outboundProspect)
     .set({ linkedinNextActionAt: null })
     .where(eq(active().schema.outboundProspect.id, fixture.prospectId));
+const applyShoppingResearch = async () => {
+  const { db, schema, store, research } = active();
+  const current = await store.policy();
+  value(
+    await store.savePlaybook("fixture", {
+      ...current.settings,
+      requireShoppingEvidence: true,
+    }),
+  );
+  const [prospect] = await db
+    .select()
+    .from(schema.outboundProspect)
+    .where(eq(schema.outboundProspect.id, fixture.prospectId));
+  if (!prospect) throw new Error("Missing fixture prospect");
+  const policy = await store.policy();
+  return value(
+    await research.saveAndApply("fixture", {
+      requestId: randomUUID(),
+      prospectId: prospect.id,
+      expectedRevision: prospect.revision,
+      expectedPlaybookRevision: policy.revision,
+      receipt: shoppingResearchSchema.parse({
+        product: {
+          name: "Linen tote",
+          url: "https://samplegoods.com/products/tote",
+        },
+        sources: [
+          {
+            id: "raw",
+            kind: "product",
+            url: "https://samplegoods.com/products/tote",
+            checkedAt: now.toISOString(),
+            capture: "http",
+            content: "Linen tote SKU LARGE Offer price 25.00 USD",
+            artifact: "fixture/raw.json",
+          },
+          {
+            id: "visible",
+            kind: "product",
+            url: "https://samplegoods.com/products/tote",
+            checkedAt: now.toISOString(),
+            capture: "browser",
+            content:
+              "Linen tote Large $30.00. Small $25.00 is a separate option.",
+            artifact: "fixture/product.png",
+          },
+          {
+            id: "query",
+            kind: "search",
+            url: "https://www.google.com/search?q=large+linen+tote",
+            checkedAt: now.toISOString(),
+            capture: "browser",
+            content:
+              "large linen tote: Sample Goods Linen tote. Market not established.",
+            artifact: "fixture/query.png",
+          },
+          {
+            id: "ucp",
+            kind: "ucp",
+            url: "https://samplegoods.com/.well-known/ucp",
+            checkedAt: now.toISOString(),
+            capture: "http",
+            content: "404 Not Found",
+            artifact: "fixture/ucp.txt",
+          },
+        ],
+        queries: [
+          {
+            query: "large linen tote",
+            surface: "Google AI Mode",
+            market: "unknown",
+            interfaceLocale: "en-US",
+            signedOut: true,
+            executedAt: now.toISOString(),
+            status: "observed",
+            sourceIds: ["query"],
+            coverage: "One observed answer, not a controlled market test.",
+          },
+        ],
+        ucp: {
+          url: "https://samplegoods.com/.well-known/ucp",
+          status: "notObserved",
+          httpStatus: 404,
+          capabilities: [],
+          sourceIds: ["ucp"],
+        },
+        checkout: {
+          status: "notTested",
+          sourceIds: [],
+          notes: "No checkout interaction.",
+        },
+        competitors: [],
+        selected: {
+          kind: "product-data-gap",
+          observation:
+            "Your large Linen tote shows $30 on the page, while its product data lists $25.",
+          consequence: "Should those prices match for the large size?",
+          askAbout: "the large Linen tote",
+          scope:
+            "One exact variant. No checkout test or measured sales impact.",
+          queryIndex: 0,
+          sourceIds: ["visible", "raw"],
+          quotes: [
+            { sourceId: "visible", quote: "Linen tote Large $30.00" },
+            { sourceId: "raw", quote: "SKU LARGE Offer price 25.00 USD" },
+          ],
+        },
+      }),
+    }),
+  );
+};
 const create = async () => {
   const { db, schema, store, campaigns } = active();
   value(await store.savePlaybook("fixture", settings));
@@ -288,6 +403,7 @@ describe.skipIf(!endpoint)(
       modules.linkedin = await import(
         "@/server/app/outbound/linkedin-automation"
       );
+      modules.research = await import("@/server/app/outbound/lead-research");
       modules.ledger = await import("@/server/utils/outbound/linkedin-ledger");
     });
     beforeEach(async () => {
@@ -337,6 +453,159 @@ describe.skipIf(!endpoint)(
           ?.linkedinStatus,
       ).toBe("invited");
     });
+    test("current shopping research can use its original selected contact after campaign and writing revisions", async () => {
+      const { db, schema, store, linkedin } = active();
+      await db
+        .update(schema.outboundCampaign)
+        .set({ revision: 2 })
+        .where(eq(schema.outboundCampaign.id, fixture.campaignId));
+      const research = await applyShoppingResearch();
+      const policy = await store.policy();
+      value(
+        await store.savePlaybook("fixture", {
+          ...policy.settings,
+          linkedinTemplate: "Hi {first}. {finding} {signature}",
+        }),
+      );
+      const transport = provider();
+      const person = value(await transport.resolveUser());
+      transport.resolveUser.mockResolvedValue({
+        success: true,
+        data: { ...person, specifics: { network_distance: "FIRST_DEGREE" } },
+      });
+      expect(value(await linkedin.run({}, transport)).accepted).toBe(1);
+      expect(transport.startChat).toHaveBeenCalledTimes(1);
+      const [job] = await rows();
+      expect(job?.input).toMatchObject({
+        qualificationJobId: fixture.sourceId,
+        prospectRevision: research.revision,
+        campaignRevision: 2,
+        playbookRevision: (await store.policy()).revision,
+        text: "Hi Jane. Your large Linen tote shows $30 on the page, while its product data lists $25. Account Owner",
+      });
+      const [source] = await db
+        .select()
+        .from(schema.outboundIntegrationJob)
+        .where(eq(schema.outboundIntegrationJob.id, fixture.sourceId));
+      expect(source?.input["campaignRevision"]).toBe(1);
+      expect(source?.input["playbookRevision"]).toBeLessThan(policy.revision);
+      expect(source?.output?.["prospectRevision"]).toBe(0);
+    });
+    test.each([
+      ["name", "Jane Jones"],
+      ["title", "Head of Ecommerce"],
+      ["linkedinUrl", "https://www.linkedin.com/in/someone-else"],
+      ["roleSource", "https://app.apollo.io/people/different_person"],
+      ["roleCheckedAt", "2026-11-16T16:59:00.000Z"],
+    ] as const)(
+      "shopping research does not permit a changed contact %s",
+      async (field, changed) => {
+        const { db, schema, linkedin } = active();
+        await applyShoppingResearch();
+        const [prospect] = await db
+          .select()
+          .from(schema.outboundProspect)
+          .where(eq(schema.outboundProspect.id, fixture.prospectId));
+        if (!prospect) throw new Error("Missing fixture prospect");
+        await db
+          .update(schema.outboundProspect)
+          .set({
+            details: { ...prospect.details, [field]: changed },
+            revision: prospect.revision + 1,
+          })
+          .where(eq(schema.outboundProspect.id, prospect.id));
+        const transport = provider();
+        const result = value(await linkedin.run({}, transport));
+        expect(result.accepted).toBe(0);
+        expect(result.held).toHaveLength(1);
+        expect(transport.getAccount).not.toHaveBeenCalled();
+        expect(transport.sendInvitation).not.toHaveBeenCalled();
+        expect(await rows()).toHaveLength(0);
+      },
+    );
+    test.each(["research policy", "campaign", "expired capture"] as const)(
+      "shopping research stays blocked with %s",
+      async (change) => {
+        const { db, schema, store, linkedin } = active();
+        await applyShoppingResearch();
+        if (change === "research policy") {
+          const policy = await store.policy();
+          value(
+            await store.savePlaybook("fixture", {
+              ...policy.settings,
+              researchInstructions: `${policy.settings.researchInstructions}\nVerify the product's current large variant.`,
+            }),
+          );
+        } else if (change === "campaign") {
+          await db
+            .update(schema.outboundCampaign)
+            .set({ revision: 2 })
+            .where(eq(schema.outboundCampaign.id, fixture.campaignId));
+        } else {
+          setSystemTime(
+            new Date(
+              now.getTime() + (settings.verificationDays + 1) * 86_400_000,
+            ),
+          );
+        }
+        const transport = provider();
+        const result = value(await linkedin.run({}, transport));
+        expect(result.accepted).toBe(0);
+        expect(result.held[0]?.reason).toBe("linkedin-check-failed");
+        expect(transport.getAccount).not.toHaveBeenCalled();
+        expect(transport.sendInvitation).not.toHaveBeenCalled();
+        expect(await rows()).toHaveLength(0);
+      },
+    );
+    test("valid shopping research still requires a qualified company", async () => {
+      const { db, schema, linkedin } = active();
+      await applyShoppingResearch();
+      const [source] = await db
+        .select()
+        .from(schema.outboundIntegrationJob)
+        .where(eq(schema.outboundIntegrationJob.id, fixture.sourceId));
+      if (!source) throw new Error("Missing fixture source");
+      await db
+        .update(schema.outboundIntegrationJob)
+        .set({
+          output: { ...source.output, qualification: { status: "rejected" } },
+        })
+        .where(eq(schema.outboundIntegrationJob.id, source.id));
+      const transport = provider();
+      expect(value(await linkedin.run({}, transport)).held[0]?.reason).toBe(
+        "linkedin-qualification-stale",
+      );
+      expect(transport.sendInvitation).not.toHaveBeenCalled();
+    });
+    test("research changed during profile and history checks cannot reach dispatch", async () => {
+      const { db, schema, linkedin } = active();
+      const research = await applyShoppingResearch();
+      const transport = provider();
+      transport.getUserChats.mockImplementation(async () => {
+        await db
+          .update(schema.outboundIntegrationJob)
+          .set({ status: "failed" })
+          .where(eq(schema.outboundIntegrationJob.id, research.researchId));
+        return { success: true, data: { object: "ChatLookup", data: [] } };
+      });
+      expect(value(await linkedin.run({}, transport)).accepted).toBe(0);
+      expect(transport.sendInvitation).not.toHaveBeenCalled();
+      expect(await rows()).toHaveLength(0);
+    });
+    test("published-data prospects still require their original source revisions", async () => {
+      const { store, linkedin } = active();
+      const policy = await store.policy();
+      value(
+        await store.savePlaybook("fixture", {
+          ...policy.settings,
+          linkedinTemplate: "Hi {first}. {finding} {signature}",
+        }),
+      );
+      const transport = provider();
+      expect(value(await linkedin.run({}, transport)).accepted).toBe(0);
+      expect(transport.sendInvitation).not.toHaveBeenCalled();
+      expect(await rows()).toHaveLength(0);
+    });
     test("concurrent workers reserve once and never send the same invitation twice", async () => {
       const transport = provider();
       await Promise.all([
@@ -345,6 +614,40 @@ describe.skipIf(!endpoint)(
       ]);
       expect(transport.sendInvitation).toHaveBeenCalledTimes(1);
       expect(await rows()).toHaveLength(1);
+    });
+    test("missing external history blocks LinkedIn unless explicitly accepted", async () => {
+      const { store, linkedin } = active();
+      const transport = provider();
+      value(
+        await store.savePlaybook("fixture", {
+          ...settings,
+          historyConfirmed: false,
+          allowIncompleteHistory: false,
+        }),
+      );
+      const result = value(await linkedin.run({}, transport));
+      expect(result.accepted).toBe(0);
+      expect(result.held[0]?.reason).toBe("linkedin-history-unconfirmed");
+      expect(transport.getAccount).not.toHaveBeenCalled();
+      expect(transport.sendInvitation).not.toHaveBeenCalled();
+    });
+    test("external history acceptance permits LinkedIn without asserting an import happened", async () => {
+      const { store, linkedin } = active();
+      const transport = provider();
+      const before = await store.policy();
+      value(
+        await store.savePlaybook("fixture", {
+          ...settings,
+          historyConfirmed: false,
+          allowIncompleteHistory: true,
+        }),
+      );
+      const policy = await store.policy();
+      expect(policy.revision).toBe(before.revision);
+      expect(policy.settings.historyConfirmed).toBe(false);
+      expect(policy.settings.allowIncompleteHistory).toBe(true);
+      expect(value(await linkedin.run({}, transport)).accepted).toBe(1);
+      expect(transport.sendInvitation).toHaveBeenCalledTimes(1);
     });
     test("paused mode and forged qualification cannot reach Unipile", async () => {
       const transport = provider();

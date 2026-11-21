@@ -11,7 +11,7 @@ import {
 import { getFormatter, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { SentDetail } from "@/lib/outbound-sent";
-import { Status } from "../../_components/common";
+import { Status } from "../../_components/status";
 import { SentStatusBadge } from "./queue";
 
 export const SentDetailView = async ({ detail }: { detail: SentDetail }) => {

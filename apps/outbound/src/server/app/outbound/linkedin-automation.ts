@@ -5,6 +5,7 @@ import { type Result, resultify } from "@zenncore/utils";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
 import {
+  contactHistoryReady,
   inSendWindow,
   normalizeDomain,
   prospectIssues,
@@ -331,7 +332,7 @@ const eligible = async (
   if (!policy.settings.linkedinAccountId)
     return hold("linkedin-account-missing");
   if (
-    !policy.settings.historyConfirmed ||
+    !contactHistoryReady(policy.settings) ||
     !policy.settings.competingSendersPaused
   )
     return hold("linkedin-history-unconfirmed");
@@ -392,17 +393,21 @@ const eligible = async (
     refresh.input["playbookRevision"] === policy.revision &&
     refresh.output?.["stage"] === "complete" &&
     refresh.output?.["appliedProspectRevision"] === prospect.revision;
+  // Shopping research binds the current prospect, campaign and research policy
+  // above; its original selected-contact job remains immutable.
+  const shoppingResearch = prospect.details.gap === "shopping-research";
   if (
     !source ||
     source.provider !== "automation" ||
     source.input["operation"] !== "campaignAutomation" ||
     source.input["campaignId"] !== campaign.id ||
-    source.input["campaignRevision"] !== campaign.revision ||
-    source.input["playbookRevision"] !== policy.revision ||
     source.output?.["prospectId"] !== prospect.id ||
-    (source.output?.["prospectRevision"] !== prospect.revision &&
-      !refreshedRevision) ||
-    prospect.details.gap !== "product-published-data" ||
+    (!shoppingResearch &&
+      (source.input["campaignRevision"] !== campaign.revision ||
+        source.input["playbookRevision"] !== policy.revision ||
+        (source.output?.["prospectRevision"] !== prospect.revision &&
+          !refreshedRevision) ||
+        prospect.details.gap !== "product-published-data")) ||
     !selection.success ||
     Object.entries(selection.data.details).some(
       ([key, detail]) =>

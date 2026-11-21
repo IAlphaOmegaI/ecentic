@@ -20,7 +20,9 @@ export type Provider =
   | "clay"
   | "google"
   | "warmbly"
-  | "claude";
+  | "claude"
+  | "scrapellm"
+  | "firecrawl";
 export type Configuration = {
   routineId?: string;
   clientId?: string;
@@ -55,6 +57,8 @@ const providerSchema = z.enum([
   "google",
   "warmbly",
   "claude",
+  "scrapellm",
+  "firecrawl",
 ]);
 const keySchema = z
   .object({
@@ -120,6 +124,16 @@ const projectConfiguration = (
 };
 const environment = (provider: Provider): Credential => {
   switch (provider) {
+    case "scrapellm":
+      return {
+        apiKey: process.env["OUTBOUND_SCRAPELLM_API_KEY"]?.trim() ?? null,
+        configuration: {},
+      };
+    case "firecrawl":
+      return {
+        apiKey: process.env["OUTBOUND_FIRECRAWL_API_KEY"]?.trim() ?? null,
+        configuration: {},
+      };
     case "claude":
       return {
         apiKey: process.env["OUTBOUND_CLAUDE_API_KEY"]?.trim() ?? null,
@@ -194,7 +208,7 @@ export const createCredentialStore = (
       );
       const configured = Boolean(result.data || fallback.apiKey);
       const credentialStatus = result.data
-        ? provider === "google"
+        ? provider === "google" || provider === "scrapellm"
           ? ("saved" as const)
           : ("verified" as const)
         : configured
@@ -237,6 +251,7 @@ export const createCredentialStore = (
         if (!validation.data.success) {
           const error = validation.data.error;
           const invalid =
+            error.code === "input" ||
             (error.code === "access" &&
               error.providerCode !== "api/inactive_subscription") ||
             error.providerCode === "api/invalid_auth_format";
@@ -322,6 +337,14 @@ const persistence: Persistence = {
 const store = createCredentialStore(
   persistence,
   async (provider, apiKey, configuration) => {
+    if (provider === "scrapellm" || provider === "firecrawl") {
+      const Research = await import("@/server/utils/outbound/live-shopping");
+      const checked = await (provider === "scrapellm"
+        ? Research.validateScrapellmCredentials({ apiKey })
+        : Research.validateFirecrawlCredentials({ apiKey }));
+      if (!checked.success) return checked;
+      return { success: true as const, data: { valid: true as const } };
+    }
     if (provider === "claude") {
       const Claude = await import("@/server/utils/outbound/claude");
       return Claude.validateKey(apiKey, configuration);

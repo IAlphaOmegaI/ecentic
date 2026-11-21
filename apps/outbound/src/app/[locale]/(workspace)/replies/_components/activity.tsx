@@ -232,7 +232,7 @@ export const ConversationActivityTable = ({
       >
         <div className="max-w-full overflow-x-auto" inert={pending}>
           <DataTable
-            className="w-full min-w-[54rem] table-fixed"
+            className="w-full min-w-[54rem] table-fixed border-b-0"
             classList={{
               "header-cell":
                 "h-10 overflow-hidden text-ellipsis whitespace-nowrap bg-background-dimmed/50 px-4 font-medium text-xs normal-case tracking-normal",

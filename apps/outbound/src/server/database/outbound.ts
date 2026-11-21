@@ -26,7 +26,16 @@ export const outboundProviderCredential = pgTable(
   "outbound_provider_credential",
   {
     provider: text("provider")
-      .$type<"unipile" | "apollo" | "clay" | "google" | "warmbly" | "claude">()
+      .$type<
+        | "unipile"
+        | "apollo"
+        | "clay"
+        | "google"
+        | "warmbly"
+        | "claude"
+        | "scrapellm"
+        | "firecrawl"
+      >()
       .primaryKey(),
     apiKey: encryptedText(
       "api_key",

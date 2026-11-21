@@ -10,7 +10,10 @@ import {
 } from "bun:test";
 import { eq, sql } from "drizzle-orm";
 import { defaultPlaybook, prospectSchema } from "@/lib/outbound";
+import { CONVERSATION_STAGES } from "@/lib/outbound-conversations";
+import { Environment } from "@/server/utils/environment";
 import { IntegrationError } from "@/server/utils/outbound/http";
+import { requireTestDatabase } from "./helpers/database";
 
 const endpoint = process.env.OUTBOUND_TEST_DATABASE_URL;
 const modules: {
@@ -21,6 +24,7 @@ const modules: {
   direct?: typeof import("@/server/utils/outbound/direct-mailbox");
   ai?: typeof import("@/server/utils/ai");
   mailboxes?: typeof import("@/server/app/outbound/transport-store");
+  actions?: typeof import("@/server/app/outbound/conversation-actions");
 } = {};
 const active = () => {
   if (
@@ -30,7 +34,8 @@ const active = () => {
     !modules.sending ||
     !modules.direct ||
     !modules.ai ||
-    !modules.mailboxes
+    !modules.mailboxes ||
+    !modules.actions
   )
     throw new Error("Missing modules");
   return {
@@ -41,6 +46,7 @@ const active = () => {
     direct: modules.direct,
     ai: modules.ai,
     mailboxes: modules.mailboxes,
+    actions: modules.actions,
   };
 };
 const value = <Data>(
@@ -50,6 +56,7 @@ const value = <Data>(
   return result.data;
 };
 const fixture = { prospectId: "", inboxId: "", threadId: "" };
+const session = { authenticated: true, role: "staff" };
 const settings = {
   ...defaultPlaybook,
   senderConfirmed: true,
@@ -66,6 +73,7 @@ const ingest = (
   identifier = "inbound_1",
   body = "Could you explain how this works?",
   sentAt = new Date(),
+  outcome?: "reply" | "optout" | "bounce" | "ooo" | "review",
 ) =>
   active().conversations.ingest({
     prospectId: fixture.prospectId,
@@ -74,6 +82,7 @@ const ingest = (
     accountLabel: "iseld@joinecentic.com",
     providerThreadId: "thread_fixture",
     counterpart: "jane@samplegoods.com",
+    outcome,
     message: {
       providerMessageId: identifier,
       direction: "inbound",
@@ -101,18 +110,32 @@ describe.skipIf(!endpoint)(
   "isolated conversation storage and exact reply delivery",
   () => {
     beforeAll(async () => {
-      if (!endpoint) throw new Error("Disposable database required");
-      const location = new URL(endpoint);
-      if (
-        !["127.0.0.1", "localhost"].includes(location.hostname) ||
-        location.pathname !== "/outbound_test"
-      )
-        throw new Error("Local outbound_test only");
+      requireTestDatabase(endpoint);
       Object.assign(process.env, {
         DATABASE_URL: endpoint,
         CREDENTIAL_ENCRYPTION_KEY: Buffer.alloc(32, 19).toString("base64"),
       });
       mock.module("server-only", () => ({}));
+      mock.module("next/headers", () => ({
+        headers: async () => new Headers(),
+      }));
+      mock.module("next/server", () => ({ connection: async () => undefined }));
+      mock.module("@/lib/auth", () => ({
+        auth: {
+          api: {
+            getSession: async () =>
+              session.authenticated
+                ? {
+                    user: { id: "stage-staff-fixture", role: session.role },
+                    session: {
+                      id: "session-fixture",
+                      userId: "stage-staff-fixture",
+                    },
+                  }
+                : null,
+          },
+        },
+      }));
       modules.database = await import("@/server/database");
       modules.store = await import("@/server/app/outbound/store");
       modules.conversations = await import(
@@ -122,8 +145,12 @@ describe.skipIf(!endpoint)(
       modules.direct = await import("@/server/utils/outbound/direct-mailbox");
       modules.ai = await import("@/server/utils/ai");
       modules.mailboxes = await import("@/server/app/outbound/transport-store");
+      modules.actions = await import(
+        "@/server/app/outbound/conversation-actions"
+      );
     });
     beforeEach(async () => {
+      Object.assign(session, { authenticated: true, role: "staff" });
       const { db, schema, store } = active();
       await db.execute(sql`set client_min_messages to warning`);
       await db.execute(
@@ -214,6 +241,192 @@ describe.skipIf(!endpoint)(
         meetingsRecorded: 1,
       });
     });
+    test.each([...CONVERSATION_STAGES])(
+      "the authenticated action saves %s without changing messages, identity or the saved draft",
+      async (stage) => {
+        const { actions, conversations, db, schema } = active();
+        await save("A staff-edited reply that must be retained.");
+        const before = value(await conversations.get({ id: fixture.threadId }));
+        const result = await actions.updateConversationStage(
+          Environment.CLIENT,
+          {
+            id: before.thread.id,
+            stage,
+            expectedRevision: before.thread.revision,
+          },
+        );
+        expect(result).toEqual({
+          success: true,
+          data: { id: before.thread.id, revision: before.thread.revision + 1 },
+        });
+        const after = value(await conversations.get({ id: fixture.threadId }));
+        expect(after.thread.stage).toBe(stage);
+        expect(after.thread.needsReply).toBe(
+          ["open", "interested", "question"].includes(stage),
+        );
+        expect(after.thread.counterpart).toBe(before.thread.counterpart);
+        expect(after.thread.accountLabel).toBe(before.thread.accountLabel);
+        expect(after.draft).toEqual(before.draft);
+        expect(after.messages).toEqual(before.messages);
+        const events = await db
+          .select()
+          .from(schema.outboundEvent)
+          .where(eq(schema.outboundEvent.kind, "conversationStage"));
+        expect(events).toHaveLength(1);
+        expect(events[0]?.actor).toBe("stage-staff-fixture");
+      },
+    );
+    test("the action without an explicit environment marker remains compatible", async () => {
+      const { actions, conversations } = active();
+      const before = value(await conversations.get({ id: fixture.threadId }));
+      const result = await actions.updateConversationStage({
+        id: before.thread.id,
+        stage: "interested",
+        expectedRevision: before.thread.revision,
+      });
+      expect(result.success).toBe(true);
+      expect(
+        value(await conversations.get({ id: fixture.threadId })).thread.stage,
+      ).toBe("interested");
+    });
+    test("concurrent stage actions accept one revision and return a serialized conflict for the other", async () => {
+      const { actions, conversations, db, schema } = active();
+      const before = value(await conversations.get({ id: fixture.threadId }));
+      const results = await Promise.all(
+        (["interested", "meetingBooked"] as const).map((stage) =>
+          actions.updateConversationStage(Environment.CLIENT, {
+            id: before.thread.id,
+            stage,
+            expectedRevision: before.thread.revision,
+          }),
+        ),
+      );
+      expect(results.filter((result) => result.success)).toHaveLength(1);
+      expect(results.find((result) => !result.success)).toEqual({
+        success: false,
+        error: { name: "conflict-error", message: "conversation-changed" },
+      });
+      const after = value(await conversations.get({ id: fixture.threadId }));
+      expect(after.thread.revision).toBe(before.thread.revision + 1);
+      expect(after.messages).toEqual(before.messages);
+      const events = await db
+        .select()
+        .from(schema.outboundEvent)
+        .where(eq(schema.outboundEvent.kind, "conversationStage"));
+      expect(events).toHaveLength(1);
+    });
+    test("a new inbound preserves the saved draft and rejects a stale stage until the user refreshes", async () => {
+      const { actions, conversations } = active();
+      await save("Keep this staff draft while the mailbox refreshes.");
+      const before = value(await conversations.get({ id: fixture.threadId }));
+      value(
+        await ingest(
+          "stage_race_inbound",
+          "One more detail.",
+          new Date(Date.now() + 1000),
+        ),
+      );
+      expect(
+        await actions.updateConversationStage(Environment.CLIENT, {
+          id: before.thread.id,
+          stage: "interested",
+          expectedRevision: before.thread.revision,
+        }),
+      ).toEqual({
+        success: false,
+        error: { name: "conflict-error", message: "conversation-changed" },
+      });
+      const refreshed = value(
+        await conversations.get({ id: fixture.threadId }),
+      );
+      expect(refreshed.thread.stage).toBe("open");
+      expect(refreshed.draft).toEqual(before.draft);
+      expect(refreshed.messages).toHaveLength(before.messages.length + 1);
+      expect(
+        (
+          await actions.updateConversationStage(Environment.CLIENT, {
+            id: refreshed.thread.id,
+            stage: "interested",
+            expectedRevision: refreshed.thread.revision,
+          })
+        ).success,
+      ).toBe(true);
+    });
+    test("an opt-out racing a stage edit stays closed and never reaches the send provider", async () => {
+      const { actions, conversations, sending, direct } = active();
+      const saved = await save();
+      const send = spyOn(direct, "send");
+      value(
+        await ingest(
+          "stage_race_optout",
+          "Please stop emailing me.",
+          new Date(Date.now() + 1000),
+          "optout",
+        ),
+      );
+      expect(
+        await actions.updateConversationStage(Environment.CLIENT, {
+          id: fixture.threadId,
+          stage: "interested",
+          expectedRevision: saved.revision,
+        }),
+      ).toEqual({
+        success: false,
+        error: { name: "conflict-error", message: "conversation-changed" },
+      });
+      const after = value(await conversations.get({ id: fixture.threadId }));
+      expect(after.thread.stage).toBe("notInterested");
+      expect(after.thread.needsReply).toBe(false);
+      expect(
+        (
+          await sending.send("fixture", {
+            id: fixture.threadId,
+            expectedRevision: after.thread.revision,
+          })
+        ).success,
+      ).toBe(false);
+      expect(send).not.toHaveBeenCalled();
+    });
+    test("a prospect group ID cannot stand in for its selected thread", async () => {
+      const { actions, conversations } = active();
+      const before = value(await conversations.get({ id: fixture.threadId }));
+      const result = await actions.updateConversationStage(Environment.CLIENT, {
+        id: fixture.prospectId,
+        stage: "interested",
+        expectedRevision: before.thread.revision,
+      });
+      expect(result).toEqual({
+        success: false,
+        error: { name: "not-found-error", message: "conversation-missing" },
+      });
+      expect(value(await conversations.get({ id: fixture.threadId }))).toEqual(
+        before,
+      );
+    });
+    test.each([
+      { authenticated: false, role: "staff", name: "unauthenticated-error" },
+      { authenticated: true, role: "user", name: "unauthorized-error" },
+    ])(
+      "the stage action rejects an unauthorized session without modifying data: %j",
+      async (authorization) => {
+        const { actions, conversations } = active();
+        const before = value(await conversations.get({ id: fixture.threadId }));
+        Object.assign(session, authorization);
+        for (const environment of [Environment.CLIENT, Environment.SERVER]) {
+          const result = await actions.updateConversationStage(environment, {
+            id: before.thread.id,
+            stage: "interested",
+            expectedRevision: before.thread.revision,
+          });
+          expect(result.success).toBe(false);
+          if (result.success) throw new Error("Expected session rejection");
+          expect(result.error.name).toBe(authorization.name);
+        }
+        expect(
+          value(await conversations.get({ id: fixture.threadId })),
+        ).toEqual(before);
+      },
+    );
     test("simultaneous send clicks produce one exact reply from its original mailbox", async () => {
       const { direct, sending, db, schema, conversations } = active();
       const saved = await save();

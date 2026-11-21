@@ -460,6 +460,17 @@ export const updateStage = (actor: string, input: unknown) =>
     const parsed = conversationStageSchema.parse(input);
     const thread = await requireConversation(parsed.id, transaction);
     requireRevision(thread, parsed.expectedRevision);
+    const pauseReason = {
+      closed: "Conversation closed",
+      notInterested: "Marked not interested",
+      meetingBooked: "Meeting booked",
+      meetingHeld: "Meeting held",
+    };
+    if (parsed.stage in pauseReason)
+      await Store.pauseColdOutreachWithin(transaction, actor, {
+        prospect: thread.prospectId,
+        reason: `${pauseReason[parsed.stage as keyof typeof pauseReason]}. Automatic outreach paused.`,
+      });
     value(
       await Threads.update(
         Environment.SERVER,

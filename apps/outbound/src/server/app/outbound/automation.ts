@@ -2,7 +2,7 @@ import "server-only";
 
 import { randomUUID } from "node:crypto";
 import { type Result, resultify } from "@zenncore/utils";
-import { and, eq, sql } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { prospectSchema } from "@/lib/outbound";
 import {
@@ -18,10 +18,16 @@ import { db, schema, type TransactionScope } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
 import { ConflictError } from "@/server/utils/error";
 import { sourceReceiptSchema } from "@/server/utils/outbound/automation-qualification";
+import {
+  researchRecoveryState,
+  researchRecoveryVersion,
+  researchStateHash,
+} from "@/server/utils/outbound/automation-recovery";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import { productCategoryCorrection } from "@/server/utils/outbound/product-category";
-import { repository } from "@/server/utils/repository";
+import { repository, resultifyRead } from "@/server/utils/repository";
 import * as Steps from "./automation-steps";
+import * as ResearchReadiness from "./research-readiness";
 import * as Store from "./store";
 
 const Jobs = repository(schema.outboundIntegrationJob);
@@ -46,7 +52,12 @@ const transaction = <Data>(
       return operation(transaction);
     }),
   );
-const view = (job: Job): AutomationJobSummary => {
+const view = (
+  job: Pick<
+    Job,
+    "id" | "input" | "output" | "status" | "error" | "prospectId" | "updatedAt"
+  >,
+): AutomationJobSummary => {
   const input = automationInputSchema.parse(job.input);
   const state = automationStateSchema.parse(job.output);
   return {
@@ -201,7 +212,7 @@ const current = async (
   return { policy, campaign, company, reason };
 };
 
-const claim = (campaignId?: string, jobId?: string) =>
+const claim = (campaignId?: string, jobId?: string, researchReady = true) =>
   transaction(async (transaction) => {
     const policy = await Store.policy(transaction);
     if (!policy.settings.automationEnabled) return null;
@@ -264,6 +275,14 @@ const claim = (campaignId?: string, jobId?: string) =>
       const input = automationInputSchema.parse(job.input);
       const state = automationStateSchema.parse(job.output);
       if (Date.parse(state.availableAt) > Date.now()) continue;
+      // Missing capture services must not burn company/contact credits or discard queued work.
+      if (
+        policy.settings.requireShoppingEvidence &&
+        !researchReady &&
+        !state["shoppingReceipt"] &&
+        state.stage !== "assessShopping"
+      )
+        continue;
       const context = await current(input, transaction);
       if (context.reason === "campaign-inactive") continue;
       if (context.reason) {
@@ -548,6 +567,9 @@ const fail = (claimed: AutomationClaim, error: Error) =>
           output: {
             ...state,
             lease: null,
+            ...(error instanceof IntegrationError
+              ? { failureProvider: error.provider }
+              : {}),
             ...(error instanceof IntegrationError && error.receipt
               ? { failureReceipt: error.receipt }
               : {}),
@@ -800,6 +822,125 @@ export const resumeVerificationDateCheck = (
     return view(saved);
   });
 
+/** Internal, explicit one-time recovery of completed research holds; no provider work or sending. */
+export const resumeResearchReview = (
+  actor: string,
+  input: {
+    jobId: string;
+    expectedStateHash: string;
+    expectedInputHash: string;
+    dryRun?: boolean;
+  },
+) =>
+  transaction(async (transaction) => {
+    const parsed = z
+      .object({
+        jobId: z.string().uuid(),
+        expectedStateHash: z.string().regex(/^[a-f0-9]{64}$/),
+        expectedInputHash: z.string().regex(/^[a-f0-9]{64}$/),
+        dryRun: z.boolean().default(false),
+      })
+      .parse(input);
+    const job = value(
+      await Jobs.get(Environment.SERVER, parsed.jobId, { tx: transaction }),
+    );
+    if (
+      !job ||
+      job.provider !== "automation" ||
+      job.prospectId ||
+      researchStateHash(job.input) !== parsed.expectedInputHash
+    )
+      throw new ConflictError("research-review-recovery-unavailable");
+    const savedInput = automationInputSchema.parse(job.input);
+    const state = automationStateSchema.parse(job.output);
+    const previous = z
+      .object({
+        version: z.literal(researchRecoveryVersion),
+        sourceStateHash: z.string(),
+      })
+      .safeParse(state["researchReviewRecovery"]);
+    if (
+      previous.success &&
+      previous.data.sourceStateHash === parsed.expectedStateHash
+    )
+      return { job: view(job), repeated: true, dryRun: parsed.dryRun };
+    if (
+      job.status !== "failed" ||
+      researchStateHash(job.output) !== parsed.expectedStateHash
+    )
+      throw new ConflictError("research-review-recovery-unavailable");
+    const context = await current(savedInput, transaction);
+    if (
+      context.reason ||
+      !context.company ||
+      !context.campaign ||
+      context.company.status !== "candidate" ||
+      context.company.prospectId ||
+      context.company.domain !== savedInput.companyDomain
+    )
+      throw new ConflictError(
+        context.reason ?? "research-review-recovery-unavailable",
+      );
+    const competing = value(
+      await Jobs.find(
+        Environment.SERVER,
+        {
+          where: and(
+            scoped(),
+            sql`${schema.outboundIntegrationJob.id} <> ${job.id}`,
+            sql`${schema.outboundIntegrationJob.input}->>'companyDomain' = ${savedInput.companyDomain}`,
+            sql`${schema.outboundIntegrationJob.status} in ('pending','starting','uncertain')`,
+          ),
+          limit: 1,
+        },
+        { tx: transaction },
+      ),
+    );
+    if (competing.length)
+      throw new ConflictError("research-review-recovery-unavailable");
+    const recovery = researchRecoveryState({
+      state,
+      error: job.error,
+      playbook: context.policy.settings,
+      domain: context.company.domain,
+      platforms: context.campaign.criteria.platforms,
+    });
+    if (parsed.dryRun) return { job: view(job), repeated: false, dryRun: true };
+    const now = new Date();
+    const saved = value(
+      await Jobs.update(
+        Environment.SERVER,
+        job.id,
+        {
+          status: "pending",
+          error: null,
+          updatedAt: now,
+          output: {
+            ...state,
+            availableAt: now.toISOString(),
+            lease: null,
+            ...(recovery.kind === "qualification"
+              ? { qualificationReplayEvidence: recovery.evidence }
+              : {}),
+            researchReviewRecovery: {
+              version: researchRecoveryVersion,
+              kind: recovery.kind,
+              actor,
+              requestedAt: now.toISOString(),
+              sourceStateHash: parsed.expectedStateHash,
+              sourceInputHash: parsed.expectedInputHash,
+              previousReason: job.error,
+              previousAssessment: recovery.previous,
+            },
+          },
+        },
+        { tx: transaction },
+      ),
+    );
+    if (!saved) throw new ConflictError("automation-job-missing");
+    return { job: view(saved), repeated: false, dryRun: false };
+  });
+
 export const run = (
   options: {
     campaignId?: string;
@@ -818,13 +959,17 @@ export const run = (
         deadline: z.number().default(Date.now() + 180000),
       })
       .parse(options);
-    const enabled = (await Store.policy()).settings.automationEnabled;
+    const policy = await Store.policy();
+    const enabled = policy.settings.automationEnabled;
     if (!enabled) return { enabled: false, processed: 0, results: [] };
-    if (!input.jobId) value(await enqueue(input.campaignId));
+    const research = value(await ResearchReadiness.getStatus(policy.settings));
+    if (!input.jobId && research.ready) value(await enqueue(input.campaignId));
     const results: AutomationJobSummary[] = [];
     for (const _ of Array.from({ length: input.maxSteps })) {
       if (Date.now() + 15000 >= input.deadline) break;
-      const claimed = value(await claim(input.campaignId, input.jobId));
+      const claimed = value(
+        await claim(input.campaignId, input.jobId, research.ready),
+      );
       if (!claimed) break;
       const executed = await resultify(() =>
         execute(claimed, Math.min(input.deadline, Date.now() + 100000)),
@@ -837,7 +982,12 @@ export const run = (
         : await fail(claimed, settled.error);
       results.push(view(value(saved)));
     }
-    return { enabled: true, processed: results.length, results };
+    return {
+      enabled: true,
+      processed: results.length,
+      results,
+      blockers: research.ready ? [] : ["research-not-configured"],
+    };
   });
 
 export const getStatus = (
@@ -858,16 +1008,26 @@ export const getStatus = (
             : undefined,
         ),
       ),
-      Jobs.find(Environment.SERVER, {
-        where: scoped(parsed.campaignId),
-        orderBy: [
-          {
-            column: schema.outboundIntegrationJob.updatedAt,
-            direction: "desc",
-          },
-        ],
-        limit: 50,
-      }),
+      // Browser/raw captures can be large. The status panel only needs the stage,
+      // never screenshots, full provider responses or private research content.
+      resultifyRead(() =>
+        db
+          .select({
+            id: schema.outboundIntegrationJob.id,
+            input: schema.outboundIntegrationJob.input,
+            output: sql<
+              Record<string, unknown>
+            >`jsonb_build_object('stage', output->'stage', 'availableAt', output->'availableAt', 'lease', output->'lease')`,
+            status: schema.outboundIntegrationJob.status,
+            error: schema.outboundIntegrationJob.error,
+            prospectId: schema.outboundIntegrationJob.prospectId,
+            updatedAt: schema.outboundIntegrationJob.updatedAt,
+          })
+          .from(schema.outboundIntegrationJob)
+          .where(scoped(parsed.campaignId))
+          .orderBy(desc(schema.outboundIntegrationJob.updatedAt))
+          .limit(50),
+      ),
       Store.automationDeliveryStatus(),
       Promise.all(
         (
@@ -901,6 +1061,7 @@ export const getStatus = (
     for (const total of totals) counts[total.status] = value(total.result);
     return {
       enabled: policy.settings.automationEnabled,
+      research: value(await ResearchReadiness.getStatus(policy.settings)),
       activeCampaigns: value(campaigns),
       counts,
       jobs: rows,

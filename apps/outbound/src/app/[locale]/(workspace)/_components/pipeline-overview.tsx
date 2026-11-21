@@ -27,10 +27,10 @@ import * as Automation from "@/server/app/outbound/automation-actions";
 import * as Pipeline from "@/server/app/outbound/pipeline-actions";
 import { Environment } from "@/server/utils/environment";
 import { AutomationPanel, AutomationSkeleton } from "./automation";
-import { Empty } from "./common";
 import { PipelineRefresh } from "./pipeline-refresh";
 import { ReportPanel } from "./report";
 import { WorkspaceSkeleton } from "./skeletons";
+import { Empty } from "./status";
 
 export const PipelineOverview = async () => {
   const [t, navigation, automation, format, messages, result] =
@@ -165,7 +165,7 @@ export const PipelineOverview = async () => {
         {data.campaigns.length ? (
           <>
             <div className="overflow-x-auto">
-              <Table className="min-w-160">
+              <Table className="min-w-160 border-b-0">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="px-4 sm:px-6">
@@ -220,7 +220,7 @@ export const PipelineOverview = async () => {
               </Table>
             </div>
             {data.totals.activeCampaigns > data.campaigns.length && (
-              <p className="px-4 py-3 text-foreground-dimmed text-sm sm:px-6">
+              <p className="border-accent-foreground border-t px-4 py-3 text-foreground-dimmed text-sm sm:px-6">
                 {t("moreCampaigns")}
               </p>
             )}
@@ -359,7 +359,7 @@ export const PipelineOverview = async () => {
           <AccordionTrigger className="py-5">
             {t("detailsTitle")}
           </AccordionTrigger>
-          <AccordionPanel>
+          <AccordionPanel className="[&>*]:border-b-0">
             <Suspense fallback={<AutomationSkeleton />}>
               <DetailedAutomation />
             </Suspense>

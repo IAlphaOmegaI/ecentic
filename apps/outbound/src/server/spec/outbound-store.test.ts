@@ -10,6 +10,7 @@ import {
 } from "bun:test";
 import { eq, sql } from "drizzle-orm";
 import { defaultPlaybook, prospectSchema, senderFor } from "@/lib/outbound";
+import { requireTestDatabase } from "./helpers/database";
 
 const endpoint = process.env.OUTBOUND_TEST_DATABASE_URL;
 const enabled = Boolean(endpoint);
@@ -18,6 +19,7 @@ const actor = "outbound-fixture-staff";
 const modules: {
   store?: typeof import("@/server/app/outbound/store");
   database?: typeof import("@/server/database");
+  conversations?: typeof import("@/server/app/outbound/conversations");
 } = {};
 const settings = {
   ...defaultPlaybook,
@@ -53,9 +55,13 @@ const details = (domain = "samplegoods.com") =>
     legitEvidence: "Active physical catalogue and company identity inspected.",
   });
 const active = () => {
-  if (!modules.store || !modules.database)
+  if (!modules.store || !modules.database || !modules.conversations)
     throw new Error("Fixture database not initialized");
-  return { store: modules.store, ...modules.database };
+  return {
+    store: modules.store,
+    conversations: modules.conversations,
+    ...modules.database,
+  };
 };
 const required = <T>(
   result: { success: true; data: T } | { success: false; error: Error },
@@ -88,18 +94,48 @@ const approved = async () => {
   );
   return { ...created, inbox: inbox.id, revision: draft.revision };
 };
+const sentSequence = async () => {
+  const { store, conversations } = active();
+  const fixture = await approved();
+  const first = required(await store.claimDelivery(actor, fixture));
+  required(
+    await store.dispatchDelivery(actor, first, async () => ({
+      success: true,
+      data: { providerMessageId: "provider-first", threadId: "thread-stage" },
+    })),
+  );
+  const detail = required(await conversations.get({ id: fixture.prospect }));
+  return { ...fixture, thread: detail.thread };
+};
+const claimedFollowup = async () => {
+  const { store, db, schema } = active();
+  const fixture = await sentSequence();
+  const date = "2026-11-12T17:00:00Z";
+  setSystemTime(new Date(date));
+  required(
+    await store.patchProspect(
+      actor,
+      fixture.prospect,
+      {
+        mxCheckedAt: date,
+        evidenceCheckedAt: date,
+        emailVerifiedAt: date,
+      },
+      fixture.revision,
+    ),
+  );
+  await db
+    .update(schema.outboundInbox)
+    .set({ lastSyncedAt: new Date(date) })
+    .where(eq(schema.outboundInbox.id, fixture.inbox));
+  const claim = required(await store.claimDelivery(actor, fixture));
+  expect(claim.step).toBe(2);
+  return { ...fixture, claim };
+};
 
 describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
   beforeAll(async () => {
-    if (!endpoint) throw new Error("OUTBOUND_TEST_DATABASE_URL is required");
-    const url = new URL(endpoint);
-    if (
-      !["127.0.0.1", "localhost"].includes(url.hostname) ||
-      url.pathname !== "/outbound_test"
-    )
-      throw new Error(
-        "Only the isolated local outbound_test database is permitted",
-      );
+    requireTestDatabase(endpoint);
     Object.assign(process.env, {
       DATABASE_URL: endpoint,
       CREDENTIAL_ENCRYPTION_KEY: Buffer.alloc(32, 19).toString("base64"),
@@ -107,6 +143,7 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
     mock.module("server-only", () => ({}));
     modules.database = await import("@/server/database");
     modules.store = await import("@/server/app/outbound/store");
+    modules.conversations = await import("@/server/app/outbound/conversations");
   }, 60000);
   beforeEach(async () => {
     setSystemTime(now);
@@ -190,6 +227,176 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
     const claim = required(await store.claimDelivery(actor, fixture));
     expect(claim.manifest.sender).toBe(senderFor(fixture.prospect, settings));
     expect(claim.message.body).toContain(settings.postalAddress);
+    expect((await store.claimDelivery(actor, fixture)).success).toBe(false);
+  });
+  test.each(["closed", "notInterested", "meetingBooked", "meetingHeld"])(
+    "manual %s pauses both cold sequences without fabricating a reply, and reopening keeps them paused",
+    async (stage) => {
+      const { store, conversations, db, schema } = active();
+      const fixture = await sentSequence();
+      await db
+        .update(schema.outboundProspect)
+        .set({
+          linkedinStatus: "invited",
+          linkedinNextActionAt: new Date(now.getTime() + 86400000),
+        })
+        .where(eq(schema.outboundProspect.id, fixture.prospect));
+      const before = required(await store.readProspect(fixture.prospect));
+      expect(before?.status).toBe("active");
+      expect(before?.nextSendAt).not.toBeNull();
+      required(
+        await conversations.updateStage(actor, {
+          id: fixture.thread.id,
+          expectedRevision: fixture.thread.revision,
+          stage,
+        }),
+      );
+      const paused = required(await store.readProspect(fixture.prospect));
+      expect(paused).toMatchObject({
+        status: "held",
+        approvedAt: null,
+        approvedBy: null,
+        approvalHash: null,
+        nextSendAt: null,
+        linkedinStatus: "closed",
+        linkedinNextActionAt: null,
+        sentStep: 1,
+      });
+      expect(paused?.holdReason).toContain("Automatic outreach paused");
+      const versions = await db
+        .select()
+        .from(schema.outboundRevision)
+        .where(eq(schema.outboundRevision.prospectId, fixture.prospect));
+      expect(
+        versions.find((version) => version.revision === fixture.revision)
+          ?.revokedAt,
+      ).not.toBeNull();
+      expect(await db.select().from(schema.outboundSuppression)).toHaveLength(
+        0,
+      );
+      const updated = required(
+        await conversations.get({ id: fixture.prospect }),
+      );
+      expect(
+        updated.messages.every((message) => message.direction === "outbound"),
+      ).toBe(true);
+      const outcomes = await db.select().from(schema.outboundEvent);
+      expect(
+        outcomes.some((entry) =>
+          ["reply", "positive", "negative", "optout", "meeting"].includes(
+            entry.kind,
+          ),
+        ),
+      ).toBe(false);
+      required(
+        await conversations.updateStage(actor, {
+          id: updated.thread.id,
+          expectedRevision: updated.thread.revision,
+          stage: "open",
+        }),
+      );
+      expect(required(await store.readProspect(fixture.prospect))).toEqual(
+        paused,
+      );
+      expect((await store.claimDelivery(actor, fixture)).success).toBe(false);
+    },
+  );
+  test.each([
+    { kind: "optout", status: "optedOut" },
+    { kind: "bounce", status: "bounced" },
+    { kind: "reply", status: "replied" },
+  ])(
+    "manual meeting stage preserves stronger $status state and existing suppression",
+    async ({ kind, status }) => {
+      const { store, conversations, db, schema } = active();
+      const fixture = await sentSequence();
+      required(
+        await store.recordOutcome(actor, {
+          prospect: fixture.prospect,
+          kind,
+          note: "Existing outcome",
+        }),
+      );
+      if (status === "replied")
+        await db
+          .update(schema.outboundProspect)
+          .set({ linkedinStatus: "replied" })
+          .where(eq(schema.outboundProspect.id, fixture.prospect));
+      const suppressions = await db.select().from(schema.outboundSuppression);
+      required(
+        await conversations.updateStage(actor, {
+          id: fixture.thread.id,
+          expectedRevision: fixture.thread.revision,
+          stage: "meetingBooked",
+        }),
+      );
+      const after = required(await store.readProspect(fixture.prospect));
+      expect(after?.status).toBe(status);
+      expect(after?.nextSendAt).toBeNull();
+      expect(after?.approvalHash).toBeNull();
+      expect(after?.linkedinStatus).toBe(
+        status === "replied" ? "replied" : "closed",
+      );
+      expect(await db.select().from(schema.outboundSuppression)).toEqual(
+        suppressions,
+      );
+    },
+  );
+  test("a manually closed conversation blocks dispatch of an already claimed follow-up", async () => {
+    const { store, conversations } = active();
+    const fixture = await claimedFollowup();
+    required(
+      await conversations.updateStage(actor, {
+        id: fixture.thread.id,
+        expectedRevision: fixture.thread.revision,
+        stage: "closed",
+      }),
+    );
+    const send = mock(async () => ({
+      success: true as const,
+      data: { providerMessageId: "never-sent", threadId: "thread-stage" },
+    }));
+    expect(
+      (await store.dispatchDelivery(actor, fixture.claim, send)).success,
+    ).toBe(false);
+    expect(send).not.toHaveBeenCalled();
+    expect(required(await store.readProspect(fixture.prospect))?.status).toBe(
+      "held",
+    );
+  });
+  test("a late acceptance receipt records the already claimed follow-up without undoing the conversation hold", async () => {
+    const { store, conversations } = active();
+    const fixture = await claimedFollowup();
+    required(
+      await conversations.updateStage(actor, {
+        id: fixture.thread.id,
+        expectedRevision: fixture.thread.revision,
+        stage: "closed",
+      }),
+    );
+    required(
+      await store.completeDelivery(actor, {
+        attempt: fixture.claim.attempt,
+        status: "accepted",
+        providerMessageId: "late-followup-receipt",
+        threadId: "thread-stage",
+      }),
+    );
+    const after = required(await store.readProspect(fixture.prospect));
+    expect(after).toMatchObject({
+      status: "held",
+      sentStep: 2,
+      nextSendAt: null,
+      approvalHash: null,
+      linkedinStatus: "closed",
+      linkedinNextActionAt: null,
+    });
+    expect(after?.holdReason).toBe(
+      "Conversation closed. Automatic outreach paused.",
+    );
+    const detail = required(await conversations.get({ id: fixture.prospect }));
+    expect(detail.thread.stage).toBe("closed");
+    expect(detail.messages).toHaveLength(2);
     expect((await store.claimDelivery(actor, fixture)).success).toBe(false);
   });
   test("editing a draft revokes its prior approval", async () => {
