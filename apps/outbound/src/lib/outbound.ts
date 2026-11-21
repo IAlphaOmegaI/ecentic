@@ -15,28 +15,19 @@ import {
   shoppingCopy,
   shoppingFindingSchema,
 } from "./outbound-shopping-research";
+import {
+  LINKEDIN_STATUSES,
+  type LinkedInStatus,
+  type ProspectStatus,
+} from "./outbound-status";
 
-export const PROSPECT_STATUSES = [
-  "candidate",
-  "draft",
-  "approved",
-  "active",
-  "held",
-  "skipped",
-  "replied",
-  "optedOut",
-  "bounced",
-  "finished",
-] as const;
-export const LINKEDIN_STATUSES = [
-  "research",
-  "ready",
-  "invited",
-  "connected",
-  "messaged",
-  "replied",
-  "closed",
-] as const;
+export {
+  LINKEDIN_STATUSES,
+  type LinkedInStatus,
+  PROSPECT_STATUSES,
+  type ProspectStatus,
+} from "./outbound-status";
+
 export const OUTCOME_KINDS = [
   "reply",
   "positive",
@@ -402,8 +393,6 @@ export type Message = {
   subject: string;
   body: string;
 };
-export type ProspectStatus = (typeof PROSPECT_STATUSES)[number];
-export type LinkedInStatus = (typeof LINKEDIN_STATUSES)[number];
 export type Issue = { code: string; field: string };
 export type Prospect = ProspectInput & {
   id: string;

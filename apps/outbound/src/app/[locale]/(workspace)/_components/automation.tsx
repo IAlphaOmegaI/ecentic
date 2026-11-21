@@ -24,7 +24,7 @@ import type { AutomationStatus } from "@/lib/outbound-automation";
 import type { Campaign } from "@/lib/outbound-campaigns";
 import * as Automation from "@/server/app/outbound/automation-actions";
 import * as Campaigns from "@/server/app/outbound/campaign-actions";
-import { Notice } from "./common";
+import { Notice } from "./status";
 
 export type AutomationSnapshot = AutomationStatus;
 type AutomationRow = AutomationSnapshot["jobs"][number] & { _id: string };

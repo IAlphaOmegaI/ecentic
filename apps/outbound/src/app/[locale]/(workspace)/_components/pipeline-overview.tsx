@@ -27,10 +27,10 @@ import * as Automation from "@/server/app/outbound/automation-actions";
 import * as Pipeline from "@/server/app/outbound/pipeline-actions";
 import { Environment } from "@/server/utils/environment";
 import { AutomationPanel, AutomationSkeleton } from "./automation";
-import { Empty } from "./common";
 import { PipelineRefresh } from "./pipeline-refresh";
 import { ReportPanel } from "./report";
 import { WorkspaceSkeleton } from "./skeletons";
+import { Empty } from "./status";
 
 export const PipelineOverview = async () => {
   const [t, navigation, automation, format, messages, result] =

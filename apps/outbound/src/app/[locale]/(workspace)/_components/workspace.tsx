@@ -1,24 +1,11 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { getTranslations } from "next-intl/server";
-import { Suspense } from "react";
+import { type ReactNode, Suspense } from "react";
 import { DashboardHeaderFigure } from "@/components/dashboard-header-figure";
 import { Link } from "@/i18n/navigation";
-import * as Outbound from "@/server/app/outbound";
-import * as Claude from "@/server/app/outbound/claude-actions";
-import * as Connections from "@/server/app/outbound/integrations";
-import * as LinkedInAccounts from "@/server/app/outbound/linkedin-accounts";
-import * as ProspectProgress from "@/server/app/outbound/prospect-progress-actions";
-import { Environment } from "@/server/utils/environment";
-import { ProspectSummary } from "../prospects/[id]/_components/summary";
-import { Empty } from "./common";
-import { Replies } from "./conversations";
 import { Crosshair } from "./grid";
-import { Integrations } from "./integrations";
 import type { Section } from "./navigation";
-import { PipelineOverview } from "./pipeline-overview";
-import { PlaybookEditor } from "./playbook";
-import { ProspectEditor, ProspectList } from "./prospects";
 import { WorkspaceSkeleton } from "./skeletons";
 
 type Mode =
@@ -28,10 +15,10 @@ type Mode =
 
 export const WorkspacePage = async ({
   section,
-  params,
+  children,
 }: {
   section: Mode;
-  params?: Promise<{ id: string }>;
+  children: ReactNode;
 }) => {
   const t = await getTranslations("outbound");
   const key =
@@ -89,107 +76,9 @@ export const WorkspacePage = async ({
       </header>
       <div className="min-w-0 flex-1 bg-background-rich">
         <Suspense fallback={<WorkspaceSkeleton section={section} />}>
-          <WorkspaceData section={section} params={params} />
+          {children}
         </Suspense>
       </div>
     </div>
   );
-};
-
-const WorkspaceData = async ({
-  section,
-  params,
-}: {
-  section: Mode;
-  params?: Promise<{ id: string }>;
-}) => {
-  const t = await getTranslations("outbound");
-  if (section === "overview") return <PipelineOverview />;
-  if (section === "playbook") {
-    const [policy, accounts] = await Promise.all([
-      Outbound.getPlaybook(Environment.SERVER),
-      LinkedInAccounts.list(),
-    ]);
-    if (!policy.success)
-      return (
-        <div role="alert" className="px-4 py-8 text-error text-sm sm:px-6">
-          {t("common.error")}
-        </div>
-      );
-    return (
-      <PlaybookEditor
-        value={policy.data.settings}
-        revision={policy.data.revision}
-        linkedinAccounts={accounts.success ? accounts.data : []}
-      />
-    );
-  }
-  const result = await Outbound.getWorkspace(Environment.SERVER);
-  if (!result.success)
-    return (
-      <div role="alert" className="px-4 py-8 text-error text-sm sm:px-6">
-        {t("common.error")}
-      </div>
-    );
-  const workspace = result.data;
-  switch (section) {
-    case "prospects": {
-      const progress = await ProspectProgress.getProgress(Environment.SERVER, {
-        prospectIds: workspace.prospects.map((prospect) => prospect.id),
-      });
-      return (
-        <ProspectList
-          prospects={workspace.prospects}
-          target={workspace.playbook.weeklyTarget}
-          progress={progress.success ? progress.data : null}
-          automationEnabled={workspace.playbook.automationEnabled}
-        />
-      );
-    }
-    case "new":
-      return <ProspectEditor />;
-    case "detail": {
-      const id = (await params)?.id;
-      const prospect = workspace.prospects.find((entry) => entry.id === id);
-      if (!prospect)
-        return (
-          <Empty
-            title={t("prospect.emptyTitle")}
-            description={t("prospect.emptyDescription")}
-          />
-        );
-      const [clay, progress] = await Promise.all([
-        Connections.getClayStatus(Environment.SERVER),
-        ProspectProgress.getProgress(Environment.SERVER, {
-          prospectIds: [prospect.id],
-        }),
-      ]);
-      return (
-        <ProspectSummary
-          prospect={prospect}
-          clay={clay.success ? clay.data : null}
-          progress={progress.success ? (progress.data[0] ?? null) : null}
-        />
-      );
-    }
-    case "replies":
-      return (
-        <Replies prospects={workspace.prospects} events={workspace.events} />
-      );
-    case "integrations": {
-      const [status, claude] = await Promise.all([
-        Connections.getStatus(Environment.SERVER),
-        Claude.getStatus(Environment.SERVER),
-      ]);
-      return (
-        <Integrations
-          status={status.success ? status.data : null}
-          inboxes={workspace.inboxes}
-          claude={claude.success ? claude.data : null}
-        />
-      );
-    }
-    default:
-      return null;
-  }
 };

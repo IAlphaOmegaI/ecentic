@@ -1027,6 +1027,9 @@ const prospectItem = (
 export const getReviewItem = (input: { id: string }) =>
   prospectItem(input, (row) => row.messages.length > 0);
 
+export const getProspectItem = (input: { id: string }) =>
+  prospectItem(input, () => true);
+
 export const getLinkedInItem = (input: { id: string }) =>
   prospectItem(
     input,
@@ -1034,6 +1037,78 @@ export const getLinkedInItem = (input: { id: string }) =>
       Boolean(row.details.linkedinUrl.trim()) &&
       !["optedOut", "bounced", "skipped"].includes(row.status),
   );
+
+/** Public mailbox metadata only; never load or decrypt transport credentials for a page. */
+export const getInboxSummaries = () =>
+  resultify(async (): Promise<Inbox[]> => {
+    const rows = requireData(
+      await resultifyRead(() =>
+        db
+          .select({
+            id: schema.outboundInbox.id,
+            email: schema.outboundInbox.email,
+            fromName: schema.outboundInbox.fromName,
+            signer: schema.outboundInbox.signer,
+            enabled: schema.outboundInbox.enabled,
+            transport: schema.outboundInbox.transport,
+            connected: sql<boolean>`case when ${schema.outboundInbox.transport} = 'google-app-password'
+          then coalesce(${schema.outboundInbox.appPassword} <> '', false)
+          else coalesce(${schema.outboundInbox.refreshToken} <> '', false) end`,
+            lastSyncedAt: schema.outboundInbox.lastSyncedAt,
+            error: schema.outboundInbox.error,
+            dailyCap: schema.outboundInbox.dailyCap,
+            nextSendAt: schema.outboundInbox.nextSendAt,
+          })
+          .from(schema.outboundInbox),
+      ),
+    );
+    return rows.map((row) => ({
+      ...row,
+      lastSyncedAt: row.lastSyncedAt?.toISOString() ?? null,
+      nextSendAt: row.nextSendAt?.toISOString() ?? null,
+    }));
+  });
+
+/** The optional manual batch loads IDs on demand, with the same ordering and evidence rules. */
+export const getPreparationSummary = () =>
+  resultify(async () => {
+    const prospect = schema.outboundProspect;
+    // Match String.trim(), which the original client queue used for empty evidence.
+    const whitespace =
+      "\u0009\u000a\u000b\u000c\u000d\u0020\u00a0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000\ufeff";
+    const [configuration, records] = await Promise.all([
+      policy(),
+      resultifyRead(() =>
+        db
+          .select({
+            id: prospect.id,
+            candidate: sql<boolean>`${prospect.status} = 'candidate' and btrim(coalesce(${prospect.details}->>'evidence', ''), ${whitespace}) = ''`,
+            verified: sql<boolean>`${prospect.status} in ('candidate','draft','approved')
+          and ${prospect.details}->>'relationship' = 'cold'
+          and coalesce(${prospect.details}->>'evidence', '') <> ''
+          and coalesce(${prospect.details}->>'gap', '') <> ''
+          and coalesce(${prospect.details}->>'finding', '') <> ''
+          and coalesce(${prospect.details}->>'productUrl', '') <> ''`,
+            checkedAt: sql<string>`coalesce(${prospect.details}->>'evidenceCheckedAt', '')`,
+          })
+          .from(prospect)
+          .orderBy(desc(prospect.updatedAt))
+          .limit(5000),
+      ),
+    ]);
+    const rows = requireData(records);
+    const now = Date.now();
+    return {
+      candidates: rows.filter((row) => row.candidate).map((row) => row.id),
+      verified: rows
+        .filter((row) => {
+          const checked = Date.parse(row.checkedAt);
+          return row.verified && checked <= now && now - checked < 86_400_000;
+        })
+        .map((row) => row.id),
+      target: configuration.settings.weeklyTarget,
+    };
+  });
 
 export const getWorkspace = () =>
   resultify(async (): Promise<Workspace> => {

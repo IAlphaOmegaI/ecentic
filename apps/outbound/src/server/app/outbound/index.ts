@@ -40,6 +40,24 @@ export const getReviewItem = withAuthorization(
   "Outbound.getReviewItem",
 );
 
+export const getProspectItem = withAuthorization(
+  [UserRole.STAFF],
+  async (_, input: { id: string }) => Store.getProspectItem(input),
+  "Outbound.getProspectItem",
+);
+
+export const getInboxSummaries = withAuthorization(
+  [UserRole.STAFF],
+  async () => Store.getInboxSummaries(),
+  "Outbound.getInboxSummaries",
+);
+
+export const getPreparationSummary = withAuthorization(
+  [UserRole.STAFF],
+  async () => Store.getPreparationSummary(),
+  "Outbound.getPreparationSummary",
+);
+
 export const getWorkspace = withAuthorization(
   [UserRole.STAFF],
   async () => {

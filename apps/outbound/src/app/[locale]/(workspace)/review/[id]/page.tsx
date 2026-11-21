@@ -10,7 +10,7 @@ import {
 } from "@/lib/outbound-review";
 import * as Outbound from "@/server/app/outbound";
 import { Environment } from "@/server/utils/environment";
-import { Empty } from "../../_components/common";
+import { Empty } from "../../_components/status";
 import { ReviewShell } from "../_components/shell";
 import { ReviewDetailSkeleton } from "../_components/skeletons";
 import { ReviewEditor } from "./_components/editor";

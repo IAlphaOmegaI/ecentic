@@ -37,7 +37,7 @@ import {
   type ReviewQueueRow,
   reviewQueueHref,
 } from "@/lib/outbound-review";
-import { Empty, Status } from "../../_components/common";
+import { Empty, Status } from "../../_components/status";
 
 type QueueRow = ReviewQueueRow & { _id: string };
 const columnHelper = createColumnHelper<QueueRow>();
@@ -65,7 +65,8 @@ export const ReviewQueueTable = ({
     },
     [currentHref, router],
   );
-  const clear = () => navigate({ ...currentQuery, q: "", status: "all", page: 1 });
+  const clear = () =>
+    navigate({ ...currentQuery, q: "", status: "all", page: 1 });
   const detailHref = useCallback(
     (id: string) => {
       const search = new URLSearchParams({

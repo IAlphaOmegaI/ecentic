@@ -30,14 +30,14 @@ import { useFormatter, useTranslations } from "next-intl";
 import { useCallback, useMemo, useTransition } from "react";
 import { z } from "zod";
 import { Link, useRouter } from "@/i18n/navigation";
-import { LINKEDIN_STATUSES } from "@/lib/outbound";
 import {
   type LinkedInQuery,
   type LinkedInQueue,
   type LinkedInQueueRow,
   linkedinQueueHref,
 } from "@/lib/outbound-linkedin";
-import { Empty } from "../../_components/common";
+import { LINKEDIN_STATUSES } from "@/lib/outbound-status";
+import { Empty } from "../../_components/status";
 
 type QueueRow = LinkedInQueueRow & { _id: string };
 const columnHelper = createColumnHelper<QueueRow>();
@@ -65,7 +65,8 @@ export const LinkedInQueueTable = ({
     },
     [currentHref, router],
   );
-  const clear = () => navigate({ ...currentQuery, q: "", status: "all", page: 1 });
+  const clear = () =>
+    navigate({ ...currentQuery, q: "", status: "all", page: 1 });
   const detailHref = useCallback(
     (id: string) => {
       const search = new URLSearchParams({

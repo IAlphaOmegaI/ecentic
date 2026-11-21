@@ -188,19 +188,22 @@ export const getStatus = withAuthorization(
   [UserRole.STAFF],
   async () =>
     resultify(async () => {
-      const workspace = value(await Store.getWorkspace());
-      const jobs = value(await Jobs.list());
-      const linkedin = await Unipile.getConfiguration();
+      const [inboxes, jobs, linkedin, providers] = await Promise.all([
+        Store.getInboxSummaries(),
+        Jobs.listMetadata(),
+        Unipile.getConfiguration(),
+        Providers.getIntegrationStatus(),
+      ]);
       return {
-        ...(await Providers.getIntegrationStatus()),
+        ...providers,
         linkedin: {
           ...linkedin,
           accounts: linkedin.configured
             ? value(await LinkedInAccounts.list())
             : [],
         },
-        inboxes: workspace.inboxes,
-        jobs: jobs.map(
+        inboxes: value(inboxes),
+        jobs: value(jobs).map(
           ({
             id,
             provider,
