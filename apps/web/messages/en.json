@@ -10331,7 +10331,7 @@
       ]
     },
     "film": {
-      "eyebrow": "04 · Watch it work",
+      "eyebrow": "01 · Watch it work",
       "title": "See ecentic in a minute.",
       "description": "A quick look at the product, from a comparison to the next decision for your catalog.",
       "caption": "ecentic product film",
@@ -10424,7 +10424,7 @@
       ]
     },
     "mechanisms": {
-      "eyebrow": "07 · Under the hood",
+      "eyebrow": "03 · Under the hood",
       "title": "Everything between “AI skipped us” and “AI bought from us”.",
       "items": [
         {
@@ -10502,7 +10502,7 @@
       ]
     },
     "proof": {
-      "eyebrow": "08 · What we've measured so far",
+      "eyebrow": "04 · What we've measured so far",
       "title": "What we've measured so far.",
       "stats": [
         {
@@ -10542,7 +10542,7 @@
       "pipeline": "Pilots in scoping with companies in enterprise retail, travel and flexible workspace."
     },
     "procurement": {
-      "eyebrow": "09 · Enterprise",
+      "eyebrow": "05 · Enterprise",
       "title": "Bring the right questions to security review.",
       "items": [
         {
@@ -10574,7 +10574,7 @@
       ]
     },
     "pricing": {
-      "eyebrow": "10 · Pricing",
+      "eyebrow": "06 · Pricing",
       "title": "Start free. Scale when AI starts buying.",
       "description": "Choose a starting point that fits your store and your team.",
       "items": [
@@ -10603,7 +10603,7 @@
       }
     },
     "editorial": {
-      "eyebrow": "11 · From the team",
+      "eyebrow": "07 · From the team",
       "title": "What we're learning.",
       "description": "Product notes and practical guides, written by the ecentic team.",
       "loading": "Loading articles",

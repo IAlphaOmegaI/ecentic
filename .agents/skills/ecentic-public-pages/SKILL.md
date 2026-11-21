@@ -46,8 +46,9 @@ The extra “From product feed” header band and “Connect, compare…” reca
 recreate the sidebar or repeat a second section introduction.
 
 The whole illustration and its current explanation share one black cutout on the blue hero
-background. Use the approved stepped shoulder geometry, a fine translucent edge and theme
-colors. Keep the caption integrated into this surface, not boxed inside a second dark card.
+background. Its decorative fill reaches both viewport edges, as the other full-width cutouts
+do; keep the illustration and caption centered within their reading widths. Use the approved
+stepped shoulder geometry, a fine translucent edge and theme colors. Keep the caption integrated into this surface, not boxed inside a second dark card.
 The main headline, supporting copy and CTAs remain on blue below it.
 
 The user explicitly requests autoplay on a loop and removed the numbered selector strip and
@@ -72,6 +73,10 @@ illustrated objects; the simulation panel retains its product cards with the ece
 above them. An arc of provider logos alone does not replace those cards. Remove heavy, misaligned
 tag strips and accidental edge clipping.
 Dense catalog findings belong behind supporting disclosure. Keep the original proof media.
+
+Number the visible homepage section eyebrows in their current rendered order, starting at 01
+for the product film. Unnumbered or conditional evidence blocks do not create gaps; do not reuse
+retired section positions after a reorder.
 
 Follow the five-stage walkthrough with compact, publication-gated DUA evidence and the existing
 product film so readers can inspect evidence before the longer capability sections. Preserve the traffic metric's scope,

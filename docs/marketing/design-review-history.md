@@ -578,3 +578,14 @@ The following correction removes homepage “Notify me” controls and requires 
 alignment like a table. Use consistent listing rows and shared column alignment for sources and
 AI channels, with safe mobile wrapping. This supersedes retaining interest actions in the
 homepage rows; the default integration cards on other routes remain unchanged.
+
+### 21 November — full-width opening cutout and current section numbers
+
+The user requested that the opening black cutout reach the edges like the other site cutouts.
+Extend only its decorative surface to the viewport edges, retaining the centered scene and
+caption plus the original headline on blue. The outer blue band must not clip this surface.
+
+The product film still began at 04 after earlier section consolidation. Number the mounted
+homepage eyebrows sequentially from 01 through 07: film, businesses, capabilities, findings,
+procurement, pricing and resources. Preserve the translated labels and the existing section
+order; unnumbered blocks and publication-gated pilot evidence do not affect the sequence.

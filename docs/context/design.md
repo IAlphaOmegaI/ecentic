@@ -650,8 +650,9 @@ CTAs together after that block. Remove the redundant secondary header/recap and 
 sidebar; retain all five detailed explanations and their links in the synchronized caption.
 
 Differentiate the entire animated story and its explanation with one black cutout on the blue
-hero canvas. Reuse the stepped shoulder shape with spacing-token geometry and a thin translucent
-edge. Do not nest a separate caption card inside it. Keep the main headline, supporting copy and
+hero canvas. Its decorative fill extends to both viewport edges like the shared feature cutouts;
+keep the illustration and caption within centered reading widths. Reuse the stepped shoulder
+shape with spacing-token geometry and a thin translucent edge. Do not nest a separate caption card inside it. Keep the main headline, supporting copy and
 CTAs on the surrounding blue field.
 
 Autoplay runs on a loop, as the user explicitly requested. The subsequent review removes the
@@ -685,7 +686,9 @@ sections with a shorter directory solely to reduce page length. Explain the conc
 and interactions affected first. Explicitly requested visual changes remain authorized.
 
 Compact, publication-gated DUA evidence and the original product film follow the five-stage
-walkthrough. The pilot appears once, with its combined AI/direct-visits metric, measurement
+walkthrough. Visible numbered eyebrows follow the current rendered section order, beginning at
+01 for the product film. Unnumbered/conditional blocks do not consume a number, and removed
+sections must not leave stale indices. The pilot appears once, with its combined AI/direct-visits metric, measurement
 period, attribution caveat and sources intact.
 
 The compatibility section answers what a merchant connects and what écentic supports on each

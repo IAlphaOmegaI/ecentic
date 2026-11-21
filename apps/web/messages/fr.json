@@ -10331,7 +10331,7 @@
       ]
     },
     "film": {
-      "eyebrow": "04 · Voir en action",
+      "eyebrow": "01 · Voir en action",
       "title": "Découvrez ecentic en une minute.",
       "description": "Un aperçu rapide du produit, de la comparaison à la prochaine décision pour votre catalogue.",
       "caption": "Vidéo produit ecentic",
@@ -10424,7 +10424,7 @@
       ]
     },
     "mechanisms": {
-      "eyebrow": "07 · Sous le capot",
+      "eyebrow": "03 · Sous le capot",
       "title": "Tout ce qu’il se passe entre « l’IA nous a ignorés » et « l’IA a acheté chez nous ».",
       "items": [
         {
@@ -10502,7 +10502,7 @@
       ]
     },
     "proof": {
-      "eyebrow": "08 · Ce que nous avons mesuré jusqu’ici",
+      "eyebrow": "04 · Ce que nous avons mesuré jusqu’ici",
       "title": "Ce que nous avons mesuré jusqu’ici.",
       "stats": [
         {
@@ -10542,7 +10542,7 @@
       "pipeline": "Pilotes en cadrage avec des entreprises du retail, du voyage et des espaces de travail flexibles."
     },
     "procurement": {
-      "eyebrow": "09 · Enterprise",
+      "eyebrow": "05 · Enterprise",
       "title": "Apportez les bonnes questions à l’examen de sécurité.",
       "items": [
         {
@@ -10574,7 +10574,7 @@
       ]
     },
     "pricing": {
-      "eyebrow": "10 · Tarification",
+      "eyebrow": "06 · Tarification",
       "title": "Commencez gratuitement. Passez à l’échelle quand l’IA commence à acheter.",
       "description": "Choisissez un point de départ adapté à votre boutique et à votre équipe.",
       "items": [
@@ -10603,7 +10603,7 @@
       }
     },
     "editorial": {
-      "eyebrow": "11 · Par l’équipe",
+      "eyebrow": "07 · Par l’équipe",
       "title": "Ce que nous apprenons.",
       "description": "Notes produit et guides pratiques rédigés par l’équipe ecentic.",
       "loading": "Chargement des articles",

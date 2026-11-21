@@ -10331,7 +10331,7 @@
       ]
     },
     "film": {
-      "eyebrow": "04 · 查看实际效果",
+      "eyebrow": "01 · 查看实际效果",
       "title": "一分钟了解 ecentic。",
       "description": "快速了解产品，从商品对比到商品目录的下一步决策。",
       "caption": "ecentic 产品演示视频",
@@ -10424,7 +10424,7 @@
       ]
     },
     "mechanisms": {
-      "eyebrow": "07 · 底层机制",
+      "eyebrow": "03 · 底层机制",
       "title": "从“AI 跳过了我们”到“AI 从我们这里购买”之间的一切。",
       "items": [
         {
@@ -10502,7 +10502,7 @@
       ]
     },
     "proof": {
-      "eyebrow": "08 · 当前测得的数据",
+      "eyebrow": "04 · 当前测得的数据",
       "title": "当前测得的数据。",
       "stats": [
         {
@@ -10542,7 +10542,7 @@
       "pipeline": "正在与企业零售、旅游和灵活办公领域的公司推进试点范围确认。"
     },
     "procurement": {
-      "eyebrow": "09 · 企业",
+      "eyebrow": "05 · 企业",
       "title": "安全审查，先问对问题。",
       "items": [
         {
@@ -10574,7 +10574,7 @@
       ]
     },
     "pricing": {
-      "eyebrow": "10 · 定价",
+      "eyebrow": "06 · 定价",
       "title": "免费开始。等 AI 开始购物时再扩展规模。",
       "description": "选择适合您的店铺和团队的起点。",
       "items": [
@@ -10603,7 +10603,7 @@
       }
     },
     "editorial": {
-      "eyebrow": "11 · 来自团队",
+      "eyebrow": "07 · 来自团队",
       "title": "我们的最新观察。",
       "description": "由 ecentic 团队撰写的产品笔记与实用指南。",
       "loading": "正在加载文章",

@@ -47,11 +47,11 @@ export const Journey = ({ copy, artwork }: Journey.Props) => {
   return (
     <section
       aria-label={copy.title}
-      className="relative isolate mx-auto w-full max-w-6xl py-8 text-center text-background-rich [--cutout-depth:calc(var(--spacing)*4)] [--cutout-shoulder:calc(var(--spacing)*12)] sm:py-12"
+      className="relative isolate w-full py-8 text-center text-background-rich [--cutout-depth:calc(var(--spacing)*4)] [--cutout-shoulder:calc(var(--spacing)*12)] sm:py-12"
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-1 [&>div]:[clip-path:polygon(0_var(--cutout-depth),calc(var(--cutout-shoulder)_-_var(--cutout-depth))_var(--cutout-depth),var(--cutout-shoulder)_0,calc(100%_-_var(--cutout-shoulder))_0,calc(100%_-_var(--cutout-shoulder)_+_var(--cutout-depth))_var(--cutout-depth),100%_var(--cutout-depth),100%_calc(100%_-_var(--cutout-depth)),calc(100%_-_var(--cutout-shoulder)_+_var(--cutout-depth))_calc(100%_-_var(--cutout-depth)),calc(100%_-_var(--cutout-shoulder))_100%,var(--cutout-shoulder)_100%,calc(var(--cutout-shoulder)_-_var(--cutout-depth))_calc(100%_-_var(--cutout-depth)),0_calc(100%_-_var(--cutout-depth)))]"
+        className="pointer-events-none absolute inset-y-0 left-1/2 -z-1 w-dvw -translate-x-1/2 [&>div]:[clip-path:polygon(0_var(--cutout-depth),calc(var(--cutout-shoulder)_-_var(--cutout-depth))_var(--cutout-depth),var(--cutout-shoulder)_0,calc(100%_-_var(--cutout-shoulder))_0,calc(100%_-_var(--cutout-shoulder)_+_var(--cutout-depth))_var(--cutout-depth),100%_var(--cutout-depth),100%_calc(100%_-_var(--cutout-depth)),calc(100%_-_var(--cutout-shoulder)_+_var(--cutout-depth))_calc(100%_-_var(--cutout-depth)),calc(100%_-_var(--cutout-shoulder))_100%,var(--cutout-shoulder)_100%,calc(var(--cutout-shoulder)_-_var(--cutout-depth))_calc(100%_-_var(--cutout-depth)),0_calc(100%_-_var(--cutout-depth)))]"
       >
         <div className="absolute inset-0 bg-background-rich/20" />
         <div className="absolute inset-px bg-emphasis-dimmed" />
