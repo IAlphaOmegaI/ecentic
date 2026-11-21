@@ -589,3 +589,14 @@ The product film still began at 04 after earlier section consolidation. Number t
 homepage eyebrows sequentially from 01 through 07: film, businesses, capabilities, findings,
 procurement, pricing and resources. Preserve the translated labels and the existing section
 order; unnumbered blocks and publication-gated pilot evidence do not affect the sequence.
+
+### 21 November — incorporate the connection graph without another section
+
+The user returned to the old source → écentic → AI diagram: “this was kinda cool but i dont
+wanna add omre stuff, can we find a way to incorporate it?” Fold its curved blue connections,
+central écentic treatment and planned-channel branches into the existing compatibility
+illustration slot, replacing the homepage logo arc. Keep a compact graphic rather than
+restoring the older introduction, Simulate/Fix/Sell/Track list or extra CTA. The grouped
+20 integration entries and six descriptive AI-channel rows remain intact. This supersedes the
+previous choice of the provider arc for this homepage slot, not the approved directory
+organization or the shared arc on other routes.

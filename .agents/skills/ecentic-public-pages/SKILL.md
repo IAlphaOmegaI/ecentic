@@ -82,16 +82,19 @@ Follow the five-stage walkthrough with compact, publication-gated DUA evidence a
 product film so readers can inspect evidence before the longer capability sections. Preserve the traffic metric's scope,
 period, attribution caveat and source links; do not repeat the same pilot result later.
 Use one compatibility section with distinct questions: what the merchant connects, and what
-écentic supports on each AI channel. Keep the restored `ProviderArc` catalog illustration with
-its reveal/hover interactions. Under it, use grouped integration accordions for commerce
+écentic supports on each AI channel. The 21 November request incorporates the old connection
+graph into the existing illustration slot, replacing the homepage `ProviderArc` without adding
+another section. Connect source categories through the écentic hub to six AI marks, preserving
+the compact footprint and planned-channel distinction. Leave shared arc consumers on other
+routes unchanged. Under this graphic, use grouped integration accordions for commerce
 platforms, feeds/data, payments/checkout and PIM, with useful descriptions and current statuses.
 Preserve the full entries, descriptions and links, but omit homepage “Notify me” actions. Align
 listing rows consistently across provider, details and status, rather than independent columns
 with mismatched heights or a final spanning card. Keep AI channels in one separate concise list
 with availability and descriptive links; omit the duplicate channels group from the accordion.
 This replaces the six-row flat source list, following the user's explicit 20 November choice.
-The full timeline and technical comparison stay on the AI-channels page. Do not also restore the
-old source → écentic → AI process map, which repeats the opening animation. Audience tabs stay
+The full timeline and technical comparison stay on the AI-channels page. Omit the old map's
+central stage list and extra introduction/CTA, which repeat the opening animation. Audience tabs stay
 unchanged. Prioritize understanding over minimum page length.
 Dark walkthrough links use the package soft Button's inverse tone for readable text and focus.
 Give each link a descriptive destination label and keep Apply's generation/publication behavior

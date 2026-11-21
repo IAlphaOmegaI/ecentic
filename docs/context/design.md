@@ -692,14 +692,17 @@ sections must not leave stale indices. The pilot appears once, with its combined
 period, attribution caveat and sources intact.
 
 The compatibility section answers what a merchant connects and what écentic supports on each
-AI channel. After consultation on 20 November, retain the restored `ProviderArc` catalog
-illustration and replace the flat catalog list with grouped accordions for commerce platforms,
-feeds/data, payments/checkout and PIM. Preserve their entries, descriptions, current statuses
+AI channel. The 21 November follow-up incorporates the old connection graph in the existing
+illustration slot: source categories converge through écentic and branch to the six AI channels.
+Replace the homepage provider arc rather than adding another block; preserve the compact
+footprint, genuine provider marks and planned-channel distinction. Omit the old central stage
+list, which repeats the opening walkthrough. Keep the grouped accordions approved on 20 November
+for commerce platforms, feeds/data, payments/checkout and PIM. Preserve their entries, descriptions, current statuses
 and links. Omit homepage “Notify me” actions. Source and AI listings use consistent table-like
 rows with aligned provider, details and status columns; avoid independent columns with mismatched
 row boundaries or a final spanning card. Keep AI channels in a separate concise capability/status list and omit
 the duplicate channels accordion group. Keep the full timeline and technical comparison on
-`/ai-channels`; do not repeat the hero's process explanation with another connection map.
+`/ai-channels`; do not repeat the hero's process explanation in the compatibility graphic.
 Audience tabs stay unchanged. Ease of understanding takes priority over simply shortening the
 page. Use descriptive walkthrough links with the package soft Button's inverse tone against
 the dark surface.

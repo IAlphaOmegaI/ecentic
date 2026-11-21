@@ -6,11 +6,10 @@ import {
   MarketingHeading,
   MarketingStatus,
 } from "@/components/marketing/primitives";
-import { ProviderArc } from "@/components/marketing/provider-arc";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { aiChannels } from "@/content/ai-channels";
-import { catalogConnections } from "@/content/integrations";
 import { Link } from "@/i18n/navigation";
+import { ConnectionMap } from "./connection-map";
 import { IntegrationsPreview } from "./integrations-preview";
 
 export const CommerceLayer = async () => {
@@ -18,6 +17,7 @@ export const CommerceLayer = async () => {
     enterpriseHome: home,
     enterpriseLayer: copy,
     enterpriseIntegrations: directory,
+    enterpriseChannels: channels,
   } = await getMessages();
   return (
     <MarketingBand id="how-it-fits" className="enterprise-connections">
@@ -25,10 +25,11 @@ export const CommerceLayer = async () => {
         title={home.connections.title}
         description={home.connections.description}
       />
-      <ProviderArc
-        artwork="catalog"
-        items={catalogConnections}
-        label={home.integration.title}
+      <ConnectionMap
+        copy={copy}
+        groups={directory.groups}
+        names={channels.names}
+        statuses={channels.statuses}
       />
       <div
         className="marketing-grid marketing-section-grid grid border-accent-foreground border-t"
