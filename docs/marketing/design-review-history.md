@@ -600,3 +600,8 @@ restoring the older introduction, Simulate/Fix/Sell/Track list or extra CTA. The
 20 integration entries and six descriptive AI-channel rows remain intact. This supersedes the
 previous choice of the provider arc for this homepage slot, not the approved directory
 organization or the shared arc on other routes.
+
+At compact tablet widths, the next review asks for the right column of the connection graph
+to align with the right edge. Mirror those identities and their status text toward the outer
+rail, with connector endpoints measured from the visible nodes. Keep the wide three-column
+composition and narrow mobile layout unchanged.

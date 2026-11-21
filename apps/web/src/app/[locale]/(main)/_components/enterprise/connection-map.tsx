@@ -60,9 +60,9 @@ export const ConnectionMap = ({
             <li
               key={category}
               data-diagram-port="input"
-              className="relative flex min-h-10 min-w-0 items-center gap-2 bg-background lg:min-h-12 lg:gap-4"
+              className="group/source relative flex min-h-10 min-w-0 items-center gap-2 bg-background sm:max-lg:w-fit sm:max-lg:max-w-full sm:max-lg:even:flex-row-reverse sm:max-lg:even:justify-self-end sm:max-lg:even:text-right lg:min-h-12 lg:gap-4"
             >
-              <span className="flex w-10 shrink-0 items-center justify-start text-primary-text lg:w-14">
+              <span className="flex w-10 shrink-0 items-center justify-start text-primary-text sm:max-lg:group-even/source:justify-end lg:w-14">
                 <SourceMark category={category} />
               </span>
               <span className="wrap-anywhere min-w-0 text-foreground-rich text-xs leading-snug lg:text-sm">
@@ -99,13 +99,13 @@ export const ConnectionMap = ({
               key={channel.key}
               data-diagram-port="output"
               data-pending={channel.status === "soon"}
-              className="relative min-w-0 bg-background"
+              className="group/channel relative min-w-0 bg-background sm:max-lg:w-fit sm:max-lg:max-w-full sm:max-lg:even:justify-self-end"
             >
               <DiagramIdentity>
                 <Link
                   href={channel.href}
                   aria-label={`${names[channel.key]}: ${statuses[channel.status]}`}
-                  className="group flex min-h-8 min-w-0 items-center gap-2 outline-offset-4 lg:min-h-10 lg:gap-3"
+                  className="group flex min-h-8 min-w-0 items-center gap-2 outline-offset-4 sm:max-lg:group-even/channel:flex-row-reverse sm:max-lg:group-even/channel:text-right lg:min-h-10 lg:gap-3"
                 >
                   <ProviderLogo
                     provider={channel.key}
