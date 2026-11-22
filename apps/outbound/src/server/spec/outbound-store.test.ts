@@ -229,6 +229,37 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
     expect(claim.message.body).toContain(settings.postalAddress);
     expect((await store.claimDelivery(actor, fixture)).success).toBe(false);
   });
+  test("changing the company discovery target preserves approved messages and schedules", async () => {
+    const { store, db, schema } = active();
+    const fixture = await approved();
+    const policy = await store.policy();
+    const prospect = required(await store.readProspect(fixture.prospect));
+    const versions = await db
+      .select()
+      .from(schema.outboundRevision)
+      .where(eq(schema.outboundRevision.prospectId, fixture.prospect));
+    expect(prospect?.status).toBe("approved");
+    expect(prospect?.approvalHash).toBeTruthy();
+    const saved = required(
+      await store.savePlaybook(
+        actor,
+        { ...policy.settings, dailyCompanyTarget: 150 },
+        policy.revision,
+      ),
+    );
+    expect(saved.revision).toBe(policy.revision);
+    expect((await store.policy()).settings.dailyCompanyTarget).toBe(150);
+    expect(required(await store.readProspect(fixture.prospect))).toEqual(
+      prospect,
+    );
+    expect(
+      await db
+        .select()
+        .from(schema.outboundRevision)
+        .where(eq(schema.outboundRevision.prospectId, fixture.prospect)),
+    ).toEqual(versions);
+    expect((await store.claimDelivery(actor, fixture)).success).toBe(true);
+  });
   test.each(["closed", "notInterested", "meetingBooked", "meetingHeld"])(
     "manual %s pauses both cold sequences without fabricating a reply, and reopening keeps them paused",
     async (stage) => {

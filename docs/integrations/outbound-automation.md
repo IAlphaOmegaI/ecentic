@@ -66,8 +66,27 @@ delivery continues through the existing sending, mailbox, history and rate gates
 Since 19 November 2026, the preparation cron replenishes active campaigns through
 `automatic-company-discovery.ts` before preparation. It buys at most two provider
 operations per tick within a 40-second budget, with campaign-specific low-water
-targets derived from inbox capacity, a rolling daily operation limit, fair campaign
-rotation and cooldowns. Apollo runs first; Clay starts only after Apollo is
+targets derived from inbox capacity, fair campaign rotation and cooldowns.
+The Playbook's editable `dailyCompanyTarget` defaults to 50 new companies across
+the workspace per UTC calendar day. This is a minimum acquisition target, not an
+email quota or a provider-request cap. Discovery continues until that target is
+met and each campaign has enough usable work; it replenishes again when research
+consumes that work. The former rolling daily search-operation limit is removed.
+
+Only first-seen eligible company domains actually saved in a completed provider
+run count toward the daily target. Each run records an atomic, versioned
+`output.acquisition` receipt with its added/excluded totals and new domains.
+Duplicates, excluded or suppressed results, revived old rows and stale criteria
+do not count as new acquisition. Day totals count distinct domains from those
+receipts in the database; provider page length and current mutable candidate
+status are not acquisition totals. Legacy runs have no invented receipt or
+backfilled credit. Changing the operational target preserves approved messages,
+their schedules and the research-policy revision.
+
+The five-minute per-campaign pacing, bounded per-tick work, provider cooldowns,
+source exhaustion and uncertainty checks remain. A depleted provider or held
+research can prevent qualified contacts even when companies have been acquired.
+Apollo runs first; Clay starts only after Apollo is
 exhausted. Existing attempts, uncertain domains, usable unattempted companies,
 pending jobs and approved unsent prospects determine demand. An atomic reservation
 guard prevents concurrent ticks from buying the same page. Provider errors do not

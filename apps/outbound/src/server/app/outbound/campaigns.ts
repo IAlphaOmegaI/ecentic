@@ -546,6 +546,7 @@ const reserve = (
               ? { page: state.apolloPage, limit: PAGE_SIZE }
               : { searchId: state.claySearchId, limit: PAGE_SIZE },
           createdBy: actor,
+          startedAt: new Date(),
         },
         { tx: transaction },
       ),
@@ -636,6 +637,38 @@ const persistCompanies = async (
   campaign: CampaignRow,
   candidates: Providers.CompanyCandidate[],
 ) => {
+  const domains = [
+    ...new Set(
+      candidates
+        .map((company) => normalizeDomain(company.domain))
+        .filter(Boolean),
+    ),
+  ];
+  // Project presence only: provider receipts and contact records are not needed for novelty.
+  const prior = domains.length
+    ? await Promise.all([
+        resultifyRead(
+          () =>
+            transaction
+              .select({ domain: schema.outboundCampaignCompany.domain })
+              .from(schema.outboundCampaignCompany)
+              .where(inArray(schema.outboundCampaignCompany.domain, domains)),
+          { tx: transaction },
+        ),
+        resultifyRead(
+          () =>
+            transaction
+              .select({ domain: schema.outboundCompany.domain })
+              .from(schema.outboundCompany)
+              .where(inArray(schema.outboundCompany.domain, domains)),
+          { tx: transaction },
+        ),
+      ])
+    : [];
+  const knownDomains = new Set(
+    prior.flatMap((result) => value(result).map((row) => row.domain)),
+  );
+  const newCompanyDomains = new Set<string>();
   const records = [] as { status: "candidate" | "excluded" | "added" }[];
   for (const company of candidates) {
     const domain = normalizeDomain(company.domain);
@@ -683,11 +716,15 @@ const persistCompanies = async (
       value(
         await Companies.create(Environment.SERVER, record, { tx: transaction }),
       );
+    if (status === "candidate" && !knownDomains.has(domain))
+      newCompanyDomains.add(domain);
+    knownDomains.add(domain);
     records.push({ status });
   }
   return {
     added: records.filter((record) => record.status === "candidate").length,
     excluded: records.filter((record) => record.status === "excluded").length,
+    newCompanyDomains: [...newCompanyDomains],
   };
 };
 
@@ -752,7 +789,7 @@ const finish = (
       throw new ConflictError("campaign-run-unresolved");
     const stale = campaign.revision !== run.criteriaRevision;
     const counts = stale
-      ? { added: 0, excluded: 0 }
+      ? { added: 0, excluded: 0, newCompanyDomains: [] }
       : await persistCompanies(transaction, campaign, companies);
     if (!stale)
       value(
@@ -772,7 +809,7 @@ const finish = (
         run.id,
         {
           status: "completed",
-          output,
+          output: { ...output, acquisition: { version: 1, ...counts } },
           companyCount: companies.length,
           error: stale ? "campaign-criteria-changed" : null,
           completedAt: new Date(),
@@ -781,7 +818,12 @@ const finish = (
       ),
     );
     if (!updated) throw new NotFoundError("Campaign run not found.");
-    return { run: runView(updated), companyCount: companies.length, ...counts };
+    return {
+      run: runView(updated),
+      companyCount: companies.length,
+      added: counts.added,
+      excluded: counts.excluded,
+    };
   });
 
 /** One user action consumes at most one 25-company page. Clay search creation is

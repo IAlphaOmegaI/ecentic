@@ -47,17 +47,47 @@ export const discoveryLimits = (input: {
   return {
     target,
     lowWater: Math.ceil(target / 2),
-    // Allows qualification attrition, while preventing an empty-result search loop.
-    dailyOperations: Math.min(
-      12,
-      Math.max(1, Math.ceil((target * 4) / PAGE_SIZE)),
+  };
+};
+
+/** The provider page length is not acquisition: count only locally committed new-domain receipts. */
+const dailyAcquisition = async (transaction?: TransactionScope) => {
+  const now = new Date();
+  const dayStart = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+  );
+  const dayEnd = new Date(dayStart.getTime() + 86_400_000);
+  // JSON-array aggregation is not expressible through repository delegates.
+  const rows = value(
+    await resultifyRead(
+      () =>
+        (transaction ?? db).execute<{ discovered: number }>(sql`
+          select count(distinct acquired.domain)::int as discovered
+          from outbound_campaign_run discovery
+          cross join lateral jsonb_array_elements_text(
+            case when jsonb_typeof(discovery.output->'acquisition'->'newCompanyDomains') = 'array'
+              then discovery.output->'acquisition'->'newCompanyDomains'
+              else '[]'::jsonb end
+          ) acquired(domain)
+          where discovery.status = 'completed'
+            and discovery.output->'acquisition'->>'version' = '1'
+            and discovery.completed_at >= ${dayStart.toISOString()}::timestamp
+            and discovery.completed_at < ${dayEnd.toISOString()}::timestamp
+        `),
+      { tx: transaction },
     ),
+  );
+  return {
+    discoveredToday: rows[0]?.discovered ?? 0,
+    dayStart: dayStart.toISOString(),
+    dayEnd: dayEnd.toISOString(),
+    dayTimezone: "UTC" as const,
   };
 };
 
 const context = async (transaction?: TransactionScope) => {
   const policy = await Store.policy(transaction);
-  const [campaigns, inboxes, credentials] = await Promise.all([
+  const [campaigns, inboxes, credentials, acquisition] = await Promise.all([
     CampaignRecords.count(
       Environment.SERVER,
       eq(schema.outboundCampaign.status, "active"),
@@ -86,6 +116,7 @@ const context = async (transaction?: TransactionScope) => {
           ),
       { tx: transaction },
     ),
+    dailyAcquisition(transaction),
   ]);
   const capacities = await Promise.all(
     value(inboxes).map((inbox) =>
@@ -96,6 +127,8 @@ const context = async (transaction?: TransactionScope) => {
     policy,
     activeCampaigns: value(campaigns),
     credentials: value(credentials),
+    dailyTarget: policy.settings.dailyCompanyTarget,
+    ...acquisition,
     ...discoveryLimits({
       weeklyTarget: policy.settings.weeklyTarget,
       dailyCapacity: capacities.length
@@ -111,16 +144,20 @@ const assess = async (
   current: Awaited<ReturnType<typeof context>>,
   transaction?: TransactionScope,
 ) => {
-  const { policy, lowWater, target, dailyOperations } = current;
+  const { policy, lowWater, target } = current;
   const now = Date.now();
-  const [candidates, working, approved, runs] = await Promise.all([
-    Companies.count(
-      Environment.SERVER,
-      and(
-        eq(schema.outboundCampaignCompany.campaignId, campaign.id),
-        eq(schema.outboundCampaignCompany.criteriaRevision, campaign.revision),
-        eq(schema.outboundCampaignCompany.status, "candidate"),
-        sql`not exists (
+  const [candidates, working, approved, runs, recentOperations] =
+    await Promise.all([
+      Companies.count(
+        Environment.SERVER,
+        and(
+          eq(schema.outboundCampaignCompany.campaignId, campaign.id),
+          eq(
+            schema.outboundCampaignCompany.criteriaRevision,
+            campaign.revision,
+          ),
+          eq(schema.outboundCampaignCompany.status, "candidate"),
+          sql`not exists (
           select 1 from outbound_integration_job attempted
           where attempted.provider = 'automation'
           and attempted.input->>'operation' = 'campaignAutomation'
@@ -132,58 +169,69 @@ const assess = async (
               and attempted.status in ('pending', 'starting', 'uncertain'))
           )
         )`,
-        sql`not exists (
+          sql`not exists (
           select 1 from outbound_suppression excluded
           where (excluded.scope = 'domain' and excluded.value = ${schema.outboundCampaignCompany.domain})
             or (excluded.scope = 'email' and split_part(excluded.value, '@', 2) = ${schema.outboundCampaignCompany.domain})
         )`,
-        sql`not exists (
+          sql`not exists (
           select 1 from outbound_company existing
           where existing.domain = ${schema.outboundCampaignCompany.domain}
           and (existing.last_contacted_at is not null or existing.relationship <> 'cold'
             or exists (select 1 from outbound_prospect prospect where prospect.company_id = existing.id))
         )`,
-        notInArray(
-          schema.outboundCampaignCompany.domain,
-          splitList(policy.settings.excludedDomains).map(normalizeDomain),
+          notInArray(
+            schema.outboundCampaignCompany.domain,
+            splitList(policy.settings.excludedDomains).map(normalizeDomain),
+          ),
         ),
+        { tx: transaction },
       ),
-      { tx: transaction },
-    ),
-    Jobs.count(
-      Environment.SERVER,
-      and(
-        eq(schema.outboundIntegrationJob.provider, "automation"),
-        sql`${schema.outboundIntegrationJob.input}->>'operation' = 'campaignAutomation'`,
-        sql`${schema.outboundIntegrationJob.input}->>'campaignId' = ${campaign.id}`,
-        sql`${schema.outboundIntegrationJob.input}->>'campaignRevision' = ${String(campaign.revision)}`,
-        sql`${schema.outboundIntegrationJob.input}->>'playbookRevision' = ${String(policy.revision)}`,
-        inArray(schema.outboundIntegrationJob.status, ["pending", "starting"]),
+      Jobs.count(
+        Environment.SERVER,
+        and(
+          eq(schema.outboundIntegrationJob.provider, "automation"),
+          sql`${schema.outboundIntegrationJob.input}->>'operation' = 'campaignAutomation'`,
+          sql`${schema.outboundIntegrationJob.input}->>'campaignId' = ${campaign.id}`,
+          sql`${schema.outboundIntegrationJob.input}->>'campaignRevision' = ${String(campaign.revision)}`,
+          sql`${schema.outboundIntegrationJob.input}->>'playbookRevision' = ${String(policy.revision)}`,
+          inArray(schema.outboundIntegrationJob.status, [
+            "pending",
+            "starting",
+          ]),
+        ),
+        { tx: transaction },
       ),
-      { tx: transaction },
-    ),
-    Prospects.count(
-      Environment.SERVER,
-      and(
-        eq(schema.outboundProspect.campaignId, campaign.id),
-        eq(schema.outboundProspect.sentStep, 0),
-        eq(schema.outboundProspect.status, "approved"),
-        eq(schema.outboundProspect.playbookRevision, policy.revision),
+      Prospects.count(
+        Environment.SERVER,
+        and(
+          eq(schema.outboundProspect.campaignId, campaign.id),
+          eq(schema.outboundProspect.sentStep, 0),
+          eq(schema.outboundProspect.status, "approved"),
+          eq(schema.outboundProspect.playbookRevision, policy.revision),
+        ),
+        { tx: transaction },
       ),
-      { tx: transaction },
-    ),
-    Runs.find(
-      Environment.SERVER,
-      {
-        where: eq(schema.outboundCampaignRun.campaignId, campaign.id),
-        orderBy: [
-          { column: schema.outboundCampaignRun.startedAt, direction: "desc" },
-        ],
-        limit: 200,
-      },
-      { tx: transaction },
-    ),
-  ]);
+      Runs.find(
+        Environment.SERVER,
+        {
+          where: eq(schema.outboundCampaignRun.campaignId, campaign.id),
+          orderBy: [
+            { column: schema.outboundCampaignRun.startedAt, direction: "desc" },
+          ],
+          limit: 200,
+        },
+        { tx: transaction },
+      ),
+      Runs.count(
+        Environment.SERVER,
+        and(
+          eq(schema.outboundCampaignRun.campaignId, campaign.id),
+          sql`${schema.outboundCampaignRun.startedAt} > ${new Date(now - 86_400_000).toISOString()}::timestamp`,
+        ),
+        { tx: transaction },
+      ),
+    ]);
   const history = value(runs);
   const latest = history[0];
   const provider = campaign.discoveryState.apolloExhausted ? "clay" : "apollo";
@@ -209,9 +257,7 @@ const assess = async (
       ? failure.startedAt.getTime() + failedDelay
       : 0;
   const recentUntil = latest ? latest.startedAt.getTime() + 5 * 60_000 : 0;
-  const operations = history.filter(
-    (run) => run.startedAt.getTime() > now - 24 * 60 * 60_000,
-  ).length;
+  const operations = value(recentOperations);
   const backlog = value(candidates) + value(working) + value(approved);
   const reason = (() => {
     if (!policy.settings.automationEnabled) return "automation-paused";
@@ -223,10 +269,11 @@ const assess = async (
       campaign.discoveryState.clayExhausted
     )
       return "campaign-source-exhausted";
-    if (backlog >= lowWater) return "backlog-ready";
+    // The daily target is a workspace floor; refill remains available after it is met.
+    if (current.discoveredToday >= current.dailyTarget && backlog >= lowWater)
+      return "backlog-ready";
     if (!providerConfigured) return "provider-not-configured";
     if (failuresUntil > now) return "provider-backoff";
-    if (operations >= dailyOperations) return "daily-discovery-limit";
     if (recentUntil > now) return "discovery-cooldown";
     return null;
   })();
@@ -240,7 +287,11 @@ const assess = async (
     backlog,
     target,
     lowWater,
-    dailyOperations,
+    dailyTarget: current.dailyTarget,
+    discoveredToday: current.discoveredToday,
+    dayStart: current.dayStart,
+    dayEnd: current.dayEnd,
+    dayTimezone: current.dayTimezone,
     operations,
     lastAttemptAt: latest?.startedAt.toISOString() ?? null,
     nextAttemptAt:
@@ -275,6 +326,11 @@ export const getStatus = () =>
     return {
       enabled: current.policy.settings.automationEnabled,
       totalCampaigns: current.activeCampaigns,
+      dailyTarget: current.dailyTarget,
+      discoveredToday: current.discoveredToday,
+      dayStart: current.dayStart,
+      dayEnd: current.dayEnd,
+      dayTimezone: current.dayTimezone,
       campaigns: rows.sort(
         (first, second) =>
           (first.lastAttemptAt ?? "").localeCompare(

@@ -1,4 +1,12 @@
-import { beforeAll, beforeEach, describe, expect, mock, test } from "bun:test";
+import {
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  mock,
+  spyOn,
+  test,
+} from "bun:test";
 import { eq, sql } from "drizzle-orm";
 import { defaultPlaybook, prospectSchema } from "@/lib/outbound";
 import {
@@ -223,7 +231,7 @@ describe.skipIf(!endpoint)("campaign service on isolated Postgres", () => {
     expect(value(await campaigns.list()).total).toBe(2);
   });
   test("Apollo exhausts before automatic Clay and Clay search ID is durably reused", async () => {
-    const { campaigns } = active();
+    const { campaigns, db, schema } = active();
     const id = await create();
     const source = fixture();
     value(
@@ -257,6 +265,106 @@ describe.skipIf(!endpoint)("campaign service on isolated Postgres", () => {
     expect(value(await campaigns.get({ id })).discoveryState.claySearchId).toBe(
       "clay-fixture-search",
     );
+    const [creation] = await db
+      .select({ output: schema.outboundCampaignRun.output })
+      .from(schema.outboundCampaignRun)
+      .where(eq(schema.outboundCampaignRun.operation, "clayStart"));
+    expect(creation?.output?.["acquisition"]).toEqual({
+      version: 1,
+      added: 0,
+      excluded: 0,
+      newCompanyDomains: [],
+    });
+  });
+  test("acquisition receipts use actual new eligible saves and overwrite provider claims", async () => {
+    const { campaigns, db, schema } = active();
+    const id = await create();
+    const source = fixture([
+      candidate("freshbrand.com"),
+      candidate("freshbrand.com"),
+      { ...candidate("excludedbrand.com"), country: "JP" },
+    ]);
+    const search = source.providers.searchApolloCompanies;
+    const providers = {
+      ...source.providers,
+      searchApolloCompanies: async (input: Parameters<typeof search>[0]) => {
+        const found = await search(input);
+        if (!found.success) return found;
+        return {
+          success: true as const,
+          data: {
+            ...found.data,
+            acquisition: {
+              version: 1,
+              added: 50,
+              excluded: 0,
+              newCompanyDomains: ["fabricated-provider-claim.com"],
+            },
+          },
+        };
+      },
+    };
+    const found = value(
+      await campaigns.discover(actor, { id, expectedRevision: 1 }, providers),
+    );
+    expect(found).toMatchObject({ companyCount: 3, added: 1, excluded: 1 });
+    const [saved] = await db
+      .select({ output: schema.outboundCampaignRun.output })
+      .from(schema.outboundCampaignRun)
+      .where(eq(schema.outboundCampaignRun.id, found.run.id));
+    expect(saved?.output?.["acquisition"]).toEqual({
+      version: 1,
+      added: 1,
+      excluded: 1,
+      newCompanyDomains: ["freshbrand.com"],
+    });
+    expect(saved?.output?.["receipt"]).toBeDefined();
+  });
+  test("a lost finish acknowledgement preserves the committed acquisition receipt", async () => {
+    const { campaigns, db, schema } = active();
+    const id = await create();
+    const source = fixture();
+    const original = db.transaction.bind(db);
+    const state = { lost: false };
+    const transaction = spyOn(db, "transaction").mockImplementation((async (
+      ...arguments_: Parameters<typeof db.transaction>
+    ) => {
+      const result = await original(...arguments_);
+      if (
+        !state.lost &&
+        result &&
+        typeof result === "object" &&
+        "run" in result
+      ) {
+        state.lost = true;
+        throw new Error("Fixture lost commit acknowledgement");
+      }
+      return result;
+    }) as typeof db.transaction);
+    try {
+      const found = value(
+        await campaigns.discover(
+          actor,
+          { id, expectedRevision: 1 },
+          source.providers,
+        ),
+      );
+      expect(state.lost).toBe(true);
+      expect(found.run.status).toBe("completed");
+      expect(source.state.apollo).toEqual([1]);
+      const [saved] = await db
+        .select({ output: schema.outboundCampaignRun.output })
+        .from(schema.outboundCampaignRun)
+        .where(eq(schema.outboundCampaignRun.id, found.run.id));
+      expect(saved?.output?.["acquisition"]).toEqual({
+        version: 1,
+        added: 1,
+        excluded: 0,
+        newCompanyDomains: ["newbrand.com"],
+      });
+    } finally {
+      transaction.mockRestore();
+    }
   });
   test("filter acknowledgement mismatch keeps its receipt without importing companies", async () => {
     const { campaigns, db, schema } = active();
@@ -392,7 +500,7 @@ describe.skipIf(!endpoint)("campaign service on isolated Postgres", () => {
     expect(source.state.apollo).toEqual([1, 1]);
   });
   test("simultaneous clicks reserve only one request; stale criteria cannot import its results", async () => {
-    const { campaigns } = active();
+    const { campaigns, db, schema } = active();
     const id = await create();
     const source = fixture();
     const release = Promise.withResolvers<void>();
@@ -423,7 +531,18 @@ describe.skipIf(!endpoint)("campaign service on isolated Postgres", () => {
       }),
     );
     release.resolve();
-    expect(value(await running).run.error).toBe("campaign-criteria-changed");
+    const finished = value(await running);
+    expect(finished.run.error).toBe("campaign-criteria-changed");
+    const [saved] = await db
+      .select({ output: schema.outboundCampaignRun.output })
+      .from(schema.outboundCampaignRun)
+      .where(eq(schema.outboundCampaignRun.id, finished.run.id));
+    expect(saved?.output?.["acquisition"]).toEqual({
+      version: 1,
+      added: 0,
+      excluded: 0,
+      newCompanyDomains: [],
+    });
     const fresh = value(await campaigns.get({ id }));
     expect(fresh.companies.total).toBe(0);
     expect(fresh.discoveryState.apolloPage).toBe(1);

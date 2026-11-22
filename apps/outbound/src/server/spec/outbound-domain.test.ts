@@ -245,11 +245,27 @@ describe("outbound concrete drafts", () => {
       historyConfirmed: _history,
       senderTested: _test,
       competingSendersPaused: _paused,
+      dailyCompanyTarget: _companyTarget,
       ...old
     } = settings;
     const parsed = playbookSchema.parse(old);
     expect(parsed.linkedinTemplate).toContain("{first}");
     expect(parsed.senderTested).toBe(false);
+    expect(parsed.dailyCompanyTarget).toBe(50);
+    expect(parsed.dailyCap).toBe(settings.dailyCap);
+    expect(parsed.weeklyTarget).toBe(settings.weeklyTarget);
+  });
+  test("daily company targets accept whole numbers without changing email limits", () => {
+    for (const dailyCompanyTarget of [1, 50, 10000]) {
+      const parsed = playbookSchema.parse({ ...settings, dailyCompanyTarget });
+      expect(parsed.dailyCompanyTarget).toBe(dailyCompanyTarget);
+      expect(parsed.dailyCap).toBe(settings.dailyCap);
+      expect(parsed.weeklyTarget).toBe(settings.weeklyTarget);
+    }
+    for (const dailyCompanyTarget of [0, -1, 1.5, 10001, "50", null])
+      expect(
+        playbookSchema.safeParse({ ...settings, dailyCompanyTarget }).success,
+      ).toBe(false);
   });
 });
 

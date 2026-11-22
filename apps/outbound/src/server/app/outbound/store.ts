@@ -1306,7 +1306,7 @@ export const savePlaybookWithin = async (
     throw new ConflictError(
       "The Playbook changed. Review its current version before applying these settings.",
     );
-  // Pausing/releasing delivery changes no approved words or policy. Other edits require review.
+  // Operational quotas and pauses change no approved words or research policy.
   const contentPolicy = (settings: Playbook) => {
     const {
       sendingEnabled,
@@ -1318,6 +1318,7 @@ export const savePlaybookWithin = async (
       competingSendersPaused,
       senderTested,
       dailyCap,
+      dailyCompanyTarget,
       weeklyTarget,
       minGapMinutes,
       maxGapMinutes,
