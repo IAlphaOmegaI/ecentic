@@ -216,17 +216,143 @@ const element = (() => {
 
 ## 6. Errors — `Result`, not `throw`
 
-- Expected failures return `Result<T, E>` — `{ success: true, data } | { success: false, error }`.
-- Wrap anything that can fail in `resultify(() => …)` from `@zenncore/utils`.
-  No `try/catch` for expected paths.
-- Raw read-only `db.select` thunks use `resultifyRead`; writes keep `resultify`.
-- Propagate, don't classify: `if (!result.success) return result;`. Do not
-  branch on every error subtype.
-- Error classes from `server/utils/error.ts` are compared by `error.name`
-  against `errorName`, never `instanceof` (see `docs/agents/review-focus.md` #1).
-- "Not found" is `null`, not an exception.
-- Server components inside `<Suspense>` use `unwrapResult(...)` instead of
-  manual checks.
+Failures are values. A function that can fail returns a `Result`; callers check
+it, then return early or pass it on. `throw` is only for real defects and for
+the one place that turns a `Result` back into an exception (`unwrapResult`).
+
+### 6a. The `Result` type
+
+```ts
+import { type Result, resultify, unwrapResult } from "@zenncore/utils";
+
+type Result<T = void, E = Error> =
+  | { success: true; data: T }      // `data` is optional only when T is void
+  | { success: false; error: E };
+```
+
+- Return the literal shapes yourself: `return { success: true, data: store };`
+  and `return { success: false, error: new NotFoundError("Store not found") };`.
+- A `Result<void>` success is just `{ success: true }`.
+- Pass a failed result on unchanged: `if (!store.success) return store;`.
+  Do not rebuild it as `{ success: false, error: store.error }` unless the
+  success type differs and TypeScript needs the narrower shape.
+
+### 6b. `resultify` — the only `try/catch`
+
+`resultify(fn)` runs `fn`, catches whatever it throws or rejects with, and
+returns a `Result`. It works with sync functions, promises and other thenables
+(Drizzle query builders are awaited rather than returned as `data`).
+
+```ts
+// ✅ wrap the call that can throw, check, return early
+const response = await resultify(() => fetch(url, { signal: controller.signal }));
+if (!response.success) return response;
+
+const payload = resultify(() => JSON.parse(text));          // sync works too
+if (!payload.success) return { success: false, error: new ParseError("Invalid JSON", { cause: payload.error }) };
+```
+
+- Always pass a **thunk** (`() => fetch(url)`), not an already-running promise.
+  The thunk is what lets a synchronous throw be caught.
+- One `resultify` per operation that can fail. Do not wrap a whole function
+  body in one big `resultify`.
+- Never write `try/catch` for an expected failure. The exceptions are a real
+  finally/cleanup need or library glue that must rethrow; leave a comment
+  saying why.
+- **Database:** use repository methods (they retry already). A raw read-only
+  `db.select(...)` thunk uses `resultifyRead` from `@/server/utils/repository`,
+  which retries once if the pooled connection died. Writes keep plain
+  `resultify`, because replaying a write that may have landed can duplicate it.
+- **HTTP:** use `HTTP.request(url, init, { timeout })`, which already returns
+  `Result<Response>` (pass `{ guard: true }` for any user-supplied URL), then
+  `HTTP.parse<T>(response)`, which returns `Result<T, RequestError | ParseError>`.
+  Never use a bare `fetch` in server code.
+
+### 6c. Custom errors — `error()` and the shared classes
+
+Error types are declared once, in `apps/web/src/server/utils/error.ts`, with
+the `error()` factory:
+
+```ts
+export class NotFoundError extends error("not-found-error", DatabaseError) {}
+export class ConflictError extends error("conflict-error", RequestError, { expected: true }) {}
+```
+
+- `error(name, parent?, { expected? })`. `name` is the kebab-case wire name
+  ending in `-error` (`"timeout-error"`). `parent` places the class in the
+  hierarchy, and `expected: true` marks a business rule rather than a bug.
+- Reuse what exists before adding a class:
+
+  | Family | Classes |
+  |---|---|
+  | `DatabaseError` | `UniqueConstraintError`, `NotFoundError` |
+  | `RequestError` | `ValidationError`*, `ConflictError`*, `SubscriptionRequiredError`*, `TimeoutError`, `ParseError`, `ResponseTooLargeError`, `IntegrationAuthError` |
+  | `AuthenticationError` | `UnauthenticatedError`, `UnauthorizedError`, `InvalidCredentialsError`, `InvalidSignatureError`*, `UntrustedRequestError`* |
+
+  `*` = expected. Expected errors still reach the user as failed results, but
+  `withContext` does not report them to Sentry.
+- Add a new class only when a caller will **branch on it**. If nothing
+  branches, use the closest existing class with a clear message.
+- Construct with a message the user can read and a `cause` when wrapping:
+  `new TimeoutError("Request timed out", { cause: error })`. An HTTP status can
+  ride along as `{ statusCode: 404 }`.
+- Give each new class a doc comment saying when it is raised and why it is or
+  is not expected, like the existing ones.
+- Never create ad-hoc `class XError extends Error` in feature code, and never
+  return a bare string as an error.
+
+### 6d. Telling errors apart — by `name`, never `instanceof`
+
+`error()` re-points each instance at its parent's prototype, so
+`instanceof NotFoundError` is **always false**. The name is also the only field
+that survives serialization to the client.
+
+```ts
+// ✅
+if (store.error.name === NotFoundError.errorName) notFound();
+if (checkout.error.name === "unauthenticated-error") router.push("/sign-in");
+if (isExpected(result.error)) ...;             // helpers keyed by name
+if (isIntegrationAuthError(result.error)) break;
+
+// ❌ always false
+if (store.error instanceof NotFoundError) ...
+// ❌ static `name` is the JS class name "NotFoundError", not the wire name
+if (store.error.name === NotFoundError.name) ...
+```
+
+When a check is needed in more than one place, add a small `isX(error)` helper
+next to the class, as `isIntegrationAuthError` does.
+
+### 6e. Handle, don't classify
+
+- Most call sites only propagate: `if (!result.success) return result;`.
+- Branch on an error only when the outcome differs (redirect to sign-in,
+  `notFound()`, stop a loop, show a paywall). Use `switch (true)` when there
+  are several.
+- Never write an exhaustive `if/else` ladder over every subtype "just in case".
+- "Not found" on reads is `null` data, not a failure. Use `NotFoundError` only
+  when the caller asked for something that must exist.
+
+### 6f. Where each layer handles it
+
+| Layer | Pattern |
+|---|---|
+| Model / util (`server/app/*`, `server/utils/*`) | `resultify` / repository / `HTTP.request`; return `Result` |
+| Exported server action | Wrapped in `withAuthentication` / `withContext` / `withSubscription`, which report unexpected errors to Sentry, serialize the error for the client and return a `Result`. No return type annotation |
+| Server component in `<Suspense>` | `await unwrapResult(Module.action(Environment.SERVER, …))`, which throws so the boundary handles it. Gated dashboard reads use `unwrapEntitled` |
+| Route handler | Check the `Result` and map it to a `Response` with a status; never let it throw |
+| Client component | `useAsyncAction` → call the action → `if (!result.success)` show a `toast.add({ type: "error", title: t("toast.error"), description: result.error.message })` or branch on `error.name`, then `return` |
+
+```tsx
+const [submit, isPending] = useAsyncAction(async (data: FormEntries<typeof config>) => {
+  const update = await User.updateProfile(data);
+  if (!update.success) {
+    toast.add({ title: t("toast.error"), description: update.error.message, type: "error" });
+    return;
+  }
+  toast.add({ title: t("toast.saved"), type: "success" });
+});
+```
 
 ---
 
@@ -335,6 +461,7 @@ const Price = ({ value }: { value: number | "free" }) => {
 ## 12. Checklist before you hand back code
 
 - [ ] No `let`, no `function`, no `forEach`, no `try/catch` for expected paths
+- [ ] Failures are `Result`s via `resultify` / `resultifyRead` / `HTTP.request`; errors come from `server/utils/error.ts`, are told apart by `name` and passed on, not classified
 - [ ] Every name is a full word, single word where possible, named for the domain
 - [ ] No `…Result` suffix; `.data` read inline
 - [ ] Props destructured in the signature with defaults; rest forwarded
