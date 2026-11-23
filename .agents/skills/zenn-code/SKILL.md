@@ -1,6 +1,6 @@
 ---
 name: zenn-code
-description: The zenn coding style for TypeScript, React, HTML and Tailwind in this monorepo — const-only, arrow functions, namespaces, single-word full names, destructuring, IIFE + switch(true), resultify, early returns, CSS variable naming, semantic HTML and Tailwind-first styling. Use whenever writing, editing, refactoring or reviewing any code here, or when asked "is this zenn style?". Component usage and design-system rules live on top of this in /zenn-style.
+description: The zenn coding style for TypeScript, React, HTML and Tailwind in this monorepo — const-only, arrow functions, namespaces, single-word full names, destructuring, IIFE + switch(true), Result/resultify and custom errors, the with* context wrappers and instrumentation, repositories, shared @zenncore/utils helpers, early returns, CSS variable naming, semantic HTML and Tailwind-first styling. Use whenever writing, editing, refactoring or reviewing any code here, or when asked "is this zenn style?". Component usage and design-system rules live on top of this in /zenn-style.
 ---
 
 # zenn-code — how code is written here
@@ -355,8 +355,195 @@ const [submit, isPending] = useAsyncAction(async (data: FormEntries<typeof confi
 ```
 
 ---
+## 7. Server modules — context wrappers (`with*`)
 
-## 7. Types
+Every server function that does real work is a **contexted action**: a
+function `(context, ...args) => Promise<Result>` wrapped by a `with*` builder.
+The wrapper builds the context, opens a Sentry span named after the action,
+reports unexpected failures, serializes errors for the client, and gives the
+caller a function without the `context` argument.
+
+### 7a. The ladder
+
+Each rung adds to the context of the one before. Pick the **lowest** rung that
+gives you what you need.
+
+| Wrapper | From | Adds to `context` | Use for |
+|---|---|---|---|
+| `withInstrumentation` | `utils/context` | `environment`, `span` | Repositories, internal helpers, `"use cache"`, `generateStaticParams`, crons' inner work. No request APIs, so it never calls `headers()` |
+| `withContext` | `utils/context` | + `auth` (Better Auth API) and request instrumentation | Public request-scoped actions that don't need a user |
+| `withAuthentication` | `utils/authentication` | + `session` (user is signed in, else `UnauthenticatedError`) | Anything per account, including the free onboarding scan |
+| `withSubscription` | `utils/entitlement` | + `subscription` (else `SubscriptionRequiredError`) | Dashboard-only, paid features |
+| `withAuthorization([UserRole.STAFF], fn, name)` | `utils/authorization` | role check (else `UnauthorizedError`) | Internal `/dev/*` actions. Never gate on merchant `owner`/`administrator` |
+| `withCron` | `utils/cron` | Bearer `CRON_SECRET` check | `/api/cron/*` work |
+| `.append(withDurable)` | `utils/context` | + `durable: { redis, db }` | Only the actions that need Redis (rate limits, locks) |
+
+```ts
+export const list = withAuthentication(
+  async (context, { store }: { store: string }) =>
+    find(Environment.SERVER, { where: scope(context.session.user.id, store) }),
+  "Competitor.list",
+);
+
+const isRateLimited = withContext.append(withDurable)(
+  async (context, { key }: { key: string }) => { ... context.durable.redis ... },
+  "Tracking.isRateLimited",
+);
+```
+
+Rules:
+
+- Always give the second argument, the span name, as `"Module.function"`.
+- The action body returns a `Result`. Never throw out of it.
+- No return-type annotations on wrapped actions; the builder infers the
+  success type and the combined error union.
+- Name the context parameter `context`. If it's unused, use `_`:
+  `async (_, { store }: { store: string }) => …`.
+- Arguments after `context` are one destructured options object named for the
+  domain (`{ store }`, `{ store: id }`), with defaults (`= {}`) when everything
+  is optional.
+- Need a new capability? Write an `Enhancer<In, Out, E>`
+  (`(context) => Promise<Result<Out, E>>`) and `.append(...)` it onto the
+  closest builder, as `withAuthentication = withContext.append(authenticate)`
+  does. Don't add fields to every context, and don't reach for globals inside
+  an action.
+
+### 7b. Calling an action — `Environment`
+
+A wrapped action takes an optional first argument from
+`@/server/utils/environment`:
+
+- **Server to server** (server components, other actions, routes, crons): pass
+  `Environment.SERVER`. Errors stay real `Error`s, so `error.name` checks work.
+- **Client** (a `"use client"` file calling a server action): pass nothing. It
+  defaults to `Environment.CLIENT`, and errors arrive serialized (`name`,
+  `message`) through `ErrorProtocol`.
+
+```ts
+// server component
+const products = await unwrapResult(Products.list(Environment.SERVER, { store }));
+// client component
+const update = await Products.update({ product: id, title });
+```
+
+### 7c. Using the context
+
+- `context.session.user` holds the signed-in user (from `withAuthentication`
+  and up). Scope every query by `context.session.user.id`.
+- `context.span.setAttribute("store.id", id)` and
+  `context.span.addBreadcrumb({ category, message, data })` add observability.
+  Never put secrets in either; action arguments that look like secrets are
+  already redacted.
+- `context.auth` is the Better Auth server API (`withContext` and up).
+- `context.subscription` holds the active plan (`withSubscription`).
+
+### 7d. Model files and repositories
+
+Every table has exactly one model file in `server/app/<model>.ts`. Only that
+file touches the table; everything else imports its namespace.
+
+```ts
+"use server";
+
+export const { get, find, paginate, create, update, destroy, exists, count } =
+  repository(schema.competitor);
+
+export type Type = Document<typeof schema.competitor>;
+```
+
+- Delegates take an `Environment` first and return `Result`s:
+  `get(Environment.SERVER, id)`, `find(Environment.SERVER, { where, limit })`.
+  `get`/`find` return `null` data when nothing matches.
+- Prefer a delegate over `db`. Raw `db.select` only for aggregates the
+  repository can't express, wrapped in `resultifyRead`.
+- `Type` is the row type every other file uses as `Module.Type`.
+  `Insertable<T>` is the create shape, and `$OmitSystemFields` (from
+  `utils/validation`) strips system columns from Zod schemas.
+- Lists use `paginate(...)`, return `Paginated<T>` (`{ items, pagination }`),
+  and read the page from the URL with `extractPaginationParams(searchParams)`.
+- Wrap an action that many components on one page call with the same
+  arguments in `dedupe(...)`. It memoizes by argument value for one request.
+  React's `cache` compares by identity and misses whenever an options object
+  is built at the call site.
+- No file-level `"use server"` on a module that also exports plain helpers or
+  cache tags. Split them out instead.
+
+### 7e. Reading results in render code
+
+| Need | Use |
+|---|---|
+| Server component, failure should throw to the boundary | `await unwrapResult(action(Environment.SERVER, …))` |
+| Gated dashboard read that renders under the paywall | `unwrapEntitled(await action(Environment.SERVER, …))`, which gives `null` on a missing plan |
+| Gated read whose data can itself be `null` | Check `isSubscriptionRequired(result.error)` |
+| Run independent reads together | `Promise.all([...])`. Never `await` one after another when they don't depend on each other |
+
+### 7f. Route handlers and public APIs
+
+- Route handlers call actions with `Environment.SERVER` and map the `Result`
+  to a `Response`.
+- Public JSON APIs answer errors with `problem(code, detail, { status })` from
+  `utils/problem` (RFC 9457 `application/problem+json`). `problemCodeFor(error)`
+  maps an error to its code.
+- Throttle with `consume(identify(request), policy)` from `utils/rate-limit`
+  using a named `Policy` (`PUBLIC_API_POLICY` is the default, `ENTRY_POLICY`…)
+  and send `rateLimitHeaders(...)`.
+- Any URL a user supplied goes through `HTTP.request(url, init, { guard: true })`,
+  with `HTTP.read` / `HTTP.page` for size-capped bodies.
+
+---
+
+## 8. Shared utilities — use these, don't rewrite them
+
+Before you write a helper, check `@zenncore/utils`. If it exists, import it.
+If it's missing and more than one place needs it, add it there, not in a local
+`utils.ts`.
+
+### 8a. `@zenncore/utils` helpers
+
+| Import | What |
+|---|---|
+| `resultify`, `unwrapResult`, `type Result`, `type UnwrapResult`, `type InferredError` | §6 |
+| `cn`, `cva`, `type VariantProps`, `type ClassList`, `type ClassValue` | Class merging, variants, sub-part classes |
+| `unique`, `head`, `tail` | Array basics (`unique` dedupes with a `Set`) |
+| `clamp`, `isEqual` | Re-exported from es-toolkit |
+| `merge`, `access`, `removeUndefinedEntries`, `isPlainObject` | Deep merge, typed path access, strip `undefined` keys |
+| `parseSearchParam(value, "single" \| "multiple", fallback)` | Normalizes Next `searchParams` values |
+| `mergeRefs`, `assignRef` | Ref plumbing |
+| `getErrorMessage` | react-hook-form field error to string |
+| `pipe` | Function composition |
+
+### 8b. `@zenncore/utils/hooks`
+
+| Hook | Use |
+|---|---|
+| `createContext({ name })` | Returns `[Context, useHook]` and throws outside the provider |
+| `useAsyncAction(fn)` | Returns `[run, isPending]`. Use for every client call to a server action |
+| `useDebounceCallback`, `useThrottleCallback` | Input-driven work |
+| `useStableCallback`, `useControlled`, `useMergedRefs`, `useIsoLayoutEffect` | From Base UI: stable handlers, controlled/uncontrolled props, refs, SSR-safe layout effects |
+| `useSlot` | Slot rendering |
+
+App-level: `useDocument` (`@/hooks/use-document`) for SSR-safe
+`document`/`window`.
+
+### 8c. `@zenncore/utils/types`
+
+`Nullable<T>` (`T | null | undefined`), `Prettify<T>`, `DistributiveOmit`,
+`Override` / `DistributiveOverride`, `EmptyObject`, `Branded<Brand, T>`,
+`UnionToIntersection`, `DeepPartial`, `IsEqual`, `UniqueIdentifier`, `Tuple` /
+`FixedTuple`. Reach for these before writing a mapped type
+yourself.
+
+### 8d. App utilities worth knowing
+
+`apps/web/src/lib/` holds client-safe helpers grouped by subject (`currency.ts`,
+`date.ts`, `csv.ts`, `redirect.ts`, `dashboard-destinations.ts`, …), and
+`server/utils/` holds server-only ones (`ai.ts` for `AI.generate` / `AI.stream`
+and `model(id)`, `http.ts`, `ssrf.ts`, `stripe.ts`, `csv.ts`). Search both
+before you add a formatter, parser or client wrapper.
+
+---
+
+## 9. Types
 
 - Colocate a component's or module's types in a **namespace with the same
   name**: `Button.Props`, `Button.State`, `SidebarNav.Props`.
@@ -371,7 +558,7 @@ const [submit, isPending] = useAsyncAction(async (data: FormEntries<typeof confi
 
 ---
 
-## 8. Modules and files
+## 10. Modules and files
 
 - Server modules are imported as namespaces: `import * as Products from "@/server/app/product"`.
   Never destructure named imports from a server module.
@@ -385,7 +572,7 @@ const [submit, isPending] = useAsyncAction(async (data: FormEntries<typeof confi
 
 ---
 
-## 9. React
+## 11. React
 
 - Components are arrow functions with implicit return when JSX-only.
 - Namespace + component: `export const X = (...: X.Props) => …; export namespace X { export type Props = … }`.
@@ -418,7 +605,7 @@ const Price = ({ value }: { value: number | "free" }) => {
 
 ---
 
-## 10. HTML
+## 12. HTML
 
 - Semantic elements first: `main`, `header`, `nav`, `section`, `article`,
   `aside`, `footer`, `h1`–`h4` in order, `ul/ol/li` for lists, `dl/dt/dd` for
@@ -438,7 +625,7 @@ const Price = ({ value }: { value: number | "free" }) => {
 
 ---
 
-## 11. Tailwind first
+## 13. Tailwind first
 
 - Style with Tailwind utilities on the element. No new `.css` / `.module.css`
   files; structural rules that utilities cannot express go in the existing
@@ -458,7 +645,7 @@ const Price = ({ value }: { value: number | "free" }) => {
 
 ---
 
-## 12. Checklist before you hand back code
+## 14. Checklist before you hand back code
 
 - [ ] No `let`, no `function`, no `forEach`, no `try/catch` for expected paths
 - [ ] Failures are `Result`s via `resultify` / `resultifyRead` / `HTTP.request`; errors come from `server/utils/error.ts`, are told apart by `name` and passed on, not classified
@@ -468,6 +655,9 @@ const Price = ({ value }: { value: number | "free" }) => {
 - [ ] Guards return early; braces dropped on one-liners; `switch (true)` for chains
 - [ ] Types in a same-name namespace; no `types/` folder; suppressions justified
 - [ ] Server modules imported as namespaces
+- [ ] Actions wrapped on the lowest `with*` rung, named `"Module.fn"`, no return type, `Environment.SERVER` on server calls
+- [ ] Tables touched only through their model file's repository delegates; reads parallel with `Promise.all`
+- [ ] Checked `@zenncore/utils` and `lib/` / `server/utils/` before writing a helper
 - [ ] Semantic HTML, no raw controls, copy through next-intl
 - [ ] Tailwind semantic tokens, 2-step spacing, `cn`/`cva` for composition
 - [ ] `bun run lint` clean on touched files; typecheck error count not increased
