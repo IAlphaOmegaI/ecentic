@@ -204,6 +204,7 @@ export const checkMailbox = (
           connectionVersion: current?.connectionVersion ?? null,
           synchronized: synchronized(current),
           historyConfirmed: currentPolicy.settings.historyConfirmed,
+          allowIncompleteHistory: currentPolicy.settings.allowIncompleteHistory,
           senderTested: currentPolicy.settings.senderTested,
           report: assessMailboxReadiness({
             domain,
@@ -211,6 +212,8 @@ export const checkMailbox = (
             synchronized: synchronized(current),
             providerError: connection === "failed",
             historyConfirmed: currentPolicy.settings.historyConfirmed,
+            allowIncompleteHistory:
+              currentPolicy.settings.allowIncompleteHistory,
             senderTested: currentPolicy.settings.senderTested,
           }),
         };

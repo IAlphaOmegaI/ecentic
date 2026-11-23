@@ -8,6 +8,7 @@ import {
   spyOn,
   test,
 } from "bun:test";
+import { createHash } from "node:crypto";
 import { eq, sql } from "drizzle-orm";
 import {
   defaultPlaybook,
@@ -15,6 +16,7 @@ import {
   renderMessages,
 } from "@/lib/outbound";
 import { IntegrationError } from "@/server/utils/outbound/http";
+import { requireTestDatabase } from "./helpers/database";
 
 const endpoint = process.env.OUTBOUND_TEST_DATABASE_URL;
 const modules: {
@@ -26,6 +28,9 @@ const modules: {
   providers?: typeof import("@/server/utils/outbound/providers");
   draft?: typeof import("@/server/utils/outbound/draft");
   mx?: typeof import("@/server/utils/outbound/mx");
+  recovery?: typeof import("@/server/utils/outbound/automation-recovery");
+  research?: typeof import("@/server/utils/outbound/shopping-research");
+  readiness?: typeof import("@/server/app/outbound/research-readiness");
 } = {};
 const active = () => {
   if (
@@ -36,7 +41,10 @@ const active = () => {
     !modules.qualification ||
     !modules.providers ||
     !modules.draft ||
-    !modules.mx
+    !modules.mx ||
+    !modules.recovery ||
+    !modules.research ||
+    !modules.readiness
   )
     throw new Error("Fixture not loaded");
   return {
@@ -48,6 +56,9 @@ const active = () => {
     providers: modules.providers,
     draft: modules.draft,
     mx: modules.mx,
+    recovery: modules.recovery,
+    research: modules.research,
+    readiness: modules.readiness,
   };
 };
 const value = <Data>(
@@ -100,6 +111,221 @@ const create = async (domain = "samplegoods.com") => {
 };
 const jobs = async () =>
   active().db.select().from(active().schema.outboundIntegrationJob);
+const recoveryJob = async (
+  kind: "qualification" | "assessment" = "qualification",
+) => {
+  const { db, schema, store, research } = active();
+  value(
+    await store.savePlaybook("fixture", {
+      ...settings,
+      requireShoppingEvidence: true,
+    }),
+  );
+  const policy = await store.policy();
+  const [campaign] = await db
+    .select()
+    .from(schema.outboundCampaign)
+    .where(eq(schema.outboundCampaign.id, fixture.campaignId));
+  if (!campaign) throw new Error("Missing recovery campaign");
+  const timestamp = new Date().toISOString();
+  const product = {
+    name: "Linen tote",
+    brand: "Sample Goods",
+    url: "https://samplegoods.com/products/tote",
+    description: "A washable linen tote",
+    price: 25,
+    currency: "USD",
+  };
+  const digest = (body: string) =>
+    createHash("sha256").update(body).digest("hex");
+  const provider = JSON.stringify({
+    domain: "samplegoods.com",
+    platform: "shopify",
+    source: "apollo",
+    sourceId: "organization_fixture",
+    sourceObservedAt: timestamp,
+  });
+  const receipts = [
+    {
+      kind: "provider",
+      url: "https://app.apollo.io/#/organizations/organization_fixture",
+      excerpt: provider,
+      sha256: digest(provider),
+      checkedAt: timestamp,
+    },
+    {
+      kind: "storefront",
+      url: "https://samplegoods.com",
+      excerpt: "Sample Goods makes physical linen bags.",
+      sha256: digest("original storefront HTML"),
+      checkedAt: timestamp,
+    },
+    {
+      kind: "product",
+      url: product.url,
+      excerpt: `A washable linen tote.\nObserved structured product: ${JSON.stringify(product)}`,
+      sha256: digest("original product HTML"),
+      checkedAt: timestamp,
+    },
+  ];
+  const assessment = {
+    decision: "hold",
+    reason: "A verified AI shopping gap is required before qualification.",
+    productCategory: "linen bags",
+    ownBrandEvidence: null,
+    physicalProductEvidence: null,
+    establishedEvidence: null,
+    criteriaEvidence: [],
+    criteriaSatisfied: false,
+    productInsight: null,
+  };
+  const qualification = {
+    status: "hold",
+    reason: assessment.reason,
+    retryable: false,
+    assessment,
+    observedProduct: product,
+    receipts,
+    providerRequestId: "completed_qualification_fixture",
+    usage: { inputTokens: 20, outputTokens: 10 },
+  };
+  const raw = (url: string, body: string, status = 200) => ({
+    url,
+    body,
+    status,
+    receivedAt: timestamp,
+    sha256: digest(body),
+  });
+  const answer = raw(
+    "https://www.google.com/search?q=linen+tote",
+    "Linen tote large: USD 30, one-time purchase.",
+  );
+  const page = raw(product.url, "Linen tote large: USD 25, one-time purchase.");
+  const ucp = raw(
+    "https://samplegoods.com/.well-known/ucp",
+    "404 Not Found",
+    404,
+  );
+  const source = (
+    id: string,
+    kind: string,
+    capture: string,
+    captured: ReturnType<typeof raw>,
+  ) => ({
+    id,
+    kind,
+    capture,
+    url: captured.url,
+    content: captured.body,
+    checkedAt: timestamp,
+    artifact: `sha256:${captured.sha256}`,
+  });
+  const output =
+    kind === "qualification"
+      ? { qualification }
+      : {
+          qualification: {
+            ...qualification,
+            status: "qualified",
+            details: { product: product.name, productUrl: product.url },
+          },
+          shoppingPolicyHash: research.researchPolicyHash(policy.settings),
+          shoppingAnswer: {
+            job: {
+              id: crypto.randomUUID(),
+              submittedAt: timestamp,
+              query: {
+                product: { name: product.name, url: product.url },
+                category: "linen bags",
+                country: "US",
+                surface: "google_ai_mode",
+                prompt: "Where can I buy a large linen tote?",
+              },
+            },
+            executedAt: timestamp,
+            receivedAt: timestamp,
+            answer: answer.body,
+            source: source("answer", "search", "provider", answer),
+            links: [],
+            cached: false,
+            raw: [answer],
+          },
+          shoppingBrowser: {
+            status: "captured",
+            sources: [
+              source("product", "product", "browser", page),
+              source("ucp", "ucp", "http", ucp),
+            ],
+            raw: [page, ucp],
+            candidates: [],
+            limitations: [],
+            ucp: {
+              url: ucp.url,
+              status: "notObserved",
+              httpStatus: 404,
+              capabilities: [],
+              sourceIds: ["ucp"],
+            },
+            checkout: {
+              status: "notTested",
+              sourceIds: [],
+              notes: "No checkout interaction.",
+            },
+          },
+          shoppingAssessment: {
+            status: "held",
+            reason:
+              "The finding needs more words than the first-email template allows; do not remove evidence qualifiers to fit.",
+            assessment: { decision: "hold", selected: null, competitors: [] },
+            providerRequestId: "completed_assessment_fixture",
+            usage: { inputTokens: 20, outputTokens: 10 },
+          },
+        };
+  const [job] = await db
+    .insert(schema.outboundIntegrationJob)
+    .values({
+      provider: "automation",
+      status: "failed",
+      error:
+        kind === "qualification"
+          ? "qualification-held"
+          : "shopping-research-held",
+      requestId: `recovery_${crypto.randomUUID()}`,
+      input: {
+        operation: "campaignAutomation",
+        ...fixture,
+        companyName: "Sample Goods",
+        companyDomain: "samplegoods.com",
+        campaignRevision: campaign.revision,
+        playbookRevision: policy.revision,
+        actor: "fixture",
+      },
+      output: {
+        ...output,
+        stage: kind === "qualification" ? "qualify" : "assessShopping",
+        availableAt: timestamp,
+        lease: null,
+      },
+    })
+    .returning();
+  if (!job) throw new Error("Missing recovery job");
+  return job;
+};
+const recoveryRequest = (job: Awaited<ReturnType<typeof recoveryJob>>) => ({
+  jobId: job.id,
+  expectedStateHash: active().recovery.researchStateHash(job.output),
+  expectedInputHash: active().recovery.researchStateHash(job.input),
+});
+const recoverySnapshot = async () => {
+  const { db, schema } = active();
+  return Promise.all([
+    jobs(),
+    db.select().from(schema.outboundCampaignCompany),
+    db.select().from(schema.outboundProspect),
+    db.select().from(schema.outboundEvent),
+    db.select().from(schema.outboundPlaybook),
+  ]);
+};
 const contactPerson = (index: number) => ({
   id: `person_${index}`,
   name: `Jane${index} Smith`,
@@ -234,13 +460,7 @@ const undatedVerificationJob = async (title = "Head of Growth") => {
 
 describe.skipIf(!endpoint)("isolated campaign automation ledger", () => {
   beforeAll(async () => {
-    if (!endpoint) throw new Error("Disposable database required");
-    const location = new URL(endpoint);
-    if (
-      !["localhost", "127.0.0.1"].includes(location.hostname) ||
-      location.pathname !== "/outbound_test"
-    )
-      throw new Error("Local outbound_test only");
+    requireTestDatabase(endpoint);
     Object.assign(process.env, {
       DATABASE_URL: endpoint,
       CREDENTIAL_ENCRYPTION_KEY: Buffer.alloc(32, 19).toString("base64"),
@@ -256,6 +476,15 @@ describe.skipIf(!endpoint)("isolated campaign automation ledger", () => {
     modules.providers = await import("@/server/utils/outbound/providers");
     modules.draft = await import("@/server/utils/outbound/draft");
     modules.mx = await import("@/server/utils/outbound/mx");
+    modules.recovery = await import(
+      "@/server/utils/outbound/automation-recovery"
+    );
+    modules.research = await import(
+      "@/server/utils/outbound/shopping-research"
+    );
+    modules.readiness = await import(
+      "@/server/app/outbound/research-readiness"
+    );
   });
   beforeEach(async () => {
     const { db, store } = active();
@@ -267,6 +496,394 @@ describe.skipIf(!endpoint)("isolated campaign automation ledger", () => {
     Object.assign(fixture, await create());
   });
   afterEach(() => mock.restore());
+
+  test.each(["qualification", "assessment"] as const)(
+    "%s recovery dry runs leave the entire checkpoint and related records unchanged",
+    async (kind) => {
+      const { automation } = active();
+      const job = await recoveryJob(kind);
+      const before = await recoverySnapshot();
+      const response = value(
+        await automation.resumeResearchReview("reviewer", {
+          ...recoveryRequest(job),
+          dryRun: true,
+        }),
+      );
+      expect(response).toMatchObject({
+        repeated: false,
+        dryRun: true,
+        job: { status: "held" },
+      });
+      expect(await recoverySnapshot()).toEqual(before);
+    },
+  );
+
+  test.each(["qualification", "assessment"] as const)(
+    "%s recovery is atomic under concurrent admission and can be used only once",
+    async (kind) => {
+      const { automation, readiness } = active();
+      const job = await recoveryJob(kind);
+      const request = recoveryRequest(job);
+      const responses = await Promise.all([
+        automation.resumeResearchReview("reviewer-one", request),
+        automation.resumeResearchReview("reviewer-two", request),
+      ]);
+      expect(
+        responses.map((response) => value(response).repeated).sort(),
+      ).toEqual([false, true]);
+      const [resumed] = await jobs();
+      expect(resumed?.status).toBe("pending");
+      expect(resumed?.error).toBeNull();
+      expect(resumed?.output?.["researchReviewRecovery"]).toMatchObject({
+        kind,
+        sourceStateHash: request.expectedStateHash,
+        sourceInputHash: request.expectedInputHash,
+        previousReason: job.error,
+        previousAssessment:
+          job.output?.[
+            kind === "qualification" ? "qualification" : "shoppingAssessment"
+          ],
+      });
+      expect(resumed?.output?.["shoppingAnswer"]).toEqual(
+        job.output?.["shoppingAnswer"],
+      );
+      expect(resumed?.output?.["shoppingBrowser"]).toEqual(
+        job.output?.["shoppingBrowser"],
+      );
+      expect(resumed?.input).toEqual(job.input);
+      expect(resumed?.requestId).toBe(job.requestId);
+      spyOn(readiness, "getStatus").mockResolvedValue({
+        success: true,
+        data: { required: true, ready: true, missing: [], blocked: [] },
+      });
+      const execute = mock(async () => ({
+        stage:
+          kind === "qualification"
+            ? ("qualify" as const)
+            : ("assessShopping" as const),
+        reason:
+          kind === "qualification"
+            ? "qualification-held"
+            : "shopping-research-held",
+        output: { completedRecoveryAssessment: "held again" },
+      }));
+      expect(
+        value(await automation.run({ jobId: job.id, maxSteps: 3 }, execute))
+          .processed,
+      ).toBe(1);
+      const [held] = await jobs();
+      if (!held) throw new Error("Missing recovered checkpoint");
+      const before = await recoverySnapshot();
+      expect(
+        (
+          await automation.resumeResearchReview(
+            "reviewer",
+            recoveryRequest(held),
+          )
+        ).success,
+      ).toBe(false);
+      expect(
+        value(await automation.resumeResearchReview("reviewer", request))
+          .repeated,
+      ).toBe(true);
+      expect(await recoverySnapshot()).toEqual(before);
+      expect(execute).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  test.each(["state", "input"] as const)(
+    "recovery rejects an exact %s checkpoint changed since the audit, then accepts a current snapshot",
+    async (field) => {
+      const { automation, db, schema } = active();
+      const job = await recoveryJob();
+      const request = recoveryRequest(job);
+      await db
+        .update(schema.outboundIntegrationJob)
+        .set(
+          field === "state"
+            ? {
+                output: {
+                  ...job.output,
+                  auditNote: "changed after inspection",
+                },
+              }
+            : { input: { ...job.input, actor: "changed after inspection" } },
+        )
+        .where(eq(schema.outboundIntegrationJob.id, job.id));
+      const before = await recoverySnapshot();
+      expect(
+        (await automation.resumeResearchReview("reviewer", request)).success,
+      ).toBe(false);
+      expect(await recoverySnapshot()).toEqual(before);
+      const [changed] = await jobs();
+      if (!changed) throw new Error("Missing changed checkpoint");
+      expect(
+        value(
+          await automation.resumeResearchReview(
+            "reviewer",
+            recoveryRequest(changed),
+          ),
+        ).job.status,
+      ).toBe("queued");
+    },
+  );
+
+  test.each([
+    "uncertain",
+    "starting",
+    "active-lease",
+    "expired-lease",
+    "wrong-error",
+    "wrong-stage",
+    "explicit-skip",
+    "post-contact",
+    "explicit-variant-mismatch",
+  ])(
+    "recovery preserves the %s job even when its current hashes are supplied",
+    async (condition) => {
+      const { automation, db, schema } = active();
+      const job = await recoveryJob(
+        condition === "explicit-variant-mismatch"
+          ? "assessment"
+          : "qualification",
+      );
+      const qualification = job.output?.["qualification"] as Record<
+        string,
+        unknown
+      >;
+      const output = {
+        ...job.output,
+        ...(condition === "active-lease" || condition === "expired-lease"
+          ? {
+              lease: {
+                token: crypto.randomUUID(),
+                expiresAt: new Date(
+                  Date.now() + (condition === "active-lease" ? 60000 : -60000),
+                ).toISOString(),
+              },
+            }
+          : {}),
+        ...(condition === "wrong-stage" ? { stage: "draft" } : {}),
+        ...(condition === "explicit-skip"
+          ? {
+              qualification: {
+                ...qualification,
+                status: "skip",
+                assessment: { decision: "skip" },
+              },
+            }
+          : {}),
+        ...(condition === "post-contact" ? { people: [contactPerson(1)] } : {}),
+        ...(condition === "explicit-variant-mismatch"
+          ? {
+              shoppingAssessment: {
+                status: "held",
+                reason:
+                  "The captured answer and page compare different product variants.",
+              },
+            }
+          : {}),
+      };
+      const [changed] = await db
+        .update(schema.outboundIntegrationJob)
+        .set({
+          output,
+          ...(condition === "uncertain" || condition === "starting"
+            ? { status: condition }
+            : {}),
+          ...(condition === "wrong-error"
+            ? { error: "provider-uncertain" }
+            : {}),
+        })
+        .where(eq(schema.outboundIntegrationJob.id, job.id))
+        .returning();
+      if (!changed) throw new Error("Missing ineligible job");
+      const before = await recoverySnapshot();
+      expect(
+        (
+          await automation.resumeResearchReview(
+            "reviewer",
+            recoveryRequest(changed),
+          )
+        ).success,
+      ).toBe(false);
+      expect(await recoverySnapshot()).toEqual(before);
+    },
+  );
+
+  test.each([
+    "campaign-revision",
+    "playbook-revision",
+    "company-criteria-revision",
+    "campaign-inactive",
+    "automation-disabled",
+    "company-excluded",
+    "company-domain",
+  ])(
+    "recovery rechecks current %s rather than trusting the audited input",
+    async (condition) => {
+      const { automation, db, schema, store } = active();
+      const job = await recoveryJob();
+      if (
+        condition === "campaign-revision" ||
+        condition === "campaign-inactive"
+      )
+        await db
+          .update(schema.outboundCampaign)
+          .set(
+            condition === "campaign-revision"
+              ? { revision: Number(job.input?.["campaignRevision"]) + 1 }
+              : { status: "paused" },
+          )
+          .where(eq(schema.outboundCampaign.id, fixture.campaignId));
+      if (
+        condition === "playbook-revision" ||
+        condition === "automation-disabled"
+      )
+        value(
+          await store.savePlaybook("fixture", {
+            ...settings,
+            requireShoppingEvidence: true,
+            targetingNotes: "Changed after audit",
+            automationEnabled: condition !== "automation-disabled",
+          }),
+        );
+      if (condition.startsWith("company-"))
+        await db
+          .update(schema.outboundCampaignCompany)
+          .set(
+            condition === "company-criteria-revision"
+              ? {
+                  criteriaRevision: Number(job.input?.["campaignRevision"]) + 1,
+                }
+              : condition === "company-excluded"
+                ? { status: "excluded" }
+                : { domain: "changedgoods.com" },
+          )
+          .where(eq(schema.outboundCampaignCompany.id, fixture.companyId));
+      const before = await recoverySnapshot();
+      expect(
+        (
+          await automation.resumeResearchReview(
+            "reviewer",
+            recoveryRequest(job),
+          )
+        ).success,
+      ).toBe(false);
+      expect(await recoverySnapshot()).toEqual(before);
+    },
+  );
+
+  test.each(["pending", "starting", "uncertain"] as const)(
+    "the %s operation for the domain in another campaign blocks recovery",
+    async (status) => {
+      const { automation, db, schema } = active();
+      const job = await recoveryJob();
+      const other = await create();
+      await db.insert(schema.outboundIntegrationJob).values({
+        provider: "automation",
+        status,
+        input: { ...job.input, ...other },
+        output: { ...job.output },
+      });
+      const before = await recoverySnapshot();
+      expect(
+        (
+          await automation.resumeResearchReview(
+            "reviewer",
+            recoveryRequest(job),
+          )
+        ).success,
+      ).toBe(false);
+      expect(await recoverySnapshot()).toEqual(before);
+    },
+  );
+
+  test.each(["held", "uncertain"] as const)(
+    "qualification recovery preserves its %s assessment result without recollecting pages or replaying",
+    async (status) => {
+      const { automation, qualification, readiness } = active();
+      const job = await recoveryJob();
+      const original = qualification.companyEvidenceSchema
+        .pick({ receipts: true })
+        .extend({
+          observedProduct: qualification.companyEvidenceSchema.shape.product,
+        })
+        .parse(job.output?.["qualification"]);
+      value(
+        await automation.resumeResearchReview("reviewer", recoveryRequest(job)),
+      );
+      const collect = spyOn(qualification, "qualifyCompany");
+      const assess = spyOn(
+        qualification,
+        "qualifyCompanyEvidence",
+      ).mockImplementation(async (input) => {
+        expect(input.evidence).toEqual({
+          platform: "shopify",
+          product: original.observedProduct,
+          receipts: original.receipts,
+        });
+        expect((await jobs())[0]?.status).toBe("starting");
+        if (status === "uncertain")
+          return {
+            success: false,
+            error: new IntegrationError(
+              "azure",
+              "uncertain",
+              "Lost model response",
+            ),
+          };
+        return {
+          success: true,
+          data: {
+            status: "hold",
+            reason: "Company fit remains unproven.",
+            retryable: false,
+            receipts: input.evidence.receipts,
+          },
+        };
+      });
+      spyOn(readiness, "getStatus").mockResolvedValue({
+        success: true,
+        data: { required: true, ready: true, missing: [], blocked: [] },
+      });
+      const response = value(
+        await automation.run({ jobId: job.id, maxSteps: 3 }),
+      );
+      expect(response.processed).toBe(1);
+      expect(response.results[0]).toMatchObject({
+        stage: "qualify",
+        status,
+        reason: status === "held" ? "qualification-held" : "provider-uncertain",
+      });
+      expect(assess).toHaveBeenCalledTimes(1);
+      expect(collect).not.toHaveBeenCalled();
+      expect(
+        value(await automation.run({ jobId: job.id, maxSteps: 3 })).processed,
+      ).toBe(0);
+      expect(assess).toHaveBeenCalledTimes(1);
+      const [finished] = await jobs();
+      if (!finished) throw new Error("Missing completed recovery");
+      const before = await recoverySnapshot();
+      expect(
+        (
+          await automation.resumeResearchReview(
+            "reviewer",
+            recoveryRequest(finished),
+          )
+        ).success,
+      ).toBe(false);
+      expect(
+        value(
+          await automation.resumeResearchReview(
+            "reviewer",
+            recoveryRequest(job),
+          ),
+        ).job.status,
+      ).toBe(status);
+      expect(await recoverySnapshot()).toEqual(before);
+    },
+  );
 
   test("source-backed category correction accepts the same VP alias as selection without altering the actual title", async () => {
     const { db, schema, store, automation } = active();

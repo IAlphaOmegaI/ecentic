@@ -35,7 +35,24 @@ describe("soft buttons on inverse surfaces", () => {
     expect(markup).not.toContain("text-background-rich");
   });
 
-  test.each(["default", "outline", "ghost", "flat"] satisfies ButtonVariant[])(
+  test.each(["ghost", "outline"] satisfies ButtonVariant[])(
+    "%s supports inverse actions on the charcoal shell",
+    (variant) => {
+      const markup = renderButton({
+        variant,
+        color: "neutral",
+        tone: "inverse",
+      });
+
+      expect(markup).toContain("text-background-rich");
+      expect(markup).toContain("border-background-rich/20");
+      expect(markup).toContain("hover:bg-background-rich/15");
+      expect(markup).toContain("focus-visible:ring-background-rich/40");
+      expect(markup).not.toContain(" tone=");
+    },
+  );
+
+  test.each(["default", "flat"] satisfies ButtonVariant[])(
     "inverse tone does not change the %s variant",
     (variant) => {
       expect(renderButton({ variant, tone: "inverse" })).toBe(
@@ -43,4 +60,19 @@ describe("soft buttons on inverse surfaces", () => {
       );
     },
   );
+
+  test("soft buttons do not create backdrop-filter layers", () => {
+    expect(renderButton({ variant: "soft" })).not.toContain("backdrop-blur");
+    expect(renderButton({ variant: "soft", tone: "inverse" })).not.toContain(
+      "backdrop-blur",
+    );
+  });
+
+  test("full width is opt-in and is not forwarded as a DOM attribute", () => {
+    expect(renderButton({})).toContain("w-fit");
+    const markup = renderButton({ width: "full" });
+    expect(markup).toContain("w-full");
+    expect(markup).not.toContain("w-fit");
+    expect(markup).not.toContain(" width=");
+  });
 });

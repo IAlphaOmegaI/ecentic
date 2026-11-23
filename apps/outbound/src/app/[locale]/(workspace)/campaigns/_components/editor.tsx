@@ -180,6 +180,23 @@ const CriteriaForm = ({
   const t = useTranslations("outbound.campaigns");
   const messages = useMessages();
   const mutation = useCampaignMutation({ feedbackVersion });
+  const [baseline, setBaseline] = useState(() => ({
+    revision: campaign.revision,
+    values: campaignCriteriaFormValues(criteria),
+  }));
+  const [values, setValues] = useState(baseline.values);
+  const [version, setVersion] = useState(0);
+  const [awaitingRevision, setAwaitingRevision] = useState<number | null>(null);
+  const stale =
+    awaitingRevision === null &&
+    (baseline.revision !== campaign.revision ||
+      (previewRevision !== undefined && previewRevision !== campaign.revision));
+  const busy = mutation.pending || awaitingRevision !== null;
+  const dirty = JSON.stringify(values) !== JSON.stringify(baseline.values);
+  useEffect(() => {
+    if (awaitingRevision !== null && campaign.revision >= awaitingRevision)
+      setAwaitingRevision(null);
+  }, [campaign.revision, awaitingRevision]);
   const config = fields(keys, messages.outbound.campaigns.fields, {
     multiline: [
       "objective",
@@ -213,71 +230,96 @@ const CriteriaForm = ({
     invalid: t("invalidCriteria"),
   });
   return (
-    <InferredForm
-      config={config}
-      defaultValues={campaignCriteriaFormValues(criteria)}
-      className="grid gap-6 sm:grid-cols-2"
-      onSubmit={(values) => {
-        if (
-          previewRevision !== undefined &&
-          previewRevision !== campaign.revision
-        ) {
-          mutation.setNotice({
-            error: true,
-            text: t("errors.campaign-criteria-changed"),
-          });
-          return;
-        }
-        const checked = campaignCriteriaSchema.safeParse({
-          ...values,
-          ...Object.fromEntries(
-            lists.map((key) => [key, splitList(String(values[key]))]),
-          ),
-          ...Object.fromEntries(
-            numeric.map((key) => [
-              key,
-              values[key] === "" ? null : Number(values[key]),
-            ]),
-          ),
-          platforms: String(values.platforms).split(","),
-        });
-        if (!checked.success) {
-          mutation.setNotice({ error: true, text: t("invalidCriteria") });
-          return;
-        }
-        return mutation.run(
-          () =>
-            Campaigns.saveCampaignCriteria({
-              id: campaign.id,
-              expectedRevision: campaign.revision,
-              criteria: checked.data,
-              answers,
-              ...(claudeGenerationId ? { claudeGenerationId } : {}),
-            }),
-          onSaved,
-        );
-      }}
-    >
-      <div className="space-y-4 sm:col-span-2">
-        <Button
-          type="submit"
-          disabled={
-            mutation.pending ||
-            (previewRevision !== undefined &&
-              previewRevision !== campaign.revision)
+    <fieldset disabled={busy} className="min-w-0">
+      <InferredForm
+        key={version}
+        config={config}
+        defaultValues={baseline.values}
+        className="grid gap-6 sm:grid-cols-2"
+        onChange={(next) => setValues(next)}
+        onSubmit={(values) => {
+          if (busy || (!preview && !dirty)) return;
+          if (stale) {
+            mutation.setNotice({
+              error: true,
+              text: t("errors.campaign-criteria-changed"),
+            });
+            return;
           }
-        >
-          {t(
-            mutation.pending
-              ? "saving"
-              : preview
-                ? "claude.action.tertiary"
-                : "criteria.action.primary",
+          const checked = campaignCriteriaSchema.safeParse({
+            ...values,
+            ...Object.fromEntries(
+              lists.map((key) => [key, splitList(String(values[key]))]),
+            ),
+            ...Object.fromEntries(
+              numeric.map((key) => [
+                key,
+                values[key] === "" ? null : Number(values[key]),
+              ]),
+            ),
+            platforms: String(values.platforms).split(","),
+          });
+          if (!checked.success) {
+            mutation.setNotice({ error: true, text: t("invalidCriteria") });
+            return;
+          }
+          return mutation.run(
+            () =>
+              Campaigns.saveCampaignCriteria({
+                id: campaign.id,
+                expectedRevision: campaign.revision,
+                criteria: checked.data,
+                answers,
+                ...(claudeGenerationId ? { claudeGenerationId } : {}),
+              }),
+            (saved) => {
+              if (saved) {
+                setBaseline({ revision: saved.revision, values });
+                setValues(values);
+                setAwaitingRevision(saved.revision);
+              }
+              onSaved?.();
+            },
+          );
+        }}
+      >
+        <div className="space-y-4 sm:col-span-2">
+          <Button
+            type="submit"
+            variant="soft"
+            color="neutral"
+            disabled={busy || stale || (!preview && !dirty)}
+          >
+            {t(
+              busy
+                ? "saving"
+                : preview
+                  ? "claude.action.tertiary"
+                  : "criteria.action.primary",
+            )}
+          </Button>
+          <Notice value={mutation.notice} />
+          {stale && (
+            <Notice value={{ error: true, text: t("forms.changed") }} />
           )}
-        </Button>
-        <Notice value={mutation.notice} />
-      </div>
-    </InferredForm>
+          {stale && !preview && (
+            <Button
+              variant="soft"
+              color="neutral"
+              onClick={() => {
+                const next = campaignCriteriaFormValues(campaign.criteria);
+                setBaseline({ revision: campaign.revision, values: next });
+                setValues(next);
+                setVersion((current) => current + 1);
+                mutation.setNotice(null);
+              }}
+            >
+              {t("forms.loadSaved")}
+            </Button>
+          )}
+        </div>
+      </InferredForm>
+    </fieldset>
   );
 };
 
@@ -296,6 +338,32 @@ export const CampaignSettings = ({
   const common = useTranslations("outbound.common");
   const [openSections, setOpenSections] = useState<string[]>([]);
   const mutation = useCampaignMutation({ feedbackVersion });
+  const [metadataBaseline, setMetadataBaseline] = useState(() => ({
+    name: campaign.name,
+    status: campaign.status,
+  }));
+  const [metadataValues, setMetadataValues] = useState(metadataBaseline);
+  const [metadataVersion, setMetadataVersion] = useState(0);
+  const [awaitingMetadata, setAwaitingMetadata] = useState<
+    (typeof metadataBaseline & { updatedAt: string }) | null
+  >(null);
+  const metadataDirty =
+    metadataValues.name !== metadataBaseline.name ||
+    metadataValues.status !== metadataBaseline.status;
+  const metadataStale =
+    awaitingMetadata === null &&
+    (campaign.name !== metadataBaseline.name ||
+      campaign.status !== metadataBaseline.status);
+  const metadataBusy = mutation.pending || awaitingMetadata !== null;
+  useEffect(() => {
+    if (
+      awaitingMetadata &&
+      ((campaign.name === awaitingMetadata.name &&
+        campaign.status === awaitingMetadata.status) ||
+        campaign.updatedAt !== awaitingMetadata.updatedAt)
+    )
+      setAwaitingMetadata(null);
+  }, [campaign.name, campaign.status, campaign.updatedAt, awaitingMetadata]);
   const [preview, setPreview] = useState<CriteriaPreview | null>(null);
   const [generationPending, setGenerationPending] = useState(false);
   useEffect(
@@ -342,50 +410,96 @@ export const CampaignSettings = ({
             <p className="max-w-2xl text-foreground-dimmed text-sm leading-6">
               {t("metadataHelp")}
             </p>
-            <InferredForm
-              key={`${campaign.id}-${campaign.updatedAt}`}
-              config={{
-                name: field({
-                  shape: "text",
-                  validator: z
-                    .string()
-                    .trim()
-                    .min(1, common("required"))
-                    .max(120, t("invalidCriteria")),
-                  label: t("name"),
-                }),
-                status: field({
-                  shape: "select",
-                  validator: z.enum(["draft", "active", "paused", "archived"]),
-                  label: t("status"),
-                  items: ["draft", "active", "paused", "archived"].map(
-                    (status) => ({
-                      value: status,
-                      label: t(`statuses.${status as Campaign["status"]}`),
-                    }),
-                  ),
-                }),
-              }}
-              defaultValues={{ name: campaign.name, status: campaign.status }}
-              onSubmit={(values) =>
-                mutation.run(() =>
-                  Campaigns.updateCampaign({
-                    id: campaign.id,
-                    expectedRevision: campaign.revision,
-                    name: values.name,
-                    status: values.status,
+            <fieldset disabled={metadataBusy} className="min-w-0">
+              <InferredForm
+                key={`${campaign.id}-${metadataVersion}`}
+                config={{
+                  name: field({
+                    shape: "text",
+                    validator: z
+                      .string()
+                      .trim()
+                      .min(1, common("required"))
+                      .max(120, t("invalidCriteria")),
+                    label: t("name"),
                   }),
-                )
-              }
-              className="grid max-w-3xl gap-6 sm:grid-cols-2"
-            >
-              <div className="space-y-4 sm:col-span-2">
-                <Button type="submit" disabled={mutation.pending}>
-                  {t(mutation.pending ? "saving" : "metadata.action.primary")}
-                </Button>
-                <Notice value={mutation.notice} />
-              </div>
-            </InferredForm>
+                  status: field({
+                    shape: "select",
+                    validator: z.enum([
+                      "draft",
+                      "active",
+                      "paused",
+                      "archived",
+                    ]),
+                    label: t("status"),
+                    items: ["draft", "active", "paused", "archived"].map(
+                      (status) => ({
+                        value: status,
+                        label: t(`statuses.${status as Campaign["status"]}`),
+                      }),
+                    ),
+                  }),
+                }}
+                defaultValues={metadataBaseline}
+                onChange={(values) => setMetadataValues(values)}
+                onSubmit={(values) => {
+                  if (metadataBusy || metadataStale || !metadataDirty) return;
+                  return mutation.run(
+                    () =>
+                      Campaigns.updateCampaign({
+                        id: campaign.id,
+                        expectedRevision: campaign.revision,
+                        name: values.name,
+                        status: values.status,
+                      }),
+                    () => {
+                      const saved = { ...values, name: values.name.trim() };
+                      setMetadataBaseline(saved);
+                      setMetadataValues(saved);
+                      setMetadataVersion((current) => current + 1);
+                      setAwaitingMetadata({
+                        ...saved,
+                        updatedAt: campaign.updatedAt,
+                      });
+                    },
+                  );
+                }}
+                className="grid max-w-3xl gap-6 sm:grid-cols-2"
+              >
+                <div className="space-y-4 sm:col-span-2">
+                  <Button
+                    type="submit"
+                    variant="soft"
+                    color="neutral"
+                    disabled={metadataBusy || metadataStale || !metadataDirty}
+                  >
+                    {t(metadataBusy ? "saving" : "metadata.action.primary")}
+                  </Button>
+                  <Notice value={mutation.notice} />
+                  {metadataStale && (
+                    <Notice value={{ error: true, text: t("forms.changed") }} />
+                  )}
+                  {metadataStale && (
+                    <Button
+                      variant="soft"
+                      color="neutral"
+                      onClick={() => {
+                        const next = {
+                          name: campaign.name,
+                          status: campaign.status,
+                        };
+                        setMetadataBaseline(next);
+                        setMetadataValues(next);
+                        setMetadataVersion((current) => current + 1);
+                        mutation.setNotice(null);
+                      }}
+                    >
+                      {t("forms.loadSaved")}
+                    </Button>
+                  )}
+                </div>
+              </InferredForm>
+            </fieldset>
           </div>
         </AccordionPanel>
       </AccordionItem>
@@ -519,7 +633,7 @@ export const CampaignSettings = ({
                   </Button>
                 </div>
                 <CriteriaForm
-                  key={`${campaign.revision}-${JSON.stringify(preview.criteria)}`}
+                  key={JSON.stringify(preview.criteria)}
                   campaign={campaign}
                   criteria={preview.criteria}
                   answers={preview.answers}
@@ -547,7 +661,7 @@ export const CampaignSettings = ({
               {t("criteriaHelp")}
             </p>
             <CriteriaForm
-              key={`${campaign.id}-${campaign.revision}`}
+              key={campaign.id}
               campaign={campaign}
               criteria={campaign.criteria}
               answers={campaign.answers}

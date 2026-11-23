@@ -15,7 +15,8 @@
       "integrations": "Integrations",
       "campaigns": "Campaigns",
       "warmup": "Warmup",
-      "sent": "Sent"
+      "sent": "Sent",
+      "allProspects": "All prospects"
     },
     "common": {
       "saving": "Saving…",
@@ -176,9 +177,18 @@
           "primary": "Previous page",
           "secondary": "Next page",
           "tertiary": "Clear filters",
-          "quaternary": "Close import"
+          "quaternary": "Close import",
+          "quinary": "First page",
+          "senary": "Last page"
         },
-        "pagination": "Prospect pages"
+        "pagination": "Prospect pages",
+        "toolbar": {
+          "filters": "Filters",
+          "more": "More",
+          "pipelineStatus": "Pipeline status",
+          "refreshing": "Refreshing…"
+        },
+        "contact": "Contact"
       },
       "productCategoryHelp": "Use the category stated by the product page. It fills the category placeholder.",
       "reviewCountHelp": "Digits only, copied from this product’s visible review count. Leave blank if it cannot be confirmed.",
@@ -316,7 +326,36 @@
       },
       "automaticReady": "No recorded blockers",
       "automaticApprovalNote": "Automatic mode performs the approval checks. You can inspect, edit or hold a message here; edits must pass the checks again.",
-      "manualApproval": "Approve manually"
+      "manualApproval": "Approve manually",
+      "panel": {
+        "automaticTitle": "Automatic approval",
+        "manualTitle": "Approval",
+        "attention": "Needs attention",
+        "update": "Draft needs updating",
+        "held": "Sequence on hold",
+        "ready": "Ready for automatic checks",
+        "approved": "Approved",
+        "sent": "Sequence complete",
+        "evidenceTitle": "Research",
+        "evidenceDetails": "View evidence",
+        "observation": "Observation",
+        "scope": "Scope and limits",
+        "consequence": "What it means",
+        "automaticNote": "Eligible drafts are approved automatically. Only exceptions need your attention.",
+        "updateNote": "This draft needs to match the current Playbook before it can be approved.",
+        "sendingPaused": "Sending is paused in the Playbook.",
+        "sendingActive": "Approved emails send automatically within your schedule and inbox limits.",
+        "sendingSettings": "Sending settings",
+        "controls": "Pause or stop outreach",
+        "holdDescription": "Pause this sequence until you are ready to continue.",
+        "systemHold": "The sequence is paused for a saved check.",
+        "unknownIssue": "A saved check needs attention.",
+        "editsPending": "Save your edits to run the checks again.",
+        "playbookChanged": "The Playbook changed since this draft was prepared.",
+        "noEvidence": "No product research has been saved yet.",
+        "checked": "Observed {date}",
+        "resume": "Resume automatic checks"
+      }
     },
     "linkedin": {
       "title": "Keep LinkedIn personal",
@@ -451,6 +490,7 @@
         "heldCountries": "Country codes to hold",
         "excludedRoles": "Excluded roles",
         "historyConfirmed": "Past sends and do-not-contact records have been imported",
+        "allowIncompleteHistory": "Allow outreach without complete past campaign history",
         "competingSendersPaused": "Other outbound senders have been paused",
         "senderTested": "The sender inbox has passed a controlled send and reply test",
         "senderEmails": "Sender inboxes",
@@ -476,6 +516,7 @@
         "noProductConsequence": "Possible consequence",
         "noProductAskAbout": "AI question topic",
         "automationEnabled": "Enable automatic campaign preparation",
+        "dailyCompanyTarget": "New companies per day",
         "productCheckIntro": "Product-check introduction",
         "publishedProductObservation": "Observation",
         "publishedProductConsequence": "Proposed check",
@@ -529,6 +570,7 @@
       "noProductHelp": "Confirm product data is absent from both the source and the page after JavaScript runs.",
       "automationTitle": "Automatic mode",
       "automationHelp": "Active campaigns can find contacts, verify work emails, prepare messages and approve eligible emails automatically. Delivery still follows the sending switch, mailbox readiness and saved limits.",
+      "dailyCompanyTargetHelp": "Minimum discovery target across all active campaigns each UTC day. Discovery can continue to replenish research. Companies still need qualification; this does not set email volume.",
       "productCheckIntroHelp": "Founder introduction used only for the observed-product check angle.",
       "publishedProductTitle": "Specific product insight",
       "publishedProductHelp": "Use '{productFeature}' for a specific ingredient, material, design or compatibility detail found on the named product. Frame the AI question as a check we propose, never a measured result or missing-data claim.",
@@ -546,7 +588,8 @@
       "researchInstructionsHelp": "Describe the shopper questions, exact variants and markets to compare, and evidence to collect from UCP, product pages or checkout. Record sources and leave untested or unavailable results unknown.",
       "requireShoppingEvidenceHelp": "Hold drafting and approval until a supported shopping finding is recorded. An ingredient fact alone is not evidence of shopping friction.",
       "legacyFindingsTitle": "Legacy finding formulas",
-      "legacyFindingsHelp": "Saved formulas for older product and missing-data checks. When shopping evidence is required, new drafts use the recorded shopping finding instead. These fields remain available for older workflows."
+      "legacyFindingsHelp": "Saved formulas for older product and missing-data checks. When shopping evidence is required, new drafts use the recorded shopping finding instead. These fields remain available for older workflows.",
+      "allowIncompleteHistoryHelp": "You can skip importing past campaigns. Someone may hear from us again; recorded opt-outs, bounces and exclusions still apply."
     },
     "integrations": {
       "title": "Connect the right tools",
@@ -726,12 +769,16 @@
         "setup": {
           "apollo": "Save the Apollo API key for your workspace here.",
           "clay": "Save your Clay API key to connect the workspace. You can set up enrichment later.",
-          "google": "Create a Google OAuth web application, add the redirect URI below, and save its client ID and client secret. Then connect each Gmail inbox."
+          "google": "Create a Google OAuth web application, add the redirect URI below, and save its client ID and client secret. Then connect each Gmail inbox.",
+          "scrapellm": "Use ScrapeLLM to capture actual shopper queries and the answers shown.",
+          "firecrawl": "Use Firecrawl to inspect rendered product pages and record supporting evidence."
         },
         "secret": {
           "apollo": "Apollo API key",
           "clay": "Clay API key",
-          "google": "Google OAuth client secret"
+          "google": "Google OAuth client secret",
+          "scrapellm": "ScrapeLLM API key",
+          "firecrawl": "Firecrawl API key"
         },
         "fields": {
           "clientId": "Google OAuth client ID",
@@ -767,7 +814,9 @@
           "clayTrial": "Try Clay",
           "clayKeys": "Clay API keys",
           "clayWorkspace": "Open Clay",
-          "clayApiDocs": "Clay API docs"
+          "clayApiDocs": "Clay API docs",
+          "scrapellmAccount": "Open ScrapeLLM",
+          "firecrawlAccount": "Open Firecrawl"
         },
         "routineHelp": "Optional for connecting. Configure an enrichment routine in your Clay workspace, then paste its routine ID here.",
         "routine": {
@@ -776,7 +825,8 @@
           }
         },
         "claySaved": "API key verified and saved.",
-        "claySavedPending": "API key verified and saved. Enrichment setup is still pending."
+        "claySavedPending": "API key verified and saved. Enrichment setup is still pending.",
+        "savedUnchecked": "Key saved. Access will be checked when the first research request runs."
       },
       "mailbox": {
         "help": "In Roger, open Manage Mailbox → Credentials and copy App Password. We check sending and reply access without sending an email.",
@@ -810,6 +860,16 @@
         },
         "maximumDailyCap": "Target maximum per inbox per day",
         "dailyCapHelp": "The target is capped at 50 and includes first emails and follow-ups. Mailboxes start at 15 per day. The limit rises by 5 only after a completed day reaches the current limit without an observed bounce. An observed bounce returns the limit to 15. A target does not guarantee sending volume or inbox reputation."
+      },
+      "liveResearch": {
+        "title": "Live shopping research",
+        "description": "Connect both services to observe shopper searches and inspect product pages before drafting.",
+        "configured": "Research credentials saved",
+        "missing": "Both connections needed",
+        "saved": "Key saved",
+        "verified": "API key verified",
+        "environment": "Server key configured",
+        "savedHelp": "ScrapeLLM access is checked when research runs. Saving its key does not run a paid search."
       }
     },
     "relationships": {
@@ -886,7 +946,9 @@
       "findingReviewRequired": "Review the raw and rendered product evidence, resolve the finding placeholders and add any required retail source.",
       "templateControlsChanged": "Restore the exact saved founder introduction and closing question before approval.",
       "platformHeld": "Select Shopify or WooCommerce for this cold campaign.",
-      "shoppingResearchRequired": "Record a supported shopping finding before drafting or approving this message."
+      "shoppingResearchRequired": "Record a supported shopping finding before drafting or approving this message.",
+      "automaticReviewFailed": "Automatic checks could not approve this draft. Check the evidence and message, then save your corrections.",
+      "automaticReviewUncertain": "An earlier draft request needs reconciliation before automatic review can resume."
     },
     "preparation": {
       "action": {
@@ -918,7 +980,9 @@
       },
       "holdReasons": "Current hold reasons",
       "empty": "No delivery or conversation activity yet.",
-      "period": "{from}–{to}"
+      "period": "{from}–{to}",
+      "detailsTitle": "Report details",
+      "sourcesTitle": "By source"
     },
     "auth": {
       "title": "Sign in to Outbound",
@@ -950,7 +1014,7 @@
       "story": {
         "label": "ecentic Outbound",
         "title": "Good outreach starts with a real finding.",
-        "description": "Research the right stores, review every message, and keep the conversation moving.",
+        "description": "Research the right stores, prepare relevant messages, and keep the conversation moving.",
         "steps": {
           "research": "Research",
           "review": "Review",
@@ -1177,7 +1241,11 @@
       "companySearchFailedDescription": "No companies were added. Resolve the issue shown above, then retry.",
       "manualClaude": "Use Claude manually",
       "viewContactOptional": "View contact",
-      "automaticContactsHelp": "Active campaigns check each matched company, find and verify a contact, then draft and queue its email sequence automatically. Opening a contact is optional; delivery checks still apply."
+      "automaticContactsHelp": "Active campaigns check each matched company, find and verify a contact, then draft and queue its email sequence automatically. Opening a contact is optional; delivery checks still apply.",
+      "forms": {
+        "changed": "This campaign changed. Your values are kept. Load the saved values before continuing.",
+        "loadSaved": "Discard edits and load saved values"
+      }
     },
     "warmup": {
       "title": "Warmup",
@@ -1253,7 +1321,8 @@
         "sync": "Mailbox synchronization",
         "provider": "Provider status",
         "history": "History reconciled",
-        "test": "Send and reply test"
+        "test": "Send and reply test",
+        "historyOptional": "Previous campaign history optional"
       },
       "mailboxesTitle": "Sender mailboxes"
     },
@@ -1461,7 +1530,13 @@
         "draft": "Preparing messages",
         "applyDraft": "Saving messages",
         "approve": "Checking eligibility",
-        "complete": "Preparation complete"
+        "complete": "Preparation complete",
+        "researchQuery": "Preparing shopper query",
+        "startShoppingQuery": "Starting shopper search",
+        "pollShoppingQuery": "Waiting for shopper answer",
+        "browseShopping": "Inspecting product pages",
+        "assessShopping": "Checking shopping evidence",
+        "applyShopping": "Saving shopping research"
       },
       "reasons": {
         "automation-disabled": "Automatic mode is off.",
@@ -1482,7 +1557,10 @@
         "provider-access": "The provider rejected access. Check the API key and search access in Integrations.",
         "provider-quota": "The provider’s credit or usage limit has been reached. Check your provider plan.",
         "provider-rate-limit": "The provider has temporarily limited requests. Wait before starting another batch.",
-        "provider-uncertain": "The request may have been processed. Check its outcome before trying again."
+        "provider-uncertain": "The request may have been processed. Check its outcome before trying again.",
+        "research-not-configured": "Connect the shopping research services in Integrations.",
+        "shopping-research-held": "Shopping research did not establish a supported finding.",
+        "shopping-research-expired": "Shopping evidence has expired; capture it again."
       },
       "deliveryBlockers": {
         "sendingPaused": "Sending is paused in the Playbook.",
@@ -1504,7 +1582,16 @@
       "currentCap": "Current daily limit",
       "targetCap": "Target maximum",
       "rampHeld": "Increase paused",
-      "rampHelp": "Mailboxes start at 15 per day. The limit rises by 5 only after a completed day reaches the current limit without an observed bounce. An observed bounce returns the limit to 15. A target does not guarantee sending volume or inbox reputation."
+      "rampHelp": "Mailboxes start at 15 per day. The limit rises by 5 only after a completed day reaches the current limit without an observed bounce. An observed bounce returns the limit to 15. A target does not guarantee sending volume or inbox reputation.",
+      "research": {
+        "missingTitle": "Shopping research needs a connection",
+        "missingHelp": "Connect {providers} in Integrations to prepare new prospects with observed shopping evidence.",
+        "action": "Connect research services",
+        "unknownProvider": "a research service",
+        "blockedTitle": "Shopping research needs attention",
+        "blockedHelp": "Check API access and available credits for {providers}. Research is paused while this connection needs attention.",
+        "reviewAction": "Review research connections"
+      }
     },
     "sent": {
       "title": "Sent",
@@ -1631,7 +1718,10 @@
       "apolloMissing": "Connect Apollo to find companies and current contacts.",
       "azureMissing": "Configure Azure to assess evidence and prepare messages.",
       "linkedinMissing": "Connect the selected LinkedIn account before enabling its messages.",
-      "error": "Couldn’t load the current pipeline. Refresh to try again."
+      "error": "Couldn’t load the current pipeline. Refresh to try again.",
+      "qualified": "Qualified companies",
+      "pipelineTitle": "Current pipeline",
+      "pipelineHelp": "Companies and contacts across active campaigns. These counts describe different stages, not a conversion rate."
     },
     "conversations": {
       "title": "Conversations",
@@ -1701,7 +1791,7 @@
       },
       "draftLabel": "Reply draft",
       "invalidBody": "Enter a reply of 1–10,000 characters.",
-      "unsaved": "Save your changes before sending or changing the stage.",
+      "unsaved": "Save your reply edits before sending.",
       "error": {
         "changed": "The conversation changed. Reload it and review the latest message before continuing.",
         "closed": "This conversation is closed or the recipient has been excluded from contact.",
@@ -1711,7 +1801,8 @@
         "generationUncertain": "The suggestion’s result is not confirmed. Checking this request will not generate another reply.",
         "connection": "The sending account is unavailable or needs a fresh reply sync. Check Integrations.",
         "controls": "The suggestion did not pass the saved reply controls. Write and review the reply yourself.",
-        "generic": "We could not complete this action. Refresh the conversation and try again."
+        "generic": "We could not complete this action. Refresh the conversation and try again.",
+        "authentication": "Your session expired. Sign in again in the new tab, then retry here. Your edits are kept."
       },
       "newestFirst": "Newest messages first",
       "direction": {
@@ -1747,6 +1838,19 @@
         "scheduledHelp": "Saved email send times are shown here. Pauses, reply checks, recipient hours and inbox limits can delay them. LinkedIn actions have no fixed saved send time.",
         "sentHelp": "Email, LinkedIn and conversation reply attempts. Accepted means the provider accepted the message; it does not prove delivery or an opened message.",
         "empty": "No activity matches this view."
+      },
+      "editor": {
+        "changed": "The conversation changed. Your edits are kept. Review the current messages before continuing.",
+        "continue": "Continue with my edits",
+        "refreshing": "Refreshing conversation…",
+        "savingStage": "Saving stage…",
+        "stageSaved": "Stage saved.",
+        "savingDraft": "Saving draft…",
+        "draftSaved": "Draft saved.",
+        "generating": "Preparing suggestion…",
+        "sending": "Sending…",
+        "signIn": "Sign in again",
+        "followUpsPaused": "Saving this stage pauses automatic email and LinkedIn outreach to this person. Reopening does not restart it."
       }
     }
   }

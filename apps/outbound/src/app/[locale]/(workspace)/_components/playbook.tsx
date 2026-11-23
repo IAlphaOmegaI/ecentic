@@ -33,7 +33,7 @@ const groups = [
   {
     title: "automationTitle",
     icon: GaugeIcon,
-    keys: ["automationEnabled"],
+    keys: ["automationEnabled", "dailyCompanyTarget"],
   },
   {
     title: "linkedinAutomationTitle",
@@ -155,6 +155,7 @@ const groups = [
       "minGapMinutes",
       "maxGapMinutes",
       "historyConfirmed",
+      "allowIncompleteHistory",
       "competingSendersPaused",
       "senderTested",
       "sendingEnabled",
@@ -213,6 +214,7 @@ export const PlaybookEditor = ({
         "targetingNotes",
       ],
       numbers: [
+        "dailyCompanyTarget",
         "maxBodyWords",
         "followupOneDays",
         "followupTwoDays",
@@ -230,6 +232,7 @@ export const PlaybookEditor = ({
       invalid: t("common.invalidField"),
       descriptions: {
         automationEnabled: t("playbook.automationHelp"),
+        dailyCompanyTarget: t("playbook.dailyCompanyTargetHelp"),
         linkedinAutomationEnabled: t("playbook.linkedinAutomationHelp"),
         linkedinAccountId: t("playbook.linkedinAccountHelp"),
         productCheckIntro: t("playbook.productCheckIntroHelp"),
@@ -247,6 +250,7 @@ export const PlaybookEditor = ({
         sentEmailExamples: t("playbook.examplesHelp"),
         humanizeDrafts: t("playbook.humanizerHelp"),
         humanizerNotes: t("playbook.humanizerNotesHelp"),
+        allowIncompleteHistory: t("playbook.allowIncompleteHistoryHelp"),
       },
       booleans: [
         "automationEnabled",
@@ -255,6 +259,7 @@ export const PlaybookEditor = ({
         "senderConfirmed",
         "humanizeDrafts",
         "historyConfirmed",
+        "allowIncompleteHistory",
         "competingSendersPaused",
         "senderTested",
         "sendingEnabled",

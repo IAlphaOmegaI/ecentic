@@ -59,6 +59,12 @@ type ClayStatus = Extract<
   Awaited<ReturnType<typeof Connections.getClayStatus>>,
   { success: true }
 >["data"];
+type CredentialProvider =
+  | "apollo"
+  | "clay"
+  | "google"
+  | "scrapellm"
+  | "firecrawl";
 
 export const Integrations = ({
   status,
@@ -190,6 +196,70 @@ export const Integrations = ({
           </div>
         </section>
       ))}
+      <section
+        id="shopping-research"
+        className="grid scroll-mt-6 gap-6 border-accent-foreground border-b px-4 py-6 sm:px-6 lg:grid-cols-[16rem_minmax(0,1fr)]"
+      >
+        <div>
+          <h2 className="flex items-center gap-2 font-semibold text-foreground-rich text-lg">
+            <FileSearchIcon aria-hidden className="size-5 text-primary" />
+            {t("integrations.liveResearch.title")}
+          </h2>
+          <p className="mt-3 text-foreground-dimmed text-sm leading-6">
+            {t("integrations.liveResearch.description")}
+          </p>
+          <div className="mt-4">
+            <ConnectionBadge
+              configured={status?.research.configured ?? false}
+              label={t(
+                status?.research.configured
+                  ? "integrations.liveResearch.configured"
+                  : "integrations.liveResearch.missing",
+              )}
+            />
+          </div>
+        </div>
+        <div className="min-w-0 divide-y divide-accent-foreground">
+          {(["scrapellm", "firecrawl"] as const).map((provider) => {
+            const connection = status?.research[provider];
+            return (
+              <div
+                key={provider}
+                className="space-y-4 py-6 first:pt-0 last:pb-0"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <h3 className="font-medium text-foreground-rich">
+                    {provider === "scrapellm" ? "ScrapeLLM" : "Firecrawl"}
+                  </h3>
+                  <ConnectionBadge
+                    configured={connection?.configured ?? false}
+                    label={
+                      connection?.configured
+                        ? t(
+                            connection.credentialStatus === "verified"
+                              ? "integrations.liveResearch.verified"
+                              : connection.credentialStatus === "environment"
+                                ? "integrations.liveResearch.environment"
+                                : "integrations.liveResearch.saved",
+                          )
+                        : undefined
+                    }
+                  />
+                </div>
+                <ProviderCredentialsForm
+                  provider={provider}
+                  configured={connection?.configured ?? false}
+                />
+                {provider === "scrapellm" && (
+                  <p className="max-w-xl text-foreground-dimmed text-xs leading-5">
+                    {t("integrations.liveResearch.savedHelp")}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </section>
       <ClaudeConnection configuration={claude} />
       <LinkedInConnection connection={status?.linkedin ?? null} />
       {status?.jobs
@@ -620,7 +690,7 @@ const ProviderCredentialsForm = ({
   configured,
   configuration,
 }: {
-  provider: "apollo" | "clay" | "google";
+  provider: CredentialProvider;
   configured: boolean;
   configuration?: {
     clientId?: string;
@@ -754,7 +824,9 @@ const ProviderCredentialsForm = ({
             text:
               provider === "clay"
                 ? t(values.routineId.trim() ? "claySaved" : "claySavedPending")
-                : t("saved"),
+                : provider === "scrapellm"
+                  ? t("savedUnchecked")
+                  : t("saved"),
           });
           running.current = false;
           setPending(false);
@@ -813,7 +885,7 @@ const ProviderCredentialsForm = ({
           )}
           {t(
             pending
-              ? provider !== "google"
+              ? provider !== "google" && provider !== "scrapellm"
                 ? "testing"
                 : "saving"
               : configured
@@ -827,10 +899,28 @@ const ProviderCredentialsForm = ({
   );
 };
 
-const ProviderLinks = ({ provider }: { provider: "apollo" | "google" }) => {
+const ProviderLinks = ({
+  provider,
+}: {
+  provider: Exclude<CredentialProvider, "clay">;
+}) => {
   const t = useTranslations("outbound.integrations.credentials.links");
   const links = (() => {
     switch (provider) {
+      case "scrapellm":
+        return [
+          {
+            label: t("scrapellmAccount"),
+            href: "https://scrapellm.com/dashboard",
+          },
+        ];
+      case "firecrawl":
+        return [
+          {
+            label: t("firecrawlAccount"),
+            href: "https://www.firecrawl.dev/app",
+          },
+        ];
       case "apollo":
         return [
           { label: t("apolloPlan"), href: "https://www.apollo.io/pricing" },

@@ -24,7 +24,7 @@ import { Environment } from "@/server/utils/environment";
 import { ConflictError, NotFoundError } from "@/server/utils/error";
 import * as Providers from "@/server/utils/outbound/company-discovery";
 import { IntegrationError } from "@/server/utils/outbound/http";
-import { repository } from "@/server/utils/repository";
+import { repository, resultifyRead } from "@/server/utils/repository";
 import * as Store from "./store";
 
 const Campaigns = repository(schema.outboundCampaign);
@@ -158,6 +158,27 @@ export const list = (
       page,
       pageSize: PAGE_SIZE,
     };
+  });
+
+/** Navigation context needs the label only, not company/provider discovery payloads. */
+export const getSummary = (input: { id: string }) =>
+  resultify(async () => {
+    const id = idSchema.parse(input.id);
+    const rows = value(
+      await resultifyRead(() =>
+        db
+          .select({
+            id: schema.outboundCampaign.id,
+            name: schema.outboundCampaign.name,
+          })
+          .from(schema.outboundCampaign)
+          .where(eq(schema.outboundCampaign.id, id))
+          .limit(1),
+      ),
+    );
+    const campaign = rows[0];
+    if (!campaign) throw new NotFoundError("Campaign not found.");
+    return campaign;
   });
 
 export const get = (input: { id: string; page?: number }) =>
@@ -448,13 +469,33 @@ const runInputSchema = z.strictObject({
 });
 type RunInput = z.input<typeof runInputSchema>;
 
-const reserve = (actor: string, input: RunInput) =>
+export type DiscoveryOptions = {
+  /** Internal scheduler guard; evaluated with the durable reservation under the workspace lock. */
+  guard?: (
+    transaction: TransactionScope,
+    campaign: CampaignRow,
+  ) => Promise<void>;
+  singleOperation?: boolean;
+  deadline?: number;
+};
+
+const reserve = (
+  actor: string,
+  input: RunInput,
+  options: DiscoveryOptions = {},
+) =>
   transaction(async (transaction) => {
     const parsed = runInputSchema.parse(input);
     const campaign = await readWithin(parsed.id, transaction);
     checkRevision(campaign, parsed.expectedRevision);
     if (!["draft", "active"].includes(campaign.status))
       throw new ConflictError("campaign-paused");
+    if (
+      options.deadline !== undefined &&
+      Date.now() >= options.deadline - 25_000
+    )
+      throw new ConflictError("campaign-discovery-deadline");
+    await options.guard?.(transaction, campaign);
     const pending = value(
       await Runs.find(
         Environment.SERVER,
@@ -505,6 +546,7 @@ const reserve = (actor: string, input: RunInput) =>
               ? { page: state.apolloPage, limit: PAGE_SIZE }
               : { searchId: state.claySearchId, limit: PAGE_SIZE },
           createdBy: actor,
+          startedAt: new Date(),
         },
         { tx: transaction },
       ),
@@ -595,6 +637,38 @@ const persistCompanies = async (
   campaign: CampaignRow,
   candidates: Providers.CompanyCandidate[],
 ) => {
+  const domains = [
+    ...new Set(
+      candidates
+        .map((company) => normalizeDomain(company.domain))
+        .filter(Boolean),
+    ),
+  ];
+  // Project presence only: provider receipts and contact records are not needed for novelty.
+  const prior = domains.length
+    ? await Promise.all([
+        resultifyRead(
+          () =>
+            transaction
+              .select({ domain: schema.outboundCampaignCompany.domain })
+              .from(schema.outboundCampaignCompany)
+              .where(inArray(schema.outboundCampaignCompany.domain, domains)),
+          { tx: transaction },
+        ),
+        resultifyRead(
+          () =>
+            transaction
+              .select({ domain: schema.outboundCompany.domain })
+              .from(schema.outboundCompany)
+              .where(inArray(schema.outboundCompany.domain, domains)),
+          { tx: transaction },
+        ),
+      ])
+    : [];
+  const knownDomains = new Set(
+    prior.flatMap((result) => value(result).map((row) => row.domain)),
+  );
+  const newCompanyDomains = new Set<string>();
   const records = [] as { status: "candidate" | "excluded" | "added" }[];
   for (const company of candidates) {
     const domain = normalizeDomain(company.domain);
@@ -642,11 +716,15 @@ const persistCompanies = async (
       value(
         await Companies.create(Environment.SERVER, record, { tx: transaction }),
       );
+    if (status === "candidate" && !knownDomains.has(domain))
+      newCompanyDomains.add(domain);
+    knownDomains.add(domain);
     records.push({ status });
   }
   return {
     added: records.filter((record) => record.status === "candidate").length,
     excluded: records.filter((record) => record.status === "excluded").length,
+    newCompanyDomains: [...newCompanyDomains],
   };
 };
 
@@ -711,7 +789,7 @@ const finish = (
       throw new ConflictError("campaign-run-unresolved");
     const stale = campaign.revision !== run.criteriaRevision;
     const counts = stale
-      ? { added: 0, excluded: 0 }
+      ? { added: 0, excluded: 0, newCompanyDomains: [] }
       : await persistCompanies(transaction, campaign, companies);
     if (!stale)
       value(
@@ -731,7 +809,7 @@ const finish = (
         run.id,
         {
           status: "completed",
-          output,
+          output: { ...output, acquisition: { version: 1, ...counts } },
           companyCount: companies.length,
           error: stale ? "campaign-criteria-changed" : null,
           completedAt: new Date(),
@@ -740,7 +818,12 @@ const finish = (
       ),
     );
     if (!updated) throw new NotFoundError("Campaign run not found.");
-    return { run: runView(updated), companyCount: companies.length, ...counts };
+    return {
+      run: runView(updated),
+      companyCount: companies.length,
+      added: counts.added,
+      excluded: counts.excluded,
+    };
   });
 
 /** One user action consumes at most one 25-company page. Clay search creation is
@@ -752,9 +835,10 @@ export const discover = (
     typeof Providers,
     "searchApolloCompanies" | "startClayCompanySearch" | "nextClayCompanies"
   > = Providers,
+  options: DiscoveryOptions = {},
 ) =>
   resultify(async () => {
-    const reserved = value(await reserve(actor, input));
+    const reserved = value(await reserve(actor, input, options));
     const execute = async (run: RunRow) => {
       switch (run.operation) {
         case "apolloPage": {
@@ -809,11 +893,14 @@ export const discover = (
       return value(await failure(reserved, executed.error));
     if (
       reserved.operation !== "clayStart" ||
+      options.singleOperation ||
       executed.data.run.status !== "completed" ||
       executed.data.run.error
     )
       return executed.data;
-    const page = value(await reserve(actor, { ...input, provider: "clay" }));
+    const page = value(
+      await reserve(actor, { ...input, provider: "clay" }, options),
+    );
     const completed = await resultify(() => execute(page));
     return completed.success
       ? completed.data

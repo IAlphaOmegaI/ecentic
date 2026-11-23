@@ -84,6 +84,7 @@ export type MailboxReadinessInput = {
   synchronized: boolean;
   providerError: boolean;
   historyConfirmed: boolean;
+  allowIncompleteHistory?: boolean;
   senderTested: boolean;
 };
 
@@ -94,6 +95,7 @@ export type MailboxCheck = {
   connectionVersion: number | null;
   synchronized: boolean;
   historyConfirmed: boolean;
+  allowIncompleteHistory?: boolean;
   senderTested: boolean;
   report: ReturnType<typeof assessMailboxReadiness>;
 };
@@ -118,10 +120,14 @@ export const assessMailboxReadiness = (input: MailboxReadinessInput) => {
       state: input.providerError ? ("invalid" as const) : ("present" as const),
     },
     {
-      key: "history" as const,
-      state: input.historyConfirmed
-        ? ("present" as const)
-        : ("unknown" as const),
+      key:
+        input.allowIncompleteHistory && !input.historyConfirmed
+          ? ("historyOptional" as const)
+          : ("history" as const),
+      state:
+        input.historyConfirmed || input.allowIncompleteHistory
+          ? ("present" as const)
+          : ("unknown" as const),
     },
     {
       key: "test" as const,

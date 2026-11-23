@@ -11,7 +11,95 @@ false. Campaigns must also be active. `sendingEnabled` and the mailbox/history
 checks separately control delivery. The automation panel shows these states
 separately and never treats a running preparation job as proof that mail can send.
 
+On 17 November 2026 the owner accepted repeat-contact risk from missing Instantly
+and Explee history. The editable `allowIncompleteHistory` setting records that
+decision separately from `historyConfirmed`: either satisfies the past-campaign
+import gate, but a waiver never marks those records imported. It defaults to
+false, is recorded with actor/time in a `historicalContactPolicyChanged` event,
+and can be switched off again without changing the approved message revision.
+It does not enable sending or an inbox by itself. Connected-mailbox sync, known
+suppression and reply records, existing Outbound attempts, sender checks and
+limits remain enforced for email and LinkedIn. No contact or attempt ledger is
+deleted or reset.
+
+## Existing drafts and Playbook edits
+
+The preparation cron also runs a bounded automatic review pass over unsent drafts
+in active campaigns. It covers operator-researched leads as well as completed
+campaign preparation. Current drafts keep their text. Drafts from an older
+Playbook get one new AI draft using the saved factual finding and current writing
+formula, followed by the same approval checks in one transaction.
+
+Before claiming a review, a bounded pass renews expired DNS observations for
+otherwise eligible drafts whose saved mail host is Google or another known host.
+It records the actual result and observation time; unknown or Microsoft results
+still fail the normal mail-host checks. DNS runs outside the transaction, and
+application rechecks active automation, campaign, revisions and explicit holds.
+This renewal does not purchase a provider request or send an email.
+
+Every pass records a `draftReview` integration job before provider work. A current
+work-email verdict must match an actual saved Apollo request, record, recipient
+and provider verification date; editable email-status labels cannot approve a
+lead. A newer standalone verification may supersede the original automation
+verification when its recorded result matches the current recipient.
+
+Explicit holds, closed sequences, any earlier email/LinkedIn attempt and uncertain
+provider work are excluded. Editing a held draft or its prospect details retains
+the hold and its reason; only an explicit Resume action returns it to review.
+Failed checks do not starve later prospects. Updated
+receipt timestamps or an explicit Resume action permit another known check;
+unresolved provider requests never replay after a Playbook edit or Resume. A
+pause during generation retains the checkpointed draft and applies it after
+resuming without purchasing another draft. Pausing or editing while a request is
+running is rechecked at the atomic approval boundary.
+
+Shopping receipts now retain a research-policy fingerprint. Writing-only edits
+can reuse those original observations without changing their capture times,
+source hashes or research job. Changed research instructions, changed campaign
+criteria, changed identities, expired evidence and legacy receipts without that
+fingerprint still need research review. Approvals always bind the current
+Playbook and exact current message version. No draft-review operation sends mail;
+delivery continues through the existing sending, mailbox, history and rate gates.
+
 ## Processing
+
+Since 19 November 2026, the preparation cron replenishes active campaigns through
+`automatic-company-discovery.ts` before preparation. It buys at most two provider
+operations per tick within a 40-second budget, with campaign-specific low-water
+targets derived from inbox capacity, fair campaign rotation and cooldowns.
+The Playbook's editable `dailyCompanyTarget` defaults to 50 new companies across
+the workspace per UTC calendar day. This is a minimum acquisition target, not an
+email quota or a provider-request cap. Discovery continues until that target is
+met and each campaign has enough usable work; it replenishes again when research
+consumes that work. The former rolling daily search-operation limit is removed.
+
+Only first-seen eligible company domains actually saved in a completed provider
+run count toward the daily target. Each run records an atomic, versioned
+`output.acquisition` receipt with its added/excluded totals and new domains.
+Duplicates, excluded or suppressed results, revived old rows and stale criteria
+do not count as new acquisition. Day totals count distinct domains from those
+receipts in the database; provider page length and current mutable candidate
+status are not acquisition totals. Legacy runs have no invented receipt or
+backfilled credit. Changing the operational target preserves approved messages,
+their schedules and the research-policy revision.
+
+The five-minute per-campaign pacing, bounded per-tick work, provider cooldowns,
+source exhaustion and uncertainty checks remain. A depleted provider or held
+research can prevent qualified contacts even when companies have been acquired.
+Apollo runs first; Clay starts only after Apollo is
+exhausted. Existing attempts, uncertain domains, usable unattempted companies,
+pending jobs and approved unsent prospects determine demand. An atomic reservation
+guard prevents concurrent ticks from buying the same page. Provider errors do not
+silently change source; missing keys and unresolved outcomes hold acquisition.
+
+When shopping evidence is required, ScrapeLLM and Firecrawl must both be connected
+before any new company enrichment or contact work is admitted. The campaign panel
+shows missing connections or provider cooldowns separately from delivery readiness.
+Known account/quota errors pause new research for 24 hours, rate limits for 15
+minutes; saving a replacement key permits another attempt. Existing source-backed
+drafts may continue through review and delivery. A saved `assessShopping` stage
+can also proceed during a capture-provider cooldown: it uses existing captures
+and does not submit or browse again. New capture work remains paused.
 
 The worker calls `Automation.run` without a browser session. The staff action
 `automation-actions.run({campaignId?})` runs at most three stages. The internal
@@ -33,13 +121,38 @@ policy edit. Expired worker leases become uncertain.
 | --- | --- |
 | Company details | One Apollo organization enrichment records actual country, size and other available source facts. Search filter values are not facts. |
 | Qualification | Bounded permitted public pages establish a named own-brand product and priced offer; one Azure assessment evaluates saved criteria and a specific buying detail using quoted evidence. |
+| Live shopping research | A concrete query is saved before one ScrapeLLM submission. The same job is polled; Firecrawl captures rendered merchant and cited competitor pages. An Azure assessment can select only an exact-quoted material contrast. No angle holds before contact spending. |
 | Contact search | One page of up to 25 Apollo people is retained before deterministic selection. |
 | Contact enrichment | Each provisional match is reserved before enrichment. Actual employer domain, identity, role and sourced address must match before promotion. A completed missing-email or unsuitable-role result advances to the next eligible saved search record, up to three distinct enrichments per company run. |
 | Promotion | The company is atomically attached to one prospect, retaining the automation evidence job ID. |
 | Email verification | One verification request is retained, then the same request is polled at bounded intervals. Exactly one returned email/record pair must match, with a current provider verification date. |
 | Mail host | A fresh MX check holds unknown and Microsoft-hosted recipients according to the Playbook. |
-| Draft | One bounded Azure draft call is saved before the separate draft-write stage. Protected copy and lint rules still apply. |
+| Apply shopping research | The completed receipt is bound to the verified contact under the same active lease, campaign and Playbook. An explicit hold or changed prospect prevents application. |
+| Draft | Invalid protected body copy is held with its lint issues before another model call. Otherwise, one bounded Azure call selects the subject and optional opening; code preserves all original body paragraphs, then saves the checked result before the separate draft-write stage. |
 | Approval | `Store.approveAutomatically` validates the current campaign, Playbook, prospect revision and durable source facts, then the existing worker can deliver within its normal gates. |
+
+In live-shopping mode, qualification evaluates all company-fit constraints;
+campaign requirements for a verified product-data gap or shopping finding are
+deferred to the shopping stage. They still must pass before contact enrichment,
+drafting, approval or delivery. Qualification does not manufacture a finding.
+
+`resumeResearchReview` is an internal, explicitly scoped recovery operation for
+completed holds affected by the research-sequence/copy correction. It checks
+exact original input/state hashes, active campaign and Playbook revisions,
+candidate status, absence of contact work, lease and competing domain jobs, and
+fresh saved evidence under the workspace transaction. A dry run writes nothing.
+A versioned marker permits only one recovery and retains the actor, original
+assessment, reason and hashes; repeated identical requests do not requeue again.
+Uncertain jobs, skipped companies and existing prospect holds cannot use it.
+
+An old copy-budget hold reruns the full assessor against the same live/browser
+captures, because older workers discarded the oversized wire selection; it is
+not assumed to be a valid finding. Saved capture hashes, product binding and
+research policy must still match. A company-fit hold can reuse its original
+product/receipts only when a hash-verified provider observation established its
+platform. `qualifyCompanyEvidence` rechecks current targeting, source binding and
+freshness without recrawling or changing observation dates. Normal leased stages
+then advance; all later evidence and delivery gates remain in effect.
 
 Provider outputs checkpoint before subsequent prospect mutations. Safe provider
 receipts, qualification sources, selected identity, verification request/record
@@ -93,9 +206,9 @@ details and provider payloads are available internally; the status action expose
 only safe job metadata and stable reason codes.
 
 `getStatus({campaignId?})` returns mode, active campaign count, all scoped job
-counts, the latest 50 jobs and separate delivery readiness. The pipeline consumes
-already discovered campaign companies; it does not autonomously buy additional
-company-discovery pages, configure inboxes or change sender limits. It does not
+counts, the latest 50 jobs, research readiness and separate delivery readiness.
+The preparation stages consume campaign companies; the bounded discovery pass
+supplies more when needed. Neither configures inboxes nor changes sender limits. It does not
 send LinkedIn messages itself. A separate LinkedIn worker handles that channel.
 
 ## LinkedIn delivery
@@ -119,6 +232,13 @@ LinkedIn connection. Actual email and LinkedIn attempts enforce a 24-hour gap
 between outreach channels. Shared account caps cover cold LinkedIn messages and
 manual conversation replies, and unresolved sends hold the account regardless
 of their age. Only provider-accepted receipts set invited/messaged state.
+
+Shopping-research prospects retain the original qualified company and selected
+contact evidence while using their separately validated current research receipt.
+They no longer require the original prospect/Playbook revision to equal the newer
+receipt's revision. Legacy published-data prospects retain the original strict
+revision checks. Changed identity, campaign criteria, research instructions and
+expired evidence still prevent dispatch.
 
 Reply synchronization runs independently of the sending switch. It stores actual
 messages in the unified conversation timeline and records shared reply/opt-out

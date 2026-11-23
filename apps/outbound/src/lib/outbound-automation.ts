@@ -3,6 +3,12 @@ import { z } from "zod";
 export const automationStageSchema = z.enum([
   "companyFacts",
   "qualify",
+  "researchQuery",
+  "startShoppingQuery",
+  "pollShoppingQuery",
+  "browseShopping",
+  "assessShopping",
+  "applyShopping",
   "findContacts",
   "selectContact",
   "promote",
@@ -73,6 +79,12 @@ export type AutomationJobSummary = {
 };
 export type AutomationStatus = {
   enabled: boolean;
+  research: {
+    required: boolean;
+    ready: boolean;
+    missing: string[];
+    blocked?: string[];
+  };
   activeCampaigns: number;
   counts: Record<AutomationJobSummary["status"], number>;
   jobs: AutomationJobSummary[];
@@ -90,6 +102,7 @@ export type AutomationStatus = {
 };
 export type AutomationTick = {
   enabled: boolean;
+  blockers?: string[];
   processed: number;
   results: AutomationJobSummary[];
 };

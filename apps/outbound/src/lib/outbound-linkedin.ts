@@ -1,5 +1,5 @@
-import { LINKEDIN_STATUSES, type LinkedInStatus } from "./outbound";
 import { parseCampaignFilter } from "./outbound-campaign-filter";
+import { LINKEDIN_STATUSES, type LinkedInStatus } from "./outbound-status";
 
 export const LINKEDIN_PAGE_SIZE = 50;
 
@@ -44,7 +44,9 @@ export const parseLinkedInQuery = (
   const status = first(input.status);
   const page = Number(first(input.page));
   return {
-    ...(parseCampaignFilter(input.campaign) ? { campaign: parseCampaignFilter(input.campaign) } : {}),
+    ...(parseCampaignFilter(input.campaign)
+      ? { campaign: parseCampaignFilter(input.campaign) }
+      : {}),
     q:
       typeof search === "string"
         ? search.replaceAll("\u0000", "").trim().slice(0, 200)

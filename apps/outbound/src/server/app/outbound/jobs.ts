@@ -1,10 +1,10 @@
 import "server-only";
 import { resultify } from "@zenncore/utils";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import { db, schema } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
 import { ConflictError, NotFoundError } from "@/server/utils/error";
-import { repository } from "@/server/utils/repository";
+import { repository, resultifyRead } from "@/server/utils/repository";
 
 const Jobs = repository(schema.outboundIntegrationJob);
 export type Job = typeof schema.outboundIntegrationJob.$inferSelect;
@@ -22,6 +22,23 @@ export const list = () =>
     ],
     limit: 100,
   });
+export const listMetadata = () =>
+  resultifyRead(() =>
+    db
+      .select({
+        id: schema.outboundIntegrationJob.id,
+        provider: schema.outboundIntegrationJob.provider,
+        prospectId: schema.outboundIntegrationJob.prospectId,
+        requestId: schema.outboundIntegrationJob.requestId,
+        status: schema.outboundIntegrationJob.status,
+        error: schema.outboundIntegrationJob.error,
+        createdAt: schema.outboundIntegrationJob.createdAt,
+        updatedAt: schema.outboundIntegrationJob.updatedAt,
+      })
+      .from(schema.outboundIntegrationJob)
+      .orderBy(desc(schema.outboundIntegrationJob.createdAt))
+      .limit(100),
+  );
 export const read = async (id: string) =>
   resultify(async () => {
     const job = value(await Jobs.get(Environment.SERVER, id));

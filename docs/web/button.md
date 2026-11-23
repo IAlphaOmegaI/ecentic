@@ -19,7 +19,7 @@ import { Button, buttonVariants } from '@zenncore/web';
 | Variant | Description |
 |---------|-------------|
 | `default` | Primary button with gradient and border |
-| `soft` | Soft background with backdrop blur |
+| `soft` | Soft tinted background without a backdrop filter |
 | `outline` | Outlined button with transparent bg |
 | `ghost` | Text-only button |
 | `flat` | Flat solid background |
@@ -43,8 +43,9 @@ import { Button, buttonVariants } from '@zenncore/web';
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `variant` | `"default" \| "soft" \| "outline" \| "ghost" \| "flat"` | `"default"` | Button style |
-| `tone` | `"default" \| "inverse"` | `"default"` | Light text and focus ring for soft buttons on dark surfaces; other variants are unchanged |
+| `tone` | `"default" \| "inverse"` | `"default"` | Light text and focus ring for soft, ghost and outline buttons on dark surfaces |
 | `color` | Color options | `"primary"` | Button color |
+| `width` | `"fit" \| "full"` | `"fit"` | Fit content or span the available width |
 | `size` | `"icon"` | - | Icon-only size |
 | `disabled` | `boolean` | `false` | Disabled state |
 | `render` | `ReactNode` | - | Custom render |
@@ -71,7 +72,7 @@ import { Button, buttonVariants } from '@zenncore/web';
 
 ```tsx
 <Button size="icon" variant="default" color="primary">
-  <PlusIcon className="size-4" />
+  <PlusIcon aria-hidden />
 </Button>
 ```
 
@@ -84,6 +85,8 @@ import { Button, buttonVariants } from '@zenncore/web';
 The inverse tone keeps the selected color's soft fill and hover treatment. It
 uses the shared inverse text and focus-ring tokens instead of text colors
 designed for a light canvas. Opt in only when the surrounding surface is dark.
+Inverse ghost and outline actions use the charcoal shell's light hover treatment;
+the default and flat variants are unchanged.
 
 ### Using buttonVariants (CVA)
 
@@ -110,3 +113,5 @@ import { buttonVariants } from '@zenncore/web';
 - Supports custom rendering via `render` prop
 - Active state scales down (95%)
 - Supports all standard button props (onClick, type, etc.)
+
+Use `tone="inverse"` for navigation controls on the charcoal workspace frame. Use `width="full"` for the primary authentication action. Icons inherit their size from Button; callers do not need class overrides.

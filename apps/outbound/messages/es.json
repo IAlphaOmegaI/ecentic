@@ -15,7 +15,8 @@
       "integrations": "Integraciones",
       "campaigns": "Campañas",
       "warmup": "Calentamiento",
-      "sent": "Enviados"
+      "sent": "Enviados",
+      "allProspects": "Todos los prospectos"
     },
     "common": {
       "saving": "Guardando…",
@@ -176,9 +177,18 @@
           "primary": "Página anterior",
           "secondary": "Página siguiente",
           "tertiary": "Borrar filtros",
-          "quaternary": "Cerrar importación"
+          "quaternary": "Cerrar importación",
+          "quinary": "Primera página",
+          "senary": "Última página"
         },
-        "pagination": "Páginas de contactos potenciales"
+        "pagination": "Páginas de contactos potenciales",
+        "toolbar": {
+          "filters": "Filtros",
+          "more": "Más",
+          "pipelineStatus": "Estado del proceso",
+          "refreshing": "Actualizando…"
+        },
+        "contact": "Contacto"
       },
       "productCategoryHelp": "Usa la categoría indicada en la página del producto. Se usará en el marcador de categoría.",
       "reviewCountHelp": "Solo dígitos, copiados del número de reseñas visible de este producto. Déjalo en blanco si no se puede confirmar.",
@@ -316,7 +326,36 @@
       },
       "automaticReady": "Sin bloqueos registrados",
       "automaticApprovalNote": "El modo automático realiza las comprobaciones de aprobación. Aquí puede inspeccionar, editar o retener un mensaje; las modificaciones deben superar las comprobaciones de nuevo.",
-      "manualApproval": "Aprobar manualmente"
+      "manualApproval": "Aprobar manualmente",
+      "panel": {
+        "automaticTitle": "Aprobación automática",
+        "manualTitle": "Aprobación",
+        "attention": "Requiere atención",
+        "update": "Hay que actualizar el borrador",
+        "held": "Secuencia en pausa",
+        "ready": "Listo para las comprobaciones automáticas",
+        "approved": "Aprobado",
+        "sent": "Secuencia completada",
+        "evidenceTitle": "Investigación",
+        "evidenceDetails": "Ver evidencias",
+        "observation": "Observación",
+        "scope": "Alcance y límites",
+        "consequence": "Qué significa",
+        "automaticNote": "Los borradores que cumplen los requisitos se aprueban automáticamente. Solo las excepciones requieren tu atención.",
+        "updateNote": "Este borrador debe ajustarse al Playbook actual antes de poder aprobarse.",
+        "sendingPaused": "El envío está en pausa en el Playbook.",
+        "sendingActive": "Los correos aprobados se envían automáticamente según tu horario y los límites de tus buzones.",
+        "sendingSettings": "Ajustes de envío",
+        "controls": "Pausar o detener el contacto",
+        "holdDescription": "Pausa esta secuencia hasta que quieras continuar.",
+        "systemHold": "La secuencia está en pausa por una comprobación guardada.",
+        "unknownIssue": "Una comprobación guardada requiere atención.",
+        "editsPending": "Guarda los cambios para repetir las comprobaciones.",
+        "playbookChanged": "El Playbook ha cambiado desde que se preparó este borrador.",
+        "noEvidence": "Aún no se ha guardado ninguna investigación del producto.",
+        "checked": "Observado el {date}",
+        "resume": "Reanudar comprobaciones automáticas"
+      }
     },
     "linkedin": {
       "title": "Mantén el trato personal en LinkedIn",
@@ -451,6 +490,7 @@
         "heldCountries": "Códigos de países que se dejan en espera",
         "excludedRoles": "Cargos excluidos",
         "historyConfirmed": "Se han importado los envíos anteriores y los registros de no contactar",
+        "allowIncompleteHistory": "Permitir contactos sin el historial completo de campañas anteriores",
         "competingSendersPaused": "Se han pausado los demás sistemas de envío de prospección",
         "senderTested": "El buzón del remitente ha superado una prueba controlada de envío y respuesta",
         "senderEmails": "Buzones de envío",
@@ -476,6 +516,7 @@
         "noProductConsequence": "Posible consecuencia",
         "noProductAskAbout": "Tema de la pregunta a la IA",
         "automationEnabled": "Activar la preparación automática de campañas",
+        "dailyCompanyTarget": "Nuevas empresas por día",
         "productCheckIntro": "Presentación para revisar el producto",
         "publishedProductObservation": "Observación",
         "publishedProductConsequence": "Comprobación propuesta",
@@ -529,6 +570,7 @@
       "noProductHelp": "Confirma que no hay datos del producto ni en el código fuente ni en la página una vez ejecutado JavaScript.",
       "automationTitle": "Modo automático",
       "automationHelp": "Las campañas activas pueden buscar contactos, verificar correos profesionales, preparar mensajes y aprobar los correos aptos automáticamente. El envío sigue sujeto a su interruptor, al estado de los buzones y a los límites guardados.",
+      "dailyCompanyTargetHelp": "Objetivo mínimo de nuevas empresas entre todas las campañas activas por día UTC. La búsqueda puede continuar para mantener empresas pendientes de investigación. Las empresas aún deben cumplir los criterios; este ajuste no determina el volumen de correos.",
       "productCheckIntroHelp": "Presentación del fundador usada solo para el enfoque de revisión del producto observado.",
       "publishedProductTitle": "Hallazgo específico del producto",
       "publishedProductHelp": "Usa '{productFeature}' para un ingrediente, material, diseño o dato de compatibilidad concreto encontrado en el producto. Plantea la pregunta sobre IA como una comprobación que proponemos, nunca como un resultado medido ni una afirmación de que faltan datos.",
@@ -546,7 +588,8 @@
       "researchInstructionsHelp": "Describe las preguntas de los compradores, las variantes y los mercados exactos que se deben comparar, y las pruebas que se deben recopilar de UCP, las páginas de producto o el proceso de pago. Registra las fuentes y marca como desconocidos los resultados no comprobados o no disponibles.",
       "requireShoppingEvidenceHelp": "Mantén la redacción y la aprobación en espera hasta que se registre un hallazgo sobre la experiencia de compra respaldado por pruebas. Un dato sobre un ingrediente no demuestra por sí solo una dificultad en la compra.",
       "legacyFindingsTitle": "Fórmulas de hallazgos anteriores",
-      "legacyFindingsHelp": "Fórmulas guardadas para las comprobaciones anteriores de productos y datos ausentes. Cuando se exigen pruebas sobre la experiencia de compra, los nuevos borradores utilizan el hallazgo registrado sobre esa experiencia. Estos campos siguen disponibles para los flujos de trabajo anteriores."
+      "legacyFindingsHelp": "Fórmulas guardadas para las comprobaciones anteriores de productos y datos ausentes. Cuando se exigen pruebas sobre la experiencia de compra, los nuevos borradores utilizan el hallazgo registrado sobre esa experiencia. Estos campos siguen disponibles para los flujos de trabajo anteriores.",
+      "allowIncompleteHistoryHelp": "Puedes omitir la importación de campañas anteriores. Es posible que alguien vuelva a recibir un mensaje; las bajas, los rebotes y las exclusiones registrados siguen vigentes."
     },
     "integrations": {
       "title": "Conecta las herramientas adecuadas",
@@ -726,12 +769,16 @@
         "setup": {
           "apollo": "Guarda aquí la clave de API de Apollo de tu espacio de trabajo.",
           "clay": "Guarda tu clave API de Clay para conectar el espacio de trabajo. Puedes configurar el enriquecimiento más adelante.",
-          "google": "Crea una aplicación web OAuth de Google, añade el URI de redirección de abajo y guarda su ID y secreto de cliente. Después, conecta cada buzón de Gmail."
+          "google": "Crea una aplicación web OAuth de Google, añade el URI de redirección de abajo y guarda su ID y secreto de cliente. Después, conecta cada buzón de Gmail.",
+          "scrapellm": "Usa ScrapeLLM para capturar consultas reales de compradores y las respuestas que se muestran.",
+          "firecrawl": "Usa Firecrawl para inspeccionar páginas de productos renderizadas y registrar pruebas de respaldo."
         },
         "secret": {
           "apollo": "Clave de API de Apollo",
           "clay": "Clave de API de Clay",
-          "google": "Secreto de cliente OAuth de Google"
+          "google": "Secreto de cliente OAuth de Google",
+          "scrapellm": "Clave API de ScrapeLLM",
+          "firecrawl": "Clave API de Firecrawl"
         },
         "fields": {
           "clientId": "ID de cliente OAuth de Google",
@@ -767,7 +814,9 @@
           "clayTrial": "Probar Clay",
           "clayKeys": "Claves de API de Clay",
           "clayWorkspace": "Abrir Clay",
-          "clayApiDocs": "Documentación de la API de Clay"
+          "clayApiDocs": "Documentación de la API de Clay",
+          "scrapellmAccount": "Abrir ScrapeLLM",
+          "firecrawlAccount": "Abrir Firecrawl"
         },
         "routineHelp": "Opcional para conectar. Configura una rutina de enriquecimiento en tu espacio de trabajo de Clay y pega aquí su ID.",
         "routine": {
@@ -776,7 +825,8 @@
           }
         },
         "claySaved": "Clave API verificada y guardada.",
-        "claySavedPending": "Clave API verificada y guardada. La configuración del enriquecimiento sigue pendiente."
+        "claySavedPending": "Clave API verificada y guardada. La configuración del enriquecimiento sigue pendiente.",
+        "savedUnchecked": "Clave guardada. El acceso se comprobará al ejecutar la primera solicitud de investigación."
       },
       "mailbox": {
         "help": "En Roger, abre Manage Mailbox → Credentials y copia App Password. Comprobamos el acceso para enviar y recibir sin enviar ningún correo.",
@@ -810,6 +860,16 @@
         },
         "maximumDailyCap": "Máximo objetivo por buzón al día",
         "dailyCapHelp": "El objetivo tiene un máximo de 50 e incluye los primeros correos y los seguimientos. Los buzones empiezan con 15 al día. El límite solo aumenta en 5 cuando un día completo alcanza el límite actual sin ningún rebote observado. Un rebote observado devuelve el límite a 15. El objetivo no garantiza el volumen de envío ni la reputación del buzón."
+      },
+      "liveResearch": {
+        "title": "Investigación de compras en vivo",
+        "description": "Conecta ambos servicios para observar búsquedas de compradores e inspeccionar páginas de productos antes de redactar.",
+        "configured": "Credenciales de investigación guardadas",
+        "missing": "Se necesitan ambas conexiones",
+        "saved": "Clave guardada",
+        "verified": "Clave API verificada",
+        "environment": "Clave del servidor configurada",
+        "savedHelp": "El acceso a ScrapeLLM se comprueba al ejecutar la investigación. Guardar la clave no inicia una búsqueda de pago."
       }
     },
     "relationships": {
@@ -886,7 +946,9 @@
       "findingReviewRequired": "Revisa las pruebas originales y renderizadas del producto, completa los marcadores del hallazgo y añade la fuente de otra tienda cuando sea obligatoria.",
       "templateControlsChanged": "Restaura la presentación del fundador y la pregunta de cierre exactamente como están guardadas antes de aprobar.",
       "platformHeld": "Selecciona Shopify o WooCommerce para esta campaña de prospección en frío.",
-      "shoppingResearchRequired": "Registra un hallazgo sobre la experiencia de compra respaldado por pruebas antes de redactar o aprobar este mensaje."
+      "shoppingResearchRequired": "Registra un hallazgo sobre la experiencia de compra respaldado por pruebas antes de redactar o aprobar este mensaje.",
+      "automaticReviewFailed": "Las comprobaciones automáticas no pudieron aprobar este borrador. Revisa las pruebas y el mensaje y guarda las correcciones.",
+      "automaticReviewUncertain": "Es necesario aclarar el resultado de una solicitud anterior de borrador antes de reanudar la revisión automática."
     },
     "preparation": {
       "action": {
@@ -918,7 +980,9 @@
       },
       "holdReasons": "Motivos actuales de espera",
       "empty": "Aún no hay actividad de envíos o conversaciones.",
-      "period": "{from}–{to}"
+      "period": "{from}–{to}",
+      "detailsTitle": "Detalles del informe",
+      "sourcesTitle": "Por fuente"
     },
     "auth": {
       "title": "Inicia sesión en Outbound",
@@ -950,7 +1014,7 @@
       "story": {
         "label": "ecentic Outbound",
         "title": "Un buen contacto empieza con un hallazgo real.",
-        "description": "Investiga las tiendas adecuadas, revisa cada mensaje y da continuidad a la conversación.",
+        "description": "Investiga las tiendas adecuadas, prepara mensajes relevantes y mantén la conversación en marcha.",
         "steps": {
           "research": "Investigación",
           "review": "Revisión",
@@ -1177,7 +1241,11 @@
       "companySearchFailedDescription": "No se ha añadido ninguna empresa. Resuelva el problema indicado arriba y vuelva a intentarlo.",
       "manualClaude": "Usar Claude manualmente",
       "viewContactOptional": "Ver contacto",
-      "automaticContactsHelp": "Las campañas activas comprueban cada empresa que coincide con los criterios, buscan y verifican un contacto y después redactan y ponen en cola su secuencia de correos automáticamente. Abrir un contacto es opcional; las comprobaciones de envío siguen aplicándose."
+      "automaticContactsHelp": "Las campañas activas comprueban cada empresa que coincide con los criterios, buscan y verifican un contacto y después redactan y ponen en cola su secuencia de correos automáticamente. Abrir un contacto es opcional; las comprobaciones de envío siguen aplicándose.",
+      "forms": {
+        "changed": "Esta campaña ha cambiado. Tus valores se conservan. Carga los valores guardados antes de continuar.",
+        "loadSaved": "Descartar cambios y cargar valores guardados"
+      }
     },
     "warmup": {
       "title": "Calentamiento",
@@ -1253,7 +1321,8 @@
         "sync": "Sincronización del buzón",
         "provider": "Estado del proveedor",
         "history": "Historial conciliado",
-        "test": "Prueba de envío y respuesta"
+        "test": "Prueba de envío y respuesta",
+        "historyOptional": "Historial de campañas anteriores opcional"
       },
       "mailboxesTitle": "Buzones de remitentes"
     },
@@ -1461,7 +1530,13 @@
         "draft": "Preparando mensajes",
         "applyDraft": "Guardando mensajes",
         "approve": "Comprobando elegibilidad",
-        "complete": "Preparación completada"
+        "complete": "Preparación completada",
+        "researchQuery": "Preparando la consulta del comprador",
+        "startShoppingQuery": "Iniciando la búsqueda de compra",
+        "pollShoppingQuery": "Esperando la respuesta de la búsqueda",
+        "browseShopping": "Inspeccionando páginas de productos",
+        "assessShopping": "Comprobando la información de la búsqueda",
+        "applyShopping": "Guardando la investigación de compras"
       },
       "reasons": {
         "automation-disabled": "El modo automático está desactivado.",
@@ -1482,7 +1557,10 @@
         "provider-access": "El proveedor ha rechazado el acceso. Compruebe la clave API y el acceso a búsquedas en Integraciones.",
         "provider-quota": "Se ha alcanzado el límite de créditos o de uso del proveedor. Revise su plan.",
         "provider-rate-limit": "El proveedor ha limitado temporalmente las solicitudes. Espere antes de iniciar otro lote.",
-        "provider-uncertain": "Es posible que la solicitud se haya procesado. Compruebe el resultado antes de reintentarlo."
+        "provider-uncertain": "Es posible que la solicitud se haya procesado. Compruebe el resultado antes de reintentarlo.",
+        "research-not-configured": "Conecta los servicios de investigación de compras en Integraciones.",
+        "shopping-research-held": "La investigación de compras no estableció un hallazgo respaldado por pruebas.",
+        "shopping-research-expired": "La información de la búsqueda ha caducado; vuelve a recopilarla."
       },
       "deliveryBlockers": {
         "sendingPaused": "El envío está pausado en el manual.",
@@ -1504,7 +1582,16 @@
       "currentCap": "Límite diario actual",
       "targetCap": "Máximo objetivo",
       "rampHeld": "Aumento en pausa",
-      "rampHelp": "Los buzones empiezan con 15 al día. El límite solo aumenta en 5 cuando un día completo alcanza el límite actual sin ningún rebote observado. Un rebote observado devuelve el límite a 15. El objetivo no garantiza el volumen de envío ni la reputación del buzón."
+      "rampHelp": "Los buzones empiezan con 15 al día. El límite solo aumenta en 5 cuando un día completo alcanza el límite actual sin ningún rebote observado. Un rebote observado devuelve el límite a 15. El objetivo no garantiza el volumen de envío ni la reputación del buzón.",
+      "research": {
+        "missingTitle": "La investigación de compras necesita una conexión",
+        "missingHelp": "Conecta {providers} en Integraciones para preparar nuevos prospectos con datos observados en búsquedas de compra.",
+        "action": "Conectar servicios de investigación",
+        "unknownProvider": "un servicio de investigación",
+        "blockedTitle": "La investigación de compras necesita atención",
+        "blockedHelp": "Comprueba el acceso a la API y los créditos disponibles para {providers}. La investigación está pausada mientras esta conexión necesita atención.",
+        "reviewAction": "Revisar conexiones de investigación"
+      }
     },
     "sent": {
       "title": "Enviados",
@@ -1631,7 +1718,10 @@
       "apolloMissing": "Conecte Apollo para encontrar empresas y contactos actuales.",
       "azureMissing": "Configure Azure para evaluar la información y preparar mensajes.",
       "linkedinMissing": "Conecte la cuenta de LinkedIn seleccionada antes de habilitar sus mensajes.",
-      "error": "No se pudo cargar el progreso actual. Actualice para volver a intentarlo."
+      "error": "No se pudo cargar el progreso actual. Actualice para volver a intentarlo.",
+      "qualified": "Empresas cualificadas",
+      "pipelineTitle": "Estado del proceso",
+      "pipelineHelp": "Empresas y contactos de las campañas activas. Estas cifras corresponden a etapas distintas, no a una tasa de conversión."
     },
     "conversations": {
       "title": "Conversaciones",
@@ -1701,7 +1791,7 @@
       },
       "draftLabel": "Borrador de respuesta",
       "invalidBody": "Escribe una respuesta de entre 1 y 10.000 caracteres.",
-      "unsaved": "Guarda los cambios antes de enviar o cambiar la etapa.",
+      "unsaved": "Guarda los cambios de tu respuesta antes de enviarla.",
       "error": {
         "changed": "La conversación ha cambiado. Recárgala y revisa el último mensaje antes de continuar.",
         "closed": "Esta conversación está cerrada o el destinatario está excluido de las comunicaciones.",
@@ -1711,7 +1801,8 @@
         "generationUncertain": "El resultado de la sugerencia no está confirmado. Consultar esta solicitud no generará otra respuesta.",
         "connection": "La cuenta de envío no está disponible o necesita sincronizar las respuestas. Revisa Integraciones.",
         "controls": "La sugerencia no ha superado los controles de respuesta guardados. Redacta y revisa la respuesta manualmente.",
-        "generic": "No hemos podido completar esta acción. Actualiza la conversación e inténtalo de nuevo."
+        "generic": "No hemos podido completar esta acción. Actualiza la conversación e inténtalo de nuevo.",
+        "authentication": "Tu sesión caducó. Inicia sesión en la nueva pestaña y vuelve a intentarlo aquí. Tus cambios se conservan."
       },
       "newestFirst": "Mensajes más recientes primero",
       "direction": {
@@ -1747,6 +1838,19 @@
         "scheduledHelp": "Aquí se muestran las horas de envío de correo guardadas. Las pausas, las comprobaciones de respuestas, el horario del destinatario y los límites de las bandejas pueden retrasarlas. Las acciones de LinkedIn no tienen una hora fija guardada.",
         "sentHelp": "Intentos de envío de correo, LinkedIn y respuestas. Aceptado significa que el proveedor aceptó el mensaje; no confirma la entrega ni la apertura.",
         "empty": "No hay actividad que coincida con esta vista."
+      },
+      "editor": {
+        "changed": "La conversación cambió. Conservamos tus cambios. Revisa los mensajes actuales antes de continuar.",
+        "continue": "Continuar con mis cambios",
+        "refreshing": "Actualizando conversación…",
+        "savingStage": "Guardando etapa…",
+        "stageSaved": "Etapa guardada.",
+        "savingDraft": "Guardando borrador…",
+        "draftSaved": "Borrador guardado.",
+        "generating": "Preparando sugerencia…",
+        "sending": "Enviando…",
+        "signIn": "Volver a iniciar sesión",
+        "followUpsPaused": "Guardar esta etapa pausa los contactos automáticos por email y LinkedIn con esta persona. Reabrir la conversación no los reanuda."
       }
     }
   }

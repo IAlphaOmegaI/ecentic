@@ -7,6 +7,73 @@ An ingredient detail or a proposed check cannot satisfy that requirement.
 Automatic company qualification can still establish business fit, but holds the
 lead before contact enrichment until actual shopping research is recorded.
 
+## Automatic live captures
+
+The Integrations page has a **Live shopping research** section for encrypted
+ScrapeLLM and Firecrawl keys. Environment fallbacks are
+`OUTBOUND_SCRAPELLM_API_KEY` and `OUTBOUND_FIRECRAWL_API_KEY`. Firecrawl is verified
+through its credit-usage endpoint without starting a scrape. ScrapeLLM has no
+documented non-billable key-validation endpoint, so its status is honestly
+**saved**, with account access checked by the first actual research job.
+
+`live-shopping.ts` submits an asynchronous live Google AI Mode query, persists its
+job ID, and polls that same job. Cached, mismatched or undated answers are held;
+the original timestamp is never replaced with the poll time. Transient polling
+errors retry only the known GET job within a bounded poll count. An uncertain
+submission never purchases a replacement automatically. Provider responses and
+their SHA256 digests are checkpointed before later stages.
+
+Firecrawl Interact opens a fresh short-lived browser, records rendered product
+text, selected options, structured offers and a screenshot, then deletes the
+session. A 120-second TTL backs up cleanup. URLs are checked, robots rules are
+respected, and a fixed read-only program permits only HTTPS GET/HEAD requests,
+with public-address checks and no cross-origin navigation. It does not add items
+to a cart, buy anything or bypass access restrictions. Missing content under
+these limits is not a merchant defect. Checkout remains `notTested`.
+
+Only direct answer citations can supply competitor URLs. The automatic assessor
+must quote both the actual answer and rendered merchant page, plus a rendered
+competitor source for any comparison. It can select a specific price, variant,
+link or promotion contrast; unsupported or ambiguous differences hold before
+contact lookup. Requested routing country does not establish result market,
+interface locale or signed-in state; these remain unknown. HTTP product evidence
+alone never satisfies this automatic path.
+
+The model selects stable IDs from a bounded catalog of unchanged source excerpts;
+server code supplies the exact quotations and captured scope. Unknown IDs,
+duplicate selections and uninspected competitor IDs hold. Without an inspected
+competitor, the output schema permits only a contrast with the merchant's own
+product. The model cannot paraphrase a quote or invent observation metadata.
+
+Price claims additionally need exact local offer blocks from the answer and
+merchant page. The server checks matching variant, explicit currency and
+purchase terms, rejects conflicting known markets, and distinguishes current
+prices from original prices. Different sizes are not a discrepancy. A matching
+variant and current price elsewhere in the complete answer blocks an omission
+claim. Ambiguous or conditional offers stay held. This comparison proof is a
+wire-only assessment input; the durable receipt format is unchanged.
+
+Selected email copy must fit the space remaining after the template's fixed
+wording, a small identity allowance, and repeated finding/consequence slots.
+There is no separate 45-word ceiling; the saved full-email limit still applies.
+A completed, factually valid assessment that exceeds the remaining budget gets
+at most one copy revision within the original assessment deadline. That revision
+cannot change the selected quotes, products, offer comparison or conditions, and
+must pass the same factual and copy checks again. Interrupted provider outcomes
+are never retried. Both completed request IDs and combined usage are retained.
+The assessor cannot discard evidence qualifiers to make it fit. Recipient-facing
+copy uses ordinary words; capture terminology stays in the supporting research.
+
+`saveAutomaticAndApply` shares the operator receipt validator but additionally
+checks the current automation lease, exact captured receipt, policy fingerprint,
+active campaign and unheld prospect in one transaction. Captures are identified
+as `provider-observed`, not operator observations. The same selected-contact
+lineage remains required.
+
+Provider contracts: [ScrapeLLM async submission](https://docs.scrapellm.com/api-reference/endpoint/create-async-job),
+[polling](https://docs.scrapellm.com/api-reference/endpoint/get-job-status),
+[Firecrawl browser execution](https://docs.firecrawl.dev/api-reference/endpoint/browser-execute).
+
 ## Operator application
 
 `server/app/outbound/lead-research.ts` exports the server-only operation:
@@ -52,10 +119,15 @@ The complete bounded schema is `lib/outbound-shopping-research.ts`:
 
 The selected `observation` fills `{finding}`, `consequence` fills
 `{consequence}`, and `askAbout` fills `{askAbout}` in the editable body template.
-Only fields used in that template need to appear in the draft. Azure can edit
-the surrounding language but must preserve these source-bound paragraphs and
-the existing sender, call-to-action and opt-out controls. Subjects remain
-editable under the normal word and claim checks.
+Only fields used in that template need to appear in the draft. Azure returns an
+editable subject and optional short opening; server code keeps every rendered
+body paragraph unchanged, including source-bound text, sender, call-to-action,
+opt-out and signature. An existing verified personal line leaves no room for a
+second generated opening. The opening's budget is the remaining word allowance,
+up to 24 words. Invalid or oversized opening edits are omitted only when the
+original sequence passes all checks. An invalid protected body is returned with
+its actual issues before another model call; it cannot be rescued by silently
+rewriting the evidence. Subjects remain editable under word and claim checks.
 
 UCP presence does not prove successful AI checkout. A product's public data can
 be compared with its rendered page without claiming a checkout failed. A sale
@@ -84,7 +156,7 @@ expect new voice notes to rewrite their protected finding paragraphs.
 ## Durable gates
 
 The existing integration-job table stores `provider: "automation"` and
-`input.operation: "leadResearch"`. The completed job contains the receipt,
+`input.operation: "leadResearch"`. The completed job contains the research-policy fingerprint, receipt,
 its hash, individual source hashes, applied prospect details, original
 campaign/Playbook revisions, actor and applied prospect revision. No schema
 migration is required.
@@ -92,10 +164,15 @@ migration is required.
 `assertShoppingEvidence` verifies the saved receipt, exact bound identity and
 finding fields, current policy and campaign revisions, and freshness. Manual
 draft writes, Azure drafting, manual approval and final delivery use these
-gates. A policy change or expired source requires fresh reviewed research;
+gates. A research-instruction change or expired source requires fresh reviewed research;
 changing a saved contact cannot repurpose another contact's qualification.
 Existing automatic selection checks remain in force for automatically sourced
-contacts even when their product research changes.
+contacts even when their product research changes. Newly saved receipts may survive a
+writing-only Playbook change when their research-policy fingerprint still
+matches. Validation still uses the current freshness limit and exact campaign,
+identity and source bindings. No capture time or historical job is rewritten.
+Receipts created before the fingerprint was recorded continue to require an
+explicit reviewed application after a Playbook revision change.
 
 The operator is responsible for supplying faithful captures. Hashes protect
 the saved receipt from accidental changes; they do not independently attest a

@@ -17,6 +17,9 @@ import { schema, type TransactionScope } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
 import { ValidationError } from "@/server/utils/error";
 import { repository } from "@/server/utils/repository";
+import { researchPolicyHash } from "./shopping-policy";
+
+export { researchPolicyHash } from "./shopping-policy";
 
 const Jobs = repository(schema.outboundIntegrationJob);
 const Prospects = repository(schema.outboundProspect);
@@ -37,7 +40,9 @@ export const researchJobInputSchema = z.object({
   campaignId: z.string().uuid().nullable(),
   campaignRevision: z.number().int().nullable(),
   receiptHash: z.string().length(64),
+  researchPolicyHash: z.string().length(64).optional(),
 });
+
 const boundFields = [
   "company",
   "domain",
@@ -104,7 +109,8 @@ export const assertShoppingEvidence = async (
     job.status !== "complete" ||
     job.prospectId !== prospect.id ||
     input.data.prospectId !== prospect.id ||
-    input.data.playbookRevision !== policy.revision ||
+    (input.data.playbookRevision !== policy.revision &&
+      input.data.researchPolicyHash !== researchPolicyHash(policy.settings)) ||
     input.data.campaignId !== prospect.campaignId ||
     input.data.receiptHash !== researchHash(receipt.data) ||
     typeof job.output?.["appliedProspectRevision"] !== "number" ||

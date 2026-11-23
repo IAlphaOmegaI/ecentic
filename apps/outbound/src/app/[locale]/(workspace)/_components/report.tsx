@@ -1,11 +1,12 @@
 "use client";
 
+import { BarChartIcon, ClockIcon } from "@zenncore/icons";
 import {
-  AlertCircleIcon,
-  BarChartIcon,
-  ClockIcon,
-  EnvelopeIcon,
-} from "@zenncore/icons";
+  Accordion,
+  AccordionItem,
+  AccordionPanel,
+  AccordionTrigger,
+} from "@zenncore/web/components/accordion";
 import {
   Table,
   TableBody,
@@ -14,13 +15,10 @@ import {
   TableHeader,
   TableRow,
 } from "@zenncore/web/components/table";
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useMessages, useTranslations } from "next-intl";
 import type * as Outbound from "@/server/app/outbound";
+import { Measurements } from "./measurements";
 
-type Report = Extract<
-  Awaited<ReturnType<typeof Outbound.getWeeklyReport>>,
-  { success: true }
->["data"];
 const columns = [
   "prospects",
   "held",
@@ -31,107 +29,171 @@ const columns = [
   "meetings",
 ] as const;
 
-export const ReportPanel = ({ report }: { report: Report }) => {
-  const t = useTranslations("outbound.report");
+export const ReportPanel = ({ report }: ReportPanel.Props) => {
+  const translate = useTranslations("outbound.report");
+  const pipeline = useTranslations("outbound.pipeline");
   const format = useFormatter();
+  const messages = useMessages();
+  const reason = (value: string) =>
+    Object.hasOwn(messages.outbound.issues, value)
+      ? messages.outbound.issues[value as keyof typeof messages.outbound.issues]
+      : value;
+  const entries = (
+    ["acceptedFirsts", "acceptedFollowups", "replies"] as const
+  ).map((key) => ({
+    key,
+    label: translate(`fields.${key}`),
+    value: report.totals[key],
+  }));
+  const date = (value: string) =>
+    format.dateTime(new Date(value), {
+      month: "short",
+      day: "numeric",
+      timeZone: "UTC",
+    });
+
   return (
-    <section className="border-accent-foreground border-t">
-      <div className="space-y-3 px-4 py-6 sm:px-6">
+    <section className="border-accent-foreground border-b">
+      <div className="flex flex-wrap items-start justify-between gap-4 px-4 pt-6 sm:px-6">
         <h2 className="flex items-center gap-2 font-semibold text-foreground-rich text-lg">
           <BarChartIcon aria-hidden className="size-5 text-primary" />
-          {t("title")}
+          {translate("title")}
         </h2>
-        <p className="max-w-3xl text-foreground-dimmed text-sm">
-          {t("description")}
-        </p>
         <p className="flex items-center gap-2 text-foreground-dimmed text-xs tabular-nums">
           <ClockIcon aria-hidden className="size-4" />
-          {t("period", {
-            from: report.from.slice(0, 10),
-            to: report.to.slice(0, 10),
+          {translate("period", {
+            from: date(report.from),
+            to: date(report.to),
           })}
         </p>
       </div>
-      <div className="grid grid-cols-2 gap-px border-accent-foreground border-y bg-accent-foreground lg:grid-cols-4">
-        {(
-          [
-            "acceptedFirsts",
-            "acceptedFollowups",
-            "replies",
-            "uncertain",
-          ] as const
-        ).map((key) => (
-          <div
-            key={key}
-            className="min-w-0 bg-background-rich px-4 py-6 sm:px-6"
-          >
-            <p className="flex items-center justify-between gap-3 text-foreground-dimmed text-sm">
-              {t(`fields.${key}`)}
-              {key === "uncertain" ? (
-                <AlertCircleIcon aria-hidden className="size-4 shrink-0" />
-              ) : (
-                <EnvelopeIcon aria-hidden className="size-4 shrink-0" />
-              )}
+      <div className="grid gap-8 px-4 py-6 sm:px-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+        <div className="min-w-0 space-y-4">
+          <Measurements entries={entries} label={translate("title")} />
+          {(
+            [
+              "acceptedFirsts",
+              "acceptedFollowups",
+              "replies",
+              "meetings",
+              "bounces",
+              "uncertain",
+            ] as const
+          ).every((key) => report.totals[key] === 0) && (
+            <p className="text-foreground-dimmed text-sm">
+              {translate("empty")}
             </p>
-            <p className="mt-3 font-semibold text-3xl text-foreground-rich tabular-nums tracking-tight">
-              {format.number(report.totals[key])}
-            </p>
-          </div>
-        ))}
-      </div>
-      <div className="max-w-full overflow-x-auto">
-        <Table className="min-w-200 [&_td]:font-normal [&_th]:bg-background/70">
-          <TableHeader>
-            <TableRow>
-              <TableHead className="px-4 normal-case tracking-normal sm:px-6">
-                {t("fields.source")}
-              </TableHead>
-              {columns.map((key) => (
-                <TableHead
-                  key={key}
-                  className="text-right normal-case tracking-normal"
-                >
-                  {t(`fields.${key}`)}
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {report.bySource.map((source) => (
-              <TableRow key={source.source}>
-                <TableCell className="max-w-64 truncate px-4 py-3 sm:px-6">
-                  {source.source}
-                </TableCell>
-                {columns.map((key) => (
-                  <TableCell key={key} className="text-right tabular-nums">
-                    {format.number(source[key])}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-      {report.holdReasons.length > 0 && (
-        <div className="px-4 py-8 sm:px-6">
-          <h3 className="font-medium">{t("holdReasons")}</h3>
-          <dl className="mt-4 max-w-3xl divide-y divide-accent-foreground">
-            {report.holdReasons.map((hold) => (
+          )}
+          <p className="text-foreground-dimmed text-xs leading-5">
+            {pipeline("acceptedHelp")}
+          </p>
+        </div>
+        <div className="min-w-0 border-accent-foreground border-t pt-4 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-6">
+          <dl className="divide-y divide-accent-foreground">
+            {(["meetings", "bounces", "uncertain"] as const).map((key) => (
               <div
-                key={hold.reason}
-                className="flex justify-between gap-6 py-3 text-sm"
+                key={key}
+                className="flex items-baseline justify-between gap-4 py-4 first:pt-0"
               >
-                <dt className="min-w-0 break-words text-foreground-dimmed">
-                  {hold.reason}
+                <dt className="text-foreground-dimmed text-sm">
+                  {translate(`fields.${key}`)}
                 </dt>
-                <dd className="shrink-0 tabular-nums">
-                  {format.number(hold.count)}
+                <dd className="font-heading font-semibold text-2xl text-foreground-rich tabular-nums">
+                  {format.number(report.totals[key])}
                 </dd>
               </div>
             ))}
           </dl>
+          <p className="mt-4 text-foreground-dimmed text-xs leading-5">
+            {pipeline("meetingsHelp")}
+          </p>
         </div>
-      )}
+      </div>
+      <Accordion className="px-4 sm:px-6">
+        <AccordionItem value="sources" className="border-0">
+          <AccordionTrigger className="border-accent-foreground border-t py-4 text-sm">
+            {translate("detailsTitle")}
+          </AccordionTrigger>
+          <AccordionPanel className="pb-6">
+            <p className="mb-4 text-foreground-dimmed text-sm leading-6">
+              {translate("description")}
+            </p>
+            <div className="max-w-full overflow-x-auto">
+              <Table
+                aria-label={translate("sourcesTitle")}
+                className="min-w-200 [&_td]:font-normal [&_th]:bg-background/70"
+              >
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="normal-case tracking-normal">
+                      {translate("fields.source")}
+                    </TableHead>
+                    {columns.map((key) => (
+                      <TableHead
+                        key={key}
+                        className="text-right normal-case tracking-normal"
+                      >
+                        {translate(`fields.${key}`)}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {report.bySource.map((source) => (
+                    <TableRow key={source.source}>
+                      <TableCell
+                        className="max-w-64 truncate py-4"
+                        title={source.source}
+                      >
+                        {source.source}
+                      </TableCell>
+                      {columns.map((key) => (
+                        <TableCell
+                          key={key}
+                          className="text-right tabular-nums"
+                        >
+                          {format.number(source[key])}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+            {report.holdReasons.length > 0 && (
+              <div className="pt-6">
+                <h3 className="font-medium text-sm">
+                  {translate("holdReasons")}
+                </h3>
+                <dl className="mt-4 max-w-3xl divide-y divide-accent-foreground">
+                  {report.holdReasons.map((hold) => (
+                    <div
+                      key={hold.reason}
+                      className="flex justify-between gap-6 py-4 text-sm"
+                    >
+                      <dt className="min-w-0 break-words text-foreground-dimmed">
+                        {reason(hold.reason)}
+                      </dt>
+                      <dd className="shrink-0 tabular-nums">
+                        {format.number(hold.count)}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            )}
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
     </section>
   );
 };
+
+export namespace ReportPanel {
+  export type Props = {
+    report: Extract<
+      Awaited<ReturnType<typeof Outbound.getWeeklyReport>>,
+      { success: true }
+    >["data"];
+  };
+}

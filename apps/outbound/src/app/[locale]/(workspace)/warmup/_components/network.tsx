@@ -374,7 +374,7 @@ export const WarmblyNetworkPanel = ({
           >
             <div className="max-w-full overflow-x-auto">
               <DataTable
-                className="min-w-200 table-fixed"
+                className="min-w-200 table-fixed border-b-0"
                 classList={{
                   "header-cell":
                     "h-10 bg-background-dimmed/50 px-4 font-medium text-xs normal-case tracking-normal",

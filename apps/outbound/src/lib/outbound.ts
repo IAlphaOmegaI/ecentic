@@ -15,28 +15,19 @@ import {
   shoppingCopy,
   shoppingFindingSchema,
 } from "./outbound-shopping-research";
+import {
+  LINKEDIN_STATUSES,
+  type LinkedInStatus,
+  type ProspectStatus,
+} from "./outbound-status";
 
-export const PROSPECT_STATUSES = [
-  "candidate",
-  "draft",
-  "approved",
-  "active",
-  "held",
-  "skipped",
-  "replied",
-  "optedOut",
-  "bounced",
-  "finished",
-] as const;
-export const LINKEDIN_STATUSES = [
-  "research",
-  "ready",
-  "invited",
-  "connected",
-  "messaged",
-  "replied",
-  "closed",
-] as const;
+export {
+  LINKEDIN_STATUSES,
+  type LinkedInStatus,
+  PROSPECT_STATUSES,
+  type ProspectStatus,
+} from "./outbound-status";
+
 export const OUTCOME_KINDS = [
   "reply",
   "positive",
@@ -217,6 +208,7 @@ export const playbookSchema = z
       DEFAULT_FINDING_COPY.publishedProductAskAbout,
     ),
     automationEnabled: z.boolean().default(false),
+    dailyCompanyTarget: z.number().int().min(1).max(10000).default(50),
     linkedinAutomationEnabled: z.boolean().default(false),
     linkedinAccountId: text.max(200).default(""),
     linkedinDailyInvites: z.number().int().min(1).max(15).default(15),
@@ -224,6 +216,7 @@ export const playbookSchema = z
     linkedinDailyMessages: z.number().int().min(1).max(15).default(15),
     senderConfirmed: z.boolean(),
     historyConfirmed: z.boolean().default(false),
+    allowIncompleteHistory: z.boolean().default(false),
     competingSendersPaused: z.boolean().default(false),
     senderTested: z.boolean().default(false),
     sendingEnabled: z.boolean(),
@@ -268,6 +261,12 @@ export const playbookSchema = z
   });
 
 export type Playbook = z.infer<typeof playbookSchema>;
+
+/** An explicit repeat-contact decision does not claim that old history was imported. */
+export const contactHistoryReady = (settings: {
+  historyConfirmed: boolean;
+  allowIncompleteHistory?: boolean;
+}) => settings.historyConfirmed || settings.allowIncompleteHistory === true;
 export const defaultPlaybook: Playbook = {
   ...DEFAULT_FINDING_COPY,
   name: "ecentic outbound",
@@ -322,12 +321,14 @@ export const defaultPlaybook: Playbook = {
     "I hope this email finds you well\nI wanted to reach out\nQuick context\nbrutally honest\nwhen I googled\nValued Recipient\nDear customer\ngame-changer\nrevolutionize\nunlock\nleverage\nsynergy\ncircle back\nChatGPT, Gemini\nGTIN\nJSON-LD\nschema\nUCP\nGEO\nAEO\nMCP\ncrawler",
   senderConfirmed: false,
   automationEnabled: false,
+  dailyCompanyTarget: 50,
   linkedinAutomationEnabled: false,
   linkedinAccountId: "",
   linkedinDailyInvites: 15,
   linkedinWeeklyInvites: 50,
   linkedinDailyMessages: 15,
   historyConfirmed: false,
+  allowIncompleteHistory: false,
   competingSendersPaused: false,
   senderTested: false,
   sendingEnabled: false,
@@ -394,8 +395,6 @@ export type Message = {
   subject: string;
   body: string;
 };
-export type ProspectStatus = (typeof PROSPECT_STATUSES)[number];
-export type LinkedInStatus = (typeof LINKEDIN_STATUSES)[number];
 export type Issue = { code: string; field: string };
 export type Prospect = ProspectInput & {
   id: string;
@@ -602,11 +601,17 @@ export const lintMessages = (
         : prospect && usesFindingFormula(settings)
           ? findingCopy(prospect, settings)
           : null;
+    const rendered = prospect
+      ? (renderMessages(prospect, settings)[0]?.body ?? "")
+      : "";
     const original =
       prospect &&
       (usesFindingFormula(settings) || prospect.gap === "shopping-research")
-        ? (renderMessages(prospect, settings)[0]?.body ?? "")
+        ? rendered
         : "";
+    const greeting = prospect
+      ? rendered.match(/^[^!\n]+!/)?.[0]
+      : message.body.match(/^(?:Hi|Hallo|Hola|Ciao|Buongiorno) [^!\n]+!/)?.[0];
     return [
       ...(message.step === 1 &&
       (usesFindingFormula(settings) || prospect?.gap === "shopping-research") &&
@@ -662,7 +667,8 @@ export const lintMessages = (
         ? [{ code: "link", field }]
         : []),
       ...(/^\s*[-*•]\s/m.test(message.body) ? [{ code: "bullet", field }] : []),
-      ...(/\p{Extended_Pictographic}/u.test(content)
+      // Text-style legal marks occur in product names; emoji presentation remains disallowed.
+      ...(/(?:[©®™]\uFE0F|(?![©®™])\p{Extended_Pictographic})/u.test(content)
         ? [{ code: "emoji", field }]
         : []),
       ...(splitList(settings.bannedPhrases).some((phrase) =>
@@ -679,7 +685,9 @@ export const lintMessages = (
         : []),
       ...(message.step === 1 &&
       /!/.test(
-        message.body.replace(/^(?:Hi|Hallo|Hola|Ciao|Buongiorno) [^!\n]+!/, ""),
+        greeting && message.body.startsWith(greeting)
+          ? message.body.slice(greeting.length)
+          : message.body,
       )
         ? [{ code: "exclamation", field }]
         : []),

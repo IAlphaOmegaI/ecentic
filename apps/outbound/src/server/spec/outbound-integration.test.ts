@@ -37,6 +37,8 @@ const keyNames = {
   apollo: "OUTBOUND_APOLLO_API_KEY",
   clay: "OUTBOUND_CLAY_API_KEY",
   google: "OUTBOUND_GOOGLE_CLIENT_SECRET",
+  scrapellm: "OUTBOUND_SCRAPELLM_API_KEY",
+  firecrawl: "OUTBOUND_FIRECRAWL_API_KEY",
 } as const;
 beforeEach(() => {
   resolveKey.mockImplementation(async (provider = "unipile") => ({
@@ -85,6 +87,8 @@ const originalGoogle = Object.fromEntries(
     "OUTBOUND_GOOGLE_CLIENT_SECRET",
     "APP_HOST",
     "CREDENTIAL_ENCRYPTION_KEY",
+    "OUTBOUND_SCRAPELLM_API_KEY",
+    "OUTBOUND_FIRECRAWL_API_KEY",
   ].map((key) => [key, process.env[key]]),
 );
 afterEach(() => {
@@ -119,6 +123,32 @@ const json = (body: unknown, status = 200) =>
   });
 
 describe("bounded provider requests", () => {
+  test("shopping research readiness requires both keys and status reads do not call providers", async () => {
+    fetched(async () => {
+      throw new Error("Integration status must not call a provider");
+    });
+    for (const connected of [
+      [],
+      ["scrapellm"],
+      ["firecrawl"],
+      ["scrapellm", "firecrawl"],
+    ]) {
+      for (const provider of ["scrapellm", "firecrawl"] as const) {
+        Reflect.deleteProperty(process.env, keyNames[provider]);
+        if (connected.includes(provider))
+          Object.assign(process.env, { [keyNames[provider]]: "synthetic-key" });
+      }
+      const status = await Providers.getIntegrationStatus();
+      expect(status.research.configured).toBe(connected.length === 2);
+      expect(status.research.scrapellm.configured).toBe(
+        connected.includes("scrapellm"),
+      );
+      expect(status.research.firecrawl.configured).toBe(
+        connected.includes("firecrawl"),
+      );
+      expect(JSON.stringify(status.research)).not.toContain("synthetic-key");
+    }
+  });
   test("Apollo key checks use auth health and require both authenticated health flags", async () => {
     const calls: { url: string; options?: RequestInit }[] = [];
     fetched(async (input, options) => {

@@ -15,7 +15,8 @@
       "integrations": "Integrationen",
       "campaigns": "Kampagnen",
       "warmup": "Warmup",
-      "sent": "Gesendet"
+      "sent": "Gesendet",
+      "allProspects": "Alle Kontakte"
     },
     "common": {
       "saving": "Wird gespeichert…",
@@ -176,9 +177,18 @@
           "primary": "Vorherige Seite",
           "secondary": "Nächste Seite",
           "tertiary": "Filter zurücksetzen",
-          "quaternary": "Import schließen"
+          "quaternary": "Import schließen",
+          "quinary": "Erste Seite",
+          "senary": "Letzte Seite"
         },
-        "pagination": "Kontaktseiten"
+        "pagination": "Kontaktseiten",
+        "toolbar": {
+          "filters": "Filter",
+          "more": "Mehr",
+          "pipelineStatus": "Pipeline-Status",
+          "refreshing": "Wird aktualisiert…"
+        },
+        "contact": "Kontakt"
       },
       "productCategoryHelp": "Verwenden Sie die auf der Produktseite angegebene Kategorie. Sie füllt den Kategorieplatzhalter.",
       "reviewCountHelp": "Nur Ziffern, übernommen aus der sichtbaren Anzahl von Bewertungen dieses Produkts. Lassen Sie das Feld leer, wenn die Anzahl nicht bestätigt werden kann.",
@@ -316,7 +326,36 @@
       },
       "automaticReady": "Keine erfassten Blockierungen",
       "automaticApprovalNote": "Der automatische Modus führt die Freigabeprüfungen aus. Sie können hier Nachrichten prüfen, bearbeiten oder zurückhalten; Änderungen müssen die Prüfungen erneut bestehen.",
-      "manualApproval": "Manuell freigeben"
+      "manualApproval": "Manuell freigeben",
+      "panel": {
+        "automaticTitle": "Automatische Freigabe",
+        "manualTitle": "Freigabe",
+        "attention": "Handlungsbedarf",
+        "update": "Entwurf muss aktualisiert werden",
+        "held": "Sequenz pausiert",
+        "ready": "Bereit für automatische Prüfungen",
+        "approved": "Freigegeben",
+        "sent": "Sequenz abgeschlossen",
+        "evidenceTitle": "Recherche",
+        "evidenceDetails": "Belege ansehen",
+        "observation": "Beobachtung",
+        "scope": "Umfang und Grenzen",
+        "consequence": "Was das bedeutet",
+        "automaticNote": "Geeignete Entwürfe werden automatisch freigegeben. Nur Ausnahmen erfordern Ihre Aufmerksamkeit.",
+        "updateNote": "Dieser Entwurf muss dem aktuellen Playbook entsprechen, bevor er freigegeben werden kann.",
+        "sendingPaused": "Der Versand ist im Playbook pausiert.",
+        "sendingActive": "Freigegebene E-Mails werden automatisch nach Ihrem Zeitplan und innerhalb der Postfachlimits gesendet.",
+        "sendingSettings": "Versandeinstellungen",
+        "controls": "Kontaktaufnahme pausieren oder stoppen",
+        "holdDescription": "Pausieren Sie diese Sequenz, bis Sie fortfahren möchten.",
+        "systemHold": "Die Sequenz ist wegen einer gespeicherten Prüfung pausiert.",
+        "unknownIssue": "Eine gespeicherte Prüfung erfordert Ihre Aufmerksamkeit.",
+        "editsPending": "Speichern Sie Ihre Änderungen, um die Prüfungen erneut auszuführen.",
+        "playbookChanged": "Das Playbook wurde seit der Erstellung dieses Entwurfs geändert.",
+        "noEvidence": "Es wurde noch keine Produktrecherche gespeichert.",
+        "checked": "Beobachtet am {date}",
+        "resume": "Automatische Prüfungen fortsetzen"
+      }
     },
     "linkedin": {
       "title": "Bleiben Sie auf LinkedIn persönlich",
@@ -451,6 +490,7 @@
         "heldCountries": "Ländercodes mit Versandsperre",
         "excludedRoles": "Ausgeschlossene Positionen",
         "historyConfirmed": "Frühere Sendungen und Kontaktsperren wurden importiert",
+        "allowIncompleteHistory": "Kontaktaufnahme ohne vollständigen Verlauf früherer Kampagnen erlauben",
         "competingSendersPaused": "Andere Versandsysteme für die Kontaktaufnahme wurden pausiert",
         "senderTested": "Das Absenderpostfach hat einen kontrollierten Sende- und Antworttest bestanden",
         "senderEmails": "Absenderpostfächer",
@@ -476,6 +516,7 @@
         "noProductConsequence": "Mögliche Folge",
         "noProductAskAbout": "Thema der Frage an die KI",
         "automationEnabled": "Automatische Kampagnenvorbereitung aktivieren",
+        "dailyCompanyTarget": "Neue Unternehmen pro Tag",
         "productCheckIntro": "Einleitung zur Produktprüfung",
         "publishedProductObservation": "Beobachtung",
         "publishedProductConsequence": "Vorgeschlagene Prüfung",
@@ -529,6 +570,7 @@
       "noProductHelp": "Bestätigen Sie, dass Produktdaten sowohl im Quelltext als auch auf der Seite nach Ausführung von JavaScript fehlen.",
       "automationTitle": "Automatischer Modus",
       "automationHelp": "Aktive Kampagnen können Kontakte suchen, geschäftliche E-Mail-Adressen prüfen, Nachrichten erstellen und geeignete E-Mails automatisch freigeben. Der Versand richtet sich weiterhin nach der Versandeinstellung, dem Postfachstatus und den gespeicherten Limits.",
+      "dailyCompanyTargetHelp": "Mindestziel für neue Unternehmen über alle aktiven Kampagnen pro UTC-Tag. Die Suche kann weiterlaufen, um neue Unternehmen zur Prüfung bereitzustellen. Die Unternehmen müssen noch qualifiziert werden; diese Einstellung legt kein E-Mail-Volumen fest.",
       "productCheckIntroHelp": "Gründervorstellung nur für die Prüfung beobachteter Produktinformationen.",
       "publishedProductTitle": "Konkrete Produkterkenntnis",
       "publishedProductHelp": "Verwenden Sie '{productFeature}' für eine konkrete Zutat, ein Material, ein Design- oder Kompatibilitätsdetail des genannten Produkts. Formulieren Sie die KI-Frage als vorgeschlagene Prüfung, niemals als Messergebnis oder Behauptung fehlender Daten.",
@@ -546,7 +588,8 @@
       "researchInstructionsHelp": "Beschreiben Sie die Käuferfragen, die genauen Varianten und Märkte für den Vergleich sowie die Belege, die aus UCP, Produktseiten oder dem Bestellprozess erhoben werden sollen. Halten Sie Quellen fest und kennzeichnen Sie ungeprüfte oder nicht verfügbare Ergebnisse als unbekannt.",
       "requireShoppingEvidenceHelp": "Halten Sie Texterstellung und Freigabe an, bis eine belegte Erkenntnis zum Einkaufserlebnis erfasst ist. Eine Information zu einem Inhaltsstoff allein belegt kein Kaufhindernis.",
       "legacyFindingsTitle": "Bisherige Erkenntnisvorlagen",
-      "legacyFindingsHelp": "Gespeicherte Vorlagen für bisherige Produktprüfungen und Prüfungen auf fehlende Daten. Wenn Belege zum Einkaufserlebnis erforderlich sind, verwenden neue Entwürfe stattdessen die erfasste Erkenntnis zum Einkaufserlebnis. Diese Felder bleiben für bisherige Abläufe verfügbar."
+      "legacyFindingsHelp": "Gespeicherte Vorlagen für bisherige Produktprüfungen und Prüfungen auf fehlende Daten. Wenn Belege zum Einkaufserlebnis erforderlich sind, verwenden neue Entwürfe stattdessen die erfasste Erkenntnis zum Einkaufserlebnis. Diese Felder bleiben für bisherige Abläufe verfügbar.",
+      "allowIncompleteHistoryHelp": "Frühere Kampagnen müssen nicht importiert werden. Manche Personen erhalten dadurch möglicherweise erneut eine Nachricht. Erfasste Abmeldungen, unzustellbare Adressen und Ausschlüsse gelten weiterhin."
     },
     "integrations": {
       "title": "Verbinden Sie die passenden Werkzeuge",
@@ -726,12 +769,16 @@
         "setup": {
           "apollo": "Speichern Sie hier den Apollo-API-Schlüssel für Ihren Arbeitsbereich.",
           "clay": "Speichern Sie Ihren Clay-API-Schlüssel, um den Arbeitsbereich zu verbinden. Die Datenanreicherung können Sie später einrichten.",
-          "google": "Erstellen Sie eine Google-OAuth-Webanwendung, tragen Sie die unten angegebene Weiterleitungs-URI ein und speichern Sie die Client-ID und das Client-Secret. Verbinden Sie anschließend jedes Gmail-Postfach."
+          "google": "Erstellen Sie eine Google-OAuth-Webanwendung, tragen Sie die unten angegebene Weiterleitungs-URI ein und speichern Sie die Client-ID und das Client-Secret. Verbinden Sie anschließend jedes Gmail-Postfach.",
+          "scrapellm": "Mit ScrapeLLM erfassen Sie tatsächliche Suchanfragen von Käufern und die angezeigten Antworten.",
+          "firecrawl": "Mit Firecrawl prüfen Sie gerenderte Produktseiten und speichern unterstützende Belege."
         },
         "secret": {
           "apollo": "Apollo-API-Schlüssel",
           "clay": "Clay-API-Schlüssel",
-          "google": "Google-OAuth-Client-Secret"
+          "google": "Google-OAuth-Client-Secret",
+          "scrapellm": "ScrapeLLM-API-Schlüssel",
+          "firecrawl": "Firecrawl-API-Schlüssel"
         },
         "fields": {
           "clientId": "Google-OAuth-Client-ID",
@@ -767,7 +814,9 @@
           "clayTrial": "Clay testen",
           "clayKeys": "Clay-API-Schlüssel",
           "clayWorkspace": "Clay öffnen",
-          "clayApiDocs": "Clay-API-Dokumentation"
+          "clayApiDocs": "Clay-API-Dokumentation",
+          "scrapellmAccount": "ScrapeLLM öffnen",
+          "firecrawlAccount": "Firecrawl öffnen"
         },
         "routineHelp": "Für die Verbindung optional. Richten Sie eine Routine zur Datenanreicherung in Ihrem Clay-Arbeitsbereich ein und fügen Sie ihre ID hier ein.",
         "routine": {
@@ -776,7 +825,8 @@
           }
         },
         "claySaved": "API-Schlüssel geprüft und gespeichert.",
-        "claySavedPending": "API-Schlüssel geprüft und gespeichert. Die Datenanreicherung muss noch eingerichtet werden."
+        "claySavedPending": "API-Schlüssel geprüft und gespeichert. Die Datenanreicherung muss noch eingerichtet werden.",
+        "savedUnchecked": "Schlüssel gespeichert. Der Zugriff wird bei der ersten Rechercheanfrage geprüft."
       },
       "mailbox": {
         "help": "Öffne in Roger Manage Mailbox → Credentials und kopiere App Password. Wir prüfen den Versand- und Antwortzugriff, ohne eine E-Mail zu senden.",
@@ -810,6 +860,16 @@
         },
         "maximumDailyCap": "Angestrebtes Maximum pro Postfach und Tag",
         "dailyCapHelp": "Das Ziel ist auf 50 begrenzt und umfasst Erstkontakte und Folge-E-Mails. Postfächer starten mit 15 pro Tag. Die Grenze steigt nur dann um 5, wenn ein abgeschlossener Tag die aktuelle Grenze ohne beobachteten Rückläufer erreicht hat. Ein beobachteter Rückläufer setzt die Grenze auf 15 zurück. Ein Ziel garantiert weder das Versandvolumen noch die Postfachreputation."
+      },
+      "liveResearch": {
+        "title": "Live-Recherche zum Einkauf",
+        "description": "Verbinden Sie beide Dienste, um Suchanfragen von Käufern zu beobachten und Produktseiten vor dem Verfassen zu prüfen.",
+        "configured": "Zugangsdaten für die Recherche gespeichert",
+        "missing": "Beide Verbindungen erforderlich",
+        "saved": "Schlüssel gespeichert",
+        "verified": "API-Schlüssel überprüft",
+        "environment": "Serverschlüssel konfiguriert",
+        "savedHelp": "Der Zugriff auf ScrapeLLM wird beim Start der Recherche geprüft. Das Speichern des Schlüssels startet keine kostenpflichtige Suche."
       }
     },
     "relationships": {
@@ -886,7 +946,9 @@
       "findingReviewRequired": "Prüfen Sie die rohen und gerenderten Produktnachweise, füllen Sie die Platzhalter zum Befund aus und ergänzen Sie bei Bedarf den erforderlichen Händlernachweis.",
       "templateControlsChanged": "Stellen Sie vor der Freigabe die gespeicherte Gründervorstellung und Abschlussfrage im genauen Wortlaut wieder her.",
       "platformHeld": "Wählen Sie Shopify oder WooCommerce für diese Kaltakquise-Kampagne aus.",
-      "shoppingResearchRequired": "Erfassen Sie eine belegte Erkenntnis zum Einkaufserlebnis, bevor Sie diese Nachricht erstellen oder freigeben."
+      "shoppingResearchRequired": "Erfassen Sie eine belegte Erkenntnis zum Einkaufserlebnis, bevor Sie diese Nachricht erstellen oder freigeben.",
+      "automaticReviewFailed": "Die automatischen Prüfungen konnten diesen Entwurf nicht freigeben. Prüfe die Belege und die Nachricht und speichere deine Korrekturen.",
+      "automaticReviewUncertain": "Eine frühere Entwurfsanfrage muss geklärt werden, bevor die automatische Prüfung fortgesetzt werden kann."
     },
     "preparation": {
       "action": {
@@ -918,7 +980,9 @@
       },
       "holdReasons": "Aktuelle Gründe für Rückstellungen",
       "empty": "Noch keine Versand- oder Gesprächsaktivitäten.",
-      "period": "{from}–{to}"
+      "period": "{from}–{to}",
+      "detailsTitle": "Berichtsdetails",
+      "sourcesTitle": "Nach Quelle"
     },
     "auth": {
       "title": "Bei Outbound anmelden",
@@ -950,7 +1014,7 @@
       "story": {
         "label": "ecentic Outbound",
         "title": "Gute Ansprache beginnt mit einem konkreten Befund.",
-        "description": "Recherchieren Sie passende Shops, prüfen Sie jede Nachricht und führen Sie das Gespräch weiter.",
+        "description": "Finde passende Shops, bereite relevante Nachrichten vor und halte das Gespräch am Laufen.",
         "steps": {
           "research": "Recherche",
           "review": "Prüfung",
@@ -1177,7 +1241,11 @@
       "companySearchFailedDescription": "Es wurden keine Unternehmen hinzugefügt. Beheben Sie das oben angezeigte Problem und versuchen Sie es erneut.",
       "manualClaude": "Claude manuell verwenden",
       "viewContactOptional": "Kontakt ansehen",
-      "automaticContactsHelp": "Aktive Kampagnen prüfen jedes passende Unternehmen, finden und verifizieren einen Kontakt und erstellen anschließend automatisch dessen E-Mail-Sequenz für die Warteschlange. Die Kontaktansicht ist optional; die Versandprüfungen gelten weiterhin."
+      "automaticContactsHelp": "Aktive Kampagnen prüfen jedes passende Unternehmen, finden und verifizieren einen Kontakt und erstellen anschließend automatisch dessen E-Mail-Sequenz für die Warteschlange. Die Kontaktansicht ist optional; die Versandprüfungen gelten weiterhin.",
+      "forms": {
+        "changed": "Diese Kampagne wurde geändert. Deine Werte bleiben erhalten. Lade die gespeicherten Werte, bevor du fortfährst.",
+        "loadSaved": "Änderungen verwerfen und gespeicherte Werte laden"
+      }
     },
     "warmup": {
       "title": "Warmup",
@@ -1253,7 +1321,8 @@
         "sync": "Postfachsynchronisierung",
         "provider": "Anbieterstatus",
         "history": "Verlauf abgeglichen",
-        "test": "Versand- und Antworttest"
+        "test": "Versand- und Antworttest",
+        "historyOptional": "Verlauf früherer Kampagnen optional"
       },
       "mailboxesTitle": "Absenderpostfächer"
     },
@@ -1461,7 +1530,13 @@
         "draft": "Nachrichten vorbereiten",
         "applyDraft": "Nachrichten speichern",
         "approve": "Berechtigung prüfen",
-        "complete": "Vorbereitung abgeschlossen"
+        "complete": "Vorbereitung abgeschlossen",
+        "researchQuery": "Suchanfrage wird vorbereitet",
+        "startShoppingQuery": "Einkaufssuche wird gestartet",
+        "pollShoppingQuery": "Warten auf die Antwort zur Einkaufssuche",
+        "browseShopping": "Produktseiten werden geprüft",
+        "assessShopping": "Recherchebelege werden geprüft",
+        "applyShopping": "Einkaufsrecherche wird gespeichert"
       },
       "reasons": {
         "automation-disabled": "Der automatische Modus ist aus.",
@@ -1482,7 +1557,10 @@
         "provider-access": "Der Anbieter hat den Zugriff abgelehnt. Prüfen Sie den API-Schlüssel und den Suchzugriff unter Integrationen.",
         "provider-quota": "Das Credit- oder Nutzungslimit des Anbieters wurde erreicht. Prüfen Sie Ihren Tarif.",
         "provider-rate-limit": "Der Anbieter begrenzt Anfragen vorübergehend. Warten Sie vor dem nächsten Durchlauf.",
-        "provider-uncertain": "Die Anfrage wurde möglicherweise verarbeitet. Prüfen Sie das Ergebnis, bevor Sie es erneut versuchen."
+        "provider-uncertain": "Die Anfrage wurde möglicherweise verarbeitet. Prüfen Sie das Ergebnis, bevor Sie es erneut versuchen.",
+        "research-not-configured": "Verbinden Sie die Dienste für die Einkaufsrecherche unter Integrationen.",
+        "shopping-research-held": "Die Einkaufsrecherche hat keinen ausreichend belegten Befund ergeben.",
+        "shopping-research-expired": "Die Belege der Einkaufsrecherche sind abgelaufen. Erfassen Sie sie erneut."
       },
       "deliveryBlockers": {
         "sendingPaused": "Der Versand ist im Playbook pausiert.",
@@ -1504,7 +1582,16 @@
       "currentCap": "Aktuelle Tagesgrenze",
       "targetCap": "Angestrebte Obergrenze",
       "rampHeld": "Erhöhung pausiert",
-      "rampHelp": "Postfächer starten mit 15 pro Tag. Die Grenze steigt nur dann um 5, wenn ein abgeschlossener Tag die aktuelle Grenze ohne beobachteten Rückläufer erreicht hat. Ein beobachteter Rückläufer setzt die Grenze auf 15 zurück. Ein Ziel garantiert weder das Versandvolumen noch die Postfachreputation."
+      "rampHelp": "Postfächer starten mit 15 pro Tag. Die Grenze steigt nur dann um 5, wenn ein abgeschlossener Tag die aktuelle Grenze ohne beobachteten Rückläufer erreicht hat. Ein beobachteter Rückläufer setzt die Grenze auf 15 zurück. Ein Ziel garantiert weder das Versandvolumen noch die Postfachreputation.",
+      "research": {
+        "missingTitle": "Für die Einkaufsrecherche fehlt eine Verbindung",
+        "missingHelp": "Verbinden Sie {providers} unter Integrationen, um neue Interessenten anhand beobachteter Einkaufsdaten vorzubereiten.",
+        "action": "Recherchedienste verbinden",
+        "unknownProvider": "einen Recherchedienst",
+        "blockedTitle": "Die Einkaufsrecherche benötigt Ihre Aufmerksamkeit",
+        "blockedHelp": "Prüfen Sie den API-Zugriff und das verfügbare Guthaben für {providers}. Die Recherche ist pausiert, bis diese Verbindung wieder einsatzbereit ist.",
+        "reviewAction": "Rechercheverbindungen prüfen"
+      }
     },
     "sent": {
       "title": "Gesendet",
@@ -1631,7 +1718,10 @@
       "apolloMissing": "Verbinden Sie Apollo, um Unternehmen und aktuelle Kontakte zu finden.",
       "azureMissing": "Konfigurieren Sie Azure, um Belege auszuwerten und Nachrichten vorzubereiten.",
       "linkedinMissing": "Verbinden Sie das ausgewählte LinkedIn-Konto, bevor Sie seine Nachrichten aktivieren.",
-      "error": "Der aktuelle Fortschritt konnte nicht geladen werden. Aktualisieren Sie die Ansicht und versuchen Sie es erneut."
+      "error": "Der aktuelle Fortschritt konnte nicht geladen werden. Aktualisieren Sie die Ansicht und versuchen Sie es erneut.",
+      "qualified": "Qualifizierte Unternehmen",
+      "pipelineTitle": "Aktueller Stand",
+      "pipelineHelp": "Unternehmen und Kontakte in aktiven Kampagnen. Diese Zahlen beschreiben verschiedene Phasen, keine Konversionsrate."
     },
     "conversations": {
       "title": "Gespräche",
@@ -1701,7 +1791,7 @@
       },
       "draftLabel": "Antwortentwurf",
       "invalidBody": "Geben Sie eine Antwort mit 1–10.000 Zeichen ein.",
-      "unsaved": "Speichern Sie Änderungen vor dem Senden oder einem Phasenwechsel.",
+      "unsaved": "Speichere deine Änderungen an der Antwort vor dem Senden.",
       "error": {
         "changed": "Das Gespräch hat sich geändert. Laden Sie es neu und prüfen Sie die letzte Nachricht, bevor Sie fortfahren.",
         "closed": "Dieses Gespräch ist abgeschlossen oder der Empfänger wurde von der Kontaktaufnahme ausgeschlossen.",
@@ -1711,7 +1801,8 @@
         "generationUncertain": "Das Ergebnis des Vorschlags ist nicht bestätigt. Beim Prüfen dieser Anfrage wird keine weitere Antwort generiert.",
         "connection": "Das Sendekonto ist nicht verfügbar oder benötigt eine neue Antwortsynchronisierung. Prüfen Sie Integrationen.",
         "controls": "Der Vorschlag entspricht nicht den gespeicherten Antwortregeln. Verfassen und prüfen Sie die Antwort selbst.",
-        "generic": "Diese Aktion konnte nicht abgeschlossen werden. Aktualisieren Sie das Gespräch und versuchen Sie es erneut."
+        "generic": "Diese Aktion konnte nicht abgeschlossen werden. Aktualisieren Sie das Gespräch und versuchen Sie es erneut.",
+        "authentication": "Deine Sitzung ist abgelaufen. Melde dich im neuen Tab an und versuche es hier erneut. Deine Änderungen bleiben erhalten."
       },
       "newestFirst": "Neueste Nachrichten zuerst",
       "direction": {
@@ -1747,6 +1838,19 @@
         "scheduledHelp": "Hier stehen gespeicherte E-Mail-Sendezeiten. Pausen, Antwortprüfungen, Empfängerzeiten und Postfachlimits können sie verzögern. LinkedIn-Aktionen haben keine feste gespeicherte Sendezeit.",
         "sentHelp": "Versandversuche für E-Mails, LinkedIn und Gesprächsantworten. Angenommen bedeutet, dass der Anbieter die Nachricht angenommen hat; Zustellung oder Öffnung sind damit nicht nachgewiesen.",
         "empty": "Keine Aktivität für diese Ansicht."
+      },
+      "editor": {
+        "changed": "Die Unterhaltung hat sich geändert. Deine Änderungen bleiben erhalten. Prüfe die aktuellen Nachrichten, bevor du fortfährst.",
+        "continue": "Mit meinen Änderungen fortfahren",
+        "refreshing": "Unterhaltung wird aktualisiert…",
+        "savingStage": "Status wird gespeichert…",
+        "stageSaved": "Status gespeichert.",
+        "savingDraft": "Entwurf wird gespeichert…",
+        "draftSaved": "Entwurf gespeichert.",
+        "generating": "Vorschlag wird vorbereitet…",
+        "sending": "Wird gesendet…",
+        "signIn": "Erneut anmelden",
+        "followUpsPaused": "Beim Speichern dieses Status wird die automatische Kontaktaufnahme per E-Mail und LinkedIn für diese Person pausiert. Erneutes Öffnen startet sie nicht wieder."
       }
     }
   }

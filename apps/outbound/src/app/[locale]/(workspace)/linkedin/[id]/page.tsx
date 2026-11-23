@@ -10,7 +10,7 @@ import {
 } from "@/lib/outbound-linkedin";
 import * as Outbound from "@/server/app/outbound";
 import { Environment } from "@/server/utils/environment";
-import { Empty } from "../../_components/common";
+import { Empty } from "../../_components/status";
 import { LinkedInShell } from "../_components/shell";
 import { LinkedInDetailSkeleton } from "../_components/skeletons";
 import { LinkedInEditor } from "./_components/editor";

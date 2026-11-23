@@ -15,7 +15,8 @@
       "integrations": "集成",
       "campaigns": "营销活动",
       "warmup": "邮箱预热",
-      "sent": "已发送"
+      "sent": "已发送",
+      "allProspects": "所有潜在客户"
     },
     "common": {
       "saving": "正在保存…",
@@ -176,9 +177,18 @@
           "primary": "上一页",
           "secondary": "下一页",
           "tertiary": "清除筛选",
-          "quaternary": "关闭导入"
+          "quaternary": "关闭导入",
+          "quinary": "第一页",
+          "senary": "最后一页"
         },
-        "pagination": "潜在客户分页"
+        "pagination": "潜在客户分页",
+        "toolbar": {
+          "filters": "筛选",
+          "more": "更多",
+          "pipelineStatus": "流程状态",
+          "refreshing": "刷新中…"
+        },
+        "contact": "联系人"
       },
       "productCategoryHelp": "使用商品页面标明的类别，用于填入类别占位符。",
       "reviewCountHelp": "仅输入数字，须与该商品页面显示的评论数一致。无法确认时请留空。",
@@ -316,7 +326,36 @@
       },
       "automaticReady": "未记录阻碍",
       "automaticApprovalNote": "自动模式执行批准检查。您仍可在此查看、编辑或暂缓消息；编辑后须重新通过检查。",
-      "manualApproval": "手动批准"
+      "manualApproval": "手动批准",
+      "panel": {
+        "automaticTitle": "自动批准",
+        "manualTitle": "批准",
+        "attention": "需要处理",
+        "update": "草稿需要更新",
+        "held": "序列已暂停",
+        "ready": "已就绪，等待自动检查",
+        "approved": "已批准",
+        "sent": "序列已完成",
+        "evidenceTitle": "研究",
+        "evidenceDetails": "查看证据",
+        "observation": "观察结果",
+        "scope": "范围与局限",
+        "consequence": "这意味着什么",
+        "automaticNote": "符合条件的草稿会自动批准。只有例外情况需要您处理。",
+        "updateNote": "此草稿需要符合当前 Playbook 的要求，才能获得批准。",
+        "sendingPaused": "发送已在 Playbook 中暂停。",
+        "sendingActive": "获批邮件会按照您的日程和邮箱限额自动发送。",
+        "sendingSettings": "发送设置",
+        "controls": "暂停或停止联系",
+        "holdDescription": "暂停此序列，直到您准备好继续。",
+        "systemHold": "此序列因一项已记录的检查而暂停。",
+        "unknownIssue": "一项已记录的检查需要处理。",
+        "editsPending": "保存修改后即可重新运行检查。",
+        "playbookChanged": "此草稿准备完成后，Playbook 已发生更改。",
+        "noEvidence": "尚未保存任何产品研究。",
+        "checked": "观察时间：{date}",
+        "resume": "恢复自动检查"
+      }
     },
     "linkedin": {
       "title": "在 LinkedIn 保持有针对性的联系",
@@ -451,6 +490,7 @@
         "heldCountries": "暂缓联系的国家代码",
         "excludedRoles": "排除的职位",
         "historyConfirmed": "已导入历史发送记录及禁止联系记录",
+        "allowIncompleteHistory": "允许在历史营销活动记录不完整时联系",
         "competingSendersPaused": "已暂停其他主动联系发送系统",
         "senderTested": "发件邮箱已通过受控的发送和回复测试",
         "senderEmails": "发件邮箱",
@@ -476,6 +516,7 @@
         "noProductConsequence": "可能的影响",
         "noProductAskAbout": "向 AI 提问的主题",
         "automationEnabled": "启用活动自动准备",
+        "dailyCompanyTarget": "每日新增公司",
         "productCheckIntro": "商品检查介绍",
         "publishedProductObservation": "观察结果",
         "publishedProductConsequence": "建议检查项",
@@ -529,6 +570,7 @@
       "noProductHelp": "确认源代码以及 JavaScript 执行后的页面中均没有商品数据。",
       "automationTitle": "自动模式",
       "automationHelp": "进行中的活动可自动查找联系人、验证工作邮箱、起草消息并批准符合条件的邮件。发送仍受发送开关、邮箱就绪状态和已保存限制的约束。",
+      "dailyCompanyTargetHelp": "所有进行中的活动按 UTC 自然日共同计算的新公司发现最低目标。为补充研究对象，发现过程可以继续。公司仍需经过资格审核；此设置不决定邮件发送量。",
       "productCheckIntroHelp": "仅用于基于已观察商品信息提供检查的创始人介绍。",
       "publishedProductTitle": "具体产品洞察",
       "publishedProductHelp": "使用 '{productFeature}' 表示在指定产品中找到的具体成分、材料、设计或兼容性信息。将 AI 问题表述为建议开展的检查，不要说成已测得的结果或数据缺失的结论。",
@@ -546,7 +588,8 @@
       "researchInstructionsHelp": "说明买家的问题、要比较的具体规格和市场，以及需从 UCP、商品页面或结账流程中收集的证据。记录来源，未经验证或无法获取的结果应保留为未知。",
       "requireShoppingEvidenceHelp": "在记录有证据支持的购物体验发现之前，暂停起草和批准。单独的成分信息不能证明购物存在障碍。",
       "legacyFindingsTitle": "旧版调研发现模板",
-      "legacyFindingsHelp": "用于以往商品检查和数据缺失检查的已保存模板。启用购物体验证据要求后，新草稿将改用已记录的购物体验发现。这些字段仍保留供旧版流程使用。"
+      "legacyFindingsHelp": "用于以往商品检查和数据缺失检查的已保存模板。启用购物体验证据要求后，新草稿将改用已记录的购物体验发现。这些字段仍保留供旧版流程使用。",
+      "allowIncompleteHistoryHelp": "可以跳过导入以往的营销活动。部分联系人可能会再次收到邮件；已记录的退订、退信和排除规则仍然有效。"
     },
     "integrations": {
       "title": "连接合适的工具",
@@ -726,12 +769,16 @@
         "setup": {
           "apollo": "请在此保存您工作区的 Apollo API 密钥。",
           "clay": "保存 Clay API 密钥即可连接工作区。你可以稍后配置数据补全。",
-          "google": "请创建 Google OAuth Web 应用，添加下方的重定向 URI，并保存其客户端 ID 和客户端密钥。然后连接各个 Gmail 收件箱。"
+          "google": "请创建 Google OAuth Web 应用，添加下方的重定向 URI，并保存其客户端 ID 和客户端密钥。然后连接各个 Gmail 收件箱。",
+          "scrapellm": "使用 ScrapeLLM 获取真实的购物搜索查询及其显示的回答。",
+          "firecrawl": "使用 Firecrawl 检查渲染后的商品页面，并记录支持证据。"
         },
         "secret": {
           "apollo": "Apollo API 密钥",
           "clay": "Clay API 密钥",
-          "google": "Google OAuth 客户端密钥"
+          "google": "Google OAuth 客户端密钥",
+          "scrapellm": "ScrapeLLM API 密钥",
+          "firecrawl": "Firecrawl API 密钥"
         },
         "fields": {
           "clientId": "Google OAuth 客户端 ID",
@@ -767,7 +814,9 @@
           "clayTrial": "试用 Clay",
           "clayKeys": "Clay API 密钥",
           "clayWorkspace": "打开 Clay",
-          "clayApiDocs": "Clay API 文档"
+          "clayApiDocs": "Clay API 文档",
+          "scrapellmAccount": "打开 ScrapeLLM",
+          "firecrawlAccount": "打开 Firecrawl"
         },
         "routineHelp": "连接时无需填写。在 Clay 工作区中配置数据补全例程后，将其 ID 粘贴到此处。",
         "routine": {
@@ -776,7 +825,8 @@
           }
         },
         "claySaved": "API 密钥已验证并保存。",
-        "claySavedPending": "API 密钥已验证并保存。数据补全尚未配置。"
+        "claySavedPending": "API 密钥已验证并保存。数据补全尚未配置。",
+        "savedUnchecked": "密钥已保存。首次运行调研请求时将检查访问权限。"
       },
       "mailbox": {
         "help": "在 Roger 中打开 Manage Mailbox → Credentials，然后复制 App Password。我们会检查发送和读取回复的权限，不会发送邮件。",
@@ -810,6 +860,16 @@
         },
         "maximumDailyCap": "每个邮箱的每日目标上限",
         "dailyCapHelp": "目标上限为50封，包含首封邮件和跟进邮件。 邮箱从每天15封开始。只有在完整的一天中达到当前上限，且未观察到退信时，上限才会增加5封。观察到退信后，上限会恢复为15封。目标并不保证实际发送量或邮箱信誉。"
+      },
+      "liveResearch": {
+        "title": "实时购物调研",
+        "description": "连接这两项服务，在起草前查看购物者的搜索结果并检查商品页面。",
+        "configured": "调研凭据已保存",
+        "missing": "需要连接两项服务",
+        "saved": "密钥已保存",
+        "verified": "API 密钥已验证",
+        "environment": "服务器密钥已配置",
+        "savedHelp": "运行调研时会检查 ScrapeLLM 访问权限。保存密钥不会发起付费搜索。"
       }
     },
     "relationships": {
@@ -886,7 +946,9 @@
       "findingReviewRequired": "请审核商品的原始和渲染后依据，填写发现项占位符，并在需要时添加其他商家的来源链接。",
       "templateControlsChanged": "批准前，请将创始人介绍和结尾问题恢复为已保存的原文。",
       "platformHeld": "请为此次陌生客户开发活动选择 Shopify 或 WooCommerce。",
-      "shoppingResearchRequired": "起草或批准此消息前，请记录有证据支持的购物体验发现。"
+      "shoppingResearchRequired": "起草或批准此消息前，请记录有证据支持的购物体验发现。",
+      "automaticReviewFailed": "自动检查未能批准此草稿。请检查证据和消息，然后保存修改。",
+      "automaticReviewUncertain": "必须核实先前草稿请求的结果，才能恢复自动审核。"
     },
     "preparation": {
       "action": {
@@ -918,7 +980,9 @@
       },
       "holdReasons": "当前暂缓原因",
       "empty": "暂无投递或对话活动。",
-      "period": "{from}–{to}"
+      "period": "{from}–{to}",
+      "detailsTitle": "报告详情",
+      "sourcesTitle": "按来源"
     },
     "auth": {
       "title": "登录 Outbound",
@@ -950,7 +1014,7 @@
       "story": {
         "label": "ecentic Outbound",
         "title": "有效的触达，始于真实的发现。",
-        "description": "研究合适的商店，审核每条消息，持续推进对话。",
+        "description": "寻找合适的店铺，准备相关消息，让对话持续推进。",
         "steps": {
           "research": "研究",
           "review": "审核",
@@ -1177,7 +1241,11 @@
       "companySearchFailedDescription": "未添加任何公司。请先解决上方显示的问题，然后重试。",
       "manualClaude": "手动使用Claude",
       "viewContactOptional": "查看联系人",
-      "automaticContactsHelp": "启用的营销活动会检查每家符合条件的公司，查找并验证联系人，然后自动起草邮件序列并加入发送队列。无需逐一打开联系人；发送前仍会执行各项检查。"
+      "automaticContactsHelp": "启用的营销活动会检查每家符合条件的公司，查找并验证联系人，然后自动起草邮件序列并加入发送队列。无需逐一打开联系人；发送前仍会执行各项检查。",
+      "forms": {
+        "changed": "此广告系列已更改。你的输入已保留。请先加载已保存的值再继续。",
+        "loadSaved": "放弃更改并加载已保存的值"
+      }
     },
     "warmup": {
       "title": "邮箱预热",
@@ -1253,7 +1321,8 @@
         "sync": "邮箱同步",
         "provider": "供应商状态",
         "history": "历史记录核对",
-        "test": "发送和回复测试"
+        "test": "发送和回复测试",
+        "historyOptional": "以往营销活动记录为可选项"
       },
       "mailboxesTitle": "发件邮箱"
     },
@@ -1461,7 +1530,13 @@
         "draft": "起草消息",
         "applyDraft": "保存消息",
         "approve": "检查资格",
-        "complete": "准备完成"
+        "complete": "准备完成",
+        "researchQuery": "正在准备购物查询",
+        "startShoppingQuery": "正在开始购物搜索",
+        "pollShoppingQuery": "正在等待搜索回答",
+        "browseShopping": "正在检查商品页面",
+        "assessShopping": "正在核查购物证据",
+        "applyShopping": "正在保存购物调研"
       },
       "reasons": {
         "automation-disabled": "自动模式已关闭。",
@@ -1482,7 +1557,10 @@
         "provider-access": "供应商拒绝了访问。请在“集成”中检查 API 密钥和搜索权限。",
         "provider-quota": "已达到供应商的积分或使用量上限。请检查您的套餐。",
         "provider-rate-limit": "供应商暂时限制了请求。请稍候再开始下一批。",
-        "provider-uncertain": "此请求可能已处理。请先确认结果再重试。"
+        "provider-uncertain": "此请求可能已处理。请先确认结果再重试。",
+        "research-not-configured": "请在“集成”中连接购物调研服务。",
+        "shopping-research-held": "购物调研未获得有充分证据支持的发现。",
+        "shopping-research-expired": "购物证据已过期，请重新获取。"
       },
       "deliveryBlockers": {
         "sendingPaused": "运营手册中的发送已暂停。",
@@ -1504,7 +1582,16 @@
       "currentCap": "当前每日上限",
       "targetCap": "目标上限",
       "rampHeld": "暂停增加",
-      "rampHelp": "邮箱从每天15封开始。只有在完整的一天中达到当前上限，且未观察到退信时，上限才会增加5封。观察到退信后，上限会恢复为15封。目标并不保证实际发送量或邮箱信誉。"
+      "rampHelp": "邮箱从每天15封开始。只有在完整的一天中达到当前上限，且未观察到退信时，上限才会增加5封。观察到退信后，上限会恢复为15封。目标并不保证实际发送量或邮箱信誉。",
+      "research": {
+        "missingTitle": "购物调研需要连接服务",
+        "missingHelp": "在“集成”中连接 {providers}，即可根据实际观察到的购物证据准备新的潜在客户。",
+        "action": "连接调研服务",
+        "unknownProvider": "一项调研服务",
+        "blockedTitle": "购物调研需要处理",
+        "blockedHelp": "请检查 {providers} 的 API 访问权限和可用额度。此连接的问题解决前，调研将暂停。",
+        "reviewAction": "检查调研连接"
+      }
     },
     "sent": {
       "title": "已发送",
@@ -1631,7 +1718,10 @@
       "apolloMissing": "连接Apollo以查找企业和当前联系人。",
       "azureMissing": "配置Azure以评估调研信息并准备消息。",
       "linkedinMissing": "启用消息发送前，请连接所选LinkedIn账号。",
-      "error": "无法加载当前进度。请刷新重试。"
+      "error": "无法加载当前进度。请刷新重试。",
+      "qualified": "符合条件的公司",
+      "pipelineTitle": "当前进展",
+      "pipelineHelp": "进行中的营销活动中的公司和联系人。这些数量代表不同阶段，并非转化率。"
     },
     "conversations": {
       "title": "对话",
@@ -1701,7 +1791,7 @@
       },
       "draftLabel": "回复草稿",
       "invalidBody": "请输入 1–10,000 个字符的回复。",
-      "unsaved": "发送或更改阶段前，请先保存修改。",
+      "unsaved": "请先保存回复的修改，再发送。",
       "error": {
         "changed": "对话已更新。请重新加载并阅读最新消息后再继续。",
         "closed": "此对话已关闭，或收件人已被排除在联系范围之外。",
@@ -1711,7 +1801,8 @@
         "generationUncertain": "回复建议的结果尚未确认。检查此请求不会再次生成回复。",
         "connection": "发送账号不可用，或需要重新同步回复。请检查“集成”。",
         "controls": "回复建议未通过已保存的回复规则检查。请手动撰写并审核回复。",
-        "generic": "无法完成此操作。请刷新对话后重试。"
+        "generic": "无法完成此操作。请刷新对话后重试。",
+        "authentication": "会话已过期。请在新标签页中重新登录，然后回到这里重试。你的编辑内容已保留。"
       },
       "newestFirst": "最新消息在前",
       "direction": {
@@ -1747,6 +1838,19 @@
         "scheduledHelp": "此处显示已保存的邮件发送时间。暂停、回复检查、收件人时段和邮箱限额可能导致延迟。LinkedIn 操作没有已保存的固定发送时间。",
         "sentHelp": "邮件、LinkedIn 和对话回复的发送记录。“已接受”表示服务商接受了消息，并不证明已送达或已打开。",
         "empty": "当前视图没有匹配的活动。"
+      },
+      "editor": {
+        "changed": "对话已更新。你的编辑内容已保留。请查看当前消息后再继续。",
+        "continue": "保留我的编辑并继续",
+        "refreshing": "正在刷新对话…",
+        "savingStage": "正在保存阶段…",
+        "stageSaved": "阶段已保存。",
+        "savingDraft": "正在保存草稿…",
+        "draftSaved": "草稿已保存。",
+        "generating": "正在准备回复建议…",
+        "sending": "正在发送…",
+        "signIn": "重新登录",
+        "followUpsPaused": "保存此阶段后，系统将暂停对此人的自动邮件和 LinkedIn 联系。重新打开对话不会自动恢复。"
       }
     }
   }

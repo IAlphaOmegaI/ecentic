@@ -133,14 +133,29 @@ export const getIntegrationStatus = async () => {
   const Credentials = await import(
     "@/server/app/outbound/provider-credentials"
   );
-  const [apollo, clay, google] = await Promise.all([
+  const [apollo, clay, google, scrapellm, firecrawl] = await Promise.all([
     Credentials.metadata("apollo"),
     Credentials.metadata("clay"),
     Google.getConfigurationStatus(),
+    Credentials.metadata("scrapellm"),
+    Credentials.metadata("firecrawl"),
   ]);
   if (!apollo.success) throw apollo.error;
   if (!clay.success) throw clay.error;
+  if (!scrapellm.success) throw scrapellm.error;
+  if (!firecrawl.success) throw firecrawl.error;
   return {
+    research: {
+      configured: scrapellm.data.configured && firecrawl.data.configured,
+      scrapellm: {
+        configured: scrapellm.data.configured,
+        credentialStatus: scrapellm.data.credentialStatus,
+      },
+      firecrawl: {
+        configured: firecrawl.data.configured,
+        credentialStatus: firecrawl.data.credentialStatus,
+      },
+    },
     apollo: {
       configured: apollo.data.configured,
       credentialStatus: apollo.data.credentialStatus,

@@ -38,7 +38,7 @@ export const ReviewDetailSkeleton = () => (
       <div className="h-6 w-48 rounded-sm bg-accent-foreground/40" />
       <div className="h-4 w-64 rounded-sm bg-accent-foreground/40" />
     </div>
-    <div className="grid gap-8 px-4 py-6 sm:px-6 xl:grid-cols-[minmax(0,1fr)_18rem]">
+    <div className="grid gap-8 px-4 py-6 sm:px-6 xl:grid-cols-[minmax(0,1fr)_20rem]">
       <div className="space-y-6">
         <div className="h-10 rounded-sm bg-accent-foreground/40" />
         <div className="h-40 rounded-sm bg-accent-foreground/40" />
