@@ -15,7 +15,8 @@
       "integrations": "Integrations",
       "campaigns": "Campaigns",
       "warmup": "Warmup",
-      "sent": "Sent"
+      "sent": "Sent",
+      "allProspects": "All prospects"
     },
     "common": {
       "saving": "Saving…",
@@ -176,7 +177,9 @@
           "primary": "Previous page",
           "secondary": "Next page",
           "tertiary": "Clear filters",
-          "quaternary": "Close import"
+          "quaternary": "Close import",
+          "quinary": "First page",
+          "senary": "Last page"
         },
         "pagination": "Prospect pages",
         "toolbar": {
@@ -184,7 +187,8 @@
           "more": "More",
           "pipelineStatus": "Pipeline status",
           "refreshing": "Refreshing…"
-        }
+        },
+        "contact": "Contact"
       },
       "productCategoryHelp": "Use the category stated by the product page. It fills the category placeholder.",
       "reviewCountHelp": "Digits only, copied from this product’s visible review count. Leave blank if it cannot be confirmed.",
@@ -976,7 +980,9 @@
       },
       "holdReasons": "Current hold reasons",
       "empty": "No delivery or conversation activity yet.",
-      "period": "{from}–{to}"
+      "period": "{from}–{to}",
+      "detailsTitle": "Report details",
+      "sourcesTitle": "By source"
     },
     "auth": {
       "title": "Sign in to Outbound",
@@ -1008,7 +1014,7 @@
       "story": {
         "label": "ecentic Outbound",
         "title": "Good outreach starts with a real finding.",
-        "description": "Research the right stores, review every message, and keep the conversation moving.",
+        "description": "Research the right stores, prepare relevant messages, and keep the conversation moving.",
         "steps": {
           "research": "Research",
           "review": "Review",
@@ -1712,7 +1718,10 @@
       "apolloMissing": "Connect Apollo to find companies and current contacts.",
       "azureMissing": "Configure Azure to assess evidence and prepare messages.",
       "linkedinMissing": "Connect the selected LinkedIn account before enabling its messages.",
-      "error": "Couldn’t load the current pipeline. Refresh to try again."
+      "error": "Couldn’t load the current pipeline. Refresh to try again.",
+      "qualified": "Qualified companies",
+      "pipelineTitle": "Current pipeline",
+      "pipelineHelp": "Companies and contacts across active campaigns. These counts describe different stages, not a conversion rate."
     },
     "conversations": {
       "title": "Conversations",

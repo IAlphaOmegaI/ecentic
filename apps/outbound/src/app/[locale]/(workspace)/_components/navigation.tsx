@@ -3,7 +3,6 @@
 import {
   ArrowRightIcon,
   CheckBadgeIcon,
-  ChevronRightIcon,
   CommerceBookOpenIcon,
   CommerceCityBuildingIcon,
   CommercePlug_3SparkleIcon,
@@ -15,7 +14,14 @@ import {
   SquareChartIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionPanel,
+  AccordionTrigger,
+} from "@zenncore/web/components/accordion";
 import { Button } from "@zenncore/web/components/button";
+import { ScrollArea } from "@zenncore/web/components/scroll-area";
 import {
   Sheet,
   SheetHeader,
@@ -25,7 +31,7 @@ import {
 } from "@zenncore/web/components/sheet";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { AccountControl } from "@/components/account-control";
 import { Link, usePathname } from "@/i18n/navigation";
 
@@ -75,7 +81,7 @@ const sectionFor = (pathname: string) =>
     );
   });
 
-const WorkspaceMark = ({ onNavigate }: { onNavigate?: () => void }) => (
+export const WorkspaceMark = ({ onNavigate }: WorkspaceMark.Props) => (
   <Link
     href="/"
     onClick={onNavigate}
@@ -93,9 +99,13 @@ const WorkspaceMark = ({ onNavigate }: { onNavigate?: () => void }) => (
   </Link>
 );
 
+export namespace WorkspaceMark {
+  export type Props = { onNavigate?: () => void };
+}
+
 export const Navigation = () => (
   <aside className="relative hidden min-h-0 w-60 shrink-0 flex-col overflow-hidden bg-emphasis font-normal text-background-rich md:flex">
-    <div className="flex h-16 shrink-0 items-center px-5">
+    <div className="flex h-16 shrink-0 items-center px-4">
       <WorkspaceMark />
     </div>
     <Suspense fallback={<NavigationLinks />}>
@@ -104,143 +114,213 @@ export const Navigation = () => (
   </aside>
 );
 
-const ActiveNavigationLinks = ({ onNavigate }: { onNavigate?: () => void }) => (
-  <NavigationLinks pathname={usePathname()} onNavigate={onNavigate} />
+const ActiveNavigationLinks = (props: WorkspaceMark.Props) => (
+  <NavigationLinks pathname={usePathname()} {...props} />
 );
 
-const NavigationLinks = ({
+export const NavigationLink = ({
+  section,
+  current,
+  onNavigate,
+  nested = false,
+}: NavigationLink.Props) => {
+  const translate = useTranslations("outbound");
+  const Icon = icons[section];
+  const active =
+    current === section || (section === "replies" && current === "sent");
+
+  return (
+    <Link
+      href={sectionHref(section)}
+      onClick={onNavigate}
+      aria-current={current === section ? "page" : undefined}
+      className={cn(
+        "group relative flex min-h-10 items-center gap-2 rounded-lg px-4 py-2 text-sm transition-colors focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 motion-reduce:transition-none",
+        active
+          ? nested
+            ? "bg-background-rich/10 font-semibold text-background-rich"
+            : "inset-shadow-background-rich/30 inset-shadow-sm bg-background-rich bg-linear-to-b from-primary-text/90 to-primary-text font-semibold text-background-rich"
+          : "font-medium text-background-rich/65 hover:bg-background-rich/8 hover:text-background-rich",
+      )}
+    >
+      <Icon
+        aria-hidden
+        className={cn(
+          "size-4 shrink-0",
+          section === "linkedin" && "fill-current",
+        )}
+      />
+      <span className="min-w-0 flex-1 leading-snug">
+        {translate(
+          nested && section === "prospects"
+            ? "nav.allProspects"
+            : `nav.${section}`,
+        )}
+      </span>
+    </Link>
+  );
+};
+export namespace NavigationLink {
+  export type Props = WorkspaceMark.Props & {
+    section: Section;
+    current?: Section;
+    nested?: boolean;
+  };
+}
+
+export const NavigationLinks = ({
   pathname,
   onNavigate,
-}: {
-  pathname?: string;
-  onNavigate?: () => void;
-}) => {
+}: NavigationLinks.Props) => {
   const translate = useTranslations("outbound");
   const current = pathname === undefined ? undefined : sectionFor(pathname);
   const prospectFamily =
     current === "prospects" || current === "review" || current === "linkedin";
+  const [expanded, setExpanded] = useState<
+    NonNullable<Accordion.Props["value"]>
+  >(prospectFamily ? ["prospects"] : []);
+
+  useEffect(() => {
+    if (pathname && prospectFamily) setExpanded(["prospects"]);
+  }, [pathname, prospectFamily]);
+
   return (
     <nav
       aria-label={translate("page.title")}
-      className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto overscroll-contain pt-3 pb-5"
+      className="flex min-h-0 flex-1 flex-col"
     >
-      {groups.map((group) => (
-        <div
-          key={group.key}
-          className={cn(
-            "shrink-0",
-            group.key === "settings" &&
-              "mt-auto border-background-rich/10 border-t pt-5",
-          )}
-        >
-          <p className="mb-2 px-6 font-medium text-background-rich/45 text-xs">
-            {translate(`chrome.groups.${group.key}`)}
-          </p>
-          <div className="space-y-1">
-            {group.sections.map((section) => {
-              const Icon = icons[section];
-              const active =
-                current === section ||
-                (section === "prospects" && prospectFamily) ||
-                (section === "replies" && current === "sent");
-              return (
-                <div key={section}>
-                  <Link
-                    href={sectionHref(section)}
-                    onClick={onNavigate}
-                    aria-current={current === section ? "page" : undefined}
-                    className={cn(
-                      "group relative mx-3 flex min-h-10 items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 motion-reduce:transition-none",
-                      active
-                        ? "inset-shadow-background-rich/30 inset-shadow-sm bg-background-rich bg-linear-to-b from-primary-text/90 to-primary-text font-semibold text-background-rich"
-                        : "font-medium text-background-rich/75 hover:bg-background-rich/8 hover:text-background-rich",
-                    )}
-                  >
-                    <Icon
-                      aria-hidden
-                      className={cn(
-                        "size-5 shrink-0",
-                        active
-                          ? "text-background-rich"
-                          : "text-background-rich/65",
-                      )}
-                    />
-                    <span className="min-w-0 flex-1 leading-snug">
-                      {translate(`nav.${section}`)}
-                    </span>
-                  </Link>
-                  {section === "prospects" && prospectFamily && (
-                    <div className="mt-1 mr-3 ml-9 space-y-1 border-background-rich/15 border-l pl-2">
-                      {(["review", "linkedin"] as const).map((secondary) => {
-                        const SecondaryIcon = icons[secondary];
-                        return (
-                          <Link
-                            key={secondary}
-                            href={sectionHref(secondary)}
-                            onClick={onNavigate}
-                            aria-current={
-                              current === secondary ? "page" : undefined
-                            }
-                            className={cn(
-                              "flex min-h-9 items-center gap-2 rounded-md px-3 py-2 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-primary motion-reduce:transition-none",
-                              current === secondary
-                                ? "bg-background-rich/10 font-semibold text-background-rich"
-                                : "text-background-rich/60 hover:bg-background-rich/8 hover:text-background-rich",
-                            )}
-                          >
-                            <SecondaryIcon
-                              aria-hidden
-                              className={cn(
-                                "size-4 shrink-0",
-                                secondary === "linkedin" && "fill-current",
-                              )}
+      <ScrollArea
+        className="min-h-0 flex-1"
+        viewportProps={{
+          role: "region",
+          tabIndex: 0,
+          "aria-label": translate("chrome.groups.workspace"),
+        }}
+        classList={{
+          viewport: "focus-visible:outline-primary",
+          scrollBar: {
+            root: "bg-background-rich/10",
+            thumb: "bg-background-rich/30",
+          },
+        }}
+      >
+        <div className="flex min-h-full flex-col">
+          <div className="shrink-0 space-y-2 px-2 py-4">
+            <p className="px-4 pb-2 font-medium text-background-rich/45 text-xs">
+              {translate("chrome.groups.workspace")}
+            </p>
+            {groups[0].sections.map((section) =>
+              section === "prospects" ? (
+                <Accordion
+                  key={section}
+                  value={expanded}
+                  onValueChange={setExpanded}
+                >
+                  <AccordionItem value="prospects" className="border-0">
+                    <AccordionTrigger
+                      className="min-h-10 items-center gap-2 px-4 py-2"
+                      classList={{
+                        trigger: {
+                          root: cn(
+                            "rounded-lg text-sm leading-snug focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 motion-reduce:transition-none",
+                            prospectFamily
+                              ? "inset-shadow-background-rich/30 inset-shadow-sm bg-background-rich bg-linear-to-b from-primary-text/90 to-primary-text font-semibold text-background-rich"
+                              : "font-medium text-background-rich/65 hover:bg-background-rich/8 hover:text-background-rich",
+                          ),
+                          icon: "mr-0 size-4 shrink-0 transition-transform duration-150 group-data-panel-open:rotate-180 motion-reduce:transition-none",
+                        },
+                      }}
+                    >
+                      <FaceSearchIcon aria-hidden className="size-4 shrink-0" />
+                      <span className="min-w-0 flex-1">
+                        {translate("nav.prospects")}
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionPanel className="duration-200 motion-reduce:transition-none">
+                      <div className="mt-2 ml-6 space-y-2 border-background-rich/15 border-l pl-2">
+                        {(["prospects", "review", "linkedin"] as const).map(
+                          (secondary) => (
+                            <NavigationLink
+                              key={secondary}
+                              section={secondary}
+                              current={current}
+                              onNavigate={onNavigate}
+                              nested
                             />
-                            {translate(`nav.${secondary}`)}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                          ),
+                        )}
+                      </div>
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+              ) : (
+                <NavigationLink
+                  key={section}
+                  section={section}
+                  current={current}
+                  onNavigate={onNavigate}
+                />
+              ),
+            )}
+          </div>
+          <div className="mt-auto shrink-0 space-y-2 border-background-rich/10 border-t px-2 py-4">
+            <p className="px-4 pb-2 font-medium text-background-rich/45 text-xs">
+              {translate("chrome.groups.settings")}
+            </p>
+            {groups[1].sections.map((section) => (
+              <NavigationLink
+                key={section}
+                section={section}
+                current={current}
+                onNavigate={onNavigate}
+              />
+            ))}
           </div>
         </div>
-      ))}
+      </ScrollArea>
     </nav>
   );
 };
+export namespace NavigationLinks {
+  export type Props = WorkspaceMark.Props & { pathname?: string };
+}
 
 const MobileNavigation = () => {
   const translate = useTranslations("outbound");
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const previousPathname = useRef(pathname);
+
+  useEffect(() => {
+    if (previousPathname.current === pathname) return;
+    previousPathname.current = pathname;
+    setOpen(false);
+  }, [pathname]);
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger
         render={
-          <Button
-            variant="ghost"
-            color="neutral"
-            size="icon"
-            className="shrink-0 rounded-lg text-background-rich/80 hover:bg-background-rich/10 hover:text-background-rich md:hidden"
-          />
+          <Button variant="ghost" color="neutral" tone="inverse" size="icon" />
         }
         aria-label={translate("chrome.menu.open")}
       >
-        <MenuIcon aria-hidden className="size-5" />
+        <MenuIcon aria-hidden />
       </SheetTrigger>
       <SheetPopup
         side="left"
         closeLabel={translate("chrome.menu.close")}
-        className="h-dvh max-h-none w-80 max-w-full origin-center gap-0 overflow-hidden rounded-r-lg border-0 bg-emphasis p-0 font-normal text-background-rich transition-[opacity,transform,filter] ease-out data-ending-style:translate-x-0 data-starting-style:translate-x-0 data-ending-style:opacity-0 data-starting-style:opacity-0 data-ending-style:blur-sm data-starting-style:blur-sm data-closed:duration-100 data-open:duration-150 motion-reduce:transition-none"
+        className="h-dvh max-h-none w-80 max-w-full origin-left gap-0 overflow-hidden rounded-r-lg border-0 p-0 transition-transform ease-out data-closed:duration-150 data-open:duration-200 motion-reduce:transition-none motion-reduce:data-ending-style:translate-x-0 motion-reduce:data-starting-style:translate-x-0"
         classList={{
-          backdrop: "z-50 bg-emphasis/40 backdrop-blur-sm",
+          root: "bg-emphasis font-normal text-background-rich",
+          backdrop:
+            "z-50 bg-emphasis/40 backdrop-blur-sm motion-reduce:transition-none",
           close: {
             root: "top-4 right-4 flex size-8 items-center justify-center rounded-lg text-background-rich/70 opacity-100 hover:bg-background-rich/10 hover:text-background-rich",
           },
         }}
       >
-        <SheetHeader className="h-16 shrink-0 justify-center px-5 py-0">
+        <SheetHeader className="h-16 shrink-0 justify-center px-4 py-0">
           <SheetTitle className="sr-only">{translate("page.title")}</SheetTitle>
           <WorkspaceMark onNavigate={() => setOpen(false)} />
         </SheetHeader>
@@ -254,59 +334,24 @@ const MobileNavigation = () => {
   );
 };
 
-const CurrentDestination = () => {
-  const pathname = usePathname();
-  const translate = useTranslations("outbound");
-  const section = sectionFor(pathname);
-  return (
-    <span className="truncate font-medium text-background-rich text-sm">
-      {section ? translate(`nav.${section}`) : translate("page.title")}
-    </span>
-  );
-};
-
-export const WorkspaceHeader = () => {
-  const translate = useTranslations("outbound");
-  return (
-    <header className="flex h-16 shrink-0 items-center justify-between gap-2 bg-emphasis px-3 font-normal text-background-rich sm:gap-6 sm:px-6">
-      <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
-        <MobileNavigation />
-        <nav
-          aria-label={translate("chrome.breadcrumb.label")}
-          className="flex min-w-0 items-center gap-3"
-        >
-          <Link
-            href="/"
-            className="hidden rounded-sm text-background-rich/55 text-sm transition-colors hover:text-background-rich focus-visible:outline-2 focus-visible:outline-primary sm:inline"
-          >
-            {translate("page.title")}
-          </Link>
-          <ChevronRightIcon
-            aria-hidden
-            className="hidden size-3.5 shrink-0 text-background-rich/35 sm:block"
-          />
-          <Suspense
-            fallback={
-              <span
-                aria-hidden
-                className="h-4 w-24 rounded-sm bg-background-rich/10"
-              />
-            }
-          >
-            <CurrentDestination />
-          </Suspense>
-        </nav>
+export const WorkspaceHeader = () => (
+  <header className="flex h-16 shrink-0 items-center justify-between gap-4 bg-emphasis px-4 font-normal text-background-rich sm:px-6">
+    <div className="min-w-0 flex-1">
+      <div className="w-fit md:hidden">
+        <Suspense>
+          <MobileNavigation />
+        </Suspense>
       </div>
-      <Suspense
-        fallback={
-          <span
-            aria-hidden
-            className="h-10 w-14 shrink-0 rounded-lg bg-background-rich/10 lg:w-28"
-          />
-        }
-      >
-        <AccountControl />
-      </Suspense>
-    </header>
-  );
-};
+    </div>
+    <Suspense
+      fallback={
+        <span
+          aria-hidden
+          className="h-10 w-16 shrink-0 rounded-lg bg-background-rich/10 lg:w-28"
+        />
+      }
+    >
+      <AccountControl />
+    </Suspense>
+  </header>
+);

@@ -1,6 +1,6 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { getFormatter, getTranslations } from "next-intl/server";
+import * as NextIntl from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { ConversationDetail } from "@/lib/outbound-conversations";
 import { ConversationEditor } from "./editor";
@@ -8,12 +8,12 @@ import { ConversationStageBadge } from "./queue";
 
 export const ConversationDetailView = async ({
   detail,
-}: {
-  detail: ConversationDetail;
-}) => {
-  const t = await getTranslations("outbound.conversations");
-  const navigation = await getTranslations("outbound.sent");
-  const format = await getFormatter();
+}: ConversationDetailView.Props) => {
+  const [translate, translateNavigation, format] = await Promise.all([
+    NextIntl.getTranslations("outbound.conversations"),
+    NextIntl.getTranslations("outbound.sent"),
+    NextIntl.getFormatter(),
+  ]);
   const date = (value: string) =>
     format.dateTime(new Date(value), {
       dateStyle: "medium",
@@ -27,15 +27,15 @@ export const ConversationDetailView = async ({
         <div className="min-w-0">
           <Link
             href={`/prospects/${detail.thread.prospectId}`}
-            className="font-heading font-medium text-2xl text-foreground-rich hover:text-primary-text"
+            className="break-words rounded-sm font-heading font-semibold text-2xl text-foreground-rich hover:text-primary-text focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4"
           >
             {detail.thread.company}
           </Link>
-          <p className="mt-1 break-words text-foreground-dimmed text-sm">
+          <p className="mt-2 break-words text-foreground-dimmed text-sm">
             {detail.thread.person} · {detail.thread.counterpart}
           </p>
           <p className="mt-2 break-words text-foreground-dimmed text-xs">
-            {t(`channel.${detail.thread.channel}`)} ·{" "}
+            {translate(`channel.${detail.thread.channel}`)} ·{" "}
             {detail.thread.accountLabel}
           </p>
         </div>
@@ -44,20 +44,22 @@ export const ConversationDetailView = async ({
           needsReply={detail.thread.needsReply}
         />
       </section>
-      <div className="grid xl:grid-cols-[minmax(0,1fr)_24rem]">
+      <div className="grid min-w-0 xl:grid-cols-[minmax(0,1fr)_24rem]">
         <div className="min-w-0">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-accent-foreground border-b px-4 py-4 sm:px-6">
-            <h2 className="min-w-0 break-words font-medium text-foreground-rich">
-              {detail.thread.subject || t("noSubject")}
+          <div className="flex flex-wrap items-center justify-between gap-4 border-accent-foreground border-b px-4 py-4 sm:px-6">
+            <h2 className="min-w-0 break-words font-semibold text-foreground-rich text-sm">
+              {detail.thread.subject || translate("noSubject")}
             </h2>
-            <p className="text-foreground-dimmed text-xs">{t("newestFirst")}</p>
+            <p className="text-foreground-dimmed text-xs">
+              {translate("newestFirst")}
+            </p>
           </div>
           {detail.messages.length ? (
             <ol className="divide-y divide-accent-foreground">
               {detail.messages.map((message) => (
                 <li key={message.id} className="px-4 py-6 sm:px-6">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="min-w-0 break-all font-medium text-foreground-rich text-sm">
+                    <p className="min-w-0 break-words font-semibold text-foreground-rich text-sm [overflow-wrap:anywhere]">
                       {message.from}
                     </p>
                     <time
@@ -67,20 +69,22 @@ export const ConversationDetailView = async ({
                       {date(message.sentAt)} UTC
                     </time>
                   </div>
-                  <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-foreground-dimmed text-xs">
-                    <span>{t(`direction.${message.direction}`)}</span>
-                    <span>{t(`channel.${message.channel}`)}</span>
-                    {message.isAutomated && <span>{t("automated")}</span>}
-                    <span className="break-all">
-                      {t("to")}: {message.to}
+                  <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-foreground-dimmed text-xs">
+                    <span>{translate(`direction.${message.direction}`)}</span>
+                    <span>{translate(`channel.${message.channel}`)}</span>
+                    {message.isAutomated && (
+                      <span>{translate("automated")}</span>
+                    )}
+                    <span className="min-w-0 [overflow-wrap:anywhere]">
+                      {translate("to")}: {message.to}
                     </span>
                   </div>
-                  <p className="mt-5 whitespace-pre-wrap break-words text-foreground-rich text-sm leading-7">
-                    {message.bodyText || t("emptyBody")}
+                  <p className="mt-4 max-w-prose whitespace-pre-wrap break-words text-foreground-rich text-sm leading-6">
+                    {message.bodyText || translate("emptyBody")}
                   </p>
                   {message.truncated && (
                     <p className="mt-4 text-sm text-warning leading-6">
-                      {t("truncated")}
+                      {translate("truncated")}
                     </p>
                   )}
                 </li>
@@ -88,13 +92,13 @@ export const ConversationDetailView = async ({
             </ol>
           ) : (
             <p className="px-4 py-10 text-foreground-dimmed text-sm sm:px-6">
-              {t("emptyMessages")}
+              {translate("emptyMessages")}
             </p>
           )}
           {pages > 1 && (
-            <div className="flex flex-wrap items-center justify-between gap-3 border-accent-foreground border-t px-4 py-4 sm:px-6">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-accent-foreground border-t px-4 py-4 sm:px-6">
               <p className="text-foreground-dimmed text-xs">
-                {navigation("pagination.page", {
+                {translateNavigation("pagination.page", {
                   page: String(detail.page),
                   pages: String(pages),
                 })}
@@ -112,8 +116,8 @@ export const ConversationDetailView = async ({
                     ) : undefined
                   }
                 >
-                  <ChevronLeftIcon aria-hidden className="size-4" />
-                  {navigation("pagination.previous")}
+                  <ChevronLeftIcon aria-hidden />
+                  {translateNavigation("pagination.previous")}
                 </Button>
                 <Button
                   variant="soft"
@@ -127,20 +131,23 @@ export const ConversationDetailView = async ({
                     ) : undefined
                   }
                 >
-                  {navigation("pagination.next")}
-                  <ChevronRightIcon aria-hidden className="size-4" />
+                  {translateNavigation("pagination.next")}
+                  <ChevronRightIcon aria-hidden />
                 </Button>
               </div>
             </div>
           )}
           {detail.sendAttempts.length > 0 && (
             <section className="border-accent-foreground border-t px-4 py-6 sm:px-6">
-              <h2 className="font-heading font-medium text-foreground-rich text-lg">
-                {t("attemptsTitle")}
+              <h2 className="font-semibold text-foreground-rich text-sm">
+                {translate("attemptsTitle")}
               </h2>
-              <ol className="mt-3 divide-y divide-accent-foreground">
+              <ol className="mt-4 divide-y divide-accent-foreground">
                 {detail.sendAttempts.map((attempt) => (
-                  <li key={attempt.id} className="space-y-2 py-3">
+                  <li
+                    key={attempt.id}
+                    className="space-y-2 py-4 first:pt-0 last:pb-0"
+                  >
                     <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
                       <span
                         className={
@@ -151,7 +158,7 @@ export const ConversationDetailView = async ({
                               : "text-warning"
                         }
                       >
-                        {t(`send.${attempt.status}`)}
+                        {translate(`send.${attempt.status}`)}
                       </span>
                       <time
                         dateTime={attempt.createdAt}
@@ -169,10 +176,14 @@ export const ConversationDetailView = async ({
             </section>
           )}
         </div>
-        <aside className="min-w-0 border-accent-foreground border-t px-4 py-6 sm:px-6 xl:border-t-0 xl:border-l">
+        <aside className="min-w-0 border-accent-foreground border-t bg-background px-4 py-6 sm:px-6 xl:border-t-0 xl:border-l">
           <ConversationEditor key={detail.thread.id} detail={detail} />
         </aside>
       </div>
     </div>
   );
 };
+
+export namespace ConversationDetailView {
+  export type Props = { detail: ConversationDetail };
+}

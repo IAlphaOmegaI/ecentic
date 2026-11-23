@@ -24,7 +24,7 @@ candidate IDs only after Start is pressed.
 Each route owns its data and client components beneath the shared page shell.
 Playbook reads its policy and LinkedIn accounts; Integrations reads connection
 status, public inbox metadata and bounded job metadata without stored job bodies
-or transport secrets. Campaign breadcrumbs read only the campaign identity.
+or transport secrets. Campaign headings read only the campaign identity.
 Navigation does not import authentication forms into every signed-in page.
 
 The overview uses bounded database aggregates instead of loading the legacy
@@ -62,3 +62,33 @@ It does not integrate with a calendar or automatically record a booking. Sender
 inboxes are aliases for the same email identity; connected provider identities
 remain intact. Pages stream data beneath server-rendered shells and matching
 skeletons, with shared controls and seven localized catalogs.
+
+The current workspace uses ecentic’s rounded charcoal frame with a white outer
+reveal and a separately scrolling, rounded inner content surface. Top-bar
+breadcrumbs are omitted; the page heading and selected navigation identify the
+screen. Prospects groups All prospects, Review and LinkedIn in a shared
+Accordion. On mobile the opaque charcoal navigation slides from the left using
+Sheet, with focus containment, Escape dismissal and reduced-motion support.
+Imports use a right-hand Sheet and return focus to More after closing.
+
+The prospect working list uses the shared DataTable provider with server-owned,
+one-based pagination. Company identity has its own wide column; contact name,
+email and role stay together. Secondary progress prioritizes holds and active
+research before scheduled and sent history. Page controls remain mounted and
+focusable during a transition while their handler prevents duplicate requests.
+The wide table is keyboard-scrollable and does not use per-row backdrop blur.
+
+Sign-in keeps the branded blue narrative/light form split, server-rendered
+heading and staff footer, controlled localized errors and guarded submission.
+Review evidence and conversation editors use light connected panels, shared
+controls and single-owner seams. They retain their existing revision and
+unsaved-edit safeguards.
+
+The overview shows seven-day first-email, follow-up and human-reply counts on a
+shared measured chart scale, with keyboard-accessible value tooltips. Current
+company, qualification, contact and sequence counts remain separate and are not
+presented as a conversion rate. Report details expose source and hold summaries.
+The report reads only projected prospect identity/status/source and bounded
+attempt/event fields; evidence details are fetched only for held prospects
+without a saved reason. No draft bodies or raw provider receipts are sent to the
+chart.

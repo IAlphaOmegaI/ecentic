@@ -10,6 +10,8 @@ import {
   eq,
   gte,
   inArray,
+  isNotNull,
+  lte,
   notInArray,
   or,
   sql,
@@ -4177,70 +4179,125 @@ export const getWeeklyReport = () =>
   resultify(async () => {
     const to = new Date();
     const from = new Date(to.getTime() - 7 * 86_400_000);
-    const [configuration, prospects, attempts, events] = await Promise.all([
-      policy(),
-      Prospects.find(Environment.SERVER),
-      Attempts.find(Environment.SERVER, {
-        where: gte(schema.outboundSendAttempt.completedAt, from),
-      }),
-      Events.find(Environment.SERVER, {
-        where: gte(schema.outboundEvent.createdAt, from),
-      }),
-    ]);
-    const records = requireData(prospects).filter(
-      (prospect) => prospect.details.source !== "internal-mailbox-setup-test",
-    );
-    const sends = requireData(attempts).filter(
-      (attempt) =>
-        !attempt.test && attempt.completedAt && attempt.completedAt <= to,
-    );
-    const outcomes = requireData(events).filter(
-      (event) => event.createdAt <= to && event.prospectId,
-    );
-    const groups = [
-      ...new Set(
-        records.map((prospect) => prospect.details.source || "manual"),
+    const prospect = schema.outboundProspect;
+    const attempt = schema.outboundSendAttempt;
+    const event = schema.outboundEvent;
+    const source = sql<string>`coalesce(nullif(${prospect.details}->>'source', ''), 'manual')`;
+    // The visible report needs measurements, not message bodies, raw receipts or
+    // every prospect's evidence. Keep the seven-day activity window in SQL.
+    const [prospects, attempts, events] = await Promise.all([
+      resultifyRead(() =>
+        db
+          .select({
+            id: prospect.id,
+            status: prospect.status,
+            holdReason: prospect.holdReason,
+            source,
+          })
+          .from(prospect)
+          .where(sql`${source} <> 'internal-mailbox-setup-test'`),
       ),
-    ].map((source) => {
-      const matching = records.filter(
-        (prospect) => (prospect.details.source || "manual") === source,
-      );
-      const identities = new Set(matching.map((prospect) => prospect.id));
-      const accepted = sends.filter(
-        (attempt) =>
-          attempt.status === "accepted" && identities.has(attempt.prospectId),
-      );
-      const unique = (kinds: string[]) =>
-        new Set(
-          outcomes
-            .filter(
-              (event) =>
-                event.prospectId &&
-                identities.has(event.prospectId) &&
-                kinds.includes(event.kind),
-            )
-            .map((event) => event.prospectId),
-        ).size;
-      return {
-        source,
-        prospects: matching.length,
-        held: matching.filter((prospect) => prospect.status === "held").length,
-        acceptedFirsts: accepted.filter((attempt) => attempt.step === 1).length,
-        acceptedFollowups: accepted.filter((attempt) => attempt.step > 1)
-          .length,
-        replies: unique(["reply", "positive", "negative", "optout"]),
-        bounces: unique(["bounce"]),
-        meetings: unique(["meeting"]),
-      };
-    });
+      resultifyRead(() =>
+        db
+          .select({
+            prospectId: attempt.prospectId,
+            status: attempt.status,
+            step: attempt.step,
+          })
+          .from(attempt)
+          .where(
+            and(
+              eq(attempt.test, false),
+              gte(attempt.completedAt, from),
+              lte(attempt.completedAt, to),
+            ),
+          ),
+      ),
+      resultifyRead(() =>
+        db
+          .select({ prospectId: event.prospectId, kind: event.kind })
+          .from(event)
+          .where(
+            and(
+              gte(event.createdAt, from),
+              lte(event.createdAt, to),
+              isNotNull(event.prospectId),
+            ),
+          ),
+      ),
+    ]);
+    const records = requireData(prospects);
+    const sends = requireData(attempts);
+    const outcomes = requireData(events);
+    const groups = [...new Set(records.map((prospect) => prospect.source))].map(
+      (source) => {
+        const matching = records.filter(
+          (prospect) => prospect.source === source,
+        );
+        const identities = new Set(matching.map((prospect) => prospect.id));
+        const accepted = sends.filter(
+          (attempt) =>
+            attempt.status === "accepted" && identities.has(attempt.prospectId),
+        );
+        const unique = (kinds: string[]) =>
+          new Set(
+            outcomes
+              .filter(
+                (event) =>
+                  event.prospectId &&
+                  identities.has(event.prospectId) &&
+                  kinds.includes(event.kind),
+              )
+              .map((event) => event.prospectId),
+          ).size;
+        return {
+          source,
+          prospects: matching.length,
+          held: matching.filter((prospect) => prospect.status === "held")
+            .length,
+          acceptedFirsts: accepted.filter((attempt) => attempt.step === 1)
+            .length,
+          acceptedFollowups: accepted.filter((attempt) => attempt.step > 1)
+            .length,
+          replies: unique(["reply", "positive", "negative", "optout"]),
+          bounces: unique(["bounce"]),
+          meetings: unique(["meeting"]),
+        };
+      },
+    );
+    const held = records.filter((prospect) => prospect.status === "held");
+    const missing = held.filter((prospect) => !prospect.holdReason);
+    // Preserve the existing validation fallback only for unlabelled holds. Most
+    // reports use saved reasons and never read policy or evidence details.
+    const fallback = missing.length
+      ? await Promise.all([
+          policy(),
+          resultifyRead(() =>
+            db
+              .select({ id: prospect.id, details: prospect.details })
+              .from(prospect)
+              .where(
+                inArray(
+                  prospect.id,
+                  missing.map(({ id }) => id),
+                ),
+              ),
+          ),
+        ]).then(
+          ([configuration, details]) =>
+            new Map(
+              requireData(details).map((prospect) => [
+                prospect.id,
+                prospectIssues(prospect.details, configuration.settings)[0]
+                  ?.code ?? "reviewRequired",
+              ]),
+            ),
+        )
+      : new Map<string, string>();
     const reasons = new Map<string, number>();
-    for (const prospect of records.filter(
-      (prospect) => prospect.status === "held",
-    )) {
+    for (const prospect of held) {
       const reason =
-        prospect.holdReason ||
-        prospectIssues(prospect.details, configuration.settings)[0]?.code ||
-        "reviewRequired";
+        prospect.holdReason || fallback.get(prospect.id) || "reviewRequired";
       reasons.set(reason, (reasons.get(reason) ?? 0) + 1);
     }
     const totals = groups.reduce(

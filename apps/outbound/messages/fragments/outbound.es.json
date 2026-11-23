@@ -15,7 +15,8 @@
       "integrations": "Integraciones",
       "campaigns": "Campañas",
       "warmup": "Calentamiento",
-      "sent": "Enviados"
+      "sent": "Enviados",
+      "allProspects": "Todos los prospectos"
     },
     "common": {
       "saving": "Guardando…",
@@ -176,7 +177,9 @@
           "primary": "Página anterior",
           "secondary": "Página siguiente",
           "tertiary": "Borrar filtros",
-          "quaternary": "Cerrar importación"
+          "quaternary": "Cerrar importación",
+          "quinary": "Primera página",
+          "senary": "Última página"
         },
         "pagination": "Páginas de contactos potenciales",
         "toolbar": {
@@ -184,7 +187,8 @@
           "more": "Más",
           "pipelineStatus": "Estado del proceso",
           "refreshing": "Actualizando…"
-        }
+        },
+        "contact": "Contacto"
       },
       "productCategoryHelp": "Usa la categoría indicada en la página del producto. Se usará en el marcador de categoría.",
       "reviewCountHelp": "Solo dígitos, copiados del número de reseñas visible de este producto. Déjalo en blanco si no se puede confirmar.",
@@ -976,7 +980,9 @@
       },
       "holdReasons": "Motivos actuales de espera",
       "empty": "Aún no hay actividad de envíos o conversaciones.",
-      "period": "{from}–{to}"
+      "period": "{from}–{to}",
+      "detailsTitle": "Detalles del informe",
+      "sourcesTitle": "Por fuente"
     },
     "auth": {
       "title": "Inicia sesión en Outbound",
@@ -1008,7 +1014,7 @@
       "story": {
         "label": "ecentic Outbound",
         "title": "Un buen contacto empieza con un hallazgo real.",
-        "description": "Investiga las tiendas adecuadas, revisa cada mensaje y da continuidad a la conversación.",
+        "description": "Investiga las tiendas adecuadas, prepara mensajes relevantes y mantén la conversación en marcha.",
         "steps": {
           "research": "Investigación",
           "review": "Revisión",
@@ -1712,7 +1718,10 @@
       "apolloMissing": "Conecte Apollo para encontrar empresas y contactos actuales.",
       "azureMissing": "Configure Azure para evaluar la información y preparar mensajes.",
       "linkedinMissing": "Conecte la cuenta de LinkedIn seleccionada antes de habilitar sus mensajes.",
-      "error": "No se pudo cargar el progreso actual. Actualice para volver a intentarlo."
+      "error": "No se pudo cargar el progreso actual. Actualice para volver a intentarlo.",
+      "qualified": "Empresas cualificadas",
+      "pipelineTitle": "Estado del proceso",
+      "pipelineHelp": "Empresas y contactos de las campañas activas. Estas cifras corresponden a etapas distintas, no a una tasa de conversión."
     },
     "conversations": {
       "title": "Conversaciones",

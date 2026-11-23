@@ -765,6 +765,85 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
     expect(report.totals.meetings).toBe(1);
     expect(report.bySource[0]?.acceptedFirsts).toBe(1);
   });
+  test("weekly report excludes test and out-of-window activity while retaining hold reasons", async () => {
+    const { store, db, schema } = active();
+    const fixture = await approved();
+    const setup = required(
+      await store.saveProspect(actor, {
+        ...details("mailbox-setup.example"),
+        source: "internal-mailbox-setup-test",
+      }),
+    );
+    const future = new Date(now.getTime() + 1_000);
+    const expired = new Date(now.getTime() - 8 * 86_400_000);
+    await db
+      .update(schema.outboundProspect)
+      .set({ status: "held", holdReason: "" })
+      .where(eq(schema.outboundProspect.id, fixture.prospect));
+    await db.insert(schema.outboundSendAttempt).values(
+      [
+        { step: 1, status: "accepted" as const, test: false, completedAt: now },
+        { step: 2, status: "uncertain" as const, test: true, completedAt: now },
+        {
+          step: 3,
+          status: "accepted" as const,
+          test: false,
+          completedAt: future,
+        },
+        {
+          step: 4,
+          status: "accepted" as const,
+          test: false,
+          completedAt: expired,
+        },
+      ].map((attempt) => ({
+        ...attempt,
+        prospectId: fixture.prospect,
+        inboxId: fixture.inbox,
+        revision: fixture.revision,
+        messageId: `report-window-${attempt.step}`,
+        contentHash: "report-fixture",
+      })),
+    );
+    await db.insert(schema.outboundEvent).values([
+      {
+        prospectId: fixture.prospect,
+        actor,
+        kind: "bounce",
+        detail: "Future receipt",
+        createdAt: future,
+      },
+      {
+        prospectId: fixture.prospect,
+        actor,
+        kind: "meeting",
+        detail: "Old receipt",
+        createdAt: expired,
+      },
+      {
+        prospectId: setup.prospect,
+        actor,
+        kind: "reply",
+        detail: "Setup test receipt",
+        createdAt: now,
+      },
+    ]);
+    const report = required(await store.getWeeklyReport());
+    expect(report.totals).toEqual({
+      prospects: 1,
+      held: 1,
+      acceptedFirsts: 1,
+      acceptedFollowups: 0,
+      replies: 0,
+      bounces: 0,
+      meetings: 0,
+      uncertain: 0,
+    });
+    expect(report.holdReasons).toEqual([
+      { reason: "reviewRequired", count: 1 },
+    ]);
+    expect(report.bySource.map(({ source }) => source)).toEqual(["manual"]);
+  });
   test("batch approval rejects repeated subjects and observations", async () => {
     const { store } = active();
     await approved();

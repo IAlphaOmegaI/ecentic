@@ -8,6 +8,8 @@ import { resolveClassName } from "../utils/helpers/class-name";
 import type { RenderComponentProps } from "../utils/types/render-component-props";
 
 export type ButtonVariant = "default" | "soft" | "outline" | "ghost" | "flat";
+export type ButtonTone = "default" | "inverse";
+export type ButtonWidth = "fit" | "full";
 export type ButtonSize = "icon";
 export type ButtonColor =
   | "primary"
@@ -22,23 +24,27 @@ export type ButtonColor =
 
 type ButtonVariantsProps = {
   variant?: Nullable<ButtonVariant>;
+  tone?: Nullable<ButtonTone>;
+  width?: Nullable<ButtonWidth>;
   size?: Nullable<ButtonSize>;
   color?: Nullable<ButtonColor>;
   disabled?: Nullable<boolean>;
 } & ClassProp;
 
 export const buttonVariants: (props?: ButtonVariantsProps) => string = cva(
-  "box-border inline-flex w-fit cursor-pointer items-center justify-center gap-2 overflow-hidden whitespace-nowrap rounded-lg px-2.5 py-2 font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/15 active:scale-99",
+  "box-border inline-flex w-fit cursor-pointer items-center justify-center gap-2 overflow-hidden whitespace-nowrap rounded-lg px-2.5 py-2 font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/15 active:scale-99 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "border bg-gradient-to-b py-1.5 inset-shadow-sm inset-shadow-background-rich/70 transition-all duration-300",
+          "inset-shadow-background-rich/70 inset-shadow-sm border bg-gradient-to-b py-1.5 transition-all duration-300",
         flat: "px-4",
         soft: "text-primary",
         outline: "border px-4",
         ghost: "transition-colors duration-300",
       },
+      tone: { default: "", inverse: "" },
+      width: { fit: "w-fit", full: "w-full" },
       size: {
         icon: "flex size-8 items-center justify-center p-2",
       },
@@ -304,6 +310,12 @@ export const buttonVariants: (props?: ButtonVariantsProps) => string = cva(
         color: "warning",
         className: "border-warning text-warning-dimmed hover:bg-warning/20",
       },
+      {
+        variant: ["soft", "ghost", "outline"],
+        tone: "inverse",
+        className:
+          "border-background-rich/20 text-background-rich hover:bg-background-rich/15 focus-visible:ring-background-rich/40",
+      },
     ],
   },
 );
@@ -312,6 +324,8 @@ export const Button = ({
   render,
   size,
   variant = "default",
+  tone = "default",
+  width = "fit",
   color = "primary",
   className,
   ...props
@@ -325,7 +339,14 @@ export const Button = ({
     render: render ?? <ButtonPrimitive />,
     props: mergeProps<typeof ButtonPrimitive>(props, {
       className: cn(
-        buttonVariants({ variant, size, color, disabled: props.disabled }),
+        buttonVariants({
+          variant,
+          tone,
+          width,
+          size,
+          color,
+          disabled: props.disabled,
+        }),
         resolveClassName(className, state),
       ),
     }),

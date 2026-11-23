@@ -15,7 +15,8 @@
       "integrations": "Integrationen",
       "campaigns": "Kampagnen",
       "warmup": "Warmup",
-      "sent": "Gesendet"
+      "sent": "Gesendet",
+      "allProspects": "Alle Kontakte"
     },
     "common": {
       "saving": "Wird gespeichert…",
@@ -176,7 +177,9 @@
           "primary": "Vorherige Seite",
           "secondary": "Nächste Seite",
           "tertiary": "Filter zurücksetzen",
-          "quaternary": "Import schließen"
+          "quaternary": "Import schließen",
+          "quinary": "Erste Seite",
+          "senary": "Letzte Seite"
         },
         "pagination": "Kontaktseiten",
         "toolbar": {
@@ -184,7 +187,8 @@
           "more": "Mehr",
           "pipelineStatus": "Pipeline-Status",
           "refreshing": "Wird aktualisiert…"
-        }
+        },
+        "contact": "Kontakt"
       },
       "productCategoryHelp": "Verwenden Sie die auf der Produktseite angegebene Kategorie. Sie füllt den Kategorieplatzhalter.",
       "reviewCountHelp": "Nur Ziffern, übernommen aus der sichtbaren Anzahl von Bewertungen dieses Produkts. Lassen Sie das Feld leer, wenn die Anzahl nicht bestätigt werden kann.",
@@ -976,7 +980,9 @@
       },
       "holdReasons": "Aktuelle Gründe für Rückstellungen",
       "empty": "Noch keine Versand- oder Gesprächsaktivitäten.",
-      "period": "{from}–{to}"
+      "period": "{from}–{to}",
+      "detailsTitle": "Berichtsdetails",
+      "sourcesTitle": "Nach Quelle"
     },
     "auth": {
       "title": "Bei Outbound anmelden",
@@ -1008,7 +1014,7 @@
       "story": {
         "label": "ecentic Outbound",
         "title": "Gute Ansprache beginnt mit einem konkreten Befund.",
-        "description": "Recherchieren Sie passende Shops, prüfen Sie jede Nachricht und führen Sie das Gespräch weiter.",
+        "description": "Finde passende Shops, bereite relevante Nachrichten vor und halte das Gespräch am Laufen.",
         "steps": {
           "research": "Recherche",
           "review": "Prüfung",
@@ -1712,7 +1718,10 @@
       "apolloMissing": "Verbinden Sie Apollo, um Unternehmen und aktuelle Kontakte zu finden.",
       "azureMissing": "Konfigurieren Sie Azure, um Belege auszuwerten und Nachrichten vorzubereiten.",
       "linkedinMissing": "Verbinden Sie das ausgewählte LinkedIn-Konto, bevor Sie seine Nachrichten aktivieren.",
-      "error": "Der aktuelle Fortschritt konnte nicht geladen werden. Aktualisieren Sie die Ansicht und versuchen Sie es erneut."
+      "error": "Der aktuelle Fortschritt konnte nicht geladen werden. Aktualisieren Sie die Ansicht und versuchen Sie es erneut.",
+      "qualified": "Qualifizierte Unternehmen",
+      "pipelineTitle": "Aktueller Stand",
+      "pipelineHelp": "Unternehmen und Kontakte in aktiven Kampagnen. Diese Zahlen beschreiben verschiedene Phasen, keine Konversionsrate."
     },
     "conversations": {
       "title": "Gespräche",

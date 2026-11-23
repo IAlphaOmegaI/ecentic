@@ -15,7 +15,8 @@
       "integrations": "Integrazioni",
       "campaigns": "Campagne",
       "warmup": "Riscaldamento",
-      "sent": "Inviati"
+      "sent": "Inviati",
+      "allProspects": "Tutti i potenziali clienti"
     },
     "common": {
       "saving": "Salvataggio…",
@@ -176,7 +177,9 @@
           "primary": "Pagina precedente",
           "secondary": "Pagina successiva",
           "tertiary": "Cancella filtri",
-          "quaternary": "Chiudi importazione"
+          "quaternary": "Chiudi importazione",
+          "quinary": "Prima pagina",
+          "senary": "Ultima pagina"
         },
         "pagination": "Pagine dei potenziali contatti",
         "toolbar": {
@@ -184,7 +187,8 @@
           "more": "Altro",
           "pipelineStatus": "Stato del processo",
           "refreshing": "Aggiornamento…"
-        }
+        },
+        "contact": "Contatto"
       },
       "productCategoryHelp": "Usa la categoria indicata nella pagina del prodotto. Compila il segnaposto della categoria.",
       "reviewCountHelp": "Solo cifre, copiate dal numero di recensioni visibile di questo prodotto. Lascia vuoto se non è possibile confermarlo.",
@@ -976,7 +980,9 @@
       },
       "holdReasons": "Motivi attuali di sospensione",
       "empty": "Ancora nessuna attività di invio o conversazione.",
-      "period": "{from}–{to}"
+      "period": "{from}–{to}",
+      "detailsTitle": "Dettagli del report",
+      "sourcesTitle": "Per fonte"
     },
     "auth": {
       "title": "Accedi a Outbound",
@@ -1008,7 +1014,7 @@
       "story": {
         "label": "ecentic Outbound",
         "title": "Un buon contatto parte da un riscontro concreto.",
-        "description": "Cerca i negozi giusti, rivedi ogni messaggio e porta avanti la conversazione.",
+        "description": "Trova i negozi giusti, prepara messaggi pertinenti e porta avanti la conversazione.",
         "steps": {
           "research": "Ricerca",
           "review": "Revisione",
@@ -1712,7 +1718,10 @@
       "apolloMissing": "Collega Apollo per trovare aziende e contatti attuali.",
       "azureMissing": "Configura Azure per valutare le informazioni e preparare i messaggi.",
       "linkedinMissing": "Collega l’account LinkedIn selezionato prima di abilitarne i messaggi.",
-      "error": "Impossibile caricare l’avanzamento attuale. Aggiorna per riprovare."
+      "error": "Impossibile caricare l’avanzamento attuale. Aggiorna per riprovare.",
+      "qualified": "Aziende qualificate",
+      "pipelineTitle": "Stato del processo",
+      "pipelineHelp": "Aziende e contatti nelle campagne attive. Questi conteggi descrivono fasi diverse, non un tasso di conversione."
     },
     "conversations": {
       "title": "Conversazioni",

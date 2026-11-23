@@ -15,7 +15,8 @@
       "integrations": "連携",
       "campaigns": "キャンペーン",
       "warmup": "ウォームアップ",
-      "sent": "送信履歴"
+      "sent": "送信履歴",
+      "allProspects": "すべての見込み客"
     },
     "common": {
       "saving": "保存中…",
@@ -176,7 +177,9 @@
           "primary": "前のページ",
           "secondary": "次のページ",
           "tertiary": "絞り込みを解除",
-          "quaternary": "インポートを閉じる"
+          "quaternary": "インポートを閉じる",
+          "quinary": "最初のページ",
+          "senary": "最後のページ"
         },
         "pagination": "見込み顧客のページ",
         "toolbar": {
@@ -184,7 +187,8 @@
           "more": "その他",
           "pipelineStatus": "進捗状況",
           "refreshing": "更新中…"
-        }
+        },
+        "contact": "連絡先"
       },
       "productCategoryHelp": "商品ページに記載されたカテゴリーを使います。カテゴリープレースホルダーに入る値です。",
       "reviewCountHelp": "対象商品の画面に表示されるレビュー件数を数字のみで入力してください。確認できない場合は空欄にします。",
@@ -976,7 +980,9 @@
       },
       "holdReasons": "現在の保留理由",
       "empty": "送信や会話の活動はまだありません。",
-      "period": "{from}–{to}"
+      "period": "{from}–{to}",
+      "detailsTitle": "レポートの詳細",
+      "sourcesTitle": "情報源別"
     },
     "auth": {
       "title": "Outboundにサインイン",
@@ -1008,7 +1014,7 @@
       "story": {
         "label": "ecentic Outbound",
         "title": "伝わるアプローチは、確かな発見から。",
-        "description": "対象のストアを調べ、一通ずつメッセージを確認し、会話をつないでいきます。",
+        "description": "適切な店舗を調査し、相手に合ったメッセージを用意して、会話を進めましょう。",
         "steps": {
           "research": "調査",
           "review": "レビュー",
@@ -1712,7 +1718,10 @@
       "apolloMissing": "企業と現在の連絡先を探すにはApolloを接続してください。",
       "azureMissing": "情報の評価とメッセージ作成のためにAzureを設定してください。",
       "linkedinMissing": "メッセージを有効にする前に、選択したLinkedInアカウントを接続してください。",
-      "error": "現在の進捗を読み込めませんでした。更新して再試行してください。"
+      "error": "現在の進捗を読み込めませんでした。更新して再試行してください。",
+      "qualified": "条件を満たした企業",
+      "pipelineTitle": "現在の進捗",
+      "pipelineHelp": "実行中のキャンペーンの企業と連絡先です。各数値は異なる段階を示し、コンバージョン率ではありません。"
     },
     "conversations": {
       "title": "会話",

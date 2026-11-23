@@ -61,6 +61,8 @@ window.matchMedia = (query) => ({
   dispatchEvent: () => true,
 });
 window.HTMLElement.prototype.scrollIntoView = () => {};
+// JSDOM has no Web Animations API; ScrollArea uses it to settle thumb geometry.
+window.Element.prototype.getAnimations = () => [];
 globalThis.fetch = Object.assign(
   async () => {
     throw new Error("Live requests forbidden in prospect list tests");
@@ -199,6 +201,33 @@ const closeWithEscape = () =>
     );
   });
 
+// A blocked research stage stays visible even when the saved prospect status is still a draft.
+await render(parseProspectQuery(), {
+  ...queue,
+  rows: queue.rows.map((row) => ({
+    ...row,
+    status: "draft",
+    lifecycles: ["held"],
+  })),
+});
+assert(
+  host
+    .querySelector("tbody")
+    ?.textContent?.includes(copy.prospect.progress.lifecycle.held),
+);
+await render(parseProspectQuery({ lifecycle: "researching" }), {
+  ...queue,
+  rows: queue.rows.map((row) => ({
+    ...row,
+    lifecycles: ["researching", "scheduled", "sent"],
+  })),
+});
+assert(
+  host
+    .querySelector("tbody")
+    ?.textContent?.includes(copy.prospect.progress.lifecycle.researching),
+);
+
 // The page range and controls follow the server's clamped page, with links only to loaded rows.
 await render(parseProspectQuery({ status: "approved", page: 99 }));
 assert.match(host.textContent ?? "", /51.*100.*101/);
@@ -328,7 +357,10 @@ await click(button(copy.prospect.list.action.tertiary, host));
 assert.equal(lastNavigation().href, "/prospects");
 assert.equal(search().value, "");
 await render(parseProspectQuery(), { ...queue, page: 1 });
-assert.equal(button(copy.prospect.list.action.primary).disabled, true);
+assert.equal(
+  button(copy.prospect.list.action.primary).getAttribute("aria-disabled"),
+  "true",
+);
 
 // Selects are real shared popups and emit server query changes instead of filtering a loaded page.
 await change(search(), "raced search");
@@ -369,7 +401,7 @@ await wait();
 await closeWithEscape();
 await wait();
 
-// The menu transfers focus to the lazy import dialog; closing returns focus to More.
+// The menu transfers focus to the lazy import side panel; closing returns focus to More.
 const more = button(copy.prospect.list.toolbar.more);
 await act(async () => {
   more.focus();
@@ -413,8 +445,14 @@ await render(parseProspectQuery({ q: "missing" }), {
   pageSize: 50,
 });
 assert(host.textContent?.includes(copy.prospect.searchEmptyTitle));
-assert.equal(button(copy.prospect.list.action.primary).disabled, true);
-assert.equal(button(copy.prospect.list.action.secondary).disabled, true);
+assert.equal(
+  button(copy.prospect.list.action.primary).getAttribute("aria-disabled"),
+  "true",
+);
+assert.equal(
+  button(copy.prospect.list.action.secondary).getAttribute("aria-disabled"),
+  "true",
+);
 
 // The detail accordion does not mount its heavy editors until opened, then preserves edits.
 const mounts = { editor: 0, tools: 0 };

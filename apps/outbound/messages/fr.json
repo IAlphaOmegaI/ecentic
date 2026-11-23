@@ -15,7 +15,8 @@
       "integrations": "Intégrations",
       "campaigns": "Campagnes",
       "warmup": "Préchauffage",
-      "sent": "Envoyés"
+      "sent": "Envoyés",
+      "allProspects": "Tous les prospects"
     },
     "common": {
       "saving": "Enregistrement…",
@@ -176,7 +177,9 @@
           "primary": "Page précédente",
           "secondary": "Page suivante",
           "tertiary": "Effacer les filtres",
-          "quaternary": "Fermer l’importation"
+          "quaternary": "Fermer l’importation",
+          "quinary": "Première page",
+          "senary": "Dernière page"
         },
         "pagination": "Pages de prospects",
         "toolbar": {
@@ -184,7 +187,8 @@
           "more": "Plus",
           "pipelineStatus": "État du processus",
           "refreshing": "Actualisation…"
-        }
+        },
+        "contact": "Contact"
       },
       "productCategoryHelp": "Utilisez la catégorie indiquée sur la page produit. Elle remplit la variable de catégorie.",
       "reviewCountHelp": "Chiffres uniquement, repris du nombre d’avis affiché pour ce produit. Laissez vide si ce nombre ne peut pas être confirmé.",
@@ -976,7 +980,9 @@
       },
       "holdReasons": "Motifs actuels de mise en attente",
       "empty": "Aucune activité d’envoi ou de conversation pour le moment.",
-      "period": "{from}–{to}"
+      "period": "{from}–{to}",
+      "detailsTitle": "Détails du rapport",
+      "sourcesTitle": "Par source"
     },
     "auth": {
       "title": "Connectez-vous à Outbound",
@@ -1008,7 +1014,7 @@
       "story": {
         "label": "ecentic Outbound",
         "title": "Une bonne prise de contact part d’un constat concret.",
-        "description": "Recherchez les bonnes boutiques, relisez chaque message et poursuivez la conversation.",
+        "description": "Identifiez les bonnes boutiques, préparez des messages pertinents et faites avancer la conversation.",
         "steps": {
           "research": "Recherche",
           "review": "Relecture",
@@ -1712,7 +1718,10 @@
       "apolloMissing": "Connectez Apollo pour trouver des entreprises et des contacts actuels.",
       "azureMissing": "Configurez Azure pour évaluer les éléments recueillis et préparer les messages.",
       "linkedinMissing": "Connectez le compte LinkedIn sélectionné avant d’activer ses messages.",
-      "error": "Impossible de charger la progression actuelle. Actualisez pour réessayer."
+      "error": "Impossible de charger la progression actuelle. Actualisez pour réessayer.",
+      "qualified": "Entreprises qualifiées",
+      "pipelineTitle": "État du parcours",
+      "pipelineHelp": "Entreprises et contacts des campagnes actives. Ces chiffres décrivent différentes étapes, pas un taux de conversion."
     },
     "conversations": {
       "title": "Conversations",

@@ -6,7 +6,7 @@ import {
   LogOutIcon,
   ShieldCheckIcon,
 } from "@zenncore/icons";
-import { cn, resultify } from "@zenncore/utils";
+import { resultify } from "@zenncore/utils";
 import {
   Avatar,
   AvatarFallback,
@@ -48,26 +48,23 @@ const useSignOut = () => {
   return { pending, failed, run };
 };
 
-export const SignOutButton = ({ dark = false }: { dark?: boolean }) => {
-  const t = useTranslations("outbound.account");
+export const SignOutButton = ({ dark = false }: SignOutButton.Props) => {
+  const translate = useTranslations("outbound.account");
   const { pending, failed, run } = useSignOut();
   return (
-    <div className="flex shrink-0 flex-col items-end gap-1">
+    <div className="flex shrink-0 flex-col items-end gap-2">
       <Button
         variant="soft"
         color="neutral"
         disabled={pending}
-        className={cn(
-          dark &&
-            "bg-background-rich/10 text-background-rich hover:bg-background-rich/15 hover:text-background-rich",
-        )}
+        tone={dark ? "inverse" : "default"}
         onClick={run}
       >
-        {pending ? t("pending") : t("action.primary")}
+        {pending ? translate("pending") : translate("action.primary")}
       </Button>
       {failed && (
         <p role="alert" className="max-w-56 text-error text-xs">
-          {t("error")}
+          {translate("error")}
         </p>
       )}
     </div>
@@ -75,7 +72,7 @@ export const SignOutButton = ({ dark = false }: { dark?: boolean }) => {
 };
 
 export const AccountControl = () => {
-  const t = useTranslations("outbound.account");
+  const translate = useTranslations("outbound.account");
   const navigation = useTranslations("outbound.nav");
   const session = client.useSession();
   const signOut = useSignOut();
@@ -90,8 +87,8 @@ export const AccountControl = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        aria-label={`${t("label")} · ${user.name}`}
-        className="group flex min-w-0 items-center gap-2 rounded-lg py-1 pr-1.5 pl-1 transition-colors hover:bg-background-rich/8 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 data-popup-open:bg-background-rich/8"
+        aria-label={`${translate("label")} · ${user.name}`}
+        className="group flex min-w-0 items-center gap-2 rounded-lg p-2 transition-colors hover:bg-background-rich/8 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 data-popup-open:bg-background-rich/8"
       >
         <Avatar className="size-8 shrink-0 rounded-sm bg-background-rich/15 text-background-rich">
           {user.image && <AvatarImage src={user.image} alt="" />}
@@ -104,30 +101,30 @@ export const AccountControl = () => {
         </span>
         <ChevronDownIcon
           aria-hidden
-          className="size-3.5 text-background-rich/60 transition-transform group-data-popup-open:rotate-180 motion-reduce:transition-none"
+          className="size-4 text-background-rich/60 transition-transform group-data-popup-open:rotate-180 motion-reduce:transition-none"
         />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
         sideOffset={10}
-        className="w-64 bg-background-rich p-1 font-normal"
+        className="w-64 bg-background-rich p-2 font-normal"
       >
-        <div className="px-2 py-2.5">
+        <div className="px-2 py-2">
           <p className="truncate font-semibold text-foreground-rich text-sm">
             {user.name}
           </p>
-          <p className="mt-0.5 truncate text-foreground-dimmed text-xs">
+          <p className="mt-2 truncate text-foreground-dimmed text-xs">
             {user.email}
           </p>
-          <p className="mt-3 flex items-center gap-1.5 text-foreground-dimmed text-xs">
-            <ShieldCheckIcon aria-hidden className="size-3.5" />
-            {t("staff")}
+          <p className="mt-4 flex items-center gap-2 text-foreground-dimmed text-xs">
+            <ShieldCheckIcon aria-hidden className="size-4" />
+            {translate("staff")}
           </p>
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           render={<Link href="/playbook" />}
-          className="gap-2.5 px-2 py-2"
+          className="gap-2 px-2 py-2"
         >
           <GearIcon aria-hidden className="size-4" />
           {navigation("playbook")}
@@ -137,17 +134,21 @@ export const AccountControl = () => {
           onClick={signOut.run}
           disabled={signOut.pending}
           closeOnClick={false}
-          className="gap-2.5 px-2 py-2"
+          className="gap-2 px-2 py-2"
         >
           <LogOutIcon aria-hidden className="size-4" />
-          {signOut.pending ? t("pending") : t("action.primary")}
+          {signOut.pending ? translate("pending") : translate("action.primary")}
         </DropdownMenuItem>
         {signOut.failed && (
           <p role="alert" className="px-2 py-2 text-error text-xs">
-            {t("error")}
+            {translate("error")}
           </p>
         )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
 };
+
+export namespace SignOutButton {
+  export type Props = { dark?: boolean };
+}

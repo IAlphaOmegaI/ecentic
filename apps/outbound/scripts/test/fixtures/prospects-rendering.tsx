@@ -1,6 +1,7 @@
 import { NextIntlClientProvider } from "next-intl";
 import { createRoot } from "react-dom/client";
 import en from "../../../messages/en.json";
+import { WorkspaceFrame } from "../../../src/app/[locale]/(workspace)/_components/frame";
 import {
   Navigation,
   WorkspaceHeader,
@@ -42,11 +43,11 @@ const host = document.getElementById("root");
 if (!host) throw new Error("Fixture root missing");
 createRoot(host).render(
   <NextIntlClientProvider locale="en" messages={en} timeZone="UTC">
-    <div className="flex h-dvh min-h-0 flex-col overflow-hidden bg-emphasis font-normal md:flex-row">
+    <WorkspaceFrame>
       <Navigation />
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
         <WorkspaceHeader />
-        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-y-contain bg-background md:rounded-tl-lg">
+        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-y-contain rounded-lg bg-background">
           <div className="flex min-h-full min-w-0 flex-col">
             <header className="relative border-accent-foreground border-b px-6 py-8">
               <h1 className="font-semibold text-3xl text-foreground-rich">
@@ -76,6 +77,6 @@ createRoot(host).render(
           </div>
         </main>
       </div>
-    </div>
+    </WorkspaceFrame>
   </NextIntlClientProvider>,
 );

@@ -15,7 +15,8 @@
       "integrations": "集成",
       "campaigns": "营销活动",
       "warmup": "邮箱预热",
-      "sent": "已发送"
+      "sent": "已发送",
+      "allProspects": "所有潜在客户"
     },
     "common": {
       "saving": "正在保存…",
@@ -176,7 +177,9 @@
           "primary": "上一页",
           "secondary": "下一页",
           "tertiary": "清除筛选",
-          "quaternary": "关闭导入"
+          "quaternary": "关闭导入",
+          "quinary": "第一页",
+          "senary": "最后一页"
         },
         "pagination": "潜在客户分页",
         "toolbar": {
@@ -184,7 +187,8 @@
           "more": "更多",
           "pipelineStatus": "流程状态",
           "refreshing": "刷新中…"
-        }
+        },
+        "contact": "联系人"
       },
       "productCategoryHelp": "使用商品页面标明的类别，用于填入类别占位符。",
       "reviewCountHelp": "仅输入数字，须与该商品页面显示的评论数一致。无法确认时请留空。",
@@ -976,7 +980,9 @@
       },
       "holdReasons": "当前暂缓原因",
       "empty": "暂无投递或对话活动。",
-      "period": "{from}–{to}"
+      "period": "{from}–{to}",
+      "detailsTitle": "报告详情",
+      "sourcesTitle": "按来源"
     },
     "auth": {
       "title": "登录 Outbound",
@@ -1008,7 +1014,7 @@
       "story": {
         "label": "ecentic Outbound",
         "title": "有效的触达，始于真实的发现。",
-        "description": "研究合适的商店，审核每条消息，持续推进对话。",
+        "description": "寻找合适的店铺，准备相关消息，让对话持续推进。",
         "steps": {
           "research": "研究",
           "review": "审核",
@@ -1712,7 +1718,10 @@
       "apolloMissing": "连接Apollo以查找企业和当前联系人。",
       "azureMissing": "配置Azure以评估调研信息并准备消息。",
       "linkedinMissing": "启用消息发送前，请连接所选LinkedIn账号。",
-      "error": "无法加载当前进度。请刷新重试。"
+      "error": "无法加载当前进度。请刷新重试。",
+      "qualified": "符合条件的公司",
+      "pipelineTitle": "当前进展",
+      "pipelineHelp": "进行中的营销活动中的公司和联系人。这些数量代表不同阶段，并非转化率。"
     },
     "conversations": {
       "title": "对话",

@@ -16,11 +16,8 @@ type Mode =
 export const WorkspacePage = async ({
   section,
   children,
-}: {
-  section: Mode;
-  children: ReactNode;
-}) => {
-  const t = await getTranslations("outbound");
+}: WorkspacePage.Props) => {
+  const translate = await getTranslations("outbound");
   const key =
     section === "prospects" || section === "new" || section === "detail"
       ? "prospect"
@@ -29,7 +26,7 @@ export const WorkspacePage = async ({
         : section;
   return (
     <div className="flex min-h-full min-w-0 flex-col">
-      <header className="relative flex flex-wrap items-center justify-between gap-5 border-accent-foreground border-b px-4 py-6 sm:px-6">
+      <header className="relative flex flex-wrap items-center justify-between gap-4 border-accent-foreground border-b px-4 py-6 sm:px-6">
         <div className="flex min-w-0 items-center gap-4">
           <DashboardHeaderFigure
             subject={
@@ -43,15 +40,15 @@ export const WorkspacePage = async ({
           <div className="min-w-0">
             <h1 className="break-words font-heading font-semibold text-3xl text-foreground-rich tracking-tight">
               {section === "new"
-                ? t("prospect.newTitle")
+                ? translate("prospect.newTitle")
                 : section === "detail"
-                  ? t("prospect.editTitle")
-                  : t(`${key}.title`)}
+                  ? translate("prospect.editTitle")
+                  : translate(`${key}.title`)}
             </h1>
-            <p className="mt-1 max-w-2xl text-foreground-dimmed text-sm leading-6">
+            <p className="mt-2 max-w-2xl text-foreground-dimmed text-sm leading-6">
               {section === "detail"
-                ? t("prospect.summary.description")
-                : t(`${key}.description`)}
+                ? translate("prospect.summary.description")
+                : translate(`${key}.description`)}
             </p>
           </div>
         </div>
@@ -61,14 +58,14 @@ export const WorkspacePage = async ({
             color="neutral"
             render={<Link href="/prospects" />}
           >
-            <ArrowLeftIcon aria-hidden className="size-4" />
-            {t("nav.prospects")}
+            <ArrowLeftIcon aria-hidden />
+            {translate("nav.prospects")}
           </Button>
         )}
         {section === "overview" && (
           <Button render={<Link href="/campaigns" />}>
-            {t("nav.campaigns")}
-            <ArrowRightIcon aria-hidden className="size-4" />
+            {translate("nav.campaigns")}
+            <ArrowRightIcon aria-hidden />
           </Button>
         )}
         <Crosshair className="bottom-0 left-0 translate-y-1/2" />
@@ -82,3 +79,7 @@ export const WorkspacePage = async ({
     </div>
   );
 };
+
+export namespace WorkspacePage {
+  export type Props = { section: Mode; children: ReactNode };
+}

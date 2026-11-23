@@ -44,6 +44,8 @@ import { Button, buttonVariants } from '@zenncore/web';
 |------|------|---------|-------------|
 | `variant` | `"default" \| "soft" \| "outline" \| "ghost" \| "flat"` | `"default"` | Button style |
 | `color` | Color options | `"primary"` | Button color |
+| `tone` | `"default" \| "inverse"` | `"default"` | Use inverse for soft, ghost and outline actions on the charcoal shell |
+| `width` | `"fit" \| "full"` | `"fit"` | Fit content or span the available width |
 | `size` | `"icon"` | - | Icon-only size |
 | `disabled` | `boolean` | `false` | Disabled state |
 | `render` | `ReactNode` | - | Custom render |
@@ -70,7 +72,7 @@ import { Button, buttonVariants } from '@zenncore/web';
 
 ```tsx
 <Button size="icon" variant="default" color="primary">
-  <PlusIcon className="size-4" />
+  <PlusIcon aria-hidden />
 </Button>
 ```
 
@@ -99,3 +101,5 @@ import { buttonVariants } from '@zenncore/web';
 - Supports custom rendering via `render` prop
 - Active state scales down (95%)
 - Supports all standard button props (onClick, type, etc.)
+
+Use `tone="inverse"` for navigation controls on the charcoal workspace frame. Use `width="full"` for the primary authentication action. Icons inherit their size from Button; callers do not need class overrides.
