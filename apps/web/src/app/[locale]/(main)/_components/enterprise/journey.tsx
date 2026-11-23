@@ -4,147 +4,138 @@ import { ArrowRightIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import type { AppConfig } from "next-intl";
-import { useEffect, useRef, useState } from "react";
-import { useInteractive } from "@/components/marketing/interactive/use-interactive";
-import { MarketingFeatureBand } from "@/components/marketing/primitives";
-import { Plus } from "@/components/plus";
-import { useDocument } from "@/hooks/use-document";
+import type { ReactNode } from "react";
+import { MarketingCutout } from "@/components/marketing/primitives";
+import { Motion } from "@/components/motion";
 import { Link } from "@/i18n/navigation";
-import { OverviewWorkbench } from "./overview-journey-scenes";
+import { ConnectedWorkflow } from "./overview-artwork";
+import { useHeroJourney } from "./use-hero-journey";
 
-/** The reader's scroll advances one product through the five actual jobs. */
+const Explanation = ({
+  step,
+  title,
+}: {
+  step: Journey.Props["copy"]["steps"][number];
+  title: ReactNode;
+}) => (
+  <>
+    <p className="font-heading text-lg text-primary-rich leading-tight tracking-tight sm:text-xl">
+      {title}
+    </p>
+    <div className="flex min-w-0 flex-col items-center">
+      <p className="max-w-2xl text-pretty text-background-rich/80 text-sm leading-relaxed sm:text-base">
+        {step.body}
+      </p>
+      <div className="mt-4 flex flex-wrap">
+        <Button
+          variant="soft"
+          tone="inverse"
+          className="max-w-full whitespace-normal text-center"
+          render={<Link href={step.href} />}
+        >
+          <span className="min-w-0">{step.label}</span>
+          <ArrowRightIcon aria-hidden className="size-4 shrink-0" />
+        </Button>
+      </div>
+    </div>
+  </>
+);
+
+/** The original connected animation, with each job explained in the same place. */
 export const Journey = ({ copy, artwork }: Journey.Props) => {
-  const container = useRef<HTMLDivElement>(null);
-  const frame = useRef<number | null>(null);
-  const [active, setActive] = useState(0);
-  const { window } = useDocument();
-  const { ready, reduced } = useInteractive();
-  const enhanced = ready && !reduced;
-
-  useEffect(() => {
-    if (!window || !container.current) return;
-    const desktop = window.matchMedia("(min-width: 1024px)");
-    const chapters = Array.from(
-      container.current.querySelectorAll<HTMLElement>("[data-journey-stage]"),
-    );
-    const update = () => {
-      frame.current = null;
-      if (!desktop.matches) return;
-      const readingLine = window.innerHeight * 0.45;
-      const index = chapters.findIndex((chapter) => {
-        const bounds = chapter.getBoundingClientRect();
-        return bounds.top <= readingLine && bounds.bottom > readingLine;
-      });
-      if (index >= 0) setActive(index);
-    };
-    const schedule = () => {
-      if (frame.current !== null) return;
-      frame.current = window.requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
-    return () => {
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-      if (frame.current !== null) window.cancelAnimationFrame(frame.current);
-      frame.current = null;
-    };
-  }, [window]);
+  const journey = useHeroJourney(copy.steps.length, 8000);
 
   return (
-    <MarketingFeatureBand tone="dark" className="enterprise-journey-panel">
-      <div ref={container} data-home-product-story>
-        <header className="relative border-background-rich/15 border-y px-4 py-8 sm:px-8 sm:py-12">
-          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-          <h2 className="max-w-2xl font-heading text-3xl leading-tight tracking-tight xl:text-4xl">
-            {copy.title}
-          </h2>
-          <p className="mt-4 max-w-2xl text-background-rich/75 text-base leading-relaxed">
-            {copy.description}
-          </p>
-        </header>
-        <div className="relative grid border-background-rich/15 border-b lg:grid-cols-2">
-          <ol className="min-w-0">
-            {copy.steps.map((step, index) => (
-              <li
-                key={step.id}
-                data-journey-stage={step.id}
-                className="relative flex min-w-0 flex-col justify-center border-background-rich/15 border-b px-4 py-8 last:border-b-0 sm:px-8 sm:py-12 lg:min-h-112 lg:py-16"
-              >
-                <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-                <h3 className="flex items-baseline gap-4 font-heading text-2xl leading-tight tracking-tight sm:text-3xl">
-                  <span className="shrink-0 text-primary-rich tabular-nums">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <span>{step.title}</span>
-                </h3>
-                <p className="mt-6 max-w-md text-background-rich/75 text-base leading-relaxed">
-                  {step.body}
-                </p>
-                <div className="mt-6 flex flex-wrap">
-                  <Button
-                    variant="soft"
-                    className="max-w-full whitespace-normal text-left"
-                    render={<Link href={step.href} />}
-                  >
-                    <span className="min-w-0">{step.label}</span>
-                    <ArrowRightIcon aria-hidden className="size-4 shrink-0" />
-                  </Button>
-                </div>
-                <div
-                  role="img"
-                  aria-label={artwork.descriptions[index]}
-                  className="mt-6 h-80 w-full min-w-0 lg:hidden"
-                >
-                  <div aria-hidden className="h-full">
-                    <OverviewWorkbench
-                      detailed
-                      active={index}
-                      enhanced={false}
-                      copy={artwork}
-                    />
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <div className="relative hidden min-w-0 border-background-rich/15 border-l bg-linear-to-br from-primary/10 via-transparent to-transparent lg:block">
-            <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+    <section
+      aria-label={copy.title}
+      className="relative isolate w-full pt-32 pb-8 text-center text-background-rich sm:pt-40 sm:pb-12"
+    >
+      <MarketingCutout edges="bottom" className="bg-emphasis-dimmed" />
+      <div data-home-product-story data-story-stage={journey.active}>
+        <div className="relative">
+          <div
+            ref={journey.container}
+            role="img"
+            aria-label={artwork.descriptions[journey.active]}
+            data-home-story-workbench
+            data-journey-playing={journey.playing}
+            className="relative mx-auto w-full min-w-0 max-w-5xl px-4 sm:px-8"
+          >
+            <ConnectedWorkflow
+              copy={artwork}
+              active={journey.active}
+              enhanced={journey.enhanced && journey.playing}
+              playing={journey.playing}
+            />
+          </div>
+          <div className="mx-auto min-w-0 max-w-3xl px-4 pt-4 sm:px-8">
             <div
-              aria-hidden
-              data-home-story-workbench
-              data-story-stage={active}
-              className="sticky top-20 flex min-h-112 flex-col justify-center px-8 py-8"
+              data-home-story-caption
+              className="relative isolate py-4 before:pointer-events-none before:absolute before:-top-4 before:left-1/2 before:h-4 before:w-px before:bg-background-rich/30"
             >
-              <div className="h-88 min-w-0">
-                <OverviewWorkbench
-                  detailed
-                  active={active}
-                  enhanced={enhanced}
-                  copy={artwork}
-                />
-              </div>
-              <div className="mt-8 flex items-center gap-2">
+              <div
+                className="grid min-w-0 motion-reduce:hidden"
+                onFocusCapture={journey.pause}
+                onBlurCapture={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget))
+                    journey.resume();
+                }}
+              >
                 {copy.steps.map((step, index) => (
-                  <span
+                  <div
                     key={step.id}
+                    aria-hidden={journey.active !== index}
+                    inert={journey.active !== index}
                     className={cn(
-                      "h-px flex-1",
-                      index <= active
-                        ? "bg-primary-rich"
-                        : "bg-background-rich/15",
+                      "col-start-1 row-start-1 flex items-start justify-center",
+                      journey.active !== index &&
+                        "pointer-events-none invisible",
                     )}
-                  />
+                  >
+                    <Motion.Item
+                      initial={false}
+                      animate={{
+                        opacity: journey.active === index ? 1 : 0,
+                        y: journey.active === index ? 0 : 4,
+                      }}
+                      transition={{ duration: journey.enhanced ? 0.2 : 0 }}
+                      className="grid w-full justify-items-center gap-2"
+                    >
+                      <Explanation step={step} title={artwork.stages[index]} />
+                    </Motion.Item>
+                  </div>
                 ))}
               </div>
+              <ol className="hidden min-w-0 divide-y divide-background-rich/15 motion-reduce:block">
+                {copy.steps.map((step, index) => (
+                  <li
+                    key={step.id}
+                    className="grid justify-items-center gap-2 py-6 first:pt-0 last:pb-0"
+                  >
+                    <Explanation step={step} title={artwork.stages[index]} />
+                  </li>
+                ))}
+              </ol>
+              <noscript>
+                <ol className="mt-6 divide-y divide-background-rich/15 border-background-rich/15 border-t motion-reduce:hidden">
+                  {copy.steps.slice(1).map((step, index) => (
+                    <li
+                      key={step.id}
+                      className="grid justify-items-center gap-2 py-6 last:pb-0"
+                    >
+                      <Explanation
+                        step={step}
+                        title={artwork.stages[index + 1]}
+                      />
+                    </li>
+                  ))}
+                </ol>
+              </noscript>
             </div>
           </div>
         </div>
       </div>
-    </MarketingFeatureBand>
+    </section>
   );
 };
 

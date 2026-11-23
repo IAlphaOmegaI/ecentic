@@ -43,8 +43,8 @@ import { Button, buttonVariants } from '@zenncore/web';
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `variant` | `"default" \| "soft" \| "outline" \| "ghost" \| "flat"` | `"default"` | Button style |
+| `tone` | `"default" \| "inverse"` | `"default"` | Light text and focus ring for soft, ghost and outline buttons on dark surfaces |
 | `color` | Color options | `"primary"` | Button color |
-| `tone` | `"default" \| "inverse"` | `"default"` | Use inverse for soft, ghost and outline actions on the charcoal shell |
 | `width` | `"fit" \| "full"` | `"fit"` | Fit content or span the available width |
 | `size` | `"icon"` | - | Icon-only size |
 | `disabled` | `boolean` | `false` | Disabled state |
@@ -75,6 +75,18 @@ import { Button, buttonVariants } from '@zenncore/web';
   <PlusIcon aria-hidden />
 </Button>
 ```
+
+### On a dark surface
+
+```tsx
+<Button variant="soft" tone="inverse">Explore the platform</Button>
+```
+
+The inverse tone keeps the selected color's soft fill and hover treatment. It
+uses the shared inverse text and focus-ring tokens instead of text colors
+designed for a light canvas. Opt in only when the surrounding surface is dark.
+Inverse ghost and outline actions use the charcoal shell's light hover treatment;
+the default and flat variants are unchanged.
 
 ### Using buttonVariants (CVA)
 

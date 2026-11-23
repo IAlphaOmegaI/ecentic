@@ -643,43 +643,84 @@ not. A drawing enhances the narrative; it does not replace proof that needs to b
 The homepage film does not repeat its illustrative disclaimer below the closed preview; the
 full film retains its accessible transcript and contextual description.
 
-The homepage hero uses one connected native HTML/CSS system on the blue cutout: a recognizable
-store, the écentic product workbench and AI channels remain in place while a product record moves
-through the work. The Naratix reference review on 16 November replaces the sliding six-card
-carousel with this anchored composition. Use its principle of a visible connected process, not
-its factory assets or product claims. A blue sneaker photograph and one example SKU persist
-through catalog import, simulated comparison, a clearer title, supported publication and rechecking.
-The source description supplies the facts used in the rewritten title; never invent specifications
-or imply that a generated rewrite can be previewed before Apply publishes it. The follow-up
-asks for richer native illustrations and recognizable spreadsheet structure: column letters, row
-numbers and a highlighted product record, followed by dimensional product/listing paperwork.
-This is illustrative catalog data, not a new Excel integration claim. Avoid a plain UI-demo card
-with a small product stranded in empty space.
+The latest 20 November direction merges the homepage banner and connected walkthrough into
+one continuous blue opening composition. Restore the original full `enterpriseHome.hero.title`
+and `description` with the existing conversion controls: the shorter experimental copy removed
+important product positioning. Retain the key information from both sections. Do not restore
+the retired shoe/card or Three.js box, or add another standalone featured object.
 
-White illustrated surfaces with theme-rounded corners float directly on the blue hero. There is
-no enclosing stage border or panel. Keep genuine provider marks and the blue écentic box visible,
-with curved connections and moving records showing the relationship. The main title and conversion
-row remain stable while short explanations change with the workbench. The visual is labeled as an
-illustrative example. AI comparisons and detected referrals are separate observations; do not show
-fabricated performance totals, guaranteed selection or checkout inside unsupported AI providers.
+The merged opening section uses the complete original connected illustration: store sources,
+central catalog/workbench, écentic and AI destinations. Keep exactly the same Connect → Simulate
+→ Fix → Sell → Track sequence, including spreadsheet rows, simulated comparisons, listing
+improvements, supported publication and separate rechecks. The active scene drives the relevant
+existing description and descriptive destination link.
+Use one coherent scene rather than repeated isolated cards or long padded scroll chapters.
 
-The hero advances automatically while visible, with enough time to read each phase and no arrows,
-stage dots or playback controls. Pause when hidden or offscreen. Reduced motion shows a complete
-static relationship and a meaningful listing state, with no automatic advancement. Below the hero,
-the five-stage Connect → Simulate → Fix → Sell → Track explanation follows the same product. On
-desktop its workbench stays alongside the narrative and advances as the reader scrolls. On mobile,
-each chapter has its own static example so nothing is trapped behind a sticky overlay. Keep the
-existing platform links and precise feature qualifications. This deeper story replaces disconnected
-Hairline props only in this homepage section; it does not retire Hairline elsewhere.
-The hero's demo action uses a white filled package Button beside the blue store-check button.
+The following review centers the full illustration at the very top of the opening, with its
+current-step explanation centered below. Keep the original full headline, supporting copy and
+CTAs together after that block. Remove the redundant secondary header/recap and the description
+sidebar; retain all five detailed explanations and their links in the synchronized caption.
+
+Differentiate the entire animated story and its explanation with one black cutout on the blue
+hero canvas. Its decorative fill extends to both viewport edges like the shared feature cutouts;
+keep the illustration and caption within centered reading widths. The 21 November correction
+extends black to the top behind navigation, with no blue strip or upper notch. Use the shared
+feature cutout's responsive shoulder/depth at the bottom only, with one solid fill and no pale
+perimeter. Rail borders belong to the blue copy block, not across the black area. Do not nest a separate caption card inside it. Keep the main headline, supporting copy and
+CTAs on the surrounding blue field.
+
+Autoplay runs on a loop, as the user explicitly requested. The subsequent review removes the
+numbered selector strip and visible Pause button: the scene and current explanation carry the
+progression. Stop while hidden/offscreen, while the reader focuses a stage link, and under
+reduced motion; resume when focus leaves. Keep all five descriptions available without animation
+and keep the illustration's position stable across descriptions of different lengths. Use
+shared Motion components and package links/buttons.
+
+The previous connected blue banner is preserved for reuse as `ConnectedOverview` in the
+homepage's enterprise components. Pass the original `enterpriseHome.hero` copy; its title,
+description, artwork, session-aware actions and animation stay available.
+
+Keep the sample sneaker and source product facts consistent within this explanation. The
+spreadsheet is illustrative catalog data, not a new Excel integration. Never imply a guaranteed
+selection, a live ranking, checkout inside unsupported providers or a rewrite preview before
+Apply publishes it.
+
 On the homepage, signed-in visitors see “Go to dashboard” in place of “Book a demo” in the
-header, hero and closing section. Keep each button's styling and localized navigation intact.
-Resolve the session on the client so the public homepage stays statically rendered; visitors
-without a confirmed session retain the demo action.
+header, hero and closing section. Keep localized navigation intact. Resolve the session on the
+client so the public homepage stays statically rendered; unconfirmed sessions keep the demo
+action. The merged blue hero uses a primary store-check Button and a neutral inverse soft secondary
+Button; the saved connected banner keeps its original button treatment.
 
 Evidence components distinguish public studies, aggregate facts, live values and examples. Dense
 methodology can be disclosed in an accordion. Do not invent KPI definitions, remove material
 qualifications or use a dramatic graphic to blur simulation and observed traffic.
+
+Consult the user before removing or consolidating homepage sections, or replacing animated
+sections with a shorter directory solely to reduce page length. Explain the concrete sections
+and interactions affected first. Explicitly requested visual changes remain authorized.
+
+Compact, publication-gated DUA evidence and the original product film follow the five-stage
+walkthrough. Visible numbered eyebrows follow the current rendered section order, beginning at
+01 for the product film. Unnumbered/conditional blocks do not consume a number, and removed
+sections must not leave stale indices. The pilot appears once, with its combined AI/direct-visits metric, measurement
+period, attribution caveat and sources intact.
+
+The compatibility section answers what a merchant connects and what écentic supports on each
+AI channel. The 21 November follow-up incorporates the old connection graph in the existing
+illustration slot: source categories converge through écentic and branch to the six AI channels.
+Replace the homepage provider arc rather than adding another block; preserve the compact
+footprint, genuine provider marks and planned-channel distinction. The central brand sits over
+a soft blue gradient fading into the canvas, without a visible pill-shaped boundary. Omit the old central stage
+list, which repeats the opening walkthrough. Keep the grouped accordions approved on 20 November
+for commerce platforms, feeds/data, payments/checkout and PIM. Preserve their entries, descriptions, current statuses
+and links. Omit homepage “Notify me” actions. Source and AI listings use consistent table-like
+rows with aligned provider, details and status columns; avoid independent columns with mismatched
+row boundaries or a final spanning card. Keep AI channels in a separate concise capability/status list and omit
+the duplicate channels accordion group. Keep the full timeline and technical comparison on
+`/ai-channels`; do not repeat the hero's process explanation in the compatibility graphic.
+Audience tabs stay unchanged. Ease of understanding takes priority over simply shortening the
+page. Use descriptive walkthrough links with the package soft Button's inverse tone against
+the dark surface.
 
 ## 12. Motion and accessibility
 

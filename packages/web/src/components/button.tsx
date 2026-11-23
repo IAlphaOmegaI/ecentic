@@ -311,7 +311,12 @@ export const buttonVariants: (props?: ButtonVariantsProps) => string = cva(
         className: "border-warning text-warning-dimmed hover:bg-warning/20",
       },
       {
-        variant: ["soft", "ghost", "outline"],
+        variant: "soft",
+        tone: "inverse",
+        className: "text-background-rich focus-visible:ring-background-rich/80",
+      },
+      {
+        variant: ["ghost", "outline"],
         tone: "inverse",
         className:
           "border-background-rich/20 text-background-rich hover:bg-background-rich/15 focus-visible:ring-background-rich/40",

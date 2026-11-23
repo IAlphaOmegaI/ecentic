@@ -173,7 +173,7 @@
             "商品フィード"
           ],
           "href": "/platform/connect",
-          "label": "接続を見る"
+          "label": "カタログの接続方法を見る"
         },
         {
           "id": "simulate",
@@ -185,19 +185,19 @@
             "対応状況監査"
           ],
           "href": "/platform/simulate",
-          "label": "シミュレーションを見る"
+          "label": "商品比較を見る"
         },
         {
           "id": "fix",
           "title": "改善",
-          "body": "Applyでは既存の商品情報をもとにタイトルと説明文を生成・公開します。構造化データの公開とMerchant Center同期は別操作で行います。",
+          "body": "既存の商品情報をもとにタイトルと説明文を分かりやすく改善します。「適用」を選択すると、変更内容が生成・公開されます。構造化データとMerchant Centerとの同期は、別の操作で管理します。",
           "tags": [
             "商品情報",
             "構造化データ",
             "Merchant Center"
           ],
           "href": "/platform/fix",
-          "label": "改善を見る"
+          "label": "商品情報の改善を見る"
         },
         {
           "id": "sell",
@@ -209,7 +209,7 @@
             "利用中の決済方法"
           ],
           "href": "/platform/sell",
-          "label": "販売を見る"
+          "label": "WooCommerceの購入手続きを見る"
         },
         {
           "id": "track",
@@ -221,18 +221,22 @@
             "複数ストア"
           ],
           "href": "/platform/track",
-          "label": "計測を見る"
+          "label": "Shopifyの参照アクセス計測を見る"
         }
       ]
     },
     "film": {
-      "eyebrow": "04 · 動作を見る",
+      "eyebrow": "01 · 動作を見る",
       "title": "1分でわかるecentic。",
       "description": "比較からカタログの次の意思決定まで、製品を短時間で紹介します。",
       "caption": "ecentic製品紹介動画",
       "action": {
         "primary": "動画を見る"
       }
+    },
+    "connections": {
+      "title": "カタログと、各チャネルの要件。",
+      "description": "既存のカタログを接続して、AIチャネルごとにecenticの対応範囲を確認できます。シミュレーション、フィード、購入手続きの対応状況は、それぞれ異なります。"
     },
     "channels": {
       "eyebrow": "05 · AIチャネル",
@@ -315,7 +319,7 @@
       ]
     },
     "mechanisms": {
-      "eyebrow": "07 · 内部機能",
+      "eyebrow": "03 · 内部機能",
       "title": "「AIに選ばれない」から「AI経由で購入される」までのすべて。",
       "items": [
         {
@@ -393,7 +397,7 @@
       ]
     },
     "proof": {
-      "eyebrow": "08 · 現時点での測定結果",
+      "eyebrow": "04 · 現時点での測定結果",
       "title": "現時点での測定結果。",
       "stats": [
         {
@@ -433,7 +437,7 @@
       "pipeline": "大規模小売、旅行、フレキシブルワークスペース分野の企業とパイロット導入を協議中。"
     },
     "procurement": {
-      "eyebrow": "09 · エンタープライズ",
+      "eyebrow": "05 · エンタープライズ",
       "title": "セキュリティ審査で確認すべき問いを整理。",
       "items": [
         {
@@ -465,7 +469,7 @@
       ]
     },
     "pricing": {
-      "eyebrow": "10 · 料金",
+      "eyebrow": "06 · 料金",
       "title": "無料で開始。AIが購入を始めたら拡張。",
       "description": "ストアとチームに合った開始方法を選べます。",
       "items": [
@@ -494,7 +498,7 @@
       }
     },
     "editorial": {
-      "eyebrow": "11 · チームより",
+      "eyebrow": "07 · チームより",
       "title": "現在わかっていること。",
       "description": "ecenticチームによる製品ノートと実践ガイド。",
       "loading": "記事を読み込み中",

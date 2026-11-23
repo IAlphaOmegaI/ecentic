@@ -10105,6 +10105,11 @@
       "description": "La couche commerce IA : corrigez les données produit lues par les assistants IA, préparez votre paiement pour les achats par IA et adaptez-vous à l’évolution de leurs règles."
     },
     "hero": {
+      "spotlight": {
+        "title": "Aidez l’IA à choisir vos produits plus facilement.",
+        "description": "ecentic compare vos produits aux offres concurrentes, améliore les fiches lues par l’IA et intègre le paiement sur les canaux compatibles.",
+        "label": "Illustration 3D interactive d’une boîte ouverte symbolisant le commerce, en suspension au-dessus d’une grille éclairée en bleu."
+      },
       "eyebrow": "La couche commerce IA",
       "title": "Une couche entre votre catalogue et l’IA qui le vend.",
       "description": "Chaque canal d’IA a ses propres règles pour choisir et acheter des produits. ecentic améliore les données lues par l’IA, prépare le paiement sur les canaux compatibles et aide votre catalogue à suivre l’évolution de leurs règles.",
@@ -10273,7 +10278,7 @@
             "Flux produit"
           ],
           "href": "/platform/connect",
-          "label": "Découvrir la connexion du catalogue"
+          "label": "Voir les connexions du catalogue"
         },
         {
           "id": "simulate",
@@ -10285,19 +10290,19 @@
             "Audit de préparation"
           ],
           "href": "/platform/simulate",
-          "label": "Découvrir les simulations"
+          "label": "Voir les comparaisons de produits"
         },
         {
           "id": "fix",
           "title": "Corriger",
-          "body": "Apply génère et publie des titres et descriptions à partir des informations produit existantes. Publiez des données structurées et synchronisez Merchant Center via des contrôles distincts.",
+          "body": "Clarifiez les titres et descriptions à partir de vos informations produit existantes. Sélectionnez « Appliquer » pour générer et publier les modifications. Les données structurées et la synchronisation avec Merchant Center se gèrent via des commandes distinctes.",
           "tags": [
             "Fiches produit",
             "Données structurées",
             "Merchant Center"
           ],
           "href": "/platform/fix",
-          "label": "Découvrir la correction des fiches"
+          "label": "Voir les corrections des fiches"
         },
         {
           "id": "sell",
@@ -10309,7 +10314,7 @@
             "Vos paiements"
           ],
           "href": "/platform/sell",
-          "label": "Découvrir la vente par IA"
+          "label": "Voir le paiement sur WooCommerce"
         },
         {
           "id": "track",
@@ -10321,18 +10326,22 @@
             "Plusieurs boutiques"
           ],
           "href": "/platform/track",
-          "label": "Découvrir le suivi"
+          "label": "Voir le suivi du trafic référent sur Shopify"
         }
       ]
     },
     "film": {
-      "eyebrow": "04 · Voir en action",
+      "eyebrow": "01 · Voir en action",
       "title": "Découvrez ecentic en une minute.",
       "description": "Un aperçu rapide du produit, de la comparaison à la prochaine décision pour votre catalogue.",
       "caption": "Vidéo produit ecentic",
       "action": {
         "primary": "Voir la vidéo"
       }
+    },
+    "connections": {
+      "title": "Votre catalogue. Les exigences de chaque canal.",
+      "description": "Connectez votre catalogue existant, puis vérifiez ce qu’ecentic prend en charge sur chaque canal IA. La disponibilité des simulations, des flux et du paiement varie."
     },
     "channels": {
       "eyebrow": "05 · Canaux IA",
@@ -10415,7 +10424,7 @@
       ]
     },
     "mechanisms": {
-      "eyebrow": "07 · Sous le capot",
+      "eyebrow": "03 · Sous le capot",
       "title": "Tout ce qu’il se passe entre « l’IA nous a ignorés » et « l’IA a acheté chez nous ».",
       "items": [
         {
@@ -10493,7 +10502,7 @@
       ]
     },
     "proof": {
-      "eyebrow": "08 · Ce que nous avons mesuré jusqu’ici",
+      "eyebrow": "04 · Ce que nous avons mesuré jusqu’ici",
       "title": "Ce que nous avons mesuré jusqu’ici.",
       "stats": [
         {
@@ -10533,7 +10542,7 @@
       "pipeline": "Pilotes en cadrage avec des entreprises du retail, du voyage et des espaces de travail flexibles."
     },
     "procurement": {
-      "eyebrow": "09 · Enterprise",
+      "eyebrow": "05 · Enterprise",
       "title": "Apportez les bonnes questions à l’examen de sécurité.",
       "items": [
         {
@@ -10565,7 +10574,7 @@
       ]
     },
     "pricing": {
-      "eyebrow": "10 · Tarification",
+      "eyebrow": "06 · Tarification",
       "title": "Commencez gratuitement. Passez à l’échelle quand l’IA commence à acheter.",
       "description": "Choisissez un point de départ adapté à votre boutique et à votre équipe.",
       "items": [
@@ -10594,7 +10603,7 @@
       }
     },
     "editorial": {
-      "eyebrow": "11 · Par l’équipe",
+      "eyebrow": "07 · Par l’équipe",
       "title": "Ce que nous apprenons.",
       "description": "Notes produit et guides pratiques rédigés par l’équipe ecentic.",
       "loading": "Chargement des articles",
