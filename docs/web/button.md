@@ -19,7 +19,7 @@ import { Button, buttonVariants } from '@zenncore/web';
 | Variant | Description |
 |---------|-------------|
 | `default` | Primary button with gradient and border |
-| `soft` | Soft background with backdrop blur |
+| `soft` | Soft tinted background without a backdrop filter |
 | `outline` | Outlined button with transparent bg |
 | `ghost` | Text-only button |
 | `flat` | Flat solid background |

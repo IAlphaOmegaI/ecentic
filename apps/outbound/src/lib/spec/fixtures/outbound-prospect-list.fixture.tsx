@@ -209,6 +209,12 @@ assert.equal(
   true,
 );
 assert.equal(host.querySelectorAll("tbody tr").length, 1);
+// Repeated soft row actions must not create a backdrop-filter layer per row.
+// Those layers caused Chromium to blank large areas of the scrolling workspace.
+const historyLink = host.querySelector('tbody a[href^="/sent"]');
+assert(historyLink);
+assert(!/backdrop-(?:blur|filter)/.test(historyLink.className));
+assert(historyLink.classList.contains("bg-neutral/10"));
 await click(button(copy.prospect.list.action.secondary));
 assert.equal(lastNavigation().href, "/prospects?status=approved&page=3");
 await click(button(copy.prospect.list.action.primary));

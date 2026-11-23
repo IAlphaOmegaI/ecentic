@@ -35,7 +35,7 @@ export const buttonVariants: (props?: ButtonVariantsProps) => string = cva(
         default:
           "border bg-gradient-to-b py-1.5 inset-shadow-sm inset-shadow-background-rich/70 transition-all duration-300",
         flat: "px-4",
-        soft: "text-primary backdrop-blur-lg",
+        soft: "text-primary",
         outline: "border px-4",
         ghost: "transition-colors duration-300",
       },

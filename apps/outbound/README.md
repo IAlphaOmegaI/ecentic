@@ -85,6 +85,24 @@ database was removed. This gate tests the current schema and application behavio
 it does not verify production migration history, provider availability, browser
 layout or a complete logged-in Next.js navigation flow.
 
+### Prospects browser paint regression
+
+After `bun run build:outbound`, run the standalone paint test with an externally
+installed Playwright module and its Chromium and WebKit browsers:
+
+```sh
+bun apps/outbound/scripts/test/prospects-rendering.ts /absolute/path/to/playwright/index.mjs
+```
+
+An optional second argument selects a Chromium executable. The test renders the
+real list and navigation with 50 synthetic prospects and production CSS, scrolls
+through the table, and checks screenshot pixels for missing text. It also checks
+the mobile filter popup and rejects backdrop filters on repeated row actions.
+No staff session, database, provider requests or existing browser window is used.
+Screenshots and results are saved in `output/outbound-prospects-rendering/`.
+This browser check is separate from smoke; the smoke DOM fixture also guards the
+shared soft-button tint and the absence of per-row backdrop-filter classes.
+
 Deploy `apps/outbound` as its own project. Configure its environment and authorized host independently. Its email, preparation and LinkedIn workers require `CRON_SECRET`; keep only this deployment's outbound schedules active.
 
 Production is [outbound.ecentic.ai](https://outbound.ecentic.ai), hosted by
