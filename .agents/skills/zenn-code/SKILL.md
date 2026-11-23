@@ -1,6 +1,6 @@
 ---
 name: zenn-code
-description: The zenn coding style for TypeScript, React, HTML and Tailwind in this monorepo — const-only, arrow functions, namespaces, single-word full names, destructuring, IIFE + switch(true), Result/resultify and custom errors, the with* context wrappers and instrumentation, repositories, shared @zenncore/utils helpers, early returns, CSS variable naming, semantic HTML and Tailwind-first styling. Use whenever writing, editing, refactoring or reviewing any code here, or when asked "is this zenn style?". Component usage and design-system rules live on top of this in /zenn-style.
+description: The zenn coding style for TypeScript, React, HTML and Tailwind in this monorepo — const-only, arrow functions, namespaces, single-word full names, destructuring, IIFE + switch(true), Result/resultify and custom errors, the with* context wrappers and instrumentation, repositories, shared @zenncore/utils helpers, Zod validation, next-intl translations, Bun tests, early returns, CSS variable naming, semantic HTML and Tailwind-first styling. Use whenever writing, editing, refactoring or reviewing any code here, or when asked "is this zenn style?". Component usage and design-system rules live on top of this in /zenn-style.
 ---
 
 # zenn-code — how code is written here
@@ -341,16 +341,16 @@ next to the class, as `isIntegrationAuthError` does.
 | Exported server action | Wrapped in `withAuthentication` / `withContext` / `withSubscription`, which report unexpected errors to Sentry, serialize the error for the client and return a `Result`. No return type annotation |
 | Server component in `<Suspense>` | `await unwrapResult(Module.action(Environment.SERVER, …))`, which throws so the boundary handles it. Gated dashboard reads use `unwrapEntitled` |
 | Route handler | Check the `Result` and map it to a `Response` with a status; never let it throw |
-| Client component | `useAsyncAction` → call the action → `if (!result.success)` show a `toast.add({ type: "error", title: t("toast.error"), description: result.error.message })` or branch on `error.name`, then `return` |
+| Client component | `useAsyncAction` → call the action → `if (!result.success)` show a `toast.add({ type: "error", title: translate("toast.error"), description: result.error.message })` or branch on `error.name`, then `return` |
 
 ```tsx
 const [submit, isPending] = useAsyncAction(async (data: FormEntries<typeof config>) => {
   const update = await User.updateProfile(data);
   if (!update.success) {
-    toast.add({ title: t("toast.error"), description: update.error.message, type: "error" });
+    toast.add({ title: translate("toast.error"), description: update.error.message, type: "error" });
     return;
   }
-  toast.add({ title: t("toast.saved"), type: "success" });
+  toast.add({ title: translate("toast.saved"), type: "success" });
 });
 ```
 
@@ -537,13 +537,113 @@ yourself.
 
 `apps/web/src/lib/` holds client-safe helpers grouped by subject (`currency.ts`,
 `date.ts`, `csv.ts`, `redirect.ts`, `dashboard-destinations.ts`, …), and
-`server/utils/` holds server-only ones (`ai.ts` for `AI.generate` / `AI.stream`
-and `model(id)`, `http.ts`, `ssrf.ts`, `stripe.ts`, `csv.ts`). Search both
-before you add a formatter, parser or client wrapper.
+`server/utils/` holds server-only ones (`http.ts`, `ssrf.ts`, `stripe.ts`,
+`csv.ts`, …). Search both before you add a formatter, parser or client wrapper.
+Product integrations such as AI calls are covered in `/zenn-style`.
+
+---
+## 9. Validation — Zod at every boundary
+
+Anything that enters from outside is parsed with Zod before it is used: form
+data, action arguments from the client, URL params, webhook and API bodies,
+JSON from third parties, and model output.
+
+- Use `safeParse`, never `parse`, and turn a failure into a `Result`:
+  ```ts
+  const parsed = schema.safeParse(body);
+  if (!parsed.success)
+    return { success: false, error: new ValidationError(parsed.error.message) };
+  const { store, queries } = parsed.data;
+  ```
+- A rule the user broke (empty selection, bad domain) returns `ValidationError`.
+  It is expected, so the user sees it and Sentry doesn't. Write its message for
+  the user ("Enter a target store domain."), not as a stack trace.
+- Name schemas `<thing>Schema` (`faqSchema`, `businessProfileSchema`) at module
+  scope, next to the code that uses them. Derive the type with
+  `z.infer<typeof faqSchema>`; don't write the type twice.
+- Database row schemas come from `server/database/validators.ts`. Strip system
+  columns with `$OmitSystemFields(schema)` and don't redeclare row shapes.
+- Enum-like values are `as const` arrays plus a derived type and a value map,
+  as `USER_ROLES` / `UserRole` do. Validate against the array with `z.enum`.
+- Use the Zod 4 top-level formats: `z.email()`, `z.url()`, `z.uuid()`.
+- A field that may be empty is `.nullable()`. Apply the fallback in code
+  (`currency ?? "USD"`), not with `.default()`, so one schema works for parsing,
+  forms and model output alike.
+- Forms reuse the schema through `field({ validator })` or
+  `applyFormOptions(schema, …)`. The client check is for UX; the server
+  re-validates.
+- Read URL params with `parseSearchParam` and then validate or clamp them, as
+  `extractPaginationParams` does. A hostile value must never reach a query.
 
 ---
 
-## 9. Types
+## 10. Translations — next-intl, no literals
+
+Every string a user can see comes from a message catalog. Nothing in JSX is
+English text.
+
+- The translator is always named **`translate`**:
+  ```ts
+  const translate = useTranslations("agentReadiness");             // client
+  const translate = await getTranslations("enterprise");            // server component
+  const translate = await getTranslations({ locale, namespace: "blog.tag" }); // action, route, metadata, OG image
+  ```
+- Server actions, route handlers, `generateMetadata` and OG images pass an
+  explicit `{ locale }`. Pages get it from `next/root-params`; never call
+  `setRequestLocale`.
+- Structured content (arrays, objects) comes from `getMessages()` /
+  `useMessages()`. Never `translate.raw()`, hand-written message types or
+  casts.
+- Keys are camelCase with dot namespaces, one namespace per feature:
+  `signIn.fields.email.label`, `pricing.plans.scale.figure`.
+- Action labels are by role: `action.primary`, `action.secondary`,
+  `action.tertiary`, `action.quaternary`. Never `submit`, `cancel` or
+  `primaryInverse`.
+- Feedback uses `toast.error`, `toast.<what>Saved` and similar inside the
+  feature namespace.
+- Messages live in fragments (`apps/web/messages/fragments/<feature>.<locale>.json`).
+  After editing, run:
+  ```bash
+  bun apps/web/scripts/merge-i18n-fragments.ts
+  ```
+  ```bash
+  cd apps/web && bunx next typegen && bun run i18n:check
+  ```
+- Never fall back to English for a missing key. Add the key in every locale.
+- Code-like strings (URLs, HTTP methods, capability keys) are not translated.
+- Errors returned from server code carry a readable message; client code shows
+  it as the toast description under a translated title.
+
+---
+
+## 11. Tests — Bun specs
+
+- Bun's runner only: `import { describe, expect, test } from "bun:test"`.
+  Run with `cd apps/web && bun test src`, or `bun test <path>` for one file.
+- Specs live in `apps/web/src/server/spec/` (server and lib logic) and
+  `apps/web/src/i18n/spec/` (catalogs and locale rules). Name them after the
+  subject: `entry.test.ts`, `ucp-validator.test.ts`. No `__tests__` folders and
+  no tests spread beside the source.
+- `describe` names the function or module (`describe("resolveOrigin", …)`).
+  `test` names the behaviour in plain words: `"accepts what a merchant actually
+  types"`, `"refuses anything that is not a storefront host"`.
+- Test pure functions directly with real inputs, the strings and payloads a
+  user or platform actually sends. Group related assertions in one `test`.
+- Assert whole values with `toEqual` where you can, rather than poking at
+  fields. For `Result`s, assert on `success` and `data` / `error.name`.
+- **Module mocks are process-global in Bun.** A test that needs `mock.module`
+  (auth, database) goes in `spec/fixtures/<name>.fixture.ts` and is run from
+  its `.test.ts` in a child `bun test` process, as
+  `account-lifecycle-actions.test.ts` does, so it can't leak into other suites.
+- Restore any environment you change (`afterEach` + `Reflect.set(process.env, …)`).
+- Slow tests take an explicit timeout as the last argument (`15_000`).
+- When a rule in the docs must not drift (prices, revisions, keys), add a spec
+  that fails on drift instead of a comment asking people to keep things in sync.
+- The same style rules apply to test code: `const`, full names, no `forEach`.
+
+---
+
+## 12. Types
 
 - Colocate a component's or module's types in a **namespace with the same
   name**: `Button.Props`, `Button.State`, `SidebarNav.Props`.
@@ -558,7 +658,7 @@ before you add a formatter, parser or client wrapper.
 
 ---
 
-## 10. Modules and files
+## 13. Modules and files
 
 - Server modules are imported as namespaces: `import * as Products from "@/server/app/product"`.
   Never destructure named imports from a server module.
@@ -572,7 +672,7 @@ before you add a formatter, parser or client wrapper.
 
 ---
 
-## 11. React
+## 14. React
 
 - Components are arrow functions with implicit return when JSX-only.
 - Namespace + component: `export const X = (...: X.Props) => …; export namespace X { export type Props = … }`.
@@ -605,7 +705,7 @@ const Price = ({ value }: { value: number | "free" }) => {
 
 ---
 
-## 12. HTML
+## 15. HTML
 
 - Semantic elements first: `main`, `header`, `nav`, `section`, `article`,
   `aside`, `footer`, `h1`–`h4` in order, `ul/ol/li` for lists, `dl/dt/dd` for
@@ -625,7 +725,7 @@ const Price = ({ value }: { value: number | "free" }) => {
 
 ---
 
-## 13. Tailwind first
+## 16. Tailwind first
 
 - Style with Tailwind utilities on the element. No new `.css` / `.module.css`
   files; structural rules that utilities cannot express go in the existing
@@ -645,7 +745,7 @@ const Price = ({ value }: { value: number | "free" }) => {
 
 ---
 
-## 14. Checklist before you hand back code
+## 17. Checklist before you hand back code
 
 - [ ] No `let`, no `function`, no `forEach`, no `try/catch` for expected paths
 - [ ] Failures are `Result`s via `resultify` / `resultifyRead` / `HTTP.request`; errors come from `server/utils/error.ts`, are told apart by `name` and passed on, not classified
@@ -657,6 +757,9 @@ const Price = ({ value }: { value: number | "free" }) => {
 - [ ] Server modules imported as namespaces
 - [ ] Actions wrapped on the lowest `with*` rung, named `"Module.fn"`, no return type, `Environment.SERVER` on server calls
 - [ ] Tables touched only through their model file's repository delegates; reads parallel with `Promise.all`
+- [ ] External input parsed with Zod `safeParse`; user mistakes are `ValidationError`s
+- [ ] Every visible string via `translate` / `getMessages`, keys by role, catalogs merged and checked
+- [ ] Tests are Bun specs in `spec/`, named for behaviour; module mocks isolated in fixtures
 - [ ] Checked `@zenncore/utils` and `lib/` / `server/utils/` before writing a helper
 - [ ] Semantic HTML, no raw controls, copy through next-intl
 - [ ] Tailwind semantic tokens, 2-step spacing, `cn`/`cva` for composition

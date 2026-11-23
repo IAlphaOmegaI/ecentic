@@ -1,6 +1,6 @@
 ---
 name: zenn-style
-description: The zenn design-system layer on top of /zenn-code — which @zenncore/web component to use and how, how to build a custom component (Base UI + useRender + cva + classList + namespace), the Tailwind token spec (seven colour foundations, radii, spacing grid, typography, motion), icons, forms, tables, and the Turborepo/Bun monorepo spec (workspaces, catalogs, tsdown builds, generators). Use whenever building or reviewing UI, adding a component to packages/web, touching Tailwind tokens, or adding a package. Always apply /zenn-code first.
+description: The zenn design-system layer on top of /zenn-code — which @zenncore/web component to use and how, how to build a custom component (Base UI + useRender + cva + classList + namespace), the Tailwind token spec (seven colour foundations, radii, spacing grid, typography, motion), icons, forms, tables, AI calls (AI.generate / AI.streamable), and the Turborepo/Bun monorepo spec (workspaces, catalogs, tsdown builds, generators). Use whenever building or reviewing UI, adding a component to packages/web, touching Tailwind tokens, or adding a package. Always apply /zenn-code first.
 ---
 
 # zenn-style — components, tokens and the monorepo
@@ -91,20 +91,30 @@ import { DataTable, DataTableProvider, type ColumnDef } from "@zenncore/web/comp
 
 ```tsx
 "use client";
-const config = {
-  email: field({ shape: "text", validator: z.email(), label: t("fields.email.label") }),
-  plan: field({ shape: "select", validator: z.enum(["compete", "scale"]), label: t("fields.plan.label") }),
-};
 
 export const SignupForm = () => {
+  const translate = useTranslations("signUp");
+  const router = useRouter();
+
+  // Built inside the component because labels come from the translator;
+  // the React Compiler keeps it stable.
+  const config = {
+    email: field({ shape: "text", validator: z.email(), label: translate("fields.email.label") }),
+    plan: field({ shape: "select", validator: z.enum(["compete", "scale"]), label: translate("fields.plan.label") }),
+  } satisfies GenericForm;
+
   const [submit, isPending] = useAsyncAction(async (data: FormEntries<typeof config>) => {
     const creation = await Accounts.create(data);
-    if (!creation.success) return;
+    if (!creation.success) {
+      toast.add({ title: translate("toast.error"), description: creation.error.message, type: "error" });
+      return;
+    }
     router.push(`/dashboard/${creation.data.id}`);
   });
+
   return (
     <InferredForm config={config} onSubmit={submit}>
-      <Button type="submit" disabled={isPending}>{t("action.primary")}</Button>
+      <Button type="submit" disabled={isPending}>{translate("action.primary")}</Button>
     </InferredForm>
   );
 };
@@ -326,7 +336,132 @@ export namespace Badge {
 
 ---
 
-## 5. The Turborepo spec
+## 5. AI calls — `server/utils/ai.ts`
+
+Every model call goes through the app's `AI` module. Never import a provider
+SDK or call `generateText` / `streamText` directly.
+
+```ts
+import * as AI from "@/server/utils/ai";
+```
+
+### 5a. Models
+
+- Pick a seat with `model?: ModelId`. `"gpt"` is the ChatGPT **seat**, not a
+  model: Azure when `AZURE_DEPLOYMENT_GPT` names a deployment, the gateway
+  otherwise. Claude, Gemini and Perplexity go through the Vercel AI Gateway by
+  their gateway spellings (`"claude-sonnet-4.6"`, `"gemini-2.5-flash"`, …).
+- Don't add a vendor key or a provider instance. If a new model is needed, add
+  it to `ModelId` in `ai.ts`.
+- The default is `"gpt"`. Name the model explicitly when the result is labelled
+  with a provider ("ChatGPT says…").
+
+### 5b. Structured output — `AI.generate`
+
+```ts
+const generation = await resultify(() =>
+  AI.generate({
+    label: "offers.categoryQuery",
+    model: "gpt",
+    instructions: "You turn a merchant product into a short shopping query…",
+    prompt: `Title: ${product.title}`,
+    output: z.object({
+      query: z.string().describe("2-5 word unbranded category query, or empty"),
+      currency: z.string().nullable(),
+    }),
+  }),
+);
+if (!generation.success) return null;
+const query = generation.data.query.trim();
+```
+
+- `AI.generate` resolves to the parsed object and throws on failure, so always
+  wrap it in `resultify` (§6 of `/zenn-code`).
+- Every call has a **`label`** (`"feature.purpose"`). It names the telemetry
+  span and the usage log.
+- `instructions` holds the fixed rules and `prompt` the per-call data. Never
+  put user data in `instructions`.
+- **Every property in an `output` schema is required.** Azure's structured
+  output rejects the whole call when a key is optional, and `.optional()` and
+  `.default()` both make a key optional. A value the model may not fill is
+  `.nullable()`; apply the fallback in code (`currency ?? "USD"`). Tool
+  `inputSchema`s are exempt.
+- `.describe(...)` every field the model has to fill; that text is the
+  model's instruction for it.
+- Treat the output as untrusted input: trim, clamp lengths and sanity-check it
+  (for example, reject a query that just repeats the title) before using it.
+- Without `output`, `AI.generate` returns plain text, and it still needs a
+  `label`.
+
+### 5c. Streaming to the client — `AI.streamable`
+
+Long-running work streams typed events. The server action returns `{ output }`
+from `AI.streamable<Event>`, and the client reads it with
+`readStreamableValue` and switches on `event.kind`.
+
+```ts
+// server: one discriminated event union per feature
+type DetectionEvent =
+  | { kind: "status"; stage: string; message: string }
+  | { kind: "result"; product: Products.Type }
+  | { kind: "error"; message: string }
+  | { kind: "done"; total: number };
+
+export const detect = withAuthentication(
+  async (context, { store }: { store: string }) => ({
+    success: true,
+    data: AI.streamable<DetectionEvent>(async (update) => {
+      const products = await Product.find(Environment.SERVER, { where: … });
+      if (!products.success) {
+        update({ kind: "error", message: "Could not read your catalog." });
+        return;
+      }
+      update({ kind: "done", total: products.data.length });
+    }),
+  }),
+  "Detection.detect",
+);
+```
+
+```tsx
+// client
+for await (const event of readStreamableValue(stream.data.output)) {
+  if (!event) continue;
+  switch (event.kind) {
+    case "status": … break;
+    case "error": … return;
+    case "done": … return;
+  }
+}
+```
+
+- In real modules the stream body lives in an `intelligence/*` helper
+  (`Detection.stream({ user, products, store })`). The wrapped action in the
+  model file validates its input first (`ValidationError` on an empty
+  selection), then returns `{ success: true, data: Detection.stream(...) }`.
+- Send failures as `{ kind: "error" }` events and `return`. Don't throw inside
+  the callback; `AI.streamable` reports anything thrown to Sentry and errors
+  the stream.
+- Always finish with a terminal event (`done` or `error`) so the UI leaves its
+  loading state.
+- Batch high-frequency text events on the client (flush on sentence
+  boundaries) instead of re-rendering per token.
+- In a streaming log panel, auto-scroll only the log container
+  (`scrollTo` on the `overflow-y-auto` element), never `scrollIntoView`.
+
+### 5d. Cost and gating
+
+- AI-backed dashboard features sit behind `withSubscription`. Free-scan paths
+  stay on `withAuthentication` and must be bounded (product count, query
+  count).
+- Run independent model calls together with `Promise.all`, and cap the fan-out
+  for large catalogs.
+- Never call a model from a render path or a `"use cache"` function; only from
+  actions, crons and routes.
+
+---
+
+## 6. The Turborepo spec
 
 ### 5a. Layout
 
@@ -385,7 +520,7 @@ produces.
 
 ---
 
-## 6. Checklist
+## 7. Checklist
 
 - [ ] Reached for an existing zenncore/app component before building one
 - [ ] Imported from `@zenncore/web/components/<name>`, never `@base-ui/react` in the app
@@ -396,4 +531,5 @@ produces.
 - [ ] Only the four `Motion.*` primitives
 - [ ] Seven-foundation tokens, four radii, 2-step spacing, no raw colours
 - [ ] New package component: namespace types, `createClassName`, `classList`, docs page
+- [ ] AI through `AI.generate` / `AI.streamable` with a `label`, every output field required (`.nullable()` not `.optional()`), wrapped in `resultify`
 - [ ] New package/dependency: `workspace:*` / `catalog:`, tsdown, env vars in `turbo.json`
