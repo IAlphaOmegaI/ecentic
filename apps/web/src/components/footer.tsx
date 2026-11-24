@@ -1,4 +1,4 @@
-import { LinkedinIcon, XTwitterIcon } from "@zenncore/icons";
+import { LinkedinIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import Image from "next/image";
 import { getMessages } from "next-intl/server";
@@ -8,6 +8,7 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { fonts } from "@/components/marketing/fonts";
 import { FooterColumns } from "@/components/marketing/footer-columns";
+import { GrantSupportLogos } from "@/components/marketing/grant-support-logos";
 import {
   MarketingClosing,
   MarketingFeatureBand,
@@ -177,6 +178,12 @@ export const Footer = async (_props: Footer.Props = {}) => {
             <EvolvingAscii artwork="selection" />
           </div>
         </div>
+        <div
+          id="grant2026-footer"
+          className="bg-emphasis-dimmed px-8 py-8 max-sm:px-4"
+        >
+          <GrantSupportLogos />
+        </div>
         <div className="marketing-footer-bottom grid items-start gap-6 px-7 py-7 max-sm:px-4 md:grid-cols-[1fr_auto]">
           <div className="space-y-3 text-foreground-rich text-xs">
             <p className="marketing-footer-trademark max-w-[76ch] leading-relaxed">
@@ -221,13 +228,6 @@ const FooterSocial = () => (
       className="inline-grid size-10 place-items-center text-primary-text transition-transform duration-200 hover:-translate-y-1 motion-reduce:transform-none"
     >
       <LinkedinIcon className="size-6" />
-    </a>
-    <a
-      href="https://x.com/ecentic_ai"
-      aria-label="X"
-      className="inline-grid size-10 place-items-center text-primary-text transition-transform duration-200 hover:-translate-y-1 motion-reduce:transform-none"
-    >
-      <XTwitterIcon className="size-6" />
     </a>
   </div>
 );
