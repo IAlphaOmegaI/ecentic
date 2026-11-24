@@ -4106,7 +4106,7 @@
       "deleteTitle": "Delete Loop data?",
       "deleteBody": "This disconnects Loop and immediately deletes its return details, reason mappings, comments and unpublished suggestions. Previously reported product counts remain available.",
       "rotateTitle": "Update webhook signing secret",
-      "rotateBody": "Paste the new secret after rotating it in Loop. The previous secret is accepted during the rotation overlap.",
+      "rotateBody": "Update the secret in Loop, then paste the new one here. ecentic accepts the previous secret for up to 24 hours.",
       "cancel": "Cancel",
       "action": {
         "primary": "Connect",
@@ -4200,7 +4200,8 @@
       "mixedValue": "Affected returns use different currencies; no combined value is shown.",
       "collecting": "The after-publication window is still collecting data. Its counts are not yet comparable with a complete baseline window.",
       "secretRequired": "Add your webhook signing secret to finish connecting Loop.",
-      "excludedControls": "{count} control products were removed because their product data changed after this comparison began."
+      "excludedControls": "{count} control products were removed because their product data changed after this comparison began.",
+      "reconnectRequired": "Disconnect Loop, then connect it again to renew access."
     }
   },
   "blog": {

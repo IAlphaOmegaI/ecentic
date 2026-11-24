@@ -4106,7 +4106,7 @@
       "deleteTitle": "Loop-Daten löschen?",
       "deleteBody": "Dadurch wird die Verbindung zu Loop getrennt und Rückgabedetails, Grundzuordnungen, Kommentare und unveröffentlichte Vorschläge werden sofort gelöscht. Bereits gemeldete Produktzahlen bleiben verfügbar.",
       "rotateTitle": "Webhook-Signatur-Secret aktualisieren",
-      "rotateBody": "Fügen Sie das neue Secret ein, nachdem Sie es in Loop rotiert haben. Das vorherige Secret wird während der Überschneidung der Rotation weiterhin akzeptiert.",
+      "rotateBody": "Aktualisieren Sie das Secret in Loop und fügen Sie das neue anschließend hier ein. ecentic akzeptiert das vorherige Secret noch bis zu 24 Stunden lang.",
       "cancel": "Abbrechen",
       "action": {
         "primary": "Verbinden",
@@ -4200,7 +4200,8 @@
       "mixedValue": "Betroffene Rücksendungen verwenden unterschiedliche Währungen; kein Gesamtwert wird angezeigt.",
       "collecting": "Im Zeitraum nach der Veröffentlichung werden noch Daten erfasst. Die aktuellen Werte sind noch nicht mit einem vollständigen Basiszeitraum vergleichbar.",
       "secretRequired": "Fügen Sie Ihr Secret für die Webhook-Signatur hinzu, um die Verbindung mit Loop abzuschließen.",
-      "excludedControls": "{count} Kontrollprodukte wurden entfernt, weil sich ihre Produktdaten nach Beginn dieses Vergleichs geändert haben."
+      "excludedControls": "{count} Kontrollprodukte wurden entfernt, weil sich ihre Produktdaten nach Beginn dieses Vergleichs geändert haben.",
+      "reconnectRequired": "Trennen Sie zuerst die Verbindung zu Loop und verbinden Sie Loop dann erneut, um den Zugriff zu erneuern."
     }
   },
   "blog": {

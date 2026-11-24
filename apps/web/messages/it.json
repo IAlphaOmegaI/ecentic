@@ -4106,7 +4106,7 @@
       "deleteTitle": "Eliminare i dati di Loop?",
       "deleteBody": "Loop verrà disconnesso e i dettagli dei resi, le mappature dei motivi, i commenti e i suggerimenti non pubblicati verranno eliminati immediatamente. I conteggi dei prodotti riportati in precedenza resteranno disponibili.",
       "rotateTitle": "Aggiorna il segreto di firma del webhook",
-      "rotateBody": "Incolla il nuovo segreto dopo averlo ruotato in Loop. Il segreto precedente viene accettato durante il periodo di sovrapposizione della rotazione.",
+      "rotateBody": "Aggiorna il segreto in Loop, poi incolla qui quello nuovo. ecentic accetta il segreto precedente per un massimo di 24 ore.",
       "cancel": "Annulla",
       "action": {
         "primary": "Collega",
@@ -4200,7 +4200,8 @@
       "mixedValue": "I resi interessati utilizzano valute diverse; non viene mostrato alcun valore combinato.",
       "collecting": "La finestra successiva alla pubblicazione sta ancora raccogliendo dati. I suoi conteggi non sono ancora confrontabili con una finestra di riferimento completa.",
       "secretRequired": "Aggiungi il segreto di firma del webhook per completare la connessione a Loop.",
-      "excludedControls": "{count} prodotti di controllo sono stati rimossi perché i loro dati prodotto sono cambiati dopo l'inizio di questo confronto."
+      "excludedControls": "{count} prodotti di controllo sono stati rimossi perché i loro dati prodotto sono cambiati dopo l'inizio di questo confronto.",
+      "reconnectRequired": "Disconnetti Loop, poi collegalo di nuovo per rinnovare l'accesso."
     }
   },
   "blog": {

@@ -76,6 +76,7 @@ export const LoopControls = ({ store, status }: LoopControls.Props) => {
       case "disconnected":
         return "disconnected";
       case "error":
+      case "reconnect_required":
         return "error";
       default:
         return status?.connected ? "pending" : "not_connected";
@@ -131,26 +132,35 @@ export const LoopControls = ({ store, status }: LoopControls.Props) => {
               {translate("secretRequired")}
             </p>
           )}
+          {status?.status === "reconnect_required" && (
+            <p className="mt-2 text-sm text-warning">
+              {translate("reconnectRequired")}
+            </p>
+          )}
         </div>
         <div className="flex flex-wrap gap-2">
           {status?.connected ? (
             <>
-              <Button
-                variant="soft"
-                color="neutral"
-                disabled={pending}
-                onClick={() => run("sync")}
-              >
-                {translate("action.secondary")}
-              </Button>
-              <Button
-                variant="ghost"
-                color="neutral"
-                disabled={pending}
-                onClick={() => setOperation("rotate")}
-              >
-                {translate("action.rotate")}
-              </Button>
+              {status.status !== "reconnect_required" && (
+                <>
+                  <Button
+                    variant="soft"
+                    color="neutral"
+                    disabled={pending}
+                    onClick={() => run("sync")}
+                  >
+                    {translate("action.secondary")}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    color="neutral"
+                    disabled={pending}
+                    onClick={() => setOperation("rotate")}
+                  >
+                    {translate("action.rotate")}
+                  </Button>
+                </>
+              )}
               <Button
                 variant="ghost"
                 color="neutral"

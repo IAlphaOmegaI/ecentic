@@ -4106,7 +4106,7 @@
       "deleteTitle": "¿Eliminar los datos de Loop?",
       "deleteBody": "Esto desconecta Loop y elimina inmediatamente los detalles de devoluciones, las asignaciones de motivos, los comentarios y las sugerencias no publicadas. Los recuentos de productos informados anteriormente seguirán disponibles.",
       "rotateTitle": "Actualizar el secreto de firma del webhook",
-      "rotateBody": "Pega el nuevo secreto después de renovarlo en Loop. El secreto anterior seguirá aceptándose durante el periodo de solapamiento de la rotación.",
+      "rotateBody": "Actualiza el secreto en Loop y pega aquí el nuevo. ecentic acepta el secreto anterior durante un máximo de 24 horas.",
       "cancel": "Cancelar",
       "action": {
         "primary": "Conectar",
@@ -4200,7 +4200,8 @@
       "mixedValue": "Las devoluciones afectadas usan distintas divisas; no se muestra un valor combinado.",
       "collecting": "La ventana posterior a la publicación sigue recopilando datos. Sus cifras todavía no son comparables con las de una ventana de referencia completa.",
       "secretRequired": "Añade tu secreto de firma del webhook para terminar de conectar Loop.",
-      "excludedControls": "Se han eliminado {count} productos de control porque sus datos de producto cambiaron después de que comenzara esta comparación."
+      "excludedControls": "Se han eliminado {count} productos de control porque sus datos de producto cambiaron después de que comenzara esta comparación.",
+      "reconnectRequired": "Desconecta Loop y vuelve a conectarlo para renovar el acceso."
     }
   },
   "blog": {
