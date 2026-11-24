@@ -437,3 +437,182 @@ claims and contact details are not part of the reusable rules.
 This section supersedes the separate repository presentation guide. Decks, previews and the
 template bundle were preserved outside the repository; shared website assets remain canonical.
 These presentation conventions do not change the website or dashboard defaults.
+
+## Independent homepage review — 19 November 2026
+
+The user shared https://slop.ooo/ecentic.ai, asked for an independent selection of useful fixes,
+and explicitly protected the header. They approved the selected changes with “make them”.
+The report's simulated reviewers are not endorsements or reviews by the named real experts.
+
+- Preserve the approved header, hero animation and five-stage illustrated walkthrough. Reported
+  overlapping captions and repeated chapter scenes were not reproducible in live desktop,
+  mobile or reduced-motion checks; do not redesign them from a captured report image alone.
+- Correct the dark walkthrough links' measured 2.77:1 text contrast with an opt-in inverse soft
+  Button tone. Give the five links descriptive destinations in all seven published locales.
+- Clarify that Apply generates and publishes listing changes. Structured data and Merchant
+  Center sync retain separate controls; do not imply an unimplemented preview step.
+- Replace repeated homepage source/channel explanations with one concise directory. Keep the
+  detailed channel timeline and matrix on the AI channels page, reached from that directory.
+- Move existing qualified DUA pilot evidence and the product film immediately after the
+  walkthrough. Keep publication gates, the combined AI/direct-visits metric, period, caveat
+  and source links. Remove the late duplicate pilot block.
+- Correct duplicated terminal brand suffixes in Open Graph and Twitter titles while preserving
+  page titles and explicit social-title overrides.
+
+Visual checks stay in subagent contexts; no screenshots are reattached to the main conversation.
+
+## Floating commerce hero — 20 November 2026
+
+The user found the connected hero too similar to the detailed walkthrough and supplied a
+reference with one tilted object above a receding tile field and localized red light. They asked
+for a commerce-focused interpretation in écentic's design language, with a new title/subtitle,
+and then explicitly requested that the existing component be saved for reuse.
+
+- The active homepage hero becomes a floating product folio over a dimensional grid. Use
+  fine strokes, a Hairline product drawing, the genuine écentic mark and semantic theme colors.
+  The red pool is decorative light confined to this illustration, not a UI error state.
+- Keep the new title, description and accessible illustration label in `hero.spotlight` across
+  all seven locales. The copy describes product comparisons, listing improvements and supported
+  checkout without making ranking or sales guarantees.
+- Preserve the old banner as `ConnectedOverview` and its original `enterpriseHome.hero` copy,
+  `OverviewArtwork` animation and session-aware CTAs. The deeper five-stage walkthrough stays
+  in place; this request supersedes the 19 November instruction to keep the hero unchanged.
+- Native CSS3D and shared Motion supply the requested perspective and interaction without a
+  new rendering dependency. The complete rest pose renders on the server; reduced motion,
+  offscreen and hidden-document states stop movement.
+
+Reuse the retained banner from
+`apps/web/src/app/[locale]/(main)/_components/enterprise/connected-overview.tsx` with
+`<ConnectedOverview copy={messages.enterpriseHome.hero} />`.
+
+### Follow-up: change the object, use blue and real 3D
+
+The next two comments reject the shoe and the entire listing-card composition (“something else
+entirely”), request blue instead of red, and explicitly require actual 3D. They supersede the
+initial folio/CSS3D treatment above. Replace it with a real Three.js open commerce box above
+beveled grid tiles, with theme-blue lighting and cast shadows. Preserve the headline/actions,
+the detailed walkthrough and the saved `ConnectedOverview`.
+
+Load WebGL progressively over a complete static open-box illustration. Reduced motion shows a
+resting scene, hidden/offscreen rendering stops, repeated tiles are instanced and pixel density
+is bounded. A Three.js animation loop is authorized only for this scene; dispose its resources
+and keep ordinary controls on the shared Motion/package components.
+
+### Final follow-up: remove the header experiment and reuse the connected explanation
+
+The user then canceled the header work: “undo the header thing, just fix the bottom thing,
+ill find something better for the header.” This supersedes both object experiments above,
+including the request to refine the box's proportions. Keep the current headline, supporting
+copy and CTAs without the experimental illustration. Remove its renderer and dependencies.
+
+The selected “From product feed to AI checkout” section must use the old connected header
+component, with all its exact steps and relevant descriptions. Reuse the full store/catalog/AI
+composition and five scenes in one explanatory section with a visible stage progression and
+synchronized descriptions. Retain manual access, finite/pauseable animation and reduced-motion
+behavior. The saved `ConnectedOverview` and its original copy remain available for reuse.
+
+### Latest direction: merge the opening sections and loop the story
+
+The user clarified that the shortened main title lost needed information and requested merging
+the banner and second section while keeping the key information from both. Restore the original
+“one layer” positioning and supporting copy. Combine that message, the existing CTAs and the
+full connected five-stage explanation in one continuous blue opening composition, with no
+separate experimental object. Autoplay must run on a loop; retain pause, manual inspection,
+visibility safeguards and reduced-motion behavior. This supersedes the temporary text-only
+header and finite-playback arrangement immediately above.
+
+### Remove redundant stage chrome
+
+The follow-up selected the numbered Connect/Simulate/Fix/Sell/Track tab strip and asked whether
+it was needed, then explicitly requested removal of the Pause button. Remove both controls;
+the connected scene and synchronized stage explanation carry the looping story. Preserve the
+full headline, supporting copy and CTAs. Focused links, offscreen/hidden state and reduced-motion
+preferences still suspend movement, and the unanimated presentation retains all five descriptions.
+
+### Center the connected illustration above the main message
+
+The next two comments removed the “Connect, compare, improve…” recap and asked to move the
+illustration to the top while centering it again and retaining its needed information. The
+opening now leads with the full-width centered scene and its centered synchronized explanation,
+then the original full headline, supporting copy and CTAs. Remove the extra secondary header
+band and desktop description sidebar. Preserve all five details/links, stable caption height,
+eight-second looping and the saved original `ConnectedOverview` component.
+
+### One black story cutout, and consult before structural consolidation
+
+The user first requested differentiation for the current-step explanation, then clarified that
+the full animation and explanation should share one black cutout on a blue background. Use one
+integrated surface with stepped shoulders and a fine translucent edge, not a nested caption card.
+The main headline and CTAs remain on blue.
+
+The user also questioned the static connection directory and missing motion, and asked to be
+consulted before section changes made to reduce scrolling. History confirms that 80be82cb
+replaced the connected source/channel diagram, timeline and matrix with the directory and removed
+the separate Channels and Integrations mounts. Audience tabs were unchanged by that cleanup.
+Further restoration or consolidation of those areas requires agreeing on the specific scope;
+this review does not itself approve a wholesale homepage restoration.
+
+After consultation, the user chose “Restore the animated integration illustration alongside
+the current directory.” Restore the existing `ProviderArc` with its catalog reveal and logo
+interactions, preserving the source/channel rows, statuses, links and audience tabs. The original
+connected diagram was responsive rather than looping; the lost visual motion came from the
+integration artwork. Do not restore the entire older section stack under this approval.
+
+### Restore useful integration groups; prioritize comprehension
+
+The user supplied the former connection map, timeline, channel comparison and integration
+accordion, questioned repetition, and emphasized that the site must be easy to understand.
+Review distinguished their jobs: the opening animation explains the workflow; compatibility
+answers what connects and what each AI channel supports; the timeline supplies market context.
+The removed dropdowns organized useful information rather than merely hiding repeated logos.
+
+The user explicitly chose “Use grouped dropdowns with a separate AI-channel list.” Keep the
+restored provider illustration, replace the flat source list with the original commerce,
+feeds/data, payments/checkout and PIM groups, and retain their descriptions/statuses/actions.
+Keep one separate AI-channel list; do not duplicate its category in the source accordion.
+The full timeline/comparison stay on the detail page and the old central process map stays off
+the homepage. This supersedes the immediately preceding instruction to preserve the flat source
+rows. No unrelated sections or audience tabs are part of this change.
+
+The following correction removes homepage “Notify me” controls and requires horizontal/vertical
+alignment like a table. Use consistent listing rows and shared column alignment for sources and
+AI channels, with safe mobile wrapping. This supersedes retaining interest actions in the
+homepage rows; the default integration cards on other routes remain unchanged.
+
+### 21 November — full-width opening cutout and current section numbers
+
+The user requested that the opening black cutout reach the edges like the other site cutouts.
+Extend only its decorative surface to the viewport edges, retaining the centered scene and
+caption plus the original headline on blue. The outer blue band must not clip this surface.
+
+The product film still began at 04 after earlier section consolidation. Number the mounted
+homepage eyebrows sequentially from 01 through 07: film, businesses, capabilities, findings,
+procurement, pricing and resources. Preserve the translated labels and the existing section
+order; unnumbered blocks and publication-gated pilot evidence do not affect the sequence.
+
+### 21 November — incorporate the connection graph without another section
+
+The user returned to the old source → écentic → AI diagram: “this was kinda cool but i dont
+wanna add omre stuff, can we find a way to incorporate it?” Fold its curved blue connections,
+central écentic treatment and planned-channel branches into the existing compatibility
+illustration slot, replacing the homepage logo arc. Keep a compact graphic rather than
+restoring the older introduction, Simulate/Fix/Sell/Track list or extra CTA. The grouped
+20 integration entries and six descriptive AI-channel rows remain intact. This supersedes the
+previous choice of the provider arc for this homepage slot, not the approved directory
+organization or the shared arc on other routes.
+
+At compact tablet widths, the next review asks for the right column of the connection graph
+to align with the right edge. Mirror those identities and their status text toward the outer
+rail, with connector endpoints measured from the visible nodes. Keep the wide three-column
+composition and narrow mobile layout unchanged.
+
+### Match the header cutout and soften the compatibility glow
+
+The next correction asks the black header to match the other cutouts, removes the blue strip
+and upper notch, and extends black to the top behind navigation. Reuse the feature bands'
+responsive shoulder/depth for the bottom transition, with a single solid fill. Remove the
+pale inset outline and keep the blue block's rail borders out of the black area. Preserve the
+workbench's position, content and loop. This supersedes the previous thin-perimeter treatment.
+
+The compatibility map's bounded rounded glow is replaced by a soft blue gradient fading into
+the surrounding canvas. The écentic identity, labels, links and connector geometry stay intact.

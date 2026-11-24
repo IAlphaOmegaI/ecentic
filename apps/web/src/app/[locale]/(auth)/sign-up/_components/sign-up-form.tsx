@@ -161,6 +161,7 @@ export const SignUpForm = () => {
 
         if (data.type === "shopify") {
           const result = await Authentication.signInWithShopify({
+            locale,
             shop: data.data.shop,
             callbackURL: localizePath("/dashboard", locale),
           });

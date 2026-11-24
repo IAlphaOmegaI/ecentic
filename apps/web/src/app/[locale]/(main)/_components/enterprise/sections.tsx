@@ -1,6 +1,7 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import type { AppConfig } from "next-intl";
 import { getMessages } from "next-intl/server";
+import { DuaEvidence } from "@/components/marketing/measured-evidence";
 import {
   MarketingActions,
   MarketingBand,
@@ -15,6 +16,12 @@ import { Link } from "@/i18n/navigation";
 import { HeroVideo } from "../hero-video";
 import { BusinessTabs } from "./business-tabs";
 import { IntegrationsPreview } from "./integrations-preview";
+
+export const PilotProof = () => (
+  <MarketingBand className="enterprise-pilot">
+    <DuaEvidence compact />
+  </MarketingBand>
+);
 
 export const Businesses = ({ copy }: Businesses.Props) => (
   <MarketingBand id="solutions">

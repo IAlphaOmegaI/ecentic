@@ -10147,6 +10147,11 @@
       "description": "The AI commerce layer: fix the product data AI assistants read, get checkout ready for AI to buy, and keep up when their rules change."
     },
     "hero": {
+      "spotlight": {
+        "title": "Make your products easier for AI to choose.",
+        "description": "ecentic compares your products with competitors, improves the listings AI reads, and connects checkout where it’s supported.",
+        "label": "Interactive 3D illustration of an open commerce box floating above a blue-lit grid."
+      },
       "eyebrow": "The AI commerce layer",
       "title": "One layer between your catalog and the AI that sells it.",
       "description": "Every AI channel has its own rules for choosing and buying products. ecentic improves the data they read, gets checkout ready on supported channels and helps your catalog keep up as their rules change.",
@@ -10315,7 +10320,7 @@
             "Product feeds"
           ],
           "href": "/platform/connect",
-          "label": "Explore Connect"
+          "label": "See catalog connections"
         },
         {
           "id": "simulate",
@@ -10327,19 +10332,19 @@
             "Readiness audit"
           ],
           "href": "/platform/simulate",
-          "label": "Explore Simulate"
+          "label": "See product comparisons"
         },
         {
           "id": "fix",
           "title": "Fix",
-          "body": "Apply generates and publishes titles and descriptions using existing product facts. Publish structured data and sync Merchant Center through separate controls.",
+          "body": "Make titles and descriptions clearer using your existing product facts. Select Apply to generate and publish the changes. Structured data and Merchant Center sync have separate controls.",
           "tags": [
             "Listings",
             "Structured data",
             "Merchant Center"
           ],
           "href": "/platform/fix",
-          "label": "Explore Fix"
+          "label": "See listing fixes"
         },
         {
           "id": "sell",
@@ -10351,7 +10356,7 @@
             "Your payments"
           ],
           "href": "/platform/sell",
-          "label": "Explore Sell"
+          "label": "See WooCommerce checkout"
         },
         {
           "id": "track",
@@ -10363,18 +10368,22 @@
             "Multiple stores"
           ],
           "href": "/platform/track",
-          "label": "Explore Track"
+          "label": "See Shopify referral tracking"
         }
       ]
     },
     "film": {
-      "eyebrow": "04 · Watch it work",
+      "eyebrow": "01 · Watch it work",
       "title": "See ecentic in a minute.",
       "description": "A quick look at the product, from a comparison to the next decision for your catalog.",
       "caption": "ecentic product film",
       "action": {
         "primary": "Watch the film"
       }
+    },
+    "connections": {
+      "title": "Your catalog. Every channel’s requirements.",
+      "description": "Connect your existing catalog, then check what ecentic supports for each AI channel. Simulations, feeds and checkout have different availability."
     },
     "channels": {
       "eyebrow": "05 · AI channels",
@@ -10457,7 +10466,7 @@
       ]
     },
     "mechanisms": {
-      "eyebrow": "07 · Under the hood",
+      "eyebrow": "03 · Under the hood",
       "title": "Everything between “AI skipped us” and “AI bought from us”.",
       "items": [
         {
@@ -10535,7 +10544,7 @@
       ]
     },
     "proof": {
-      "eyebrow": "08 · What we've measured so far",
+      "eyebrow": "04 · What we've measured so far",
       "title": "What we've measured so far.",
       "stats": [
         {
@@ -10575,7 +10584,7 @@
       "pipeline": "Pilots in scoping with companies in enterprise retail, travel and flexible workspace."
     },
     "procurement": {
-      "eyebrow": "09 · Enterprise",
+      "eyebrow": "05 · Enterprise",
       "title": "Bring the right questions to security review.",
       "items": [
         {
@@ -10607,7 +10616,7 @@
       ]
     },
     "pricing": {
-      "eyebrow": "10 · Pricing",
+      "eyebrow": "06 · Pricing",
       "title": "Start free. Scale when AI starts buying.",
       "description": "Choose a starting point that fits your store and your team.",
       "items": [
@@ -10636,7 +10645,7 @@
       }
     },
     "editorial": {
-      "eyebrow": "11 · From the team",
+      "eyebrow": "07 · From the team",
       "title": "What we're learning.",
       "description": "Product notes and practical guides, written by the ecentic team.",
       "loading": "Loading articles",

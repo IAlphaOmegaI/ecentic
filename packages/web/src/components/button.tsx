@@ -8,6 +8,7 @@ import { resolveClassName } from "../utils/helpers/class-name";
 import type { RenderComponentProps } from "../utils/types/render-component-props";
 
 export type ButtonVariant = "default" | "soft" | "outline" | "ghost" | "flat";
+export type ButtonTone = "default" | "inverse";
 export type ButtonSize = "icon";
 export type ButtonColor =
   | "primary"
@@ -22,6 +23,7 @@ export type ButtonColor =
 
 type ButtonVariantsProps = {
   variant?: Nullable<ButtonVariant>;
+  tone?: Nullable<ButtonTone>;
   size?: Nullable<ButtonSize>;
   color?: Nullable<ButtonColor>;
   disabled?: Nullable<boolean>;
@@ -38,6 +40,10 @@ export const buttonVariants: (props?: ButtonVariantsProps) => string = cva(
         soft: "text-primary backdrop-blur-lg",
         outline: "border px-4",
         ghost: "transition-colors duration-300",
+      },
+      tone: {
+        default: "",
+        inverse: "",
       },
       size: {
         icon: "flex size-8 items-center justify-center p-2",
@@ -304,6 +310,11 @@ export const buttonVariants: (props?: ButtonVariantsProps) => string = cva(
         color: "warning",
         className: "border-warning text-warning-dimmed hover:bg-warning/20",
       },
+      {
+        variant: "soft",
+        tone: "inverse",
+        className: "text-background-rich focus-visible:ring-background-rich/80",
+      },
     ],
   },
 );
@@ -312,6 +323,7 @@ export const Button = ({
   render,
   size,
   variant = "default",
+  tone = "default",
   color = "primary",
   className,
   ...props
@@ -325,7 +337,13 @@ export const Button = ({
     render: render ?? <ButtonPrimitive />,
     props: mergeProps<typeof ButtonPrimitive>(props, {
       className: cn(
-        buttonVariants({ variant, size, color, disabled: props.disabled }),
+        buttonVariants({
+          variant,
+          tone,
+          size,
+          color,
+          disabled: props.disabled,
+        }),
         resolveClassName(className, state),
       ),
     }),

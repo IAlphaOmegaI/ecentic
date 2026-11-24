@@ -173,7 +173,7 @@
             "Produkt-Feeds"
           ],
           "href": "/platform/connect",
-          "label": "Connect entdecken"
+          "label": "Kataloganbindungen ansehen"
         },
         {
           "id": "simulate",
@@ -185,19 +185,19 @@
             "Bereitschaftsprüfung"
           ],
           "href": "/platform/simulate",
-          "label": "Simulate entdecken"
+          "label": "Produktvergleiche ansehen"
         },
         {
           "id": "fix",
           "title": "Korrigieren",
-          "body": "Apply erstellt und veröffentlicht Titel und Beschreibungen auf Basis bestehender Produktfakten. Strukturierte Daten veröffentlichen und Merchant Center synchronisieren Sie über separate Bedienelemente.",
+          "body": "Formulieren Sie Titel und Beschreibungen anhand Ihrer vorhandenen Produktinformationen klarer. Wählen Sie „Anwenden“, um die Änderungen zu erstellen und zu veröffentlichen. Strukturierte Daten und die Synchronisierung mit Merchant Center steuern Sie separat.",
           "tags": [
             "Produktangebote",
             "Strukturierte Daten",
             "Merchant Center"
           ],
           "href": "/platform/fix",
-          "label": "Fix entdecken"
+          "label": "Korrekturen an Angeboten ansehen"
         },
         {
           "id": "sell",
@@ -209,7 +209,7 @@
             "Ihre Zahlungsabwicklung"
           ],
           "href": "/platform/sell",
-          "label": "Sell entdecken"
+          "label": "WooCommerce-Checkout ansehen"
         },
         {
           "id": "track",
@@ -221,18 +221,22 @@
             "Mehrere Shops"
           ],
           "href": "/platform/track",
-          "label": "Track entdecken"
+          "label": "Verweis-Tracking in Shopify ansehen"
         }
       ]
     },
     "film": {
-      "eyebrow": "04 · So funktioniert es",
+      "eyebrow": "01 · So funktioniert es",
       "title": "Sehen Sie ecentic in einer Minute.",
       "description": "Ein kurzer Einblick in das Produkt – vom Vergleich bis zur nächsten Entscheidung für Ihren Katalog.",
       "caption": "ecentic Produktfilm",
       "action": {
         "primary": "Film ansehen"
       }
+    },
+    "connections": {
+      "title": "Ihr Katalog. Die Anforderungen jedes Kanals.",
+      "description": "Verbinden Sie Ihren bestehenden Katalog und prüfen Sie, was ecentic für den jeweiligen KI-Kanal unterstützt. Die Verfügbarkeit von Simulationen, Feeds und Checkout unterscheidet sich je nach Kanal."
     },
     "channels": {
       "eyebrow": "05 · KI-Kanäle",
@@ -315,7 +319,7 @@
       ]
     },
     "mechanisms": {
-      "eyebrow": "07 · Hinter den Kulissen",
+      "eyebrow": "03 · Hinter den Kulissen",
       "title": "Alles zwischen „Die KI hat uns übersprungen“ und „Die KI hat bei uns gekauft“.",
       "items": [
         {
@@ -393,7 +397,7 @@
       ]
     },
     "proof": {
-      "eyebrow": "08 · Was wir bisher gemessen haben",
+      "eyebrow": "04 · Was wir bisher gemessen haben",
       "title": "Was wir bisher gemessen haben.",
       "stats": [
         {
@@ -433,7 +437,7 @@
       "pipeline": "Pilotprojekte werden derzeit mit Unternehmen aus dem großen Einzelhandel, der Reisebranche und dem Bereich flexibler Arbeitsplätze abgestimmt."
     },
     "procurement": {
-      "eyebrow": "09 · Enterprise",
+      "eyebrow": "05 · Enterprise",
       "title": "Bringen Sie die richtigen Fragen in die Sicherheitsprüfung ein.",
       "items": [
         {
@@ -465,7 +469,7 @@
       ]
     },
     "pricing": {
-      "eyebrow": "10 · Preise",
+      "eyebrow": "06 · Preise",
       "title": "Kostenlos starten. Skalieren, wenn KI mit einkauft.",
       "description": "Wählen Sie einen Einstieg, der zu Ihrem Store und Ihrem Team passt.",
       "items": [
@@ -494,7 +498,7 @@
       }
     },
     "editorial": {
-      "eyebrow": "11 · Aus dem Team",
+      "eyebrow": "07 · Aus dem Team",
       "title": "Was wir lernen.",
       "description": "Produktnotizen und praxisnahe Leitfäden vom ecentic-Team.",
       "loading": "Artikel werden geladen",

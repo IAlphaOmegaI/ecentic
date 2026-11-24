@@ -41,8 +41,14 @@ const parseName = (fullName: string): { name: string; surname: string } => {
 export const signInWithShopify = withContext(
   async (
     context,
-    { shop, callbackURL }: { shop: string; callbackURL: string },
+    {
+      shop,
+      callbackURL,
+      locale = defaultLocale,
+    }: { shop: string; callbackURL: string; locale?: Locale },
   ) => {
+    const resolvedLocale = isPublishedLocale(locale) ? locale : defaultLocale;
+    const destination = sanitizeRedirect(callbackURL, "/dashboard");
     const jar = await cookies();
 
     const domain = await resolveAdminHost(shop);
@@ -73,7 +79,8 @@ export const signInWithShopify = withContext(
             // Server actions are invocable directly, so the caller controls
             // `callbackURL`. Re-validate here — Better Auth's originCheck does
             // not run on `auth.api.*` calls (no `ctx.request`).
-            callbackURL: sanitizeRedirect(callbackURL, "/dashboard"),
+            callbackURL: destination,
+            errorCallbackURL: `${localizePath("/sign-in", resolvedLocale)}?redirect=${encodeURIComponent(destination)}`,
             // `/onboarding/connect/shopify?shop=${encodeURIComponent(shop)}`
             // TODO: replace with /api/auth/shopify-proxy/authorize
             newUserCallbackURL: `/api/integrations/shopify/install?shop=${encodeURIComponent(domain)}`,
@@ -114,12 +121,14 @@ export const signInWithGoogle = withContext(
     }: { callbackURL: string; locale?: Locale },
   ) => {
     const resolvedLocale = isPublishedLocale(locale) ? locale : defaultLocale;
+    const destination = sanitizeRedirect(callbackURL, "/dashboard");
     const result = await resultify(
       async () =>
         await context.auth.signInSocial({
           body: {
             provider: "google",
-            callbackURL: sanitizeRedirect(callbackURL, "/dashboard"),
+            callbackURL: destination,
+            errorCallbackURL: `${localizePath("/sign-in", resolvedLocale)}?redirect=${encodeURIComponent(destination)}`,
             newUserCallbackURL: localizePath(
               "/complete-profile",
               resolvedLocale,

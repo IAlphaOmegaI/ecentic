@@ -35,6 +35,10 @@ Central navigation for product context, agent rules, and package/component docum
 - [Claude configuration questions](./integrations/outbound-claude-questions.md) — current setup, sender identity decisions and the Clay routine specification to complete with ecentic context
 - [Outbound launch decisions](./integrations/outbound-launch-decisions.md) — November answers, implemented launch policy and remaining account/history work
 
+### If you are working on document signing
+
+- [esign](./integrations/esign.md) — private source repository, separate development checkout, and deployment at esign.ecentic.ai
+
 ### If you are writing or publishing a blog post
 
 - [Blog post format](../apps/web/content/blog/README.md) — one markdown file per post in `apps/web/content/blog`, frontmatter, body rules, `bun run blog:check`

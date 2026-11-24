@@ -429,7 +429,7 @@ export const OverviewWorkbench = ({
 }) => (
   <div
     data-hero-workbench
-    className="relative flex h-full flex-col overflow-hidden rounded-lg border border-foreground/15 bg-background-rich text-foreground shadow-emphasis/10 shadow-sm"
+    className="@container relative flex h-full flex-col overflow-hidden rounded-lg border border-foreground/15 bg-background-rich text-foreground shadow-emphasis/10 shadow-sm"
   >
     <header className="flex min-h-10 items-center gap-4 border-accent-foreground border-b px-4 py-2">
       <p className="min-w-0 text-left font-medium text-sm leading-snug">
@@ -463,13 +463,13 @@ export const OverviewWorkbench = ({
     </div>
     <div className="flex h-8 shrink-0 items-center gap-2 border-accent-foreground border-t bg-background px-4">
       <span className="size-1.5 rounded-full bg-primary" />
-      <span className="font-mono text-foreground-dimmed text-xs">
+      <span className="whitespace-nowrap font-mono text-foreground-dimmed text-xs">
         {heroProduct.id}
       </span>
-      <span className="ml-auto text-foreground-dimmed text-xs">
+      <span className="ml-auto whitespace-nowrap text-foreground-dimmed text-xs">
         {copy.labels.example}
       </span>
-      <span className="ml-2 hidden gap-1 sm:flex">
+      <span className="ml-2 @sm:flex hidden gap-1">
         {copy.stages.map((stage, index) => (
           <span
             key={stage}

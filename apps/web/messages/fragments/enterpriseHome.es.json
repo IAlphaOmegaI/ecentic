@@ -173,7 +173,7 @@
             "Feeds de productos"
           ],
           "href": "/platform/connect",
-          "label": "Explora Conecta"
+          "label": "Ver conexiones del catálogo"
         },
         {
           "id": "simulate",
@@ -185,19 +185,19 @@
             "Auditoría de preparación"
           ],
           "href": "/platform/simulate",
-          "label": "Explora Simula"
+          "label": "Ver comparaciones de productos"
         },
         {
           "id": "fix",
           "title": "Mejora",
-          "body": "Aplicar genera y publica títulos y descripciones a partir de los datos existentes. Publica datos estructurados y sincroniza Merchant Center con controles separados.",
+          "body": "Mejora la claridad de los títulos y las descripciones con los datos que ya tienes de tus productos. Selecciona «Aplicar» para generar y publicar los cambios. Los datos estructurados y la sincronización con Merchant Center tienen controles independientes.",
           "tags": [
             "Fichas",
             "Datos estructurados",
             "Merchant Center"
           ],
           "href": "/platform/fix",
-          "label": "Explora Mejora"
+          "label": "Ver mejoras de fichas"
         },
         {
           "id": "sell",
@@ -209,7 +209,7 @@
             "Tus pagos"
           ],
           "href": "/platform/sell",
-          "label": "Explora Vende"
+          "label": "Ver checkout de WooCommerce"
         },
         {
           "id": "track",
@@ -221,18 +221,22 @@
             "Varias tiendas"
           ],
           "href": "/platform/track",
-          "label": "Explora Mide"
+          "label": "Ver seguimiento de tráfico referido en Shopify"
         }
       ]
     },
     "film": {
-      "eyebrow": "04 · Mira cómo funciona",
+      "eyebrow": "01 · Mira cómo funciona",
       "title": "Descubre ecentic en un minuto.",
       "description": "Un vistazo al producto, desde una comparación hasta la siguiente decisión sobre tu catálogo.",
       "caption": "Vídeo de producto de ecentic",
       "action": {
         "primary": "Ver el vídeo"
       }
+    },
+    "connections": {
+      "title": "Tu catálogo. Los requisitos de cada canal.",
+      "description": "Conecta tu catálogo actual y comprueba qué admite ecentic en cada canal de IA. La disponibilidad varía entre simulaciones, feeds y checkout."
     },
     "channels": {
       "eyebrow": "05 · Canales de IA",
@@ -315,7 +319,7 @@
       ]
     },
     "mechanisms": {
-      "eyebrow": "07 · Por dentro",
+      "eyebrow": "03 · Por dentro",
       "title": "Todo lo que hay entre «la IA nos ignoró» y «la IA nos compró».",
       "items": [
         {
@@ -393,7 +397,7 @@
       ]
     },
     "proof": {
-      "eyebrow": "08 · Lo que hemos medido hasta ahora",
+      "eyebrow": "04 · Lo que hemos medido hasta ahora",
       "title": "Lo que hemos medido hasta ahora.",
       "stats": [
         {
@@ -433,7 +437,7 @@
       "pipeline": "Pilotos en fase de definición con empresas de gran distribución, viajes y espacios de trabajo flexibles."
     },
     "procurement": {
-      "eyebrow": "09 · Grandes empresas",
+      "eyebrow": "05 · Grandes empresas",
       "title": "Lleva las preguntas adecuadas a la revisión de seguridad.",
       "items": [
         {
@@ -465,7 +469,7 @@
       ]
     },
     "pricing": {
-      "eyebrow": "10 · Precios",
+      "eyebrow": "06 · Precios",
       "title": "Empieza gratis. Crece cuando la IA empiece a comprar.",
       "description": "Elige un punto de partida que encaje con tu tienda y tu equipo.",
       "items": [
@@ -494,7 +498,7 @@
       }
     },
     "editorial": {
-      "eyebrow": "11 · Nuestro equipo",
+      "eyebrow": "07 · Nuestro equipo",
       "title": "Lo que estamos aprendiendo.",
       "description": "Notas de producto y guías prácticas, escritas por el equipo de ecentic.",
       "loading": "Cargando artículos",

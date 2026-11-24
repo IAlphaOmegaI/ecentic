@@ -8,6 +8,42 @@ const content = {
 } as const;
 
 describe("social image metadata", () => {
+  test.each([
+    ["Pricing", "Pricing | ecentic"],
+    ["Pricing | ecentic", "Pricing | ecentic"],
+    ["ecentic", "ecentic"],
+    [
+      "How ecentic improves product data",
+      "How ecentic improves product data | ecentic",
+    ],
+  ])("%s receives one social brand suffix", (title, expected) => {
+    const metadata = createMetadata({ ...content, title, path: "/pricing" });
+
+    expect(metadata.title).toBe(title);
+    expect(metadata.openGraph?.title).toBe(expected);
+    expect(metadata.twitter?.title).toBe(expected);
+  });
+
+  test.each([
+    ["A plan for your catalog", "A plan for your catalog | ecentic"],
+    ["A plan for your catalog | ecentic", "A plan for your catalog | ecentic"],
+  ])(
+    "custom social title %s stays independent of the page title",
+    (socialTitle, expected) => {
+      const title = "Pricing | ecentic";
+      const metadata = createMetadata({
+        ...content,
+        title,
+        socialTitle,
+        path: "/pricing",
+      });
+
+      expect(metadata.title).toBe(title);
+      expect(metadata.openGraph?.title).toBe(expected);
+      expect(metadata.twitter?.title).toBe(expected);
+    },
+  );
+
   test.each(
     publishedLocales.map((locale) => [
       locale === "en" ? "/pricing" : `/${locale}/pricing`,

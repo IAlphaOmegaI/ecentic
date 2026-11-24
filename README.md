@@ -11,6 +11,8 @@ This is a Bun + Turborepo monorepo with:
 - Shared UI/utilities packages in `packages/*`
 - Internal docs and implementation rules in `docs/*`
 
+The separate [esign application](apps/esign/README.md) is maintained in a private repository and deployed at [esign.ecentic.ai](https://esign.ecentic.ai).
+
 ## Monorepo Structure
 
 ```text

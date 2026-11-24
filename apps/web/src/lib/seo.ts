@@ -279,6 +279,10 @@ export const createMetadata = ({
     height: 630,
     alt: title,
   };
+  const brandedSocialTitle =
+    socialTitle === seo.name || socialTitle.endsWith(BRAND_SUFFIX)
+      ? socialTitle
+      : `${socialTitle}${BRAND_SUFFIX}`;
 
   return {
     title,
@@ -301,13 +305,13 @@ export const createMetadata = ({
       ...(image === false ? {} : { images: [socialImage] }),
       url: absoluteUrl(path),
       siteName: seo.name,
-      title: `${socialTitle} | ${seo.name}`,
+      title: brandedSocialTitle,
       description,
     },
     twitter: {
       card: "summary_large_image",
       ...(image === false ? {} : { images: [socialImage] }),
-      title: `${socialTitle} | ${seo.name}`,
+      title: brandedSocialTitle,
       description,
     },
   };

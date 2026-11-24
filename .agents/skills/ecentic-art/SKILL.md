@@ -49,27 +49,25 @@ space. The viewer should recognize a cart, bag, product or word without reading 
 - Do not repeat the same ambiguous texture across unrelated page heroes.
 - Keep texture subordinate where it shares a plane with essential information.
 
-The audience panel, integration arc and global closing CTA may use tonal artwork. In the latest
-15 November homepage correction, "graphics" means **custom HTML/CSS animation**, using native
-product documents and interface elements. It does not mean a generated 3D image, a Hairline
-drawing or an animated collage of sampled objects. Keep one coherent explanation and a complete
-static state; see the homepage recipe in the public-page skill. The 16 November Naratix reference
-review replaces the six-card carousel with an anchored store → écentic workbench → AI-channel
-system. Small feed records move through curved connections while one blue sneaker remains the
-subject. White native objects float directly on the blue hero, with the blue box as the hub.
-The workbench shows the imported facts, a simulated comparison, a title clarified from those
-facts, supported publication/merchant checkout, and separate comparison/referral observations.
-Build the catalog as a recognizable spreadsheet with column letters, row numbers and a highlighted
-product row. Follow it with dimensional product/listing paperwork and a prominent product image.
-Avoid a plain UI-demo card with an undersized product stranded in empty space.
-Use no fabricated measurements or unsupported channel claims. The product is an illustrative
-example, not a live result. Keep all visible copy localized and JSON identifiers as code.
+The audience panel, integration arc and global closing CTA may use tonal artwork.
+The latest 20 November direction retires the homepage shoe/card and 3D open-box experiments
+and merges the banner with the connected walkthrough. Lead with the centered HTML/CSS
+source → product workbench → AI composition and its centered changing explanation, then the
+full original product positioning and CTAs. One continuous blue opening field contains the
+title, supporting copy, CTAs and five-stage story. The complete scene and its explanation sit
+in one black cutout on that blue background; the caption does not receive a second nested card.
+Do not create another replacement object or repeat the same illustration in two sections.
 
-The hero advances automatically while visible and pauses offscreen or in a hidden document.
-Reduced motion shows the complete static system without advancement. Keep the headline and CTA
-stable, and omit playback controls. The deeper homepage roadmap reuses this product workbench:
-scroll-linked beside the narrative on desktop, static chapter examples in mobile document flow.
-This local composition change does not retire the site's Hairline or tonal ASCII treatments.
+The earlier connected hero remains available in `ConnectedOverview` / `OverviewArtwork`.
+Reuse its five exact scenes and consistent sample product facts in the merged opening section.
+Synchronize the illustration with the current stage name and relevant explanation. The spreadsheet
+is illustrative catalog data; moving records do not establish live AI rankings or unsupported
+checkout capability. Preserve original localized copy and the saved banner API. The sequence
+autoplays on a loop, as explicitly requested. The numbered selector strip and visible Pause
+button were removed in the next review. Hidden, offscreen, focused-link and reduced-motion
+states stop movement; resume after focus leaves. Keep all five descriptions available without
+animation and keep the illustration stable while explanations change.
+
 The global closing subject is now a tonal shopping bag; it is not the former generic Hairline
 basket. The footer retains a small trademark and a separate **tonal product-selection graphic**
 with a finite reveal. The 15 November review replaces the repeated oversized wordmark; the

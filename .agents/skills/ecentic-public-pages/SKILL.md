@@ -26,43 +26,48 @@ The public design audit includes every route family and both locales.
 
 ## Homepage `/`
 
-A custom HTML/CSS motion graphic leads the centered blue hero. The 16 November Naratix
-reference review replaces the six-card sneaker carousel with one anchored connected system:
-store/catalog source, écentic workbench and AI channels. Keep all three visible while records
-travel through connections and the workbench reveals catalog import, simulated comparison,
-a clearer listing title, supported publication and separate rechecks. Use the existing blue
-sneaker photograph and one example SKU throughout. The rewritten title uses only the source
-product facts. Label the product as an illustrative example; do not imply a live AI ranking,
-a guaranteed sale or a pre-publication rewrite-preview capability.
+The latest 20 November direction merges the homepage banner and five-stage explanation into
+one continuous blue opening composition. Restore the original `enterpriseHome.hero.title` and
+`description`, with the existing store-check/demo actions: the shorter experimental title lost
+important product positioning. Preserve the key information from the walkthrough as well.
+Do not restore the retired shoe/card or 3D box, or introduce a second feature illustration.
 
-White theme-rounded objects float on the blue hero without an enclosing panel. Preserve genuine
-provider marks, the blue écentic box, curved connections and native product-record details.
-Keep the headline/CTA position stable. The hero plays automatically while visible without player
-controls; pause offscreen and in hidden documents. Reduced motion retains a complete static
-relationship and meaningful listing state. Translate all prose and accessibility text while
-preserving JSON keys and identifiers. AI comparisons, supported channel publishing, merchant
-checkout and detected referrals must stay distinct.
+Lead the opening with the complete original connected scene: store sources, central
+product workbench, écentic and AI channels. Keep exactly the five stages and their order:
+Connect → Simulate → Fix → Sell → Track. The current scene stays synchronized with its relevant
+existing description/destination link. Use one coherent illustration rather
+than five repeated isolated workbench cards or long padded scroll chapters. The native
+spreadsheet, sample product, comparison, listing changes, supported publication and separate
+recheck scenes remain intact.
 
-Use recognizable spreadsheet rows and columns, layered product/listing papers and a prominent
-product image so the work reads as an illustrated transformation, not a plain dashboard demo.
-The spreadsheet is an example of catalog data, not a claim of native Excel integration.
+Center the illustration at full width with a restrained, centered current-step explanation
+beneath it. Follow that block with the original full headline, supporting copy and CTAs.
+The extra “From product feed” header band and “Connect, compare…” recap were removed; do not
+recreate the sidebar or repeat a second section introduction.
 
-The deeper five-stage explanation follows the same product. On desktop, a workbench stays beside
-the narrative and changes with the reader's scroll. Mobile exposes each chapter's static example
-in the normal document flow. Keep the existing platform links and detailed capability wording;
-the animation does not replace the merchant controls or factual qualifications.
-Keep the specific title, "One layer between your catalog and the AI that sells it," and enough
-copy to explain product data, supported checkout and changing channel rules. A generic slogan
-does not replace that meaning. Keep the blue store-check action and a white filled demo Button;
-omit a redundant integration-fact row. This 15 November review supersedes the earlier split hero
-and its briefly tested generic headline. Lead the Brands pain list with the inability
-to see why AI chooses competitors; name stores selling the same products instead of ambiguous
-"retailers". The homepage pricing section ends in a full-width "See pricing" navigation row.
-The five-stage Connect → Simulate → Fix → Sell → Track story remains a connected roadmap, with
-normal font numerals on one continuous dark section. The shared product record supplies its
-visual continuity. Keep mobile chapter spacing compact. Channel and integration tiles become compact
-logo/title/status rows on phones while retaining their desktop card layout; status stays at
-the far side and the mobile channel arrow is omitted.
+The whole illustration and its current explanation share one black cutout on the blue hero
+background. Its decorative fill reaches both viewport edges, as the other full-width cutouts
+do; keep the illustration and caption centered within their reading widths. Use the approved
+responsive feature-cutout geometry at the bottom only. Black extends to the top behind
+navigation; remove the upper blue strip/notch and the pale perimeter. Keep rail borders on the
+blue copy area rather than over the black fill. Keep the caption integrated into this surface, not boxed inside a second dark card.
+The main headline, supporting copy and CTAs remain on blue below it.
+
+The user explicitly requests autoplay on a loop and removed the numbered selector strip and
+visible Pause control. Let the scene and its changing explanation carry the progression. Pause
+while hidden/offscreen or while the reader focuses its link, resume on blur, and respect reduced
+motion. Keep all five descriptions available in the unanimated presentation. Stabilize the
+illustration's position across short/long descriptions, and use shared Motion primitives.
+
+The previous connected blue banner is deliberately retained as `ConnectedOverview`, using
+`copy={messages.enterpriseHome.hero}`. Preserve its original title/description, actions and
+animation for reuse; do not delete it as unused. Preserve descriptive platform links,
+inverse soft-button contrast and accurate Apply behavior. No artwork implies a native Excel
+integration, a live AI ranking, a guaranteed sale or an unimplemented pre-publication preview.
+
+Keep mobile chapter spacing compact. Lead the Brands pain list with the inability to see why
+AI chooses competitors; name stores selling the same products instead of ambiguous “retailers”.
+The homepage pricing section ends in a full-width “See pricing” navigation row.
 
 Audience sections combine their own copy with tonal artwork. The integrations arc can have
 ASCII atmosphere while genuine provider marks stay clear. Capability cards use complete
@@ -70,6 +75,37 @@ illustrated objects; the simulation panel retains its product cards with the ece
 above them. An arc of provider logos alone does not replace those cards. Remove heavy, misaligned
 tag strips and accidental edge clipping.
 Dense catalog findings belong behind supporting disclosure. Keep the original proof media.
+
+Number the visible homepage section eyebrows in their current rendered order, starting at 01
+for the product film. Unnumbered or conditional evidence blocks do not create gaps; do not reuse
+retired section positions after a reorder.
+
+Follow the five-stage walkthrough with compact, publication-gated DUA evidence and the existing
+product film so readers can inspect evidence before the longer capability sections. Preserve the traffic metric's scope,
+period, attribution caveat and source links; do not repeat the same pilot result later.
+Use one compatibility section with distinct questions: what the merchant connects, and what
+écentic supports on each AI channel. The 21 November request incorporates the old connection
+graph into the existing illustration slot, replacing the homepage `ProviderArc` without adding
+another section. Connect source categories through the écentic hub to six AI marks, preserving
+the compact footprint and planned-channel distinction. Behind the hub, use a soft blue gradient
+that fades into the canvas rather than a bounded rounded glow. Leave shared arc consumers on other
+routes unchanged. Under this graphic, use grouped integration accordions for commerce
+platforms, feeds/data, payments/checkout and PIM, with useful descriptions and current statuses.
+Preserve the full entries, descriptions and links, but omit homepage “Notify me” actions. Align
+listing rows consistently across provider, details and status, rather than independent columns
+with mismatched heights or a final spanning card. Keep AI channels in one separate concise list
+with availability and descriptive links; omit the duplicate channels group from the accordion.
+This replaces the six-row flat source list, following the user's explicit 20 November choice.
+The full timeline and technical comparison stay on the AI-channels page. Omit the old map's
+central stage list and extra introduction/CTA, which repeat the opening animation. Audience tabs stay
+unchanged. Prioritize understanding over minimum page length.
+Dark walkthrough links use the package soft Button's inverse tone for readable text and focus.
+Give each link a descriptive destination label and keep Apply's generation/publication behavior
+explicit in the Fix paragraph.
+
+Do not remove or consolidate homepage sections, or replace their animations with a shorter
+directory, merely to reduce page length without first consulting the user. This does not block
+visual edits the user has explicitly requested, including the combined opening section.
 
 ## Platform overview and stage pages
 
