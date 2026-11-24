@@ -10,7 +10,6 @@ import {
   type RechargeClient,
   RechargeError,
   type RechargeOrder,
-  type RechargeProduct,
   type RechargeSubscription,
   type RechargeWebhookProjection,
   rechargeTimestamp,
@@ -322,21 +321,6 @@ const nextStage = async (lease: Lease, kind: string, run: string) =>
     );
   });
 
-const productProjection = (product: RechargeProduct): RechargeProduct => ({
-  external_product_id: identifier(product.external_product_id) ?? undefined,
-  variants: (product.variants ?? []).flatMap((variant) => {
-    const identifierValue = identifier(variant.external_variant_id);
-    return identifierValue
-      ? [
-          {
-            external_variant_id: identifierValue,
-            prices: { unit_price: variant.prices?.unit_price ?? null },
-          },
-        ]
-      : [];
-  }),
-});
-
 const catalogVariants = (
   products: {
     externalId: string | null;
@@ -391,72 +375,30 @@ const processJob = async (
   };
   switch (lease.job.kind) {
     case "products": {
-      const page = await client.listProducts({ cursor, limit: 100 });
-      const values = page.items.flatMap((product) => {
-        const data = productProjection(product);
-        return data.external_product_id
-          ? [
-              {
-                storeId: lease.store,
-                externalId: String(data.external_product_id),
-                syncRunId: run,
-                data: data as Record<string, unknown>,
-              },
-            ]
-          : [];
-      });
-      await Model.fenced(lease, async (transaction) => {
-        if (values.length)
-          await transaction
-            .insert(schema.rechargeCatalogItem)
-            .values(values)
-            .onConflictDoUpdate({
-              target: [
-                schema.rechargeCatalogItem.storeId,
-                schema.rechargeCatalogItem.externalId,
-              ],
-              set: {
-                data: sql`excluded."data"`,
-                syncRunId: sql`excluded."syncRunId"`,
-              },
-            });
-      });
-      if (page.nextCursor) return continuation(page.nextCursor);
+      // OAuth permits Shopify only. Recharge v2 /products is Custom-only and
+      // returns 422 for Shopify; use the imported Shopify catalog in plans.
+      // Keep this stage so already queued/retrying product jobs can resume.
       await nextStage(lease, "plans", run);
       return;
     }
     case "plans": {
       const page = await client.listPlans({ cursor, limit: 100 });
-      const [cached, products, connection] = await Promise.all([
-        Model.read(() =>
-          db
-            .select()
-            .from(schema.rechargeCatalogItem)
-            .where(
-              and(
-                eq(schema.rechargeCatalogItem.storeId, lease.store),
-                eq(schema.rechargeCatalogItem.syncRunId, run),
-              ),
-            ),
-        ),
-        Model.read(() =>
-          db
-            .select({
-              id: schema.product.id,
-              externalId: schema.product.externalId,
-              rawData: schema.product.rawData,
-              currency: schema.product.currency,
-            })
-            .from(schema.product)
-            .where(eq(schema.product.storeId, lease.store)),
-        ),
-        Model.getConnection(lease.store),
-      ]);
+      const products = await Model.read(() =>
+        db
+          .select({
+            id: schema.product.id,
+            externalId: schema.product.externalId,
+            rawData: schema.product.rawData,
+            currency: schema.product.currency,
+          })
+          .from(schema.product)
+          .where(eq(schema.product.storeId, lease.store)),
+      );
       const offers = normalizeSubscriptionOffers({
-        products: cached.map((row) => row.data as RechargeProduct),
+        // Ignore any product staging left by an older, interrupted sync.
+        products: [],
         plans: page.items,
         catalog: catalogVariants(products),
-        currency: connection?.currency ?? undefined,
       });
       const productIds = new Map(
         products.map((product) => [product.externalId, product.id]),

@@ -2,8 +2,13 @@
 
 Updated 24 November 2026. Connector source: `apps/plugins/recharge`.
 The existing Next.js web app hosts OAuth, webhooks, jobs and merchant controls.
-Recharge subscriptions, orders, products and plans are read-only. The only
+Recharge subscriptions, orders and plans are read-only. The only
 provider mutations configure webhook delivery and exchange/refresh OAuth grants.
+Product/variant identities, base prices and currency come from the store's
+existing Shopify catalog import. Recharge v2 `/products` supports Custom
+platforms only and returns 422 for Shopify, so the Shopify worker reads `/plans`
+and maps them to that catalog instead. Import Shopify products before syncing
+Recharge offers; an empty catalog produces no offers.
 
 ## What the metrics mean
 
@@ -30,10 +35,10 @@ provider mutations configure webhook delivery and exchange/refresh OAuth grants.
 
 ## Partner portal setup
 
-The existing [ecentic OAuth app](https://www.admin.rechargeapps.com/partners/apps/144935)
-was inspected in the partner portal on 24 November 2026. Its client ID and
-client secret are available. This verifies portal configuration; live install
-testing and Marketplace approval remain unverified.
+The replacement [ecentic OAuth app](https://www.admin.rechargeapps.com/partners/apps/145292)
+was created in the partner portal on 24 November 2026. Production credentials
+are configured; a live Shopify authorization and webhook registration succeeded.
+The full reviewer exercise and Marketplace approval remain unverified.
 
 1. Use the existing ecentic OAuth app under Apps.
 2. Its registered production callback is
@@ -44,6 +49,8 @@ testing and Marketplace approval remain unverified.
    `read_subscriptions`, and the store permission option whose value is
    `store_info read_shop read_store`. This is one combined portal selection. Customers and all other
    permission options are set to None. No business-data write scopes are selected.
+   `read_products` remains selected in this grant for compatibility; the Shopify
+   sync does not call Recharge's Custom-only products endpoint.
 4. Configure the three Recharge variables below in the Production environment
    of the existing Vercel project `zennit/ecentic`. Locally, use untracked
    `apps/web/.env.local`; do not commit real client credential values.
@@ -110,7 +117,7 @@ For the recorded-response lifecycle fixture against a disposable database with
 the current schema, run from `apps/web`:
 
 ```sh
-RECHARGE_TEST_DATABASE_URL=postgres://USER@localhost/TEST_DB bun test src/server/spec/recharge-integration.dbtest.ts
+RECHARGE_TEST_DATABASE_URL=postgres://USER@localhost/TEST_DB bun test ./src/server/spec/recharge-integration.dbtest.ts
 ```
 
 This fixture creates and removes its own test records and mocks Recharge HTTP;
@@ -180,6 +187,9 @@ All Recharge API attempts use the same per-store database reservation. Requests
 are paced conservatively at two per second and 429 responses wait at least two
 seconds with jitter. Jobs checkpoint per page and use expiring leases plus an
 installation generation so another instance can recover after a crash.
+The retained `products` job stage advances directly to plans for Shopify, so
+pending retries from older deployments recover without reconnecting. A terminal
+failed run needs **Sync** in Settings → Integrations after deploying the fix.
 Every authenticated webhook is projected into IDs, statuses and timestamps
 before durable enqueue. No raw customer/order webhook body is retained.
 

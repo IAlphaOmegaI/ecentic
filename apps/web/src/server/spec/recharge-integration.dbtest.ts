@@ -48,7 +48,14 @@ describe.skipIf(!target)(
       });
       await database!`insert into "user" (id,name,email,surname) values (${customer},'Fixture',${`${identity}@example.test`},'Merchant')`;
       await database!`insert into store (id,"userId",platform,name,domain,status,"storeId") values (${store},${customer},'shopify','Fixture','https://recharge-fixture.myshopify.com','connected','1001')`;
-      await database!`insert into product (id,"storeId","userId","externalId",title,price,currency,"rawData") values (${product},${store},${customer},'101','Fixture product','20.00','USD',${JSON.stringify({ variants: [{ id: 201, price: "20.00" }] })})`;
+      await database!`insert into product (id,"storeId","userId","externalId",title,price,currency,"rawData") values (${product},${store},${customer},'101','Fixture product','20.00','USD',${JSON.stringify(
+        {
+          variants: [
+            { id: 201, price: "20.00" },
+            { id: 202, price: "30.00" },
+          ],
+        },
+      )})`;
       globalThis.fetch = Object.assign(
         async (input: string | URL | Request, options?: RequestInit) => {
           const url = new URL(
@@ -87,34 +94,26 @@ describe.skipIf(!target)(
             });
           }
           if (url.pathname === "/products")
-            return Response.json({
-              products: url.searchParams.has("cursor")
-                ? []
-                : [
-                    {
-                      external_product_id: 101,
-                      variants: [
-                        {
-                          external_variant_id: 201,
-                          prices: { unit_price: "20.00" },
-                        },
-                      ],
-                    },
-                  ],
-              next_cursor: url.searchParams.has("cursor")
-                ? null
-                : "products-page-2",
-            });
+            return Response.json(
+              { error: "Products are supported for Custom platforms only" },
+              { status: 422 },
+            );
           if (url.pathname === "/plans")
             return Response.json({
               plans: [
                 {
-                  id: 301,
+                  id: url.searchParams.has("cursor") ? 302 : 301,
                   type: "subscription",
                   external_product_id: { ecommerce: 101 },
-                  external_plan_id: 401,
-                  discount_type: "percentage",
-                  discount_amount: "10",
+                  external_plan_id: url.searchParams.has("cursor") ? 402 : 401,
+                  discount_type: url.searchParams.has("cursor")
+                    ? "fixed_amount"
+                    : "percentage",
+                  discount_amount: url.searchParams.has("cursor")
+                    ? "3.25"
+                    : "10",
+                  has_variant_restrictions: url.searchParams.has("cursor"),
+                  external_variant_ids: [202],
                   subscription_preferences: {
                     order_interval_unit: "month",
                     order_interval_frequency: 1,
@@ -122,7 +121,9 @@ describe.skipIf(!target)(
                   },
                 },
               ],
-              next_cursor: null,
+              next_cursor: url.searchParams.has("cursor")
+                ? null
+                : "plans-page-2",
             });
           if (url.pathname === "/orders")
             return Response.json({ orders: state.orders, next_cursor: null });
@@ -200,18 +201,64 @@ describe.skipIf(!target)(
         await database!`select "accessToken","refreshToken" from recharge_connections where "storeId"=${store}`;
       expect(raw!["accessToken"]).toStartWith("ecentic.enc.v1:");
       expect(raw!["refreshToken"]).toStartWith("ecentic.enc.v1:");
-      await Integration.drain({ limit: 10 });
+      // Resume an already failing products job without another provider call.
+      // Old staging must not invent a third variant absent from Shopify.
+      const [retry] =
+        await database!`update recharge_jobs set attempts=2,error='recharge_unavailable',payload=payload || '{"cursor":"old-products-page"}'::jsonb where "storeId"=${store} and kind='products' returning id,payload`;
+      const run = (retry!["payload"] as { run: string }).run;
+      await database!`insert into recharge_catalog_items ("storeId","externalId","syncRunId",data) values (${store},'101',${run},${JSON.stringify({ external_product_id: 101, variants: [{ external_variant_id: 999, prices: { unit_price: "9.00" } }] })})`;
+      expect(await Integration.drain({ limit: 10 })).toEqual({
+        processed: 6,
+        failed: 0,
+      });
       const offers = await Integration.listOffersForProducts({
         store,
         products: [product],
       });
-      expect(offers).toHaveLength(1);
-      expect(offers[0]!.price).toBe("18.00");
-      expect(offers[0]!.sellingPlanId).toBe("401");
+      expect(offers).toHaveLength(3);
+      expect(offers).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            productId: product,
+            externalProductId: "101",
+            externalVariantId: "201",
+            planId: "301",
+            sellingPlanId: "401",
+            price: "18.00",
+            currency: "USD",
+            pricingStatus: "available",
+          }),
+          expect.objectContaining({
+            externalVariantId: "202",
+            planId: "301",
+            sellingPlanId: "401",
+            price: "27.00",
+          }),
+          expect.objectContaining({
+            externalVariantId: "202",
+            planId: "302",
+            sellingPlanId: "402",
+            price: "26.75",
+          }),
+        ]),
+      );
+      expect(requests).not.toContain("GET /products");
+      expect(
+        requests.filter((request) => request === "GET /plans"),
+      ).toHaveLength(2);
+      expect(
+        await database!`select id from recharge_catalog_items where "storeId"=${store}`,
+      ).toHaveLength(0);
+      const [resumed] =
+        await database!`select status,error from recharge_jobs where id=${retry!["id"]}`;
+      expect(resumed).toMatchObject({ status: "done", error: null });
       expect(hooks).toHaveLength(4);
       expect(
-        (await Integration.getStatus({ store, user: customer })).status,
-      ).toBe("connected");
+        await Integration.getStatus({ store, user: customer }),
+      ).toMatchObject({
+        status: "connected",
+        lastSyncedAt: expect.any(Date),
+      });
       await expect(
         Integration.getStatus({ store, user: "someone-else" }),
       ).rejects.toThrow("store_not_found");
@@ -504,6 +551,7 @@ describe.skipIf(!target)(
             request.startsWith("DELETE /webhooks/"),
         ),
       ).toBe(true);
+      expect(requests).not.toContain("GET /products");
     }, 60_000);
   },
 );

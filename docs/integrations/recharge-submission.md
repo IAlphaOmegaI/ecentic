@@ -19,13 +19,13 @@ App icon, listing images, privacy URL and terms URL: **[OWNER TO CONFIRM]**
 
 ## Requirements and scopes
 
-Verified in the existing [ecentic OAuth app](https://www.admin.rechargeapps.com/partners/apps/144935)
-on 24 November 2026. Client ID and client secret are available; the registered
+Verified in the replacement [ecentic OAuth app](https://www.admin.rechargeapps.com/partners/apps/145292)
+on 24 November 2026. Production credentials are configured; the registered
 callback is `https://www.ecentic.ai/api/integrations/recharge/callback`.
 
 | Selected portal permission | Reason |
 | --- | --- |
-| `read_products` | Map subscribable products and variants to the Shopify catalog |
+| `read_products` | Retained in the existing grant; Shopify sync uses the imported Shopify catalog and does not call Recharge v2 `/products` (Custom-only) |
 | `read_plans` | Read plan discounts, delivery intervals and selling-plan mappings |
 | `read_orders` | Match exact Shopify first-order IDs and subscription line items |
 | `read_subscriptions` | Read subscription creation, activation and cancellation status |
@@ -48,8 +48,8 @@ paid-order notifications. Existing installations must reauthorize this scope.
 ## Webhook topics
 
 `subscription/created`, `subscription/cancelled`, `order/created`, and
-`recharge/uninstalled`. Live registration and delivery still need dev-store
-verification. Daily reconciliation covers missed
+`recharge/uninstalled`. Live registration succeeded on 24 November 2026;
+delivery still needs dev-store verification. Daily reconciliation covers missed
 events, involuntary cancellations, stale offers and removed registrations.
 Confirm a distinct partner-app removal notification with Recharge.
 
