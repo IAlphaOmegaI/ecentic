@@ -114,12 +114,53 @@ describe.skipIf(!target)(
                     : "10",
                   has_variant_restrictions: url.searchParams.has("cursor"),
                   external_variant_ids: [202],
+                  channel_settings: {
+                    api: { display: true },
+                    checkout_page: { display: true },
+                  },
                   subscription_preferences: {
-                    order_interval_unit: "month",
+                    interval_unit: "month",
+                    order_interval_frequency: 1,
+                    charge_interval_frequency: 1,
+                    pricing_progression: [],
+                  },
+                },
+                {
+                  id: 303,
+                  type: "subscription",
+                  external_product_id: { ecommerce: 101 },
+                  external_plan_id: 403,
+                  discount_type: "percentage",
+                  discount_amount: "10",
+                  has_variant_restrictions: true,
+                  external_variant_ids: [201],
+                  subscription_preferences: {
+                    interval_unit: "month",
+                    order_interval_frequency: 1,
+                    charge_interval_frequency: 1,
+                    pricing_progression: [
+                      {
+                        recurring_discount_after_cycle: 1,
+                        recurring_discount_amount: 5,
+                        recurring_discount_type: "percentage",
+                      },
+                    ],
+                  },
+                },
+                ...["api", "checkout_page"].map((channel, index) => ({
+                  id: 304 + index,
+                  type: "subscription",
+                  external_product_id: { ecommerce: 101 },
+                  external_plan_id: 404 + index,
+                  discount_type: "percentage",
+                  discount_amount: "10",
+                  channel_settings: { [channel]: { display: false } },
+                  subscription_preferences: {
+                    interval_unit: "month",
                     order_interval_frequency: 1,
                     charge_interval_frequency: 1,
                   },
-                },
+                })),
               ],
               next_cursor: url.searchParams.has("cursor")
                 ? null
@@ -215,7 +256,7 @@ describe.skipIf(!target)(
         store,
         products: [product],
       });
-      expect(offers).toHaveLength(3);
+      expect(offers).toHaveLength(4);
       expect(offers).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
@@ -226,6 +267,9 @@ describe.skipIf(!target)(
             sellingPlanId: "401",
             price: "18.00",
             currency: "USD",
+            orderIntervalUnit: "month",
+            orderIntervalFrequency: 1,
+            chargeIntervalFrequency: 1,
             pricingStatus: "available",
           }),
           expect.objectContaining({
@@ -239,6 +283,17 @@ describe.skipIf(!target)(
             planId: "302",
             sellingPlanId: "402",
             price: "26.75",
+          }),
+          expect.objectContaining({
+            externalVariantId: "201",
+            planId: "303",
+            sellingPlanId: "403",
+            price: null,
+            orderIntervalUnit: "month",
+            orderIntervalFrequency: 1,
+            chargeIntervalFrequency: 1,
+            pricingStatus: "unavailable",
+            unavailableReason: "unsupported-pricing-progression",
           }),
         ]),
       );

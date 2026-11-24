@@ -61,7 +61,7 @@ test("mocked install → initial offer sync → signed first-order webhook contr
               subscription_preferences: {
                 order_interval_frequency: 1,
                 charge_interval_frequency: 1,
-                order_interval_unit: "month",
+                interval_unit: "month",
               },
             },
           ],
