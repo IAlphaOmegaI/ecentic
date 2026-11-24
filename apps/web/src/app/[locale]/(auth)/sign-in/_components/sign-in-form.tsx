@@ -22,6 +22,7 @@ import { z } from "zod";
 import { Motion } from "@/components/motion";
 import { localizePath } from "@/i18n/locale";
 import { Link, useRouter } from "@/i18n/navigation";
+import { authCallbackErrorKey } from "@/lib/auth-errors";
 import { sanitizeRedirect } from "@/lib/redirect";
 import * as Authentication from "@/server/app/authentication";
 import { AuthFeedback, useAuthFeedback } from "../../_components/auth-feedback";
@@ -33,7 +34,9 @@ export const SignInForm = () => {
   const translate = useTranslations("signIn");
   const translateAuthChrome = useTranslations("authChrome");
   const translateAuth = useTranslations("authUX");
-  const feedback = useAuthFeedback();
+  const feedback = useAuthFeedback(
+    authCallbackErrorKey(searchParameters.get("error")),
+  );
   const [provider, setProvider] = useState<"credential" | "google" | "shopify">(
     "credential",
   );
@@ -133,6 +136,7 @@ export const SignInForm = () => {
 
         if (data.type === "shopify") {
           const result = await Authentication.signInWithShopify({
+            locale,
             shop: data.data.shop,
             callbackURL: sanitizeRedirect(
               requestedRedirect,

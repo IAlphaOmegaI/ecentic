@@ -9,8 +9,8 @@ import {
   authErrorKey,
 } from "@/lib/auth-errors";
 
-export const useAuthFeedback = () => {
-  const [error, setError] = useState<AuthErrorKey | null>(null);
+export const useAuthFeedback = (initial: AuthErrorKey | null = null) => {
+  const [error, setError] = useState<AuthErrorKey | null>(initial);
   return {
     error,
     clear: () => setError(null),

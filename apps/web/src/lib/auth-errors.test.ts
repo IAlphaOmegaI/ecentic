@@ -1,7 +1,32 @@
 import { describe, expect, test } from "bun:test";
-import { authErrorKey } from "./auth-errors";
+import { authCallbackErrorKey, authErrorKey } from "./auth-errors";
 
 describe("actionable authentication errors", () => {
+  test("callback failures use safe localized guidance without raw provider text", () => {
+    expect(authCallbackErrorKey(null)).toBeNull();
+    expect(authCallbackErrorKey("")).toBeNull();
+    expect(authCallbackErrorKey("email_not_verified")).toBe("emailUnverified");
+    expect(authCallbackErrorKey("too_many_requests")).toBe("rateLimited");
+    for (const code of [
+      "internal_server_error",
+      "unable_to_create_user",
+      "unable_to_create_session",
+      "unable_to_link_account",
+      "unable_to_update_account",
+      "oauth_provider_not_found",
+    ])
+      expect(authCallbackErrorKey(code)).toBe("unavailable");
+
+    for (const code of [
+      "account_not_linked",
+      "access_denied",
+      "state_mismatch",
+      "<script>private provider response</script>",
+      "auth:invalidCredentials",
+    ])
+      expect(authCallbackErrorKey(code)).toBe("signIn");
+  });
+
   test("recognizes stable provider codes without exposing their detail", () => {
     expect(
       authErrorKey({ body: { code: "INVALID_EMAIL_OR_PASSWORD" } }, "signIn"),

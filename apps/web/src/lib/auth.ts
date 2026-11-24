@@ -84,6 +84,9 @@ const shopifyCallbackValidationPlugin = {
 
 export const auth = betterAuth({
   baseURL: process.env.APP_HOST,
+  // A missing/unreadable OAuth state cannot recover its localized callback.
+  // Keep that fallback on the form too, where only safe error keys are shown.
+  onAPIError: { errorURL: "/sign-in" },
   database: drizzleAdapter(db, {
     provider: "pg",
     schema,

@@ -27,6 +27,31 @@ const errorKeys = [
 
 export type AuthErrorKey = (typeof errorKeys)[number];
 
+/** Callback query strings are untrusted; only existing message keys reach UI. */
+export const authCallbackErrorKey = (
+  code: string | null,
+): AuthErrorKey | null => {
+  if (!code) return null;
+
+  switch (code) {
+    case "email_not_verified":
+      return "emailUnverified";
+    case "too_many_requests":
+      return "rateLimited";
+    case "internal_server_error":
+    case "unable_to_create_user":
+    case "unable_to_create_session":
+    case "unable_to_link_account":
+    case "unable_to_update_account":
+    case "oauth_provider_not_found":
+      return "unavailable";
+    default:
+      // Linking failures do not establish that a local email is unverified.
+      // Keep them, denied consent and unknown provider errors generic.
+      return "signIn";
+  }
+};
+
 const property = (value: unknown, key: string): unknown =>
   value !== null && typeof value === "object" && key in value
     ? Reflect.get(value, key)
