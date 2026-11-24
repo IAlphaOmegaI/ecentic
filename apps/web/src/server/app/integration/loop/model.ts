@@ -440,12 +440,30 @@ export const requestSync = async (input: { store: string; user: string }) => {
     },
   );
 };
+const withIngestion = async <T>(
+  input: { store: string; generation: number; lease?: Lease },
+  callback: (
+    transaction: TransactionScope,
+    connection: Connection,
+  ) => Promise<T>,
+): Promise<T> => {
+  if (
+    input.lease &&
+    (input.lease.store !== input.store ||
+      input.lease.generation !== input.generation)
+  )
+    throw new LoopLifecycleError("superseded");
+  return input.lease
+    ? fenced(input.lease, callback)
+    : withActive(input, callback);
+};
 export const ingest = async (input: {
   store: string;
   generation: number;
   returns: LoopReturn[];
+  lease?: Lease;
 }) =>
-  withActive(input, async (transaction, connection) => {
+  withIngestion(input, async (transaction, connection) => {
     for (const source of input.returns) {
       if (source.store !== input.store)
         throw new LoopLifecycleError("shop_mismatch");

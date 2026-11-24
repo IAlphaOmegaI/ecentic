@@ -419,6 +419,32 @@ describe.skipIf(!target)("Loop isolated merchant lifecycle fixture", () => {
       ).length,
     ).toBe(1);
   });
+  test("abandoned OAuth installation expires without retaining its verifier", async () => {
+    const pending = await modules.model.prepare({ store: otherStore, user });
+    const { db, schema } = await import("../database");
+    await db
+      .insert(schema.loopInstallation)
+      .values({
+        id: `expired-${identity}`,
+        storeId: otherStore,
+        userId: user,
+        organization: "fixture",
+        verifier: "x".repeat(43),
+        stateHash: "fixture-state-hash",
+        generation: pending.generation,
+        expiresAt: new Date(Date.now() - 600_000),
+      });
+    await modules.jobs.maintainStore({ store: otherStore });
+    expect(
+      (
+        await database!`select id from loop_installations where "storeId"=${otherStore}`
+      ).length,
+    ).toBe(0);
+    const [connection] =
+      await database!`select "callbackToken","lastError" from loop_connections where "storeId"=${otherStore}`;
+    expect(connection?.["callbackToken"]).toBeNull();
+    expect(connection?.["lastError"]).toBe("installation_expired");
+  });
   test("daily reconciliation includes cancellation tombstones and repairs missing hooks", async () => {
     hooks.splice(0, 1);
     await modules.jobs.maintainStore({ store });
@@ -458,6 +484,15 @@ describe.skipIf(!target)("Loop isolated merchant lifecycle fixture", () => {
     await expect(modules.model.fenced(first!, async () => {})).rejects.toThrow(
       "superseded",
     );
+    const { parseReturn } = await import("@ecentic/loop");
+    await expect(
+      modules.model.ingest({
+        store,
+        generation: connection.generation,
+        lease: first!,
+        returns: [parseReturn(store, returns[0])],
+      }),
+    ).rejects.toThrow("superseded");
     await modules.model.finish(second!);
   });
   test("disconnect erases grants/evidence and rejects old work; purge is immediate", async () => {

@@ -75,7 +75,7 @@ const processJob = async (
               payload["filter"] === "updated_at" ? "updated_at" : "created_at",
             state: payload["state"] as LoopReturnState,
           });
-      await Model.ingest({ ...lease, returns: page.returns });
+      await Model.ingest({ ...lease, lease, returns: page.returns });
       if (page.nextPageUrl)
         return {
           ...payload,
@@ -91,7 +91,7 @@ const processJob = async (
     }
     case "webhook": {
       const returned = parseReturn(lease.store, payload["returned"]);
-      await Model.ingest({ ...lease, returns: [returned] });
+      await Model.ingest({ ...lease, lease, returns: [returned] });
       await Model.enqueue({
         ...lease,
         kind: "analysis",
@@ -254,6 +254,27 @@ export const dispatch = async () => {
 export const maintainStore = async ({ store }: { store: string }) => {
   const connection = await Model.getConnection({ store });
   if (!connection) return;
+  const expired = await db
+    .delete(schema.loopInstallation)
+    .where(
+      and(
+        eq(schema.loopInstallation.storeId, store),
+        lt(schema.loopInstallation.expiresAt, new Date()),
+      ),
+    )
+    .returning({ generation: schema.loopInstallation.generation });
+  if (
+    connection.status === "connecting" &&
+    expired.some(
+      (installation) => installation.generation === connection.generation,
+    )
+  ) {
+    await Model.markFailedConnect(
+      { store, generation: connection.generation },
+      "installation_expired",
+    );
+    return;
+  }
   if (connection.disconnectedAt) {
     if (connection.purgeAfter && connection.purgeAfter <= new Date())
       await Model.purge({ store });
@@ -352,6 +373,7 @@ export const maintain = async () => {
           ),
         ),
         lt(schema.loopConnection.purgeAfter, new Date()),
+        sql`exists (select 1 from ${schema.loopInstallation} where ${schema.loopInstallation.storeId} = ${schema.loopConnection.storeId} and ${schema.loopInstallation.expiresAt} <= ${new Date().toISOString()}::timestamp)`,
       ),
     )
     .orderBy(asc(schema.loopConnection.lastMaintenanceAt))
