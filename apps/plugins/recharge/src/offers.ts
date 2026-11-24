@@ -16,12 +16,23 @@ export type RechargePlan = {
   external_plan_id?: string | number | null;
   external_variant_ids?: (string | number)[];
   has_variant_restrictions?: boolean;
+  channel_settings?: {
+    api?: { display?: boolean } | null;
+    checkout_page?: { display?: boolean } | null;
+  } | null;
   discount_type?: string | null;
   discount_amount?: string | number | null;
   subscription_preferences?: {
-    order_interval_unit?: string | null;
+    interval_unit?: string | null;
     order_interval_frequency?: number | string | null;
     charge_interval_frequency?: number | string | null;
+    pricing_progression?:
+      | {
+          recurring_discount_after_cycle?: number;
+          recurring_discount_amount?: number | string | null;
+          recurring_discount_type?: string | null;
+        }[]
+      | null;
   } | null;
 };
 
@@ -165,7 +176,9 @@ export const normalizeSubscriptionOffers = ({
       !planId ||
       plan.deleted_at ||
       !plan.type ||
-      plan.type === "onetime"
+      plan.type === "onetime" ||
+      plan.channel_settings?.api?.display === false ||
+      plan.channel_settings?.checkout_page?.display === false
     )
       return [];
     const restricted = new Set(
@@ -176,10 +189,10 @@ export const normalizeSubscriptionOffers = ({
     );
     const preferences = plan.subscription_preferences;
     const orderIntervalUnit =
-      preferences?.order_interval_unit === "day" ||
-      preferences?.order_interval_unit === "week" ||
-      preferences?.order_interval_unit === "month"
-        ? preferences.order_interval_unit
+      preferences?.interval_unit === "day" ||
+      preferences?.interval_unit === "week" ||
+      preferences?.interval_unit === "month"
+        ? preferences.interval_unit
         : null;
     const orderIntervalFrequency = positiveInteger(
       preferences?.order_interval_frequency,
@@ -206,6 +219,8 @@ export const normalizeSubscriptionOffers = ({
           // TODO(recharge-confirm): prepaid billing-price semantics and authoritative
           // Shopify selling-plan allocations. Retain intervals; never invent a price.
           if (plan.type !== "subscription") return "unsupported-plan-pricing";
+          if (preferences?.pricing_progression?.length)
+            return "unsupported-pricing-progression";
           if (
             !orderIntervalUnit ||
             !orderIntervalFrequency ||

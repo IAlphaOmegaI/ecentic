@@ -72,7 +72,7 @@ deletion removes those aggregates. Backups follow the hosting retention policy.
 
 ## Reviewer testing
 
-Use the dedicated `ecentic.myshopify.com` dev store and the detailed
+Use the dedicated `ecentic-recharge-test.myshopify.com` dev store and the detailed
 [local/reviewer runbook](./recharge.md). Reviewer account and test-payment
 instructions: **[OWNER TO SUPPLY SECURELY]**.
 

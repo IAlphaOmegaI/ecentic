@@ -15,6 +15,12 @@ Recharge offers; an empty catalog produces no offers.
 - Subscription offers are keyed by store, Shopify product/variant and Recharge
   plan. Unknown prices, unsupported prepaid terms and unmapped products remain
   unavailable; they are never guessed from another variant's price.
+- Plan delivery units come from Recharge's documented
+  `subscription_preferences.interval_unit`. Plans explicitly hidden from the
+  API or checkout channel are excluded. Plans with a nonempty
+  `pricing_progression` remain unavailable until their changing renewal prices
+  can be represented; no flat recurring price is published for them. See the
+  [Recharge Plan schema](https://developer.rechargepayments.com/v2/plans).
 - An AI-started first order has a signed `_ecentic_ai_checkout` receipt issued
   by ecentic and an authenticated Shopify paid-order delivery. A receipt can
   credit only one order. `_ecentic_ai_ref`, referrers and nearby visits do not
@@ -54,12 +60,18 @@ The full reviewer exercise and Marketplace approval remain unverified.
 4. Configure the three Recharge variables below in the Production environment
    of the existing Vercel project `zennit/ecentic`. Locally, use untracked
    `apps/web/.env.local`; do not commit real client credential values.
-5. Install Recharge on `ecentic.myshopify.com` and create a subscribable product
-   with two variants, two delivery plans, and a known discount.
+5. Use the free Shopify Dev store `ecentic-recharge-test.myshopify.com` for live
+   integration testing. Shopify requires organization-owner identity verification
+   before third-party apps can be installed. Confirm Recharge recognizes the
+   store as a test account before accepting any billing configuration.
+   The dedicated draft product `ecentic Recharge Test Product` has Standard
+   ($20 USD) and Plus ($30 USD) variants. Add a monthly 10% plan and an every-two-
+   months 15% plan, each billing on delivery. Expect four variant/plan offers:
+   $18/$27 monthly and $17/$25.50 every two months.
 6. Connect the Shopify dev store to ecentic. Existing installations must
    authorize Shopify `read_orders` again so `orders/paid` can be registered.
 7. In ecentic Settings → Integrations, connect Recharge for that verified store.
-   The install link uses `ecentic`, without `.myshopify.com`.
+   The install link uses `ecentic-recharge-test`, without `.myshopify.com`.
 
 ## Configuration and local commands
 
