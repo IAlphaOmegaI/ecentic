@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import * as Optimization from "@/server/app/optimization";
 import { isSubscriptionRequired } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
+import { LoopSignals, LoopSignalsSkeleton } from "../_components/loop-signals";
 import { OptimizeClient } from "./_components/optimize-client";
 import {
   OptimizeFeedback,
@@ -31,6 +32,9 @@ export default ({
   <OptimizeShell>
     <Suspense fallback={<OptimizeSkeleton />}>
       <OptimizeContent params={params} />
+    </Suspense>
+    <Suspense fallback={<LoopSignalsSkeleton />}>
+      <LoopSignals params={params} queue />
     </Suspense>
   </OptimizeShell>
 );

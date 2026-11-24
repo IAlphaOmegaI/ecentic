@@ -10,10 +10,12 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { seo } from "@/lib/seo";
 import type * as GoogleMerchant from "@/server/app/integration/google-merchant";
+import type { Status as LoopStatus } from "@/server/app/integration/loop/types";
 import type { Status as RechargeStatus } from "@/server/app/integration/recharge/types";
 import * as Store from "@/server/app/store";
 import { DashboardEmptyState } from "../../../_components/empty-state";
 import { StoreDisconnection } from "./lifecycle-controls";
+import { LoopControls } from "./loop-controls";
 import { RechargeControls } from "./recharge-controls";
 
 /** Compact Google Shopping state for the store row — management lives on the
@@ -78,10 +80,12 @@ export const IntegrationsSection = ({
   stores,
   google,
   recharge,
+  loop,
 }: {
   stores: Store.Type[];
   google: Record<string, GoogleMerchant.Status | null>;
   recharge: Record<string, RechargeStatus | null>;
+  loop: Record<string, LoopStatus | null>;
 }) => {
   const translate = useTranslations("dashboard.settings.integrations");
   const toast = useToastManager();
@@ -256,6 +260,10 @@ export const IntegrationsSection = ({
                   <RechargeControls
                     store={store.id}
                     status={recharge[store.id] ?? null}
+                  />
+                  <LoopControls
+                    store={store.id}
+                    status={loop[store.id] ?? null}
                   />
                 </div>
               );
