@@ -8,6 +8,11 @@
  * catalog, so a tool added to the server cannot go undocumented.
  */
 export const DOCUMENTED_MCP_TOOLS = [
+  {
+    name: "create_shopify_checkout",
+    summary: "createShopifyCheckout",
+    authenticated: true,
+  },
   { name: "list_plans", summary: "listPlans", authenticated: false },
   { name: "create_api_key", summary: "createApiKey", authenticated: true },
   { name: "create_checkout", summary: "createCheckout", authenticated: true },

@@ -47,6 +47,30 @@ export const Utils = {
   },
   tools: [
     {
+      name: "create_shopify_checkout",
+      description:
+        "Start an AI-attributed Shopify cart for an owned, connected store with Recharge. Returns a checkout URL; the buyer reviews and pays on Shopify. This does not place or pay for an order.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          store: { type: "string", description: "Owned ecentic store ID." },
+          variant: {
+            type: "string",
+            description:
+              "Synced Shopify variant numeric ID or ProductVariant GID.",
+          },
+          plan: {
+            type: "string",
+            description:
+              "Optional synced Recharge plan ID for this variant. Omit for a one-time purchase.",
+          },
+          quantity: { type: "integer", minimum: 1, maximum: 99, default: 1 },
+        },
+        required: ["store", "variant"],
+        additionalProperties: false,
+      },
+    },
+    {
       name: "list_plans",
       description:
         "List available ecentic plans and Stripe price availability.",

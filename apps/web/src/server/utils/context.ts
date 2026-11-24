@@ -13,9 +13,10 @@ import { ErrorProtocol, isExpected } from "./error";
  * Secret-bearing argument names never reach telemetry — action arguments are
  * shipped to Sentry as a span attribute, and values like OAuth authorization
  * codes, tokens, and passwords must not be exfiltrated by observability.
+ * Raw webhook bodies and signatures are excluded before validation too.
  */
 const SENSITIVE_ARGUMENT_PATTERN =
-  /code|token|secret|password|credential|authorization|apikey|api_key|consumerkey/i;
+  /code|token|secret|password|credential|authorization|apikey|api_key|consumerkey|^body$|^signature$/i;
 
 // Depth-capped and cycle-guarded: arguments can carry rich runtime objects
 // (Drizzle query nodes are circular — column → table → column), and telemetry

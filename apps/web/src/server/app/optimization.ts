@@ -11,6 +11,7 @@ import { withSubscription } from "../utils/entitlement";
 import { Environment } from "../utils/environment";
 import { DatabaseError } from "../utils/error";
 import { scopeOptimizationProducts } from "../utils/optimization-scope";
+import { composeJsonForProduct } from "../utils/recharge-publication";
 import { type Document, repository, resultifyRead } from "../utils/repository";
 import { feedUrl } from "./feed-export";
 import * as Shopify from "./integration/shopify";
@@ -642,14 +643,18 @@ SKU: ${productData.sku ?? "(unknown)"}`,
 
     if (!generated.success) return generated;
 
+    const composition = await resultify(() =>
+      composeJsonForProduct(productData, generated.data.json_ld),
+    );
+    if (!composition.success) return composition;
     const updated = await Product.update(Environment.SERVER, id, {
-      structuredData: generated.data.json_ld,
+      structuredData: composition.data,
     });
 
     if (!updated.success) return updated;
 
     revalidatePath("/dashboard/[store]/products/[id]", "page");
-    return { success: true, data: { structuredData: generated.data.json_ld } };
+    return { success: true, data: { structuredData: composition.data } };
   },
   "Optimization.generateStructuredData",
 );
@@ -687,7 +692,7 @@ export const publishProductStructuredData = withSubscription(
 
     const store = storeResult.data;
 
-    const structuredJson = await (async () => {
+    const sourceJson = await (async () => {
       if (product.structuredData) return product.structuredData;
       const generated = await Ucp.generateProductStructuredData({
         product: id,
@@ -696,11 +701,16 @@ export const publishProductStructuredData = withSubscription(
       return generated.data.json;
     })();
 
-    if (!structuredJson)
+    if (!sourceJson)
       return {
         success: false as const,
         error: new Error("Could not generate structured data"),
       };
+    const composition = await resultify(() =>
+      composeJsonForProduct(product, sourceJson),
+    );
+    if (!composition.success) return composition;
+    const structuredJson = composition.data;
 
     const result = await (async () => {
       switch (store.platform) {

@@ -13,6 +13,16 @@ import {
 
 const targets = [
   {
+    table: "recharge_connections",
+    purpose: "rechargeConnection",
+    fields: ["accessToken", "refreshToken"],
+  },
+  {
+    table: "recharge_installations",
+    purpose: "rechargeInstallation",
+    fields: ["code", "grant"],
+  },
+  {
     table: "account",
     purpose: "account",
     fields: ["accessToken", "refreshToken", "idToken"],
@@ -32,6 +42,16 @@ const targets = [
     table: "google_merchant_account",
     purpose: "googleMerchantAccount",
     fields: ["accessToken", "refreshToken"],
+  },
+  {
+    table: "recharge_connections",
+    purpose: "rechargeConnection",
+    fields: ["accessToken", "refreshToken"],
+  },
+  {
+    table: "recharge_installations",
+    purpose: "rechargeInstallation",
+    fields: ["code", "grant"],
   },
 ] as const;
 

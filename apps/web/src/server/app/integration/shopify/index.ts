@@ -22,6 +22,7 @@ import * as Product from "../../product";
 import * as Store from "../../store";
 import * as StoreAccount from "../../store-account";
 import { fetchPublicMeta } from "./domain";
+import { ensurePaidOrderWebhook } from "./order-webhook";
 import { redeemRefreshToken } from "./token";
 
 type Type = {
@@ -643,26 +644,15 @@ export const handleOAuthCallback = withContext(
         data: { "store.id": store.id, shop: shopId },
       });
 
-      // Register the `orders/paid` webhook so the performance-fee attribution
-      // pipeline sees completed orders. Routes to the same handler as the GDPR
-      // topics; failures here must not fail the connect, so we don't unwrap.
-      await HTTP.request(
-        `https://${shopId}/admin/api/${API_VERSION}/webhooks.json`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Shopify-Access-Token": accessToken,
-          },
-          body: JSON.stringify({
-            webhook: {
-              topic: "orders/paid",
-              address: `${origin}/api/integrations/shopify/webhooks`,
-              format: "json",
-            },
-          }),
-        },
-      );
+      // Paid-order attribution requires this delivery. Reconnects repair a
+      // missing subscription and surface failures instead of claiming success.
+      const registered = await ensurePaidOrderWebhook({
+        shop: shopId,
+        version: API_VERSION,
+        accessToken,
+        origin,
+      });
+      if (!registered.success) return registered;
 
       context.span.addBreadcrumb({
         category: "shopify.webhook.registered",

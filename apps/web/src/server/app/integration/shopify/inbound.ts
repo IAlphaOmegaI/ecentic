@@ -1,12 +1,15 @@
 import * as Sentry from "@sentry/nextjs";
 import { resultify } from "@zenncore/utils";
 import { and, eq } from "drizzle-orm";
+import { z } from "zod";
 import { schema } from "@/server/database";
 import { withContext } from "@/server/utils/context";
 import { Environment } from "@/server/utils/environment";
 import { InvalidSignatureError, ValidationError } from "@/server/utils/error";
 import * as Attribution from "../../billing/attribution";
 import * as Store from "../../store";
+import * as Recharge from "../recharge";
+import { CHECKOUT_MARKER, verifyCheckoutMarker } from "./checkout-marker";
 import { verifyWebhookHmac } from "./hmac";
 
 /**
@@ -18,20 +21,84 @@ import { verifyWebhookHmac } from "./hmac";
  * work with no signature required, letting anyone forge an attributed order.
  */
 
-type CustomerPayload = {
-  shop_domain: string;
-  customer: { id: number; email: string };
-  orders_requested?: number[];
-  orders_to_redact?: number[];
+const externalId = z
+  .union([
+    z.string().regex(/^\d+$/),
+    z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+  ])
+  .transform(String);
+const customerRequest = z.object({
+  shop_domain: z.string(),
+  customer: z.object({ id: externalId }),
+  orders_requested: z.array(externalId).optional(),
+  orders_to_redact: z.array(externalId).optional(),
+});
+
+const processCustomerRequest = async (
+  shop: string,
+  payload: unknown,
+  redact: boolean,
+) => {
+  const customer = customerRequest.safeParse(payload);
+  if (!customer.success || customer.data.shop_domain !== shop)
+    return {
+      success: false as const,
+      error: new ValidationError("Malformed customer request", {
+        statusCode: 400,
+      }),
+    };
+  const stores = await Store.find(Environment.SERVER, {
+    where: and(
+      eq(schema.store.domain, `https://${shop}`),
+      eq(schema.store.platform, "shopify"),
+    ),
+  });
+  if (!stores.success) return stores;
+  const orders =
+    (redact
+      ? customer.data.orders_to_redact
+      : customer.data.orders_requested) ?? [];
+  const result = await resultify(async () => {
+    const data = [];
+    for (const store of stores.data) {
+      if (redact) await Recharge.redactOrders({ store: store.id, orders });
+      else
+        data.push(
+          ...(await Recharge.getAttributionsForOrders({
+            store: store.id,
+            orders,
+          })),
+        );
+    }
+    return {
+      shop,
+      customer: customer.data.customer.id,
+      data_stored: data,
+      message: redact
+        ? "Removed matching order and subscription attribution details."
+        : "Matching order and subscription attribution details. Customer names, email addresses, and payment information are not retained by this integration.",
+    };
+  });
+  return result.success
+    ? result
+    : {
+        success: false as const,
+        error: new Error("Could not process customer privacy request"),
+      };
 };
 
-type OrdersPaidPayload = {
-  id: number;
-  current_total_price?: string;
-  total_price?: string;
-  currency?: string;
-  note_attributes?: { name: string; value: string }[];
-};
+const paidOrder = z.object({
+  id: externalId,
+  financial_status: z.literal("paid"),
+  created_at: z.string().optional(),
+  current_total_price: z.string().optional(),
+  total_price: z.string().optional(),
+  currency: z.string().optional(),
+  note_attributes: z
+    .array(z.object({ name: z.string(), value: z.string() }))
+    .optional(),
+});
+type OrdersPaidPayload = z.infer<typeof paidOrder>;
 
 /**
  * `orders/paid` → performance-fee attribution. Maps the shop to its ecentic
@@ -69,6 +136,35 @@ const recordPaidOrder = async (shop: string, payload: OrdersPaidPayload) => {
     accumulator[entry.name] = entry.value;
     return accumulator;
   }, {});
+
+  const marker = noteAttributes[CHECKOUT_MARKER];
+  const createdAt = new Date(payload.created_at ?? "");
+  const receipt =
+    marker &&
+    verifyCheckoutMarker({
+      marker,
+      store: store.id,
+      secret: process.env.SHOPIFY_API_SECRET ?? "",
+      at: createdAt,
+    });
+  if (receipt) {
+    // A valid receipt is durable before acknowledgement. Return failures so
+    // Shopify retries; the receipt can credit exactly one order across retries.
+    const recorded = await resultify(() =>
+      Recharge.recordAiOrder({
+        store: store.id,
+        order: String(payload.id),
+        reference: receipt.reference,
+        marker,
+        createdAt,
+      }),
+    );
+    if (!recorded.success)
+      return {
+        success: false as const,
+        error: new Error("Could not persist checkout attribution"),
+      };
+  }
 
   // The result is intentionally not propagated: a failed attribution must not
   // turn into a non-2xx, or Shopify redelivers the order and we re-run it. The
@@ -201,32 +297,35 @@ export const handle = withContext(
       };
 
     switch (topic) {
-      case "customers/data_request": {
-        const customer = payload.data as CustomerPayload;
-
-        return {
-          success: true as const,
-          data: {
-            shop,
-            customer: customer.customer.id,
-            data_stored: [],
-            message:
-              "ecentic does not collect or store any customer personal data. Only product catalog information is accessed via the Shopify Admin API.",
-          },
-        };
-      }
+      case "customers/data_request":
+        return await processCustomerRequest(shop, payload.data, false);
       case "customers/redact":
-        return {
-          success: true as const,
-          data: {
-            shop,
-            message: "No customer data stored. Nothing to redact.",
-          },
-        };
-      case "shop/redact":
+        return await processCustomerRequest(shop, payload.data, true);
+      case "shop/redact": {
+        const request = z
+          .object({ shop_id: externalId, shop_domain: z.literal(shop) })
+          .strict()
+          .safeParse(payload.data);
+        if (!request.success)
+          return {
+            success: false as const,
+            error: new ValidationError("Malformed shop privacy request", {
+              statusCode: 400,
+            }),
+          };
         return await redactShop(shop);
-      case "orders/paid":
-        return await recordPaidOrder(shop, payload.data as OrdersPaidPayload);
+      }
+      case "orders/paid": {
+        const order = paidOrder.safeParse(payload.data);
+        if (!order.success)
+          return {
+            success: false as const,
+            error: new ValidationError("Malformed paid order", {
+              statusCode: 400,
+            }),
+          };
+        return await recordPaidOrder(shop, order.data);
+      }
       default:
         return {
           success: false as const,

@@ -84,7 +84,7 @@ const runScanForUser = async (
   },
 ) => {
   const [products, competitors] = await Promise.all([
-    Product.find(Environment.SERVER, {
+    Product.findForSimulation(Environment.SERVER, {
       where: and(
         eq(schema.product.userId, user),
         store ? eq(schema.product.storeId, store) : undefined,

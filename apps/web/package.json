@@ -27,6 +27,7 @@
     "design:theme": "bun scripts/design/check-theme.ts"
   },
   "dependencies": {
+    "@ecentic/recharge": "workspace:*",
     "@ai-sdk/anthropic": "^4.0.48",
     "@ai-sdk/azure": "^4.0.59",
     "@ai-sdk/google": "^4.0.62",

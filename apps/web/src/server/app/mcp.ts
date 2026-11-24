@@ -8,6 +8,7 @@ import { resourceMetadataWwwAuthenticate } from "@/lib/agent-discovery";
 import * as Agent from "@/server/app/agent";
 import * as Authentication from "@/server/app/authentication";
 import * as Feed from "@/server/app/integration/feed";
+import * as ShopifyCheckout from "@/server/app/integration/shopify/checkout";
 import * as WooCommerce from "@/server/app/integration/woocommerce";
 import * as Store from "@/server/app/store";
 import * as Subscription from "@/server/app/subscription";
@@ -485,6 +486,27 @@ const dispatch = async (request: Request, body: JsonRpc2.JsonRpcMessage) => {
       const actor = await resolveActor(request);
 
       switch (call.data.name) {
+        case "create_shopify_checkout": {
+          if (!actor) return JsonRpc.unauthorized(body.id);
+          const input = ShopifyCheckout.checkoutInput.safeParse(
+            call.data.arguments,
+          );
+          if (!input.success)
+            return JsonRpc.invalidParams(
+              body.id,
+              "Provide store, variant, optional Recharge plan, and quantity (1–99).",
+            );
+          const checkout = await ShopifyCheckout.create(
+            actor.user.id,
+            input.data,
+          );
+          if (!checkout.success)
+            return JsonRpc.create(body.id, undefined, {
+              code: -32000,
+              message: checkout.error.message,
+            });
+          return JsonRpc.create(body.id, createText(checkout.data));
+        }
         case "list_plans":
           return JsonRpc.create(body.id, listPlans());
         case "create_api_key": {

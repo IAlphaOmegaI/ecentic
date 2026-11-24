@@ -1,0 +1,45 @@
+{
+  "dashboard": {
+    "recharge": {
+      "title": "Recharge 订阅购买",
+      "description": "将从 AI 助手发起的首笔订单与订阅关联。",
+      "offers": "已发现的订阅选项",
+      "firstOrders": "由 AI 发起的首笔订单",
+      "converted": "转为订阅的订单",
+      "active": "仍有效的订阅：{count}",
+      "answers": "AI 回答中的订阅选项",
+      "notChecked": "暂无可确定的检查结果。",
+      "coverage": "已检查当前 {total} 项选项中的 {checked} 项。",
+      "findings": "错误：{wrong} · 缺失：{missing}",
+      "inconclusive": "无法确定或检查失败：{count}",
+      "checkedAt": "上次检查：{date}",
+      "scope": "结果仅涵盖在 ChatGPT 和 Google AI Mode 中采集的提问、商品及美国市场，并不代表所有 AI 回答。",
+      "synced": "同步时间：{date}",
+      "unavailable": "状态暂不可用",
+      "notConfigured": "尚未配置 Recharge 连接。",
+      "actionFailed": "无法完成操作，请重试。",
+      "disconnectTitle": "断开 Recharge 连接？",
+      "disconnectDescription": "这将删除 Recharge 凭据和订阅详情，汇总指标会保留。",
+      "cancel": "取消",
+      "checking": "检查已排队",
+      "checkCost": "通过付费采集，在 ChatGPT 和 Google AI Mode 中检查最多 5 项选项。每个 UTC 日最多采集 10 次。",
+      "checksNotConfigured": "尚未配置 AI 回答采集。",
+      "queued": "回答检查已加入队列，处理完成后将显示结果。",
+      "limit": "没有新检查加入队列。请检查同步状态，或明天重试。",
+      "action": {
+        "primary": "连接 Recharge",
+        "secondary": "同步选项",
+        "tertiary": "断开连接",
+        "quaternary": "检查 AI 回答"
+      },
+      "status": {
+        "not_connected": "未连接",
+        "connected": "已连接",
+        "syncing": "同步中",
+        "reconnect_required": "需要重新连接",
+        "disconnected": "已断开",
+        "error": "连接错误"
+      }
+    }
+  }
+}

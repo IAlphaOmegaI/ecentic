@@ -152,6 +152,15 @@ export const proxy = async (request: Request) => {
   // Fail closed: an unreadable session must never grant access.
   const session = result.success ? result.data : null;
 
+  // Email verification and provider sign-up can drop a redirect query. Resume
+  // the encrypted pending Recharge install once sign-in reaches the dashboard.
+  if (
+    session &&
+    request.cookies.has("ecentic_recharge_install") &&
+    (authenticationRoute || pathnameWithoutLocale === "/dashboard")
+  )
+    return redirect(request, "/api/integrations/recharge/resume");
+
   // A store typed into the landing hero that has not been imported yet. The
   // signed-in account finishes that import before anything else — a Google
   // sign-in defaults to the dashboard, and a signed-in visitor who re-runs the

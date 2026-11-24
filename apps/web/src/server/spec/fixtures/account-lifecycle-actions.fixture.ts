@@ -252,6 +252,18 @@ describe("actual lifecycle actions with isolated transactional adapter", () => {
     expect(state.reads[0]?.parameters).toEqual([actor.id]);
     expect(state.locks).toEqual(["user", "store", "subscription"]);
   });
+  test("keeps the store and account while a Recharge channel grant remains", async () => {
+    Object.assign(state.rows, {
+      recharge_connections: [{ id: "recharge", status: "connected" }],
+    });
+    expect(await disconnectStore({ store: "store" })).toMatchObject({
+      data: { reason: "storeConnections" },
+    });
+    expect(await deleteAccount({ email: actor.email })).toMatchObject({
+      data: { reason: "storeConnections" },
+    });
+    expect(state.deleted).toHaveLength(0);
+  });
   test("rolls back when deletion fails and does not expire the account session", async () => {
     state.failDelete = true;
     expect(await deleteAccount({ email: actor.email })).toMatchObject({

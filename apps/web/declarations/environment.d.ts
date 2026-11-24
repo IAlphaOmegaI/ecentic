@@ -26,6 +26,10 @@ declare namespace NodeJS {
     readonly SHOPIFY_API_KEY: string;
     readonly SHOPIFY_API_SECRET: string;
 
+    readonly RECHARGE_CLIENT_ID?: string;
+    readonly RECHARGE_CLIENT_SECRET?: string;
+    readonly RECHARGE_REDIRECT_URI?: string;
+
     readonly NEXT_PUBLIC_POSTHOG_KEY: string;
     readonly NEXT_PUBLIC_POSTHOG_HOST: string;
     readonly NEXT_PUBLIC_CHATWOOT_BASE_URL: string;

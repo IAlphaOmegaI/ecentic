@@ -280,7 +280,7 @@
         "assurances": [
           "HTTP con streaming",
           "JSON-RPC 2.0",
-          "7 strumenti"
+          "8 strumenti"
         ],
         "art": {
           "alt": "Illustrazione ASCII art di un robot"
@@ -313,6 +313,7 @@
           "summary": "Funzione"
         },
         "items": {
+          "createShopifyCheckout": "Crea un carrello Shopify per un negozio di proprietà dell'utente autenticato, con un piano di abbonamento Recharge facoltativo. L'acquirente completa il pagamento su Shopify.",
           "listPlans": "Restituisce il catalogo pubblico dei piani con prezzi, modalità di fatturazione e termini delle commissioni sulle prestazioni.",
           "createApiKey": "Genera una chiave API agente a lunga durata per l’account del chiamante. Mostrata una sola volta.",
           "createCheckout": "Apre una sessione di checkout Stripe per un piano in abbonamento.",

@@ -115,7 +115,7 @@ export const runUcpLift = withAuthentication(
       Ucp.find(Environment.SERVER, {
         where: eq(schema.ucpProfile.userId, user),
       }),
-      Product.find(Environment.SERVER, {
+      Product.findForSimulation(Environment.SERVER, {
         where: and(
           eq(schema.product.userId, user),
           eq(schema.product.storeId, store),

@@ -9,6 +9,10 @@ import { generate } from "../../../utils/ai";
 import { withSubscription } from "../../../utils/entitlement";
 import { Environment } from "../../../utils/environment";
 import { isIntegrationAuthError } from "../../../utils/error";
+import {
+  composeForProduct,
+  composeJsonForProduct,
+} from "../../../utils/recharge-publication";
 import type { Document } from "../../../utils/repository";
 import { repository } from "../../../utils/repository";
 import { selectUcpGenerationProducts } from "../../../utils/ucp-product-scope";
@@ -181,7 +185,12 @@ URL: ${product.data.url ?? ""}`,
       }),
     });
 
-    const structuredJson = JSON.stringify(structured, null, 2);
+    const record = product.data;
+    const composition = await resultify(() =>
+      composeForProduct(record, structured),
+    );
+    if (!composition.success) return composition;
+    const structuredJson = JSON.stringify(composition.data, null, 2);
 
     const persistence = await Product.update(
       Environment.SERVER,
@@ -252,7 +261,12 @@ SKU: ${product.sku ?? ""}`,
         if (!structured.success)
           return { productId: product.id, success: false as const };
 
-        const json = JSON.stringify(structured.data, null, 2);
+        const composition = await resultify(() =>
+          composeForProduct(product, structured.data),
+        );
+        if (!composition.success)
+          return { productId: product.id, success: false as const };
+        const json = JSON.stringify(composition.data, null, 2);
 
         const persistence = await Product.update(
           Environment.SERVER,
@@ -400,7 +414,8 @@ export const publishProductsToShopify = withSubscription(
         if (!product.externalId) continue;
 
         const structuredJson = await (async () => {
-          if (product.structuredData) return product.structuredData;
+          if (product.structuredData)
+            return composeJsonForProduct(product, product.structuredData);
           const generated = await generateProductStructuredData({
             product: product.id,
           });
@@ -489,7 +504,8 @@ export const publishProductsToWooCommerce = withSubscription(
       if (!product.externalId) continue;
 
       const structuredJson = await (async () => {
-        if (product.structuredData) return product.structuredData;
+        if (product.structuredData)
+          return composeJsonForProduct(product, product.structuredData);
         const generated = await generateProductStructuredData({
           product: product.id,
         });

@@ -4040,6 +4040,47 @@
         "roster": "{total} competidores · {selected} seleccionados",
         "updateFailed": "No se ha podido actualizar el competidor"
       }
+    },
+    "recharge": {
+      "title": "Suscripciones con Recharge",
+      "description": "Relaciona los primeros pedidos iniciados en asistentes de IA con las suscripciones.",
+      "offers": "Ofertas de suscripción encontradas",
+      "firstOrders": "Primeros pedidos iniciados con IA",
+      "converted": "Pedidos convertidos en suscripciones",
+      "active": "Suscripciones que siguen activas: {count}",
+      "answers": "Ofertas de suscripción en respuestas de IA",
+      "notChecked": "Todavía no hay comprobaciones concluyentes.",
+      "coverage": "Se han comprobado {checked} de {total} ofertas actuales.",
+      "findings": "Incorrectas: {wrong} · Ausentes: {missing}",
+      "inconclusive": "No concluyentes o fallidas: {count}",
+      "checkedAt": "Última comprobación: {date}",
+      "scope": "Los resultados corresponden a las consultas, los productos y el mercado de EE. UU. capturados en ChatGPT y Google AI Mode. No representan todas las respuestas de IA.",
+      "synced": "Sincronizado: {date}",
+      "unavailable": "Estado no disponible",
+      "notConfigured": "La conexión con Recharge aún no está configurada.",
+      "actionFailed": "No se ha podido completar la acción. Vuelve a intentarlo.",
+      "disconnectTitle": "¿Desconectar Recharge?",
+      "disconnectDescription": "Se eliminarán las credenciales de Recharge y los detalles de las suscripciones. Se conservarán las métricas agregadas.",
+      "cancel": "Cancelar",
+      "checking": "Comprobaciones en cola",
+      "checkCost": "Comprueba hasta 5 ofertas en ChatGPT y Google AI Mode mediante capturas de pago. Máximo de 10 capturas por día UTC.",
+      "checksNotConfigured": "Las capturas de respuestas de IA aún no están configuradas.",
+      "queued": "Comprobaciones de respuestas en cola. Los resultados aparecerán al finalizar el procesamiento.",
+      "limit": "No se han añadido comprobaciones. Revisa el estado de sincronización o vuelve a intentarlo mañana.",
+      "action": {
+        "primary": "Conectar Recharge",
+        "secondary": "Sincronizar ofertas",
+        "tertiary": "Desconectar",
+        "quaternary": "Comprobar respuestas de IA"
+      },
+      "status": {
+        "not_connected": "Sin conectar",
+        "connected": "Conectado",
+        "syncing": "Sincronizando",
+        "reconnect_required": "Es necesario reconectar",
+        "disconnected": "Desconectado",
+        "error": "Error de conexión"
+      }
     }
   },
   "blog": {
@@ -8799,7 +8840,7 @@
         "assurances": [
           "Streamable HTTP",
           "JSON-RPC 2.0",
-          "7 herramientas"
+          "8 herramientas"
         ],
         "art": {
           "alt": "Ilustración ASCII de un robot"
@@ -8838,7 +8879,8 @@
           "connectShopify": "Inicia la instalación OAuth de Shopify para un dominio de tienda.",
           "connectWooCommerce": "Conecta una tienda WooCommerce con credenciales REST de consumidor.",
           "connectFeed": "Conecta un feed de productos por URL, detectando XML o JSON automáticamente.",
-          "getOnboardingStatus": "Informa de qué pasos del onboarding ha completado la cuenta."
+          "getOnboardingStatus": "Informa de qué pasos del onboarding ha completado la cuenta.",
+          "createShopifyCheckout": "Crea un carrito de Shopify para una tienda del usuario autenticado, con un plan de suscripción de Recharge opcional. El comprador completa el pago en Shopify."
         },
         "none": "ninguna",
         "bearer": "bearer"

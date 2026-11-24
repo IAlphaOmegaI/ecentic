@@ -280,7 +280,7 @@
         "assurances": [
           "Streamable HTTP",
           "JSON-RPC 2.0",
-          "7 herramientas"
+          "8 herramientas"
         ],
         "art": {
           "alt": "Ilustración ASCII de un robot"
@@ -313,6 +313,7 @@
           "summary": "Qué hace"
         },
         "items": {
+          "createShopifyCheckout": "Crea un carrito de Shopify para una tienda del usuario autenticado, con un plan de suscripción de Recharge opcional. El comprador completa el pago en Shopify.",
           "listPlans": "Devuelve el catálogo público de planes con precios, modo de facturación y condiciones de la comisión por rendimiento.",
           "createApiKey": "Genera una clave de API de larga duración en la cuenta que llama. Se muestra una sola vez.",
           "createCheckout": "Abre una sesión de pago de Stripe para un plan de suscripción.",

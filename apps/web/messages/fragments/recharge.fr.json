@@ -1,0 +1,45 @@
+{
+  "dashboard": {
+    "recharge": {
+      "title": "Abonnements avec Recharge",
+      "description": "Reliez les premières commandes initiées dans les assistants IA aux abonnements.",
+      "offers": "Offres d’abonnement trouvées",
+      "firstOrders": "Premières commandes initiées avec l’IA",
+      "converted": "Commandes devenues des abonnements",
+      "active": "Abonnements toujours actifs : {count}",
+      "answers": "Offres d’abonnement dans les réponses IA",
+      "notChecked": "Aucune vérification concluante pour le moment.",
+      "coverage": "{checked} offres actuelles vérifiées sur {total}.",
+      "findings": "Incorrectes : {wrong} · Absentes : {missing}",
+      "inconclusive": "Non concluantes ou en échec : {count}",
+      "checkedAt": "Dernière vérification : {date}",
+      "scope": "Les résultats concernent les requêtes, les produits et le marché américain capturés sur ChatGPT et Google AI Mode. Ils ne décrivent pas toutes les réponses IA.",
+      "synced": "Synchronisé : {date}",
+      "unavailable": "État indisponible",
+      "notConfigured": "La connexion à Recharge n’est pas encore configurée.",
+      "actionFailed": "L’action n’a pas pu être effectuée. Veuillez réessayer.",
+      "disconnectTitle": "Déconnecter Recharge ?",
+      "disconnectDescription": "Les identifiants Recharge et les détails des abonnements seront supprimés. Les indicateurs agrégés seront conservés.",
+      "cancel": "Annuler",
+      "checking": "Vérifications en attente",
+      "checkCost": "Vérifie jusqu’à 5 offres sur ChatGPT et Google AI Mode à l’aide de captures payantes. Maximum de 10 captures par jour UTC.",
+      "checksNotConfigured": "Les captures de réponses IA ne sont pas encore configurées.",
+      "queued": "Vérifications des réponses mises en attente. Les résultats apparaîtront à la fin du traitement.",
+      "limit": "Aucune nouvelle vérification ajoutée. Vérifiez la synchronisation ou réessayez demain.",
+      "action": {
+        "primary": "Connecter Recharge",
+        "secondary": "Synchroniser les offres",
+        "tertiary": "Déconnecter",
+        "quaternary": "Vérifier les réponses IA"
+      },
+      "status": {
+        "not_connected": "Non connecté",
+        "connected": "Connecté",
+        "syncing": "Synchronisation en cours",
+        "reconnect_required": "Reconnexion nécessaire",
+        "disconnected": "Déconnecté",
+        "error": "Erreur de connexion"
+      }
+    }
+  }
+}

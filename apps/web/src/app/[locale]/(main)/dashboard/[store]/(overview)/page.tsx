@@ -31,6 +31,10 @@ import {
   OverviewRecentScansSkeleton,
 } from "./_components/performance-skeleton";
 import {
+  RechargeSummary,
+  RechargeSummarySkeleton,
+} from "./_components/recharge-summary";
+import {
   OverviewActionsSkeleton,
   OverviewShell,
   OverviewUpdatedSkeleton,
@@ -76,6 +80,11 @@ export default ({
     traffic={
       <Suspense fallback={<OverviewTrafficSkeleton />}>
         <OverviewTraffic params={params} />
+      </Suspense>
+    }
+    subscriptions={
+      <Suspense fallback={<RechargeSummarySkeleton />}>
+        <RechargeSummary params={params} />
       </Suspense>
     }
     recent={

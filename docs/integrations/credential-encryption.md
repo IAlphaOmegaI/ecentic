@@ -23,6 +23,12 @@ Covered fields:
 | `account` | `accessToken`, `refreshToken`, `idToken` |
 | `store_account` | `accessToken`, `refreshToken`, `consumerKey`, `consumerSecret`, `bridgeSecret` |
 | `google_merchant_account` | `accessToken`, `refreshToken` |
+| `recharge_connections` | `accessToken`, `refreshToken` |
+| `recharge_installations` | `code`, `grant` |
+
+Apply the Recharge schema migration before running the expanded rotation script.
+Recharge pending-install rows expire automatically; disconnect removes the
+connection's encrypted credentials and pending grants. See [Recharge](./recharge.md).
 
 Password hashes and agent API key hashes stay hashes. Session tokens, tracking
 keys and credential-like data in other storage are not newly encrypted by this

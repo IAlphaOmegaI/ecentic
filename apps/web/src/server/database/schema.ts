@@ -16,6 +16,7 @@ import type * as Brand from "@/server/app/intelligence/brand";
 import type * as Simulate from "@/server/app/intelligence/simulate";
 import { encryptedText } from "./encrypted-text";
 import * as Outbound from "./outbound";
+
 export * from "./outbound";
 
 /**
@@ -1211,6 +1212,251 @@ export const dealRedemption = pgTable(
   ],
 );
 
+/** Recharge is a channel alongside Shopify, never a replacement platform grant. */
+export const rechargeConnection = pgTable("recharge_connections", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+  storeId: text("storeId")
+    .notNull()
+    .unique()
+    .references(() => store.id, { onDelete: "cascade" }),
+  externalStoreId: text("externalStoreId"),
+  domain: text("domain"),
+  currency: text("currency"),
+  accessToken: encryptedText("accessToken", "rechargeConnection.accessToken"),
+  refreshToken: encryptedText(
+    "refreshToken",
+    "rechargeConnection.refreshToken",
+  ),
+  accessTokenExpiresAt: timestamp("accessTokenExpiresAt", { mode: "date" }),
+  scopes: jsonb("scopes").$type<string[]>().notNull().default([]),
+  status: text("status")
+    .$type<
+      "connected" | "syncing" | "reconnect_required" | "disconnected" | "error"
+    >()
+    .notNull()
+    .default("syncing"),
+  generation: integer("generation").notNull().default(1),
+  installedAt: timestamp("installedAt", { mode: "date" })
+    .notNull()
+    .defaultNow(),
+  uninstalledAt: timestamp("uninstalledAt", { mode: "date" }),
+  lastSyncedAt: timestamp("lastSyncedAt", { mode: "date" }),
+  lastMaintenanceAt: timestamp("lastMaintenanceAt", { mode: "date" }),
+  /** Aggregate provider-cost budget survives disconnect/reconnect and detail erasure. */
+  answerCaptureDay: text("answerCaptureDay"),
+  answerCaptureCount: integer("answerCaptureCount").notNull().default(0),
+  error: text("error"),
+  lease: text("lease"),
+  leaseUntil: timestamp("leaseUntil", { mode: "date" }),
+  nextRequestAt: timestamp("nextRequestAt", { mode: "date" }),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+});
+
+/** Only this opaque token's hash crosses the DB boundary; OAuth codes are encrypted. */
+export const rechargeInstallation = pgTable("recharge_installations", {
+  id: text("id").primaryKey(),
+  userId: text("userId").references(() => user.id, { onDelete: "cascade" }),
+  storeId: text("storeId").references(() => store.id, { onDelete: "cascade" }),
+  code: encryptedText("code", "rechargeInstallation.code"),
+  grant: encryptedText("grant", "rechargeInstallation.grant"),
+  returnTo: text("returnTo"),
+  state: text("state").notNull().default("pending"),
+  lease: text("lease"),
+  expiresAt: timestamp("expiresAt", { mode: "date" }).notNull(),
+  createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+});
+
+export const rechargeSubscriptionOffer = pgTable(
+  "recharge_subscription_offers",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    productId: text("productId").references(() => product.id, {
+      onDelete: "cascade",
+    }),
+    externalProductId: text("externalProductId").notNull(),
+    externalVariantId: text("externalVariantId").notNull().default(""),
+    planId: text("planId").notNull(),
+    sellingPlanId: text("sellingPlanId"),
+    planType: text("planType"),
+    discountType: text("discountType"),
+    discountValue: text("discountValue"),
+    price: text("price"),
+    currency: text("currency"),
+    orderIntervalUnit: text("orderIntervalUnit"),
+    orderIntervalFrequency: integer("orderIntervalFrequency"),
+    chargeIntervalFrequency: integer("chargeIntervalFrequency"),
+    pricingStatus: text("pricingStatus").notNull().default("unavailable"),
+    unavailableReason: text("unavailableReason"),
+    syncRunId: text("syncRunId").notNull(),
+    syncedAt: timestamp("syncedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("recharge_offer_identity").on(
+      table.storeId,
+      table.externalProductId,
+      table.externalVariantId,
+      table.planId,
+    ),
+    index("recharge_offer_product").on(table.storeId, table.productId),
+  ],
+);
+
+/** Evidence from real answer captures, separate from simulations. */
+export const rechargeOfferCheck = pgTable(
+  "recharge_offer_checks",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    offerId: text("offerId")
+      .notNull()
+      .references(() => rechargeSubscriptionOffer.id, { onDelete: "cascade" }),
+    productId: text("productId")
+      .notNull()
+      .references(() => product.id, { onDelete: "cascade" }),
+    status: text("status")
+      .$type<
+        | "pending"
+        | "running"
+        | "correct"
+        | "wrong"
+        | "missing"
+        | "inconclusive"
+        | "failed"
+      >()
+      .notNull()
+      .default("pending"),
+    surface: text("surface").notNull(),
+    country: text("country").notNull().default("US"),
+    prompt: text("prompt").notNull(),
+    expected: jsonb("expected").$type<Record<string, unknown>>().notNull(),
+    observed: jsonb("observed").$type<Record<string, unknown>>(),
+    evidence: text("evidence"),
+    requestKey: text("requestKey").notNull().unique(),
+    error: text("error"),
+    checkedAt: timestamp("checkedAt", { mode: "date" }),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("recharge_checks_store_status").on(table.storeId, table.status),
+  ],
+);
+
+export const rechargeCheckoutIntent = pgTable(
+  "recharge_checkout_intents",
+  {
+    id: text("id").primaryKey(),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    generation: integer("generation").notNull(),
+    consumedOrderId: text("consumedOrderId"),
+    expiresAt: timestamp("expiresAt", { mode: "date" }).notNull(),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [index("recharge_intent_store").on(table.storeId)],
+);
+
+export const aiOrderAttribution = pgTable(
+  "ai_order_attributions",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    shopifyOrderId: text("shopifyOrderId").notNull(),
+    rechargeOrderId: text("rechargeOrderId"),
+    marker: text("marker").notNull(),
+    subscriptionId: text("subscriptionId").notNull().default(""),
+    status: text("status").notNull().default("pending"),
+    subscribedAt: timestamp("subscribedAt", { mode: "date" }),
+    cancelledAt: timestamp("cancelledAt", { mode: "date" }),
+    sourceUpdatedAt: timestamp("sourceUpdatedAt", { mode: "date" }),
+    orderedAt: timestamp("orderedAt", { mode: "date" }).notNull(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("recharge_attribution_identity").on(
+      table.storeId,
+      table.shopifyOrderId,
+      table.subscriptionId,
+    ),
+    index("recharge_attribution_subscription").on(
+      table.storeId,
+      table.subscriptionId,
+    ),
+  ],
+);
+
+/** Sanitized provider resources only; no order/customer bodies are cached here. */
+export const rechargeCatalogItem = pgTable(
+  "recharge_catalog_items",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    externalId: text("externalId").notNull(),
+    syncRunId: text("syncRunId").notNull(),
+    data: jsonb("data").$type<Record<string, unknown>>().notNull(),
+  },
+  (table) => [
+    uniqueIndex("recharge_catalog_identity").on(
+      table.storeId,
+      table.externalId,
+    ),
+  ],
+);
+
+/** Durable inbox and page-sized work. A lease and generation fence every worker write. */
+export const rechargeJob = pgTable(
+  "recharge_jobs",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    generation: integer("generation").notNull(),
+    kind: text("kind").notNull(),
+    key: text("key").notNull().unique(),
+    payload: jsonb("payload")
+      .$type<Record<string, unknown>>()
+      .notNull()
+      .default({}),
+    status: text("status").notNull().default("pending"),
+    attempts: integer("attempts").notNull().default(0),
+    availableAt: timestamp("availableAt", { mode: "date" })
+      .notNull()
+      .defaultNow(),
+    lease: text("lease"),
+    error: text("error"),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("recharge_jobs_due").on(table.status, table.availableAt),
+    index("recharge_jobs_store").on(table.storeId),
+  ],
+);
+
+/** Frozen counts after uninstall; deliberately contains no external/customer identifiers. */
+export const rechargeAggregate = pgTable("recharge_aggregates", {
+  storeId: text("storeId")
+    .primaryKey()
+    .references(() => store.id, { onDelete: "cascade" }),
+  aiFirstOrders: integer("aiFirstOrders").notNull().default(0),
+  convertedSubscriptions: integer("convertedSubscriptions")
+    .notNull()
+    .default(0),
+  activeSubscriptions: integer("activeSubscriptions").notNull().default(0),
+  asOf: timestamp("asOf", { mode: "date" }).notNull().defaultNow(),
+});
+
 /** Tables object for defineRelations and better-auth adapter */
 export const tables = {
   ...Outbound,
@@ -1220,6 +1466,15 @@ export const tables = {
   verification,
   store,
   store_account,
+  rechargeConnection,
+  rechargeInstallation,
+  rechargeSubscriptionOffer,
+  rechargeOfferCheck,
+  rechargeCheckoutIntent,
+  aiOrderAttribution,
+  rechargeCatalogItem,
+  rechargeJob,
+  rechargeAggregate,
   googleMerchantAccount,
   googleMerchantOffer,
   googleMerchantUcp,

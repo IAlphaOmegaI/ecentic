@@ -1,3 +1,4 @@
+import { formatSubscriptionOffers } from "@ecentic/recharge";
 import { resultify } from "@zenncore/utils";
 import * as Evidence from "@/lib/competitor-evidence";
 import { formatPrice } from "@/lib/currency";
@@ -36,6 +37,11 @@ export const formatProduct = (product: Product.Type): string => {
       `Compare at: ${formatPrice(product.compareAtPrice, product.currency)}`,
     );
   }
+
+  const subscriptions = formatSubscriptionOffers(
+    product.subscriptionOffers ?? [],
+  );
+  if (subscriptions) lines.push(subscriptions);
 
   const imageCount = parseImageCount(product.images);
   lines.push(`Image count: ${imageCount}`);
