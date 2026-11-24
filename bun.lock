@@ -70,6 +70,18 @@
         "typescript": "^6.0.3",
       },
     },
+    "apps/plugins/loop": {
+      "name": "@ecentic/loop",
+      "version": "0.1.0",
+      "dependencies": {
+        "@zenncore/utils": "workspace:*",
+      },
+      "devDependencies": {
+        "@types/node": "catalog:",
+        "bun-types": "^1.4.0",
+        "typescript": "catalog:",
+      },
+    },
     "apps/plugins/recharge": {
       "name": "@ecentic/recharge",
       "version": "0.1.0",
@@ -95,6 +107,7 @@
         "@ai-sdk/react": "^4.0.93",
         "@ai-sdk/rsc": "^3.0.90",
         "@calcom/embed-react": "^1.5.3",
+        "@ecentic/loop": "workspace:*",
         "@ecentic/recharge": "workspace:*",
         "@formatjs/icu-messageformat-parser": "3.5.17",
         "@hookform/resolvers": "^5.9.1",
@@ -431,6 +444,8 @@
     "@drizzle-team/brocli": ["@drizzle-team/brocli@0.12.0", "", {}, "sha512-mlUE+rZ8CatQekLhnaiN91Iemdd+e2gFKooGlnRB3oPTL3VghLfX24dx7HrzMNeC1JrIB/0kpsfyty3f5HNfxQ=="],
 
     "@ecentic/cli": ["@ecentic/cli@workspace:apps/cli"],
+
+    "@ecentic/loop": ["@ecentic/loop@workspace:apps/plugins/loop"],
 
     "@ecentic/recharge": ["@ecentic/recharge@workspace:apps/plugins/recharge"],
 
