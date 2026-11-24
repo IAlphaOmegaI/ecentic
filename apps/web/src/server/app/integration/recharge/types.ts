@@ -49,7 +49,13 @@ export const configuration = () => {
   if (!clientId || !clientSecret || !redirectUri)
     throw new RechargeLifecycleError("not_configured");
   const redirect = new URL(redirectUri);
-  if (redirect.protocol !== "https:" && redirect.hostname !== "localhost")
+  // Webhook delivery must reach the app directly even when the registered
+  // OAuth callback uses a hostname that redirects to the canonical APP_HOST.
+  const origin = new URL(process.env.APP_HOST || redirectUri);
+  if (
+    (redirect.protocol !== "https:" && redirect.hostname !== "localhost") ||
+    (origin.protocol !== "https:" && origin.hostname !== "localhost")
+  )
     throw new RechargeLifecycleError("invalid_redirect");
-  return { clientId, clientSecret, redirectUri, origin: redirect.origin };
+  return { clientId, clientSecret, redirectUri, origin: origin.origin };
 };
