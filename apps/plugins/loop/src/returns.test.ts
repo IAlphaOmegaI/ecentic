@@ -98,6 +98,29 @@ describe("privacy and idempotency", () => {
       "another merchant",
     );
   });
+  test("a retained manual-edit timestamp does not collapse newer updates", () => {
+    const earlier = parseReturn(
+      store,
+      returnFixture({
+        trigger: "return.updated",
+        edited_at: "2026-11-01T12:00:00Z",
+        updated_at: "2026-11-02T12:00:00Z",
+      }),
+    );
+    const later = parseReturn(
+      store,
+      returnFixture({
+        trigger: "return.updated",
+        edited_at: "2026-11-01T12:00:00Z",
+        updated_at: "2026-11-03T12:00:00Z",
+      }),
+    );
+    expect(webhookKey(store, earlier)).not.toBe(webhookKey(store, later));
+    expect(webhookKey(store, later)).toBe(
+      webhookKey(store, { ...later, edited_at: later.updated_at }),
+    );
+  });
+
   test("rejects ambiguous IDs and duplicate returned units; tolerates additive provider fields", () => {
     expect(() =>
       parseReturn(store, returnFixture({ id: Number.MAX_SAFE_INTEGER + 1 })),

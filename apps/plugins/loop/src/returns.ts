@@ -133,15 +133,16 @@ export const webhookKey = (store: string, value: LoopReturn): string => {
   assertMerchant(store);
   if (value.store !== store)
     throw new LoopError("Loop return belongs to another merchant.");
+  // A previous manual edit may predate a later state update. Use the newest
+  // provider timestamp so two return.updated events cannot collapse onto it.
+  const version = new Date(
+    Math.max(
+      Date.parse(value.updated_at),
+      value.edited_at ? Date.parse(value.edited_at) : Number.NEGATIVE_INFINITY,
+    ),
+  ).toISOString();
   return createHash("sha256")
-    .update(
-      JSON.stringify([
-        store,
-        value.id,
-        value.trigger ?? "sync",
-        value.edited_at ?? value.updated_at,
-      ]),
-    )
+    .update(JSON.stringify([store, value.id, value.trigger ?? "sync", version]))
     .digest("hex");
 };
 
