@@ -1,6 +1,6 @@
 # Recharge partner integration
 
-Updated 17 November 2026. Connector source: `apps/plugins/recharge`.
+Updated 24 November 2026. Connector source: `apps/plugins/recharge`.
 The existing Next.js web app hosts OAuth, webhooks, jobs and merchant controls.
 Recharge subscriptions, orders, products and plans are read-only. The only
 provider mutations configure webhook delivery and exchange/refresh OAuth grants.
@@ -30,17 +30,23 @@ provider mutations configure webhook delivery and exchange/refresh OAuth grants.
 
 ## Partner portal setup
 
-1. In the Recharge partner portal, create a public OAuth app under Apps.
-2. Set the callback to `https://YOUR_ORIGIN/api/integrations/recharge/callback`.
-   Use an HTTPS tunnel to the local Next.js server for dev-store testing.
-3. Request `read_products`, `read_plans`, `read_orders`, `read_subscriptions`
-   and the portal's confirmed store-info read scope. The docs disagree on
-   `store_info` versus `read_store`; resolve that with Recharge before submission.
-   No business-data write scopes. Separate customer reads are unnecessary for
-   current exact order/subscription links; add `read_customers` only if Recharge
-   confirms a demonstrated need.
-4. Save client credentials in deployment secrets. Locally, set the variables
-   below in untracked `apps/web/.env.local`; do not commit real values.
+The existing [ecentic OAuth app](https://www.admin.rechargeapps.com/partners/apps/144935)
+was inspected in the partner portal on 24 November 2026. Its client ID and
+client secret are available. This verifies portal configuration; live install
+testing and Marketplace approval remain unverified.
+
+1. Use the existing ecentic OAuth app under Apps.
+2. Its registered production callback is
+   `https://www.ecentic.ai/api/integrations/recharge/callback`.
+   For local dev-store testing, use a registered HTTPS tunnel callback to the
+   local Next.js server and match `RECHARGE_REDIRECT_URI` exactly.
+3. The selected permissions are `read_products`, `read_plans`, `read_orders`,
+   `read_subscriptions`, and the store permission option whose value is
+   `store_info read_shop read_store`. This is one combined portal selection. Customers and all other
+   permission options are set to None. No business-data write scopes are selected.
+4. Configure the three Recharge variables below in the Production environment
+   of the existing Vercel project `zennit/ecentic`. Locally, use untracked
+   `apps/web/.env.local`; do not commit real client credential values.
 5. Install Recharge on `ecentic.myshopify.com` and create a subscribable product
    with two variants, two delivery plans, and a known discount.
 6. Connect the Shopify dev store to ecentic. Existing installations must
@@ -50,13 +56,15 @@ provider mutations configure webhook delivery and exchange/refresh OAuth grants.
 
 ## Configuration and local commands
 
-New variables in `apps/web/.env.example`:
+The production deployment target is the existing Vercel project
+`zennit/ecentic`. Its Production environment uses these three Recharge
+variables, also documented in `apps/web/.env.example`:
 
 | Variable | Value |
 | --- | --- |
 | `RECHARGE_CLIENT_ID` | Partner app client ID |
 | `RECHARGE_CLIENT_SECRET` | Partner app secret; webhook validation |
-| `RECHARGE_REDIRECT_URI` | Exact registered callback URL |
+| `RECHARGE_REDIRECT_URI` | `https://www.ecentic.ai/api/integrations/recharge/callback` |
 
 Existing configuration: `DATABASE_URL`, `BETTER_AUTH_SECRET`,
 `BETTER_AUTH_BASE_URL`, `APP_HOST`, `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`,
@@ -185,7 +193,6 @@ maintenance; database backups follow the hosting environment's retention policy.
 
 ## Open provider confirmations
 
-- `TODO(recharge-confirm)`: store-info scope name in the partner dashboard.
 - `TODO(recharge-confirm)`: whether this app requires client secret in token
   exchange/refresh; expiry and refresh-token rotation contract. Current official
   examples omit client secret and expiry.

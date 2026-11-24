@@ -19,18 +19,28 @@ App icon, listing images, privacy URL and terms URL: **[OWNER TO CONFIRM]**
 
 ## Requirements and scopes
 
-| Recharge scope | Reason |
+Verified in the existing [ecentic OAuth app](https://www.admin.rechargeapps.com/partners/apps/144935)
+on 24 November 2026. Client ID and client secret are available; the registered
+callback is `https://www.ecentic.ai/api/integrations/recharge/callback`.
+
+| Selected portal permission | Reason |
 | --- | --- |
 | `read_products` | Map subscribable products and variants to the Shopify catalog |
 | `read_plans` | Read plan discounts, delivery intervals and selling-plan mappings |
 | `read_orders` | Match exact Shopify first-order IDs and subscription line items |
 | `read_subscriptions` | Read subscription creation, activation and cancellation status |
-| `read_store` / `store_info` | Verify the authorized store identity; **confirm portal spelling** |
+| `store_info read_shop read_store` | Verify the authorized store identity; this is the portal's combined store-permission option value |
 
-No product, order, customer or subscription write scopes. Current matching
-requires no separate customer endpoint; `read_customers` is not requested unless
-Recharge confirms a demonstrated need. Webhook registration is infrastructure
-configuration using each topic's read permission.
+Customers and all other permission options are set to None. No business-data
+write scopes are selected. Current matching requires no separate customer
+endpoint. Webhook registration is infrastructure configuration using each
+topic's read permission.
+
+Production configuration belongs to the existing Vercel project
+`zennit/ecentic`, in its Production environment: `RECHARGE_CLIENT_ID`,
+`RECHARGE_CLIENT_SECRET`, and `RECHARGE_REDIRECT_URI`. The redirect value must
+match the registered callback above; credential values stay in deployment
+secrets and are not included in this worksheet.
 
 Separate Shopify dependency: existing catalog scopes plus `read_orders` for
 paid-order notifications. Existing installations must reauthorize this scope.
@@ -38,8 +48,8 @@ paid-order notifications. Existing installations must reauthorize this scope.
 ## Webhook topics
 
 `subscription/created`, `subscription/cancelled`, `order/created`, and
-`recharge/uninstalled` where the
-confirmed store permission permits it. Daily reconciliation covers missed
+`recharge/uninstalled`. Live registration and delivery still need dev-store
+verification. Daily reconciliation covers missed
 events, involuntary cancellations, stale offers and removed registrations.
 Confirm a distinct partner-app removal notification with Recharge.
 
