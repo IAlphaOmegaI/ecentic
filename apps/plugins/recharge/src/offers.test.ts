@@ -96,6 +96,44 @@ describe("subscription offers", () => {
     expect(offers[1]?.price).toBeNull();
   });
 
+  test("normalizes Shopify plans entirely from imported catalog variants", () => {
+    const offers = normalizeSubscriptionOffers({
+      products: [],
+      plans: [plan],
+      catalog: [
+        {
+          externalProductId: "100",
+          externalVariantId: "101",
+          price: "20.00",
+          currency: "USD",
+        },
+        {
+          externalProductId: "100",
+          externalVariantId: "102",
+          price: "30.00",
+          currency: "USD",
+        },
+      ],
+    });
+    expect(offers).toHaveLength(2);
+    expect(offers[0]).toMatchObject({
+      externalProductId: "100",
+      externalVariantId: "101",
+      planId: "1",
+      sellingPlanId: "500",
+      price: "17.00",
+      currency: "USD",
+      pricingStatus: "available",
+    });
+    expect(offers[1]).toMatchObject({
+      externalVariantId: "102",
+      price: "25.50",
+    });
+    expect(
+      normalizeSubscriptionOffers({ products: [], plans: [plan], catalog: [] }),
+    ).toEqual([]);
+  });
+
   test("retains prepaid intervals but does not invent monthly price or billing amount", () => {
     const offers = normalizeSubscriptionOffers({
       products,
