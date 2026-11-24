@@ -69,6 +69,10 @@ variables, also documented in `apps/web/.env.example`:
 Existing configuration: `DATABASE_URL`, `BETTER_AUTH_SECRET`,
 `BETTER_AUTH_BASE_URL`, `APP_HOST`, `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`,
 `CRON_SECRET`, and the independent 32-byte base64 `CREDENTIAL_ENCRYPTION_KEY`.
+Webhook URLs use the canonical `APP_HOST` (`https://ecentic.ai` in production)
+to avoid the `www` hostname's redirect. The OAuth `redirect_uri` remains the
+exact registered `RECHARGE_REDIRECT_URI` above. When `APP_HOST` is unset, webhook
+URLs fall back to the callback origin.
 Configure `SCRAPELLM_API_KEY` and the existing AI extraction provider to run
 actual answer captures. Capture requests are merchant initiated and capped at
 ten per store per UTC day; installing Recharge does not start paid captures.
