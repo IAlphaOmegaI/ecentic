@@ -370,7 +370,7 @@ const Signal = ({
         </p>
       )}
       <Dialog open={open} onOpenChange={(value) => !pending && setOpen(value)}>
-        <DialogPopup className="mt-0 max-h-[calc(100dvh-3rem)] w-3xl overflow-y-auto p-0">
+        <DialogPopup className="mt-0 max-h-[calc(100dvh-3rem)] w-3xl overflow-y-auto overflow-x-hidden p-0">
           <div className="p-6">
             <DialogTitle>{translate("approveTitle")}</DialogTitle>
             <DialogDescription className="mb-0">
