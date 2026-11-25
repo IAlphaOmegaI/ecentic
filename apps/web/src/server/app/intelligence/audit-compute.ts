@@ -126,6 +126,7 @@ IMAGES: ${images} image${images === 1 ? "" : "s"}
 Score each field (${fieldKeys.join(", ")}) 0-100 on content quality for this product's category, each with a verdict and a specific suggestion. Then assess the listing's target audience and market positioning.`;
 
   return AI.generate({
+    label: "audit.listing",
     instructions,
     prompt,
     output: schema,

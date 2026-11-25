@@ -43,7 +43,7 @@ export const LoopSignals = async ({
           {translate("status.not_connected")}
         </p>
         <Link
-          href="/dashboard/settings"
+          href="/dashboard/settings?tab=integrations"
           className="mt-3 inline-block font-medium text-primary text-sm"
         >
           {translate("setupTitle")}

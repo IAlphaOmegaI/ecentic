@@ -20,12 +20,17 @@ export const metadata: Metadata = {
 // Outer frame shared by the store hub (`/dashboard`), the account settings
 // screen (`/dashboard/settings`), and every per-store view
 // (`/dashboard/[store]/*`). Each of those provides its own chrome inside this
-// full-height flex container.
+// rounded frame. Its border is the only outside seam for the connected chrome.
 export default ({ children }: PropsWithChildren) => (
   <ClientMessages scope="dashboard">
     <NuqsAdapter>
-      <div className="flex h-dvh min-h-0 overflow-hidden bg-background font-normal">
-        {children}
+      <div className="flex h-dvh min-h-0 overflow-hidden bg-emphasis font-normal">
+        <div
+          data-dashboard-frame
+          className="border-(length:--dashboard-frame-border-width) isolate flex min-h-0 min-w-0 flex-1 overflow-hidden rounded-lg border-emphasis bg-emphasis [--dashboard-frame-border-width:3px] [--dashboard-workspace-inset:var(--dashboard-frame-border-width)]"
+        >
+          {children}
+        </div>
       </div>
     </NuqsAdapter>
   </ClientMessages>

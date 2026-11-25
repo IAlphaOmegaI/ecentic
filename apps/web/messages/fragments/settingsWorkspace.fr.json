@@ -1,0 +1,56 @@
+{
+  "dashboard": {
+    "settings": {
+      "description": "Gérez votre profil, vos paramètres de connexion, vos boutiques connectées et la facturation de votre compte.",
+      "tabs": {
+        "account": "Profil",
+        "security": "Connexion et sécurité",
+        "integrations": "Boutiques connectées",
+        "billing": "Forfait et facturation"
+      },
+      "workspace": {
+        "navigation": "Navigation du compte",
+        "description": "Gérez votre profil, vos paramètres de connexion, vos boutiques connectées et la facturation de votre compte.",
+        "sections": {
+          "account": {
+            "title": "Profil",
+            "description": "Vos informations personnelles et votre langue préférée."
+          },
+          "security": {
+            "title": "Connexion et sécurité",
+            "description": "Gérez votre mot de passe, déconnectez-vous ou supprimez votre compte."
+          },
+          "integrations": {
+            "title": "Boutiques connectées",
+            "description": "Gérez la connexion de chaque boutique, actualisez ses produits et consultez les services connectés."
+          },
+          "billing": {
+            "title": "Forfait et facturation",
+            "description": "Votre forfait, vos informations de paiement et les factures de ce compte."
+          }
+        },
+        "readOnly": "Catalogue en lecture seule",
+        "manageStore": "Ouvrir la boutique",
+        "services": "Services connectés",
+        "unavailable": "Statut indisponible"
+      },
+      "account": {
+        "profile": {
+          "fields": {
+            "role": {
+              "label": "Rôle dans votre entreprise"
+            }
+          }
+        }
+      },
+      "integrations": {
+        "action": {
+          "sync": "Synchroniser les produits"
+        },
+        "google": {
+          "manage": "Gérer Google Shopping"
+        }
+      }
+    }
+  }
+}

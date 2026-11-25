@@ -44,7 +44,9 @@ export const parseReviewQuery = (
   const requestedPage = first(input.page);
   const page = Number(requestedPage);
   return {
-    ...(parseCampaignFilter(input.campaign) ? { campaign: parseCampaignFilter(input.campaign) } : {}),
+    ...(parseCampaignFilter(input.campaign)
+      ? { campaign: parseCampaignFilter(input.campaign) }
+      : {}),
     q:
       typeof search === "string"
         ? search.replaceAll("\u0000", "").trim().slice(0, 200)

@@ -1,12 +1,12 @@
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
-import { CampaignContext } from "../_components/campaign-context";
 import {
   type LinkedInSearchParams,
   parseLinkedInQuery,
 } from "@/lib/outbound-linkedin";
 import * as Outbound from "@/server/app/outbound";
 import { Environment } from "@/server/utils/environment";
+import { CampaignContext } from "../_components/campaign-context";
 import { LinkedInQueueTable } from "./_components/queue";
 import { LinkedInShell } from "./_components/shell";
 import { LinkedInQueueSkeleton } from "./_components/skeletons";
@@ -42,11 +42,11 @@ const QueueData = async ({
   }
   return (
     <>
-    <CampaignContext campaign={query.campaign} />
-    <LinkedInQueueTable
-      queue={result.data}
-      query={{ ...query, page: result.data.page }}
-    />
+      <CampaignContext campaign={query.campaign} />
+      <LinkedInQueueTable
+        queue={result.data}
+        query={{ ...query, page: result.data.page }}
+      />
     </>
   );
 };

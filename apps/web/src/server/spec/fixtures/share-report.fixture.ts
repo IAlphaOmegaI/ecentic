@@ -5,6 +5,9 @@ import { PgDialect } from "drizzle-orm/pg-core";
 import { tables as schema } from "../../database/schema";
 import { Environment } from "../../utils/environment";
 
+// Next handles this build-time marker; this isolated Bun fixture runs server code.
+mock.module("server-only", () => ({}));
+
 const database = new Database(":memory:");
 database.exec("create table simulation (scanId text, model text, winner text)");
 const dialect = new PgDialect();

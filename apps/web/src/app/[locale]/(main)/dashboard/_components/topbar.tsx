@@ -25,6 +25,7 @@ import { UserButtonSkeleton } from "./chrome-skeletons";
 import { CommandPalette } from "./command-palette";
 import { AccountNotifications } from "./notification-bell";
 import { MobileNavigation } from "./sidebar";
+import { AccountSignOut } from "./sign-out";
 
 /** The static workspace frame does not wait for account reads. */
 export const WorkspaceTopbar = ({ children }: { children: ReactNode }) => (
@@ -127,6 +128,8 @@ const Account = async () => {
           <CreditCardIcon aria-hidden className="size-4" />
           {translate("billing")}
         </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <AccountSignOut />
       </DropdownMenuContent>
     </DropdownMenu>
   );

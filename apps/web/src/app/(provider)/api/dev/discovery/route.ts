@@ -1,5 +1,5 @@
 import * as Report from "@/server/app/intelligence/discovery-report";
-import { executeDiscovery } from "@/server/app/intelligence/discovery-run";
+import * as Discovery from "@/server/app/intelligence/discovery-run";
 import { Environment } from "@/server/utils/environment";
 import { ValidationError } from "@/server/utils/error";
 
@@ -77,7 +77,7 @@ const run = async (
   const oversized = input.queries.find((query) => query.length > QUERY_LIMIT);
   if (oversized) return text(`A query exceeds ${QUERY_LIMIT} characters.`, 400);
 
-  const result = await executeDiscovery(Environment.SERVER, {
+  const result = await Discovery.executeDiscovery(Environment.SERVER, {
     targetStore: input.store,
     queries: input.queries,
   });
@@ -87,7 +87,7 @@ const run = async (
   if (!result.success)
     return text(
       result.error.message,
-      result.error instanceof ValidationError ? 400 : 500,
+      result.error.name === ValidationError.errorName ? 400 : 500,
     );
 
   if (url.searchParams.get("format") === "json")

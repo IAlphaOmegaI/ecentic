@@ -44,7 +44,9 @@ export const parseLinkedInQuery = (
   const status = first(input.status);
   const page = Number(first(input.page));
   return {
-    ...(parseCampaignFilter(input.campaign) ? { campaign: parseCampaignFilter(input.campaign) } : {}),
+    ...(parseCampaignFilter(input.campaign)
+      ? { campaign: parseCampaignFilter(input.campaign) }
+      : {}),
     q:
       typeof search === "string"
         ? search.replaceAll("\u0000", "").trim().slice(0, 200)

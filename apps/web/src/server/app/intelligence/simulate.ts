@@ -317,6 +317,7 @@ export const runScan = withAuthentication(
             (perspective) => async (): Promise<SimulationResult> => {
               const parsing = await resultify(() =>
                 AI.generate({
+                  label: "simulation.compare",
                   model: perspective.model,
                   instructions: Judge.JUDGE_SYSTEM,
                   prompt: Judge.buildJudgePrompt(product, competitor),
@@ -539,6 +540,7 @@ export const runScan = withAuthentication(
           if (!worst) return null;
 
           return AI.generate({
+            label: "simulation.finding",
             instructions:
               "You are an e-commerce optimization analyst. Given the reasons a product lost in AI shopping simulations, identify the specific missing attributes or weaknesses that caused the most losses. Be concise and actionable. Respond only with the structured fields — no prose outside the object.",
             prompt: `Product "${worst[1].title}" lost ${worst[1].count} out of ${results.length} total simulations.\n\nHere are the reasons it lost:\n${worst[1].reasons.slice(0, 10).join("\n---\n")}\n\nIdentify the top missing attributes and estimate what percentage of simulations these gaps cost.`,

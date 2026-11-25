@@ -13,7 +13,7 @@ import { useOnboardingError } from "@/app/[locale]/(auth)/onboarding/_components
 import { FeedbackState } from "@/components/feedback-state";
 import { useRouter } from "@/i18n/navigation";
 import { formatElapsed } from "@/lib/date";
-import * as Competitor from "@/server/app/competitor";
+import * as Competitor from "@/server/app/competitor.actions";
 
 type LogEntry = {
   id: number;

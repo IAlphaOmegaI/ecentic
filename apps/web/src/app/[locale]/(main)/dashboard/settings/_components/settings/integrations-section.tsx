@@ -1,6 +1,6 @@
 "use client";
 
-import { FileIcon, GlobeIcon, PlusIcon } from "@zenncore/icons";
+import { ArrowRightIcon, FileIcon, GlobeIcon, PlusIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
@@ -12,7 +12,7 @@ import { seo } from "@/lib/seo";
 import type * as GoogleMerchant from "@/server/app/integration/google-merchant";
 import type { Status as LoopStatus } from "@/server/app/integration/loop/types";
 import type { Status as RechargeStatus } from "@/server/app/integration/recharge/types";
-import * as Store from "@/server/app/store";
+import * as Store from "@/server/app/store.actions";
 import { DashboardEmptyState } from "../../../_components/empty-state";
 import { StoreDisconnection } from "./lifecycle-controls";
 import { LoopControls } from "./loop-controls";
@@ -26,8 +26,14 @@ const googleSummary = (
   translate: ReturnType<
     typeof useTranslations<"dashboard.settings.integrations">
   >,
+  unavailable: string,
 ): { label: string; className: string } => {
-  if (!status?.supported)
+  if (!status)
+    return {
+      label: unavailable,
+      className: "bg-foreground/5 text-foreground-dimmed",
+    };
+  if (!status.supported)
     return {
       label: translate("google.comingSoon"),
       className: "bg-foreground/5 text-foreground-dimmed",
@@ -88,6 +94,7 @@ export const IntegrationsSection = ({
   loop: Record<string, LoopStatus | null>;
 }) => {
   const translate = useTranslations("dashboard.settings.integrations");
+  const workspace = useTranslations("dashboard.settings.workspace");
   const toast = useToastManager();
   const lifecycle = useTranslations("dashboard.lifecycle");
 
@@ -140,10 +147,15 @@ export const IntegrationsSection = ({
   return (
     <div className="divide-y divide-accent-foreground">
       <div>
-        <div className="border-accent-foreground border-b px-4 py-5 sm:px-6">
-          <h3 className="font-semibold text-base text-foreground-rich">
-            {translate("title")}
-          </h3>
+        <div className="flex justify-end border-accent-foreground border-b px-4 py-4 sm:px-6">
+          <Button
+            variant="soft"
+            color="primary"
+            render={<Link href="/onboarding/connect" />}
+          >
+            <PlusIcon aria-hidden className="size-4" />
+            {translate("action.connectAnother")}
+          </Button>
         </div>
         {stores.length === 0 ? (
           <DashboardEmptyState
@@ -160,11 +172,20 @@ export const IntegrationsSection = ({
                   ? "/providers/woocommerce.svg"
                   : null;
               const status = google[store.id] ?? null;
-              const summary = googleSummary(status, translate);
+              const summary = googleSummary(
+                status,
+                translate,
+                workspace("unavailable"),
+              );
               const upgrade = upgradeFor(store);
 
               return (
-                <div key={store.id} className="min-w-0">
+                <article
+                  key={store.id}
+                  id={`store-${store.id}`}
+                  aria-labelledby={`store-${store.id}-name`}
+                  className="min-w-0 scroll-mt-4"
+                >
                   <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-5 sm:px-6">
                     <div className="flex min-w-0 items-center gap-3">
                       <div
@@ -186,9 +207,12 @@ export const IntegrationsSection = ({
                         )}
                       </div>
                       <div className="min-w-0">
-                        <p className="wrap-anywhere font-semibold text-foreground text-sm">
+                        <h3
+                          id={`store-${store.id}-name`}
+                          className="wrap-anywhere font-semibold text-base text-foreground-rich"
+                        >
                           {store.name}
-                        </p>
+                        </h3>
                         <p className="wrap-anywhere mt-0.5 text-foreground-dimmed text-sm">
                           {store.domain}
                         </p>
@@ -209,15 +233,25 @@ export const IntegrationsSection = ({
                       <span
                         className={cn(
                           "rounded-full px-2 py-1 font-medium text-xs",
-                          store.status === "disconnected"
+                          store.status === "disconnected" || upgrade
                             ? "bg-foreground/5 text-foreground-dimmed"
                             : "bg-success/10 text-success",
                         )}
                       >
                         {store.status === "disconnected"
                           ? lifecycle("disconnected")
-                          : translate("connected")}
+                          : upgrade
+                            ? workspace("readOnly")
+                            : translate("connected")}
                       </span>
+                      <Button
+                        variant="ghost"
+                        color="neutral"
+                        render={<Link href={`/dashboard/${store.id}`} />}
+                      >
+                        {workspace("manageStore")}
+                        <ArrowRightIcon aria-hidden className="size-4" />
+                      </Button>
                       <Button
                         color="neutral"
                         variant="soft"
@@ -236,51 +270,52 @@ export const IntegrationsSection = ({
                       )}
                     </div>
                   </div>
-                  <div className="flex flex-wrap items-center gap-3 border-accent-foreground border-t bg-background-rich px-4 py-3 sm:px-6">
-                    <span className="text-foreground-dimmed text-xs">
-                      Google Shopping
-                    </span>
-                    <span
-                      className={cn(
-                        "rounded-full px-2 py-1 font-medium text-xs",
-                        summary.className,
+                  <section
+                    aria-label={workspace("services")}
+                    className="bg-background"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-4 border-accent-foreground border-t px-4 py-4 sm:px-6">
+                      <div className="space-y-2">
+                        <h4 className="font-medium text-foreground text-sm">
+                          Google Shopping
+                        </h4>
+                        <span
+                          className={cn(
+                            "rounded-full px-2 py-1 font-medium text-xs",
+                            summary.className,
+                          )}
+                        >
+                          {summary.label}
+                        </span>
+                      </div>
+                      {status?.supported && (
+                        <Button
+                          variant="soft"
+                          color="neutral"
+                          render={
+                            <Link
+                              href={`/dashboard/${store.id}/google-shopping`}
+                            />
+                          }
+                        >
+                          {translate("google.manage")}
+                        </Button>
                       )}
-                    >
-                      {summary.label}
-                    </span>
-                    {status?.supported && (
-                      <Link
-                        href={`/dashboard/${store.id}/google-shopping`}
-                        className="text-primary text-xs hover:underline"
-                      >
-                        {translate("google.manage")}
-                      </Link>
-                    )}
-                  </div>
-                  <RechargeControls
-                    store={store.id}
-                    status={recharge[store.id] ?? null}
-                  />
-                  <LoopControls
-                    store={store.id}
-                    status={loop[store.id] ?? null}
-                  />
-                </div>
+                    </div>
+                    <RechargeControls
+                      store={store.id}
+                      status={recharge[store.id] ?? null}
+                    />
+                    <LoopControls
+                      store={store.id}
+                      status={loop[store.id] ?? null}
+                    />
+                  </section>
+                </article>
               );
             })}
           </div>
         )}
-      </div>
-
-      <div className="px-4 py-4 sm:px-6">
-        <Button
-          variant="soft"
-          color="primary"
-          render={<Link href="/onboarding/connect" />}
-        >
-          <PlusIcon aria-hidden className="size-4" />
-          {translate("action.connectAnother")}
-        </Button>
       </div>
     </div>
   );

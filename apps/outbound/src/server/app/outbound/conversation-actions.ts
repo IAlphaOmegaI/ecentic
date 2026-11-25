@@ -20,7 +20,8 @@ export const listConversations = withAuthorization(
 );
 export const getConversation = withAuthorization(
   [UserRole.STAFF],
-  async (_, input: { id: string; threadId?: string; page?: number }) => Conversations.get(input),
+  async (_, input: { id: string; threadId?: string; page?: number }) =>
+    Conversations.get(input),
   "Outbound.getConversation",
 );
 export const updateConversationStage = withAuthorization(

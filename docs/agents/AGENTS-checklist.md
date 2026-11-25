@@ -1,6 +1,6 @@
 # Summary Checklist
 
-Quick reference for all coding conventions. See linked sub-guides for details.
+Quick reference for repository conventions. Read the base [zenn-code](../../.agents/skills/zenn-code/SKILL.md) and layered [zenn-style](../../.agents/skills/zenn-style/SKILL.md) skills before implementation; see linked sub-guides for repository detail.
 
 ---
 
@@ -45,7 +45,7 @@ Quick reference for all coding conventions. See linked sub-guides for details.
 
 ## Next.js ([AGENTS-nextjs.md](./AGENTS-nextjs.md))
 
-- [ ] Use server actions for mutations
+- [ ] Use server actions for mutations; model delegates stay in `server-only` modules, with explicit authenticated async `.actions.ts` forwarders for browser calls. Never export raw repository delegates from a `"use server"` file.
 - [ ] Every `page.tsx` exports HTML: server component with static shell; no full-page client wrapper
 - [ ] PPR + streaming: static shell in `page.tsx`, data in async server components wrapped in `<Suspense fallback={<Skeleton />}>`
 - [ ] Colocate page-specific components in `_components` inside the page folder
@@ -71,3 +71,11 @@ Quick reference for all coding conventions. See linked sub-guides for details.
 - [ ] Use `Button` with variants only — no `className` overrides; use `render={<Link />}` for navigation
 - [ ] Use semantic design tokens; avoid raw Tailwind colors
 - [ ] All spacing values (`gap`, `p`, `m`, etc.) must be multiples of 2; icons use `size-4` (never `size-3` or `size-5`)
+
+## Delivery gates
+
+- [ ] `bun run typecheck` and `bun run lint:check` pass with zero errors.
+- [ ] Run meaningful affected tests; `bun run test` covers apps and shared packages. Use a clean test environment, never live provider or production database credentials.
+- [ ] Run `bun run i18n:check` and `bun run design:theme` in `apps/web` for UI/catalog changes.
+- [ ] Build and check Next action registration after changing server/client boundaries; typechecking cannot validate the compiler boundary.
+- [ ] Apply `review-focus.md` and record runtime coverage and skipped checks honestly.

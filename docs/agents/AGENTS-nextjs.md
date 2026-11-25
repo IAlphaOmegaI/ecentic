@@ -6,7 +6,9 @@ Next.js-specific patterns for this codebase.
 
 ## 21a. Use Server Actions Always
 
-Prefer server actions over API routes for mutations and form submissions. Use `"use server"` at the top of the file.
+Prefer server actions over API routes for mutations and form submissions. Use `"use server"` only on the browser-facing action module. Keep raw repository delegates and internal helpers in a separate model with `import "server-only"`. Neither `Environment.SERVER` nor instrumentation provides authentication.
+
+Mixed models use a `<model>.actions.ts` facade with explicit async arrow functions forwarding unchanged arguments to `withAuthentication`, `withSubscription` or `withAuthorization` model operations. Next.js in this repository rejects runtime re-exports from action files; use `ClientParameters` from `server/utils/environment` to infer the domain arguments without accepting the internal environment argument. Type-only exports remain erased. Server code continues importing the internal model; browser callers import the facade. Check ownership inside each operation and validate untrusted payloads before mutation.
 
 ```ts
 // ✅ Good — actions.ts
@@ -153,7 +155,7 @@ export const SignInForm = () => {
 
 ## 22a. Server Component Data Fetching — `unwrapResult` + `Environment.SERVER`
 
-When calling server actions from **server components** (inside `<Suspense>`), use `unwrapResult` from `@zenncore/utils` instead of manually checking `result.success`. `unwrapResult` throws on error, which is caught by the nearest Suspense error boundary — no manual error branching needed.
+When calling server actions from **server components** (inside `<Suspense>`), use `unwrapResult` from `@zenncore/utils` instead of manually checking `result.success`. `unwrapResult` throws on error; Suspense handles loading, not errors. A React/Next error boundary must handle thrown failures. Under the dashboard paywall use `unwrapEntitled` for missing plans; preserve deliberate user-facing failure handling when no error boundary exists.
 
 Always pass `Environment.SERVER` from `@/server/utils/environment` as the first argument to server actions when calling from the server.
 
@@ -198,7 +200,7 @@ const products = await Products.skimForCurrentUser();
 
 Never use raw `db.insert(...)`, `db.select(...)`, etc. directly in application code. Every table must have a repository file in `server/app/` using the `repository()` helper.
 
-The **only files that should touch the DB** are the server action files that correspond directly to a model (e.g. `server/app/product.ts` owns the `product` table). All other files — pages, components, other server action files — must import the bundle and call its exported actions. This ensures `resultify`, Sentry, and other cross-cutting concerns are always applied.
+The **only files that should touch the DB** are the internal server model files that correspond directly to a model (e.g. `server/app/product.ts` owns the `product` table). All other files — pages, components, other server action files — must import the bundle and call its exported actions. This ensures `resultify`, Sentry, and other cross-cutting concerns are always applied.
 
 Within a model file, a query the repository cannot express (a group-by, a join, a `count(*) filter`) may call `db.select(...)` directly — but a **read-only** thunk must be wrapped in `resultifyRead` from `@/server/utils/repository`, not plain `resultify`, so it retries once when the pooled connection died under a Fluid freeze/thaw (see AGENTS-style §6). Repository methods retry internally; raw thunks only get this if they opt in. Writes never use `resultifyRead`.
 

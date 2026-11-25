@@ -67,7 +67,9 @@ describe("AI instructions page", () => {
           expect(amount * 100).toBe(published.performanceFee.rateBps);
         } else {
           expect(figure).toContain("$");
-          expect(Math.round(amount * 100)).toBe(published.price?.amountCents);
+          const price = published.price;
+          if (!price) throw new Error(`Missing public ${plan} price`);
+          expect(Math.round(amount * 100)).toBe(price.amountCents);
         }
       }
     });

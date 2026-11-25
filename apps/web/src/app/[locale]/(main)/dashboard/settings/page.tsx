@@ -1,6 +1,6 @@
 import { unwrapResult } from "@zenncore/utils";
 import { connection } from "next/server";
-import { getLocale } from "next-intl/server";
+import { getLocale, getMessages } from "next-intl/server";
 import { Suspense } from "react";
 import { redirect } from "@/i18n/navigation";
 import * as Authentication from "@/server/app/authentication";
@@ -11,7 +11,10 @@ import * as Recharge from "@/server/app/integration/recharge/actions";
 import * as Store from "@/server/app/store";
 import * as Subscription from "@/server/app/subscription";
 import { Environment } from "@/server/utils/environment";
-import { AccountSection } from "./_components/settings/account-section";
+import {
+  AccountSection,
+  SecuritySection,
+} from "./_components/settings/account-section";
 import { BillingSection } from "./_components/settings/billing-section";
 import { IntegrationsSection } from "./_components/settings/integrations-section";
 import { SettingsClient } from "./_components/settings-client";
@@ -30,9 +33,9 @@ const requireSession = async () => {
 
 const Account = async () => {
   await connection();
-  const user = await requireSession();
+  const [user, messages] = await Promise.all([requireSession(), getMessages()]);
 
-  return <AccountSection user={user} />;
+  return <AccountSection user={user} roles={messages.signUp.roles} />;
 };
 
 const Integrations = async () => {
@@ -104,18 +107,22 @@ const Billing = async () => {
 export default () => (
   <SettingsShell>
     <SettingsClient
+      security={<SecuritySection key="security" />}
       account={
-        <Suspense fallback={<PanelSkeleton />}>
+        <Suspense key="account" fallback={<PanelSkeleton />}>
           <Account />
         </Suspense>
       }
       integrations={
-        <Suspense fallback={<PanelSkeleton section="integrations" />}>
+        <Suspense
+          key="integrations"
+          fallback={<PanelSkeleton section="integrations" />}
+        >
           <Integrations />
         </Suspense>
       }
       billing={
-        <Suspense fallback={<PanelSkeleton section="billing" />}>
+        <Suspense key="billing" fallback={<PanelSkeleton section="billing" />}>
           <Billing />
         </Suspense>
       }

@@ -6,7 +6,7 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import * as Payg from "@/server/app/billing/payg";
-import * as Subscription from "@/server/app/subscription";
+import * as Subscription from "@/server/app/subscription.actions";
 
 export const PricingCTA = ({
   plan,

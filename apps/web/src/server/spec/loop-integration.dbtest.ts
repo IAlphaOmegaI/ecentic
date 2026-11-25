@@ -422,18 +422,16 @@ describe.skipIf(!target)("Loop isolated merchant lifecycle fixture", () => {
   test("abandoned OAuth installation expires without retaining its verifier", async () => {
     const pending = await modules.model.prepare({ store: otherStore, user });
     const { db, schema } = await import("../database");
-    await db
-      .insert(schema.loopInstallation)
-      .values({
-        id: `expired-${identity}`,
-        storeId: otherStore,
-        userId: user,
-        organization: "fixture",
-        verifier: "x".repeat(43),
-        stateHash: "fixture-state-hash",
-        generation: pending.generation,
-        expiresAt: new Date(Date.now() - 600_000),
-      });
+    await db.insert(schema.loopInstallation).values({
+      id: `expired-${identity}`,
+      storeId: otherStore,
+      userId: user,
+      organization: "fixture",
+      verifier: "x".repeat(43),
+      stateHash: "fixture-state-hash",
+      generation: pending.generation,
+      expiresAt: new Date(Date.now() - 600_000),
+    });
     await modules.jobs.maintainStore({ store: otherStore });
     expect(
       (

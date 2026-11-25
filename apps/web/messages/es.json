@@ -2414,13 +2414,14 @@
     "settings": {
       "statusPill": "Cuenta y espacio de trabajo",
       "title": "Ajustes",
-      "description": "Gestiona tu cuenta, integraciones y preferencias.",
+      "description": "Gestiona tu perfil, el inicio de sesión, las tiendas conectadas y la facturación de tu cuenta.",
       "tabs": {
-        "account": "Cuenta",
-        "integrations": "Integraciones",
+        "account": "Perfil",
+        "integrations": "Tiendas conectadas",
         "notifications": "Notificaciones",
         "simulation": "Simulación",
-        "billing": "Facturación"
+        "billing": "Plan y facturación",
+        "security": "Inicio de sesión y seguridad"
       },
       "account": {
         "language": {
@@ -2444,7 +2445,7 @@
               "validation": "Email no válido"
             },
             "role": {
-              "label": "Rol"
+              "label": "Función en tu empresa"
             }
           },
           "roles": [
@@ -2574,7 +2575,7 @@
         "empty": "Aún no hay tiendas conectadas.",
         "connected": "Conectada",
         "action": {
-          "sync": "Sincronizar ahora",
+          "sync": "Sincronizar productos",
           "syncing": "Sincronizando…",
           "connectAnother": "Conectar otra tienda"
         },
@@ -2592,7 +2593,7 @@
           "active": "Activo · {count, number} publicados",
           "linked": "Vinculado",
           "setupInProgress": "Configuración en curso",
-          "manage": "Gestionar →"
+          "manage": "Gestionar Google Shopping"
         },
         "publicImport": {
           "note": "Importada desde su catálogo público · solo lectura.",
@@ -2697,6 +2698,32 @@
             "description": "La invitación al miembro del equipo está en camino."
           }
         }
+      },
+      "workspace": {
+        "navigation": "Navegación de la cuenta",
+        "description": "Gestiona tu perfil, el inicio de sesión, las tiendas conectadas y la facturación de tu cuenta.",
+        "sections": {
+          "account": {
+            "title": "Perfil",
+            "description": "Tus datos personales y tu idioma preferido."
+          },
+          "security": {
+            "title": "Inicio de sesión y seguridad",
+            "description": "Gestiona tu contraseña, cierra sesión o elimina tu cuenta."
+          },
+          "integrations": {
+            "title": "Tiendas conectadas",
+            "description": "Gestiona la conexión de cada tienda, actualiza sus productos y revisa los servicios conectados."
+          },
+          "billing": {
+            "title": "Plan y facturación",
+            "description": "Tu plan, tus datos de pago y las facturas de esta cuenta."
+          }
+        },
+        "readOnly": "Catálogo de solo lectura",
+        "manageStore": "Abrir tienda",
+        "services": "Servicios conectados",
+        "unavailable": "Estado no disponible"
       }
     },
     "reports": {

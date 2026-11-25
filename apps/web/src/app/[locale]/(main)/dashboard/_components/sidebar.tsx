@@ -17,7 +17,7 @@ import {
   SidebarNavSkeleton,
   StoreSwitcherSkeleton,
 } from "./chrome-skeletons";
-import { MobileSidebar, SidebarNav } from "./sidebar-nav";
+import { MobileSidebar, SettingsShortcut, SidebarNav } from "./sidebar-nav";
 import { StoreSwitcher } from "./store-switcher";
 import { TrialCard } from "./trial-card";
 
@@ -56,10 +56,11 @@ export const Sidebar = ({ params }: { params: StoreParams }) => (
 
     {/* No skeleton: this renders for trial accounts only, and a placeholder
         shown to everyone else is a flash of a trial nobody is on. */}
-    <div className="mt-auto">
+    <div className="mt-auto shrink-0">
       <Suspense fallback={null}>
         <TrialStatus />
       </Suspense>
+      <SettingsShortcut />
     </div>
   </aside>
 );
@@ -72,6 +73,7 @@ export const MobileNavigation = ({ params }: { params: StoreParams }) => (
     <Suspense fallback={<SidebarNavSkeleton />}>
       <Navigation params={params} />
     </Suspense>
+    <SettingsShortcut />
   </MobileSidebar>
 );
 

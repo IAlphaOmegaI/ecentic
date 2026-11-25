@@ -88,7 +88,10 @@ export const WorkspaceViewport = ({
 
   return (
     <WorkspaceAccess value={setBlocked}>
-      <div className="relative min-h-0 min-w-0 flex-1 overflow-hidden bg-background md:rounded-tl-lg">
+      <div
+        data-workspace-surface
+        className="relative min-h-0 min-w-0 flex-1 overflow-hidden rounded-lg bg-background after:pointer-events-none after:absolute after:inset-0 after:inset-shadow-workspace after:z-30 after:rounded-lg"
+      >
         <main
           ref={viewport}
           inert={blocked}
@@ -104,9 +107,10 @@ export const WorkspaceViewport = ({
             moreBelow ? "opacity-100" : "opacity-0",
           )}
         />
+        {/* Convert the viewport-safe bottom offset to the inset workspace. */}
         <div
           inert={blocked}
-          className="pointer-events-none absolute right-24 bottom-(--floating-controls-bottom) left-3 z-20 flex h-14 items-center justify-center sm:left-6 lg:inset-x-24"
+          className="pointer-events-none absolute right-24 bottom-[calc(var(--floating-controls-bottom)_-_var(--dashboard-workspace-inset,0px))] left-3 z-20 flex h-14 items-center justify-center sm:left-6 lg:inset-x-24"
         >
           <AssistantPreview blocked={blocked} workspaceRef={viewport} />
         </div>

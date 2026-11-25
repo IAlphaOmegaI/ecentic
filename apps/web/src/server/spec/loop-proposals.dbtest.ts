@@ -466,19 +466,17 @@ describe.skipIf(!target)("Loop interrupted publication recovery", () => {
     expect(suppressed?.evidence["autoDismissed"]).toBeTrue();
     for (const fixture of [manual, automatic]) {
       for (const index of [0, 1, 2, 3, 4])
-        await db
-          .insert(schema.loopReturnLine)
-          .values({
-            storeId: store,
-            generation: 1,
-            loopReturnId: `${fixture.product.id}-return-${index}`,
-            lineItemId: `${fixture.product.id}-line-${index}`,
-            productId: fixture.product.id,
-            returnReason: "too small",
-            returnState: "closed",
-            createdAt: new Date(Date.now() - 1000),
-            updatedAt: new Date(),
-          });
+        await db.insert(schema.loopReturnLine).values({
+          storeId: store,
+          generation: 1,
+          loopReturnId: `${fixture.product.id}-return-${index}`,
+          lineItemId: `${fixture.product.id}-line-${index}`,
+          productId: fixture.product.id,
+          returnReason: "too small",
+          returnState: "closed",
+          createdAt: new Date(Date.now() - 1000),
+          updatedAt: new Date(),
+        });
     }
     await analysis.processReturnSignals({ store, generation: 1 });
     const [stillDismissed] = await db

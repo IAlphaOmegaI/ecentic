@@ -5,9 +5,6 @@ import { respond } from "@/server/utils/http";
 
 export const maxDuration = 300;
 
-const drain = withCron(
-  async () => Checks.drain(),
-  "RechargeChecks.drain",
-);
+const drain = withCron(async () => Checks.drain(), "RechargeChecks.drain");
 
 export const GET = async () => respond(await drain(Environment.SERVER));

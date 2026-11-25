@@ -57,7 +57,6 @@ export const ShopifyForm = () => {
             .min(1, translate("shopify.fields.shop.validation")),
           label: translate("shopify.fields.shop.label"),
           placeholder: translate("shopify.fields.shop.placeholder"),
-          // @ts-expect-error - description is a function
           description: () => (
             <FieldDescription>
               {translate("shopify.fields.shop.description.beforeExample")}{" "}

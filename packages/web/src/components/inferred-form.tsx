@@ -183,7 +183,7 @@ export type GenericShape = GenericShapePrimitive<Interface>;
 export type GenericField = GenericFieldPrimitive<Interface>;
 
 export type InferredFormFieldProps<Field extends GenericField> = Field & {
-  className?: string | ((state: never) => string);
+  className?: string | ((state: never) => string | undefined);
   name: string;
   custom?: {
     error?: FieldError.Props["render"];
@@ -191,10 +191,10 @@ export type InferredFormFieldProps<Field extends GenericField> = Field & {
 };
 
 export const InferredFormField = <Field extends GenericField>(
-  // @ts-expect-error - InferredFormFieldProps is a generic type that is used to infer the props for the field
-  props: InferredFormFieldProps<Field>,
+  config: InferredFormFieldProps<Field>,
 ): ReactNode => {
-  const { className, name, validator, description, ...inputProps } = props;
+  const props: InferredFormFieldProps<GenericField> = config;
+  const { className, name, validator, description } = props;
 
   const isFieldRequired =
     validator &&
@@ -228,8 +228,11 @@ export const InferredFormField = <Field extends GenericField>(
         const element = (() => {
           switch (props.shape) {
             case "otp": {
+              const { render, ...input } = props;
+              if (render)
+                return <InputOTP {...field} {...input} render={render} />;
               return (
-                <InputOTP {...field} {...props}>
+                <InputOTP {...field} {...input}>
                   <InputOTPGroup>
                     {Array.from({ length: props.maxLength }).map((_, index) => (
                       // biome-ignore lint/suspicious/noArrayIndexKey: needed to handle the key
@@ -241,13 +244,18 @@ export const InferredFormField = <Field extends GenericField>(
             }
             case "text": {
               const {
+                className: _className,
+                name: _name,
+                validator: _validator,
+                description: _description,
+                label: _label,
                 maskToggleLabels,
                 leadingContent,
                 trailingContent,
                 autoComplete,
                 inputMode,
                 ...textProps
-              } = inputProps;
+              } = props;
               return (
                 <TextField
                   {...field}
@@ -293,10 +301,7 @@ export const InferredFormField = <Field extends GenericField>(
                   name={inherit.name}
                   value={inherit.value ?? null}
                   disabled={inherit.disabled || props.disabled}
-                  onValueChange={(value, details) => {
-                    inherit.onChange(value);
-                    props.onValueChange?.(value, details);
-                  }}
+                  onValueChange={inherit.onChange}
                 >
                   <NumberFieldGroup className="w-full">
                     <NumberFieldDecrement className="size-10 shrink-0" />
@@ -464,7 +469,6 @@ export const InferredFormField = <Field extends GenericField>(
 
             case "custom": {
               const { Component, ...rest } = props;
-              // @ts-expect-error - Component is a custom component that is used to render the field
               return <Component {...rest} {...field} />;
             }
 
@@ -595,16 +599,16 @@ export namespace InferredForm {
       error?: FieldError.Props["render"];
     };
     onSubmit?: (
-      data: FormEntries<Form>,
-      form: UseFormReturn<FormEntries<Form>>,
+      data: z.infer<Schema>,
+      form: UseFormReturn<z.infer<Schema>>,
     ) => void;
     onBlur?: (
       event: FocusEvent<HTMLFormElement, Element>,
-      form: UseFormReturn<FormEntries<Form>>,
+      form: UseFormReturn<z.infer<Schema>>,
     ) => void;
     onChange?: (
-      data: FormEntries<Form>,
-      form: UseFormReturn<FormEntries<Form>>,
+      data: z.infer<Schema>,
+      form: UseFormReturn<z.infer<Schema>>,
     ) => void;
   };
 }

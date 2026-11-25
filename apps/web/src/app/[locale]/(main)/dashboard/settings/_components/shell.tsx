@@ -1,74 +1,101 @@
 "use client";
 
+import { cn } from "@zenncore/utils";
 import { useTranslations } from "next-intl";
 import type { PropsWithChildren } from "react";
 import { Crosshair } from "../../_components/grid";
 import { DashboardHeaderFigure } from "../../_components/header-figure";
 
+const FieldSkeleton = ({ className }: { className?: string }) => (
+  <div className={cn("space-y-2", className)}>
+    <div className="h-4 w-24 rounded-sm bg-foreground/10" />
+    <div className="h-10 w-full rounded-lg bg-foreground/5" />
+  </div>
+);
+
+const FormSkeleton = ({
+  children,
+  className,
+}: PropsWithChildren<{ className?: string }>) => (
+  <div className="grid lg:grid-cols-3">
+    <div className="space-y-2 border-accent-foreground border-b px-4 py-6 sm:px-6 lg:border-r lg:border-b-0">
+      <div className="h-5 w-36 rounded-sm bg-foreground/10" />
+      <div className="h-10 w-full rounded-sm bg-foreground/5" />
+    </div>
+    <div
+      className={cn(
+        "grid min-w-0 grid-cols-1 gap-4 px-4 pt-6 sm:px-6 lg:col-span-2",
+        className,
+      )}
+    >
+      {children}
+      <div className="col-span-full -mx-4 flex justify-end border-accent-foreground border-t px-4 py-4 sm:-mx-6 sm:px-6">
+        <div className="h-10 w-36 rounded-lg bg-foreground/10" />
+      </div>
+    </div>
+  </div>
+);
+
+const ControlSkeleton = () => (
+  <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-6 sm:px-6">
+    <div className="space-y-2">
+      <div className="h-5 w-36 rounded-sm bg-foreground/10" />
+      <div className="h-4 w-64 max-w-full rounded-sm bg-foreground/5" />
+    </div>
+    <div className="h-10 w-28 rounded-lg bg-foreground/10" />
+  </div>
+);
+
 export const PanelSkeleton = ({
   section = "account",
 }: {
-  section?: "account" | "integrations" | "billing";
+  section?: "account" | "security" | "integrations" | "billing";
 }) => (
   <div
     aria-hidden
     className="animate-pulse divide-y divide-accent-foreground bg-background-rich motion-reduce:animate-none"
   >
-    <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-6 sm:px-6">
-      <div className="space-y-2">
-        <div className="h-5 w-36 rounded-sm bg-foreground/10" />
-        <div className="h-4 w-64 max-w-full rounded-sm bg-foreground/5" />
-      </div>
-      <div className="h-10 w-28 rounded-lg bg-foreground/10" />
-    </div>
-    {section === "account"
-      ? ["profile", "password"].map((key) => (
-          <div key={key} className="grid lg:grid-cols-3">
-            <div className="space-y-2 border-accent-foreground border-b px-4 py-6 sm:px-6 lg:border-r lg:border-b-0">
-              <div className="h-5 w-36 rounded-sm bg-foreground/10" />
-              <div className="h-10 w-full rounded-sm bg-foreground/5" />
-            </div>
-            <div className="space-y-4 px-4 pt-6 sm:px-6 lg:col-span-2">
-              <div
-                className={
-                  key === "profile" ? "grid gap-4 sm:grid-cols-2" : "grid gap-4"
-                }
-              >
-                {(key === "profile"
-                  ? ["name", "surname", "email", "role"]
-                  : ["current", "new", "confirm"]
-                ).map((field) => (
-                  <div
-                    key={field}
-                    className={
-                      field === "email" || field === "role"
-                        ? "col-span-full space-y-2"
-                        : "space-y-2"
-                    }
-                  >
-                    <div className="h-4 w-24 rounded-sm bg-foreground/10" />
-                    <div className="h-10 w-full rounded-lg bg-foreground/5" />
-                  </div>
-                ))}
+    {(() => {
+      switch (section) {
+        case "account":
+          return (
+            <>
+              <FormSkeleton className="sm:grid-cols-2">
+                <FieldSkeleton />
+                <FieldSkeleton />
+                <FieldSkeleton className="col-span-full" />
+                <FieldSkeleton className="col-span-full" />
+              </FormSkeleton>
+              <ControlSkeleton />
+            </>
+          );
+        case "security":
+          return (
+            <>
+              <FormSkeleton>
+                <FieldSkeleton />
+                <FieldSkeleton />
+                <FieldSkeleton />
+              </FormSkeleton>
+              <ControlSkeleton />
+              <div>
+                <div className="space-y-2 px-4 pt-6 sm:px-6">
+                  <div className="h-5 w-36 rounded-sm bg-foreground/10" />
+                  <div className="h-4 w-64 max-w-full rounded-sm bg-foreground/5" />
+                </div>
+                <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-6 sm:px-6">
+                  <div className="h-5 w-48 max-w-full rounded-sm bg-foreground/10" />
+                  <div className="h-10 w-36 rounded-lg bg-foreground/10" />
+                </div>
               </div>
-              <div className="-mx-4 flex justify-end border-accent-foreground border-t px-4 py-4 sm:-mx-6 sm:px-6">
-                <div className="h-10 w-36 rounded-lg bg-foreground/10" />
-              </div>
-            </div>
-          </div>
-        ))
-      : ["first", "second"].map((key) => (
-          <div
-            key={key}
-            className="flex flex-wrap items-center justify-between gap-4 px-4 py-6 sm:px-6"
-          >
-            <div className="space-y-3">
-              <div className="h-6 w-48 rounded-sm bg-foreground/10" />
-              <div className="h-4 w-64 max-w-full rounded-sm bg-foreground/5" />
-            </div>
-            <div className="h-10 w-36 rounded-lg bg-foreground/10" />
-          </div>
-        ))}
+            </>
+          );
+        default:
+          return ["first", "second", "third"].map((key) => (
+            <ControlSkeleton key={key} />
+          ));
+      }
+    })()}
   </div>
 );
 

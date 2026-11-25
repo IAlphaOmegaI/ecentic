@@ -610,27 +610,23 @@ describe.skipIf(!endpoint)(
         success: true,
         data: { ...person, specifics: { network_distance: "FIRST_DEGREE" } },
       });
-      await db
-        .update(schema.outboundPlaybook)
-        .set({
-          settings: {
-            ...settings,
-            linkedinTemplate: "Hi {first}. {founderLine}",
-          },
-        });
+      await db.update(schema.outboundPlaybook).set({
+        settings: {
+          ...settings,
+          linkedinTemplate: "Hi {first}. {founderLine}",
+        },
+      });
       expect(value(await linkedin.run({}, transport)).held[0]?.reason).toBe(
         "linkedin-persona-mismatch",
       );
       expect(transport.startChat).not.toHaveBeenCalled();
       await resetDue();
-      await db
-        .update(schema.outboundPlaybook)
-        .set({
-          settings: {
-            ...settings,
-            linkedinTemplate: "Hi {first}. {signature}",
-          },
-        });
+      await db.update(schema.outboundPlaybook).set({
+        settings: {
+          ...settings,
+          linkedinTemplate: "Hi {first}. {signature}",
+        },
+      });
       expect(value(await linkedin.run({}, transport)).accepted).toBe(1);
       expect((await rows())[0]?.input["text"]).toBe("Hi Jane. Account Owner");
     });
@@ -654,21 +650,19 @@ describe.skipIf(!endpoint)(
         })
         .returning();
       if (!thread) throw new Error("Missing conversation");
-      await db
-        .insert(schema.outboundConversationSend)
-        .values(
-          Array.from(
-            { length: settings.linkedinDailyMessages },
-            (_, revision) => ({
-              conversationId: thread.id,
-              revision,
-              status: "accepted" as const,
-              input: { channel: "linkedin", accountId: "acc_fixture" },
-              createdBy: "fixture",
-              createdAt: new Date(now.getTime() - 3_600_000),
-            }),
-          ),
-        );
+      await db.insert(schema.outboundConversationSend).values(
+        Array.from(
+          { length: settings.linkedinDailyMessages },
+          (_, revision) => ({
+            conversationId: thread.id,
+            revision,
+            status: "accepted" as const,
+            input: { channel: "linkedin", accountId: "acc_fixture" },
+            createdBy: "fixture",
+            createdAt: new Date(now.getTime() - 3_600_000),
+          }),
+        ),
+      );
       expect(value(await linkedin.run({}, transport)).held[0]?.reason).toBe(
         "linkedin-capacity",
       );

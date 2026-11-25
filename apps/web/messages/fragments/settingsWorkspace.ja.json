@@ -1,0 +1,56 @@
+{
+  "dashboard": {
+    "settings": {
+      "description": "アカウントのプロフィール、サインイン、接続済みストア、請求情報をまとめて管理します。",
+      "tabs": {
+        "account": "プロフィール",
+        "security": "サインインとセキュリティ",
+        "integrations": "接続済みストア",
+        "billing": "プランと請求"
+      },
+      "workspace": {
+        "navigation": "アカウントナビゲーション",
+        "description": "アカウントのプロフィール、サインイン、接続済みストア、請求情報をまとめて管理します。",
+        "sections": {
+          "account": {
+            "title": "プロフィール",
+            "description": "個人情報と希望する言語。"
+          },
+          "security": {
+            "title": "サインインとセキュリティ",
+            "description": "パスワードの管理、サインアウト、アカウントの削除ができます。"
+          },
+          "integrations": {
+            "title": "接続済みストア",
+            "description": "各ストアの接続を管理し、商品を更新して、接続済みサービスを確認します。"
+          },
+          "billing": {
+            "title": "プランと請求",
+            "description": "このアカウントのプラン、お支払い情報、請求書。"
+          }
+        },
+        "readOnly": "読み取り専用カタログ",
+        "manageStore": "ストアを開く",
+        "services": "接続済みサービス",
+        "unavailable": "ステータスを取得できません"
+      },
+      "account": {
+        "profile": {
+          "fields": {
+            "role": {
+              "label": "事業での役割"
+            }
+          }
+        }
+      },
+      "integrations": {
+        "action": {
+          "sync": "商品を同期"
+        },
+        "google": {
+          "manage": "Google Shoppingを管理"
+        }
+      }
+    }
+  }
+}

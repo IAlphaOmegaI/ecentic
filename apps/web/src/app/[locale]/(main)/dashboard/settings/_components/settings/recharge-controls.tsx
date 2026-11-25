@@ -118,7 +118,7 @@ export const RechargeControls = ({ store, status }: RechargeControls.Props) => {
             disabled={!status?.configured}
             render={
               <a
-                href={`/api/integrations/recharge/install?store=${encodeURIComponent(store)}&return_to=${encodeURIComponent("/dashboard/settings")}`}
+                href={`/api/integrations/recharge/install?store=${encodeURIComponent(store)}&return_to=${encodeURIComponent("/dashboard/settings?tab=integrations")}`}
               />
             }
           >

@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 
 // Keep mocked auth, cookies and mail isolated from the other server suites.
-test("OAuth callbacks preserve success destinations and show safe failure guidance", async () => {
+test("auth callbacks and sign-out preserve localized destinations and safe failure handling", async () => {
   const process = Bun.spawn(
     ["bun", "test", "./src/server/spec/fixtures/oauth-callback.fixture.tsx"],
     {

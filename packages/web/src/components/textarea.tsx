@@ -14,7 +14,7 @@ import type { RenderComponentProps } from "../utils/types/render-component-props
 
 type TextareaContext = {
   id: string;
-  value: string;
+  value: string | null;
   disabled: boolean;
   setValue: (value: string) => void;
 };

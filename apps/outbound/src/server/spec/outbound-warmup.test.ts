@@ -173,6 +173,35 @@ describe("sender readiness evidence", () => {
         (await checkSendingDomain({ domain }, resolver(records))).success,
       ).toBe(false);
   });
+  test.each([
+    "brand.com/path",
+    "brand.com\\path",
+    "brand.com?query",
+    "brand.com#fragment",
+    "brand.com:443",
+    "user@brand.com",
+    "brand%2ecom",
+    "brand.com\n/path",
+  ])("rejects domain syntax before DNS lookup: %s", async (domain) => {
+    const resolveMx = mock(async () => []);
+    const resolveTxt = mock(async () => []);
+    const checked = await checkSendingDomain(
+      { domain },
+      { resolveMx, resolveTxt },
+    );
+    expect(checked.success).toBe(false);
+    expect(resolveMx).not.toHaveBeenCalled();
+    expect(resolveTxt).not.toHaveBeenCalled();
+  });
+  test("normalizes a bare international domain before DNS lookup", async () => {
+    const resolveMx = mock(async () => []);
+    const checked = await checkSendingDomain(
+      { domain: "  BÜCHER.DE  " },
+      { ...resolver(), resolveMx },
+    );
+    expect(checked.success && checked.data.domain).toBe("xn--bcher-kva.de");
+    expect(resolveMx).toHaveBeenCalledWith("xn--bcher-kva.de");
+  });
 });
 
 describe("bounded warmup plan", () => {

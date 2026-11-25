@@ -1,10 +1,23 @@
 "use server";
 
-import { resultify } from "@zenncore/utils";
+import { type Result, resultify } from "@zenncore/utils";
 import { z } from "zod";
 import * as AI from "../../utils/ai";
 import { withContext } from "../../utils/context";
+import { RequestError, ValidationError } from "../../utils/error";
 import * as HTTP from "../../utils/http";
+
+const inputSchema = z.object({
+  urlA: z
+    .url({ protocol: /^https?$/ })
+    .trim()
+    .max(2048),
+  urlB: z
+    .url({ protocol: /^https?$/ })
+    .trim()
+    .max(2048),
+  prompt: z.string().trim().min(1).max(2000),
+});
 
 const SCORING_RULES = `
 STRICT SCORING RULES — apply these to BOTH products equally:
@@ -133,24 +146,23 @@ export type CompareResult = {
   keyFactors: string[];
 };
 
-const scrapePage = async (url: string): Promise<ScrapedProduct | null> => {
-  const response = await HTTP.request(url, {
-    headers: {
-      "User-Agent":
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-      Accept: "text/html,application/xhtml+xml",
-    },
+const scrapePage = async (url: string): Promise<Result<ScrapedProduct>> => {
+  const response = await HTTP.page(url, {
+    timeout: 10000,
+    limit: 3 * 1024 * 1024,
   });
+  if (!response.success) return response;
+  if (response.data.status < 200 || response.data.status >= 300)
+    return {
+      success: false,
+      error: new RequestError("The product page could not be read."),
+    };
 
-  if (!response.success) return null;
-
-  const text = await resultify(() => response.data.text());
-  if (!text.success) return null;
-
-  const html = truncateHtml(text.data);
+  const html = truncateHtml(response.data.body);
 
   const extraction = await resultify(() =>
     AI.generate({
+      label: "compare.extract",
       instructions: `You are a product data extraction specialist. Given stripped text from an e-commerce product page, extract structured product information.
 
 Rules:
@@ -190,7 +202,7 @@ Rules:
     }),
   );
 
-  if (!extraction.success) return null;
+  if (!extraction.success) return extraction;
 
   const domain = (() => {
     const parsed = resultify(() => new URL(url));
@@ -203,9 +215,8 @@ Rules:
     : null;
 
   return {
-    url,
-    ...extraction.data,
-    favicon,
+    success: true,
+    data: { url, ...extraction.data, favicon },
   };
 };
 
@@ -230,10 +241,16 @@ const formatScrapedProduct = (product: ScrapedProduct): string => {
 };
 
 export const runCompare = withContext(
-  async (
-    _context,
-    { urlA, urlB, prompt }: { urlA: string; urlB: string; prompt: string },
-  ) => {
+  async (_, input: z.infer<typeof inputSchema>) => {
+    const parsed = inputSchema.safeParse(input);
+    if (!parsed.success)
+      return {
+        success: false,
+        error: new ValidationError(
+          "Enter two valid product URLs and a shopping request of 1–2,000 characters.",
+        ),
+      };
+    const { urlA, urlB, prompt } = parsed.data;
     const stream = AI.streamable<CompareEvent>(async (update) => {
       update({
         kind: "log",
@@ -241,20 +258,35 @@ export const runCompare = withContext(
         message: "Scraping product pages...",
       });
 
-      const [productA, productB] = await Promise.all([
+      const [first, second] = await Promise.all([
         scrapePage(urlA),
         scrapePage(urlB),
       ]);
 
-      if (!productA) {
-        update({ kind: "error", text: `Could not scrape product A: ${urlA}` });
+      if (!first.success) {
+        update({
+          kind: "error",
+          text:
+            first.error.name === ValidationError.errorName
+              ? "Product A must be a reachable public HTTPS URL."
+              : "Could not read product A. Please try again.",
+        });
         return;
       }
 
-      if (!productB) {
-        update({ kind: "error", text: `Could not scrape product B: ${urlB}` });
+      if (!second.success) {
+        update({
+          kind: "error",
+          text:
+            second.error.name === ValidationError.errorName
+              ? "Product B must be a reachable public HTTPS URL."
+              : "Could not read product B. Please try again.",
+        });
         return;
       }
+
+      const productA = first.data;
+      const productB = second.data;
 
       update({
         kind: "scrape_done",
@@ -273,7 +305,7 @@ export const runCompare = withContext(
       update({ kind: "progress", completed: 0, total });
 
       const tasks = perspectives.map(
-        (perspective) => async (): Promise<CompareResult> => {
+        (perspective) => async (): Promise<Result<CompareResult>> => {
           update({
             kind: "log",
             model: perspective.label,
@@ -281,6 +313,7 @@ export const runCompare = withContext(
           });
 
           const { output, textStream } = AI.stream({
+            label: "compare.evaluate",
             model: perspective.model,
             instructions: perspective.instructions,
             prompt: `A consumer says: "${prompt}"
@@ -344,25 +377,19 @@ INSTRUCTIONS:
             resultify(() => output),
           ]);
 
-          if (!parse.success)
-            return {
-              model: perspective.id,
-              modelLabel: perspective.label,
-              winner: "b" as const,
-              scoreA: 0,
-              scoreB: 50,
-              reasoning: "Evaluation failed — defaulting to Product B",
-              keyFactors: [],
-            };
+          if (!parse.success) return parse;
 
           return {
-            model: perspective.id,
-            modelLabel: perspective.label,
-            winner: parse.data.winner,
-            scoreA: Math.round(parse.data.scoreA),
-            scoreB: Math.round(parse.data.scoreB),
-            reasoning: parse.data.reasoning,
-            keyFactors: parse.data.keyFactors,
+            success: true,
+            data: {
+              model: perspective.id,
+              modelLabel: perspective.label,
+              winner: parse.data.winner,
+              scoreA: Math.round(parse.data.scoreA),
+              scoreB: Math.round(parse.data.scoreB),
+              reasoning: parse.data.reasoning,
+              keyFactors: parse.data.keyFactors,
+            },
           };
         },
       );
@@ -378,9 +405,18 @@ INSTRUCTIONS:
 
       for (const batch of batches) {
         const completed = await Promise.all(batch.map((task) => task()));
-        results.push(...completed);
+        if (completed.some((evaluation) => !evaluation.success)) {
+          update({
+            kind: "error",
+            text: "A model could not complete the comparison. Please try again.",
+          });
+          return;
+        }
 
-        for (const record of completed) {
+        for (const evaluation of completed) {
+          if (!evaluation.success) continue;
+          const record = evaluation.data;
+          results.push(record);
           const winner =
             record.winner === "a" ? productA.title : productB.title;
           update({

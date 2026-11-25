@@ -45,16 +45,9 @@ import {
 } from "react";
 import { UcpValidatorForm } from "@/app/[locale]/(main)/ucp-validator/_components/ucp-validator-form";
 import { formatPrice } from "@/lib/currency";
-import type * as Ucp from "@/server/app/intelligence/ucp/profile";
-import {
-  generateAllProductStructuredData,
-  generateJson,
-  generateProductStructuredData,
-  publishProductsToShopify,
-  publishProfileToShopify,
-  saveProfile,
-} from "@/server/app/intelligence/ucp/profile";
+import * as Ucp from "@/server/app/intelligence/ucp/profile.actions";
 import type * as Product from "@/server/app/product";
+import type * as Store from "@/server/app/store";
 import { DashboardEmptyState } from "../../../_components/empty-state";
 import { StatusPill } from "../../../_components/grid";
 import { UcpAdvancedValidator } from "./ucp-advanced-validator";
@@ -257,21 +250,13 @@ type ProductRow = Product.Type & { _id: string };
 
 export namespace UcpManager {
   export type Props = {
-    store?: string;
-    domain?: string;
+    store: Store.Type;
     profile: Ucp.Type | null;
     products: Product.Type[];
-    shopifyStores: { id: string; name: string }[];
   };
 }
 
-export const UcpManager = ({
-  store,
-  domain,
-  profile,
-  products,
-  shopifyStores,
-}: UcpManager.Props) => {
+export const UcpManager = ({ store, profile, products }: UcpManager.Props) => {
   const toast = useToastManager();
   const translate = useTranslations("dashboard.ucp.manager");
   const review = useTranslations("dashboard.ucp.review");
@@ -338,32 +323,39 @@ export const UcpManager = ({
 
   const result = generation ?? live;
 
-  const [handleSave, isSaving] = useAsyncAction(() => saveProfile(state));
+  const [handleSave, isSaving] = useAsyncAction(() => Ucp.saveProfile(state));
 
   const [handleGenerateJson, isGeneratingJson] = useAsyncAction(async () => {
-    const r = await generateJson();
-    if (r.success) setGeneration(r.data.json);
+    const generation = await Ucp.generateJson();
+    if (generation.success) setGeneration(generation.data.json);
   });
 
   const [handleGenerateAll, isGeneratingAll] = useAsyncAction(async () => {
-    const r = await generateAllProductStructuredData({ store });
-    if (!r.success) return;
+    const generation = await Ucp.generateAllProductStructuredData({
+      store: store.id,
+    });
+    if (!generation.success) return;
     const updates = Object.fromEntries(
-      r.data.items.map(({ productId, json }) => [productId, json]),
+      generation.data.items.map(({ productId, json }) => [productId, json]),
     );
-    setProductData((prev) => ({ ...prev, ...updates }));
+    setProductData((previous) => ({ ...previous, ...updates }));
   });
 
-  const targetStore = shopifyStores[0] ?? null;
+  const target =
+    store.platform === "shopify" || store.platform === "shopify-public"
+      ? store
+      : null;
 
   const [handlePublishProfile, isPublishingProfile] = useAsyncAction(
     async () => {
-      if (!targetStore) return;
-      const r = await publishProfileToShopify({ store: targetStore.id });
-      if (!r.success) {
+      if (!target) return;
+      const publication = await Ucp.publishProfileToShopify({
+        store: target.id,
+      });
+      if (!publication.success) {
         toast.add({
           title: translate("toast.pushProfileFailed"),
-          description: r.error.message,
+          description: publication.error.message,
           type: "error",
         });
         return;
@@ -371,8 +363,8 @@ export const UcpManager = ({
       toast.add({
         title: translate("toast.pushProfileSuccess"),
         description: translate("toast.pushProfileSuccessDescription", {
-          written: String(r.data.written),
-          store: targetStore.name,
+          written: String(publication.data.written),
+          store: target.name,
         }),
         type: "success",
       });
@@ -381,12 +373,14 @@ export const UcpManager = ({
 
   const [handlePublishProducts, isPublishingProducts] = useAsyncAction(
     async () => {
-      if (!targetStore) return;
-      const r = await publishProductsToShopify({ store: targetStore.id });
-      if (!r.success) {
+      if (!target) return;
+      const publication = await Ucp.publishProductsToShopify({
+        store: target.id,
+      });
+      if (!publication.success) {
         toast.add({
           title: translate("toast.pushProductsFailed"),
-          description: r.error.message,
+          description: publication.error.message,
           type: "error",
         });
         return;
@@ -394,9 +388,9 @@ export const UcpManager = ({
       toast.add({
         title: translate("toast.pushProductsSuccess"),
         description: translate("toast.pushProductsSuccessDescription", {
-          pushed: String(r.data.pushed),
-          total: String(r.data.total),
-          store: targetStore.name,
+          pushed: String(publication.data.pushed),
+          total: String(publication.data.total),
+          store: target.name,
         }),
         type: "success",
       });
@@ -404,22 +398,36 @@ export const UcpManager = ({
   );
 
   const handleGenerateProduct = useCallback(async (productId: string) => {
-    setPending((prev) => new Set([...prev, productId]));
-    const r = await generateProductStructuredData({ product: productId });
-    setPending((prev) => {
-      const next = new Set(prev);
+    setPending((previous) => new Set([...previous, productId]));
+    const generation = await Ucp.generateProductStructuredData({
+      product: productId,
+    });
+    setPending((previous) => {
+      const next = new Set(previous);
       next.delete(productId);
       return next;
     });
-    if (r.success)
-      setProductData((prev) => ({ ...prev, [productId]: r.data.json }));
+    if (generation.success)
+      setProductData((previous) => ({
+        ...previous,
+        [productId]: generation.data.json,
+      }));
   }, []);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(result);
+  const [handleCopy, isCopying] = useAsyncAction(async () => {
+    setCopied(false);
+    const copy = await resultify(() => navigator.clipboard.writeText(result));
+    if (!copy.success) {
+      toast.add({
+        title: translate("action.copy"),
+        description: copy.error.message,
+        type: "error",
+      });
+      return;
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
-  };
+  });
 
   const columns: ColumnDef<ProductRow>[] = useMemo(
     () => [
@@ -613,7 +621,7 @@ export const UcpManager = ({
                     ? translate("action.saving")
                     : translate("action.save")}
                 </Button>
-                {targetStore && (
+                {target && (
                   <Button
                     color="success"
                     onClick={handlePublishProfile}
@@ -621,7 +629,7 @@ export const UcpManager = ({
                   >
                     {isPublishingProfile
                       ? translate("action.pushing")
-                      : translate("action.pushTo", { store: targetStore.name })}
+                      : translate("action.pushTo", { store: target.name })}
                   </Button>
                 )}
                 {generation && (
@@ -662,6 +670,7 @@ export const UcpManager = ({
                     color="neutral"
                     type="button"
                     onClick={handleCopy}
+                    disabled={isCopying}
                     className="flex shrink-0 items-center gap-1 rounded-sm px-2 py-1 font-medium text-foreground-dimmed text-xs transition-colors hover:bg-accent-foreground hover:text-foreground"
                   >
                     {copied ? (
@@ -729,8 +738,11 @@ export const UcpManager = ({
 
         {/* Validate tab */}
         <TabsPanel value="validate">
-          <UcpValidatorForm appearance="dashboard" initialDomain={domain} />
-          <UcpAdvancedValidator initialDomain={domain} />
+          <UcpValidatorForm
+            appearance="dashboard"
+            initialDomain={store.domain}
+          />
+          <UcpAdvancedValidator initialDomain={store.domain} />
         </TabsPanel>
 
         {/* Products tab */}
@@ -778,7 +790,7 @@ export const UcpManager = ({
                     ? translate("action.generatingAll")
                     : translate("action.generateAll")}
                 </Button>
-                {targetStore && (
+                {target && (
                   <Button
                     color="neutral"
                     variant="soft"
@@ -787,7 +799,7 @@ export const UcpManager = ({
                   >
                     {isPublishingProducts
                       ? translate("action.pushing")
-                      : translate("action.pushTo", { store: targetStore.name })}
+                      : translate("action.pushTo", { store: target.name })}
                   </Button>
                 )}
               </div>

@@ -1,0 +1,56 @@
+{
+  "dashboard": {
+    "settings": {
+      "description": "Gestisci il profilo, l’accesso, i negozi collegati e la fatturazione del tuo account.",
+      "tabs": {
+        "account": "Profilo",
+        "security": "Accesso e sicurezza",
+        "integrations": "Negozi collegati",
+        "billing": "Piano e fatturazione"
+      },
+      "workspace": {
+        "navigation": "Navigazione dell’account",
+        "description": "Gestisci il profilo, l’accesso, i negozi collegati e la fatturazione del tuo account.",
+        "sections": {
+          "account": {
+            "title": "Profilo",
+            "description": "I tuoi dati personali e la lingua preferita."
+          },
+          "security": {
+            "title": "Accesso e sicurezza",
+            "description": "Gestisci la password, esci o elimina il tuo account."
+          },
+          "integrations": {
+            "title": "Negozi collegati",
+            "description": "Gestisci il collegamento di ogni negozio, aggiorna i suoi prodotti e controlla i servizi collegati."
+          },
+          "billing": {
+            "title": "Piano e fatturazione",
+            "description": "Il piano, i dati di pagamento e le fatture di questo account."
+          }
+        },
+        "readOnly": "Catalogo di sola lettura",
+        "manageStore": "Apri negozio",
+        "services": "Servizi collegati",
+        "unavailable": "Stato non disponibile"
+      },
+      "account": {
+        "profile": {
+          "fields": {
+            "role": {
+              "label": "Ruolo nella tua azienda"
+            }
+          }
+        }
+      },
+      "integrations": {
+        "action": {
+          "sync": "Sincronizza prodotti"
+        },
+        "google": {
+          "manage": "Gestisci Google Shopping"
+        }
+      }
+    }
+  }
+}

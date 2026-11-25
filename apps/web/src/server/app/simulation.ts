@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 
 import { and, count as countRows, eq, inArray, sql } from "drizzle-orm";
 import { db, schema } from "../database";

@@ -26,7 +26,7 @@ const BLOG_CACHE_TAG = "blog";
 
 /** Next Cache Components only — no-ops in Bun CLI / scripts. */
 const applyBlogCache = (...tags: string[]) => {
-  if (!process.env.__NEXT_USE_CACHE) return;
+  if (!process.env["__NEXT_USE_CACHE"]) return;
   cacheLife("days");
   cacheTag(...tags);
 };

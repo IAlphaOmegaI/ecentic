@@ -1,6 +1,7 @@
 // Deliberately NOT a "use server" module: every export of an action file is a
 // public RPC door.
 
+import { resultify } from "@zenncore/utils";
 import { sql } from "drizzle-orm";
 import { db } from "../../database";
 
@@ -8,9 +9,9 @@ import { db } from "../../database";
  * `/agents` run state in one small Postgres table. Values are JSON in a text
  * column, so nothing depends on how a driver encodes jsonb.
  *
- * The app creates the table itself on first use. It is not in `schema.ts` and has
- * no migration, so `drizzle-kit push` will offer to drop it: move it into the
- * schema if `/agents` outlives tonight.
+ * `schema.agentsState` and migration `20261123120000_agents_state` own the table.
+ * Atomic upserts keep expiry, exclusive claims and increments in one statement.
+ * Runtime requests only read/write data; migrations provision the schema.
  */
 
 export type SetOptions = { ex: number; nx?: boolean };
@@ -33,18 +34,13 @@ const setup = { pending: null as Promise<void> | null };
 /** Once per process. Expired rows are only ever filtered, so this also sweeps them. */
 const ready = () => {
   setup.pending ??= (async () => {
-    await db.execute(sql`
-      create table if not exists agents_state (
-        key text primary key,
-        value text not null,
-        expires_at timestamptz
-      )
-    `);
-    await db.execute(sql`delete from agents_state where expires_at <= now()`);
-  })().catch((error) => {
+    const sweep = await resultify(() =>
+      db.execute(sql`delete from agents_state where expires_at <= now()`),
+    );
+    if (sweep.success) return;
     setup.pending = null;
-    throw error;
-  });
+    throw sweep.error;
+  })();
   return setup.pending;
 };
 

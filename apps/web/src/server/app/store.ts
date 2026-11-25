@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 
 import { resultify } from "@zenncore/utils";
 import { and, eq, inArray, or } from "drizzle-orm";

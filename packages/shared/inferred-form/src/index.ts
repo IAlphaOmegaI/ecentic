@@ -1,6 +1,7 @@
 export {
   type CreateCustomField,
   field,
+  type GenericField,
   type GenericFieldConfig,
   type InferredFieldConfig,
 } from "./field";
@@ -12,7 +13,11 @@ export {
   type InferredFormOptions,
 } from "./form";
 export { type UseInferredFormParams, useInferredForm } from "./hooks";
-export type { GenericProps, InferredProps } from "./inferred-props";
+export type {
+  GenericProps,
+  InferredProps,
+  RefinedProps,
+} from "./inferred-props";
 export type {
   CompleteInterface as FullInterface,
   GenericInterface,

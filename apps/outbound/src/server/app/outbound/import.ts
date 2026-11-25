@@ -146,7 +146,11 @@ export const mapLegacyProspect = (
     productCategory: string(row, "productCategory", "product_category"),
     reviewCount: string(row, "reviewCount", "review_count"),
     distributionSource: url(row, "distributionSource", "distribution_source"),
-    personalPublishedAt: date(row, "personalPublishedAt", "personal_published_at"),
+    personalPublishedAt: date(
+      row,
+      "personalPublishedAt",
+      "personal_published_at",
+    ),
     personalCheckedAt: date(row, "personalCheckedAt", "personal_checked_at"),
     personalLine: string(row, "personalLine", "hook"),
     personalSource: url(

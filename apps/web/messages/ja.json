@@ -2899,13 +2899,14 @@
     "settings": {
       "statusPill": "アカウントとワークスペース",
       "title": "設定",
-      "description": "アカウント、連携、設定を管理します。",
+      "description": "アカウントのプロフィール、サインイン、接続済みストア、請求情報をまとめて管理します。",
       "tabs": {
-        "account": "アカウント",
-        "integrations": "連携",
+        "account": "プロフィール",
+        "integrations": "接続済みストア",
         "notifications": "通知",
         "simulation": "シミュレーション",
-        "billing": "請求"
+        "billing": "プランと請求",
+        "security": "サインインとセキュリティ"
       },
       "account": {
         "language": {
@@ -2929,7 +2930,7 @@
               "validation": "無効なメールアドレス"
             },
             "role": {
-              "label": "役割"
+              "label": "事業での役割"
             }
           },
           "roles": [
@@ -3059,7 +3060,7 @@
         "empty": "接続済みのストアはありません。",
         "connected": "接続済み",
         "action": {
-          "sync": "今すぐ同期",
+          "sync": "商品を同期",
           "syncing": "同期中…",
           "connectAnother": "別のストアを接続"
         },
@@ -3077,7 +3078,7 @@
           "active": "有効 · {count, number} 件稼働中",
           "linked": "連携済み",
           "setupInProgress": "セットアップ中",
-          "manage": "管理 →"
+          "manage": "Google Shoppingを管理"
         },
         "publicImport": {
           "note": "公開カタログからインポート済み · 読み取り専用。",
@@ -3182,6 +3183,32 @@
             "description": "チームメンバーへの招待を送信しました。"
           }
         }
+      },
+      "workspace": {
+        "navigation": "アカウントナビゲーション",
+        "description": "アカウントのプロフィール、サインイン、接続済みストア、請求情報をまとめて管理します。",
+        "sections": {
+          "account": {
+            "title": "プロフィール",
+            "description": "個人情報と希望する言語。"
+          },
+          "security": {
+            "title": "サインインとセキュリティ",
+            "description": "パスワードの管理、サインアウト、アカウントの削除ができます。"
+          },
+          "integrations": {
+            "title": "接続済みストア",
+            "description": "各ストアの接続を管理し、商品を更新して、接続済みサービスを確認します。"
+          },
+          "billing": {
+            "title": "プランと請求",
+            "description": "このアカウントのプラン、お支払い情報、請求書。"
+          }
+        },
+        "readOnly": "読み取り専用カタログ",
+        "manageStore": "ストアを開く",
+        "services": "接続済みサービス",
+        "unavailable": "ステータスを取得できません"
       }
     },
     "reports": {

@@ -1458,6 +1458,13 @@ export const rechargeAggregate = pgTable("recharge_aggregates", {
   asOf: timestamp("asOf", { mode: "date" }).notNull().defaultNow(),
 });
 
+/** Durable /agents runs, claims, counters and bounded lists. JSON stays text. */
+export const agentsState = pgTable("agents_state", {
+  key: text("key").primaryKey(),
+  value: text("value").notNull(),
+  expiresAt: timestamp("expires_at", { withTimezone: true, mode: "date" }),
+});
+
 /** Loop reads data only for a consenting merchant; never combine merchants. */
 export const loopConnection = pgTable(
   "loop_connections",
@@ -1894,6 +1901,7 @@ export const tables = {
   blogTranslation,
   dealRedemption,
   ucpOrder,
+  agentsState,
 };
 
 /** Relations */

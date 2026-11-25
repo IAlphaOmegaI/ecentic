@@ -17,8 +17,7 @@ export const segmentAnalysisText = (
     : null;
 
   return text.split(/(\*\*[^*\n]{1,160}\*\*)/g).flatMap((part, index) => {
-    if (index % 2 === 1)
-      return [{ text: part.slice(2, -2), emphasized: true }];
+    if (index % 2 === 1) return [{ text: part.slice(2, -2), emphasized: true }];
     if (!pattern) return [{ text: part, emphasized: false }];
 
     return part.split(pattern).map((segment, index) => ({

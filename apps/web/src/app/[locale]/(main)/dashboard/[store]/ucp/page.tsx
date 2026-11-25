@@ -14,49 +14,35 @@ type StoreParams = PageProps<"/[locale]/dashboard/[store]/ucp">["params"];
 
 const UcpContent = async ({ params }: { params: StoreParams }) => {
   const { store } = await params;
-  const resolvedStore = await Store.resolveForUser(Environment.SERVER, {
+  const resolved = await Store.resolveForUser(Environment.SERVER, {
     store,
   });
-  if (!resolvedStore.success) return <ChannelLoadError />;
-  const [profileResult, productsResult, storesResult] = await Promise.all([
+  if (!resolved.success) return <ChannelLoadError />;
+  const [profile, products] = await Promise.all([
     Ucp.getProfile(Environment.SERVER),
     Product.find(Environment.SERVER, {
       where: and(
-        eq(schema.product.storeId, resolvedStore.data.id),
-        eq(schema.product.userId, resolvedStore.data.userId),
+        eq(schema.product.storeId, resolved.data.id),
+        eq(schema.product.userId, resolved.data.userId),
       ),
     }),
-    Store.getForCurrentUser(Environment.SERVER),
   ]);
 
   // Blocked accounts render nothing beneath the paywall overlay. An entitled
   // account with no profile saved yet resolves to `null` too, so the two are
   // told apart by the result rather than by the unwrapped value.
-  if (!profileResult.success) {
-    if (isSubscriptionRequired(profileResult.error)) return null;
+  if (!profile.success) {
+    if (isSubscriptionRequired(profile.error)) return null;
     return <ChannelLoadError />;
   }
 
-  if (!productsResult.success || !storesResult.success)
-    return <ChannelLoadError />;
-  const profile = profileResult.data;
-  const products = productsResult.data;
-  const stores = storesResult.data;
-
-  const shopifyStores = stores
-    .filter(
-      (store) =>
-        store.platform === "shopify-public" || store.platform === "shopify",
-    )
-    .map((store) => ({ id: store.id, name: store.name }));
+  if (!products.success) return <ChannelLoadError />;
 
   return (
     <UcpManager
-      store={store}
-      domain={resolvedStore.data.domain}
-      profile={profile}
-      products={products}
-      shopifyStores={shopifyStores}
+      store={resolved.data}
+      profile={profile.data}
+      products={products.data}
     />
   );
 };

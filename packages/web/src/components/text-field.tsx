@@ -63,7 +63,6 @@ export const TextField = ({
   // variant,
   className,
   classList,
-  label: _label,
   onValueChange,
   ...props
 }: TextField.Props): JSX.Element => {
@@ -169,6 +168,7 @@ export namespace TextField {
   export type Props = {
     name?: string;
     disabled?: boolean;
+    classList?: ClassList<"root">;
   } & RenderComponentProps<
     // & VariantProps<typeof inputVariants>
     "div",

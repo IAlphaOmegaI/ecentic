@@ -1,41 +1,18 @@
-import Image from "next/image";
 import type { ReactNode } from "react";
-import { Link } from "@/i18n/navigation";
+import { AccountWorkspace } from "./account-workspace";
 import { Crosshair } from "./grid";
-import { HubContextLabel, HubShellCopy } from "./hub-shell-copy";
-import { WorkspaceTopbar } from "./topbar";
+import { HubShellCopy } from "./hub-shell-copy";
 
 /** Shared static frame keeps the heading and account controls stable during streaming. */
 export const HubShell = ({ stores }: HubShell.Props) => (
-  <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background">
-    <WorkspaceTopbar>
-      <Link
-        href="/dashboard"
-        aria-label="ecentic"
-        className="mr-2 shrink-0 rounded-sm outline-offset-4 focus-visible:outline-2 focus-visible:outline-primary"
-      >
-        <Image
-          src="/images/marketing/trademark-on-dark.svg"
-          alt="ecentic"
-          width={112}
-          height={28}
-          loading="eager"
-          className="h-auto w-24 sm:w-28"
-        />
-      </Link>
-      <HubContextLabel />
-    </WorkspaceTopbar>
-
-    <main
-      className="min-h-0 min-w-0 flex-1 overflow-y-auto px-4 sm:px-8"
-      data-hub-scroll
-    >
+  <AccountWorkspace>
+    <div className="min-h-full px-4 sm:px-8" data-hub-scroll>
       <div className="relative mx-auto min-h-full max-w-304 border-accent-foreground border-x">
         <HubShellCopy />
         {stores}
       </div>
-    </main>
-  </div>
+    </div>
+  </AccountWorkspace>
 );
 
 export namespace HubShell {

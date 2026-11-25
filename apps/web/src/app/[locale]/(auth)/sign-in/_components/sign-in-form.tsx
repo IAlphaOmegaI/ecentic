@@ -64,7 +64,6 @@ export const SignInForm = () => {
           validator: z
             .string({ error: translateAuth("validation.password") })
             .min(1, translateAuth("validation.password")),
-          // @ts-expect-error - label is a function
           label: () => (
             <div className="flex items-center justify-between">
               <FieldLabel>{translate("fields.password.label")}</FieldLabel>

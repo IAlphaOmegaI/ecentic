@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useRouter } from "@/i18n/navigation";
-import * as BrandSnapshot from "@/server/app/brand-snapshot";
+import * as BrandSnapshot from "@/server/app/brand-snapshot.actions";
 import { DashboardLoadingState } from "../../../_components/loading-state";
 import { BrandUnavailable } from "./shell";
 

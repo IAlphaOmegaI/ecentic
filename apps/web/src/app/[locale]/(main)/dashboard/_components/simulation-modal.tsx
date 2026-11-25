@@ -19,7 +19,7 @@ import { useEffect, useRef, useState } from "react";
 import { useScanRunner } from "@/app/[locale]/(auth)/onboarding/scan/_components/use-scan-runner";
 import { Link } from "@/i18n/navigation";
 import { formatElapsed } from "@/lib/date";
-import { countForCurrentUser } from "@/server/app/competitor";
+import * as Competitor from "@/server/app/competitor.actions";
 import type * as Simulate from "@/server/app/intelligence/simulate";
 import { StatusPill, TopFindingCallout } from "./grid";
 import { DashboardLoadingState } from "./loading-state";
@@ -108,7 +108,7 @@ export const SimulationModal = ({
     const controller = new AbortController();
 
     void (async () => {
-      const result = await countForCurrentUser({ store });
+      const result = await Competitor.countForCurrentUser({ store });
       if (controller.signal.aborted || !result.success) return;
       if (result.data.total === 0) {
         setError(translate("pre.noCompetitors"));

@@ -1,0 +1,56 @@
+{
+  "dashboard": {
+    "settings": {
+      "description": "Verwalten Sie Profil, Anmeldung, verbundene Shops und Abrechnung für Ihr Konto.",
+      "tabs": {
+        "account": "Profil",
+        "security": "Anmeldung und Sicherheit",
+        "integrations": "Verbundene Shops",
+        "billing": "Plan und Abrechnung"
+      },
+      "workspace": {
+        "navigation": "Kontonavigation",
+        "description": "Verwalten Sie Profil, Anmeldung, verbundene Shops und Abrechnung für Ihr Konto.",
+        "sections": {
+          "account": {
+            "title": "Profil",
+            "description": "Ihre persönlichen Angaben und Ihre bevorzugte Sprache."
+          },
+          "security": {
+            "title": "Anmeldung und Sicherheit",
+            "description": "Verwalten Sie Ihr Passwort, melden Sie sich ab oder löschen Sie Ihr Konto."
+          },
+          "integrations": {
+            "title": "Verbundene Shops",
+            "description": "Verwalten Sie die Verbindung jedes Shops, aktualisieren Sie dessen Produkte und prüfen Sie die verbundenen Dienste."
+          },
+          "billing": {
+            "title": "Plan und Abrechnung",
+            "description": "Ihr Plan, Ihre Zahlungsdaten und die Rechnungen für dieses Konto."
+          }
+        },
+        "readOnly": "Schreibgeschützter Katalog",
+        "manageStore": "Shop öffnen",
+        "services": "Verbundene Dienste",
+        "unavailable": "Status nicht verfügbar"
+      },
+      "account": {
+        "profile": {
+          "fields": {
+            "role": {
+              "label": "Ihre Rolle im Unternehmen"
+            }
+          }
+        }
+      },
+      "integrations": {
+        "action": {
+          "sync": "Produkte synchronisieren"
+        },
+        "google": {
+          "manage": "Google Shopping verwalten"
+        }
+      }
+    }
+  }
+}

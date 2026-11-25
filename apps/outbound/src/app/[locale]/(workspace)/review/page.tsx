@@ -6,10 +6,10 @@ import {
 } from "@/lib/outbound-review";
 import * as Outbound from "@/server/app/outbound";
 import { Environment } from "@/server/utils/environment";
+import { CampaignContext } from "../_components/campaign-context";
 import { ReviewQueueTable } from "./_components/queue";
 import { ReviewShell } from "./_components/shell";
 import { ReviewQueueSkeleton } from "./_components/skeletons";
-import { CampaignContext } from "../_components/campaign-context";
 
 export default function Page({
   searchParams,
@@ -42,11 +42,11 @@ const QueueData = async ({
   }
   return (
     <>
-    <CampaignContext campaign={query.campaign} />
-    <ReviewQueueTable
-      queue={result.data}
-      query={{ ...query, page: result.data.page }}
-    />
+      <CampaignContext campaign={query.campaign} />
+      <ReviewQueueTable
+        queue={result.data}
+        query={{ ...query, page: result.data.page }}
+      />
     </>
   );
 };

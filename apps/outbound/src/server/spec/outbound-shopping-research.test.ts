@@ -482,38 +482,36 @@ describe.skipIf(!endpoint)(
       const row = value(await store.readProspect(fixture.prospectId));
       if (!row) throw new Error("Missing prospect");
       const identifier = randomUUID();
-      await db
-        .insert(schema.outboundIntegrationJob)
-        .values({
-          id: identifier,
-          provider: "automation",
+      await db.insert(schema.outboundIntegrationJob).values({
+        id: identifier,
+        provider: "automation",
+        prospectId: row.id,
+        status: "complete",
+        input: {
+          operation: "campaignAutomation",
+          campaignId: row.campaignId,
+        },
+        output: {
           prospectId: row.id,
-          status: "complete",
-          input: {
-            operation: "campaignAutomation",
-            campaignId: row.campaignId,
-          },
-          output: {
-            prospectId: row.id,
-            selection: {
-              status: "selected",
-              provisional: false,
-              person: {
-                name: row.details.name,
-                first: row.details.first,
-                title: row.details.title,
-                email: "original@samplegoods.com",
-                domain: row.details.domain,
-                linkedinUrl: row.details.linkedinUrl,
-              },
-              details: {
-                roleSource: row.details.roleSource,
-                roleCheckedAt: row.details.roleCheckedAt,
-                timezone: row.details.timezone,
-              },
+          selection: {
+            status: "selected",
+            provisional: false,
+            person: {
+              name: row.details.name,
+              first: row.details.first,
+              title: row.details.title,
+              email: "original@samplegoods.com",
+              domain: row.details.domain,
+              linkedinUrl: row.details.linkedinUrl,
+            },
+            details: {
+              roleSource: row.details.roleSource,
+              roleCheckedAt: row.details.roleCheckedAt,
+              timezone: row.details.timezone,
             },
           },
-        });
+        },
+      });
       value(
         await store.patchProspect(
           "operator",

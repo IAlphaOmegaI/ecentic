@@ -39,7 +39,6 @@ export const WooCommerceForm = () => {
             .min(1, translate("woocommerce.fields.domain.validation")),
           label: translate("woocommerce.fields.domain.label"),
           placeholder: translate("woocommerce.fields.domain.placeholder"),
-          // @ts-expect-error - description is a function
           description: () => (
             <FieldDescription>
               {translate("woocommerce.fields.domain.description.before")}{" "}
@@ -60,7 +59,6 @@ export const WooCommerceForm = () => {
             .min(1, translate("woocommerce.fields.consumerKey.validation")),
           label: translate("woocommerce.fields.consumerKey.label"),
           placeholder: translate("woocommerce.fields.consumerKey.placeholder"),
-          // @ts-expect-error - description is a function
           description: () => (
             <FieldDescription>
               {translate("woocommerce.fields.consumerKey.description")}
@@ -81,7 +79,6 @@ export const WooCommerceForm = () => {
           placeholder: translate(
             "woocommerce.fields.consumerSecret.placeholder",
           ),
-          // @ts-expect-error - description is a function
           description: () => (
             <FieldDescription>
               {translate("woocommerce.fields.consumerSecret.description")}

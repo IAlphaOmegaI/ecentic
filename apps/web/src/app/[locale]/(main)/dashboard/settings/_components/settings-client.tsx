@@ -1,113 +1,57 @@
 "use client";
 
-import {
-  Tab,
-  Tabs,
-  TabsIndicator,
-  TabsList,
-  TabsPanel,
-} from "@zenncore/web/components/tabs";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { parseAsStringLiteral, useQueryState } from "nuqs";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { type ReactNode, Suspense } from "react";
+import { resolveSettingsSection } from "@/lib/dashboard-settings";
 
 export namespace SettingsClient {
-  /**
-   * The tab rail carries no data of its own, so it prerenders. Each panel that
-   * needs a query arrives as a slot on its own boundary — billing in particular
-   * reconciles against Stripe, and used to hold up the whole screen including
-   * the Account tab.
-   */
   export type Props = {
     account: ReactNode;
+    security: ReactNode;
     integrations: ReactNode;
     billing: ReactNode;
   };
 }
 
-const sections = ["account", "integrations", "billing"] as const;
-type Section = (typeof sections)[number];
-
 export const SettingsClient = (props: SettingsClient.Props) => (
-  <NuqsAdapter>
-    <Suspense fallback={<SettingsPanels {...props} />}>
-      <SettingsSelection {...props} />
-    </Suspense>
-  </NuqsAdapter>
+  <Suspense fallback={<SettingsPanel {...props} selection="account" />}>
+    <SettingsSelection {...props} />
+  </Suspense>
 );
 
 const SettingsSelection = (props: SettingsClient.Props) => {
-  const [selection, setSelection] = useQueryState(
-    "tab",
-    parseAsStringLiteral(sections).withDefault("account"),
-  );
-
+  const parameters = useSearchParams();
   return (
-    <SettingsPanels
-      {...props}
-      selection={selection}
-      onSelectionChange={(value) => {
-        if (typeof value !== "string") return;
-        const section = sections.find((section) => section === value);
-        if (section) void setSelection(section);
-      }}
-    />
+    <SettingsPanel {...props} selection={resolveSettingsSection(parameters)} />
   );
 };
 
-const SettingsPanels = ({
-  account,
-  integrations,
-  billing,
+const SettingsPanel = ({
   selection,
-  onSelectionChange,
+  ...panels
 }: SettingsClient.Props & {
-  selection?: Section;
-  onSelectionChange?: (value: unknown) => void;
+  selection: ReturnType<typeof resolveSettingsSection>;
 }) => {
-  const translate = useTranslations("dashboard.settings.tabs");
+  const translate = useTranslations("dashboard.settings.workspace.sections");
 
   return (
-    <div className="min-w-0">
-      <Tabs
-        defaultValue="account"
-        value={selection}
-        onValueChange={onSelectionChange}
-        className="flex w-full min-w-0 flex-col"
-      >
-        <div className="border-accent-foreground border-b px-4 py-4 sm:px-6">
-          <TabsList className="max-w-full text-sm">
-            <TabsIndicator />
-            {sections.map((section) => (
-              <Tab key={section} value={section}>
-                {translate(section)}
-              </Tab>
-            ))}
-          </TabsList>
-        </div>
-
-        <TabsPanel
-          value="account"
-          className="min-w-0 flex-1 bg-background-rich outline-none"
+    <section
+      className="min-w-0 bg-background-rich"
+      aria-labelledby="settings-section-title"
+    >
+      <header className="border-accent-foreground border-b px-4 py-6 sm:px-8">
+        <h2
+          id="settings-section-title"
+          className="font-medium text-2xl text-foreground-rich"
         >
-          {account}
-        </TabsPanel>
-
-        <TabsPanel
-          value="integrations"
-          className="min-w-0 flex-1 bg-background-rich outline-none"
-        >
-          {integrations}
-        </TabsPanel>
-
-        <TabsPanel
-          value="billing"
-          className="min-w-0 flex-1 bg-background-rich outline-none"
-        >
-          {billing}
-        </TabsPanel>
-      </Tabs>
-    </div>
+          {translate(`${selection}.title`)}
+        </h2>
+        <p className="mt-2 max-w-2xl text-foreground-dimmed text-sm">
+          {translate(`${selection}.description`)}
+        </p>
+      </header>
+      {panels[selection]}
+    </section>
   );
 };

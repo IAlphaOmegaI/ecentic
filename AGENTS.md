@@ -18,7 +18,7 @@ Read in this order before substantial work:
 
 1. `docs/index.md` - docs navigation hub.
 2. `docs/context/` - product context, before making product or UX decisions (`idea.md`, `strategy.md`, `shopify.md`).
-3. `docs/agents/` - coding rules, before implementing code.
+3. `.agents/skills/zenn-code/SKILL.md`, then `.agents/skills/zenn-style/SKILL.md` - the base code rules and component/package rules; apply across pages, server modules and shared packages. Read `docs/agents/` for repository-specific implementation guidance.
 4. `docs/web/index.md` and `docs/shared/index.md` - component/package API references, before building components.
 
 If code and docs disagree, prefer docs intent unless explicitly instructed otherwise.
@@ -93,9 +93,12 @@ bun run test          # all apps
 cd apps/web && bun test src
 ```
 
-Note: `bun run typecheck` is not a clean gate — the repository carries a few
-hundred pre-existing errors. Compare the count before and after your change
-rather than expecting zero.
+`bun run typecheck` and `bun run lint:check` are clean error gates as of the
+23 November 2026 audit. Keep them passing; do not reintroduce a pre-existing-error
+exception. `lint:check` is read-only and scopes first-party source/scripts/specs;
+generated assets/catalogs have their own checks. `bun run test` includes apps
+and shared packages. See `docs/audits/2026-11-23-zenn.md` for coverage and remaining
+manual-review work.
 
 ---
 

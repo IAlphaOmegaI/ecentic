@@ -285,9 +285,22 @@ Why (originally inferred; accepted via “write all”, 2026-11-12): One continu
 Use the shared `Plus` / grid junction helpers at real rail intersections. Crosses mark where a
 structural horizontal rule meets a vertical delimiter. They do not decorate arbitrary corners.
 
+Keep them hairline: the shared `Plus` uses two one-pixel bars in a `size-3` box; the dashboard
+`Crosshair` uses the same 12-by-12 geometry with a one-pixel SVG stroke. Center each mark on
+its seam with half-width/half-height translation. Use the helper's semantic color (`bg-foreground-dimmed`
+for `Plus`, `text-accent-rich` for the dashboard SVG), or the established `cross` token where the
+surface owns that override. Do not replace them with thick icon strokes, enlarge them into badges,
+or assign page-local colors. Both helpers are `aria-hidden` and `pointer-events-none`.
+
 Diff panels include their top header intersections and bottom annotation intersections in the
 shared renderer. Stage groups and company-details sections follow the same rule. Never put two
 crosses on the same intersection because both a parent and child try to own it.
+Dashboard header/section seams use sparse pane-edge marks, not a cross on every metric or row.
+Keep the mark visible without introducing a second border or clipping the shared seam.
+
+A decorative cross is not a close control. Dismissal uses the package Dialog/Sheet close primitive
+with an `XIcon`, a localized accessible label and a visible keyboard focus state. Never make a
+grid cross clickable or substitute an unlabeled decorative mark for that button.
 
 ### Responsive construction
 
@@ -369,7 +382,7 @@ Why: The user explicitly rejected the nested framing: “you know we hate square
 
 Use only `rounded-none`, `rounded-sm`, `rounded-lg` and `rounded-full` (including their directional
 variants). Square is for structural regions; small corners are for compact
-menus and selection checkboxes; large corners are for inputs, buttons, dialogs, thumbnails and the workspace inner junction; full is for
+menus and selection checkboxes; large corners are for inputs, buttons, dialogs, thumbnails and the workspace inner contour; full is for
 avatars, dots and deliberate pills. Legacy theme names alias these values for compatibility;
 new code uses the four approved names. Do not vary radii to decorate adjacent cards.
 The 14 November follow-up explicitly rounds the open Judy chat and toast edges further:
@@ -390,6 +403,12 @@ Blog thumbnails are slightly rounded squares. Do not make every long panel a rou
 Depth should describe the object. A complete product card can tilt or lift; rotating just its
 content inside an unmoving frame looks broken. Subtle illumination or perspective supports a
 physical illustration. Heavy floating shadows are not the main way to separate site sections.
+The complete dashboard application frame is a scoped exception: one `rounded-lg` enclosure
+has a 3px charcoal perimeter and casts a soft shadow inward onto the white content pane using
+`inset-shadow-workspace`. There is no outer white gutter or external drop shadow. This frame
+and its inward shadow define the workspace boundary; they do not authorize thick borders,
+shadows or rounded cards on its connected data regions. Keep those inner surfaces flat,
+with one owner for each one-pixel seam.
 
 ## 7. Tonal ASCII
 
@@ -832,22 +851,90 @@ Each shared seam has one border owner.
 
 Keep a persistent store switcher and six primary destinations: Overview, Products, Optimize, AI research, Channels and Results. This approved consolidation supersedes the earlier catalog/intelligence/channel accordions. Related routes expand inside their parent sidebar group using the package Accordion. Expand the active group automatically and keep subpage links compact; do not repeat the same links in a horizontal bar above the page. Technical tools remain nested under Channels. Preserve existing route URLs and their active parent in navigation. The latest 13 November Shopify
 reference establishes a solid charcoal sidebar and top bar around an off-white workspace,
-with a gently rounded inner junction. Use the negative trademark on the dark chrome. This
+with one rounded rectangular content pane. Use the negative trademark on the dark chrome. This
 supersedes the earlier all-off-white navigation direction; the rejection of technical-looking
 gradient rails, angular command decks and decorative chrome still applies. Keep blue for
 primary actions, selection and measured data.
 
+The shared `dashboard/layout.tsx` owns one complete outer frame around the store hub, account
+screens and every store workspace. The outer `bg-emphasis` canvas reaches every viewport edge
+with no surrounding padding or white strip. This 24 November correction replaces the earlier
+white reveal around the frame. Enclose the entire chrome/content composition with `border-(length:--dashboard-frame-border-width)`,
+`border-emphasis bg-emphasis` and `rounded-lg`. The frame casts its shadow inward onto the
+light workspace rather than outward onto the page.
+Set `--dashboard-frame-border-width: 3px` on this frame only; inner section rules, grid seams
+and decorative crosses retain their one-pixel strokes. The border and backing use the same
+emphasis charcoal as the existing header/sidebar; the confirmed direction preserves that chrome
+color. All four outside edges belong to this frame; do not leave the right/bottom edges open
+or draw separate outer borders around the sidebar, top bar and page. The border and shadow are
+the dashboard-shell exception in §6, not a content-card recipe.
+
+The central workspace owns a separate, complete `rounded-lg bg-background` rectangle at every
+viewport size, including mobile. Round all four inner connecting corners, rather than only the
+desktop top-left join. `WorkspaceViewport` owns this contour for store pages; the fixed wrapper
+around the scrolling `main` in `AccountWorkspace` owns it for account pages and the store hub
+(`HubShell`). Keep `bg-emphasis` behind the pane so each corner reveals the same connected
+charcoal chrome. Each wrapper uses a pointer-transparent, absolutely positioned `after` layer
+covering its bounds, with `rounded-lg`, `z-30` and `inset-shadow-workspace`. The named app theme
+token derives its shadow from emphasis at 18% opacity, with a one-spacing-unit downward offset
+and four-spacing-unit blur. This keeps the soft frame shadow above opaque content backgrounds
+and fixed at the edges while content scrolls, without intercepting controls. Clip the pane's
+contents to its contour without adding another border or padding layer.
+Tables, sections and connected data grids inside it remain square and keep their one-pixel seams.
+
+Keep the shell `h-dvh` with `min-h-0 min-w-0 flex-1` through its flex ancestors, and clip the
+assembled chrome to the outer rounding. The content viewport scrolls inside that frame; the
+outer canvas remains the same charcoal as the navigation. Menus and the mobile Sheet retain their package portals,
+so the shell's clipping must not crop those overlays. Preserve the server-rendered frame and
+the separate Suspense boundaries for account/store data and subscription overlays.
+Set `--dashboard-workspace-inset` to that same border-width variable.
+Judy's workspace-positioned dock subtracts this inset from `--floating-controls-bottom`,
+so it remains aligned with the viewport-fixed support launcher. With no outside gutter,
+the compensation is 3px at every viewport size. Keep this geometry linked when
+changing the frame so the controls preserve the shared mobile baseline defined below.
+
+**Breadcrumbs and route context:** the current dashboard presents location through the store
+selector, active sidebar family/subpage and page heading; its top bar contains search and the
+account menu, without an additional visible breadcrumb trail. Keep those labels synchronized
+with the actual route and its six-destination parent mapping. Public-page `BreadcrumbList`
+JSON-LD is search metadata, not a visible navigation component or a dashboard breadcrumb
+implementation. Do not duplicate the sidebar hierarchy as a second band of links above the page.
+
 Navigation is a coherent workspace frame. Store identity, store switching and “All stores”
 belong in one selector. Use a real store logo or favicon with a recognizable store-image fallback,
 not a letter tile. The account menu repeats the saved profile image or a person fallback beside
-the name and email. Group account identity, settings, notifications and billing in this compact
-menu; plan details belong in Billing rather than a separate prominent badge.
-Keep search directly reachable, including on mobile. The dashboard search opens as an opaque charcoal extension of its top-bar field, using the package Popover and Command components without a page backdrop. Match Judy’s emphasis charcoal and restrained vertical highlight. Reveal the results downward from the existing field and fold them back into it on close; the input stays sharp, stationary and immediately ready for typing. Use a short package transition, without lateral slide, zoom or delayed focus, and reveal immediately for reduced motion. Support arrow-key selection and Enter, and return focus to the field on Escape. Sidebar families use the package Accordion with a short height/opacity transition and rotating chevron; reduced motion removes these transitions. Keep child routes in the sidebar, never in a duplicate band above the page. Dashboard language selection lives in
-Settings > Account, not in the top bar. Use one compact keycap treatment for the command
+the name and email. Keep account identity, notifications and shortcuts to Settings and Billing in this compact
+menu, with Sign out as its final action after a separator. Sign out disables while pending,
+shows a localized failure toast if needed and uses the shared session-ending action to
+return to sign-in in the current language.
+Plan details belong in Plan & billing rather than a separate prominent badge. Settings also
+has a persistent destination at the very bottom of the store sidebar, after any trial status
+and outside the scrolling navigation, separated from it by one rule. Keep the same fixed
+Settings footer in the mobile sheet. The account menu must not be its only entry point.
+Keep store search directly reachable, including on mobile; do not render the store-scoped search
+on account pages or infer a store identifier from `settings`, `reports` or an empty hub route. The dashboard search opens as an opaque charcoal extension of its top-bar field, using the package Popover and Command components without a page backdrop. Match Judy’s emphasis charcoal and restrained vertical highlight. Reveal the results downward from the existing field and fold them back into it on close; the input stays sharp, stationary and immediately ready for typing. Use a short package transition, without lateral slide, zoom or delayed focus, and reveal immediately for reduced motion. Support arrow-key selection and Enter, and return focus to the field on Escape. Sidebar families use the package Accordion with a short height/opacity transition and rotating chevron; reduced motion removes these transitions. Keep child routes in the sidebar, never in a duplicate band above the page. Dashboard language selection lives in
+Settings > Profile, not in the top bar. Use one compact keycap treatment for the command
 shortcut, Escape and footer keyboard hints, including their opening and closing states.
-The mobile dashboard sidebar is a left-hand drawer: it slides from that edge through the
-package Sheet transition and opens immediately for reduced motion. This does not change the
-public navigation's approved fade treatment. Notifications belong inside the account menu, using
+
+The mobile dashboard sidebar is the shared `MobileSidebar` in `sidebar-nav.tsx`, visible below
+`md` in place of the persistent desktop rail. Use the package `Sheet`, `SheetTrigger` and
+`SheetPopup side="left"`; it is a navigation overlay, not a horizontally sliding page workspace.
+Keep the full-height `h-dvh` panel `w-80 max-w-full`, with `rounded-r-lg`, an opaque `bg-emphasis`
+surface and `text-background-rich`. Its negative trademark and store selector precede the same
+six-destination navigation and Settings shortcut used on desktop. Account pages and the store
+hub instead use the shared account navigation: All stores, Reports and Settings, with the four
+Settings sections nested beneath it when Settings is open. The navigation region scrolls internally through a
+`min-h-0 flex-1` height chain, leaving its header and close control reachable.
+
+Use the existing horizontal Sheet transition: `transition-transform ease-out`, 200ms opening
+and 150ms closing. The backdrop is `bg-emphasis/40 backdrop-blur-sm`. Reduced motion removes
+the transition and both starting/ending translations. Keep the package modal focus management,
+Escape/outside dismissal and focus return to the trigger; supply the localized hidden Sheet title,
+menu trigger label and close label. Changing the route or a Settings section query parameter closes the sheet. Preserve keyboard
+navigation within the shared Accordion and the current link's `aria-current="page"` state.
+This does not change the public navigation's approved fade treatment.
+
+Notifications belong inside the account menu, using
 the shared menu components rather than a separate top-bar bell. Menus
 are compact, gently rounded and separated before reset or destructive actions. Dropdowns,
 submenus and compact explanatory popovers use one semi-transparent theme border or ring and
@@ -886,7 +973,26 @@ Keep recent scan activity as compact linked rows, with a quiet vertical connecto
 A pair of edge crosshairs can mark the section seam; avoid adding them to every row.
 Distinguish queued, running, completed and failed states; do not show progress totals when
 the accessor cannot provide a correct planned denominator.
-Direct links should take the merchant to the corresponding scan, filtered catalog or action. The default Overview stops after its useful summary and recent activity; full catalogs and research tables belong in their task destinations. Existing `?view=products|competitors|agents` overview links remain compatible. Results shows store-scoped recorded referrals and requests; reports explicitly cover all stores in the account. Do not advertise report scheduling or a measured optimization lift that the saved data cannot establish. Account-level Reports and Settings use the same charcoal header and light, edge-to-edge workspace as the store dashboard. Hide unpersisted settings switches instead of presenting local state as a saved preference.
+Direct links should take the merchant to the corresponding scan, filtered catalog or action. The default Overview stops after its useful summary and recent activity; full catalogs and research tables belong in their task destinations. Existing `?view=products|competitors|agents` overview links remain compatible. Results shows store-scoped recorded referrals and requests; reports explicitly cover all stores in the account. Do not advertise report scheduling or a measured optimization lift that the saved data cannot establish. Account-level Reports and Settings use the same charcoal header, persistent sidebar and light, edge-to-edge workspace as the store dashboard. The store hub shares that account frame; do not make navigation disappear when the merchant leaves a store. Hide unpersisted settings switches instead of presenting local state as a saved preference.
+
+**Settings organization:** use four clearly named sidebar sections: Profile, Sign-in & security,
+Connected stores, and Plan & billing. Render a short section description and one selected panel;
+do not repeat a horizontal tab rail above the content. Profile contains personal details first and
+language second. Label the business-role field explicitly so it cannot be confused with account
+permissions. Sign-in & security contains password controls, session actions and account deletion
+in that order. Keep the destructive confirmation intact and separate from ordinary profile edits.
+Connected stores groups each store's identity, connection status, product sync/disconnect actions
+and connected services together, with a direct Open store link. Distinguish read-only public
+catalog imports from full store connections. A failed service-status read is unavailable, not
+proof that a service is coming soon. Preserve Google Shopping and Recharge controls and their
+store-specific destinations. Plan & billing remains account-wide and reachable without a paid plan.
+
+Preserve `?tab=account|security|integrations|billing` deep links. Payment-provider returns and
+plan-management links open Plan & billing; Google and Recharge connection returns open Connected
+stores. An explicit section selection wins over older callback parameters. Keep data reads in
+independent Suspense slots with matching Profile, Security, store-list and billing skeletons so
+remote billing services cannot hold up the Profile panel. Both desktop and mobile navigation use
+the same section resolver and localized labels.
 
 Structural surfaces reach the content pane edges: chart regions, scan activity, table headers
 and rows, section rules and hatch gutters have no outer horizontal inset. Put reading padding
@@ -1116,6 +1222,40 @@ technical grid or competing forms. Keep the lifecycle test’s potential test-ca
 Use light full-width sections, one border owner per seam and sparse edge crosses. Public versions
 of shared tools retain their own approved composition.
 
+### Sign-in and account-entry pages
+
+`/sign-in` uses the shared `AuthShell`, with its form behind `Suspense` and the matching
+`AuthFormSkeleton`. Keep the title, description, home link, language selector and footer in the
+server-rendered shell. The form is the task, not a floating card inside another padded surface.
+
+At `lg` and above, use the full-height two-pane grid: a `0.9fr / 1.1fr` split, narrative on the
+left and the light task pane on the right. The narrative surface uses the existing
+`bg-linear-to-br from-primary-text via-primary to-emphasis` field and its clipped upper corner.
+Keep clipping on the pointer-transparent decorative layer. The negative trademark, localized
+heading/copy and contained `og-commerce.png` artwork share that plane. The white cutout at its
+foot distinguishes catalog-platform marks from illustrative AI-channel marks; these are not
+additional sign-in methods.
+
+The task pane uses `bg-background-rich`, a fixed header seam and a centered `max-w-xl` content
+column. Its `min-h-0` main region scrolls independently on desktop with `lg:overflow-y-auto`
+and `lg:overscroll-contain`. Keep the scroll region keyboard-focusable, labeled by the page
+title, and visibly outlined on focus. Below `lg`, hide the narrative pane and return the form
+to ordinary document flow. Show the standard trademark in the task header and keep the shared
+flag language switcher visible at every width. Do not squeeze the desktop illustration beside
+a narrow form or clip content when the virtual keyboard opens.
+
+Preserve the sign-in order: full-width Google and Shopify soft/emphasis buttons with genuine
+brand marks, an inline Shopify disclosure, a quiet divider, then email/password fields and the
+primary submit action. The Shopify disclosure uses the package Collapsible and an `InferredForm`
+for the store field; its button exposes `aria-expanded` and `aria-controls`. The credential
+`InferredForm` keeps password recovery beside the password label and uses localized visibility
+toggle labels. The footer pairs the account-creation prompt with its soft secondary action.
+All field, validation, provider, pending and recovery copy is localized. Disable competing
+provider/submission actions while a request is pending, preserve entered data on failure, and
+place controlled `AuthFeedback` copy in its alert region above the form. Never display raw
+provider errors. Use the established `Motion.Stagger`/`Motion.Item` entry treatment and remove
+decorative loading animation for reduced motion.
+
 ### Onboarding
 
 The four steps are Connect → Products → Competitors → Scan. Each screen names the task and
@@ -1211,6 +1351,11 @@ states which patterns to repeat.
 | Shared page / hero mapping | `apps/web/src/components/marketing/page.tsx` |
 | Crosses | `apps/web/src/components/plus.tsx` |
 | Gutters and grid helpers | `apps/web/src/app/[locale]/(main)/dashboard/_components/grid.tsx` |
+| Dashboard frame and workspace scroll | `apps/web/src/app/[locale]/(main)/dashboard/layout.tsx`, `apps/web/src/app/[locale]/(main)/dashboard/_components/workspace-viewport.tsx` |
+| Account and hub workspace contours | `apps/web/src/app/[locale]/(main)/dashboard/_components/account-workspace.tsx`, `apps/web/src/app/[locale]/(main)/dashboard/_components/hub-shell.tsx` |
+| Dashboard mobile navigation | `apps/web/src/app/[locale]/(main)/dashboard/_components/sidebar-nav.tsx`, `packages/web/src/components/sheet.tsx` |
+| Dashboard top bar and route families | `apps/web/src/app/[locale]/(main)/dashboard/_components/topbar.tsx`, `apps/web/src/lib/dashboard-destinations.ts` |
+| Sign-in and shared account-entry shell | `apps/web/src/app/[locale]/(auth)/_components/auth-shell.tsx`, `apps/web/src/app/[locale]/(auth)/sign-in/page.tsx`, `apps/web/src/app/[locale]/(auth)/sign-in/_components/sign-in-form.tsx` |
 | Motion vocabulary | `apps/web/src/components/motion.tsx` |
 | Navigation and footer | `apps/web/src/components/navbar.tsx`, `apps/web/src/components/footer.tsx` |
 | Light field | `apps/web/src/components/marketing/illustration-glow.tsx` |

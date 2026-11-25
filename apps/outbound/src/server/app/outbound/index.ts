@@ -67,8 +67,10 @@ export const saveProspect = withAuthorization(
 );
 export const saveCampaignProspect = withAuthorization(
   [UserRole.STAFF],
-  async (context, input: { company: string; revision: number; prospect: ProspectInput }) =>
-    Store.saveCampaignProspect(context.session.user.id, input),
+  async (
+    context,
+    input: { company: string; revision: number; prospect: ProspectInput },
+  ) => Store.saveCampaignProspect(context.session.user.id, input),
   "Outbound.saveCampaignProspect",
 );
 export const importProspects = withAuthorization(

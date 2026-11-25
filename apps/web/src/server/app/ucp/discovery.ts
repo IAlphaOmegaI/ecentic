@@ -44,7 +44,7 @@ export const buildDiscoveryProfile = (
   // config.scopes declares which operations gate behind user authentication.
   const identityScopes = storefront?.identityScopes ?? {};
   if (Object.keys(identityScopes).length > 0) {
-    (ucp.capabilities as Record<string, unknown>)[
+    (ucp["capabilities"] as Record<string, unknown>)[
       "dev.ucp.common.identity_linking"
     ] = [
       {

@@ -66,7 +66,7 @@ export const SubscriptionGate = async () => {
               <p className="font-body font-light text-foreground-dimmed">
                 {translate("manage")}{" "}
                 <Link
-                  href="/dashboard/settings"
+                  href="/dashboard/settings?tab=billing"
                   className="text-primary transition-opacity hover:opacity-80"
                 >
                   {translate("manageAction")}

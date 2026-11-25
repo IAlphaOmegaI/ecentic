@@ -9,7 +9,7 @@ import { useState } from "react";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
-import * as Competitor from "@/server/app/competitor";
+import * as Competitor from "@/server/app/competitor.actions";
 import { CompetitorList } from "../../_components/competitor-list";
 
 export namespace CompetitorReview {

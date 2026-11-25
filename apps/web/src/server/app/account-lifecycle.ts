@@ -182,38 +182,46 @@ export const deleteAccount = withAuthentication(
 
         if (stores.length > 0) {
           const identifiers = stores.map((store) => store.id);
-          const [credentials, google, orders, recharge, loop] = await Promise.all([
-            transaction
-              .select({ id: schema.store_account.id })
-              .from(schema.store_account)
-              .where(inArray(schema.store_account.storeId, identifiers))
-              .limit(1),
-            transaction
-              .select({ id: schema.googleMerchantAccount.id })
-              .from(schema.googleMerchantAccount)
-              .where(inArray(schema.googleMerchantAccount.storeId, identifiers))
-              .limit(1),
-            transaction
-              .select({ id: schema.ucpOrder.id })
-              .from(schema.ucpOrder)
-              .where(inArray(schema.ucpOrder.storeId, identifiers))
-              .limit(1),
-            transaction
-              .select({ status: schema.rechargeConnection.status })
-              .from(schema.rechargeConnection)
-              .where(
-                and(
-                  inArray(schema.rechargeConnection.storeId, identifiers),
-                  ne(schema.rechargeConnection.status, "disconnected"),
-                ),
-              )
-              .limit(1),
-            transaction
-              .select({ status: schema.loopConnection.status })
-              .from(schema.loopConnection)
-              .where(and(inArray(schema.loopConnection.storeId, identifiers), ne(schema.loopConnection.status, "disconnected")))
-              .limit(1),
-          ]);
+          const [credentials, google, orders, recharge, loop] =
+            await Promise.all([
+              transaction
+                .select({ id: schema.store_account.id })
+                .from(schema.store_account)
+                .where(inArray(schema.store_account.storeId, identifiers))
+                .limit(1),
+              transaction
+                .select({ id: schema.googleMerchantAccount.id })
+                .from(schema.googleMerchantAccount)
+                .where(
+                  inArray(schema.googleMerchantAccount.storeId, identifiers),
+                )
+                .limit(1),
+              transaction
+                .select({ id: schema.ucpOrder.id })
+                .from(schema.ucpOrder)
+                .where(inArray(schema.ucpOrder.storeId, identifiers))
+                .limit(1),
+              transaction
+                .select({ status: schema.rechargeConnection.status })
+                .from(schema.rechargeConnection)
+                .where(
+                  and(
+                    inArray(schema.rechargeConnection.storeId, identifiers),
+                    ne(schema.rechargeConnection.status, "disconnected"),
+                  ),
+                )
+                .limit(1),
+              transaction
+                .select({ status: schema.loopConnection.status })
+                .from(schema.loopConnection)
+                .where(
+                  and(
+                    inArray(schema.loopConnection.storeId, identifiers),
+                    ne(schema.loopConnection.status, "disconnected"),
+                  ),
+                )
+                .limit(1),
+            ]);
           if (orders.length > 0) return blocked("billingRecords");
           if (
             credentials.length > 0 ||

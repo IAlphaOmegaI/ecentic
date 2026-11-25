@@ -93,36 +93,30 @@ describe.skipIf(!target)("Reviewed Shopify listing publication", () => {
     }));
     modules.database = await import("../database");
     const { db, schema } = modules.database;
-    await db
-      .insert(schema.user)
-      .values({
-        id: user,
-        name: "Fixture",
-        surname: "Merchant",
-        email: `${suffix}@example.test`,
-      });
-    await db
-      .insert(schema.store)
-      .values({
-        id: store,
-        userId: user,
-        platform: "shopify",
-        name: "Fixture",
-        domain: "https://loop-publication.myshopify.com",
-        status: "connected",
-        storeId: "1",
-      });
-    await db
-      .insert(schema.product)
-      .values({
-        id: product,
-        storeId: store,
-        userId: user,
-        externalId: "100",
-        title: state.title,
-        description: state.remote,
-        rawData: "{}",
-      });
+    await db.insert(schema.user).values({
+      id: user,
+      name: "Fixture",
+      surname: "Merchant",
+      email: `${suffix}@example.test`,
+    });
+    await db.insert(schema.store).values({
+      id: store,
+      userId: user,
+      platform: "shopify",
+      name: "Fixture",
+      domain: "https://loop-publication.myshopify.com",
+      status: "connected",
+      storeId: "1",
+    });
+    await db.insert(schema.product).values({
+      id: product,
+      storeId: store,
+      userId: user,
+      externalId: "100",
+      title: state.title,
+      description: state.remote,
+      rawData: "{}",
+    });
     globalThis.fetch = Object.assign(
       async (input: string | URL | Request, options?: RequestInit) => {
         const url = new URL(
