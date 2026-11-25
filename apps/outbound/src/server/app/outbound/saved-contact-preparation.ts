@@ -15,6 +15,7 @@ import {
   candidateExclusion,
 } from "@/lib/outbound-campaigns";
 import { isExcludedRole, matchesRole } from "@/lib/outbound-roles";
+import { resolveSendingWindow } from "@/lib/outbound-scheduling";
 import { db, schema, type TransactionScope } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
 import { ConflictError, ValidationError } from "@/server/utils/error";
@@ -26,6 +27,7 @@ import {
 } from "@/server/utils/outbound/firecrawl-cooldown";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import * as Capture from "@/server/utils/outbound/live-shopping";
+import { rawCaptureSchema } from "@/server/utils/outbound/live-shopping-contract";
 import * as MX from "@/server/utils/outbound/mx";
 import * as Location from "@/server/utils/outbound/saved-contact-location";
 import { resolveBusinessTimezone } from "@/server/utils/outbound/saved-contact-timezone";
@@ -37,6 +39,14 @@ import {
   preparationStageBudget,
   preparationStateSchema,
 } from "@/server/utils/outbound/saved-preparation-contract";
+import {
+  shoppingClaimInterval,
+  shoppingMinuteRateLimit,
+  shoppingPollLimit,
+  shoppingPollUrl,
+  shoppingQueryUrl,
+  shoppingRetryLimit,
+} from "@/server/utils/outbound/scrapellm-cooldown";
 import * as Assessment from "@/server/utils/outbound/shopping-assessment";
 import { researchHash } from "@/server/utils/outbound/shopping-research";
 import { repository } from "@/server/utils/repository";
@@ -80,6 +90,7 @@ const budgetSchema = z.object({
   failureProvider: z.string().optional(),
   failureCode: z.string().optional(),
   browserAvailableAt: z.string().datetime().optional(),
+  scrapellmAvailableAt: z.string().datetime().optional(),
 });
 type Job = typeof schema.outboundIntegrationJob.$inferSelect;
 type Claim = { job: Job; input: PreparationInput; state: PreparationState };
@@ -149,6 +160,26 @@ const eligible = async (
       "The campaign or Playbook changed; review this preparation before continuing.",
     );
   const details = prospect.details;
+  if (
+    [
+      "qualify",
+      "applyCompany",
+      "query",
+      "poll",
+      "browser",
+      "assess",
+      "applyResearch",
+      "draft",
+    ].includes(state.stage) &&
+    !resolveSendingWindow(
+      {
+        timezone: state.timezone?.timezone ?? details.timezone,
+        country: details.country,
+      },
+      policy.settings,
+    )
+  )
+    throw new ConflictError("The contact has no enabled sending window.");
   const contact = prospectIssues(details, policy.settings).find((issue) =>
     [
       "domainInvalid",
@@ -429,7 +460,7 @@ const claim = (deadline: number, batchId?: string) =>
         input: schema.outboundIntegrationJob.input,
         output: sql<
           Record<string, unknown>
-        >`${schema.outboundIntegrationJob.output} - ARRAY['companyEvidence','locationReceipts','qualification','query','shoppingJob','answer','browser','assessment','shoppingReceipt','collection','failureReceipt','originalQualification','originalCollection','originalLocation']::text[]`,
+        >`${schema.outboundIntegrationJob.output} - ARRAY['companyEvidence','locationReceipts','qualification','query','shoppingJob','answer','browser','assessment','shoppingReceipt','collection','failureReceipt','originalQualification','originalCollection','originalLocation','originalQualificationCollection']::text[]`,
       })
       .from(schema.outboundIntegrationJob)
       .where(
@@ -480,7 +511,22 @@ const claim = (deadline: number, batchId?: string) =>
       );
       const settings = batchSchema.parse(batch?.input);
       const budget = budgetSchema.parse(batch?.output);
-      if (budget.paused && paidPreparationStage(state.stage)) continue;
+      const savedAnswerMayContinue =
+        budget.paused &&
+        budget.failureProvider === "scrapellm" &&
+        ["browser", "assess"].includes(state.stage);
+      if (
+        budget.paused &&
+        paidPreparationStage(state.stage) &&
+        !savedAnswerMayContinue
+      )
+        continue;
+      if (
+        ["query", "poll"].includes(state.stage) &&
+        budget.scrapellmAvailableAt &&
+        Date.parse(budget.scrapellmAvailableAt) > Date.now()
+      )
+        continue;
       if (
         state.stage === "browser" &&
         budget.browserAvailableAt &&
@@ -503,8 +549,17 @@ const claim = (deadline: number, batchId?: string) =>
         );
         continue;
       }
+      const selected = value(
+        await Jobs.get(Environment.SERVER, job.id, { tx: transaction }),
+      );
+      if (!selected)
+        throw new ConflictError("The preparation job disappeared.");
+      const saved = preparationStateSchema.parse(selected.output);
+      if (savedAnswerMayContinue && !hasAcceptedShoppingAnswer(saved)) continue;
+      const rejectedQueryMayRetry = hasRejectedQueryRetry(saved);
       if (
         state.stage === "query" &&
+        !rejectedQueryMayRetry &&
         (state.queryReservedAt || budget.queriesReserved >= settings.maxQueries)
       ) {
         if (state.queryReservedAt)
@@ -523,12 +578,6 @@ const claim = (deadline: number, batchId?: string) =>
           );
         continue;
       }
-      const selected = value(
-        await Jobs.get(Environment.SERVER, job.id, { tx: transaction }),
-      );
-      if (!selected)
-        throw new ConflictError("The preparation job disappeared.");
-      const saved = preparationStateSchema.parse(selected.output);
       const next = preparationStateSchema.parse({
         ...saved,
         lease: {
@@ -536,10 +585,14 @@ const claim = (deadline: number, batchId?: string) =>
           expiresAt: new Date(Date.now() + 180_000).toISOString(),
         },
         ...(state.stage === "query"
-          ? { queryReservedAt: new Date().toISOString() }
+          ? {
+              queryReservedAt:
+                saved.queryReservedAt ?? new Date().toISOString(),
+              queryRetryPending: false,
+            }
           : {}),
       });
-      if (state.stage === "query" || state.stage === "browser")
+      if (["query", "poll", "browser"].includes(state.stage))
         value(
           await Jobs.update(
             Environment.SERVER,
@@ -548,12 +601,26 @@ const claim = (deadline: number, batchId?: string) =>
               output: {
                 ...budget,
                 ...(state.stage === "query"
-                  ? { queriesReserved: budget.queriesReserved + 1 }
-                  : {
+                  ? {
+                      queriesReserved:
+                        budget.queriesReserved +
+                        (rejectedQueryMayRetry ? 0 : 1),
+                    }
+                  : {}),
+                ...(["query", "poll"].includes(state.stage)
+                  ? {
+                      scrapellmAvailableAt: new Date(
+                        Date.now() + shoppingClaimInterval,
+                      ).toISOString(),
+                    }
+                  : {}),
+                ...(state.stage === "browser"
+                  ? {
                       browserAvailableAt: new Date(
                         Date.now() + browserClaimInterval,
                       ).toISOString(),
-                    }),
+                    }
+                  : {}),
               },
               updatedAt: new Date(),
             },
@@ -622,23 +689,146 @@ const checkpoint = (
       ),
     );
   });
-const hasSavedBrowserAnswer = (state: PreparationState) =>
+const hasAcceptedShoppingAnswer = (state: PreparationState) =>
   Boolean(
-    state.stage === "browser" &&
-      state.queryReservedAt &&
+    state.queryReservedAt &&
       state.query &&
       state.shoppingJob &&
       state.answer &&
-      !state.browser &&
-      !state.shoppingReceipt &&
-      !state["assessment"] &&
       researchHash(state.shoppingJob) === researchHash(state.answer.job) &&
       researchHash(state.query) === researchHash(state.shoppingJob.query),
   );
+const hasSavedBrowserAnswer = (state: PreparationState) =>
+  state.stage === "browser" &&
+  hasAcceptedShoppingAnswer(state) &&
+  !state.browser &&
+  !state.shoppingReceipt &&
+  !state["assessment"];
+const hasUnacceptedQuery = (state: PreparationState) =>
+  state.stage === "query" &&
+  Boolean(state.queryReservedAt && state.query) &&
+  !state.shoppingJob &&
+  !state.answer &&
+  !state.browser &&
+  !state.shoppingReceipt &&
+  !state["assessment"] &&
+  state.polls === 0 &&
+  state.pollRateLimits.length === 0;
+const hasRejectedQueryRetry = (state: PreparationState) => {
+  const last = state.queryRateLimits.at(-1);
+  const failure = z
+    .object({ response: rawCaptureSchema })
+    .safeParse(state["failureReceipt"]);
+  return Boolean(
+    hasUnacceptedQuery(state) &&
+      state.queryRetryPending &&
+      state.queryRetries > 0 &&
+      state.queryRetries <= shoppingRetryLimit &&
+      state.queryRateLimits.length === state.queryRetries &&
+      last &&
+      state.query &&
+      failure.success &&
+      shoppingMinuteRateLimit(last, shoppingQueryUrl(state.query)) &&
+      researchHash(last.response) === researchHash(failure.data.response),
+  );
+};
 const fail = (claim: Claim, error: Error) =>
   transaction(async (transaction) => {
     const state = await owned(transaction, claim);
     const provider = error instanceof IntegrationError ? error : null;
+    const queryMayRetry =
+      hasUnacceptedQuery(state) && state.queryRetries < shoppingRetryLimit;
+    const pollMayRetry =
+      state.stage === "poll" &&
+      state.polls < shoppingPollLimit &&
+      state.shoppingJob &&
+      state.query &&
+      !state.answer &&
+      researchHash(state.shoppingJob.query) === researchHash(state.query);
+    const retryUrl =
+      queryMayRetry && state.query
+        ? shoppingQueryUrl(state.query)
+        : pollMayRetry && state.shoppingJob
+          ? shoppingPollUrl(state.shoppingJob)
+          : null;
+    const shoppingCooldown =
+      provider?.provider === "scrapellm" &&
+      provider.code === "rate-limit" &&
+      retryUrl
+        ? shoppingMinuteRateLimit(
+            provider.receipt,
+            retryUrl,
+            provider.retryAfterSeconds,
+          )
+        : null;
+    if (shoppingCooldown) {
+      const ready = await resultify(() =>
+        eligible(transaction, claim.input, state),
+      );
+      value(
+        await Jobs.update(
+          Environment.SERVER,
+          claim.job.id,
+          {
+            status: ready.success ? "pending" : "failed",
+            error: ready.success
+              ? "ScrapeLLM reached its minute limit; waiting to resume the same research request."
+              : ready.error.message,
+            output: preparationStateSchema.parse({
+              ...state,
+              lease: null,
+              availableAt: shoppingCooldown.retryAt,
+              ...(queryMayRetry
+                ? {
+                    queryRetries: state.queryRetries + 1,
+                    queryRetryPending: true,
+                    queryRateLimits: [
+                      ...state.queryRateLimits,
+                      shoppingCooldown,
+                    ],
+                  }
+                : {
+                    polls: state.polls + 1,
+                    pollRateLimits: [...state.pollRateLimits, shoppingCooldown],
+                  }),
+              failureProvider: provider?.provider,
+              failureCode: provider?.code,
+              failureReceipt: provider?.receipt,
+            }),
+            updatedAt: new Date(),
+          },
+          { tx: transaction },
+        ),
+      );
+      if (ready.success) {
+        const batch = value(
+          await Jobs.get(Environment.SERVER, claim.input.batchId, {
+            tx: transaction,
+          }),
+        );
+        const budget = budgetSchema.parse(batch?.output);
+        value(
+          await Jobs.update(
+            Environment.SERVER,
+            claim.input.batchId,
+            {
+              output: {
+                ...budget,
+                scrapellmAvailableAt: new Date(
+                  Math.max(
+                    Date.parse(budget.scrapellmAvailableAt ?? "1970-01-01"),
+                    Date.parse(shoppingCooldown.retryAt),
+                  ),
+                ).toISOString(),
+              },
+              updatedAt: new Date(),
+            },
+            { tx: transaction },
+          ),
+        );
+      }
+      return;
+    }
     const cooldown =
       provider?.provider === "firecrawl" &&
       provider.code === "rate-limit" &&
@@ -849,7 +1039,14 @@ const execute = async (
         evidence.receipts,
         company.domain,
       );
-      return next(timezone ? "qualify" : "location", {
+      const window = resolveSendingWindow(
+        {
+          timezone: timezone?.timezone ?? prospect.details.timezone,
+          country: prospect.details.country,
+        },
+        policy.settings,
+      );
+      return next(window ? "qualify" : "location", {
         companyEvidence: evidence,
         ...(timezone ? { timezone } : {}),
       });
@@ -863,7 +1060,7 @@ const execute = async (
         }),
       );
       const timezone = resolveBusinessTimezone(receipts, company.domain);
-      if (!timezone)
+      if (!timezone && !resolveSendingWindow(prospect.details, policy.settings))
         return checkpoint(
           claim,
           {
@@ -874,7 +1071,10 @@ const execute = async (
           },
           "complete",
         );
-      return next("qualify", { locationReceipts: receipts, timezone });
+      return next("qualify", {
+        locationReceipts: receipts,
+        ...(timezone ? { timezone } : {}),
+      });
     }
     case "qualify": {
       const evidence = Qualification.companyEvidenceSchema.parse(
@@ -908,7 +1108,15 @@ const execute = async (
         const qualified = state.qualification as
           | Extract<Qualification.Qualification, { status: "qualified" }>
           | undefined;
-        if (qualified?.status !== "qualified" || !state.mx || !state.timezone)
+        const window = resolveSendingWindow(
+          {
+            timezone:
+              state.timezone?.timezone ?? current.prospect.details.timezone,
+            country: current.prospect.details.country,
+          },
+          current.policy.settings,
+        );
+        if (qualified?.status !== "qualified" || !state.mx || !window)
           throw new ValidationError(
             "Public qualification, MX, or business location receipts are missing.",
           );
@@ -951,7 +1159,10 @@ const execute = async (
             ...company.sourcePayload,
             ...existing?.sourcePayload,
             preparationJobId: claim.job.id,
-            businessHours: state.timezone,
+            businessHours: state.timezone ?? {
+              ...window,
+              basis: "chosen-sending-window",
+            },
           },
           status: "added" as const,
           reason: "",
@@ -988,7 +1199,8 @@ const execute = async (
           personalCheckedAt: "",
           mxProvider: state.mx.provider,
           mxCheckedAt: state.mx.checkedAt,
-          timezone: state.timezone.timezone,
+          timezone:
+            state.timezone?.timezone ?? current.prospect.details.timezone,
         });
         const saved = await Store.saveProspectWithin(
           transaction,
@@ -1052,7 +1264,7 @@ const execute = async (
     case "poll": {
       const job = Capture.aiJobSchema.parse(state.shoppingJob);
       if (
-        state.polls >= 40 ||
+        state.polls >= shoppingPollLimit ||
         Date.now() - Date.parse(job.submittedAt) > 86_400_000
       )
         throw new ValidationError(
@@ -1408,7 +1620,14 @@ export const resumeLocation = (
       [...evidence.receipts, ...(state.locationReceipts ?? [])],
       context.company.domain,
     );
-    if (!timezone)
+    const window = resolveSendingWindow(
+      {
+        timezone: timezone?.timezone ?? context.prospect.details.timezone,
+        country: context.prospect.details.country,
+      },
+      context.policy.settings,
+    );
+    if (!window)
       throw new ValidationError(
         "The original saved sources do not establish an unambiguous business address.",
       );
@@ -1429,7 +1648,8 @@ export const resumeLocation = (
         reviewedAt: now.toISOString(),
         reason: parsed.reason,
       },
-      timezone,
+      ...(timezone ? { timezone } : {}),
+      schedulingWindow: window,
       stage: "qualify",
       lease: null,
       heldReason: null,
@@ -1762,4 +1982,313 @@ export const resumeBrowserRateLimit = (
       availableAt: cooldown.retryAt,
       queriesReserved: budget.queriesReserved,
     };
+  });
+
+export const resumeQueryRateLimitSchema = z
+  .object({
+    jobId: z.string().uuid(),
+    requestId: z.string().uuid(),
+    expectedUpdatedAt: z.string().datetime(),
+    expectedJobHash: z.string().regex(/^[a-f0-9]{64}$/),
+    expectedBatchUpdatedAt: z.string().datetime(),
+    expectedBatchHash: z.string().regex(/^[a-f0-9]{64}$/),
+    reason: z.string().trim().min(20).max(2000),
+  })
+  .strict();
+
+/** Recover only the exact rejected query submission; retain its original budget reservation. */
+export const resumeQueryRateLimit = (
+  actor: string,
+  input: z.infer<typeof resumeQueryRateLimitSchema>,
+) =>
+  transaction(async (transaction) => {
+    const parsed = resumeQueryRateLimitSchema.parse(input);
+    const job = value(
+      await Jobs.get(Environment.SERVER, parsed.jobId, { tx: transaction }),
+    );
+    const claim = preparationInputSchema.parse(job?.input);
+    const state = preparationStateSchema.parse(job?.output);
+    const requestHash = researchHash({ ...parsed, actor });
+    const prior = z
+      .object({ requestId: z.string().uuid(), requestHash: z.string() })
+      .safeParse(state["queryRateLimitRecovery"]);
+    if (prior.success) {
+      if (
+        prior.data.requestId !== parsed.requestId ||
+        prior.data.requestHash !== requestHash
+      )
+        throw new ConflictError(
+          "This query failure already has a different reviewed recovery.",
+        );
+      return { jobId: parsed.jobId, batchId: claim.batchId, repeated: true };
+    }
+    const batch = value(
+      await Jobs.get(Environment.SERVER, claim.batchId, { tx: transaction }),
+    );
+    const settings = batchSchema.parse(batch?.input);
+    const budget = budgetSchema.parse(batch?.output);
+    const now = new Date();
+    const cooldown = state.query
+      ? shoppingMinuteRateLimit(
+          state["failureReceipt"],
+          shoppingQueryUrl(state.query),
+          null,
+          now.getTime(),
+        )
+      : null;
+    if (
+      job?.provider !== "automation" ||
+      job.status !== "failed" ||
+      job.updatedAt.toISOString() !== parsed.expectedUpdatedAt ||
+      browserRecoverySnapshot(job) !== parsed.expectedJobHash ||
+      !batch ||
+      batch.provider !== "automation" ||
+      batch.updatedAt.toISOString() !== parsed.expectedBatchUpdatedAt ||
+      browserRecoverySnapshot(batch) !== parsed.expectedBatchHash ||
+      settings.campaignId !== claim.campaignId ||
+      !budget.paused ||
+      budget.failureProvider !== "scrapellm" ||
+      budget.failureCode !== "rate-limit" ||
+      budget.queriesReserved < 1 ||
+      budget.queriesReserved > settings.maxQueries ||
+      state.lease !== null ||
+      state["failureProvider"] !== "scrapellm" ||
+      state["failureCode"] !== "rate-limit" ||
+      state.queryRetries >= shoppingRetryLimit ||
+      !hasUnacceptedQuery(state) ||
+      state.queryRetryPending ||
+      !cooldown
+    )
+      throw new ConflictError(
+        "Only an unchanged ScrapeLLM minute-limit rejection without an accepted job can resume.",
+      );
+    const otherFailure = value(
+      await Jobs.find(
+        Environment.SERVER,
+        {
+          where: and(
+            scope,
+            ne(schema.outboundIntegrationJob.id, job.id),
+            eq(schema.outboundIntegrationJob.status, "failed"),
+            sql`${schema.outboundIntegrationJob.input}->>'batchId' = ${claim.batchId}`,
+            sql`${schema.outboundIntegrationJob.output}->>'failureCode' in ('quota', 'access', 'rate-limit', 'configuration')`,
+          ),
+          limit: 1,
+        },
+        { tx: transaction },
+      ),
+    )[0];
+    if (otherFailure)
+      throw new ConflictError(
+        "Another provider failure still pauses this batch; reconcile it before recovery.",
+      );
+    await eligible(transaction, claim, state);
+    value(
+      await Jobs.update(
+        Environment.SERVER,
+        job.id,
+        {
+          status: "pending",
+          error: null,
+          output: preparationStateSchema.parse({
+            ...state,
+            availableAt: cooldown.retryAt,
+            queryRetries: state.queryRetries + 1,
+            queryRetryPending: true,
+            queryRateLimits: [...state.queryRateLimits, cooldown],
+            queryRateLimitRecovery: {
+              requestId: parsed.requestId,
+              requestHash,
+              previousJobHash: parsed.expectedJobHash,
+              previousBatchHash: parsed.expectedBatchHash,
+              reviewedBy: actor,
+              reviewedAt: now.toISOString(),
+              reason: parsed.reason,
+            },
+          }),
+          updatedAt: now,
+        },
+        { tx: transaction },
+      ),
+    );
+    value(
+      await Jobs.update(
+        Environment.SERVER,
+        batch.id,
+        {
+          error: null,
+          output: {
+            ...budget,
+            paused: false,
+            failureProvider: undefined,
+            failureCode: undefined,
+            scrapellmAvailableAt: new Date(
+              Math.max(
+                Date.parse(budget.scrapellmAvailableAt ?? "1970-01-01"),
+                Date.parse(cooldown.retryAt),
+              ),
+            ).toISOString(),
+          },
+          updatedAt: now,
+        },
+        { tx: transaction },
+      ),
+    );
+    value(
+      await repository(schema.outboundEvent).create(
+        Environment.SERVER,
+        {
+          prospectId: claim.prospectId,
+          actor,
+          kind: "savedQueryRateLimitRecovered",
+          detail: parsed.reason,
+          externalId: `saved-query-recovery:${parsed.requestId}`,
+        },
+        { tx: transaction },
+      ),
+    );
+    return {
+      jobId: job.id,
+      batchId: batch.id,
+      repeated: false,
+      availableAt: cooldown.retryAt,
+      queriesReserved: budget.queriesReserved,
+    };
+  });
+
+export const retryQualificationCollectionSchema = z
+  .object({
+    jobId: z.string().uuid(),
+    requestId: z.string().uuid(),
+    expectedUpdatedAt: z.string().datetime(),
+    expectedJobHash: z.string().regex(/^[a-f0-9]{64}$/),
+    reason: z.string().trim().min(20).max(2000),
+  })
+  .strict();
+
+/** Recollect public facts once after a reviewed collection defect, before shopping work. */
+export const retryQualificationCollection = (
+  actor: string,
+  input: z.infer<typeof retryQualificationCollectionSchema>,
+) =>
+  transaction(async (transaction) => {
+    const parsed = retryQualificationCollectionSchema.parse(input);
+    const job = value(
+      await Jobs.get(Environment.SERVER, parsed.jobId, { tx: transaction }),
+    );
+    const claim = preparationInputSchema.parse(job?.input);
+    const state = preparationStateSchema.parse(job?.output);
+    const requestHash = researchHash({ ...parsed, actor });
+    const prior = z
+      .object({ requestId: z.string().uuid(), requestHash: z.string() })
+      .safeParse(state["qualificationCollectionRetry"]);
+    if (prior.success) {
+      if (
+        prior.data.requestId !== parsed.requestId ||
+        prior.data.requestHash !== requestHash
+      )
+        throw new ConflictError(
+          "This qualification already has a different reviewed collection retry.",
+        );
+      return { jobId: parsed.jobId, repeated: true };
+    }
+    const qualification = z
+      .object({
+        status: z.literal("hold"),
+        reason: z.string().min(1),
+        assessment: Qualification.assessmentSchema,
+      })
+      .safeParse(state.qualification);
+    if (
+      job?.provider !== "automation" ||
+      job.status !== "complete" ||
+      job.updatedAt.toISOString() !== parsed.expectedUpdatedAt ||
+      browserRecoverySnapshot(job) !== parsed.expectedJobHash ||
+      state.stage !== "complete" ||
+      state.lease !== null ||
+      !qualification.success ||
+      state["heldReason"] !== qualification.data.reason ||
+      state.polls !== 0 ||
+      state.queryRetries !== 0 ||
+      state.browserRetries !== 0 ||
+      [
+        "queryReservedAt",
+        "query",
+        "shoppingJob",
+        "answer",
+        "browser",
+        "assessment",
+        "shoppingReceipt",
+        "failureReceipt",
+        "qualificationReview",
+        "originalQualificationCollection",
+      ].some((key) => state[key] !== undefined && state[key] !== null)
+    )
+      throw new ConflictError(
+        "Only an unchanged completed company-qualification hold without shopping work can be recollected.",
+      );
+    const evidence = Qualification.companyEvidenceSchema.parse(
+      state.companyEvidence,
+    );
+    const context = await eligible(transaction, claim, state);
+    if (
+      normalizeDomain(evidence.product.url) !== context.company.domain ||
+      !evidence.receipts.some(
+        (receipt) =>
+          receipt.kind === "product" &&
+          receipt.url === evidence.product.url &&
+          receipt.excerpt.includes("Observed structured product:"),
+      )
+    )
+      throw new ValidationError(
+        "The held qualification has no source-bound own-site product to recollect.",
+      );
+    const now = new Date();
+    const updated = preparationStateSchema.parse({
+      ...state,
+      originalQualificationCollection: {
+        companyEvidence: state.companyEvidence,
+        qualification: state.qualification,
+        locationReceipts: state.locationReceipts,
+        timezone: state.timezone,
+        heldReason: state["heldReason"],
+      },
+      companyEvidence: undefined,
+      qualification: undefined,
+      locationReceipts: undefined,
+      timezone: undefined,
+      qualificationCollectionRetry: {
+        requestId: parsed.requestId,
+        requestHash,
+        previousJobHash: parsed.expectedJobHash,
+        reviewedBy: actor,
+        reviewedAt: now.toISOString(),
+        reason: parsed.reason,
+      },
+      stage: "collect",
+      heldReason: null,
+      availableAt: now.toISOString(),
+    });
+    value(
+      await Jobs.update(
+        Environment.SERVER,
+        job.id,
+        { status: "pending", output: updated, error: null, updatedAt: now },
+        { tx: transaction },
+      ),
+    );
+    value(
+      await repository(schema.outboundEvent).create(
+        Environment.SERVER,
+        {
+          prospectId: claim.prospectId,
+          actor,
+          kind: "savedQualificationCollectionRetried",
+          detail: parsed.reason,
+          externalId: `saved-qualification-collection-retry:${parsed.requestId}`,
+        },
+        { tx: transaction },
+      ),
+    );
+    return { jobId: job.id, repeated: false };
   });

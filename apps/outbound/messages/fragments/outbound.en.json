@@ -533,7 +533,8 @@
         "sendingRampEnabled": "Increase sending volume gradually",
         "trustSavedContactVerification": "Use saved contact verification",
         "automaticApolloEnabled": "Allow automatic Apollo spending",
-        "allowProductObservations": "Allow truthful product observations"
+        "allowProductObservations": "Allow truthful product observations",
+        "allowUsMarketWindow": "Use a US-wide window when timezone is unknown"
       },
       "templateHelp": "Insert the supported variables shown below. They are filled from the prospect's saved details.",
       "variablesTitle": "Available variables",
@@ -599,7 +600,8 @@
       "sendingRampHelp": "Start at 15 emails a day and increase after completed sending days. Turn off to use your configured daily limit directly; bounce protection still applies.",
       "trustSavedContactVerificationHelp": "Accept source-verified imported contacts without claiming a new verification or role check. Original dates, including unknown dates, are preserved.",
       "automaticApolloHelp": "Use Apollo for new companies, enrichment and email verification. Turn off to work from saved records without new paid Apollo requests.",
-      "allowProductObservationsHelp": "A specific, supported product or shopping observation can start a conversation even when no problem is found. Never invent a discrepancy or sales impact."
+      "allowProductObservationsHelp": "A specific, supported product or shopping observation can start a conversation even when no problem is found. Never invent a discrepancy or sales impact.",
+      "allowUsMarketWindowHelp": "For contacts recorded in the United States with no saved timezone, allow Monday–Thursday, 18:00–21:00 UTC. This is your chosen market window, not a verified personal location. Known timezones keep 08:00–14:00 local sending. Off by default."
     },
     "integrations": {
       "title": "Connect the right tools",

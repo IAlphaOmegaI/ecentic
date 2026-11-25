@@ -48,6 +48,22 @@ const prospect = prospectSchema.parse({
 });
 
 describe("outbound eligibility", () => {
+  test("unknown US timezone readiness follows only the explicit market-window preference", () => {
+    const contact = { ...prospect, timezone: "" };
+    const enabled = { ...settings, allowUsMarketWindow: true };
+    expect(
+      prospectIssues(contact, settings, now).some(
+        ({ code }) => code === "timezoneMissing",
+      ),
+    ).toBe(true);
+    expect(prospectIssues(contact, enabled, now)).toEqual([]);
+    expect(
+      prospectIssues({ ...contact, country: "UK" }, enabled, now).some(
+        ({ code }) => code === "timezoneMissing",
+      ),
+    ).toBe(true);
+    expect(contact.timezone).toBe("");
+  });
   test("qualified fresh evidence clears the review gate", () => {
     expect(prospectIssues(prospect, settings, now)).toEqual([]);
     expect(lintMessages(renderMessages(prospect, settings), settings)).toEqual(
@@ -270,6 +286,64 @@ describe("outbound concrete drafts", () => {
 });
 
 describe("outbound scheduling and import", () => {
+  test.each(["2026-01-05", "2026-07-06"])(
+    "US market-window boundaries are exact in winter and summer (%s)",
+    (day) => {
+      const location = { timezone: "", country: "US" };
+      const policy = { allowUsMarketWindow: true };
+      for (const [time, allowed] of [
+        ["17:59:59", false],
+        ["18:00:00", true],
+        ["20:59:59", true],
+        ["21:00:00", false],
+      ] as const)
+        expect(
+          inSendWindow(location, new Date(`${day}T${time}Z`), policy),
+        ).toBe(allowed);
+      expect(location.timezone).toBe("");
+    },
+  );
+  test("market scheduling is opt-in and never replaces a known or malformed timezone", () => {
+    const at = new Date("2026-07-06T18:00:00Z");
+    expect(defaultPlaybook.allowUsMarketWindow).toBe(false);
+    expect(inSendWindow({ timezone: "", country: "US" }, at)).toBe(false);
+    for (const country of [
+      "UK",
+      "GB",
+      "United Kingdom",
+      "",
+      "CA",
+      "US/CA",
+      "US territory",
+    ])
+      expect(
+        inSendWindow({ timezone: "", country }, at, {
+          allowUsMarketWindow: true,
+        }),
+      ).toBe(false);
+    expect(
+      inSendWindow({ timezone: "America/New_York", country: "US" }, at, {
+        allowUsMarketWindow: true,
+      }),
+    ).toBe(false);
+    expect(
+      inSendWindow({ timezone: "America/Los_Angeles", country: "US" }, at, {
+        allowUsMarketWindow: true,
+      }),
+    ).toBe(true);
+    expect(
+      inSendWindow({ timezone: "invalid", country: "US" }, at, {
+        allowUsMarketWindow: true,
+      }),
+    ).toBe(false);
+    expect(
+      inSendWindow(
+        { timezone: "", country: "US" },
+        new Date("2026-07-10T18:00:00Z"),
+        { allowUsMarketWindow: true },
+      ),
+    ).toBe(false);
+  });
   test("weekday and recipient-local boundaries are exact", () => {
     expect(
       inSendWindow("America/New_York", new Date("2026-11-09T12:59:59Z")),

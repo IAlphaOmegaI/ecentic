@@ -344,16 +344,18 @@ const providerObservation = (company: Company) => {
 };
 const platformFrom = (body: string) => {
   const shopify =
-    /(?:Shopify\.shop\s*=|cdn\.shopify\.com\/|shopify-section)/i.test(body);
+    /(?:Shopify\.shop\s*=|cdn\.shopify\.com\/|shopify-section)/i.exec(body);
   const woo =
-    /(?:wp-content\/plugins\/woocommerce\/|class=["'][^"']*\bwoocommerce\b)/i.test(
+    /(?:wp-content\/plugins\/woocommerce\/|class=["'][^"']*\bwoocommerce\b)/i.exec(
       body,
     );
-  return shopify === woo
+  return Boolean(shopify) === Boolean(woo)
     ? null
     : shopify
-      ? ("shopify" as const)
-      : ("woocommerce" as const);
+      ? { platform: "shopify" as const, marker: shopify[0] }
+      : woo
+        ? { platform: "woocommerce" as const, marker: woo[0].slice(-200) }
+        : null;
 };
 
 /** A separately journaled paid observation. Search filters are never promoted to company facts. */
@@ -713,9 +715,15 @@ export const collectCompanyEvidence = async (
         receipts,
         state.failure?.retryable ?? true,
       );
-    const platform = platformFrom(home.body) ?? company.platform;
+    const observedPlatform = platformFrom(home.body);
+    const platform = observedPlatform?.platform ?? company.platform;
     if (!platform || !campaign.criteria.platforms.includes(platform))
       return stop("No supported commerce platform was established.", receipts);
+    const storefront = receipts.find(
+      (receipt) => receipt.kind === "storefront",
+    );
+    if (storefront && observedPlatform)
+      storefront.excerpt = `${storefront.excerpt.slice(0, 17700)}\nObserved commerce platform: ${observedPlatform.platform}. Published HTML marker: ${observedPlatform.marker}`;
     const links = productLinks(home.body, origin);
     if (!links.length) {
       const map = await read(`${origin}/sitemap.xml`, "provider");
@@ -771,19 +779,33 @@ export const collectCompanyEvidence = async (
         receipts,
         Date.now() >= deadline,
       );
-    const about = nodes(parse(home.body))
+    const companyLinks = nodes(parse(home.body))
       .filter((node) => node.tagName === "a")
-      .map((node) => attribute(node, "href"))
-      .map((href) => resultify(() => new URL(href, origin)))
-      .find(
-        (url) =>
-          url.success &&
-          url.data.origin === origin &&
-          /\/(?:pages\/)?(?:about(?:-us)?|our-story|our-brand|story)\/?$/i.test(
-            url.data.pathname,
-          ),
-      );
-    if (about?.success) await read(about.data.href, "company");
+      .flatMap((node) => {
+        const parsed = resultify(
+          () => new URL(attribute(node, "href"), origin),
+        );
+        if (!parsed.success) return [];
+        const url = parsed.data;
+        if (
+          url.origin !== origin ||
+          url.username ||
+          url.password ||
+          url.port ||
+          !/\b(?:about|our[ -]?(?:story|brand|team)|stockists?|retailers?|(?:store|dealer)[ -]?locator|where[ -]to[ -]buy)\b/i.test(
+            `${url.pathname} ${clean(content(node))}`,
+          )
+        )
+          return [];
+        url.hash = "";
+        return [url.href];
+      });
+    for (const url of [...new Set(companyLinks)]
+      .filter((url) => !receipts.some((receipt) => receipt.url === url))
+      .slice(0, Math.min(2, Math.max(0, 5 - receipts.length)))) {
+      await read(url, "company");
+      if (currentFailure()) break;
+    }
     const companyFailure = currentFailure();
     if (companyFailure)
       return stop(companyFailure.reason, receipts, companyFailure.retryable);
@@ -943,6 +965,7 @@ export const assessCompanyEvidence = async (
           excludedDomains: input.playbook.excludedDomains,
         },
         observedProduct: input.evidence.product,
+        observedPlatform: input.evidence.platform,
         quoteCatalog: catalog.data.quotes,
       }),
     }),

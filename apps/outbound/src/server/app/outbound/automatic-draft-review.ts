@@ -202,7 +202,7 @@ const claim = () =>
           { tx: transaction },
         ),
       );
-    const readiness = sql`concat_ws('|', ${schema.outboundProspect.details}->>'emailVerifiedAt', ${schema.outboundProspect.details}->>'mxCheckedAt', ${schema.outboundProspect.details}->>'evidenceCheckedAt', ${schema.outboundProspect.details}->>'roleCheckedAt', ${schema.outboundProspect.details}->>'personalCheckedAt', ${String(policy.settings.senderConfirmed)}::text, ${policy.settings.allowStaleEvidence ? "allow-stale-evidence" : null}::text, ${policy.settings.trustSavedContactVerification ? "trust-saved-contact-verification" : null}::text, ${policy.settings.allowProductObservations ? "allow-product-observations" : null}::text)`;
+    const readiness = sql`concat_ws('|', ${schema.outboundProspect.details}->>'emailVerifiedAt', ${schema.outboundProspect.details}->>'mxCheckedAt', ${schema.outboundProspect.details}->>'evidenceCheckedAt', ${schema.outboundProspect.details}->>'roleCheckedAt', ${schema.outboundProspect.details}->>'personalCheckedAt', ${String(policy.settings.senderConfirmed)}::text, ${policy.settings.allowStaleEvidence ? "allow-stale-evidence" : null}::text, ${policy.settings.trustSavedContactVerification ? "trust-saved-contact-verification" : null}::text, ${policy.settings.allowProductObservations ? "allow-product-observations" : null}::text, ${policy.settings.allowUsMarketWindow ? "allow-us-market-window" : null}::text)`;
     const resumed = sql`coalesce((select event.id from outbound_event event where event.prospect_id = ${schema.outboundProspect.id} and event.kind = 'review' order by event.created_at desc, event.id desc limit 1), '')`;
     const prospects = value(
       await Prospects.find(
@@ -246,6 +246,7 @@ const claim = () =>
       policy.settings.allowStaleEvidence,
       policy.settings.trustSavedContactVerification,
       policy.settings.allowProductObservations,
+      policy.settings.allowUsMarketWindow,
     );
     const resumeId = await Store.latestDraftReviewRequest(
       transaction,

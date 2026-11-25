@@ -433,7 +433,7 @@ const eligible = async (
     return hold(`linkedin-${issues[0]?.code ?? "evidence-missing"}`);
   if (
     !prospect.details.linkedinUrl ||
-    !inSendWindow(prospect.details.timezone, now)
+    !inSendWindow(prospect.details, now, policy.settings)
   )
     return hold("linkedin-window-or-profile");
   const suppressed = value(

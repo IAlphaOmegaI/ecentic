@@ -533,7 +533,8 @@
         "sendingRampEnabled": "送信数を段階的に増やす",
         "trustSavedContactVerification": "保存済みの連絡先確認を使用する",
         "automaticApolloEnabled": "Apolloの自動課金リクエストを許可する",
-        "allowProductObservations": "事実に基づく商品観察を許可する"
+        "allowProductObservations": "事実に基づく商品観察を許可する",
+        "allowUsMarketWindow": "タイムゾーン不明時に米国共通の送信時間帯を使う"
       },
       "templateHelp": "以下に示す対応変数を挿入してください。見込み顧客の保存済み情報が自動で入ります。",
       "variablesTitle": "使用できる変数",
@@ -599,7 +600,8 @@
       "sendingRampHelp": "1日15通から開始し、送信を完了した日ごとに増やします。オフにすると設定した1日の上限を直接使用します。不達時の保護は引き続き適用されます。",
       "trustSavedContactVerificationHelp": "取り込み元で確認済みとされた連絡先を使用します。新たな連絡先確認や役職確認を行ったとは扱いません。不明な日付も含め、元の日付を保持します。",
       "automaticApolloHelp": "新しい企業の検索、情報補完、メール確認にApolloを使用します。オフにすると、新たな有料リクエストを行わず保存済みのデータで作業します。",
-      "allowProductObservationsHelp": "問題が見つからなくても、根拠のある具体的な商品や検索結果の観察から会話を始められます。食い違いや売上への影響を捏造しません。"
+      "allowProductObservationsHelp": "問題が見つからなくても、根拠のある具体的な商品や検索結果の観察から会話を始められます。食い違いや売上への影響を捏造しません。",
+      "allowUsMarketWindowHelp": "国が米国で、タイムゾーンが未登録の連絡先には、月〜木の18:00〜21:00 UTCに送信できます。これは選択した市場向けの時間帯であり、本人の所在地を確認したものではありません。タイムゾーンが登録済みの場合は現地時間08:00〜14:00を維持します。初期設定はオフです。"
     },
     "integrations": {
       "title": "適切なツールと連携",

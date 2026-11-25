@@ -14,6 +14,11 @@ import {
   browserResearchSchema,
   preparedQuerySchema,
 } from "./live-shopping";
+import {
+  shoppingPollLimit,
+  shoppingRateLimitSchema,
+  shoppingRetryLimit,
+} from "./scrapellm-cooldown";
 
 export const preparationInputSchema = z.object({
   operation: z.literal("savedContactPreparation"),
@@ -47,6 +52,16 @@ export const preparationStateSchema = z
       .nullable(),
     queryReservedAt: z.string().datetime().optional(),
     polls: z.number().int().nonnegative().default(0),
+    queryRetries: z.number().int().min(0).max(shoppingRetryLimit).default(0),
+    queryRetryPending: z.boolean().default(false),
+    queryRateLimits: z
+      .array(shoppingRateLimitSchema)
+      .max(shoppingRetryLimit)
+      .default([]),
+    pollRateLimits: z
+      .array(shoppingRateLimitSchema)
+      .max(shoppingPollLimit)
+      .default([]),
     browserRetries: z.number().int().min(0).max(browserRetryLimit).default(0),
     browserRateLimits: z
       .array(browserRateLimitSchema)

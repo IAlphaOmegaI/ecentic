@@ -1,5 +1,6 @@
 import { mock } from "bun:test";
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { defaultPlaybook } from "@/lib/outbound";
 import { defaultCampaignCriteria } from "@/lib/outbound-campaigns";
 import type { Person } from "@/server/utils/outbound/providers";
@@ -57,7 +58,15 @@ const state = {
   invalidInsight: false,
   invalidOutput: false,
   noInsight: false,
+  companyLinks: false,
 };
+const companyPages = {
+  "/pages/about-example":
+    "<html><body><h1>About Example Beauty</h1><p>Our team includes 15 employees.</p></body></html>",
+  "/pages/dealer-locator":
+    "<html><body><h1>Find our products</h1><p>Available at Example Retailer.</p></body></html>",
+};
+const additionalLinks = `<a href="https://unrelated.test/about">About us</a><a href="https://user:password@examplebeauty.test/about">About</a><a href="/pages/about-example#story">About Example Beauty</a><a href="/pages/about-example">About Us</a><a href="/pages/dealer-locator">Dealers</a><a href="/pages/our-team">Our Team</a>`;
 const sourceHttp = await import("@/server/utils/http");
 mock.module("@/server/utils/http", () => ({
   ...sourceHttp,
@@ -75,11 +84,15 @@ mock.module("@/server/utils/http", () => ({
           name: state.readError,
         }),
       };
+    const companyPage = Object.entries(companyPages).find(
+      ([path]) => new URL(url).pathname === path,
+    )?.[1];
     const body = url.endsWith("robots.txt")
       ? "User-agent: *\nAllow: /"
       : url.includes("/products/")
         ? productHtml()
-        : `${home}${state.largeHome ? `<!--${"a".repeat(1600000)}-->` : ""}`;
+        : (companyPage ??
+          `${home}${state.companyLinks ? additionalLinks : ""}${state.largeHome ? `<!--${"a".repeat(1600000)}-->` : ""}`);
     if (state.largeHome && !url.endsWith("robots.txt"))
       assert.ok((options.limit ?? 0) >= Buffer.byteLength(body));
     return {
@@ -195,6 +208,7 @@ globalThis.fetch = mock(async (_url, options) => {
     url: string;
     quote: string;
   }[];
+  assert.equal(payload.observedPlatform, "shopify");
   const store = sources.find((source) => source.url === company.website);
   assert.ok(store);
   const quote = state.invalidQuote ? "q_unknown_invented" : store.id;
@@ -330,6 +344,20 @@ assert.equal(
 );
 assert.equal(JSON.stringify(calls[0]).includes("senderEmails"), false);
 assert.equal(reads.length, 3);
+const storefront = qualified.data.receipts.find(
+  (receipt) => receipt.kind === "storefront",
+);
+assert.ok(storefront);
+assert.ok(
+  storefront.excerpt.includes(
+    "Observed commerce platform: shopify. Published HTML marker: cdn.shopify.com/",
+  ),
+);
+assert.equal(
+  storefront.sha256,
+  createHash("sha256").update(home).digest("hex"),
+);
+assert.ok(Date.parse(storefront.checkedAt) <= Date.now());
 
 const evidence = {
   platform: "shopify" as const,
@@ -377,6 +405,40 @@ if (largeDocument.success && !("status" in largeDocument.data)) {
   );
 }
 state.largeHome = false;
+state.companyLinks = true;
+const beforeCompanyPages = reads.length;
+const companyEvidence = await Qualification.collectCompanyEvidence(input);
+assert.ok(companyEvidence.success && !("status" in companyEvidence.data));
+if (companyEvidence.success && !("status" in companyEvidence.data)) {
+  const sources = companyEvidence.data.receipts.filter(
+    (receipt) => receipt.kind === "company",
+  );
+  assert.deepEqual(
+    sources.map((source) => source.url),
+    Object.keys(companyPages).map((path) => `${company.website}${path}`),
+  );
+  for (const source of sources) {
+    const page = Object.entries(companyPages).find(
+      ([path]) => source.url === `${company.website}${path}`,
+    )?.[1];
+    assert.ok(page);
+    assert.equal(
+      source.sha256,
+      createHash("sha256").update(page).digest("hex"),
+    );
+    assert.ok(Date.parse(source.checkedAt) <= Date.now());
+  }
+  assert.ok(sources[1]?.excerpt.includes("Available at Example Retailer."));
+  assert.ok(companyEvidence.data.receipts.length <= 6);
+}
+assert.equal(reads.length - beforeCompanyPages, 5);
+assert.ok(
+  reads.slice(beforeCompanyPages).every((url) => !url.includes("unrelated")),
+);
+assert.ok(
+  reads.slice(beforeCompanyPages).every((url) => !url.includes("password")),
+);
+state.companyLinks = false;
 for (const [name, expected, retryable] of [
   ["response-too-large-error", "8 MiB collection limit", false],
   ["timeout-error", "time limit", true],

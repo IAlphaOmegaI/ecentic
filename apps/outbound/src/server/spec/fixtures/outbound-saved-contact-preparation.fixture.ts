@@ -17,6 +17,10 @@ import type {
   RawCapture,
   Source,
 } from "@/server/utils/outbound/live-shopping-contract";
+import {
+  shoppingPollUrl,
+  shoppingQueryUrl,
+} from "@/server/utils/outbound/scrapellm-cooldown";
 import { requireTestDatabase } from "../helpers/database";
 
 const endpoint = requireTestDatabase(process.env.OUTBOUND_TEST_DATABASE_URL);
@@ -301,9 +305,15 @@ const jobFor = async (id: string) => {
   assert.ok(job, "Expected a saved preparation job");
   return job;
 };
-const release = async () => {
+const releaseJobs = async () => {
   await db.execute(
     sql`update outbound_integration_job set output = jsonb_set(output, '{availableAt}', to_jsonb('2000-01-01T00:00:00.000Z'::text)) where input->>'operation' = 'savedContactPreparation' and status = 'pending'`,
+  );
+};
+const release = async () => {
+  await releaseJobs();
+  await db.execute(
+    sql`update outbound_integration_job set output = jsonb_set(output, '{scrapellmAvailableAt}', to_jsonb('2000-01-01T00:00:00.000Z'::text)) where input->>'operation' = 'savedContactPreparationBatch'`,
   );
 };
 const run = (
@@ -1059,6 +1069,99 @@ const locationBudget = (
 )[0];
 assert.equal(locationBudget?.output?.["queriesReserved"], 0);
 
+// The explicit US market window recovers old address holds without inventing a location.
+const marketReview = await seed();
+value(await Preparation.enqueue("fixture-operator", marketReview));
+value(
+  await run(marketReview.batchId, {
+    collect: async () => ({ success: true, data: productWithoutAddress }),
+    location: async () => ({ success: true, data: [] }),
+  }),
+);
+const marketHeld = await jobFor(firstProspect(marketReview));
+assert.equal(marketHeld.status, "complete");
+const marketInput = {
+  jobId: marketHeld.id,
+  requestId: randomUUID(),
+  expectedUpdatedAt: marketHeld.updatedAt.toISOString(),
+  reason:
+    "Use the explicitly enabled US market scheduling window for this recorded US contact. The person's city and timezone remain unknown.",
+};
+assert.equal(
+  (await Preparation.resumeLocation("fixture-reviewer", marketInput)).success,
+  false,
+);
+const marketPolicy = await Store.policy();
+const marketSaved = value(
+  await Store.savePlaybook(
+    "fixture-operator",
+    { ...marketPolicy.settings, allowUsMarketWindow: true },
+    marketPolicy.revision,
+  ),
+);
+assert.equal(marketSaved.revision, marketPolicy.revision);
+const beforeMarketCalls = { ...calls };
+value(await Preparation.resumeLocation("fixture-reviewer", marketInput));
+const marketResumed = await jobFor(firstProspect(marketReview));
+assert.equal(marketResumed.output?.["stage"], "qualify");
+assert.equal(marketResumed.output?.["timezone"], undefined);
+assert.deepEqual(marketResumed.output?.["schedulingWindow"], {
+  kind: "us-market-window",
+  timezone: "UTC",
+  startHour: 18,
+  endHour: 21,
+});
+assert.deepEqual(calls, beforeMarketCalls);
+value(await run(marketReview.batchId, {}, 2));
+assert.equal(
+  (await jobFor(firstProspect(marketReview))).output?.["stage"],
+  "query",
+);
+assert.equal(
+  value(await Store.readProspect(firstProspect(marketReview)))?.details
+    .timezone,
+  "",
+);
+assert.equal(calls.start, beforeMarketCalls.start);
+const marketCompany = (
+  await db
+    .select()
+    .from(schema.outboundCampaignCompany)
+    .where(
+      eq(
+        schema.outboundCampaignCompany.prospectId,
+        firstProspect(marketReview),
+      ),
+    )
+)[0];
+assert.deepEqual(marketCompany?.sourcePayload["businessHours"], {
+  kind: "us-market-window",
+  timezone: "UTC",
+  startHour: 18,
+  endHour: 21,
+  basis: "chosen-sending-window",
+});
+value(
+  await Store.savePlaybook(
+    "fixture-operator",
+    { ...marketPolicy.settings, allowUsMarketWindow: false },
+    marketPolicy.revision,
+  ),
+);
+value(await run(marketReview.batchId));
+assert.equal(
+  calls.start,
+  beforeMarketCalls.start,
+  "turning the policy off stops the next paid stage",
+);
+const marketBudget = (
+  await db
+    .select()
+    .from(schema.outboundIntegrationJob)
+    .where(eq(schema.outboundIntegrationJob.id, marketReview.batchId))
+)[0];
+assert.equal(marketBudget?.output?.["queriesReserved"], 0);
+
 const firecrawlRejection = (execute = false) => {
   const body = JSON.stringify({
     success: false,
@@ -1249,8 +1352,20 @@ assert.equal(calls.start, startsBeforeThrottle + 1);
 // One shared batch pacing reservation prevents two workers from starting browsers together.
 const paced = await seed(2);
 value(await Preparation.enqueue("fixture-operator", paced));
-value(await run(paced.batchId));
-await release();
+// Hold browser starts while the independently paced query/poll stages finish.
+await db.execute(
+  sql`update outbound_integration_job set output = jsonb_set(output, '{browserAvailableAt}', to_jsonb('2099-01-01T00:00:00.000Z'::text)) where id = ${paced.batchId}`,
+);
+for (let cycle = 0; cycle < 4; cycle += 1) {
+  await release();
+  value(await run(paced.batchId));
+}
+assert.ok(
+  (await Promise.all(paced.prospects.map(jobFor))).every(
+    (job) => job.output?.["stage"] === "browser",
+  ),
+);
+await releaseBrowser();
 const browserBeforePacing = calls.browse;
 value(await run(paced.batchId));
 assert.equal(calls.browse, browserBeforePacing + 1);
@@ -1294,4 +1409,516 @@ assert.equal(
   false,
 );
 assert.equal(value(await run(executeRejected.batchId)).steps, 0);
+// POST and GET share one durable gate even when workers compete for different jobs.
+const queryPaced = await seed(2);
+value(await Preparation.enqueue("fixture-operator", queryPaced));
+const beforeQueryPacing = { start: calls.start, poll: calls.poll };
+await Promise.all([run(queryPaced.batchId), run(queryPaced.batchId)]).then(
+  (results) => results.forEach(value),
+);
+assert.equal(calls.start, beforeQueryPacing.start + 1);
+assert.equal(calls.poll, beforeQueryPacing.poll);
+assert.equal(
+  (await firecrawlBatch(queryPaced.batchId)).output?.["queriesReserved"],
+  1,
+);
+await releaseJobs();
+await Promise.all([run(queryPaced.batchId), run(queryPaced.batchId)]).then(
+  (results) => results.forEach(value),
+);
+assert.equal(calls.start, beforeQueryPacing.start + 1);
+assert.equal(
+  calls.poll,
+  beforeQueryPacing.poll,
+  "a due poll cannot bypass the shared POST gate",
+);
+for (let cycle = 0; cycle < 4; cycle += 1) {
+  await releaseBrowser();
+  await Promise.all([run(queryPaced.batchId), run(queryPaced.batchId)]).then(
+    (results) => results.forEach(value),
+  );
+}
+assert.equal(calls.start, beforeQueryPacing.start + 2);
+assert.equal(calls.poll, beforeQueryPacing.poll + 2);
+
+const queryRejection = (
+  url: string,
+  body: unknown = { error: "Rate limit exceeded: max 5 request(s) per minute" },
+) => {
+  const text = JSON.stringify(body);
+  return new IntegrationError(
+    "scrapellm",
+    "rate-limit",
+    "scrapellm returned HTTP 429.",
+    429,
+    90,
+    null,
+    {
+      response: {
+        url,
+        status: 429,
+        receivedAt: new Date().toISOString(),
+        body: text,
+        sha256: createHash("sha256").update(text).digest("hex"),
+      },
+      retryAfterSeconds: 90,
+    },
+  );
+};
+
+// Only a rejected query with no accepted job can reuse its original reservation, at most three times.
+const queryThrottled = { ...(await seed()), maxQueries: 1 };
+value(await Preparation.enqueue("fixture-operator", queryThrottled));
+let rejectedStarts = 0;
+const rejectQuery: NonNullable<Parameters<typeof Preparation.run>[1]>["start"] =
+  async ({ query }) => {
+    rejectedStarts += 1;
+    return { success: false, error: queryRejection(shoppingQueryUrl(query)) };
+  };
+const beforeQueryThrottle = Date.now();
+value(await run(queryThrottled.batchId, { start: rejectQuery }));
+const rejectedQuery = await jobFor(firstProspect(queryThrottled));
+assert.equal(rejectedQuery.status, "pending");
+assert.equal(rejectedQuery.output?.["queryRetries"], 1);
+assert.equal(rejectedQuery.output?.["queryRetryPending"], true);
+assert.equal(rejectedQuery.output?.["shoppingJob"], undefined);
+assert.ok(
+  Date.parse(String(rejectedQuery.output?.["availableAt"])) >=
+    beforeQueryThrottle + 90_000,
+);
+const rejectedReservation = rejectedQuery.output?.["queryReservedAt"];
+assert.equal(
+  (await firecrawlBatch(queryThrottled.batchId)).output?.["queriesReserved"],
+  1,
+);
+assert.equal(
+  (await firecrawlBatch(queryThrottled.batchId)).output?.["paused"],
+  false,
+);
+await releaseJobs();
+assert.equal(
+  value(await run(queryThrottled.batchId, { start: rejectQuery })).steps,
+  0,
+);
+for (const retries of [2, 3]) {
+  await release();
+  value(await run(queryThrottled.batchId, { start: rejectQuery }));
+  const deferred = await jobFor(firstProspect(queryThrottled));
+  assert.equal(deferred.status, "pending");
+  assert.equal(deferred.output?.["queryRetries"], retries);
+  assert.equal(deferred.output?.["queryReservedAt"], rejectedReservation);
+  assert.equal(
+    (await firecrawlBatch(queryThrottled.batchId)).output?.["queriesReserved"],
+    1,
+  );
+}
+await release();
+value(await run(queryThrottled.batchId, { start: rejectQuery }));
+assert.equal(rejectedStarts, 4);
+assert.equal((await jobFor(firstProspect(queryThrottled))).status, "failed");
+assert.equal(
+  (await firecrawlBatch(queryThrottled.batchId)).output?.["paused"],
+  true,
+);
+
+// Historical recovery requires the exact job and batch, and never resets the paid budget.
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({
+    status: "failed",
+    output: {
+      ...rejectedQuery.output,
+      queryRetries: 0,
+      queryRetryPending: false,
+      queryRateLimits: [],
+    },
+    error: "scrapellm returned HTTP 429.",
+    updatedAt: new Date(),
+  })
+  .where(eq(schema.outboundIntegrationJob.id, rejectedQuery.id));
+const oldQueryFailure = await jobFor(firstProspect(queryThrottled));
+const oldQueryBudget = await firecrawlBatch(queryThrottled.batchId);
+const queryRecovery = {
+  jobId: oldQueryFailure.id,
+  requestId: randomUUID(),
+  expectedUpdatedAt: oldQueryFailure.updatedAt.toISOString(),
+  expectedJobHash: Preparation.browserRecoverySnapshot(oldQueryFailure),
+  expectedBatchUpdatedAt: oldQueryBudget.updatedAt.toISOString(),
+  expectedBatchHash: Preparation.browserRecoverySnapshot(oldQueryBudget),
+  reason:
+    "Reviewed the exact minute rejection: the provider accepted no job, so retain the original single query reservation.",
+};
+assert.equal(
+  (
+    await Preparation.resumeQueryRateLimit("fixture-operator", {
+      ...queryRecovery,
+      expectedJobHash: "0".repeat(64),
+    })
+  ).success,
+  false,
+);
+assert.equal(
+  (
+    await Preparation.resumeQueryRateLimit("fixture-operator", {
+      ...queryRecovery,
+      expectedBatchHash: "0".repeat(64),
+    })
+  ).success,
+  false,
+);
+assert.equal(
+  value(
+    await Preparation.resumeQueryRateLimit("fixture-operator", queryRecovery),
+  ).repeated,
+  false,
+);
+assert.equal(
+  value(
+    await Preparation.resumeQueryRateLimit("fixture-operator", queryRecovery),
+  ).repeated,
+  true,
+);
+assert.equal(
+  (
+    await Preparation.resumeQueryRateLimit("fixture-operator", {
+      ...queryRecovery,
+      requestId: randomUUID(),
+    })
+  ).success,
+  false,
+);
+assert.equal(
+  (await firecrawlBatch(queryThrottled.batchId)).output?.["queriesReserved"],
+  1,
+);
+assert.equal(
+  (await jobFor(firstProspect(queryThrottled))).output?.["queryReservedAt"],
+  rejectedReservation,
+);
+assert.equal(value(await run(queryThrottled.batchId)).steps, 0);
+const beforeAcceptedRetry = calls.start;
+await release();
+value(await run(queryThrottled.batchId));
+const acceptedRetry = await jobFor(firstProspect(queryThrottled));
+assert.equal(acceptedRetry.output?.["stage"], "poll");
+assert.equal(acceptedRetry.output?.["queryRetryPending"], false);
+assert.equal(acceptedRetry.output?.["queryReservedAt"], rejectedReservation);
+await release();
+value(await run(queryThrottled.batchId));
+value(await run(queryThrottled.batchId));
+assert.equal((await jobFor(firstProspect(queryThrottled))).status, "complete");
+assert.equal(calls.start, beforeAcceptedRetry + 1);
+assert.equal(
+  (await firecrawlBatch(queryThrottled.batchId)).output?.["queriesReserved"],
+  1,
+);
+
+// A GET rejection resumes the same known job and consumes the existing poll bound.
+const pollThrottled = await seed();
+value(await Preparation.enqueue("fixture-operator", pollThrottled));
+const beforePollThrottle = calls.start;
+value(await run(pollThrottled.batchId));
+const acceptedPollJob = (await jobFor(firstProspect(pollThrottled))).output?.[
+  "shoppingJob"
+];
+await release();
+value(
+  await run(pollThrottled.batchId, {
+    poll: async ({ job }) => ({
+      success: false,
+      error: queryRejection(shoppingPollUrl(job)),
+    }),
+  }),
+);
+const deferredPoll = await jobFor(firstProspect(pollThrottled));
+assert.equal(deferredPoll.status, "pending");
+assert.equal(deferredPoll.output?.["stage"], "poll");
+assert.equal(deferredPoll.output?.["polls"], 1);
+assert.equal(deferredPoll.output?.["queryRetries"], 0);
+assert.deepEqual(deferredPoll.output?.["shoppingJob"], acceptedPollJob);
+assert.equal(
+  (await firecrawlBatch(pollThrottled.batchId)).output?.["queriesReserved"],
+  1,
+);
+await releaseJobs();
+assert.equal(value(await run(pollThrottled.batchId)).steps, 0);
+await release();
+value(await run(pollThrottled.batchId));
+assert.equal((await jobFor(firstProspect(pollThrottled))).status, "complete");
+assert.equal(calls.start, beforePollThrottle + 1);
+
+// A ScrapeLLM pause holds new paid starts but does not strand answers already purchased.
+const savedAnswerBatch = await seed(2);
+value(await Preparation.enqueue("fixture-operator", savedAnswerBatch));
+value(await run(savedAnswerBatch.batchId));
+const acceptedForPause = (
+  await Promise.all(savedAnswerBatch.prospects.map(jobFor))
+).find((job) => job.output?.["stage"] === "poll");
+assert.ok(acceptedForPause);
+const pausedBatch = await firecrawlBatch(savedAnswerBatch.batchId);
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({
+    output: {
+      ...pausedBatch.output,
+      paused: true,
+      failureProvider: "scrapellm",
+      failureCode: "rate-limit",
+    },
+  })
+  .where(eq(schema.outboundIntegrationJob.id, pausedBatch.id));
+const beforePaused = { start: calls.start, browse: calls.browse };
+await release();
+value(await run(savedAnswerBatch.batchId));
+const completedDuringPause = await jobFor(String(acceptedForPause.prospectId));
+assert.equal(
+  completedDuringPause.status,
+  "complete",
+  JSON.stringify(completedDuringPause),
+);
+assert.equal(calls.start, beforePaused.start);
+assert.equal(calls.browse, beforePaused.browse + 1);
+assert.equal(
+  (await firecrawlBatch(savedAnswerBatch.batchId)).output?.["paused"],
+  true,
+);
+
+// Unknown/quota-like 429s and responses containing an accepted ID must stay held.
+for (const payload of [
+  { error: "Daily quota exceeded" },
+  { error: "Rate limit exceeded" },
+  {
+    error: "Rate limit exceeded: max 5 request(s) per minute",
+    job_id: randomUUID(),
+  },
+]) {
+  const rejected = await seed();
+  value(await Preparation.enqueue("fixture-operator", rejected));
+  value(
+    await run(rejected.batchId, {
+      start: async ({ query }) => ({
+        success: false,
+        error: queryRejection(shoppingQueryUrl(query), payload),
+      }),
+    }),
+  );
+  const job = await jobFor(firstProspect(rejected));
+  const batch = await firecrawlBatch(rejected.batchId);
+  assert.equal(job.status, "failed");
+  assert.equal(job.output?.["queryRetries"], 0);
+  assert.equal(batch.output?.["paused"], true);
+  assert.equal(
+    (
+      await Preparation.resumeQueryRateLimit("fixture-operator", {
+        ...queryRecovery,
+        requestId: randomUUID(),
+        jobId: job.id,
+        expectedUpdatedAt: job.updatedAt.toISOString(),
+        expectedJobHash: Preparation.browserRecoverySnapshot(job),
+        expectedBatchUpdatedAt: batch.updatedAt.toISOString(),
+        expectedBatchHash: Preparation.browserRecoverySnapshot(batch),
+      })
+    ).success,
+    false,
+  );
+}
+// A reviewed collection omission can refresh source evidence once, before any shopping request.
+const qualificationRetry = await seed();
+value(await Preparation.enqueue("fixture-operator", qualificationRetry));
+const missingQualification =
+  "The saved excerpts do not establish the observed commerce platform.";
+value(
+  await run(qualificationRetry.batchId, {
+    qualify: async ({ evidence }) => ({
+      success: true,
+      data: {
+        status: "hold",
+        reason: missingQualification,
+        retryable: false,
+        receipts: evidence.receipts,
+        companyEvidence: evidence,
+        assessment: {
+          ...corrected,
+          decision: "hold",
+          reason: missingQualification,
+          criteriaSatisfied: false,
+        },
+        usage: { inputTokens: 40, outputTokens: 20 },
+        providerRequestId: "original-qualified-collection-fixture",
+      },
+    }),
+  }),
+);
+const qualificationHeld = await jobFor(firstProspect(qualificationRetry));
+assert.equal(qualificationHeld.status, "complete");
+const qualificationRetryInput = {
+  jobId: qualificationHeld.id,
+  requestId: randomUUID(),
+  expectedUpdatedAt: qualificationHeld.updatedAt.toISOString(),
+  expectedJobHash: Preparation.browserRecoverySnapshot(qualificationHeld),
+  reason:
+    "Reviewed the commerce-platform extraction omission. Recollect public facts and requalify; retain original receipts with their original dates and hashes.",
+};
+const beforeQualificationRetry = { ...calls };
+const qualificationRetryBudget = await firecrawlBatch(
+  qualificationRetry.batchId,
+);
+for (const mutation of [
+  { status: "uncertain" as const },
+  {
+    output: {
+      ...qualificationHeld.output,
+      lease: {
+        token: randomUUID(),
+        expiresAt: new Date(Date.now() + 60000).toISOString(),
+      },
+    },
+  },
+  {
+    output: {
+      ...qualificationHeld.output,
+      queryReservedAt: new Date().toISOString(),
+    },
+  },
+  {
+    output: {
+      ...qualificationHeld.output,
+      failureReceipt: { status: "unknown" },
+    },
+  },
+  {
+    output: {
+      ...qualificationHeld.output,
+      qualification: {
+        ...(qualificationHeld.output?.["qualification"] as Record<
+          string,
+          unknown
+        >),
+        status: "skip",
+      },
+    },
+  },
+]) {
+  await db
+    .update(schema.outboundIntegrationJob)
+    .set(mutation)
+    .where(eq(schema.outboundIntegrationJob.id, qualificationHeld.id));
+  const changed = await jobFor(firstProspect(qualificationRetry));
+  assert.equal(
+    (
+      await Preparation.retryQualificationCollection("fixture-reviewer", {
+        ...qualificationRetryInput,
+        expectedJobHash: Preparation.browserRecoverySnapshot(changed),
+      })
+    ).success,
+    false,
+  );
+  await db
+    .update(schema.outboundIntegrationJob)
+    .set({ status: qualificationHeld.status, output: qualificationHeld.output })
+    .where(eq(schema.outboundIntegrationJob.id, qualificationHeld.id));
+}
+assert.equal(
+  (
+    await Preparation.retryQualificationCollection("fixture-reviewer", {
+      ...qualificationRetryInput,
+      expectedJobHash: "0".repeat(64),
+    })
+  ).success,
+  false,
+);
+assert.equal(
+  value(
+    await Preparation.retryQualificationCollection(
+      "fixture-reviewer",
+      qualificationRetryInput,
+    ),
+  ).repeated,
+  false,
+);
+assert.equal(
+  value(
+    await Preparation.retryQualificationCollection(
+      "fixture-reviewer",
+      qualificationRetryInput,
+    ),
+  ).repeated,
+  true,
+);
+assert.deepEqual(
+  calls,
+  beforeQualificationRetry,
+  "reviewed recollection schedules normal collection without network calls",
+);
+const recollecting = await jobFor(firstProspect(qualificationRetry));
+assert.equal(recollecting.output?.["stage"], "collect");
+assert.equal(recollecting.output?.["companyEvidence"], undefined);
+assert.equal(recollecting.output?.["qualification"], undefined);
+const archivedQualification = recollecting.output?.[
+  "originalQualificationCollection"
+] as Record<string, unknown>;
+assert.deepEqual(
+  archivedQualification["companyEvidence"],
+  qualificationHeld.output?.["companyEvidence"],
+);
+assert.deepEqual(
+  archivedQualification["qualification"],
+  qualificationHeld.output?.["qualification"],
+);
+assert.deepEqual(
+  (await firecrawlBatch(qualificationRetry.batchId)).output,
+  qualificationRetryBudget.output,
+);
+assert.equal(
+  (
+    await Preparation.retryQualificationCollection("fixture-reviewer", {
+      ...qualificationRetryInput,
+      requestId: randomUUID(),
+    })
+  ).success,
+  false,
+);
+const recollectedEvidence = evidence("saved0.test");
+const recollectedStorefront = recollectedEvidence.receipts[0];
+assert.ok(recollectedStorefront);
+recollectedEvidence.receipts[0] = {
+  ...recollectedStorefront,
+  checkedAt: new Date().toISOString(),
+  sha256: "b".repeat(64),
+  excerpt: `${recollectedEvidence.receipts[0]?.excerpt}\nObserved commerce platform: shopify. Published HTML marker: Shopify.shop =`,
+};
+value(
+  await run(
+    qualificationRetry.batchId,
+    {
+      collect: async () => ({ success: true, data: recollectedEvidence }),
+    },
+    1,
+  ),
+);
+const recollected = await jobFor(firstProspect(qualificationRetry));
+assert.equal(recollected.output?.["stage"], "qualify");
+assert.deepEqual(recollected.output?.["companyEvidence"], recollectedEvidence);
+assert.deepEqual(
+  recollected.output?.["originalQualificationCollection"],
+  archivedQualification,
+);
+assert.equal(calls.start, beforeQualificationRetry.start);
+assert.equal(
+  (await firecrawlBatch(qualificationRetry.batchId)).output?.[
+    "queriesReserved"
+  ],
+  0,
+);
+assert.equal(
+  (
+    await db
+      .select()
+      .from(schema.outboundEvent)
+      .where(
+        eq(schema.outboundEvent.kind, "savedQualificationCollectionRetried"),
+      )
+  ).length,
+  1,
+);
 console.log("Saved contact preparation contracts passed");

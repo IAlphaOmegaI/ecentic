@@ -533,7 +533,8 @@
         "sendingRampEnabled": "Versandmenge schrittweise erhöhen",
         "trustSavedContactVerification": "Gespeicherte Kontaktverifizierung verwenden",
         "automaticApolloEnabled": "Automatische Apollo-Ausgaben erlauben",
-        "allowProductObservations": "Sachlich belegte Produktbeobachtungen erlauben"
+        "allowProductObservations": "Sachlich belegte Produktbeobachtungen erlauben",
+        "allowUsMarketWindow": "US-weites Zeitfenster bei unbekannter Zeitzone verwenden"
       },
       "templateHelp": "Fügen Sie die unten aufgeführten Variablen ein. Sie werden aus den gespeicherten Angaben des Interessenten ausgefüllt.",
       "variablesTitle": "Verfügbare Variablen",
@@ -599,7 +600,8 @@
       "sendingRampHelp": "Mit 15 E-Mails pro Tag beginnen und nach abgeschlossenen Versandtagen erhöhen. Deaktivieren, um das konfigurierte Tageslimit direkt zu nutzen; der Schutz bei unzustellbaren E-Mails bleibt aktiv.",
       "trustSavedContactVerificationHelp": "Als verifiziert importierte Kontakte zulassen, ohne eine neue Verifizierung oder Rollenprüfung zu behaupten. Ursprüngliche und unbekannte Datumsangaben bleiben erhalten.",
       "automaticApolloHelp": "Apollo für neue Unternehmen, Anreicherung und E-Mail-Verifizierung nutzen. Deaktivieren, um mit gespeicherten Datensätzen ohne neue kostenpflichtige Apollo-Anfragen zu arbeiten.",
-      "allowProductObservationsHelp": "Eine konkrete, belegte Produkt- oder Einkaufsbeobachtung kann ein Gespräch eröffnen, auch wenn kein Problem gefunden wurde. Keine Abweichungen oder Umsatzauswirkungen erfinden."
+      "allowProductObservationsHelp": "Eine konkrete, belegte Produkt- oder Einkaufsbeobachtung kann ein Gespräch eröffnen, auch wenn kein Problem gefunden wurde. Keine Abweichungen oder Umsatzauswirkungen erfinden.",
+      "allowUsMarketWindowHelp": "Für Kontakte in den Vereinigten Staaten ohne gespeicherte Zeitzone: Montag–Donnerstag, 18:00–21:00 UTC. Dies ist Ihr gewähltes Marktzeitfenster, kein bestätigter persönlicher Standort. Bekannte Zeitzonen behalten 08:00–14:00 Ortszeit bei. Standardmäßig deaktiviert."
     },
     "integrations": {
       "title": "Verbinden Sie die passenden Werkzeuge",

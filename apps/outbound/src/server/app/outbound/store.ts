@@ -404,7 +404,7 @@ export const assertAutomaticContactEvidence = async (
       details: z.object({
         roleSource: z.string().min(1),
         roleCheckedAt: z.string().min(1),
-        timezone: z.string().min(1),
+        timezone: z.string(),
       }),
     })
     .safeParse(job?.output?.["selection"]);
@@ -1002,7 +1002,7 @@ const prospectItem = (
                 eq(schema.outboundIntegrationJob.status, "failed"),
                 sql`${schema.outboundIntegrationJob.input}->>'prospectRevision' = ${String(row.revision)}`,
                 sql`${schema.outboundIntegrationJob.input}->>'playbookRevision' = ${String(configuration.revision)}`,
-                sql`${schema.outboundIntegrationJob.input}->>'readinessKey' = ${draftReviewReadinessKey(row.details, configuration.settings.senderConfirmed, configuration.settings.allowStaleEvidence, configuration.settings.trustSavedContactVerification, configuration.settings.allowProductObservations)}`,
+                sql`${schema.outboundIntegrationJob.input}->>'readinessKey' = ${draftReviewReadinessKey(row.details, configuration.settings.senderConfirmed, configuration.settings.allowStaleEvidence, configuration.settings.trustSavedContactVerification, configuration.settings.allowProductObservations, configuration.settings.allowUsMarketWindow)}`,
                 sql`${schema.outboundIntegrationJob.input}->>'resumeId' = ${resumeId}`,
               ),
             ),
@@ -1357,6 +1357,7 @@ export const savePlaybookWithin = async (
       senderTested,
       dailyCap,
       sendingRampEnabled,
+      allowUsMarketWindow,
       automaticApolloEnabled,
       trustSavedContactVerification,
       allowProductObservations,
@@ -2889,6 +2890,7 @@ export const applyAutomaticDraftReview = (input: {
         current.settings.allowStaleEvidence,
         current.settings.trustSavedContactVerification,
         current.settings.allowProductObservations,
+        current.settings.allowUsMarketWindow,
       ) !== scope.readinessKey ||
       (await latestDraftReviewRequest(transaction, prospect.id)) !==
         scope.resumeId ||
@@ -3947,9 +3949,9 @@ const deliveryGates = async (
     throw new ConflictError(
       "The sequence is complete or its playbook changed.",
     );
-  if (!inSendWindow(prospect.details.timezone, now))
+  if (!inSendWindow(prospect.details, now, settings))
     throw new ConflictError(
-      "Wait for Monday–Thursday, 08:00–14:00 in the recipient timezone.",
+      "Wait for the selected sending window: Monday–Thursday, 08:00–14:00 in the saved timezone, or 18:00–21:00 UTC for an enabled US market window with no saved timezone.",
     );
   if (
     prospect.sentStep &&

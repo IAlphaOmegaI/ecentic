@@ -4,6 +4,7 @@ import { type Result, resultify } from "@zenncore/utils";
 import { z } from "zod";
 import * as HTTP from "@/server/utils/http";
 import { IntegrationError } from "./http";
+import { shoppingPollUrl, shoppingQueryUrl } from "./scrapellm-cooldown";
 import {
   type AiCapture,
   type AiJob,
@@ -21,7 +22,6 @@ import {
   providerJson,
 } from "./live-shopping-http";
 
-const HOST = "https://api.scrapellm.com";
 type CaptureDependencies = Dependencies & { page?: typeof HTTP.page };
 const failure = (
   message: string,
@@ -107,15 +107,9 @@ export const startQuery = async (
       ),
     };
   const submittedAt = new Date((dependencies.now ?? Date.now)()).toISOString();
-  const parameters = new URLSearchParams({
-    prompt: query.data.prompt,
-    country: query.data.country,
-    bypass_cache: "true",
-    timeout: "180",
-  });
   const response = await providerJson(
     "scrapellm",
-    `${HOST}/scrapers/${query.data.surface}/jobs?${parameters}`,
+    shoppingQueryUrl(query.data),
     {
       method: "POST",
       headers: { "X-API-Key": apiKey },
@@ -247,7 +241,7 @@ export const pollQuery = async (
     };
   const response = await providerJson(
     "scrapellm",
-    `${HOST}/jobs/${job.data.id}`,
+    shoppingPollUrl(job.data),
     {
       headers: { "X-API-Key": apiKey },
     },

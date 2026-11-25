@@ -73,6 +73,10 @@ export const providerJson = async (
     : null;
   if (!response.data.ok) {
     const status = response.data.status;
+    const retryAfterSeconds = retryAfter(
+      response.data.headers.get("retry-after"),
+      now(),
+    );
     const code = (() => {
       switch (true) {
         case status === 401 || status === 403:
@@ -96,9 +100,9 @@ export const providerJson = async (
         code,
         `${provider} returned HTTP ${status}.`,
         status,
-        retryAfter(response.data.headers.get("retry-after"), now()),
+        retryAfterSeconds,
         null,
-        raw ? { response: raw } : null,
+        raw ? { response: raw, retryAfterSeconds } : null,
       ),
     };
   }

@@ -472,15 +472,110 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
     );
     expect((await store.claimDelivery(actor, fixture)).success).toBe(true);
   });
+  test("toggling the US market window preserves approved content and known-zone schedules", async () => {
+    const { store } = active();
+    const fixture = await approved();
+    const before = required(await store.readProspect(fixture.prospect));
+    const policy = await store.policy();
+    for (const allowUsMarketWindow of [true, false]) {
+      const saved = required(
+        await store.savePlaybook(
+          actor,
+          { ...policy.settings, allowUsMarketWindow },
+          policy.revision,
+        ),
+      );
+      expect(saved.revision).toBe(policy.revision);
+      expect(required(await store.readProspect(fixture.prospect))).toEqual(
+        before,
+      );
+    }
+    expect((await store.claimDelivery(actor, fixture)).success).toBe(true);
+  });
+  test("unknown-zone US delivery waits for the market window and rechecks the preference at dispatch", async () => {
+    const { store, db, schema } = active();
+    required(
+      await store.savePlaybook(actor, {
+        ...settings,
+        allowUsMarketWindow: true,
+      }),
+    );
+    const created = required(
+      await store.saveProspect(actor, { ...details(), timezone: "" }),
+    );
+    const drafted = required(await store.generateDrafts(actor, created));
+    required(
+      await store.reviewProspect(actor, {
+        ...created,
+        revision: drafted.revision,
+        decision: "approve",
+      }),
+    );
+    required(
+      await store.savePlaybook(actor, {
+        ...settings,
+        allowUsMarketWindow: true,
+        sendingEnabled: true,
+      }),
+    );
+    const inbox = (
+      await db
+        .select()
+        .from(schema.outboundInbox)
+        .where(
+          eq(schema.outboundInbox.email, senderFor(created.prospect, settings)),
+        )
+    )[0];
+    if (!inbox) throw new Error("Assigned inbox missing");
+    const fixture = { ...created, revision: drafted.revision, inbox: inbox.id };
+    const outside = await store.claimDelivery(actor, fixture);
+    expect(outside.success).toBe(false);
+    if (!outside.success)
+      expect(outside.error.message).toContain("sending window");
+    setSystemTime(new Date("2026-11-09T18:00:00Z"));
+    await db.update(schema.outboundInbox).set({ lastSyncedAt: new Date() });
+    const claim = required(await store.claimDelivery(actor, fixture));
+    const policy = await store.policy();
+    const before = required(await store.readProspect(created.prospect));
+    required(
+      await store.savePlaybook(
+        actor,
+        { ...policy.settings, allowUsMarketWindow: false },
+        policy.revision,
+      ),
+    );
+    expect(required(await store.readProspect(created.prospect))).toEqual(
+      before,
+    );
+    expect(before?.details.timezone).toBe("");
+    const send = mock(async () => ({
+      success: true as const,
+      data: { providerMessageId: "must-not-send", threadId: "must-not-send" },
+    }));
+    expect((await store.dispatchDelivery(actor, claim, send)).success).toBe(
+      false,
+    );
+    expect(send).not.toHaveBeenCalled();
+  });
   test("refreshing receipts on a pre-deployment row preserves approval when new defaults are missing", async () => {
     const { store, db, schema } = active();
     const fixture = await approved();
-    await db.update(schema.outboundProspect).set({
-      details: sql`${schema.outboundProspect.details} - 'savedContactVerificationId'`,
-    }).where(eq(schema.outboundProspect.id, fixture.prospect));
+    await db
+      .update(schema.outboundProspect)
+      .set({
+        details: sql`${schema.outboundProspect.details} - 'savedContactVerificationId'`,
+      })
+      .where(eq(schema.outboundProspect.id, fixture.prospect));
     const before = required(await store.readProspect(fixture.prospect));
     if (!before) throw new Error("Approved fixture missing");
-    const saved = required(await store.patchProspect(actor, fixture.prospect, { mxCheckedAt: now.toISOString() }, fixture.revision));
+    const saved = required(
+      await store.patchProspect(
+        actor,
+        fixture.prospect,
+        { mxCheckedAt: now.toISOString() },
+        fixture.revision,
+      ),
+    );
     const after = required(await store.readProspect(fixture.prospect));
     if (!after) throw new Error("Patched fixture missing");
     expect(saved.revision).toBe(fixture.revision);
@@ -494,62 +589,147 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
     const { store, db, schema } = active();
     const fixture = sent ? await sentSequence() : await approved();
     const before = required(await store.readProspect(fixture.prospect));
-    if (!before?.nextSendAt) throw new Error("Approved incident fixture missing");
+    if (!before?.nextSendAt)
+      throw new Error("Approved incident fixture missing");
     // Reproduce the old normalization path, which saved unchanged details as an edit.
-    required(await store.saveProspect("outbound-worker", { ...before.details, id: before.id }));
+    required(
+      await store.saveProspect("outbound-worker", {
+        ...before.details,
+        id: before.id,
+      }),
+    );
     const after = required(await store.readProspect(fixture.prospect));
-    const versions = await db.select().from(schema.outboundRevision).where(eq(schema.outboundRevision.prospectId, fixture.prospect));
-    const version = versions.find((version) => version.revision === before.revision);
-    const events = await db.select().from(schema.outboundEvent).where(eq(schema.outboundEvent.prospectId, fixture.prospect));
-    const incident = events.find((event) => event.kind === "prospectUpdated" && event.actor === "outbound-worker");
-    if (!after || !version || !incident) throw new Error("Incident snapshot missing");
-    await db.update(schema.outboundEvent).set({ createdAt: after.updatedAt }).where(eq(schema.outboundEvent.id, incident.id));
-    return { before, after, fixture, input: {
-      prospect: before.id, revision: after.revision, updatedAt: after.updatedAt.toISOString(),
-      incidentEventId: incident.id, priorRevisionId: version.id,
-      contentHash: version.contentHash, nextSendAt: before.nextSendAt.toISOString(),
-      snapshot: "isolated-test/pre-incident.json",
-    } };
+    const versions = await db
+      .select()
+      .from(schema.outboundRevision)
+      .where(eq(schema.outboundRevision.prospectId, fixture.prospect));
+    const version = versions.find(
+      (version) => version.revision === before.revision,
+    );
+    const events = await db
+      .select()
+      .from(schema.outboundEvent)
+      .where(eq(schema.outboundEvent.prospectId, fixture.prospect));
+    const incident = events.find(
+      (event) =>
+        event.kind === "prospectUpdated" && event.actor === "outbound-worker",
+    );
+    if (!after || !version || !incident)
+      throw new Error("Incident snapshot missing");
+    await db
+      .update(schema.outboundEvent)
+      .set({ createdAt: after.updatedAt })
+      .where(eq(schema.outboundEvent.id, incident.id));
+    return {
+      before,
+      after,
+      fixture,
+      input: {
+        prospect: before.id,
+        revision: after.revision,
+        updatedAt: after.updatedAt.toISOString(),
+        incidentEventId: incident.id,
+        priorRevisionId: version.id,
+        contentHash: version.contentHash,
+        nextSendAt: before.nextSendAt.toISOString(),
+        snapshot: "isolated-test/pre-incident.json",
+      },
+    };
   };
-  test.each([false, true])("audited receipt recovery preserves the original approval and delivery timeline (sent=%s)", async (sent) => {
-    const { store, db, schema } = active();
-    const incident = await receiptIncident(sent);
-    required(await store.restoreReceiptNormalizationApproval(actor, incident.input));
-    const restored = required(await store.readProspect(incident.before.id));
-    if (!restored) throw new Error("Restored fixture missing");
-    for (const key of ["revision", "status", "messages", "approvalHash", "approvedAt", "approvedBy", "sentStep", "firstSentAt", "lastSentAt", "nextSendAt", "inboxId", "threadId"] as const)
-      expect(restored[key]).toEqual(incident.before[key]);
-    const events = await db.select().from(schema.outboundEvent).where(eq(schema.outboundEvent.prospectId, incident.before.id));
-    expect(events.filter((event) => event.kind === "approvalRestored")).toHaveLength(1);
-    expect((await store.restoreReceiptNormalizationApproval(actor, incident.input)).success).toBe(false);
-  });
-  test.each(["edited", "suppressed", "replied", "source", "schedule"])("receipt recovery refuses %s changes and leaves the revocation intact", async (change) => {
-    const { store, db, schema } = active();
-    const incident = await receiptIncident(true);
-    if (change === "edited") await db.update(schema.outboundProspect).set({
-      messages: incident.after.messages.map((message) => ({ ...message, body: `${message.body} Changed.` })),
-    }).where(eq(schema.outboundProspect.id, incident.before.id));
-    if (change === "suppressed") await db.insert(schema.outboundSuppression).values({
-      scope: "email", value: incident.before.details.email, reason: "Opted out", createdBy: actor,
-    });
-    if (change === "replied") await db.update(schema.outboundConversation).set({
-      lastInboundAt: now,
-    }).where(eq(schema.outboundConversation.prospectId, incident.before.id));
-    if (change === "source") await db.update(schema.outboundProspect).set({
-      details: { ...incident.after.details, emailStatus: "unknown" },
-    }).where(eq(schema.outboundProspect.id, incident.before.id));
-    const result = await store.restoreReceiptNormalizationApproval(actor, {
-      ...incident.input,
-      ...(change === "schedule" ? { nextSendAt: now.toISOString() } : {}),
-    });
-    expect(result.success).toBe(false);
-    const unchanged = required(await store.readProspect(incident.before.id));
-    expect(unchanged?.revision).toBe(incident.after.revision);
-    expect(unchanged?.status).toBe("held");
-    expect(unchanged?.approvalHash).toBeNull();
-    const version = (await db.select().from(schema.outboundRevision).where(eq(schema.outboundRevision.id, incident.input.priorRevisionId)))[0];
-    expect(version?.revokedAt).toBeTruthy();
-  });
+  test.each([false, true])(
+    "audited receipt recovery preserves the original approval and delivery timeline (sent=%s)",
+    async (sent) => {
+      const { store, db, schema } = active();
+      const incident = await receiptIncident(sent);
+      required(
+        await store.restoreReceiptNormalizationApproval(actor, incident.input),
+      );
+      const restored = required(await store.readProspect(incident.before.id));
+      if (!restored) throw new Error("Restored fixture missing");
+      for (const key of [
+        "revision",
+        "status",
+        "messages",
+        "approvalHash",
+        "approvedAt",
+        "approvedBy",
+        "sentStep",
+        "firstSentAt",
+        "lastSentAt",
+        "nextSendAt",
+        "inboxId",
+        "threadId",
+      ] as const)
+        expect(restored[key]).toEqual(incident.before[key]);
+      const events = await db
+        .select()
+        .from(schema.outboundEvent)
+        .where(eq(schema.outboundEvent.prospectId, incident.before.id));
+      expect(
+        events.filter((event) => event.kind === "approvalRestored"),
+      ).toHaveLength(1);
+      expect(
+        (await store.restoreReceiptNormalizationApproval(actor, incident.input))
+          .success,
+      ).toBe(false);
+    },
+  );
+  test.each(["edited", "suppressed", "replied", "source", "schedule"])(
+    "receipt recovery refuses %s changes and leaves the revocation intact",
+    async (change) => {
+      const { store, db, schema } = active();
+      const incident = await receiptIncident(true);
+      if (change === "edited")
+        await db
+          .update(schema.outboundProspect)
+          .set({
+            messages: incident.after.messages.map((message) => ({
+              ...message,
+              body: `${message.body} Changed.`,
+            })),
+          })
+          .where(eq(schema.outboundProspect.id, incident.before.id));
+      if (change === "suppressed")
+        await db.insert(schema.outboundSuppression).values({
+          scope: "email",
+          value: incident.before.details.email,
+          reason: "Opted out",
+          createdBy: actor,
+        });
+      if (change === "replied")
+        await db
+          .update(schema.outboundConversation)
+          .set({
+            lastInboundAt: now,
+          })
+          .where(
+            eq(schema.outboundConversation.prospectId, incident.before.id),
+          );
+      if (change === "source")
+        await db
+          .update(schema.outboundProspect)
+          .set({
+            details: { ...incident.after.details, emailStatus: "unknown" },
+          })
+          .where(eq(schema.outboundProspect.id, incident.before.id));
+      const result = await store.restoreReceiptNormalizationApproval(actor, {
+        ...incident.input,
+        ...(change === "schedule" ? { nextSendAt: now.toISOString() } : {}),
+      });
+      expect(result.success).toBe(false);
+      const unchanged = required(await store.readProspect(incident.before.id));
+      expect(unchanged?.revision).toBe(incident.after.revision);
+      expect(unchanged?.status).toBe("held");
+      expect(unchanged?.approvalHash).toBeNull();
+      const version = (
+        await db
+          .select()
+          .from(schema.outboundRevision)
+          .where(eq(schema.outboundRevision.id, incident.input.priorRevisionId))
+      )[0];
+      expect(version?.revokedAt).toBeTruthy();
+    },
+  );
   test("allowing product observations preserves already approved messages and schedules", async () => {
     const { store } = active();
     const fixture = await approved();

@@ -50,6 +50,7 @@ export const draftReviewReadinessKey = (
   allowStaleEvidence = false,
   trustSavedContactVerification = false,
   allowProductObservations = false,
+  allowUsMarketWindow = false,
 ) =>
   [
     details.emailVerifiedAt,
@@ -63,4 +64,5 @@ export const draftReviewReadinessKey = (
       ? ["trust-saved-contact-verification"]
       : []),
     ...(allowProductObservations ? ["allow-product-observations"] : []),
+    ...(allowUsMarketWindow ? ["allow-us-market-window"] : []),
   ].join("|");

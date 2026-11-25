@@ -1,4 +1,3 @@
-import { resultify } from "@zenncore/utils";
 import { getDomain } from "tldts";
 import { z } from "zod";
 import { evidenceDateUsable } from "./outbound-evidence";
@@ -12,6 +11,7 @@ import {
 import { productInsightSchema } from "./outbound-product-insight";
 import { isExcludedRole, matchesRole } from "./outbound-roles";
 import { savedContactVerificationReady } from "./outbound-saved-contact";
+import { resolveSendingWindow } from "./outbound-scheduling";
 import {
   DEFAULT_RESEARCH_INSTRUCTIONS,
   shoppingCopy,
@@ -23,6 +23,7 @@ import {
   type ProspectStatus,
 } from "./outbound-status";
 
+export { inSendWindow, isTimezone } from "./outbound-scheduling";
 export {
   LINKEDIN_STATUSES,
   type LinkedInStatus,
@@ -146,6 +147,7 @@ export const playbookSchema = z
     weeklyTarget: z.number().int().min(1).max(10000),
     dailyCap: z.number().int().min(1).max(50),
     sendingRampEnabled: z.boolean().default(true),
+    allowUsMarketWindow: z.boolean().default(false),
     automaticApolloEnabled: z.boolean().default(true),
     minGapMinutes: z.number().int().min(1).max(60),
     maxGapMinutes: z.number().int().min(1).max(120),
@@ -305,6 +307,7 @@ export const defaultPlaybook: Playbook = {
   weeklyTarget: 50,
   dailyCap: 15,
   sendingRampEnabled: true,
+  allowUsMarketWindow: false,
   automaticApolloEnabled: true,
   minGapMinutes: 12,
   maxGapMinutes: 28,
@@ -865,32 +868,10 @@ export const prospectIssues = (
     ...(!z.email().max(254).safeParse(settings.fromEmail).success
       ? [{ code: "senderDomain", field: "fromEmail" }]
       : []),
-    ...(!isTimezone(prospect.timezone)
+    ...(!resolveSendingWindow(prospect, settings)
       ? [{ code: "timezoneMissing", field: "timezone" }]
       : []),
   ];
-};
-
-export const isTimezone = (timezone: string) =>
-  Boolean(timezone) &&
-  resultify(() =>
-    new Intl.DateTimeFormat("en-US", { timeZone: timezone }).format(),
-  ).success;
-
-/** Monday–Thursday, 08:00 inclusive through 14:00 exclusive in the verified recipient zone. */
-export const inSendWindow = (timezone: string, now = new Date()) => {
-  if (!isTimezone(timezone)) return false;
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: timezone,
-    weekday: "short",
-    hour: "numeric",
-    hourCycle: "h23",
-  }).formatToParts(now);
-  const weekday = parts.find((part) => part.type === "weekday")?.value ?? "";
-  const hour = Number(parts.find((part) => part.type === "hour")?.value);
-  return (
-    ["Mon", "Tue", "Wed", "Thu"].includes(weekday) && hour >= 8 && hour < 14
-  );
 };
 
 export const draftSchema = z.object({

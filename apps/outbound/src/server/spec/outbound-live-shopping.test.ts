@@ -79,6 +79,34 @@ const capture = async (): Promise<AiCapture> => {
 };
 
 describe("live shopper query adapters", () => {
+  test("persists Retry-After with the exact rejected provider capture", async () => {
+    const body = { error: "Rate limit exceeded: max 5 request(s) per minute" };
+    const result = await Shopping.startQuery(
+      { apiKey, query: query() },
+      {
+        now,
+        request: async () => ({
+          success: true,
+          data: Response.json(body, {
+            status: 429,
+            headers: { "Retry-After": "90" },
+          }),
+        }),
+      },
+    );
+    expect(result.success).toBe(false);
+    if (result.success)
+      throw new Error("Expected a captured throttle response");
+    expect(result.error.retryAfterSeconds).toBe(90);
+    expect(result.error.receipt).toMatchObject({
+      retryAfterSeconds: 90,
+      response: {
+        status: 429,
+        body: JSON.stringify(body),
+        sha256: digest(JSON.stringify(body)),
+      },
+    });
+  });
   test("prepares a concrete question without pretending it was executed", () => {
     expect(query().prompt).toContain("Where can I buy Trail Tote");
     expect(query().prompt).toContain("price");
