@@ -315,11 +315,23 @@ way. Repeating the same review is idempotent and does not reset the query budget
 
 `resumeLocation` applies the same reviewed-request contract to a completed
 missing-address hold. It must resolve one business timezone from the original
-saved company and location receipts after a parser correction. It retains the
+saved company and location receipts after a parser correction, or use an
+explicitly enabled US market window for a recorded US contact. It retains the
 entire held state, reviewer audit and original address observation timestamp,
 then resumes qualification without fetching pages or submitting shopping work.
 Ambiguous addresses, third-party policy addresses, changed campaign or contact
 bindings, and any prior paid work remain ineligible.
+
+The operational Playbook preference `allowUsMarketWindow` defaults to false.
+When enabled, contacts recorded in the US whose timezone is blank may qualify
+without a postal address. Their actual timezone remains blank; saved metadata
+labels the schedule as a chosen market window. The same scheduling resolver
+governs readiness, email reservation and final dispatch, and LinkedIn sending:
+Monday–Thursday, 18:00 inclusive through 21:00 exclusive UTC. Known timezones
+retain 08:00–14:00 local scheduling. Unknown countries, non-US countries and
+malformed nonempty timezones do not qualify for this fallback. Switching the
+preference changes no approved message or approval revision, but each send
+rechecks the current preference.
 
 Company qualification uses a bounded catalog of unchanged source excerpts.
 Azure selects excerpt IDs; local code supplies their original text and URLs,
