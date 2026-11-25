@@ -13,6 +13,8 @@ Central navigation for product context, agent rules, and package/component docum
 
 ### If you are working on store integrations or hosted UCP
 
+- [Loop Returns](./integrations/loop.md) — per-merchant return signals, setup, sync, privacy and verification
+- [Loop partner submission](./integrations/loop-partner-submission.md) — scope, reviewer steps and open partner questions
 - [Store integrations progress tracker](./integrations/overview.md)
 - [WebMCP store scans](./integrations/webmcp.md) — free public and dashboard source scans, detection evidence, current browser APIs, and runtime verification limits
 - [Google UCP — agentic checkout guide](./integrations/google-ucp.md) — merchant checklist for checkout on Google AI surfaces + which steps ecentic automates

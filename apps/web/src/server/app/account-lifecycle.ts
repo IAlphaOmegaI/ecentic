@@ -80,6 +80,13 @@ export const disconnectStore = withAuthentication(
           .limit(1);
         if (recharge && recharge.status !== "disconnected")
           return blocked("storeConnections");
+        const [loop] = await transaction
+          .select({ status: schema.loopConnection.status })
+          .from(schema.loopConnection)
+          .where(eq(schema.loopConnection.storeId, identifier))
+          .limit(1);
+        if (loop && loop.status !== "disconnected")
+          return blocked("storeConnections");
 
         await transaction
           .delete(schema.store_account)
@@ -175,7 +182,7 @@ export const deleteAccount = withAuthentication(
 
         if (stores.length > 0) {
           const identifiers = stores.map((store) => store.id);
-          const [credentials, google, orders, recharge] = await Promise.all([
+          const [credentials, google, orders, recharge, loop] = await Promise.all([
             transaction
               .select({ id: schema.store_account.id })
               .from(schema.store_account)
@@ -201,12 +208,18 @@ export const deleteAccount = withAuthentication(
                 ),
               )
               .limit(1),
+            transaction
+              .select({ status: schema.loopConnection.status })
+              .from(schema.loopConnection)
+              .where(and(inArray(schema.loopConnection.storeId, identifiers), ne(schema.loopConnection.status, "disconnected")))
+              .limit(1),
           ]);
           if (orders.length > 0) return blocked("billingRecords");
           if (
             credentials.length > 0 ||
             google.length > 0 ||
-            recharge.length > 0
+            recharge.length > 0 ||
+            loop.length > 0
           )
             return blocked("storeConnections");
         }

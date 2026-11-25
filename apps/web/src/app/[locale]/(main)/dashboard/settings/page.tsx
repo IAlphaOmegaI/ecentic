@@ -6,6 +6,7 @@ import { redirect } from "@/i18n/navigation";
 import * as Authentication from "@/server/app/authentication";
 import * as PerformanceFee from "@/server/app/billing/performance-fee";
 import * as GoogleMerchant from "@/server/app/integration/google-merchant";
+import * as Loop from "@/server/app/integration/loop/actions";
 import * as Recharge from "@/server/app/integration/recharge/actions";
 import * as Store from "@/server/app/store";
 import * as Subscription from "@/server/app/subscription";
@@ -59,11 +60,20 @@ const Integrations = async () => {
       return [store.id, status.success ? status.data : null] as const;
     }),
   );
+  const loopEntries = await Promise.all(
+    stores.map(async (store) => {
+      const status = await Loop.getStatus(Environment.SERVER, {
+        store: store.id,
+      });
+      return [store.id, status.success ? status.data : null] as const;
+    }),
+  );
   return (
     <IntegrationsSection
       stores={stores}
       google={google}
       recharge={Object.fromEntries(rechargeEntries)}
+      loop={Object.fromEntries(loopEntries)}
     />
   );
 };

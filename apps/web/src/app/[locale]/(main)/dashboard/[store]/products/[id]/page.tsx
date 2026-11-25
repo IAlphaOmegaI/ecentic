@@ -3,6 +3,10 @@ import { Suspense } from "react";
 import * as Product from "@/server/app/product";
 import { sanitize } from "@/server/utils/blog-content";
 import { Environment } from "@/server/utils/environment";
+import {
+  LoopSignals,
+  LoopSignalsSkeleton,
+} from "../../_components/loop-signals";
 import { ProductDetail } from "./_components/product-detail";
 import {
   PageSkeleton,
@@ -50,6 +54,9 @@ export default ({
   <ProductShell>
     <Suspense fallback={<PageSkeleton />}>
       <ProductContent params={params} />
+    </Suspense>
+    <Suspense fallback={<LoopSignalsSkeleton />}>
+      <LoopSignals params={params} />
     </Suspense>
   </ProductShell>
 );

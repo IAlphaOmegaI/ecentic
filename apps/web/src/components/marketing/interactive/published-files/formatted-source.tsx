@@ -43,7 +43,7 @@ export const FormattedSourceTokens = ({ source }: { source: string }) => (
           /^".*"\s*:$/.test(part)
             ? "text-primary-rich"
             : /^"/.test(part)
-              ? "text-info-foreground"
+              ? "text-info-rich"
               : /^(true|false)$/.test(part)
                 ? "text-success-rich"
                 : part === "null"

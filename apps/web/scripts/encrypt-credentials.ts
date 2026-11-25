@@ -13,6 +13,23 @@ import {
 
 const targets = [
   {
+    table: "loop_connections",
+    purpose: "loopConnection",
+    fields: [
+      "apiKey",
+      "accessToken",
+      "refreshToken",
+      "webhookSecret",
+      "previousWebhookSecret",
+      "callbackToken",
+    ],
+  },
+  {
+    table: "loop_installations",
+    purpose: "loopInstallation",
+    fields: ["verifier"],
+  },
+  {
     table: "recharge_connections",
     purpose: "rechargeConnection",
     fields: ["accessToken", "refreshToken"],

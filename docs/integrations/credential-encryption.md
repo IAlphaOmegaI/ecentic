@@ -25,10 +25,15 @@ Covered fields:
 | `google_merchant_account` | `accessToken`, `refreshToken` |
 | `recharge_connections` | `accessToken`, `refreshToken` |
 | `recharge_installations` | `code`, `grant` |
+| `loop_connections` | `apiKey`, `accessToken`, `refreshToken`, `webhookSecret`, `previousWebhookSecret` |
+| `loop_installations` | `verifier` |
 
 Apply the Recharge schema migration before running the expanded rotation script.
 Recharge pending-install rows expire automatically; disconnect removes the
 connection's encrypted credentials and pending grants. See [Recharge](./recharge.md).
+Apply both Loop migrations before rotating the new Loop columns. Loop disconnect
+removes its connection credentials and pending installation verifier immediately;
+see [Loop](./loop.md) for webhook cleanup and return-data retention.
 
 Password hashes and agent API key hashes stay hashes. Session tokens, tracking
 keys and credential-like data in other storage are not newly encrypted by this
