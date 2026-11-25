@@ -57,6 +57,7 @@ export const LoopSignals = async ({
       product={product}
       data={result.data}
       queue={queue}
+      standalone={standalone}
     />
   );
 };

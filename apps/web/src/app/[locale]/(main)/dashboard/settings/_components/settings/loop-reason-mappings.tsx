@@ -1,6 +1,12 @@
 "use client";
 
 import { useAsyncAction } from "@zenncore/utils/hooks";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionPanel,
+  AccordionTrigger,
+} from "@zenncore/web/components/accordion";
 import { Button } from "@zenncore/web/components/button";
 import {
   field,
@@ -60,7 +66,7 @@ const Mapping = ({
     },
   );
   return (
-    <div className="py-4">
+    <div className="min-w-0 px-4 py-4 sm:px-6">
       <p className="wrap-anywhere font-medium text-sm">
         {mapping.parentReason ? `${mapping.parentReason} / ` : ""}
         {mapping.reason}
@@ -133,45 +139,56 @@ export const LoopReasonMappings = ({ store }: { store: string }) => {
     setMappings(result.data.mappings);
   });
   return (
-    <div className="mt-4">
-      <Button
-        variant="ghost"
-        color="neutral"
-        aria-expanded={open}
-        onClick={() => {
-          setOpen(!open);
-          if (!open && mappings === null) void load();
-        }}
-      >
-        {translate("mappings")}
-      </Button>
-      {open && (
-        <div className="mt-4">
-          <p className="max-w-2xl text-foreground-dimmed text-sm">
-            {translate("mappingsIntro")}
-          </p>
-          {pending && (
-            <p role="status" className="mt-4 text-foreground-dimmed text-sm">
-              {translate("working")}
+    <Accordion
+      className="min-w-0 border-accent-foreground border-t"
+      value={open ? ["mappings"] : []}
+      onValueChange={(value) => {
+        const nextOpen = value.includes("mappings");
+        setOpen(nextOpen);
+        if (nextOpen && mappings === null) void load();
+      }}
+    >
+      <AccordionItem value="mappings" className="min-w-0 border-0">
+        <AccordionTrigger
+          className="items-center px-4 py-4 text-sm sm:px-6"
+          classList={{
+            trigger: {
+              icon: "mr-0 size-4 shrink-0 group-data-panel-open:rotate-180 motion-reduce:transition-none",
+            },
+          }}
+        >
+          {translate("mappings")}
+        </AccordionTrigger>
+        <AccordionPanel className="motion-reduce:transition-none">
+          <div className="px-4 pb-4 sm:px-6">
+            <p className="max-w-2xl text-foreground-dimmed text-sm">
+              {translate("mappingsIntro")}
             </p>
-          )}
-          {error && (
-            <p role="alert" className="mt-4 text-error text-sm">
-              {translate("actionFailed")}
-            </p>
-          )}
-          {mappings?.length === 0 && (
-            <p className="mt-4 text-foreground-dimmed text-sm">
-              {translate("noMappings")}
-            </p>
-          )}
-          <div className="mt-4 divide-y divide-accent-foreground">
-            {mappings?.map((mapping) => (
-              <Mapping key={mapping.id} store={store} mapping={mapping} />
-            ))}
+            {pending && (
+              <p role="status" className="mt-4 text-foreground-dimmed text-sm">
+                {translate("working")}
+              </p>
+            )}
+            {error && (
+              <p role="alert" className="mt-4 text-error text-sm">
+                {translate("actionFailed")}
+              </p>
+            )}
+            {mappings?.length === 0 && (
+              <p className="mt-4 text-foreground-dimmed text-sm">
+                {translate("noMappings")}
+              </p>
+            )}
           </div>
-        </div>
-      )}
-    </div>
+          {mappings && mappings.length > 0 && (
+            <div className="divide-y divide-accent-foreground border-accent-foreground border-t">
+              {mappings.map((mapping) => (
+                <Mapping key={mapping.id} store={store} mapping={mapping} />
+              ))}
+            </div>
+          )}
+        </AccordionPanel>
+      </AccordionItem>
+    </Accordion>
   );
 };

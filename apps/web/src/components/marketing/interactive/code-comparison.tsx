@@ -37,6 +37,7 @@ export const CodeDiff = ({
   const lines = sourceDiff(original, updated);
   const added = lines.filter((line) => line.kind === "added").length;
   const removed = lines.filter((line) => line.kind === "removed").length;
+  const annotations = rows.filter((row) => row.note.trim().length > 0);
   return (
     <section
       aria-label={label}
@@ -155,23 +156,25 @@ export const CodeDiff = ({
           ))}
         </code>
       </pre>
-      <div className="border-background-rich/15 border-t px-8 py-6 max-sm:px-4">
-        <p className="mb-4 text-background-rich/50 text-xs">
-          {copy.annotations}
-        </p>
-        <dl className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,220px),1fr))] gap-x-8 gap-y-6">
-          {rows.map((row) => (
-            <div key={row.key} className="min-w-0">
-              <dt className="mb-2 break-all font-mono text-primary-rich text-xs">
-                {row.key}
-              </dt>
-              <dd className="max-w-[48ch] text-background-rich/65 text-sm leading-relaxed">
-                {row.note}
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </div>
+      {annotations.length > 0 && (
+        <div className="border-background-rich/15 border-t px-8 py-6 max-sm:px-4">
+          <p className="mb-4 text-background-rich/50 text-xs">
+            {copy.annotations}
+          </p>
+          <dl className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,220px),1fr))] gap-x-8 gap-y-6">
+            {annotations.map((row) => (
+              <div key={row.key} className="min-w-0">
+                <dt className="mb-2 break-all font-mono text-primary-rich text-xs">
+                  {row.key}
+                </dt>
+                <dd className="max-w-[48ch] text-background-rich/65 text-sm leading-relaxed">
+                  {row.note}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      )}
       <p role="status" className="sr-only">
         {copied === "idle" ? "" : copy.copyState[copied]}
       </p>

@@ -97,8 +97,8 @@ export const LoopControls = ({ store, status }: LoopControls.Props) => {
   };
 
   return (
-    <section className="min-w-0 border-accent-foreground border-t px-4 py-6 sm:px-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
+    <section className="min-w-0 border-accent-foreground border-t">
+      <div className="flex flex-wrap items-start justify-between gap-4 px-4 py-6 sm:px-6">
         <div className="min-w-0 max-w-2xl">
           <h4 className="font-semibold text-sm">{translate("title")}</h4>
           <p className="mt-2 text-foreground-dimmed text-sm">
@@ -192,7 +192,7 @@ export const LoopControls = ({ store, status }: LoopControls.Props) => {
         </div>
       </div>
       {error && !operation && (
-        <p role="alert" className="mt-4 text-error text-sm">
+        <p role="alert" className="px-4 pb-6 text-error text-sm sm:px-6">
           {translate("actionFailed")}
         </p>
       )}
