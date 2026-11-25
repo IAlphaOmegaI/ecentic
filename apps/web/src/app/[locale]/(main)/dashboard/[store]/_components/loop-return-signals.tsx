@@ -377,13 +377,15 @@ const Signal = ({
               {translate("approveBody")}
             </DialogDescription>
           </div>
-          <CodeDiff
-            rows={rows}
-            filename={signal.title}
-            label={translate("proposal")}
-            before={translate("before")}
-            after={translate("after")}
-          />
+          <div className="min-w-0 overflow-x-clip">
+            <CodeDiff
+              rows={rows}
+              filename={signal.title}
+              label={translate("proposal")}
+              before={translate("before")}
+              after={translate("after")}
+            />
+          </div>
           {error && (
             <p role="alert" className="px-6 pt-6 text-error text-sm">
               {translate("actionFailed")}
