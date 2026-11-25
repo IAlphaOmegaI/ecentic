@@ -2,6 +2,7 @@ import { defineRelations, sql } from "drizzle-orm";
 import {
   boolean,
   date,
+  doublePrecision,
   index,
   integer,
   jsonb,
@@ -1464,9 +1465,404 @@ export const agentsState = pgTable("agents_state", {
   expiresAt: timestamp("expires_at", { withTimezone: true, mode: "date" }),
 });
 
+/** Loop reads data only for a consenting merchant; never combine merchants. */
+export const loopConnection = pgTable(
+  "loop_connections",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    storeId: text("storeId")
+      .notNull()
+      .unique()
+      .references(() => store.id, { onDelete: "cascade" }),
+    authMode: text("authMode")
+      .$type<"api_key" | "oauth">()
+      .notNull()
+      .default("api_key"),
+    apiKey: encryptedText("apiKey", "loopConnection.apiKey"),
+    accessToken: encryptedText("accessToken", "loopConnection.accessToken"),
+    refreshToken: encryptedText("refreshToken", "loopConnection.refreshToken"),
+    accessTokenExpiresAt: timestamp("accessTokenExpiresAt", { mode: "date" }),
+    webhookSecret: encryptedText(
+      "webhookSecret",
+      "loopConnection.webhookSecret",
+    ),
+    previousWebhookSecret: encryptedText(
+      "previousWebhookSecret",
+      "loopConnection.previousWebhookSecret",
+    ),
+    previousSecretExpiresAt: timestamp("previousSecretExpiresAt", {
+      mode: "date",
+    }),
+    callbackToken: encryptedText(
+      "callbackToken",
+      "loopConnection.callbackToken",
+    ),
+    scopes: jsonb("scopes").$type<string[]>().notNull().default([]),
+    shopId: text("shopId"),
+    webhookIds: jsonb("webhookIds").$type<string[]>().notNull().default([]),
+    status: text("status")
+      .$type<
+        | "connecting"
+        | "connected"
+        | "syncing"
+        | "error"
+        | "reconnect_required"
+        | "disconnected"
+      >()
+      .notNull()
+      .default("connecting"),
+    generation: integer("generation").notNull().default(1),
+    connectedAt: timestamp("connectedAt", { mode: "date" })
+      .notNull()
+      .defaultNow(),
+    disconnectedAt: timestamp("disconnectedAt", { mode: "date" }),
+    purgeAfter: timestamp("purgeAfter", { mode: "date" }),
+    lastSyncedAt: timestamp("lastSyncedAt", { mode: "date" }),
+    lastMaintenanceAt: timestamp("lastMaintenanceAt", { mode: "date" }),
+    lastError: text("lastError"),
+    cleanupRequired: boolean("cleanupRequired").notNull().default(false),
+    lease: text("lease"),
+    leaseUntil: timestamp("leaseUntil", { mode: "date" }),
+    nextRequestAt: timestamp("nextRequestAt", { mode: "date" }),
+    nextAuthRequestAt: timestamp("nextAuthRequestAt", { mode: "date" }),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("loop_connection_shop").on(table.storeId, table.shopId),
+    uniqueIndex("loop_active_shop_identity")
+      .on(table.shopId)
+      .where(
+        sql`${table.disconnectedAt} is null and ${table.shopId} is not null`,
+      ),
+  ],
+);
+
+export const loopReturnLine = pgTable(
+  "loop_return_lines",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    generation: integer("generation").notNull(),
+    loopReturnId: text("loopReturnId").notNull(),
+    lineItemId: text("lineItemId").notNull(),
+    providerLineItemId: text("providerLineItemId"),
+    providerOrderId: text("providerOrderId"),
+    orderName: text("orderName"),
+    productId: text("productId").references(() => product.id, {
+      onDelete: "set null",
+    }),
+    externalProductId: text("externalProductId"),
+    variantId: text("variantId"),
+    sku: text("sku"),
+    title: text("title"),
+    price: numeric("price", { precision: 18, scale: 4 }),
+    quantity: integer("quantity").notNull().default(1),
+    refund: text("refund"),
+    currency: text("currency"),
+    returnReason: text("returnReason").notNull(),
+    parentReturnReason: text("parentReturnReason"),
+    redactedComment: text("redactedComment"),
+    outcome: text("outcome"),
+    lineOutcome: text("lineOutcome"),
+    exchangeVariant: text("exchangeVariant"),
+    returnState: text("returnState").notNull(),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull(),
+    returnedAt: timestamp("returnedAt", { mode: "date" }),
+  },
+  (table) => [
+    uniqueIndex("loop_line_identity").on(table.storeId, table.lineItemId),
+    index("loop_line_return").on(table.storeId, table.loopReturnId),
+    index("loop_line_order").on(table.storeId, table.providerOrderId),
+    index("loop_line_product").on(
+      table.storeId,
+      table.productId,
+      table.createdAt,
+    ),
+    index("loop_line_external_product").on(
+      table.storeId,
+      table.externalProductId,
+    ),
+    index("loop_line_variant").on(table.storeId, table.variantId),
+    index("loop_line_provider_line").on(
+      table.storeId,
+      table.providerLineItemId,
+    ),
+  ],
+);
+
+export const loopReturnVersion = pgTable(
+  "loop_return_versions",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    generation: integer("generation").notNull(),
+    loopReturnId: text("loopReturnId").notNull(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull(),
+    state: text("state").notNull(),
+  },
+  (table) => [
+    uniqueIndex("loop_return_version_identity").on(
+      table.storeId,
+      table.loopReturnId,
+    ),
+  ],
+);
+
+export const loopReasonMapping = pgTable(
+  "loop_reason_mappings",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    reason: text("reason").notNull(),
+    parentReason: text("parentReason").notNull().default(""),
+    category: text("category").notNull(),
+    dataFixable: boolean("dataFixable").notNull(),
+    source: text("source").$type<"rule" | "model" | "merchant">().notNull(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("loop_reason_identity").on(
+      table.storeId,
+      table.reason,
+      table.parentReason,
+    ),
+  ],
+);
+
+export const returnExpectationGap = pgTable(
+  "return_expectation_gaps",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    generation: integer("generation").notNull(),
+    productId: text("productId")
+      .notNull()
+      .references(() => product.id, { onDelete: "cascade" }),
+    variantId: text("variantId"),
+    attribute: text("attribute").notNull(),
+    direction: text("direction"),
+    count: integer("count").notNull(),
+    share: doublePrecision("share").notNull(),
+    refundValue: numeric("refundValue", { precision: 18, scale: 4 }),
+    currency: text("currency"),
+    windowStart: timestamp("windowStart", { mode: "date" }).notNull(),
+    windowEnd: timestamp("windowEnd", { mode: "date" }).notNull(),
+    status: text("status")
+      .$type<
+        "open" | "ai_checked" | "fix_proposed" | "fix_published" | "dismissed"
+      >()
+      .notNull()
+      .default("open"),
+    checkRunId: text("checkRunId"),
+    optimizationId: text("optimizationId"),
+    evidence: jsonb("evidence")
+      .$type<Record<string, unknown>>()
+      .notNull()
+      .default({}),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("loop_gap_identity").on(
+      table.storeId,
+      table.productId,
+      table.attribute,
+    ),
+    index("loop_gap_product").on(table.storeId, table.productId),
+    index("loop_gap_status").on(table.storeId, table.status),
+  ],
+);
+
+export const loopSignalCheck = pgTable(
+  "loop_signal_checks",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    generation: integer("generation").notNull(),
+    gapId: text("gapId")
+      .notNull()
+      .references(() => returnExpectationGap.id, { onDelete: "cascade" }),
+    productId: text("productId")
+      .notNull()
+      .references(() => product.id, { onDelete: "cascade" }),
+    surface: text("surface").notNull(),
+    prompt: text("prompt").notNull(),
+    expected: jsonb("expected")
+      .$type<Record<string, unknown>>()
+      .notNull()
+      .default({}),
+    status: text("status").notNull().default("pending"),
+    observed: jsonb("observed").$type<Record<string, unknown>>(),
+    evidence: text("evidence"),
+    error: text("error"),
+    requestKey: text("requestKey").notNull(),
+    checkedAt: timestamp("checkedAt", { mode: "date" }),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("loop_check_identity").on(table.storeId, table.requestKey),
+    index("loop_check_gap").on(table.storeId, table.gapId),
+  ],
+);
+
+export const loopProposal = pgTable(
+  "loop_proposals",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    generation: integer("generation").notNull(),
+    productId: text("productId")
+      .notNull()
+      .references(() => product.id, { onDelete: "cascade" }),
+    gapId: text("gapId")
+      .notNull()
+      .references(() => returnExpectationGap.id, { onDelete: "cascade" }),
+    status: text("status").notNull().default("pending"),
+    source: text("source").notNull().default("loop"),
+    revision: integer("revision").notNull().default(1),
+    original: jsonb("original")
+      .$type<Record<string, unknown>>()
+      .notNull()
+      .default({}),
+    proposed: jsonb("proposed")
+      .$type<Record<string, unknown>>()
+      .notNull()
+      .default({}),
+    diff: jsonb("diff").$type<Record<string, unknown>>().notNull().default({}),
+    evidence: jsonb("evidence")
+      .$type<Record<string, unknown>>()
+      .notNull()
+      .default({}),
+    requiresMerchantApproval: boolean("requiresMerchantApproval")
+      .notNull()
+      .default(true),
+    approvedAt: timestamp("approvedAt", { mode: "date" }),
+    publishedAt: timestamp("publishedAt", { mode: "date" }),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("loop_proposal_identity").on(
+      table.storeId,
+      table.gapId,
+      table.revision,
+    ),
+    index("loop_proposal_product").on(table.storeId, table.productId),
+    index("loop_proposal_gap").on(table.storeId, table.gapId),
+  ],
+);
+
+export const loopMeasurement = pgTable(
+  "loop_measurements",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    proposalId: text("proposalId").references(() => loopProposal.id, {
+      onDelete: "set null",
+    }),
+    productId: text("productId")
+      .notNull()
+      .references(() => product.id, { onDelete: "cascade" }),
+    publishedAt: timestamp("publishedAt", { mode: "date" }).notNull(),
+    windowDays: integer("windowDays").notNull().default(60),
+    baseline: jsonb("baseline")
+      .$type<Record<string, unknown>>()
+      .notNull()
+      .default({}),
+    controlProductIds: jsonb("controlProductIds")
+      .$type<string[]>()
+      .notNull()
+      .default([]),
+    snapshot: jsonb("snapshot")
+      .$type<Record<string, unknown>>()
+      .notNull()
+      .default({}),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("loop_measurement_product").on(table.storeId, table.productId),
+  ],
+);
+
+export const loopJob = pgTable(
+  "loop_jobs",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    generation: integer("generation").notNull(),
+    kind: text("kind").notNull(),
+    key: text("key").notNull(),
+    payload: jsonb("payload")
+      .$type<Record<string, unknown>>()
+      .notNull()
+      .default({}),
+    status: text("status").notNull().default("pending"),
+    attempts: integer("attempts").notNull().default(0),
+    availableAt: timestamp("availableAt", { mode: "date" })
+      .notNull()
+      .defaultNow(),
+    lease: text("lease"),
+    error: text("error"),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("loop_job_identity").on(table.storeId, table.key),
+    index("loop_job_due").on(table.storeId, table.status, table.availableAt),
+  ],
+);
+
+export const loopInstallation = pgTable(
+  "loop_installations",
+  {
+    id: text("id").primaryKey(),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    userId: text("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    organization: text("organization").notNull(),
+    verifier: encryptedText("verifier", "loopInstallation.verifier").notNull(),
+    stateHash: text("stateHash").notNull(),
+    generation: integer("generation").notNull(),
+    expiresAt: timestamp("expiresAt", { mode: "date" }).notNull(),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [index("loop_installation_store").on(table.storeId)],
+);
+
 /** Tables object for defineRelations and better-auth adapter */
 export const tables = {
   ...Outbound,
+  loopConnection,
+  loopReturnLine,
+  loopReturnVersion,
+  loopReasonMapping,
+  returnExpectationGap,
+  loopSignalCheck,
+  loopProposal,
+  loopMeasurement,
+  loopJob,
+  loopInstallation,
   user,
   session,
   account,

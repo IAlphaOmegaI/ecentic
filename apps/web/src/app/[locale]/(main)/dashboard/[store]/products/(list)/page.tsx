@@ -162,14 +162,24 @@ const MissingFields = async ({ params }: { params: StoreParams }) => {
 const AddProductsAction = async ({ params }: { params: StoreParams }) => {
   const { store } = await params;
   const translate = await getTranslations("dashboard.products.catalog");
+  const loop = await getTranslations("dashboard.loop");
   return (
-    <Button
-      color="primary"
-      render={<Link href={`/dashboard/${store}/products/add`} />}
-    >
-      <PlusIcon className="size-4" />
-      {translate("action.add")}
-    </Button>
+    <div className="flex flex-wrap gap-2">
+      <Button
+        color="neutral"
+        variant="soft"
+        render={<Link href={`/dashboard/${store}/products/return-signals`} />}
+      >
+        {loop("signals")}
+      </Button>
+      <Button
+        color="primary"
+        render={<Link href={`/dashboard/${store}/products/add`} />}
+      >
+        <PlusIcon className="size-4" />
+        {translate("action.add")}
+      </Button>
+    </div>
   );
 };
 

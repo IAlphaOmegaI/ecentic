@@ -14,6 +14,7 @@ import { scopeOptimizationProducts } from "../utils/optimization-scope";
 import { composeJsonForProduct } from "../utils/recharge-publication";
 import { type Document, repository, resultifyRead } from "../utils/repository";
 import { feedUrl } from "./feed-export";
+import * as LoopSignals from "./integration/loop/analysis-model";
 import * as Shopify from "./integration/shopify";
 import { themeEmbedDeepLink } from "./integration/shopify/hmac";
 import * as WooCommerce from "./integration/woocommerce";
@@ -512,6 +513,12 @@ export const approveProductListing = withSubscription(
     if (product.data.userId !== user)
       return { success: false, error: new Error("Not authorized") };
 
+    const merchant = product.data.storeId;
+    const reviewed = await resultify(() =>
+      LoopSignals.assertNoUnreviewedProposal({ store: merchant, product: id }),
+    );
+    if (!reviewed.success) return reviewed;
+
     const store = await Store.get(Environment.SERVER, product.data.storeId);
     if (!store.success) return store;
     if (!store.data)
@@ -878,6 +885,17 @@ export const optimizeStoreForAgents = withSubscription(
       return { success: false as const, error: new Error("Store not found") };
     if (store.data.userId !== userId)
       return { success: false as const, error: new Error("Not authorized") };
+    const blocked = await resultify(() =>
+      LoopSignals.hasUnreviewedProposals({ store: storeId }),
+    );
+    if (!blocked.success) return blocked;
+    if (blocked.data)
+      return {
+        success: false as const,
+        error: new Error(
+          "Review the pending Return signals proposals before optimizing this store.",
+        ),
+      };
     const isShopify =
       store.data.platform === "shopify-public" ||
       store.data.platform === "shopify";

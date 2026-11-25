@@ -35,7 +35,12 @@ describe("settings navigation", () => {
   });
 
   test("returns to connected stores for service connection results", () => {
-    for (const query of ["google=connected", "recharge=reconnect_required"])
+    for (const query of [
+      "google=connected",
+      "recharge=reconnect_required",
+      "loop=connected",
+      "loop=reconnect_required",
+    ])
       expect(resolveSettingsSection(new URLSearchParams(query))).toBe(
         "integrations",
       );

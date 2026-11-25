@@ -22,6 +22,7 @@ export const resolveSettingsSection = (
       return "billing";
     case parameters.get("google") !== null:
     case parameters.get("recharge") !== null:
+    case parameters.get("loop") !== null:
       return "integrations";
     default:
       return "account";

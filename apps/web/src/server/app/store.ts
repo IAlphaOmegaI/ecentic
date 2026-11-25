@@ -274,8 +274,10 @@ export const publishProductListing = withAuthentication(
     {
       product: id,
       data,
+      expectedFingerprint,
     }: {
       product: string;
+      expectedFingerprint?: string;
       data: {
         title?: string;
         body_html?: string;
@@ -303,7 +305,11 @@ export const publishProductListing = withAuthentication(
 
     switch (store.data.platform) {
       case "shopify":
-        return Shopify.updateProduct({ product: id, data });
+        return Shopify.updateProduct({
+          product: id,
+          data,
+          expectedFingerprint,
+        });
       case "woocommerce":
         return WooCommerce.updateProduct({ product: id, data });
       case "shopify-public":

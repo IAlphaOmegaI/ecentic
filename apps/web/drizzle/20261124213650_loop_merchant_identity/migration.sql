@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "loop_active_shop_identity" ON "loop_connections" ("shopId") WHERE "disconnectedAt" is null and "shopId" is not null;

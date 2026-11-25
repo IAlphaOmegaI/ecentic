@@ -2,7 +2,12 @@
 
 import crypto from "node:crypto";
 import { resultify, unwrapResult } from "@zenncore/utils";
-import { type TransactionScope, withTransaction } from "../../../database";
+import { and, eq } from "drizzle-orm";
+import {
+  schema,
+  type TransactionScope,
+  withTransaction,
+} from "../../../database";
 import { withAuthentication } from "../../../utils/authentication";
 import { withContext } from "../../../utils/context";
 import { Environment } from "../../../utils/environment";
@@ -14,6 +19,7 @@ import {
   ValidationError,
 } from "../../../utils/error";
 import * as HTTP from "../../../utils/http";
+import { productRevision } from "../../../utils/product-revision";
 import {
   normalizeHostname,
   resolveTrackerPublicOrigin,
@@ -1259,12 +1265,14 @@ export const pushProductMetafields = withContext(
 
 export const updateProduct = withAuthentication(
   async (
-    _context,
+    context,
     {
       product: id,
       data,
+      expectedFingerprint,
     }: {
       product: string;
+      expectedFingerprint?: string;
       data: {
         title?: string;
         body_html?: string;
@@ -1276,6 +1284,8 @@ export const updateProduct = withAuthentication(
 
     if (!product.data)
       return { success: false, error: new Error("Product not found") };
+    if (product.data.userId !== context.session.user.id)
+      return { success: false, error: new Error("Not authorized") };
 
     const store = await Store.get(Environment.SERVER, product.data.storeId);
     if (!store.success) return store;
@@ -1303,32 +1313,123 @@ export const updateProduct = withAuthentication(
 
     const url = `${shopBaseUrl(domain)}/admin/api/${API_VERSION}/products/${product.data.externalId}.json`;
 
-    const response = await HTTP.request(url, {
-      method: "PUT",
-      headers: {
-        "X-Shopify-Access-Token": accessToken,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ product: data }),
-    });
+    const expected = expectedFingerprint ?? productRevision(product.data);
+    const merchant = store.data.id;
+    return resultify(() =>
+      withTransaction(async (transaction) => {
+        const [current] = await transaction
+          .select()
+          .from(schema.product)
+          .where(
+            and(
+              eq(schema.product.id, id),
+              eq(schema.product.storeId, merchant),
+            ),
+          )
+          .for("update");
+        if (!current || productRevision(current) !== expected)
+          throw new Error(
+            "Product data changed; review the latest listing before publishing.",
+          );
+        if (expectedFingerprint) {
+          const checked = await HTTP.request(url, {
+            headers: { "X-Shopify-Access-Token": accessToken },
+          });
+          if (!checked.success) throw checked.error;
+          const live = await HTTP.parse<{ product: Type }>(checked);
+          if (!live.success) throw live.error;
+          if (
+            !live.data.product ||
+            live.data.product.body_html !== (current.description ?? "") ||
+            live.data.product.title !== current.title
+          )
+            throw new Error(
+              "The store listing changed since this proposal. Sync and review it again.",
+            );
+        }
+        const response = await HTTP.request(url, {
+          method: "PUT",
+          headers: {
+            "X-Shopify-Access-Token": accessToken,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ product: data }),
+        });
 
-    if (!response.success) return response;
+        if (!response.success) throw response.error;
 
-    const parsed = await HTTP.parse<{ product: Type }>(response);
-    if (!parsed.success) return parsed;
+        const parsed = await HTTP.parse<{ product: Type }>(response);
+        if (!parsed.success) throw parsed.error;
 
-    const updated = parsed.data.product;
+        const updated = parsed.data.product;
 
-    await Product.update(Environment.SERVER, id, {
-      title: updated.title,
-      description: updated.body_html,
-      rawData: JSON.stringify(updated),
-      syncedAt: new Date(),
-    });
+        const saved = await Product.update(
+          Environment.SERVER,
+          id,
+          {
+            title: updated.title,
+            description: updated.body_html,
+            rawData: JSON.stringify(updated),
+            syncedAt: new Date(),
+          },
+          { tx: transaction },
+        );
+        if (!saved.success) throw saved.error;
 
-    return { success: true, data: updated };
+        return updated;
+      }),
+    );
   },
   "Shopify.updateProduct",
+);
+
+/** Read the authoritative current listing to reconcile an interrupted reviewed publish. */
+export const readProductListing = withAuthentication(
+  async (context, { product: id }: { product: string }) => {
+    const product = await Product.get(Environment.SERVER, id);
+    if (!product.success) return product;
+    if (!product.data || product.data.userId !== context.session.user.id)
+      return { success: false as const, error: new Error("Product not found") };
+    const store = await Store.get(Environment.SERVER, product.data.storeId);
+    if (!store.success) return store;
+    if (
+      !store.data ||
+      store.data.userId !== context.session.user.id ||
+      store.data.platform !== "shopify" ||
+      !product.data.externalId
+    )
+      return {
+        success: false as const,
+        error: new Error("Connected Shopify product not found"),
+      };
+    const token = await resolveAccessToken(store.data.id);
+    if (!token.success) return token;
+    const response = await HTTP.request(
+      `${shopBaseUrl(store.data.domain)}/admin/api/${API_VERSION}/products/${product.data.externalId}.json`,
+      { headers: { "X-Shopify-Access-Token": token.accessToken } },
+    );
+    if (!response.success) return response;
+    const parsed = await HTTP.parse<{ product: Type }>(response);
+    if (!parsed.success) return parsed;
+    if (
+      !parsed.data.product ||
+      String(parsed.data.product.id) !== product.data.externalId ||
+      typeof parsed.data.product.body_html !== "string"
+    )
+      return {
+        success: false as const,
+        error: new Error("Shopify returned an invalid product"),
+      };
+    return {
+      success: true as const,
+      data: {
+        description: parsed.data.product.body_html,
+        title: parsed.data.product.title,
+        rawData: JSON.stringify(parsed.data.product),
+      },
+    };
+  },
+  "Shopify.readProductListing",
 );
 
 const normalizeDomain = (domain: string): string => {
