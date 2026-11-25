@@ -86,10 +86,12 @@ const Signal = ({
   signal,
   store,
   showProduct,
+  standalone,
 }: {
   signal: ReturnSignal;
   store: string;
   showProduct: boolean;
+  standalone: boolean;
 }) => {
   const translate = useTranslations("dashboard.loop");
   const formatter = useFormatter();
@@ -130,17 +132,20 @@ const Signal = ({
     })) ?? [];
   const canApprove =
     signal.proposal && ["pending", "proposed"].includes(signal.proposal.status);
+  const ProductHeading = standalone ? "h2" : "div";
   return (
-    <article className="min-w-0 py-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
+    <article className="min-w-0">
+      <header className="flex flex-wrap items-start justify-between gap-4 px-4 py-6 sm:px-6">
         <div className="min-w-0">
           {showProduct && (
-            <Link
-              href={`/dashboard/${store}/products/${signal.productId}`}
-              className="wrap-anywhere font-semibold text-primary"
-            >
-              {signal.title}
-            </Link>
+            <ProductHeading>
+              <Link
+                href={`/dashboard/${store}/products/${signal.productId}`}
+                className="wrap-anywhere font-semibold text-primary"
+              >
+                {signal.title}
+              </Link>
+            </ProductHeading>
           )}
           <h3 className="mt-2 font-semibold text-base">
             {translate(`category.${category}`)}
@@ -186,9 +191,9 @@ const Signal = ({
                 })}
           </p>
         </div>
-      </div>
+      </header>
       {signal.comments.length > 0 && (
-        <div className="mt-6">
+        <div className="px-4 pb-6 sm:px-6">
           <h4 className="font-medium text-sm">{translate("examples")}</h4>
           <ul className="mt-2 list-disc space-y-2 pl-4 text-foreground-dimmed text-sm">
             {[...new Set(signal.comments)].map((comment) => (
@@ -199,14 +204,16 @@ const Signal = ({
           </ul>
         </div>
       )}
-      <div className="mt-6">
-        <h4 className="font-medium text-sm">{translate("answers")}</h4>
+      <div className="border-accent-foreground border-t">
+        <h4 className="px-4 py-4 font-medium text-sm sm:px-6">
+          {translate("answers")}
+        </h4>
         {signal.checks.length === 0 && (
-          <p className="mt-2 text-foreground-dimmed text-sm">
+          <p className="px-4 pb-6 text-foreground-dimmed text-sm sm:px-6">
             {translate("noAnswers")}
           </p>
         )}
-        <div className="mt-2 grid min-w-0 gap-4 lg:grid-cols-2">
+        <div className="min-w-0">
           {signal.checks.map((check) => {
             const verdict =
               check.status === "correct"
@@ -216,46 +223,55 @@ const Signal = ({
                   : (verdicts.find((value) => value === check.status) ??
                     "not_checked");
             return (
-              <div key={check.id} className="min-w-0 bg-background-dimmed p-4">
-                <p className="font-medium text-sm">
-                  {check.surface === "chatgpt" ? "ChatGPT" : "Google AI Mode"}
-                </p>
-                <p className="mt-2 text-foreground-dimmed text-xs">
-                  {translate(`verdict.${verdict}`)}
-                </p>
-                <p className="wrap-anywhere mt-4 text-sm">{check.prompt}</p>
-                {check.answer && (
-                  <p className="wrap-anywhere mt-2 whitespace-pre-wrap text-foreground-dimmed text-sm">
-                    {check.answer}
+              <div
+                key={check.id}
+                className="grid min-w-0 gap-4 border-accent-foreground border-t px-4 py-6 sm:px-6 lg:grid-cols-[12rem_minmax(0,1fr)]"
+              >
+                <div className="min-w-0">
+                  <p className="font-medium text-sm">
+                    {check.surface === "chatgpt" ? "ChatGPT" : "Google AI Mode"}
                   </p>
-                )}
-                {check.evidence && (
-                  <p className="wrap-anywhere mt-2 text-sm">{check.evidence}</p>
-                )}
+                  <p className="mt-2 text-foreground-dimmed text-xs">
+                    {translate(`verdict.${verdict}`)}
+                  </p>
+                </div>
+                <div className="min-w-0 max-w-3xl">
+                  <p className="wrap-anywhere text-sm">{check.prompt}</p>
+                  {check.answer && (
+                    <p className="wrap-anywhere mt-2 whitespace-pre-wrap text-foreground-dimmed text-sm">
+                      {check.answer}
+                    </p>
+                  )}
+                  {check.evidence && (
+                    <p className="wrap-anywhere mt-2 text-sm">
+                      {check.evidence}
+                    </p>
+                  )}
+                </div>
               </div>
             );
           })}
         </div>
       </div>
       {signal.proposal && (
-        <div className="mt-6">
-          <h4 className="font-medium text-sm">{translate("proposal")}</h4>
-          {signal.proposal.requiresMerchantApproval && category === "fit" && (
-            <p className="mt-2 text-foreground-dimmed text-sm">
-              {translate("fitApproval")}
-            </p>
-          )}
-          <div className="mt-4">
-            <CodeDiff
-              rows={rows}
-              filename={signal.title}
-              label={translate("proposal")}
-              before={translate("before")}
-              after={translate("after")}
-            />
+        <div className="border-accent-foreground border-t">
+          <div className="px-4 py-6 sm:px-6">
+            <h4 className="font-medium text-sm">{translate("proposal")}</h4>
+            {signal.proposal.requiresMerchantApproval && category === "fit" && (
+              <p className="mt-2 text-foreground-dimmed text-sm">
+                {translate("fitApproval")}
+              </p>
+            )}
           </div>
+          <CodeDiff
+            rows={rows}
+            filename={signal.title}
+            label={translate("proposal")}
+            before={translate("before")}
+            after={translate("after")}
+          />
           {canApprove && (
-            <div className="mt-4 flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 px-4 py-6 sm:px-6">
               <Button disabled={pending} onClick={() => setOpen(true)}>
                 {translate("action.approve")}
               </Button>
@@ -270,7 +286,7 @@ const Signal = ({
             </div>
           )}
           {signal.proposal.status === "publishing" && (
-            <div className="mt-4">
+            <div className="px-4 py-6 sm:px-6">
               <Button
                 variant="soft"
                 color="neutral"
@@ -284,7 +300,7 @@ const Signal = ({
         </div>
       )}
       {signal.measurement && (
-        <div className="mt-6">
+        <div className="border-accent-foreground border-t px-4 py-6 sm:px-6">
           <h4 className="font-medium text-sm">{translate("measurement")}</h4>
           <p className="mt-2 max-w-3xl text-foreground-dimmed text-sm">
             {translate("denominatorMissing")}
@@ -330,7 +346,7 @@ const Signal = ({
           )}
         </div>
       )}
-      <div className="mt-6">
+      <div className="border-accent-foreground border-t px-4 py-6 sm:px-6">
         <h4 className="font-medium text-sm">{translate("knownAi")}</h4>
         <p className="mt-2 text-sm">
           {translate("counts", {
@@ -349,27 +365,33 @@ const Signal = ({
         </p>
       </div>
       {error && !open && (
-        <p role="alert" className="mt-4 text-error text-sm">
+        <p role="alert" className="px-4 pb-6 text-error text-sm sm:px-6">
           {translate("actionFailed")}
         </p>
       )}
       <Dialog open={open} onOpenChange={(value) => !pending && setOpen(value)}>
-        <DialogPopup className="mt-0 max-h-[calc(100dvh-3rem)] overflow-y-auto">
-          <DialogTitle>{translate("approveTitle")}</DialogTitle>
-          <DialogDescription>{translate("approveBody")}</DialogDescription>
-          <div className="mt-6">
+        <DialogPopup className="mt-0 max-h-[calc(100dvh-3rem)] w-3xl overflow-y-auto overflow-x-hidden p-0">
+          <div className="p-6">
+            <DialogTitle>{translate("approveTitle")}</DialogTitle>
+            <DialogDescription className="mb-0">
+              {translate("approveBody")}
+            </DialogDescription>
+          </div>
+          <div className="min-w-0 overflow-x-clip">
             <CodeDiff
               rows={rows}
               filename={signal.title}
               label={translate("proposal")}
+              before={translate("before")}
+              after={translate("after")}
             />
           </div>
           {error && (
-            <p role="alert" className="mt-4 text-error text-sm">
+            <p role="alert" className="px-6 pt-6 text-error text-sm">
               {translate("actionFailed")}
             </p>
           )}
-          <div className="mt-6 flex flex-wrap justify-end gap-2">
+          <div className="flex flex-wrap justify-end gap-2 p-6">
             <DialogClose
               render={
                 <Button variant="soft" color="neutral" disabled={pending} />
@@ -392,11 +414,13 @@ export const LoopReturnSignals = ({
   data,
   product,
   queue = false,
+  standalone = false,
 }: {
   store: string;
   data: ReturnSignals;
   product?: string;
   queue?: boolean;
+  standalone?: boolean;
 }) => {
   const translate = useTranslations("dashboard.loop");
   const router = useRouter();
@@ -410,39 +434,45 @@ export const LoopReturnSignals = ({
   const signals = queue
     ? data.signals.filter((signal) => signal.proposal !== null)
     : data.signals;
+  const canRequest =
+    data.connected && data.captureConfigured && signals.length > 0;
   if (!data.connected && signals.length === 0) return null;
   return (
     <section
       aria-label={translate("signals")}
-      className="min-w-0 border-accent-foreground border-t px-4 py-6 sm:px-6"
+      className="min-w-0 border-accent-foreground border-t"
     >
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="min-w-0 max-w-3xl">
-          <h2 className="font-semibold text-xl">{translate("signals")}</h2>
-          {!product && (
-            <p className="mt-2 text-foreground-dimmed text-sm">
-              {translate("signalsIntro")}
-            </p>
+      {(!standalone || canRequest) && (
+        <div className="flex flex-wrap items-start justify-between gap-4 border-accent-foreground border-b px-4 py-6 sm:px-6">
+          {!standalone && (
+            <div className="min-w-0 max-w-3xl">
+              <h2 className="font-medium text-xl">{translate("signals")}</h2>
+              {!product && (
+                <p className="mt-2 text-foreground-dimmed text-sm">
+                  {translate("signalsIntro")}
+                </p>
+              )}
+            </div>
+          )}
+          {canRequest && (
+            <Button
+              variant="soft"
+              color="neutral"
+              disabled={pending}
+              onClick={() => request()}
+            >
+              {translate("action.check")}
+            </Button>
           )}
         </div>
-        {data.connected && data.captureConfigured && signals.length > 0 && (
-          <Button
-            variant="soft"
-            color="neutral"
-            disabled={pending}
-            onClick={() => request()}
-          >
-            {translate("action.check")}
-          </Button>
-        )}
-      </div>
+      )}
       {signals.length === 0 && (
-        <p className="mt-6 text-foreground-dimmed text-sm">
+        <p className="px-4 py-6 text-foreground-dimmed text-sm sm:px-6">
           {translate("empty")}
         </p>
       )}
       {error && (
-        <p role="alert" className="mt-4 text-error text-sm">
+        <p role="alert" className="px-4 py-6 text-error text-sm sm:px-6">
           {translate("actionFailed")}
         </p>
       )}
@@ -453,6 +483,7 @@ export const LoopReturnSignals = ({
             signal={signal}
             store={store}
             showProduct={!product}
+            standalone={standalone}
           />
         ))}
       </div>
