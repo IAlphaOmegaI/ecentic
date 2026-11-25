@@ -3,6 +3,7 @@ import "server-only";
 import { setTimeout as delay } from "node:timers/promises";
 import { type Result, resultify } from "@zenncore/utils";
 import { z } from "zod";
+import { productCaptureUrlMatches } from "@/lib/outbound-shopping-research";
 import * as HTTP from "@/server/utils/http";
 import { isSafePublicHttpUrl } from "@/server/utils/ssrf";
 import { classifyPageAccess } from "./evidence/bot-challenge";
@@ -93,6 +94,99 @@ console.log(JSON.stringify({ ...observed, url: page.url(), status: response?.sta
 
 const normalize = (value: string) =>
   value.replace(/\s+/g, " ").trim().toLowerCase();
+/** Project one intact fixed-program execution; also used when reviewing an already paid capture. */
+export const projectBrowserExecution = ({
+  capture,
+  url,
+  id,
+  productName,
+  startedAt,
+  now = Date.now(),
+}: {
+  capture: RawCapture;
+  url: string;
+  id: string;
+  productName: string;
+  startedAt: string;
+  now?: number;
+}) => {
+  if (
+    capture.status < 200 ||
+    capture.status >= 300 ||
+    digest(capture.body) !== capture.sha256 ||
+    !/^https:\/\/api\.firecrawl\.dev\/v2\/interact\/[a-f0-9-]{36}\/execute$/.test(
+      capture.url,
+    )
+  )
+    return null;
+  const value = resultify(() => JSON.parse(capture.body) as unknown);
+  if (!value.success) return null;
+  const envelope = z
+    .object({
+      success: z.literal(true),
+      stdout: z.string().nullish(),
+      result: z.string().nullish(),
+      error: z.string().nullish(),
+      killed: z.boolean().optional(),
+      exitCode: z.number().nullish(),
+      truncated: z.boolean().optional(),
+    })
+    .safeParse(value.data);
+  if (
+    !envelope.success ||
+    envelope.data.error ||
+    envelope.data.killed ||
+    envelope.data.truncated ||
+    (envelope.data.exitCode !== undefined &&
+      envelope.data.exitCode !== null &&
+      envelope.data.exitCode !== 0)
+  )
+    return null;
+  const content = resultify(
+    () =>
+      JSON.parse(envelope.data.stdout || envelope.data.result || "") as unknown,
+  );
+  const rendered = content.success
+    ? renderedSchema.safeParse(content.data)
+    : null;
+  if (
+    !rendered?.success ||
+    !(id === "product-browser"
+      ? productCaptureUrlMatches(url, rendered.data.url)
+      : rendered.data.url === url) ||
+    rendered.data.status < 200 ||
+    rendered.data.status >= 300 ||
+    !rendered.data.text.trim() ||
+    Date.parse(rendered.data.checkedAt) < Date.parse(startedAt) - 60_000 ||
+    Date.parse(rendered.data.checkedAt) > now + 60_000 ||
+    /(?:just a moment|verify (?:you are|you're) human|access denied|sign in to continue|password protected)/i.test(
+      `${rendered.data.title} ${rendered.data.text.slice(0, 500)}`,
+    )
+  )
+    return null;
+  const visible = [
+    rendered.data.title,
+    ...rendered.data.headings,
+    ...rendered.data.selected,
+    rendered.data.text,
+  ].join("\n");
+  if (
+    id === "product-browser" &&
+    !normalize(visible).includes(normalize(productName))
+  )
+    return null;
+  const source: Source = {
+    id,
+    kind: id === "product-browser" ? "product" : "competitor",
+    capture: "browser",
+    url: rendered.data.url,
+    checkedAt: rendered.data.checkedAt,
+    content: `${visible.slice(0, 12000)}\nRendered product data:\n${rendered.data.structured.join("\n").slice(0, 5500)}`,
+    artifact: `sha256:${capture.sha256}`,
+  };
+  return { source, rendered: rendered.data };
+};
+
 const safe = async (url: string, dependencies: BrowserDependencies) => {
   if (!publicUrlSchema.safeParse(url).success) return false;
   const controller = new AbortController();
@@ -329,71 +423,21 @@ export const inspectPages = async (
     );
     if (!execution.success) throw execution.error;
     raw.push(execution.data.raw);
-    const envelope = z
-      .object({
-        success: z.literal(true),
-        stdout: z.string().nullish(),
-        result: z.string().nullish(),
-        error: z.string().nullish(),
-        killed: z.boolean().optional(),
-        exitCode: z.number().nullish(),
-      })
-      .safeParse(execution.data.value);
-    if (
-      !envelope.success ||
-      envelope.data.error ||
-      envelope.data.killed ||
-      (envelope.data.exitCode !== undefined &&
-        envelope.data.exitCode !== null &&
-        envelope.data.exitCode !== 0)
-    )
-      return null;
-    const content = resultify(
-      () =>
-        JSON.parse(
-          envelope.data.stdout || envelope.data.result || "",
-        ) as unknown,
-    );
-    const rendered = content.success
-      ? renderedSchema.safeParse(content.data)
-      : null;
-    if (
-      !rendered?.success ||
-      new URL(rendered.data.url).origin !== new URL(url).origin ||
-      rendered.data.url !== url ||
-      rendered.data.status < 200 ||
-      rendered.data.status >= 300 ||
-      !rendered.data.text.trim() ||
-      Date.parse(rendered.data.checkedAt) <
-        Date.parse(creation.data.raw.receivedAt) - 60_000 ||
-      Date.parse(rendered.data.checkedAt) > now() + 60_000 ||
-      /(?:just a moment|verify (?:you are|you're) human|access denied|sign in to continue|password protected)/i.test(
-        `${rendered.data.title} ${rendered.data.text.slice(0, 500)}`,
-      )
-    )
-      return null;
-    const visible = [
-      rendered.data.title,
-      ...rendered.data.headings,
-      ...rendered.data.selected,
-      rendered.data.text,
-    ].join("\n");
-    if (
-      id === "product-browser" &&
-      !normalize(visible).includes(normalize(product.name))
-    )
-      return null;
-    const source: Source = {
+    const projected = projectBrowserExecution({
+      capture: execution.data.raw,
+      url,
       id,
-      kind: id === "product-browser" ? "product" : "competitor",
-      capture: "browser",
-      url: rendered.data.url,
-      checkedAt: rendered.data.checkedAt,
-      content: `${visible.slice(0, 12000)}\nRendered product data:\n${rendered.data.structured.join("\n").slice(0, 5500)}`,
-      artifact: `sha256:${execution.data.raw.sha256}`,
-    };
-    sources.push(source);
-    return { source, rendered: rendered.data };
+      productName: product.name,
+      startedAt: creation.data.raw.receivedAt,
+      now: now(),
+    });
+    if (!projected) return null;
+    sources.push(projected.source);
+    if (id === "product-browser" && projected.source.url !== url)
+      limitations.push(
+        "The storefront selected its default numeric product variant. Its final URL and selected options are recorded. This capture can support a neutral product observation only; variant prices must not be compared as a discrepancy.",
+      );
+    return projected;
   };
 
   // Await cleanup even when browser execution throws. TTL is the backstop if deletion cannot reach the provider.

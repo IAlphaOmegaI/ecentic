@@ -5,7 +5,7 @@ import type { AiCapture } from "@/server/utils/outbound/live-shopping-contract";
 
 mock.module("server-only", () => ({}));
 const Shopping = await import("@/server/utils/outbound/live-shopping");
-const { browserInspectionCode } = await import(
+const { browserInspectionCode, projectBrowserExecution } = await import(
   "@/server/utils/outbound/live-shopping-browser"
 );
 
@@ -366,6 +366,59 @@ const browserRequest =
   };
 
 describe("rendered browser research", () => {
+  test("preserves an automatically selected numeric variant as the actual browser source", async () => {
+    const calls: { url: string; options: RequestInit }[] = [];
+    const inspected = value(
+      await Shopping.inspectPages(
+        {
+          apiKey,
+          product,
+          answer: await capture(),
+          country: "US",
+          competitorUrls: [],
+        },
+        {
+          now,
+          safeUrl: async () => true,
+          page,
+          request: browserRequest(calls, (_url, body) => ({
+            success: true,
+            stdout: JSON.stringify({
+              ...body,
+              url: `${product.url}?variant=12345`,
+            }),
+          })),
+        },
+      ),
+    );
+    expect(inspected.status).toBe("captured");
+    if (inspected.status !== "captured") throw new Error(inspected.reason);
+    const source = inspected.sources.find(
+      (source) => source.id === "product-browser",
+    );
+    expect(source?.url).toBe(`${product.url}?variant=12345`);
+    expect(source?.checkedAt).toBe(new Date(time).toISOString());
+    expect(inspected.limitations.join(" ")).toContain(
+      "neutral product observation only",
+    );
+    const execution = inspected.raw.find((raw) => raw.url.endsWith("/execute"));
+    if (!execution) throw new Error("Missing execution fixture");
+    const input = {
+      capture: execution,
+      url: product.url,
+      id: "product-browser",
+      productName: product.name,
+      startedAt: execution.receivedAt,
+      now: time,
+    };
+    expect(projectBrowserExecution(input)?.source).toEqual(source);
+    expect(
+      projectBrowserExecution({
+        ...input,
+        capture: { ...execution, body: "changed" },
+      }),
+    ).toBeNull();
+  });
   test("captures merchant, cited competitor and UCP without inventing checkout", async () => {
     const calls: { url: string; options: RequestInit }[] = [];
     const inspected = value(

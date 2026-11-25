@@ -19,6 +19,7 @@ import {
 import { defaultCampaignCriteria } from "@/lib/outbound-campaigns";
 import { draftReviewReadinessKey } from "@/lib/outbound-draft-review";
 import {
+  productCaptureUrlMatches,
   type ShoppingResearch,
   shoppingResearchSchema,
   validateShoppingResearch,
@@ -269,6 +270,70 @@ const runReview = (
 ) => active().review.run(options, generate, checkMx);
 
 describe("source-bound shopping research validation", () => {
+  test("default numeric variant URLs match only the exact originally unparameterized product", () => {
+    const target = "https://samplegoods.com/products/tote";
+    expect(productCaptureUrlMatches(target, `${target}?variant=12345`)).toBe(
+      true,
+    );
+    for (const observed of [
+      `${target}?variant=large`,
+      `${target}?variant=123&currency=USD`,
+      `${target}?variant=123&variant=456`,
+      `${target}?variant=123#checkout`,
+      `${target}/other?variant=123`,
+      "https://other.example/products/tote?variant=123",
+    ])
+      expect(productCaptureUrlMatches(target, observed)).toBe(false);
+    expect(
+      productCaptureUrlMatches(
+        `${target}?variant=123`,
+        `${target}?variant=456`,
+      ),
+    ).toBe(false);
+    expect(
+      productCaptureUrlMatches(
+        `${target}?variant=123`,
+        `${target}?variant=123`,
+      ),
+    ).toBe(true);
+    expect(productCaptureUrlMatches("invalid", target)).toBe(false);
+  });
+  test("a default variant capture permits neutral observations but cannot become a price discrepancy", () => {
+    const captured = receipt();
+    captured.product.url = "https://samplegoods.com/products/tote";
+    for (const source of captured.sources.filter(
+      (source) => source.kind === "product",
+    ))
+      source.url =
+        source.capture === "browser"
+          ? `${captured.product.url}?variant=12345`
+          : captured.product.url;
+    expect(validateShoppingResearch(captured, 1, now.getTime())).toContain(
+      "neutral observation",
+    );
+    captured.selected.kind = "product-observation";
+    captured.selected.observation =
+      "I was looking at reusable totes and opened your Trail Tote page.";
+    captured.selected.consequence = "The large option caught my eye.";
+    captured.selected.sourceIds = ["visible", "query"];
+    captured.selected.quotes = [
+      { sourceId: "visible", quote: "Trail Tote Large" },
+      { sourceId: "query", quote: "Sample Goods Trail Tote" },
+    ];
+    expect(
+      validateShoppingResearch(captured, 1, now.getTime(), {
+        allowProductObservations: true,
+      }),
+    ).toBeNull();
+    const visible = captured.sources.find((source) => source.id === "visible");
+    if (!visible) throw new Error("Missing browser fixture");
+    visible.url = `${captured.product.url}?variant=12345&currency=USD`;
+    expect(
+      validateShoppingResearch(captured, 1, now.getTime(), {
+        allowProductObservations: true,
+      }),
+    ).not.toBeNull();
+  });
   test("accepts mixed browser/HTTP variant evidence in either source order", () => {
     expect(validateShoppingResearch(receipt(), 1, now.getTime())).toBeNull();
     const other = receipt();

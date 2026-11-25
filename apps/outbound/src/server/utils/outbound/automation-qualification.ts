@@ -31,7 +31,11 @@ import {
 } from "@/lib/outbound-roles";
 import * as HTTP from "@/server/utils/http";
 import { normalizeApolloCompany } from "./company-discovery";
-import { productLinks, sitemapLinks } from "./discovery";
+import {
+  isPhysicalProductCandidate,
+  productLinks,
+  sitemapLinks,
+} from "./discovery";
 import { classifyPageAccess } from "./evidence/bot-challenge";
 import {
   extractProductCandidates,
@@ -673,7 +677,11 @@ export const collectCompanyEvidence = async (
         return null;
       }
       const access = classifyPageAccess(response.data);
-      if (access.kind === "challenged" || response.data.status === 401) {
+      if (
+        access.kind === "challenged" ||
+        response.data.status === 401 ||
+        /^\/password\/?$/i.test(new URL(response.data.url).pathname)
+      ) {
         state.failure = {
           reason:
             "A storefront request was restricted; no alternate access was attempted.",
@@ -729,20 +737,14 @@ export const collectCompanyEvidence = async (
       const map = await read(`${origin}/sitemap.xml`, "provider");
       if (map) {
         const found = sitemapLinks(map.body, origin);
-        links.push(
-          ...found.filter((url) =>
-            /\/(?:products?|p|item|shop)\/[^/]+/i.test(new URL(url).pathname),
-          ),
-        );
+        links.push(...found.filter(isPhysicalProductCandidate));
         const nested = found.find((url) => /product.*\.xml/i.test(url));
         if (!links.length && nested) {
           const child = await read(nested, "provider");
           if (child)
             links.push(
-              ...sitemapLinks(child.body, origin).filter((url) =>
-                /\/(?:products?|p|item|shop)\/[^/]+/i.test(
-                  new URL(url).pathname,
-                ),
+              ...sitemapLinks(child.body, origin).filter(
+                isPhysicalProductCandidate,
               ),
             );
         }

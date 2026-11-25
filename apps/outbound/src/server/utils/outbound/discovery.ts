@@ -7,6 +7,24 @@ import { classifyPageAccess } from "./evidence/bot-challenge";
 import { blockedByRobots } from "./research";
 
 const PRODUCT_PATH = /\/(?:products?|p|item|shop)\/[^/]+/i;
+const GIFT_CARD_PATH = /(?:^|[-_/])(?:e[-_]?)?gift[-_]?cards?(?=$|[-_/])/i;
+const NON_PHYSICAL_PATH =
+  /(?:^|[-_/])(?:(?:virtual|online)[-_](?:consultations?|appointments?)|digital[-_](?:downloads?|vouchers?)|e[-_]?books?)(?=$|[-_/])/i;
+
+export const isGiftCardProductCandidate = (url: string) => {
+  const pathname = new URL(url).pathname;
+  return PRODUCT_PATH.test(pathname) && GIFT_CARD_PATH.test(pathname);
+};
+
+/** Navigation candidates only; a permitted URL still needs priced own-product evidence. */
+export const isPhysicalProductCandidate = (url: string) => {
+  const pathname = new URL(url).pathname;
+  return (
+    PRODUCT_PATH.test(pathname) &&
+    !GIFT_CARD_PATH.test(pathname) &&
+    !NON_PHYSICAL_PATH.test(pathname)
+  );
+};
 const elements = (
   node: DefaultTreeAdapterTypes.Node,
 ): DefaultTreeAdapterTypes.Element[] => [
@@ -35,7 +53,7 @@ export const productLinks = (body: string, origin: string) =>
             (attribute) => attribute.name === "href",
           )?.value;
           const url = href ? canonical(href, origin) : null;
-          return url && PRODUCT_PATH.test(new URL(url).pathname) ? [url] : [];
+          return url && isPhysicalProductCandidate(url) ? [url] : [];
         }),
     ),
   ].slice(0, 8);
@@ -134,6 +152,7 @@ export const discover = async ({
     if (page.data.status === 404) return null;
     if (
       classifyPageAccess(page.data).kind !== "ok" ||
+      /^\/password\/?$/i.test(new URL(page.data.url).pathname) ||
       [401, 403, 429, 503].includes(page.data.status)
     ) {
       state.stopped = true;
@@ -174,9 +193,7 @@ export const discover = async ({
       );
     if (!page) continue;
     const links = sitemapLinks(page.body, origin);
-    urls.push(
-      ...links.filter((url) => PRODUCT_PATH.test(new URL(url).pathname)),
-    );
+    urls.push(...links.filter(isPhysicalProductCandidate));
     for (const nested of links
       .filter((url) => /\.xml$/i.test(new URL(url).pathname))
       .sort(
@@ -192,8 +209,8 @@ export const discover = async ({
         );
       if (child)
         urls.push(
-          ...sitemapLinks(child.body, origin).filter((url) =>
-            PRODUCT_PATH.test(new URL(url).pathname),
+          ...sitemapLinks(child.body, origin).filter(
+            isPhysicalProductCandidate,
           ),
         );
     }

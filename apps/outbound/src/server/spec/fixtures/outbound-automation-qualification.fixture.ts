@@ -59,7 +59,12 @@ const state = {
   invalidOutput: false,
   noInsight: false,
   companyLinks: false,
+  giftOnly: false,
+  passwordGate: false,
+  blockedSitemap: false,
+  robotsBlockSitemap: false,
 };
+const giftOnlyHome = `<html><script src="https://cdn.shopify.com/a.js"></script><body><h1>Example Beauty</h1><a href="/products/e-gift-card">Gift card</a><a href="/products/virtual-consultation">Virtual consultation</a></body></html>`;
 const companyPages = {
   "/pages/about-example":
     "<html><body><h1>About Example Beauty</h1><p>Our team includes 15 employees.</p></body></html>",
@@ -88,24 +93,31 @@ mock.module("@/server/utils/http", () => ({
       ([path]) => new URL(url).pathname === path,
     )?.[1];
     const body = url.endsWith("robots.txt")
-      ? "User-agent: *\nAllow: /"
-      : url.includes("/products/")
-        ? productHtml()
-        : (companyPage ??
-          `${home}${state.companyLinks ? additionalLinks : ""}${state.largeHome ? `<!--${"a".repeat(1600000)}-->` : ""}`);
+      ? `User-agent: *\nAllow: /${state.robotsBlockSitemap ? "\nDisallow: /sitemap.xml" : ""}`
+      : url.endsWith("/sitemap.xml")
+        ? `<sitemapindex><sitemap><loc>${company.website}/sitemap_products_1.xml</loc></sitemap></sitemapindex>`
+        : url.endsWith("/sitemap_products_1.xml")
+          ? `<urlset><url><loc>${company.website}/products/gift-card</loc></url><url><loc>https://unrelated.test/products/foreign</loc></url><url><loc>${company.website}/products/daily-face-cream</loc></url></urlset>`
+          : url.includes("/products/")
+            ? productHtml()
+            : (companyPage ??
+              `${state.giftOnly ? giftOnlyHome : home}${state.companyLinks ? additionalLinks : ""}${state.largeHome ? `<!--${"a".repeat(1600000)}-->` : ""}`);
     if (state.largeHome && !url.endsWith("robots.txt"))
       assert.ok((options.limit ?? 0) >= Buffer.byteLength(body));
     return {
       success: true,
       data: {
         url:
-          state.redirectHome && !url.endsWith("robots.txt")
-            ? "https://us.examplebeauty.test/"
-            : url,
+          state.passwordGate && !url.endsWith("robots.txt")
+            ? `${company.website}/password`
+            : state.redirectHome && !url.endsWith("robots.txt")
+              ? "https://us.examplebeauty.test/"
+              : url,
         body,
         status: url.endsWith("robots.txt")
           ? 200
-          : state.blocked
+          : state.blocked ||
+              (state.blockedSitemap && url.endsWith("/sitemap.xml"))
             ? 403
             : state.outage
               ? 503
@@ -439,6 +451,46 @@ assert.ok(
   reads.slice(beforeCompanyPages).every((url) => !url.includes("password")),
 );
 state.companyLinks = false;
+state.giftOnly = true;
+const beforeGiftFallback = reads.length;
+const giftFallback = await Qualification.collectCompanyEvidence(input);
+assert.ok(giftFallback.success && !("status" in giftFallback.data));
+if (giftFallback.success && !("status" in giftFallback.data)) {
+  assert.equal(giftFallback.data.product.name, product.name);
+  assert.ok(giftFallback.data.receipts.length <= 6);
+}
+assert.deepEqual(reads.slice(beforeGiftFallback), [
+  `${company.website}/robots.txt`,
+  company.website,
+  `${company.website}/sitemap.xml`,
+  `${company.website}/sitemap_products_1.xml`,
+  `${company.website}/products/daily-face-cream`,
+]);
+assert.equal(
+  calls.length,
+  1,
+  "fallback discovery makes no paid provider calls",
+);
+for (const mode of [
+  "passwordGate",
+  "blockedSitemap",
+  "robotsBlockSitemap",
+] as const) {
+  state[mode] = true;
+  const beforeClosed = reads.length;
+  const closed = await Qualification.collectCompanyEvidence(input);
+  assert.ok(closed.success && "status" in closed.data);
+  if (closed.success && "status" in closed.data) {
+    assert.equal(closed.data.status, "hold");
+    assert.equal(closed.data.retryable, false);
+    assert.match(closed.data.reason, /restricted|robots rules/);
+  }
+  const attempted = reads.slice(beforeClosed);
+  assert.equal(attempted.length, mode === "blockedSitemap" ? 3 : 2);
+  assert.ok(attempted.every((url) => !url.includes("/products/")));
+  state[mode] = false;
+}
+state.giftOnly = false;
 for (const [name, expected, retryable] of [
   ["response-too-large-error", "8 MiB collection limit", false],
   ["timeout-error", "time limit", true],

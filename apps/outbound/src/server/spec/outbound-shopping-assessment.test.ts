@@ -27,6 +27,7 @@ const {
   createAssessmentCatalog,
   assessmentWireSchema,
   projectAssessment,
+  normalizeNumericRangeCopy,
   assessmentCopyBudget,
 } = await import("@/server/utils/outbound/shopping-assessment");
 
@@ -271,8 +272,12 @@ const selectionFixture = () => {
           marketAnchor: null,
         },
       },
-      answerQuoteId: catalog.quotes.find((quote) => quote.sourceId === "answer")!.id,
-      productQuoteId: catalog.quotes.find((quote) => quote.sourceId === "product")!.id,
+      answerQuoteId: catalog.quotes.find(
+        (quote) => quote.sourceId === "answer",
+      )!.id,
+      productQuoteId: catalog.quotes.find(
+        (quote) => quote.sourceId === "product",
+      )!.id,
       quoteIds: catalog.quotes
         .filter((quote) => ["answer", "product"].includes(quote.sourceId))
         .map((quote) => quote.id),
@@ -283,15 +288,55 @@ const selectionFixture = () => {
 };
 
 describe("assessment selects exact captured excerpts", () => {
-  test("the generation schema requires an actual answer and own-product excerpt for neutral observations", () => {
-    const { catalog, output } = selectionFixture();
-    const schema = assessmentWireSchema(catalog, { allowProductObservations: true });
+  test("normalizes only numeric range punctuation in generated display copy, never its source quotes", () => {
+    const { evidence, catalog, output } = selectionFixture();
+    const before = JSON.stringify({ evidence, catalog });
     const neutral = {
       ...output,
       selected: {
         ...output.selected,
         kind: "product-observation",
-        observation: "I was looking at linen totes and opened your product page.",
+        observation:
+          "I checked the 15–20 minute product instructions on your page.",
+        consequence: "The instructions describe 2 — 3 uses per week.",
+        priceComparison: null,
+      },
+    };
+    const projected = projectAssessment(catalog, neutral, 45, {
+      allowProductObservations: true,
+    });
+    expect(projected.decision).toBe("supported");
+    expect(projected.selected?.observation).toBe(
+      "I checked the 15-20 minute product instructions on your page.",
+    );
+    expect(projected.selected?.consequence).toBe(
+      "The instructions describe 2-3 uses per week.",
+    );
+    expect(JSON.stringify({ evidence, catalog })).toBe(before);
+    expect(projected.selected?.quotes).toEqual(
+      output.selected.quoteIds.map((id) => {
+        const source = catalog.quotes.find((quote) => quote.id === id)!;
+        return { sourceId: source.sourceId, quote: source.quote };
+      }),
+    );
+    expect(
+      normalizeNumericRangeCopy(
+        "15–20, 1.5–2.5, 2—3, −5, product—detail, unchanged – words",
+      ),
+    ).toBe("15-20, 1.5-2.5, 2-3, −5, product—detail, unchanged – words");
+  });
+  test("the generation schema requires an actual answer and own-product excerpt for neutral observations", () => {
+    const { catalog, output } = selectionFixture();
+    const schema = assessmentWireSchema(catalog, {
+      allowProductObservations: true,
+    });
+    const neutral = {
+      ...output,
+      selected: {
+        ...output.selected,
+        kind: "product-observation",
+        observation:
+          "I was looking at linen totes and opened your product page.",
         consequence: "The page lists large and small options.",
         priceComparison: null,
         quoteIds: [],
@@ -303,17 +348,27 @@ describe("assessment selects exact captured excerpts", () => {
       { ...neutral.selected, productQuoteId: undefined },
       { ...neutral.selected, answerQuoteId: neutral.selected.productQuoteId },
       { ...neutral.selected, productQuoteId: neutral.selected.answerQuoteId },
-      { ...neutral.selected, productQuoteId: catalog.quotes.find((quote) => quote.sourceId === "ucp")!.id },
-    ]) expect(schema.safeParse({ ...neutral, selected }).success).toBe(false);
-    const projected = projectAssessment(catalog, neutral, 45, { allowProductObservations: true });
+      {
+        ...neutral.selected,
+        productQuoteId: catalog.quotes.find(
+          (quote) => quote.sourceId === "ucp",
+        )!.id,
+      },
+    ])
+      expect(schema.safeParse({ ...neutral, selected }).success).toBe(false);
+    const projected = projectAssessment(catalog, neutral, 45, {
+      allowProductObservations: true,
+    });
     expect(projected.decision).toBe("supported");
     expect(projected.selected?.sourceIds).toEqual(["answer", "product"]);
-    expect(projected.selected?.quotes).toEqual([
-      neutral.selected.answerQuoteId, neutral.selected.productQuoteId,
-    ].map((id) => {
-      const quote = catalog.quotes.find((quote) => quote.id === id)!;
-      return { sourceId: quote.sourceId, quote: quote.quote };
-    }));
+    expect(projected.selected?.quotes).toEqual(
+      [neutral.selected.answerQuoteId, neutral.selected.productQuoteId].map(
+        (id) => {
+          const quote = catalog.quotes.find((quote) => quote.id === id)!;
+          return { sourceId: quote.sourceId, quote: quote.quote };
+        },
+      ),
+    );
   });
 
   test("projects quote IDs into unchanged source text and server-owned scope", () => {
@@ -367,7 +422,11 @@ describe("assessment selects exact captured excerpts", () => {
     expect(
       projectAssessment(catalog, {
         ...output,
-        selected: { ...output.selected, answerQuoteId: undefined, quoteIds: [] },
+        selected: {
+          ...output.selected,
+          answerQuoteId: undefined,
+          quoteIds: [],
+        },
       }),
     ).toMatchObject({ decision: "hold" });
     expect(
@@ -383,7 +442,9 @@ describe("assessment selects exact captured excerpts", () => {
 
   test("an answer plus unrelated source cannot substitute for a merchant excerpt", () => {
     const { evidence, catalog, output } = selectionFixture();
-    output.selected.productQuoteId = catalog.quotes.find((quote) => quote.sourceId === "ucp")!.id;
+    output.selected.productQuoteId = catalog.quotes.find(
+      (quote) => quote.sourceId === "ucp",
+    )!.id;
     output.selected.quoteIds = catalog.quotes
       .filter((quote) => ["answer", "ucp"].includes(quote.sourceId))
       .map((quote) => quote.id);

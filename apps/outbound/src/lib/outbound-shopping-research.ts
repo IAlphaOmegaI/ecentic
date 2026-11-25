@@ -113,6 +113,32 @@ export const shoppingResearchSchema = z
 export type ShoppingResearch = z.infer<typeof shoppingResearchSchema>;
 export const normalizeResearchText = (value: string) =>
   value.replace(/\s+/g, " ").trim();
+
+/** A storefront may select its default Shopify variant without leaving the requested product. */
+export const productCaptureUrlMatches = (
+  requested: string,
+  observed: string,
+) => {
+  if (
+    !URL.canParse(requested) ||
+    !URL.canParse(observed) ||
+    !url.safeParse(requested).success ||
+    !url.safeParse(observed).success
+  )
+    return false;
+  if (requested === observed) return true;
+  const target = new URL(requested);
+  const final = new URL(observed);
+  return (
+    target.origin === final.origin &&
+    target.pathname === final.pathname &&
+    !target.port &&
+    !target.search &&
+    !target.hash &&
+    !final.hash &&
+    /^\?variant=\d{1,25}$/.test(final.search)
+  );
+};
 export const validateShoppingResearch = (
   receipt: ShoppingResearch,
   days: number,
@@ -163,11 +189,22 @@ export const validateShoppingResearch = (
   const product = receipt.sources.find(
     (source) =>
       source.kind === "product" &&
-      source.url === receipt.product.url &&
+      productCaptureUrlMatches(receipt.product.url, source.url) &&
       normalizeResearchText(source.content).includes(receipt.product.name),
   );
   if (!product)
     return "Shopping research needs the named product's own source.";
+  if (
+    receipt.selected.kind !== "product-observation" &&
+    receipt.sources.some(
+      (source) =>
+        source.kind === "product" &&
+        source.capture === "browser" &&
+        source.url !== receipt.product.url &&
+        productCaptureUrlMatches(receipt.product.url, source.url),
+    )
+  )
+    return "An automatically selected product variant supports only a neutral observation, not a price or product discrepancy.";
   const query = receipt.queries[receipt.selected.queryIndex];
   if (
     !query ||
@@ -250,7 +287,7 @@ export const validateShoppingResearch = (
     !receipt.sources.some(
       (source) =>
         source.kind === "product" &&
-        source.url === receipt.product.url &&
+        productCaptureUrlMatches(receipt.product.url, source.url) &&
         source.capture === "browser",
     )
   )
@@ -282,7 +319,7 @@ export const validateShoppingResearch = (
         const source = sources.get(id);
         return (
           source?.kind === "product" &&
-          source.url === receipt.product.url &&
+          productCaptureUrlMatches(receipt.product.url, source.url) &&
           source.capture === "browser"
         );
       }) ||

@@ -674,6 +674,30 @@ describe("scoped product evidence", () => {
     expect(links[0]).toBe("https://example.com/products/a");
     expect(links.some((link) => /other|user:pass/.test(link))).toBe(false);
   });
+  test("gift cards and online services do not exhaust the physical-product link budget", () => {
+    const ignored = [
+      "gift-card",
+      "e-gift-card-volcom-black",
+      "venum-gift-card",
+      "virtual-consultation",
+      "online-appointment",
+      "digital-download",
+      "e-book",
+      "digital-voucher",
+      "gift-cards",
+    ]
+      .map((name) => `<a href="/products/${name}">${name}</a>`)
+      .join("");
+    expect(
+      productLinks(
+        `${ignored}<a href="/products/gift-box">Gift box</a><a href="/products/shoe">Shoe</a>`,
+        "https://example.com",
+      ),
+    ).toEqual([
+      "https://example.com/products/gift-box",
+      "https://example.com/products/shoe",
+    ]);
+  });
   test("sitemap parsing rejects malformed XML and unrelated domains", () => {
     expect(
       sitemapLinks(

@@ -20,6 +20,7 @@ import { db, schema, type TransactionScope } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
 import { ConflictError, ValidationError } from "@/server/utils/error";
 import * as Qualification from "@/server/utils/outbound/automation-qualification";
+import { isGiftCardProductCandidate } from "@/server/utils/outbound/discovery";
 import {
   browserClaimInterval,
   browserRetryLimit,
@@ -460,7 +461,7 @@ const claim = (deadline: number, batchId?: string) =>
         input: schema.outboundIntegrationJob.input,
         output: sql<
           Record<string, unknown>
-        >`${schema.outboundIntegrationJob.output} - ARRAY['companyEvidence','locationReceipts','qualification','query','shoppingJob','answer','browser','assessment','shoppingReceipt','collection','failureReceipt','originalQualification','originalCollection','originalLocation','originalQualificationCollection']::text[]`,
+        >`${schema.outboundIntegrationJob.output} - ARRAY['companyEvidence','locationReceipts','qualification','query','shoppingJob','answer','browser','assessment','shoppingReceipt','collection','failureReceipt','originalQualification','originalCollection','originalLocation','originalQualificationCollection','originalGiftNavigationCollection']::text[]`,
       })
       .from(schema.outboundIntegrationJob)
       .where(
@@ -476,6 +477,13 @@ const claim = (deadline: number, batchId?: string) =>
       )
       .orderBy(asc(schema.outboundIntegrationJob.updatedAt))
       .limit(200);
+    const batches = new Map<
+      string,
+      {
+        settings: z.infer<typeof batchSchema>;
+        budget: z.infer<typeof budgetSchema>;
+      }
+    >();
     for (const job of jobs) {
       const input = preparationInputSchema.parse(job.input);
       const state = preparationStateSchema.parse(job.output);
@@ -506,11 +514,17 @@ const claim = (deadline: number, batchId?: string) =>
         Date.now() + preparationStageBudget(state.stage) > deadline
       )
         continue;
-      const batch = value(
-        await Jobs.get(Environment.SERVER, input.batchId, { tx: transaction }),
-      );
-      const settings = batchSchema.parse(batch?.input);
-      const budget = budgetSchema.parse(batch?.output);
+      if (!batches.has(input.batchId)) {
+        const batch = value(
+          await Jobs.get(Environment.SERVER, input.batchId, { tx: transaction }),
+        );
+        batches.set(input.batchId, {
+          settings: batchSchema.parse(batch?.input),
+          budget: budgetSchema.parse(batch?.output),
+        });
+      }
+      // The workspace lock keeps this snapshot stable; a budget write returns immediately.
+      const { settings, budget } = batches.get(input.batchId)!;
       const savedAnswerMayContinue =
         budget.paused &&
         budget.failureProvider === "scrapellm" &&
@@ -1684,6 +1698,11 @@ export const retryCollectionSchema = z
     jobId: z.string().uuid(),
     requestId: z.string().uuid(),
     expectedUpdatedAt: z.string().datetime(),
+    expectedJobHash: z
+      .string()
+      .regex(/^[a-f0-9]{64}$/)
+      .optional(),
+    defect: z.literal("giftNavigation").optional(),
     reason: z.string().trim().min(20).max(2000),
   })
   .strict();
@@ -1691,7 +1710,7 @@ export const retryCollectionSchema = z
 const missingProductReason =
   "No unambiguous own-brand priced physical product was established from the bounded public pages.";
 
-/** An operator may retry a proven parser hold once, before any paid shopping work. */
+/** Reviewed defects get separate bounded retries before any paid shopping work. */
 export const retryCollection = (
   actor: string,
   input: z.infer<typeof retryCollectionSchema>,
@@ -1704,9 +1723,11 @@ export const retryCollection = (
     const claim = preparationInputSchema.parse(job?.input);
     const state = preparationStateSchema.parse(job?.output);
     const requestHash = researchHash({ ...parsed, actor });
+    const giftNavigation = parsed.defect === "giftNavigation";
+    const retryKey = giftNavigation ? "giftNavigationRetry" : "collectionRetry";
     const prior = z
       .object({ requestId: z.string().uuid(), requestHash: z.string() })
-      .safeParse(state["collectionRetry"]);
+      .safeParse(state[retryKey]);
     if (prior.success) {
       if (
         prior.data.requestId !== parsed.requestId ||
@@ -1724,6 +1745,12 @@ export const retryCollection = (
       state.stage !== "complete" ||
       state["heldReason"] !== missingProductReason ||
       state.lease !== null ||
+      (giftNavigation &&
+        (!parsed.expectedJobHash ||
+          browserRecoverySnapshot(job) !== parsed.expectedJobHash ||
+          state.polls !== 0 ||
+          state.queryRetries !== 0 ||
+          state.browserRetries !== 0)) ||
       [
         "companyEvidence",
         "qualification",
@@ -1735,21 +1762,51 @@ export const retryCollection = (
         "assessment",
         "shoppingReceipt",
         "failureReceipt",
-        "originalCollection",
+        "originalGiftNavigationCollection",
+        ...(giftNavigation ? [] : ["originalCollection"]),
       ].some((key) => state[key] !== undefined && state[key] !== null)
     )
       throw new ConflictError(
         "Only an unchanged product-parser hold without shopping work can be retried.",
       );
-    const collection = z
-      .object({
-        status: z.literal("hold"),
-        reason: z.literal(missingProductReason),
-        retryable: z.literal(false),
-        receipts: z.array(Qualification.sourceReceiptSchema).min(1).max(6),
-      })
-      .parse(state["collection"]);
+    const collectionSchema = z.object({
+      status: z.literal("hold"),
+      reason: z.literal(missingProductReason),
+      retryable: z.literal(false),
+      receipts: z.array(Qualification.sourceReceiptSchema).min(1).max(6),
+    });
+    const collection = collectionSchema.parse(state["collection"]);
     const context = await eligible(transaction, claim, state);
+    if (giftNavigation) {
+      const original = collectionSchema.parse(state["originalCollection"]);
+      z.object({
+        requestId: z.string().uuid(),
+        requestHash: z.string(),
+        reviewedBy: z.string(),
+        reviewedAt: z.string().datetime(),
+      }).parse(state["collectionRetry"]);
+      for (const attempt of [original, collection]) {
+        const products = attempt.receipts.filter(
+          (receipt) => receipt.kind === "product",
+        );
+        if (
+          !products.length ||
+          attempt.receipts.some((receipt) => {
+            const url = new URL(receipt.url);
+            return (
+              normalizeDomain(receipt.url) !== context.company.domain ||
+              url.protocol !== "https:" ||
+              Boolean(url.username || url.password || url.port) ||
+              /^\/password\/?$/i.test(url.pathname)
+            );
+          }) ||
+          products.some((receipt) => !isGiftCardProductCandidate(receipt.url))
+        )
+          throw new ValidationError(
+            "Both saved collection attempts must contain only own-site gift-card products before this navigation retry.",
+          );
+      }
+    }
     if (
       !collection.receipts.some(
         (receipt) =>
@@ -1767,12 +1824,17 @@ export const retryCollection = (
     const now = new Date();
     const updated = preparationStateSchema.parse({
       ...state,
-      originalCollection: state["collection"],
+      ...(giftNavigation
+        ? { originalGiftNavigationCollection: state["collection"] }
+        : { originalCollection: state["collection"] }),
       collection: undefined,
-      collectionRetry: {
+      [retryKey]: {
         requestId: parsed.requestId,
         requestHash,
         previousUpdatedAt: parsed.expectedUpdatedAt,
+        ...(giftNavigation
+          ? { previousJobHash: parsed.expectedJobHash, defect: parsed.defect }
+          : {}),
         reviewedBy: actor,
         reviewedAt: now.toISOString(),
         reason: parsed.reason,
@@ -1796,9 +1858,11 @@ export const retryCollection = (
         {
           prospectId: claim.prospectId,
           actor,
-          kind: "savedCollectionRetryReviewed",
+          kind: giftNavigation
+            ? "savedGiftNavigationRetried"
+            : "savedCollectionRetryReviewed",
           detail: parsed.reason,
-          externalId: `saved-collection-retry:${parsed.requestId}`,
+          externalId: `${giftNavigation ? "saved-gift-navigation-retry" : "saved-collection-retry"}:${parsed.requestId}`,
         },
         { tx: transaction },
       ),

@@ -7,6 +7,7 @@ import { generateObject } from "ai";
 import { z } from "zod";
 import { countWords, type Playbook } from "@/lib/outbound";
 import {
+  productCaptureUrlMatches,
   type ShoppingResearch,
   shoppingResearchSchema,
   validateShoppingResearch,
@@ -118,18 +119,23 @@ export const createAssessmentCatalog = ({ answer, browser }: Evidence) => {
       (source) =>
         source.capture === "browser" &&
         source.kind === "product" &&
-        source.url === answer.job.query.product.url,
+        productCaptureUrlMatches(answer.job.query.product.url, source.url),
     )?.id,
   };
 };
 type AssessmentCatalog = ReturnType<typeof createAssessmentCatalog>;
 
-const sourceQuoteSchema = (catalog: AssessmentCatalog, source: string | undefined) => {
+const sourceQuoteSchema = (
+  catalog: AssessmentCatalog,
+  source: string | undefined,
+) => {
   const identifiers = catalog.quotes
     .filter((quote) => quote.sourceId === source)
     .map((quote) => quote.id);
   if (!identifiers.length)
-    throw new Error("The shopper answer and merchant product both need captured excerpts.");
+    throw new Error(
+      "The shopper answer and merchant product both need captured excerpts.",
+    );
   return z.enum(identifiers as [string, ...string[]]);
 };
 
@@ -482,6 +488,10 @@ export const assessmentWireSchema = (
     })
     .strict();
 
+/** Numeric range punctuation is display copy; source excerpts remain byte-for-byte unchanged. */
+export const normalizeNumericRangeCopy = (copy: string) =>
+  copy.replace(/(\d)[ \t]*[\u2013\u2014][ \t]*(?=\d)/g, "$1-");
+
 export const projectAssessment = (
   catalog: AssessmentCatalog,
   output: unknown,
@@ -511,11 +521,15 @@ export const projectAssessment = (
     return held("Select each captured excerpt and competitor only once.");
   const selected = {
     ...selection,
-    quoteIds: [...new Set([
-      selection.answerQuoteId,
-      selection.productQuoteId,
-      ...selection.quoteIds,
-    ])],
+    observation: normalizeNumericRangeCopy(selection.observation),
+    consequence: normalizeNumericRangeCopy(selection.consequence),
+    quoteIds: [
+      ...new Set([
+        selection.answerQuoteId,
+        selection.productQuoteId,
+        ...selection.quoteIds,
+      ]),
+    ],
   };
   if (selected.kind === "query-comparison" && !assessment.competitors.length)
     return held("A comparison needs an inspected competing product.");
@@ -669,7 +683,7 @@ export const validateAutomaticResearch = (
     (source) =>
       source.kind === "product" &&
       source.capture === "browser" &&
-      source.url === receipt.product.url,
+      productCaptureUrlMatches(receipt.product.url, source.url),
   );
   if (
     !product ||
@@ -806,6 +820,7 @@ export const assess = async (
           input.playbook.allowProductObservations
             ? "Match the wording to the finding kind. For product-observation, describe the actual product or shopping detail; consequence is a neutral connection or a second supported fact, with no implied discrepancy. If the shopper answer does not discuss this product, do not attribute the page detail to that answer. Only for a supported discrepancy finding, explain the narrow observed difference and its cautious implication for that particular answer."
             : "Explain the narrow observed discrepancy. Consequence is a cautious implication limited to this particular answer.",
+          "If the merchant capture's final URL adds a default numeric variant to the requested product URL, select only product-observation without any price, promotion or discrepancy claim. The default variant was chosen by the storefront, not established by the shopper question. If product observations are disabled, hold that capture.",
           "Any price, cost, sale, discount or promotion claim requires priceComparison, regardless of finding kind. Each side must quote one exact contiguous local offer from a selected quoteId: at most 600 characters and six complete lines, no unrelated offer, no blank-line-separated blocks. Supply exact variant, price, currencyAnchor and conditionAnchor substrings inside that offer. A bare dollar sign does not establish USD. Compare the SAME size/variant, explicit currency and purchase condition, using the current payable price, never a crossed-out original price or a subscription discount against one-time pricing. Known different markets cannot be compared; absent market metadata stays unknown, not inferred from the requested country. marketAnchor is an exact local market statement or null. Do not combine a size selected elsewhere on a long page with an unrelated price. Unknown or ambiguous offers => hold. Read ALL answer excerpts before alleging a mismatch or omission: if the answer already lists the page's same variant at its current sale price anywhere, there is no supported price discrepancy. Different-size prices, such as standard 5 fl oz at $52 versus jumbo 9.6 fl oz at $84, are not a discrepancy. Set priceComparison=null for a non-price finding.",
           `Observation plus consequence must total at most ${copyBudget} words. Keep both conversational and preserve every qualification needed for accuracy. If the finding cannot fit with its necessary qualifications, return hold; do not remove them to meet the budget.`,
           ...(previous

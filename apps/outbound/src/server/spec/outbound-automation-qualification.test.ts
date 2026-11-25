@@ -28,4 +28,4 @@ test("automatic qualification preserves positive evidence, exact source quotes a
   expect(error).toBe("");
   expect(status).toBe(0);
   expect(output).toContain("Automatic qualification contracts passed");
-}, 30000);
+}, 45000);

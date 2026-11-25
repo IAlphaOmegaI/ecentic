@@ -370,6 +370,46 @@ assert.equal(prospect.sentStep, 0);
 value(await run(first.batchId));
 assert.equal(calls.start, 1, "completed jobs must not repeat providers");
 
+// Skipping a paused batch reads its budget once, then refreshes it on the next claim.
+const cachedBatch = await seed(4);
+value(await Preparation.enqueue("fixture-operator", cachedBatch));
+await db.execute(
+  sql`update outbound_integration_job set output = jsonb_set(output, '{stage}', '"query"'::jsonb) where input->>'operation' = 'savedContactPreparation'`,
+);
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({ output: { queriesReserved: 0, paused: true } })
+  .where(eq(schema.outboundIntegrationJob.id, cachedBatch.batchId));
+const debug = db.$client.options.debug;
+const batchReads: string[] = [];
+db.$client.options.debug = (_, query, parameters) => {
+  if (
+    /^select\b/i.test(query.trim()) &&
+    query.includes('"outbound_integration_job"') &&
+    parameters.includes(cachedBatch.batchId)
+  )
+    batchReads.push(query);
+};
+const beforeCachedBatch = { ...calls };
+try {
+  assert.equal(value(await run(cachedBatch.batchId)).steps, 0);
+  assert.equal(batchReads.length, 2, "one projected job read and one batch read");
+  assert.equal(value(await run(cachedBatch.batchId)).steps, 0);
+  assert.equal(batchReads.length, 4, "each transaction must read a fresh budget");
+} finally {
+  db.$client.options.debug = debug;
+}
+assert.deepEqual(calls, beforeCachedBatch, "a paused batch must not call providers");
+assert.equal(
+  (
+    await db
+      .select()
+      .from(schema.outboundIntegrationJob)
+      .where(eq(schema.outboundIntegrationJob.id, cachedBatch.batchId))
+  )[0]?.output?.["queriesReserved"],
+  0,
+);
+
 // All reservations count forever across the batch, including an uncertain POST.
 const capped = { ...(await seed(2)), maxQueries: 1 };
 value(await Preparation.enqueue("fixture-operator", capped));
@@ -1918,6 +1958,175 @@ assert.equal(
       .where(
         eq(schema.outboundEvent.kind, "savedQualificationCollectionRetried"),
       )
+  ).length,
+  1,
+);
+// The gift-navigation defect gets one separately audited retry only after two intact gift-only attempts.
+const giftNavigation = await seed();
+value(await Preparation.enqueue("fixture-operator", giftNavigation));
+const giftReceipts = evidence("saved0.test").receipts.map((receipt) => ({
+  ...receipt,
+  ...(receipt.kind === "product"
+    ? {
+        url: "https://saved0.test/products/e-gift-card",
+        excerpt:
+          "Saved Goods electronic gift card. Choose a value of $25, $50, or $100.",
+      }
+    : {}),
+}));
+const giftCollection = { ...parserCollection, receipts: giftReceipts };
+const giftCollector: Parameters<typeof run>[1] = {
+  collect: async () => ({ success: true, data: giftCollection }),
+};
+value(await run(giftNavigation.batchId, giftCollector));
+const firstGiftHold = await jobFor(firstProspect(giftNavigation));
+const firstGiftRetry = {
+  jobId: firstGiftHold.id,
+  requestId: randomUUID(),
+  expectedUpdatedAt: firstGiftHold.updatedAt.toISOString(),
+  reason:
+    "Reviewed the earlier product-parser defect; preserve original receipt before retrying free collection.",
+};
+value(await Preparation.retryCollection("fixture-reviewer", firstGiftRetry));
+value(await run(giftNavigation.batchId, giftCollector, 1));
+const secondGiftHold = await jobFor(firstProspect(giftNavigation));
+const giftRetry = {
+  jobId: secondGiftHold.id,
+  requestId: randomUUID(),
+  expectedUpdatedAt: secondGiftHold.updatedAt.toISOString(),
+  expectedJobHash: Preparation.browserRecoverySnapshot(secondGiftHold),
+  defect: "giftNavigation" as const,
+  reason:
+    "Both saved public collection attempts reached only the digital gift-card product. Retry once after the confirmed gift-navigation filter fix; preserve both receipts and all access rules.",
+};
+for (const changedOutput of [
+  { ...secondGiftHold.output, queryReservedAt: new Date().toISOString() },
+  { ...secondGiftHold.output, failureReceipt: { outcome: "unknown" } },
+  {
+    ...secondGiftHold.output,
+    collection: { ...giftCollection, receipts: parserReceipts },
+  },
+  {
+    ...secondGiftHold.output,
+    originalCollection: { ...giftCollection, receipts: parserReceipts },
+  },
+  {
+    ...secondGiftHold.output,
+    collection: {
+      ...giftCollection,
+      receipts: giftReceipts.map((receipt) =>
+        receipt.kind === "storefront"
+          ? { ...receipt, url: "https://saved0.test/password" }
+          : receipt,
+      ),
+    },
+  },
+  {
+    ...secondGiftHold.output,
+    originalCollection: {
+      ...giftCollection,
+      receipts: giftReceipts.map((receipt) => ({
+        ...receipt,
+        url: "https://unrelated.test/products/gift-card",
+      })),
+    },
+  },
+  { ...secondGiftHold.output, collectionRetry: undefined },
+]) {
+  await db
+    .update(schema.outboundIntegrationJob)
+    .set({ output: changedOutput })
+    .where(eq(schema.outboundIntegrationJob.id, secondGiftHold.id));
+  const changed = await jobFor(firstProspect(giftNavigation));
+  assert.equal(
+    (
+      await Preparation.retryCollection("fixture-reviewer", {
+        ...giftRetry,
+        expectedJobHash: Preparation.browserRecoverySnapshot(changed),
+      })
+    ).success,
+    false,
+  );
+}
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({ output: secondGiftHold.output })
+  .where(eq(schema.outboundIntegrationJob.id, secondGiftHold.id));
+assert.equal(
+  (
+    await Preparation.retryCollection("fixture-reviewer", {
+      ...giftRetry,
+      expectedJobHash: undefined,
+    })
+  ).success,
+  false,
+);
+assert.equal(
+  (
+    await Preparation.retryCollection("fixture-reviewer", {
+      ...giftRetry,
+      expectedJobHash: "0".repeat(64),
+    })
+  ).success,
+  false,
+);
+const giftCallsBefore = { ...calls };
+assert.equal(
+  value(await Preparation.retryCollection("fixture-reviewer", giftRetry))
+    .repeated,
+  false,
+);
+assert.equal(
+  value(await Preparation.retryCollection("fixture-reviewer", giftRetry))
+    .repeated,
+  true,
+);
+assert.equal(
+  value(await Preparation.retryCollection("fixture-reviewer", firstGiftRetry))
+    .repeated,
+  true,
+);
+const recoveredGift = await jobFor(firstProspect(giftNavigation));
+assert.deepEqual(
+  recoveredGift.output?.["originalCollection"],
+  firstGiftHold.output?.["collection"],
+);
+assert.deepEqual(
+  recoveredGift.output?.["originalGiftNavigationCollection"],
+  secondGiftHold.output?.["collection"],
+);
+assert.deepEqual(
+  recoveredGift.output?.["collectionRetry"],
+  secondGiftHold.output?.["collectionRetry"],
+);
+assert.equal(recoveredGift.output?.["stage"], "collect");
+assert.equal(recoveredGift.output?.["collection"], undefined);
+assert.deepEqual(calls, giftCallsBefore);
+assert.equal(
+  (await firecrawlBatch(giftNavigation.batchId)).output?.["queriesReserved"],
+  0,
+);
+assert.equal(
+  (
+    await Preparation.retryCollection("fixture-reviewer", {
+      ...giftRetry,
+      requestId: randomUUID(),
+    })
+  ).success,
+  false,
+);
+value(await run(giftNavigation.batchId, {}, 1));
+assert.equal(
+  (await jobFor(firstProspect(giftNavigation))).output?.["stage"],
+  "qualify",
+);
+assert.equal(calls.start, giftCallsBefore.start);
+assert.equal(
+  (
+    await db
+      .select()
+      .from(schema.outboundEvent)
+      .where(eq(schema.outboundEvent.kind, "savedGiftNavigationRetried"))
   ).length,
   1,
 );
