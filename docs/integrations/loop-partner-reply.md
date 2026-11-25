@@ -1,13 +1,12 @@
 # Reply to Anna — draft
 
-Use only after production publication has been verified. Replace `[LIVE_URL]`
-with the verified URL before sending. This draft has not been sent.
+Use only after production publication has been verified. This draft has not been sent.
 
 **Subject:** ecentic × Loop — v1 ready for partner validation
 
 Hi Anna,
 
-We’ve built the first version of ecentic’s Loop integration: [LIVE_URL].
+We’ve built the first version of ecentic’s Loop integration: [ecentic.ai](https://ecentic.ai).
 
 Each merchant connects their own Loop API key. We read return data only for
 that merchant, never combine it across merchants, and never process, cancel or
@@ -36,4 +35,4 @@ Once those details are confirmed, we’d like to run the live validation with
 your team.
 
 Best,
-Yuri
+Xhurian
