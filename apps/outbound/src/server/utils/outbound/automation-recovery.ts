@@ -3,6 +3,7 @@ import { resultify } from "@zenncore/utils";
 import { z } from "zod";
 import { normalizeDomain, type Playbook } from "@/lib/outbound";
 import type { AutomationState } from "@/lib/outbound-automation";
+import { evidenceDateUsable } from "@/lib/outbound-evidence";
 import { ConflictError } from "@/server/utils/error";
 import {
   companyEvidenceSchema,
@@ -32,10 +33,6 @@ export const researchStateHash = (state: unknown) =>
 const reject = (): never => {
   throw new ConflictError("research-review-recovery-unavailable");
 };
-const fresh = (time: string, days: number, now: number) =>
-  Number.isFinite(Date.parse(time)) &&
-  Date.parse(time) <= now &&
-  now - Date.parse(time) < days * 86_400_000;
 
 /** Only completed pre-contact holds affected by this correction can be reassessed once. */
 export const researchRecoveryState = (input: {
@@ -86,7 +83,7 @@ export const researchRecoveryState = (input: {
     const receipts = qualification.data.receipts;
     if (
       receipts.some(
-        (source) => !fresh(source.checkedAt, playbook.verificationDays, now),
+        (source) => !evidenceDateUsable(source.checkedAt, playbook, now),
       )
     )
       return reject();
@@ -190,9 +187,9 @@ export const researchRecoveryState = (input: {
     answer.data.job.query.product.url !==
       qualification.data.details.productUrl ||
     normalizeDomain(answer.data.job.query.product.url) !== domain ||
-    !fresh(answer.data.executedAt, playbook.verificationDays, now) ||
+    !evidenceDateUsable(answer.data.executedAt, playbook, now) ||
     qualification.data.receipts.some(
-      (source) => !fresh(source.checkedAt, playbook.verificationDays, now),
+      (source) => !evidenceDateUsable(source.checkedAt, playbook, now),
     )
   )
     return reject();
@@ -203,11 +200,11 @@ export const researchRecoveryState = (input: {
       (capture) =>
         createHash("sha256").update(capture.body).digest("hex") !==
           capture.sha256 ||
-        !fresh(capture.receivedAt, playbook.verificationDays, now),
+        !evidenceDateUsable(capture.receivedAt, playbook, now),
     ) ||
     sources.some(
       (source) =>
-        !fresh(source.checkedAt, playbook.verificationDays, now) ||
+        !evidenceDateUsable(source.checkedAt, playbook, now) ||
         !captures.some(
           (capture) => source.artifact === `sha256:${capture.sha256}`,
         ),

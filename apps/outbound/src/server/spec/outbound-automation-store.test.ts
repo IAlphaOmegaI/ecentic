@@ -497,6 +497,141 @@ describe.skipIf(!endpoint)("isolated campaign automation ledger", () => {
   });
   afterEach(() => mock.restore());
 
+  const rejectedQuery = async () => {
+    const { db, schema } = active();
+    const job = await recoveryJob();
+    const output = {
+      ...job.output,
+      stage: "startShoppingQuery",
+      failureProvider: "scrapellm",
+      failureReceipt: { statusCode: 429, code: "rate-limit" },
+      qualification: {
+        status: "qualified",
+        details: { productUrl: "https://samplegoods.com/products/tote" },
+        receipts: [{ checkedAt: "2026-11-20T10:00:00.000Z" }],
+      },
+      shoppingQuery: {
+        product: {
+          name: "Linen tote",
+          url: "https://samplegoods.com/products/tote",
+        },
+        country: "US",
+        surface: "google_ai_mode",
+        category: "linen tote",
+        prompt: "Where can I buy a linen tote?",
+      },
+    };
+    const [saved] = await db
+      .update(schema.outboundIntegrationJob)
+      .set({ output, error: "provider-rate-limit" })
+      .where(eq(schema.outboundIntegrationJob.id, job.id))
+      .returning();
+    if (!saved) throw new Error("Missing rejected query");
+    return saved;
+  };
+
+  test("definitively rejected research resumes exactly once from saved query and qualification", async () => {
+    const { automation } = active();
+    const job = await rejectedQuery();
+    const request = recoveryRequest(job);
+    const before = await recoverySnapshot();
+    expect(
+      value(
+        await automation.resumeProviderFailure("operator", {
+          ...request,
+          dryRun: true,
+        }),
+      ),
+    ).toMatchObject({ repeated: false, dryRun: true, job: { status: "held" } });
+    expect(await recoverySnapshot()).toEqual(before);
+    const resumed = await Promise.all([
+      automation.resumeProviderFailure("operator", request),
+      automation.resumeProviderFailure("operator", request),
+    ]);
+    expect(resumed.map((result) => value(result).repeated).sort()).toEqual([
+      false,
+      true,
+    ]);
+    const [saved] = await jobs();
+    expect(saved?.status).toBe("pending");
+    expect(saved?.error).toBeNull();
+    expect(saved?.input).toEqual(job.input);
+    expect(saved?.requestId).toBe(job.requestId);
+    expect(saved?.output?.["stage"]).toBe("startShoppingQuery");
+    expect(saved?.output?.["qualification"]).toEqual(
+      job.output?.["qualification"],
+    );
+    expect(saved?.output?.["shoppingQuery"]).toEqual(
+      job.output?.["shoppingQuery"],
+    );
+    expect(saved?.output?.["providerRecovery"]).toMatchObject({
+      version: 1,
+      actor: "operator",
+      provider: "scrapellm",
+      sourceStateHash: request.expectedStateHash,
+      previousReason: "provider-rate-limit",
+      previousReceipt: { statusCode: 429, code: "rate-limit" },
+    });
+    expect((await recoverySnapshot()).slice(1)).toEqual(before.slice(1));
+  });
+
+  test.each([
+    "uncertain",
+    "starting",
+    "active-lease",
+    "wrong-error",
+    "wrong-provider",
+    "wrong-stage",
+    "accepted-query",
+    "changed-state",
+  ])(
+    "provider recovery refuses %s without changing saved work",
+    async (kind) => {
+      const { automation, db, schema } = active();
+      const job = await rejectedQuery();
+      const original = recoveryRequest(job);
+      const output = {
+        ...job.output,
+        ...(kind === "active-lease"
+          ? {
+              lease: {
+                token: crypto.randomUUID(),
+                expiresAt: new Date(Date.now() + 60_000).toISOString(),
+              },
+            }
+          : {}),
+        ...(kind === "wrong-provider" ? { failureProvider: "apollo" } : {}),
+        ...(kind === "wrong-stage" ? { stage: "browseShopping" } : {}),
+        ...(kind === "accepted-query"
+          ? { shoppingJob: { id: "accepted" } }
+          : {}),
+        ...(kind === "changed-state" ? { note: "changed after review" } : {}),
+      };
+      const [changed] = await db
+        .update(schema.outboundIntegrationJob)
+        .set({
+          output,
+          ...(kind === "uncertain" || kind === "starting"
+            ? { status: kind }
+            : {}),
+          ...(kind === "wrong-error" ? { error: "provider-input" } : {}),
+        })
+        .where(eq(schema.outboundIntegrationJob.id, job.id))
+        .returning();
+      if (!changed) throw new Error("Missing changed query");
+      const before = await recoverySnapshot();
+      expect(
+        (
+          await automation.resumeProviderFailure(
+            "operator",
+            kind === "changed-state" ? original : recoveryRequest(changed),
+          )
+        ).success,
+      ).toBe(false);
+      expect(await recoverySnapshot()).toEqual(before);
+    },
+  );
+
   test.each(["qualification", "assessment"] as const)(
     "%s recovery dry runs leave the entire checkpoint and related records unchanged",
     async (kind) => {
@@ -1324,6 +1459,131 @@ describe.skipIf(!endpoint)("isolated campaign automation ledger", () => {
     );
     expect(value(await automation.run({}, execute)).processed).toBe(0);
     expect(execute).not.toHaveBeenCalled();
+  });
+  test("Apollo pause keeps billable preparation pending and resumes its exact checkpoint once", async () => {
+    const { automation, store } = active();
+    const before = await store.policy();
+    value(
+      await store.savePlaybook("fixture", {
+        ...before.settings,
+        automaticApolloEnabled: false,
+      }),
+    );
+    const execute = mock(async () => ({ stage: "qualify" as const }));
+    const result = value(await automation.run({ maxSteps: 3 }, execute));
+    expect(result.processed).toBe(0);
+    expect(result.blockers).toContain("apollo-paused");
+    expect(execute).not.toHaveBeenCalled();
+    const [paused] = await jobs();
+    if (!paused) throw new Error("Missing paused job");
+    expect(paused).toMatchObject({
+      status: "pending",
+      error: "apollo-paused",
+      output: { stage: "companyFacts", lease: null },
+    });
+    value(await automation.run({ maxSteps: 3 }, execute));
+    expect(await jobs()).toEqual([paused]);
+    expect((await store.policy()).revision).toBe(before.revision);
+    value(await store.savePlaybook("fixture", before.settings));
+    expect(
+      value(await automation.run({ maxSteps: 1 }, execute)).processed,
+    ).toBe(1);
+    expect(execute).toHaveBeenCalledTimes(1);
+    const [resumed] = await jobs();
+    expect(resumed).toMatchObject({
+      id: paused?.id,
+      input: paused?.input,
+      requestId: paused?.requestId,
+      status: "pending",
+      error: null,
+      output: { stage: "qualify", lease: null },
+    });
+  });
+  test.each(["enrich", "verify"] as const)(
+    "Apollo pause prevents new %s requests without discarding saved receipts",
+    async (stage) => {
+      const { automation, store } = active();
+      value(
+        await automation.run({ maxSteps: 1 }, async () => ({
+          stage,
+          output: { receipt: "saved-before-pause" },
+        })),
+      );
+      const [original] = await jobs();
+      value(
+        await store.savePlaybook("fixture", {
+          ...settings,
+          automaticApolloEnabled: false,
+        }),
+      );
+      const execute = mock(async () => ({ stage: "complete" as const }));
+      expect(
+        value(await automation.run({ maxSteps: 3 }, execute)).processed,
+      ).toBe(0);
+      expect(execute).not.toHaveBeenCalled();
+      const [paused] = await jobs();
+      expect(paused).toMatchObject({
+        id: original?.id,
+        status: "pending",
+        error: "apollo-paused",
+        output: original?.output,
+      });
+    },
+  );
+  test("Apollo pause allows accepted request reconciliation and saved company facts without another enrichment", async () => {
+    const { automation, store, qualification, db, schema } = active();
+    const sourcePayload = {
+      id: "organization_fixture",
+      name: "Sample Goods",
+      primary_domain: "samplegoods.com",
+      country: "United States",
+      estimated_num_employees: 10,
+      sourceObservedAt: "2026-11-20T10:00:00.000Z",
+    };
+    await db
+      .update(schema.outboundCampaignCompany)
+      .set({ sourcePayload })
+      .where(eq(schema.outboundCampaignCompany.id, fixture.companyId));
+    value(
+      await store.savePlaybook("fixture", {
+        ...settings,
+        automaticApolloEnabled: false,
+      }),
+    );
+    const enrichment = spyOn(qualification, "enrichCompany").mockImplementation(
+      async () => {
+        throw new Error("Apollo spending must remain paused");
+      },
+    );
+    expect(value(await automation.run({ maxSteps: 1 })).processed).toBe(1);
+    expect(enrichment).not.toHaveBeenCalled();
+    const [saved] = await jobs();
+    expect(saved?.output).toMatchObject({
+      stage: "qualify",
+      companyFacts: { sourcePayload },
+    });
+    if (!saved) throw new Error("Fixture missing");
+    const output = {
+      ...saved.output,
+      stage: "pollVerification",
+      verification: { requestId: "already-accepted" },
+    };
+    await db
+      .update(schema.outboundIntegrationJob)
+      .set({ output })
+      .where(eq(schema.outboundIntegrationJob.id, saved.id));
+    const reconcile = mock(async () => ({
+      stage: "applyVerification" as const,
+      output: { verificationResult: "reconciled-original-request" },
+    }));
+    expect(
+      value(await automation.run({ maxSteps: 1 }, reconcile)).processed,
+    ).toBe(1);
+    expect(reconcile).toHaveBeenCalledTimes(1);
+    expect((await jobs())[0]?.output).toMatchObject({
+      stage: "applyVerification",
+      verification: output.verification,
+    });
   });
   test("concurrent ticks reserve one leased operation and checkpoint its result", async () => {
     const { automation } = active();

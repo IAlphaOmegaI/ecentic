@@ -1,5 +1,6 @@
 import { getDomain } from "tldts";
 import { z } from "zod";
+import { evidenceDateUsable } from "./outbound-evidence";
 
 export const DEFAULT_RESEARCH_INSTRUCTIONS =
   "Research each lead separately using real shopper questions, the merchant's UCP profile, comparable competitor products and the observed shopping or checkout path. Record the actual surface, query, market, locale, time and sources. Separate a simulation from a live shopping result. Unknown or blocked checks remain unknown. Use one specific, supported observation in a conversational email; never fall back to an ingredient compliment or a hypothetical 'I would check'. Do not invent purchases, relationships, personal experiences, missing UCP, lost sales or AI invisibility.";
@@ -15,6 +16,7 @@ export const shoppingFindingSchema = z.object({
     "checkout-handoff",
     "ucp-gap",
     "product-data-gap",
+    "product-observation",
   ]),
   observation: text(1200),
   consequence: text(600),
@@ -115,7 +117,16 @@ export const validateShoppingResearch = (
   receipt: ShoppingResearch,
   days: number,
   now = Date.now(),
+  options: {
+    allowStaleEvidence?: boolean;
+    allowProductObservations?: boolean;
+  } = {},
 ): string | null => {
+  if (
+    receipt.selected.kind === "product-observation" &&
+    !options.allowProductObservations
+  )
+    return "Product observations are not enabled in the Playbook.";
   const merchant = getDomain(new URL(receipt.product.url).hostname, {
     allowPrivateDomains: true,
   });
@@ -145,8 +156,7 @@ export const validateShoppingResearch = (
   if (
     timestamps.some(
       (value) =>
-        Date.parse(value) > now + 60_000 ||
-        now - Date.parse(value) > days * 86400_000,
+        !evidenceDateUsable(value, { verificationDays: days, ...options }, now),
     )
   )
     return "Shopping research has expired or future-dated evidence.";
@@ -234,7 +244,9 @@ export const validateShoppingResearch = (
   )
     return "A competitor needs its own product source or an actual query result naming that product.";
   if (
-    receipt.selected.kind === "product-data-gap" &&
+    ["product-data-gap", "product-observation"].includes(
+      receipt.selected.kind,
+    ) &&
     !receipt.sources.some(
       (source) =>
         source.kind === "product" &&
@@ -260,6 +272,25 @@ export const validateShoppingResearch = (
   )
     return "A shopping research quote does not match its source.";
   const copy = `${receipt.selected.observation} ${receipt.selected.consequence} ${receipt.selected.askAbout}`;
+  if (
+    receipt.selected.kind === "product-observation" &&
+    (/\b(?:missing|mismatch(?:ed)?|incorrect|inaccurate|wrong|broken|omitted|outdated|invisible|lost sales|losing sales|conversion|revenue|ranking|checkout failure)\b/i.test(
+      copy,
+    ) ||
+      receipt.competitors.length > 0 ||
+      !receipt.selected.sourceIds.some((id) => {
+        const source = sources.get(id);
+        return (
+          source?.kind === "product" &&
+          source.url === receipt.product.url &&
+          source.capture === "browser"
+        );
+      }) ||
+      !receipt.selected.sourceIds.some(
+        (id) => sources.get(id)?.kind === "search",
+      ))
+  )
+    return "A product observation must stay neutral and cite the actual product and shopper answer without alleging a problem or business impact.";
   if (
     /\b(?:I|we)(?:'d| would)\s+(?:check|test|look)\b|\bmy (?:girlfriend|wife|husband|partner)\b|\b(?:I|we) (?:bought|purchased|ordered)\b|\bI (?:use|wear|tried) your\b/i.test(
       copy,

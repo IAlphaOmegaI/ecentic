@@ -528,7 +528,12 @@
         "linkedinDailyMessages": "Massimo di messaggi al giorno",
         "meetingBookingUrl": "Link per prenotare incontri",
         "researchInstructions": "Istruzioni di ricerca",
-        "requireShoppingEvidence": "Richiedi prove sull’esperienza di acquisto prima di redigere"
+        "requireShoppingEvidence": "Richiedi prove sull’esperienza di acquisto prima di redigere",
+        "allowStaleEvidence": "Consenti ricerche salvate meno recenti",
+        "sendingRampEnabled": "Aumenta gradualmente il volume di invio",
+        "trustSavedContactVerification": "Usa la verifica dei contatti salvata",
+        "automaticApolloEnabled": "Consenti spese automatiche su Apollo",
+        "allowProductObservations": "Consenti osservazioni veritiere sui prodotti"
       },
       "templateHelp": "Inserisci le variabili supportate indicate sotto. Verranno compilate con i dati salvati del potenziale cliente.",
       "variablesTitle": "Variabili disponibili",
@@ -558,7 +563,7 @@
       "noProductTitle": "Nessun dato sul prodotto trovato",
       "inactiveSenderHelp": "Mantieni qui gli alias aggiuntivi in attesa di connessione. Una volta collegati possono sincronizzare lo storico, ma non inviare finché non vengono spostati nell’elenco attivo.",
       "emailVerificationHelp": "Età massima della prova effettiva di verifica del fornitore. Recuperare un vecchio record non la rinnova.",
-      "productVerificationHelp": "Età massima delle prove sul prodotto indicato al momento della revisione e dell’invio.",
+      "productVerificationHelp": "Età massima delle prove del prodotto quando non sono consentite ricerche salvate meno recenti.",
       "excludedCompaniesHelp": "Un nome esatto di azienda o alias noto per riga. Il confronto riguarda i nomi delle aziende, non il testo dei siti.",
       "targetingNotesHelp": "Priorità e indicazioni di revisione per il team. Queste note non aggiungono controlli automatici di idoneità.",
       "replyClaimNotesHelp": "Formulazioni di riferimento per risposte e LinkedIn. Queste note non autorizzano affermazioni nella prima email.",
@@ -589,7 +594,12 @@
       "requireShoppingEvidenceHelp": "Sospendi la redazione e l’approvazione finché non viene registrata un’osservazione sull’esperienza di acquisto supportata da prove. Un dato su un ingrediente non dimostra, da solo, una difficoltà di acquisto.",
       "legacyFindingsTitle": "Formule di osservazione precedenti",
       "legacyFindingsHelp": "Formule salvate per i precedenti controlli sui prodotti e sui dati mancanti. Quando sono richieste prove sull’esperienza di acquisto, i nuovi testi usano invece l’osservazione registrata su tale esperienza. Questi campi restano disponibili per i flussi di lavoro precedenti.",
-      "allowIncompleteHistoryHelp": "Puoi saltare l’importazione delle campagne precedenti. Qualcuno potrebbe ricevere un altro messaggio; le rinunce al contatto, i mancati recapiti e le esclusioni registrati restano validi."
+      "allowIncompleteHistoryHelp": "Puoi saltare l’importazione delle campagne precedenti. Qualcuno potrebbe ricevere un altro messaggio; le rinunce al contatto, i mancati recapiti e le esclusioni registrati restano validi.",
+      "allowStaleEvidenceHelp": "Usa ricerche reali salvate anche oltre il limite di età. Le date originali restano visibili; prove mancanti, risposte e disiscrizioni continuano a impedire l’invio.",
+      "sendingRampHelp": "Inizia con 15 email al giorno e aumenta dopo giornate di invio completate. Disattiva per usare direttamente il limite giornaliero configurato; la protezione dai mancati recapiti resta attiva.",
+      "trustSavedContactVerificationHelp": "Accetta i contatti importati contrassegnati come verificati dalla fonte, senza dichiarare una nuova verifica del contatto o del ruolo. Le date originali, comprese quelle sconosciute, vengono conservate.",
+      "automaticApolloHelp": "Usa Apollo per nuove aziende, arricchimento e verifica delle email. Disattiva per lavorare sui dati salvati senza nuove richieste Apollo a pagamento.",
+      "allowProductObservationsHelp": "Un’osservazione specifica e supportata su un prodotto o una ricerca può avviare una conversazione anche senza problemi rilevati. Non inventare discrepanze o effetti sulle vendite."
     },
     "integrations": {
       "title": "Collega gli strumenti giusti",
@@ -859,7 +869,7 @@
           "inactive": "Questa casella è inattiva nella guida. Può sincronizzare le risposte. Spostala in Caselle del mittente prima di attivare l’invio."
         },
         "maximumDailyCap": "Massimo obiettivo per casella al giorno",
-        "dailyCapHelp": "L’obiettivo è limitato a 50 e include prime email e solleciti. Le caselle iniziano con 15 al giorno. Il limite aumenta di 5 solo dopo una giornata completa in cui è stato raggiunto il limite attuale senza mancati recapiti osservati. Un mancato recapito osservato riporta il limite a 15. L’obiettivo non garantisce il volume di invio o la reputazione della casella."
+        "dailyCapHelp": "Fino a 50 prime email e follow-up per casella al giorno. Il Playbook controlla gli aumenti graduali; i mancati recapiti riducono la capacità."
       },
       "liveResearch": {
         "title": "Ricerca acquisti in tempo reale",
@@ -1226,7 +1236,8 @@
         "provider-clay-plan-required": "Clay richiede un piano a pagamento per questi filtri aziendali. Passa a un piano superiore prima di eseguire questa ricerca.",
         "campaign-generation-invalid": "Questa anteprima di Claude non è più disponibile. Generane una nuova prima di salvare.",
         "campaign-playbook-changed": "Il manuale è cambiato dopo la generazione di questa anteprima. Generane una nuova prima di salvare.",
-        "campaign-archived": "Questa campagna è archiviata. Cambia lo stato prima di generare i criteri."
+        "campaign-archived": "Questa campagna è archiviata. Cambia lo stato prima di generare i criteri.",
+        "apollo-paused": "Le richieste automatiche ad Apollo sono sospese nel Playbook. Il lavoro salvato può continuare."
       },
       "objectiveHelp": "Descrivi il pubblico. Usa i filtri strutturati qui sotto per le ricerche dei fornitori.",
       "qualificationHelp": "Lista di controllo per il team. La ricerca del fornitore non verifica automaticamente questi requisiti.",
@@ -1245,7 +1256,8 @@
       "forms": {
         "changed": "Questa campagna è cambiata. I tuoi valori sono conservati. Carica i valori salvati prima di continuare.",
         "loadSaved": "Annulla le modifiche e carica i valori salvati"
-      }
+      },
+      "savedSource": "Contatti salvati"
     },
     "warmup": {
       "title": "Riscaldamento",
@@ -1560,7 +1572,8 @@
         "provider-uncertain": "La richiesta potrebbe essere stata elaborata. Controlla l’esito prima di riprovare.",
         "research-not-configured": "Collega i servizi di ricerca acquisti in Integrazioni.",
         "shopping-research-held": "La ricerca acquisti non ha individuato un risultato supportato da prove.",
-        "shopping-research-expired": "Le evidenze della ricerca acquisti sono scadute; acquisiscile di nuovo."
+        "shopping-research-expired": "Le evidenze della ricerca acquisti sono scadute; acquisiscile di nuovo.",
+        "apollo-paused": "Le richieste automatiche ad Apollo sono sospese nel Playbook. Il lavoro salvato può continuare."
       },
       "deliveryBlockers": {
         "sendingPaused": "L’invio è in pausa nel manuale.",

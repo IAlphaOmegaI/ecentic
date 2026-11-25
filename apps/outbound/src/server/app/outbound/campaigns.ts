@@ -557,7 +557,10 @@ const reserve = (
 const sharedExclusion = async (
   transaction: TransactionScope,
   campaign: CampaignRow,
-  company: Providers.CompanyCandidate,
+  company: Pick<
+    Providers.CompanyCandidate,
+    "domain" | "name" | "country" | "platform" | "teamSize" | "annualRevenue"
+  >,
 ) => {
   const mismatch = candidateExclusion(campaign.criteria, company);
   if (mismatch) return mismatch;

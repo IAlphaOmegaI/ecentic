@@ -10,6 +10,7 @@ import {
 } from "bun:test";
 import { eq, sql } from "drizzle-orm";
 import { defaultPlaybook, prospectSchema, senderFor } from "@/lib/outbound";
+import { LEGACY_CONTACT_IMPORT_ACTOR } from "@/lib/outbound-saved-contact";
 import { requireTestDatabase } from "./helpers/database";
 
 const endpoint = process.env.OUTBOUND_TEST_DATABASE_URL;
@@ -164,6 +165,198 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
   });
   afterAll(() => setSystemTime());
 
+  const savedContact = async () => {
+    const { store } = active();
+    required(
+      await store.savePlaybook(actor, {
+        ...settings,
+        trustSavedContactVerification: true,
+      }),
+    );
+    return required(
+      await store.saveProspect(LEGACY_CONTACT_IMPORT_ACTOR, {
+        ...details(),
+        emailVerifiedAt: "",
+        roleSource: "",
+        roleCheckedAt: "",
+        emailSource: "StoreInspect (verified)",
+        source:
+          "legacy W46: StoreInspect export 2026-11-10 (A: $500K-$10M, marketing/e-com contact)",
+      }),
+    );
+  };
+
+  test("saved contact acceptance keeps unknown dates and binds the source before approval", async () => {
+    const { store, db, schema } = active();
+    const imported = await savedContact();
+    const accepted = required(await store.trustSavedContact(actor, imported));
+    const repeated = required(await store.trustSavedContact(actor, accepted));
+    expect(repeated.verificationId).toBe(accepted.verificationId);
+    const stored = (
+      await db
+        .select()
+        .from(schema.outboundProspect)
+        .where(eq(schema.outboundProspect.id, imported.prospect))
+    )[0];
+    if (!stored) throw new Error("Saved prospect missing");
+    expect(stored.details.emailVerifiedAt).toBe("");
+    expect(stored.details.roleCheckedAt).toBe("");
+    const draft = required(await store.generateDrafts(actor, imported));
+    expect(
+      (
+        await store.reviewProspect(actor, {
+          ...imported,
+          revision: draft.revision,
+          decision: "approve",
+        })
+      ).success,
+    ).toBe(true);
+    const changed = required(
+      await store.patchProspect(actor, imported.prospect, {
+        title: "VP Marketing",
+      }),
+    );
+    const changedDraft = required(await store.generateDrafts(actor, imported));
+    expect(
+      (
+        await store.reviewProspect(actor, {
+          ...changed,
+          revision: changedDraft.revision,
+          decision: "approve",
+        })
+      ).success,
+    ).toBe(false);
+    expect((await store.trustSavedContact(actor, changedDraft)).success).toBe(
+      false,
+    );
+  });
+
+  test("manual labels and disabled policy cannot accept an imported verification receipt", async () => {
+    const { store } = active();
+    const imported = await savedContact();
+    required(await store.savePlaybook(actor, settings));
+    expect((await store.trustSavedContact(actor, imported)).success).toBe(
+      false,
+    );
+    required(
+      await store.savePlaybook(actor, {
+        ...settings,
+        trustSavedContactVerification: true,
+      }),
+    );
+    const manual = required(
+      await store.saveProspect(actor, {
+        ...details("anotherbrand.com"),
+        source:
+          "legacy W46: StoreInspect export 2026-11-10 (A: $500K-$10M, marketing/e-com contact)",
+        emailSource: "StoreInspect (verified)",
+      }),
+    );
+    expect((await store.trustSavedContact(actor, manual)).success).toBe(false);
+  });
+
+  test("automatic saved-contact drafting checks revision and respects an operator hold", async () => {
+    const { store, db, schema } = active();
+    const imported = await savedContact();
+    const accepted = required(await store.trustSavedContact(actor, imported));
+    await expect(
+      db.transaction((transaction) =>
+        store.generateDraftsWithin(transaction, actor, {
+          prospect: imported.prospect,
+          expectedRevision: imported.revision,
+        }),
+      ),
+    ).rejects.toThrow("changed or was held");
+    const draft = await db.transaction((transaction) =>
+      store.generateDraftsWithin(transaction, actor, {
+        prospect: imported.prospect,
+        expectedRevision: accepted.revision,
+      }),
+    );
+    expect(draft.revision).toBe(accepted.revision + 1);
+    await db
+      .update(schema.outboundProspect)
+      .set({ status: "held", holdReason: "operator hold" })
+      .where(eq(schema.outboundProspect.id, imported.prospect));
+    await expect(
+      db.transaction((transaction) =>
+        store.generateDraftsWithin(transaction, actor, {
+          prospect: imported.prospect,
+          expectedRevision: draft.revision,
+        }),
+      ),
+    ).rejects.toThrow("changed or was held");
+  });
+
+  test("preparation reads suppression in its existing transaction", async () => {
+    const { store, db, schema } = active();
+    const imported = await savedContact();
+    await db.transaction(async (transaction) => {
+      await transaction.insert(schema.outboundSuppression).values({
+        scope: "domain",
+        value: "samplegoods.com",
+        reason: "operator hold",
+        createdBy: actor,
+      });
+      expect(
+        required(
+          await store.getEnrichmentContext(imported.prospect, transaction),
+        ).suppressed,
+      ).toBe(true);
+    });
+  });
+
+  test("dispatch rechecks the accepted source and never invokes SMTP for a changed receipt", async () => {
+    const { store, db, schema } = active();
+    const imported = await savedContact();
+    const accepted = required(await store.trustSavedContact(actor, imported));
+    const draft = required(await store.generateDrafts(actor, imported));
+    required(
+      await store.reviewProspect(actor, {
+        ...imported,
+        revision: draft.revision,
+        decision: "approve",
+      }),
+    );
+    required(
+      await store.savePlaybook(actor, {
+        ...settings,
+        trustSavedContactVerification: true,
+        sendingEnabled: true,
+      }),
+    );
+    const inbox = (
+      await db
+        .select()
+        .from(schema.outboundInbox)
+        .where(
+          eq(
+            schema.outboundInbox.email,
+            senderFor(imported.prospect, settings),
+          ),
+        )
+    )[0];
+    if (!inbox) throw new Error("Assigned inbox missing");
+    const claim = required(
+      await store.claimDelivery(actor, {
+        ...imported,
+        inbox: inbox.id,
+      }),
+    );
+    await db
+      .update(schema.outboundIntegrationJob)
+      .set({ status: "failed" })
+      .where(eq(schema.outboundIntegrationJob.id, accepted.verificationId));
+    const send = mock(async () => ({
+      success: true as const,
+      data: { providerMessageId: "must-not-send", threadId: "must-not-send" },
+    }));
+    expect((await store.dispatchDelivery(actor, claim, send)).success).toBe(
+      false,
+    );
+    expect(send).not.toHaveBeenCalled();
+  });
+
   test("repeat imports and subdomains produce one company and one prospect", async () => {
     const { store, db, schema } = active();
     const first = required(
@@ -258,6 +451,122 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
         .from(schema.outboundRevision)
         .where(eq(schema.outboundRevision.prospectId, fixture.prospect)),
     ).toEqual(versions);
+    expect((await store.claimDelivery(actor, fixture)).success).toBe(true);
+  });
+  test("changing observation-age tolerance preserves approved content and schedules", async () => {
+    const { store } = active();
+    const fixture = await approved();
+    const policy = await store.policy();
+    const prospect = required(await store.readProspect(fixture.prospect));
+    const saved = required(
+      await store.savePlaybook(
+        actor,
+        { ...policy.settings, allowStaleEvidence: true },
+        policy.revision,
+      ),
+    );
+    expect(saved.revision).toBe(policy.revision);
+    expect((await store.policy()).settings.allowStaleEvidence).toBe(true);
+    expect(required(await store.readProspect(fixture.prospect))).toEqual(
+      prospect,
+    );
+    expect((await store.claimDelivery(actor, fixture)).success).toBe(true);
+  });
+  test("refreshing receipts on a pre-deployment row preserves approval when new defaults are missing", async () => {
+    const { store, db, schema } = active();
+    const fixture = await approved();
+    await db.update(schema.outboundProspect).set({
+      details: sql`${schema.outboundProspect.details} - 'savedContactVerificationId'`,
+    }).where(eq(schema.outboundProspect.id, fixture.prospect));
+    const before = required(await store.readProspect(fixture.prospect));
+    if (!before) throw new Error("Approved fixture missing");
+    const saved = required(await store.patchProspect(actor, fixture.prospect, { mxCheckedAt: now.toISOString() }, fixture.revision));
+    const after = required(await store.readProspect(fixture.prospect));
+    if (!after) throw new Error("Patched fixture missing");
+    expect(saved.revision).toBe(fixture.revision);
+    expect(after.approvalHash).toBe(before.approvalHash);
+    expect(after.status).toBe("approved");
+    expect(after.nextSendAt).toEqual(before.nextSendAt);
+    expect(after.details.savedContactVerificationId).toBe("");
+    expect((await store.claimDelivery(actor, fixture)).success).toBe(true);
+  });
+  const receiptIncident = async (sent: boolean) => {
+    const { store, db, schema } = active();
+    const fixture = sent ? await sentSequence() : await approved();
+    const before = required(await store.readProspect(fixture.prospect));
+    if (!before?.nextSendAt) throw new Error("Approved incident fixture missing");
+    // Reproduce the old normalization path, which saved unchanged details as an edit.
+    required(await store.saveProspect("outbound-worker", { ...before.details, id: before.id }));
+    const after = required(await store.readProspect(fixture.prospect));
+    const versions = await db.select().from(schema.outboundRevision).where(eq(schema.outboundRevision.prospectId, fixture.prospect));
+    const version = versions.find((version) => version.revision === before.revision);
+    const events = await db.select().from(schema.outboundEvent).where(eq(schema.outboundEvent.prospectId, fixture.prospect));
+    const incident = events.find((event) => event.kind === "prospectUpdated" && event.actor === "outbound-worker");
+    if (!after || !version || !incident) throw new Error("Incident snapshot missing");
+    await db.update(schema.outboundEvent).set({ createdAt: after.updatedAt }).where(eq(schema.outboundEvent.id, incident.id));
+    return { before, after, fixture, input: {
+      prospect: before.id, revision: after.revision, updatedAt: after.updatedAt.toISOString(),
+      incidentEventId: incident.id, priorRevisionId: version.id,
+      contentHash: version.contentHash, nextSendAt: before.nextSendAt.toISOString(),
+      snapshot: "isolated-test/pre-incident.json",
+    } };
+  };
+  test.each([false, true])("audited receipt recovery preserves the original approval and delivery timeline (sent=%s)", async (sent) => {
+    const { store, db, schema } = active();
+    const incident = await receiptIncident(sent);
+    required(await store.restoreReceiptNormalizationApproval(actor, incident.input));
+    const restored = required(await store.readProspect(incident.before.id));
+    if (!restored) throw new Error("Restored fixture missing");
+    for (const key of ["revision", "status", "messages", "approvalHash", "approvedAt", "approvedBy", "sentStep", "firstSentAt", "lastSentAt", "nextSendAt", "inboxId", "threadId"] as const)
+      expect(restored[key]).toEqual(incident.before[key]);
+    const events = await db.select().from(schema.outboundEvent).where(eq(schema.outboundEvent.prospectId, incident.before.id));
+    expect(events.filter((event) => event.kind === "approvalRestored")).toHaveLength(1);
+    expect((await store.restoreReceiptNormalizationApproval(actor, incident.input)).success).toBe(false);
+  });
+  test.each(["edited", "suppressed", "replied", "source", "schedule"])("receipt recovery refuses %s changes and leaves the revocation intact", async (change) => {
+    const { store, db, schema } = active();
+    const incident = await receiptIncident(true);
+    if (change === "edited") await db.update(schema.outboundProspect).set({
+      messages: incident.after.messages.map((message) => ({ ...message, body: `${message.body} Changed.` })),
+    }).where(eq(schema.outboundProspect.id, incident.before.id));
+    if (change === "suppressed") await db.insert(schema.outboundSuppression).values({
+      scope: "email", value: incident.before.details.email, reason: "Opted out", createdBy: actor,
+    });
+    if (change === "replied") await db.update(schema.outboundConversation).set({
+      lastInboundAt: now,
+    }).where(eq(schema.outboundConversation.prospectId, incident.before.id));
+    if (change === "source") await db.update(schema.outboundProspect).set({
+      details: { ...incident.after.details, emailStatus: "unknown" },
+    }).where(eq(schema.outboundProspect.id, incident.before.id));
+    const result = await store.restoreReceiptNormalizationApproval(actor, {
+      ...incident.input,
+      ...(change === "schedule" ? { nextSendAt: now.toISOString() } : {}),
+    });
+    expect(result.success).toBe(false);
+    const unchanged = required(await store.readProspect(incident.before.id));
+    expect(unchanged?.revision).toBe(incident.after.revision);
+    expect(unchanged?.status).toBe("held");
+    expect(unchanged?.approvalHash).toBeNull();
+    const version = (await db.select().from(schema.outboundRevision).where(eq(schema.outboundRevision.id, incident.input.priorRevisionId)))[0];
+    expect(version?.revokedAt).toBeTruthy();
+  });
+  test("allowing product observations preserves already approved messages and schedules", async () => {
+    const { store } = active();
+    const fixture = await approved();
+    const policy = await store.policy();
+    const prospect = required(await store.readProspect(fixture.prospect));
+    const saved = required(
+      await store.savePlaybook(
+        actor,
+        { ...policy.settings, allowProductObservations: true },
+        policy.revision,
+      ),
+    );
+    expect(saved.revision).toBe(policy.revision);
+    expect((await store.policy()).settings.allowProductObservations).toBe(true);
+    expect(required(await store.readProspect(fixture.prospect))).toEqual(
+      prospect,
+    );
     expect((await store.claimDelivery(actor, fixture)).success).toBe(true);
   });
   test.each(["closed", "notInterested", "meetingBooked", "meetingHeld"])(

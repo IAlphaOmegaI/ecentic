@@ -77,6 +77,13 @@ import {
 } from "@/lib/outbound-review";
 import { isExcludedRole, matchesRole } from "@/lib/outbound-roles";
 import {
+  LEGACY_CONTACT_IMPORT_ACTOR,
+  savedContactIdentitySchema,
+  savedContactReceiptMatches,
+  savedContactReceiptSchema,
+  savedContactSourceVerified,
+} from "@/lib/outbound-saved-contact";
+import {
   sequenceRefreshInputSchema,
   sequenceRefreshStateSchema,
   validateSequenceRefreshReceipts,
@@ -245,9 +252,12 @@ export const inboxCapacity = async (
       bucket.bounced += 1;
     days.set(day, bucket);
   }
-  return sendingCapacity(Math.min(inbox.dailyCap, settings.dailyCap), [
-    ...days.values(),
-  ]);
+  return sendingCapacity(
+    Math.min(inbox.dailyCap, settings.dailyCap),
+    [...days.values()],
+    new Date(),
+    { rampEnabled: settings.sendingRampEnabled },
+  );
 };
 
 /** Readiness describes observed setup; enabling preparation never asserts these checks passed. */
@@ -320,11 +330,36 @@ const qualifiedProductSchema = z.object({
   }),
 });
 
+const assertSavedContactVerification = async (
+  transaction: TransactionScope,
+  prospect: ProspectRow,
+) => {
+  if (!prospect.details.savedContactVerificationId) return false;
+  const receipt = requireData(
+    await IntegrationJobs.get(
+      Environment.SERVER,
+      prospect.details.savedContactVerificationId,
+      { tx: transaction },
+    ),
+  );
+  if (
+    receipt?.provider !== "automation" ||
+    receipt.status !== "complete" ||
+    receipt.prospectId !== prospect.id ||
+    !savedContactReceiptMatches(receipt.input, prospect)
+  )
+    throw new ValidationError(
+      "The recipient no longer matches the accepted saved contact source.",
+    );
+  return (await policy(transaction)).settings.trustSavedContactVerification;
+};
+
 /** Retain the independently sourced contact when later product research changes. */
 export const assertAutomaticContactEvidence = async (
   transaction: TransactionScope,
   prospect: ProspectRow,
 ) => {
+  await assertSavedContactVerification(transaction, prospect);
   const identifier = z
     .string()
     .uuid()
@@ -402,13 +437,13 @@ export const assertAutomaticEvidence = async (
     prospect,
     await policy(transaction),
   );
+  const job = await assertAutomaticContactEvidence(transaction, prospect);
   if (
     !["product-published-data", "shopping-research"].includes(
       prospect.details.gap,
     )
   )
     return;
-  const job = await assertAutomaticContactEvidence(transaction, prospect);
   if (prospect.details.gap === "shopping-research") return;
   if (!job) throw new ValidationError("Automatic product evidence is missing.");
   const qualified = qualifiedProductSchema.safeParse(
@@ -967,7 +1002,7 @@ const prospectItem = (
                 eq(schema.outboundIntegrationJob.status, "failed"),
                 sql`${schema.outboundIntegrationJob.input}->>'prospectRevision' = ${String(row.revision)}`,
                 sql`${schema.outboundIntegrationJob.input}->>'playbookRevision' = ${String(configuration.revision)}`,
-                sql`${schema.outboundIntegrationJob.input}->>'readinessKey' = ${draftReviewReadinessKey(row.details, configuration.settings.senderConfirmed)}`,
+                sql`${schema.outboundIntegrationJob.input}->>'readinessKey' = ${draftReviewReadinessKey(row.details, configuration.settings.senderConfirmed, configuration.settings.allowStaleEvidence, configuration.settings.trustSavedContactVerification, configuration.settings.allowProductObservations)}`,
                 sql`${schema.outboundIntegrationJob.input}->>'resumeId' = ${resumeId}`,
               ),
             ),
@@ -1308,7 +1343,7 @@ export const savePlaybookWithin = async (
     throw new ConflictError(
       "The Playbook changed. Review its current version before applying these settings.",
     );
-  // Operational quotas and pauses change no approved words or research policy.
+  // Operational quotas, pauses and observation-age tolerance change no approved words or research scope.
   const contentPolicy = (settings: Playbook) => {
     const {
       sendingEnabled,
@@ -1317,9 +1352,14 @@ export const savePlaybookWithin = async (
       senderConfirmed,
       historyConfirmed,
       allowIncompleteHistory,
+      allowStaleEvidence,
       competingSendersPaused,
       senderTested,
       dailyCap,
+      sendingRampEnabled,
+      automaticApolloEnabled,
+      trustSavedContactVerification,
+      allowProductObservations,
       dailyCompanyTarget,
       weeklyTarget,
       minGapMinutes,
@@ -1598,6 +1638,91 @@ export const saveProspect = (actor: string, input: unknown) =>
     return saveProspectWithin(transaction, actor, parsed.data);
   });
 
+/** Accept the existing import's verification label without inventing a newer check. */
+export const trustSavedContact = (
+  actor: string,
+  input: { prospect: string; revision: number },
+) =>
+  transaction(async (transaction) => {
+    const prospect = await findProspect(transaction, input.prospect);
+    const current = await policy(transaction);
+    if (!current.settings.trustSavedContactVerification)
+      throw new ValidationError(
+        "Enable saved contact verification in the Playbook first.",
+      );
+    if (prospect.revision !== input.revision)
+      throw new ConflictError("The saved contact changed before acceptance.");
+    if (
+      prospect.createdBy !== LEGACY_CONTACT_IMPORT_ACTOR ||
+      !savedContactSourceVerified(prospect.details) ||
+      prospect.sentStep > 0 ||
+      !["candidate", "draft"].includes(prospect.status)
+    )
+      throw new ValidationError(
+        "Only an unsent source-verified contact from the original import can be accepted.",
+      );
+    if (prospect.details.savedContactVerificationId) {
+      await assertSavedContactVerification(transaction, prospect);
+      return {
+        prospect: prospect.id,
+        revision: prospect.revision,
+        verificationId: prospect.details.savedContactVerificationId,
+      };
+    }
+    const previous = requireData(
+      await IntegrationJobs.find(
+        Environment.SERVER,
+        {
+          where: and(
+            eq(schema.outboundIntegrationJob.prospectId, prospect.id),
+            sql`${schema.outboundIntegrationJob.input}->>'operation' = 'savedContactVerification'`,
+          ),
+          limit: 1,
+        },
+        { tx: transaction },
+      ),
+    )[0];
+    if (previous)
+      throw new ConflictError(
+        "The original accepted contact receipt cannot be replaced.",
+      );
+    const receipt = requireData(
+      await IntegrationJobs.create(
+        Environment.SERVER,
+        {
+          provider: "automation",
+          prospectId: prospect.id,
+          requestId: `saved-contact-verification:${prospect.id}`,
+          status: "complete",
+          input: savedContactReceiptSchema.parse({
+            operation: "savedContactVerification",
+            prospectId: prospect.id,
+            importedBy: prospect.createdBy,
+            importedAt: prospect.createdAt.toISOString(),
+            acceptedBy: actor,
+            acceptedAt: new Date().toISOString(),
+            originalRevision: prospect.revision,
+            identity: savedContactIdentitySchema.parse(prospect.details),
+          }),
+        },
+        { tx: transaction },
+      ),
+    );
+    const saved = await saveProspectWithin(transaction, actor, {
+      ...prospect.details,
+      id: prospect.id,
+      savedContactVerificationId: receipt.id,
+    });
+    await event(
+      transaction,
+      actor,
+      "savedContactAccepted",
+      "Accepted the imported source's verified label and saved role. Original observation dates remain unchanged.",
+      prospect.id,
+    );
+    return { ...saved, verificationId: receipt.id };
+  });
+
 /** Claim a researched company for one prospect in the same workspace transaction. */
 export const saveCampaignProspect = (
   actor: string,
@@ -1804,10 +1929,12 @@ export const patchProspect = (
       "evidenceCheckedAt",
       "roleCheckedAt",
     ]);
+    // New schema defaults are storage normalization, not a changed approved fact.
+    const previous = prospectSchema.parse({ ...prospect.details, id });
     const unchanged = Object.entries(parsed.data).every(
       ([key, value]) =>
         receipts.has(key) ||
-        isDeepStrictEqual(prospect.details[key as keyof ProspectInput], value),
+        isDeepStrictEqual(previous[key as keyof ProspectInput], value),
     );
     if (unchanged) {
       requireData(
@@ -1902,25 +2029,40 @@ const writeMessages = async (
   };
 };
 
-export const generateDrafts = (actor: string, input: { prospect: string }) =>
-  transaction(async (transaction) => {
-    const prospect = await findProspect(transaction, input.prospect);
-    if (prospect.sentStep)
-      throw new ConflictError(
-        "A sent sequence's original draft cannot be regenerated.",
-      );
-    const current = await policy(transaction);
-    if (!personalSourceReadyForDraft(prospect.details, current.settings))
-      throw new ValidationError(
-        "Reopen and date the personal source before drafting, or remove the personal line.",
-      );
-    return writeMessages(
-      transaction,
-      actor,
-      prospect,
-      renderMessages(prospect.details, current.settings),
+export const generateDraftsWithin = async (
+  transaction: TransactionScope,
+  actor: string,
+  input: { prospect: string; expectedRevision?: number },
+) => {
+  const prospect = await findProspect(transaction, input.prospect);
+  if (
+    input.expectedRevision !== undefined &&
+    (prospect.revision !== input.expectedRevision ||
+      !["candidate", "draft"].includes(prospect.status) ||
+      !["", "playbookChanged"].includes(prospect.holdReason))
+  )
+    throw new ConflictError(
+      "The prospect changed or was held before automatic drafting.",
     );
-  });
+  if (prospect.sentStep)
+    throw new ConflictError(
+      "A sent sequence's original draft cannot be regenerated.",
+    );
+  const current = await policy(transaction);
+  if (!personalSourceReadyForDraft(prospect.details, current.settings))
+    throw new ValidationError(
+      "Reopen and date the personal source before drafting, or remove the personal line.",
+    );
+  return writeMessages(
+    transaction,
+    actor,
+    prospect,
+    renderMessages(prospect.details, current.settings),
+  );
+};
+
+export const generateDrafts = (actor: string, input: { prospect: string }) =>
+  transaction((transaction) => generateDraftsWithin(transaction, actor, input));
 
 export const saveDraft = (actor: string, input: unknown) =>
   transaction(async (transaction) => {
@@ -2221,6 +2363,218 @@ export const reviewProspect = (
     reviewProspectWithin(transaction, actor, input, automatic),
   );
 
+/** Operator-only recovery for an audited receipt-normalization revocation. */
+export const restoreReceiptNormalizationApproval = (
+  actor: string,
+  input: unknown,
+) =>
+  transaction(async (transaction) => {
+    const parsed = z
+      .object({
+        prospect: z.string().uuid(),
+        revision: z.number().int().positive(),
+        updatedAt: z.string().datetime(),
+        incidentEventId: z.string().uuid(),
+        priorRevisionId: z.string().uuid(),
+        contentHash: z.string().regex(/^[a-f0-9]{64}$/),
+        nextSendAt: z.string().datetime(),
+        snapshot: z.string().trim().min(1).max(500),
+      })
+      .safeParse(input);
+    if (!parsed.success)
+      throw new ValidationError(
+        "An exact audited recovery snapshot is required.",
+      );
+    const expected = parsed.data;
+    const prospect = await findProspect(transaction, expected.prospect);
+    const version = requireData(
+      await Revisions.get(Environment.SERVER, expected.priorRevisionId, {
+        tx: transaction,
+      }),
+    );
+    const incident = requireData(
+      await Events.get(Environment.SERVER, expected.incidentEventId, {
+        tx: transaction,
+      }),
+    );
+    if (
+      prospect.revision !== expected.revision ||
+      prospect.updatedAt.toISOString() !== expected.updatedAt ||
+      prospect.approvedAt ||
+      prospect.approvedBy ||
+      prospect.approvalHash ||
+      prospect.nextSendAt ||
+      prospect.sentStep >= 3 ||
+      (prospect.sentStep
+        ? prospect.status !== "held" || prospect.holdReason !== "detailsChanged"
+        : prospect.status !== "draft" || prospect.holdReason !== "") ||
+      !version?.approvedAt ||
+      !version.approvedBy ||
+      !version.revokedAt ||
+      version.prospectId !== prospect.id ||
+      version.revision !== prospect.revision - 1 ||
+      version.revokeReason !== "Prospect details changed" ||
+      version.contentHash !== expected.contentHash ||
+      !isDeepStrictEqual(version.messages, prospect.messages) ||
+      Math.abs(version.revokedAt.getTime() - prospect.updatedAt.getTime()) >
+        1000 ||
+      incident?.prospectId !== prospect.id ||
+      incident.kind !== "prospectUpdated" ||
+      incident.actor !== "outbound-worker" ||
+      Math.abs(incident.createdAt.getTime() - prospect.updatedAt.getTime()) >
+        1000
+    )
+      throw new ConflictError(
+        "The current record no longer matches the audited receipt incident.",
+      );
+    const newer = requireData(
+      await Revisions.find(
+        Environment.SERVER,
+        {
+          where: and(
+            eq(schema.outboundRevision.prospectId, prospect.id),
+            gte(schema.outboundRevision.revision, prospect.revision),
+          ),
+          limit: 1,
+        },
+        { tx: transaction },
+      ),
+    );
+    if (newer.length)
+      throw new ConflictError(
+        "A newer draft exists and must be reviewed normally.",
+      );
+    const current = await policy(transaction);
+    if (
+      prospect.playbookRevision !== current.revision ||
+      version.contentHash !== contentHash(version.messages, version.manifest) ||
+      version.contentHash !==
+        contentHash(
+          prospect.messages,
+          approvalManifest(prospect, current.settings, current.revision),
+        )
+    )
+      throw new ConflictError(
+        "The previously approved content or policy no longer matches.",
+      );
+    const conversations = await transaction
+      .select({
+        inbound: schema.outboundConversation.lastInboundAt,
+        stage: schema.outboundConversation.stage,
+      })
+      .from(schema.outboundConversation)
+      .where(eq(schema.outboundConversation.prospectId, prospect.id));
+    if (
+      conversations.some(
+        (conversation) => conversation.inbound || conversation.stage !== "open",
+      )
+    )
+      throw new ConflictError(
+        "A reply or conversation decision prevents sequence restoration.",
+      );
+    const attempts = requireData(
+      await Attempts.find(
+        Environment.SERVER,
+        {
+          where: eq(schema.outboundSendAttempt.prospectId, prospect.id),
+        },
+        { tx: transaction },
+      ),
+    );
+    if (
+      attempts.length !== prospect.sentStep ||
+      attempts.some(
+        (attempt) =>
+          attempt.test ||
+          attempt.status !== "accepted" ||
+          attempt.step > prospect.sentStep,
+      ) ||
+      (prospect.sentStep &&
+        (!prospect.firstSentAt ||
+          !prospect.lastSentAt ||
+          !prospect.threadId ||
+          !prospect.inboxId))
+    )
+      throw new ConflictError(
+        "Delivery history changed or contains an unresolved attempt.",
+      );
+    for (const attempt of attempts)
+      await immutableDelivery(transaction, attempt);
+    const next = prospect.messages.find(
+      (message) => message.step === prospect.sentStep + 1,
+    );
+    if (!next)
+      throw new ConflictError("The saved sequence has no remaining message.");
+    const scheduled =
+      prospect.firstSentAt && prospect.lastSentAt
+        ? new Date(
+            Math.max(
+              prospect.firstSentAt.getTime() + next.afterDays * 86_400_000,
+              prospect.lastSentAt.getTime() + 86_400_000,
+            ),
+          )
+        : version.approvedAt;
+    if (scheduled.toISOString() !== expected.nextSendAt)
+      throw new ConflictError(
+        "The audited schedule does not match the immutable delivery history.",
+      );
+
+    // Normal approval performs current campaign, source, opt-out, and copy checks.
+    // A failure rolls back both this temporary revision pointer and the approval.
+    requireData(
+      await Prospects.update(
+        Environment.SERVER,
+        prospect.id,
+        {
+          revision: version.revision,
+        },
+        { tx: transaction },
+      ),
+    );
+    await reviewProspectWithin(transaction, actor, {
+      prospect: prospect.id,
+      revision: version.revision,
+      decision: "approve",
+      reason: "",
+    });
+    requireData(
+      await Revisions.update(
+        Environment.SERVER,
+        version.id,
+        {
+          approvedAt: version.approvedAt,
+          approvedBy: version.approvedBy,
+        },
+        { tx: transaction },
+      ),
+    );
+    requireData(
+      await Prospects.update(
+        Environment.SERVER,
+        prospect.id,
+        {
+          approvedAt: version.approvedAt,
+          approvedBy: version.approvedBy,
+          nextSendAt: scheduled,
+        },
+        { tx: transaction },
+      ),
+    );
+    await event(
+      transaction,
+      actor,
+      "approvalRestored",
+      `Restored unchanged revision ${version.revision} after receipt-normalization incident ${incident.id}; original approval and schedule retained. Snapshot: ${expected.snapshot}`,
+      prospect.id,
+    );
+    return {
+      prospect: prospect.id,
+      revision: version.revision,
+      status: prospect.sentStep ? "active" : "approved",
+      nextSendAt: scheduled.toISOString(),
+    };
+  });
+
 export const approveAutomatically = (
   actor: string,
   input: { prospect: string; revision: number; automationJobId: string },
@@ -2263,6 +2617,7 @@ const assertAutomaticReviewVerification = async (
   transaction: TransactionScope,
   prospect: ProspectRow,
 ) => {
+  if (await assertSavedContactVerification(transaction, prospect)) return;
   const match = /^Apollo verification (.+); record (.+)$/.exec(
     prospect.details.emailSource,
   );
@@ -2531,6 +2886,9 @@ export const applyAutomaticDraftReview = (input: {
       draftReviewReadinessKey(
         prospect.details,
         current.settings.senderConfirmed,
+        current.settings.allowStaleEvidence,
+        current.settings.trustSavedContactVerification,
+        current.settings.allowProductObservations,
       ) !== scope.readinessKey ||
       (await latestDraftReviewRequest(transaction, prospect.id)) !==
         scope.resumeId ||
@@ -3252,11 +3610,14 @@ export const getProspect = (id: string) =>
 export const readProspect = getProspect;
 
 /** Paid preparation reads only this company and its matching suppression records. */
-export const getEnrichmentContext = (id: string) =>
+export const getEnrichmentContext = (
+  id: string,
+  transaction?: TransactionScope,
+) =>
   resultify(async () => {
     const [configuration, loaded] = await Promise.all([
-      policy(),
-      Prospects.get(Environment.SERVER, id),
+      policy(transaction),
+      Prospects.get(Environment.SERVER, id, { tx: transaction }),
     ]);
     const prospect = requireData(loaded);
     if (!prospect) throw new NotFoundError("Prospect not found.");
@@ -3270,19 +3631,25 @@ export const getEnrichmentContext = (id: string) =>
       ),
     ];
     const [company, entries] = await Promise.all([
-      Companies.get(Environment.SERVER, prospect.companyId),
-      Suppressions.find(Environment.SERVER, {
-        where: or(
-          and(
-            eq(schema.outboundSuppression.scope, "email"),
-            eq(schema.outboundSuppression.value, email),
-          ),
-          and(
-            eq(schema.outboundSuppression.scope, "domain"),
-            inArray(schema.outboundSuppression.value, domains),
-          ),
-        ),
+      Companies.get(Environment.SERVER, prospect.companyId, {
+        tx: transaction,
       }),
+      Suppressions.find(
+        Environment.SERVER,
+        {
+          where: or(
+            and(
+              eq(schema.outboundSuppression.scope, "email"),
+              eq(schema.outboundSuppression.value, email),
+            ),
+            and(
+              eq(schema.outboundSuppression.scope, "domain"),
+              inArray(schema.outboundSuppression.value, domains),
+            ),
+          ),
+        },
+        { tx: transaction },
+      ),
     ]);
     const identity = requireData(company);
     if (!identity) throw new NotFoundError("Company not found.");

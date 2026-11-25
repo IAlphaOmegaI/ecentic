@@ -30,11 +30,13 @@ or LinkedIn chat. Inbound replies and opt-outs stop cold follow-ups across both
 channels. Opening a timeline never sends or retries anything.
 
 Email targets may be set up to 50 messages per inbox per rolling 24 hours, including
-follow-ups and conversational replies. The effective limit starts at 15 (or a lower configured target), rises
-by 5 only after a completed UTC day reached its then-current cap, and returns to
-the starting limit on an observed bounce in the 60-day evaluation history. Test
-and warmup messages do not advance this ramp. This measures actual volume, not
-reputation or inbox placement. Individual mailbox caps, pacing, weekly target,
+follow-ups and conversational replies. With `sendingRampEnabled` (the default),
+the effective limit starts at 15 (or a lower configured target) and rises by 5
+only after a completed UTC day reached its then-current cap. Disabling the ramp
+uses the configured limit directly. An observed bounce in the 60-day evaluation
+history returns either mode to the starting limit. Test and warmup messages do
+not advance the ramp. This measures actual volume, not reputation or inbox placement.
+Individual mailbox caps, pacing, weekly target,
 recipient windows and provider holds still apply. The worker runs every minute,
 with bounded preparation work and at most one attempt per inbox per tick.
 
@@ -175,6 +177,27 @@ The daily limit includes follow-ups and reserved/failed attempts. A weekly targe
 is not a guarantee of capacity. The first-email copy has a configurable maximum
 of 99 words, before the separately displayed postal footer. Sending starts off.
 
+### Operational Playbook options
+
+These switches preserve the approved words and original source dates; changing
+them does not claim a fresh capture, reset a provider budget, or automatically
+replay an accepted, failed or uncertain paid query. Final eligibility checks use
+the current settings, including for an already claimed email. Explicit recovery
+of a definitively rejected provider request retains its saved checkpoint and audit.
+
+| Setting | Default | Effect |
+| --- | --- | --- |
+| `automaticApolloEnabled` | `true` | Enables new automatic company searches, organization/contact enrichment and email verification. When off, stages needing new paid Apollo requests remain pending; saved facts, free identity search and polling an already accepted request can continue. Manual provider actions remain explicit. |
+| `sendingRampEnabled` | `true` | Uses the observed-volume ramp described above. When off, the lower of the workspace and inbox caps applies directly, up to 50; bounce protection remains active. |
+| `allowStaleEvidence` | `false` | Allows genuine saved product and shopping observations beyond the configured age limit. Missing, future-dated or changed receipts still fail. |
+| `trustSavedContactVerification` | `false` | Allows an explicitly accepted, source-verified legacy contact and saved role to retain their original verification dates, including unknown dates. An immutable receipt binds the imported identity; this is not a new verification. Live MX, targeting, reply and suppression checks remain. |
+| `allowProductObservations` | `false` | Allows a specific, truthful neutral product observation when no discrepancy is supported. Actual shopper-query and browser receipts remain required; invented issues, price discrepancies and sales-impact claims are not permitted as neutral observations. |
+
+On 25 November 2026 the owner chose a configured 50-message inbox cap without
+the gradual ramp, paused new automatic Apollo spending, and enabled the stale
+evidence, accepted saved-contact and neutral-observation options. These are
+dated operating decisions, not new defaults or a guarantee of daily send volume.
+
 The overview report counts accepted first emails, accepted follow-ups, replies,
 bounces, meetings and uncertain outcomes in the last seven days. Its prospect
 and hold counts describe the current pipeline. Accepted means that the sending
@@ -183,8 +206,9 @@ provider accepted the message; it does not establish inbox delivery.
 Country settings determine application eligibility; they do not grant legal
 permission to contact someone. The initial allowed country is `US`; the default
 held list is `DE, AT, CH, FR, ES, IT, NL, GB`. Microsoft-hosted recipients,
-unknown mail hosts, shared inboxes, stale/unverified addresses, excluded roles
-and non-cold relationships cannot pass the cold-email checks. Qualification,
+unknown mail hosts, shared inboxes, excluded roles and non-cold relationships
+cannot pass the cold-email checks. Stale or undated verification fails unless
+the explicit saved-contact policy and its bound import receipt apply. Qualification,
 current-role and product evidence must be recorded with their sources.
 
 Email receipt age is independent of product evidence age: the November launch
@@ -246,6 +270,64 @@ has passed a controlled send/reply test. They do not perform those tasks or
 independently establish that the records are complete.
 
 ## Provider setup
+
+### Preparing explicitly selected saved contacts
+
+`server/app/outbound/saved-contact-preparation.ts` exposes an internal
+`enqueue(actor, { batchId, campaignId, prospects, maxQueries })` operation and
+a bounded `run({ batchId?, maxSteps?, deadline? })` worker. The prepare cron
+resumes only these explicitly seeded jobs. Existing imported prospect IDs,
+source-verification receipts and original observation dates remain intact;
+the worker never calls Apollo or sends mail directly.
+
+Each job checkpoints live MX, public product evidence, a source-bound business
+address for local sending hours, qualification, one ScrapeLLM query, its poll
+result, browser captures, assessment, applied research and draft generation.
+The normal automatic-review and sending workers handle the resulting draft.
+Public sources with no supported finding retain their actual receipts for
+review. Playbook observation policy controls whether an accurate neutral
+product observation can qualify. Missing facts are never replaced with guesses.
+
+A batch permits at most 50 reserved ScrapeLLM submissions, with the limit
+saved before any provider call. More contacts can be added to the same batch
+without resetting its budget. A lost paid-stage response becomes uncertain
+and is not replayed. Quota, access, configuration or unknown rate-limit failures
+pause further paid stages for that batch. A verified per-minute HTTP 429 from
+Firecrawl session creation keeps the same saved shopping answer and browser
+stage pending, with at most three retries after 60, 120 and 240 seconds (or the
+provider's longer delay). Browser claims share a durable 60-second batch limit.
+An execute failure or uncertain outcome never creates a replacement browser.
+`resumeBrowserRateLimit` can recover one older paused creation rejection after
+an audited review of exact job and batch snapshots; query reservations remain
+unchanged. Replies, suppression, changed identity,
+manual holds, campaign changes and existing delivery attempts are rechecked
+before each stage. Provider captures are retained even if a hold arrives while
+the external request is running.
+
+An operator can review a completed product-parser hold and call `retryCollection`
+once with its job ID, current update timestamp, a unique request ID and the
+review reason. Only the exact missing-product hold with an original same-site
+product receipt is eligible. The worker checks the current contact, campaign
+and Playbook bindings, preserves the original collection and review audit, then
+resumes free public collection. Restricted pages, missing product receipts,
+changed bindings and any shopping submission or result cannot be retried this
+way. Repeating the same review is idempotent and does not reset the query budget.
+
+`resumeLocation` applies the same reviewed-request contract to a completed
+missing-address hold. It must resolve one business timezone from the original
+saved company and location receipts after a parser correction. It retains the
+entire held state, reviewer audit and original address observation timestamp,
+then resumes qualification without fetching pages or submitting shopping work.
+Ambiguous addresses, third-party policy addresses, changed campaign or contact
+bindings, and any prior paid work remain ineligible.
+
+Company qualification uses a bounded catalog of unchanged source excerpts.
+Azure selects excerpt IDs; local code supplies their original text and URLs,
+then validates the same company-fit and product-insight requirements. Unknown
+IDs are rejected. An explicitly reviewed qualification correction can repair
+a known quote/source error using the saved receipts, while retaining the
+original model assessment, reviewer, reason and timestamp. It resumes at
+company application and does not repeat a model or shopping query.
 
 The existing `apps/web` migration history remains the owner of the shared
 PostgreSQL schema. Apply migrations there with `bun run db:migrate` when needed.
@@ -416,9 +498,17 @@ attempts at most one message per inbox per tick, with at most ten inboxes. Deliv
 requires a current approval, enabled and matching sender, completed history
 reconciliation within ten minutes, current eligibility and verification, clear
 suppression/history checks, remaining inbox capacity, and the recipient's
-Monday–Thursday 08:00–14:00 window. MX records and the product page are rechecked
-before dispatch; changed or unavailable evidence holds the sequence. Automatic sequences renew stale email and product receipts through a durable
-preparation job; failed, changed or uncertain receipts hold the sequence.
+Monday–Thursday 08:00–14:00 window. MX records are refreshed before dispatch.
+Legacy raw-HTML findings also recheck their product page; structured product and
+shopping findings retain their dated captures and revalidate their receipt bindings.
+Changed or unavailable required evidence holds the sequence. `allowStaleEvidence`
+only relaxes observation age: exact approved words, original timestamps, receipt
+bindings and schedules stay intact. Missing, future-dated, contradictory or
+tampered evidence, replies and opt-outs still fail. Turning it off restores age
+checks at final dispatch, including already claimed sends. Automatic sequences
+renew stale email and product receipts when current policy requires renewal;
+MX age alone does not create a paid renewal. Failed, changed or uncertain
+renewal receipts hold the sequence.
 First-email approval expires
 after seven days. Follow-ups need the existing conversation and at least
 24 hours since the previous message. SMTP uses RFC reply references; OAuth

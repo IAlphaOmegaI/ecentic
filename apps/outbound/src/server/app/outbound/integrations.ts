@@ -8,6 +8,7 @@ import {
   prospectIssues,
   splitList,
 } from "@/lib/outbound";
+import { evidenceDateUsable } from "@/lib/outbound-evidence";
 import { UserRole } from "@/server/database/validators";
 import { withAuthorization } from "@/server/utils/authorization";
 import {
@@ -89,7 +90,7 @@ const eligibleForEnrichment = async (id: string, roleCheck = false) => {
       (issue) => issue.code === "findingReviewRequired",
     ) ||
     normalizeDomain(details.productUrl) !== domain ||
-    !fresh(details.evidenceCheckedAt, settings.verificationDays)
+    !evidenceDateUsable(details.evidenceCheckedAt, settings, now)
   )
     throw new ValidationError(
       "Review a current product finding on this company's domain before spending on contact lookup or enrichment.",

@@ -3,6 +3,7 @@ import * as Discovery from "@/server/app/outbound/automatic-company-discovery";
 import * as Review from "@/server/app/outbound/automatic-draft-review";
 import * as Refresh from "@/server/app/outbound/automatic-sequence-refresh";
 import * as Automation from "@/server/app/outbound/automation";
+import * as SavedContacts from "@/server/app/outbound/saved-contact-preparation";
 import { authorizeCron } from "@/server/utils/outbound/cron";
 
 export const maxDuration = 300;
@@ -14,13 +15,17 @@ export const GET = async (request: Request) => {
     maxSteps: 20,
     deadline: deadline - 150_000,
   });
+  const savedContacts = await SavedContacts.run({
+    maxSteps: 20,
+    deadline: Math.min(deadline - 30_000, Date.now() + 150_000),
+  });
   const review = await Review.run({
     maxDrafts: 5,
-    deadline: deadline - 90_000,
+    deadline: Math.min(deadline - 15_000, Date.now() + 45_000),
   });
   const discovery = await Discovery.run({
     maxCampaigns: 2,
-    deadline: Math.min(deadline - 60_000, Date.now() + 40_000),
+    deadline: Math.min(deadline - 10_000, Date.now() + 30_000),
   });
   const preparation = await Automation.run({ maxSteps: 20, deadline });
   return NextResponse.json(
@@ -34,6 +39,9 @@ export const GET = async (request: Request) => {
       preparation: preparation.success
         ? preparation.data
         : { error: "Preparation needs attention" },
+      savedContacts: savedContacts.success
+        ? savedContacts.data
+        : { error: "Saved contact preparation needs attention" },
       discovery: discovery.success
         ? discovery.data
         : { error: "Company discovery needs attention" },
@@ -43,6 +51,7 @@ export const GET = async (request: Request) => {
         refresh.success &&
         review.success &&
         preparation.success &&
+        savedContacts.success &&
         discovery.success
           ? 200
           : 500,

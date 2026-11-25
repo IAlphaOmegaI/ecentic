@@ -323,6 +323,34 @@ describe("automatic company acquisition and replenishment", () => {
     expect(source.providers.searchApolloCompanies).not.toHaveBeenCalled();
     expect(source.providers.startClayCompanySearch).not.toHaveBeenCalled();
   });
+  test("pausing automatic Apollo preserves the cursor and reserves no paid search until resumed", async () => {
+    const { discovery, store, db, schema } = active();
+    const id = await create();
+    const source = fixture();
+    const before = await store.policy();
+    value(
+      await store.savePlaybook(actor, {
+        ...before.settings,
+        automaticApolloEnabled: false,
+      }),
+    );
+    expect(value(await discovery.getStatus()).campaigns[0]?.reason).toBe(
+      "apollo-paused",
+    );
+    expect(value(await discovery.run({}, source.providers)).processed).toBe(0);
+    expect(source.providers.searchApolloCompanies).not.toHaveBeenCalled();
+    expect(source.providers.startClayCompanySearch).not.toHaveBeenCalled();
+    expect(await db.select().from(schema.outboundCampaignRun)).toHaveLength(0);
+    const [paused] = await db
+      .select()
+      .from(schema.outboundCampaign)
+      .where(eq(schema.outboundCampaign.id, id));
+    expect(paused?.discoveryState.apolloPage).toBe(1);
+    expect((await store.policy()).revision).toBe(before.revision);
+    value(await store.savePlaybook(actor, before.settings));
+    expect(value(await discovery.run({}, source.providers)).added).toBe(1);
+    expect(source.providers.searchApolloCompanies).toHaveBeenCalledTimes(1);
+  });
   test("already attempted candidate rows do not falsely satisfy the backlog", async () => {
     const { discovery } = active();
     const id = await create();

@@ -4,15 +4,11 @@ import { randomUUID } from "node:crypto";
 import { sql } from "drizzle-orm";
 import { defaultPlaybook, prospectSchema } from "@/lib/outbound";
 import { defaultCampaignCriteria } from "@/lib/outbound-campaigns";
+import { requireTestDatabase } from "../helpers/database";
 
 const endpoint = process.env.OUTBOUND_TEST_DATABASE_URL;
 if (!endpoint) throw new Error("Disposable test database required");
-const location = new URL(endpoint);
-if (
-  !["localhost", "127.0.0.1"].includes(location.hostname) ||
-  location.pathname !== "/outbound_test"
-)
-  throw new Error("Local outbound_test only");
+requireTestDatabase(endpoint);
 Object.assign(process.env, { DATABASE_URL: endpoint });
 mock.module("server-only", () => ({}));
 mock.module("@/server/app/outbound/provider-credentials", () => ({
@@ -389,6 +385,173 @@ if (result.success) {
     1,
   );
 }
+// Saved contacts are visible before promotion; qualification is not a shopping receipt.
+const savedCompany = randomUUID();
+const savedPerson = randomUUID();
+const savedProspect = randomUUID();
+const savedJob = randomUUID();
+await db.insert(schema.outboundCompany).values({
+  id: savedCompany,
+  domain: "saved.test",
+  name: "Saved prospect",
+  source: "saved",
+  country: "US",
+  website: "https://saved.test",
+});
+await db.insert(schema.outboundPerson).values({
+  id: savedPerson,
+  companyId: savedCompany,
+  identityKey: "saved-person",
+  name: "Saved Person",
+});
+await db.insert(schema.outboundProspect).values({
+  id: savedProspect,
+  companyId: savedCompany,
+  personId: savedPerson,
+  details: { ...details, company: "Saved prospect", domain: "saved.test" },
+  createdBy: "fixture",
+});
+await db
+  .update(schema.outboundPlaybook)
+  .set({ settings: { ...defaultPlaybook, requireShoppingEvidence: true } });
+await db.insert(schema.outboundIntegrationJob).values({
+  id: savedJob,
+  provider: "automation",
+  prospectId: savedProspect,
+  status: "pending",
+  input: {
+    operation: "savedContactPreparation",
+    campaignId: id("campaign"),
+    campaignRevision: 2,
+    playbookRevision: 3,
+  },
+  output: { stage: "query", qualification: { status: "qualified" } },
+});
+const pendingSaved = await Pipeline.read();
+assert.ok(pendingSaved.success);
+if (pendingSaved.success) {
+  assert.equal(pendingSaved.data.totals.insights, 0);
+  assert.equal(pendingSaved.data.totals.contacts, 1);
+  const visible = pendingSaved.data.work.find((work) => work.id === savedJob);
+  assert.equal(visible?.prospectId, savedProspect);
+  assert.equal(visible?.companyId, null);
+  assert.equal(visible?.stage, "query");
+}
+// This aggregate reads receipts already validated by the preparation worker.
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({
+    output: {
+      stage: "draft",
+      qualification: { status: "qualified" },
+      shoppingReceipt: {
+        queries: [{ status: "observed" }],
+        selected: { kind: "product-data-gap" },
+      },
+      assessment: { status: "researched" },
+    },
+  })
+  .where(sql`id = ${savedJob}`);
+const researchedSaved = await Pipeline.read();
+assert.ok(researchedSaved.success);
+if (researchedSaved.success) {
+  assert.equal(researchedSaved.data.totals.insights, 1);
+  assert.equal(researchedSaved.data.totals.contacts, 1);
+  assert.equal(researchedSaved.data.totals.sequences, 1);
+}
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({
+    status: "complete",
+    output: {
+      stage: "complete",
+      heldReason: "No eligible public business address.",
+    },
+  })
+  .where(sql`id = ${savedJob}`);
+const heldSaved = await Pipeline.read();
+assert.ok(heldSaved.success);
+if (heldSaved.success) {
+  assert.equal(
+    heldSaved.data.campaigns.find((campaign) => campaign.id === id("campaign"))
+      ?.held,
+    1,
+  );
+  assert.equal(
+    heldSaved.data.work.find((work) => work.id === savedJob)?.status,
+    "failed",
+  );
+}
+
+// A reviewed later receipt resolves the current hold without rewriting its history.
+const recoveredResearch = randomUUID();
+const recoveredApproval = randomUUID();
+const researchAt = new Date(Date.now() - 30_000);
+const approvedAt = new Date(Date.now() - 10_000);
+const recoveredDetails = prospectSchema.parse({
+  ...details,
+  company: "Saved prospect",
+  domain: "saved.test",
+  email: "person@saved.test",
+  product: "Linen tote",
+  productUrl: "https://saved.test/products/tote",
+  shoppingResearchId: recoveredResearch,
+  shoppingFinding: {
+    kind: "product-observation",
+    observation: "The tote has a removable shoulder strap.",
+    consequence: "The page lists two colors.",
+    askAbout: "the tote",
+    scope: "One observed answer and merchant page.",
+    checkedAt: researchAt.toISOString(),
+  },
+  evidence: "A persisted reviewed receipt.",
+});
+await db.update(schema.outboundIntegrationJob).set({ updatedAt: new Date(Date.now() - 60_000) }).where(sql`id = ${savedJob}`);
+const [originalHold] = await db.select().from(schema.outboundIntegrationJob).where(sql`id = ${savedJob}`);
+await db.update(schema.outboundProspect).set({
+  campaignId: id("campaign"), details: recoveredDetails, status: "approved",
+  revision: 1, playbookRevision: 3, approvedAt, approvedBy: "fixture",
+  approvalHash: "recovered-hash",
+}).where(sql`id = ${savedProspect}`);
+await db.insert(schema.outboundIntegrationJob).values({
+  id: recoveredResearch, provider: "automation", status: "complete", prospectId: savedProspect,
+  input: { operation: "leadResearch", prospectId: savedProspect, campaignId: id("campaign"), campaignRevision: 2, playbookRevision: 3 },
+  output: { details: recoveredDetails, receipt: { product: { name: "Linen tote", url: recoveredDetails.productUrl } } },
+  createdAt: researchAt,
+});
+const assertSavedHold = async (resolved: boolean) => {
+  const result = await Pipeline.read();
+  assert.ok(result.success);
+  if (!result.success) return;
+  assert.equal(result.data.campaigns.find((campaign) => campaign.id === id("campaign"))?.held, resolved ? 0 : 1);
+  assert.equal(result.data.work.some((work) => work.id === savedJob), !resolved);
+  assert.equal(result.data.totals.insights, resolved ? 1 : 0);
+};
+await assertSavedHold(false); // A status string alone is not a current approval.
+await db.insert(schema.outboundRevision).values({
+  id: recoveredApproval, prospectId: savedProspect, revision: 1, messages: [],
+  manifest: { recipient: recoveredDetails.email, sender: "sender@ecentic.test", fromName: "Sender", signature: "Sender", postalAddress: "Test address", playbookRevision: 3, evidence: recoveredDetails.evidence, evidenceCheckedAt: researchAt.toISOString() },
+  contentHash: "recovered-hash", approvedAt, approvedBy: "fixture",
+});
+await assertSavedHold(true);
+await db.update(schema.outboundIntegrationJob).set({ prospectId: id("prospect") }).where(sql`id = ${recoveredResearch}`);
+await assertSavedHold(false); // Another recipient's research cannot hide this hold.
+await db.update(schema.outboundIntegrationJob).set({ prospectId: savedProspect, createdAt: new Date(Date.now() - 120_000) }).where(sql`id = ${recoveredResearch}`);
+await assertSavedHold(false); // An earlier receipt cannot resolve a later failure.
+await db.update(schema.outboundIntegrationJob).set({ createdAt: researchAt }).where(sql`id = ${recoveredResearch}`);
+await db.update(schema.outboundRevision).set({ revokedAt: new Date() }).where(sql`id = ${recoveredApproval}`);
+await assertSavedHold(false);
+await db.update(schema.outboundRevision).set({ revokedAt: null }).where(sql`id = ${recoveredApproval}`);
+await db.update(schema.outboundProspect).set({ details: { ...recoveredDetails, evidence: "Different evidence" } }).where(sql`id = ${savedProspect}`);
+await assertSavedHold(false);
+await db.update(schema.outboundProspect).set({ details: recoveredDetails }).where(sql`id = ${savedProspect}`);
+await assertSavedHold(true);
+const [preservedHold] = await db.select().from(schema.outboundIntegrationJob).where(sql`id = ${savedJob}`);
+assert.deepEqual(preservedHold, originalHold);
+await db.update(schema.outboundProspect).set({
+  status: "candidate", approvedAt: null, approvedBy: null, approvalHash: null,
+}).where(sql`id = ${savedProspect}`);
+
 const Activity = await import("@/server/app/outbound/conversation-activity");
 await db.insert(schema.outboundIntegrationJob).values([
   {

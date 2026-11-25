@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { Playbook, ProspectInput } from "./outbound";
 import { validateProductInsight } from "./outbound-product-insight";
+import { savedContactVerificationReady } from "./outbound-saved-contact";
 
 export const refreshProductSchema = z.object({
   name: z.string().min(1).max(300),
@@ -228,7 +229,12 @@ export const validateSequenceRefreshReceipts = (
     patch.emailStatus = "verified";
   } else if (
     details.emailStatus !== "verified" ||
-    !refreshFresh(details.emailVerifiedAt, settings.emailVerificationDays, now)
+    (!refreshFresh(
+      details.emailVerifiedAt,
+      settings.emailVerificationDays,
+      now,
+    ) &&
+      !savedContactVerificationReady(details, settings))
   )
     return { reason: "sequence-verification-held" };
   if (

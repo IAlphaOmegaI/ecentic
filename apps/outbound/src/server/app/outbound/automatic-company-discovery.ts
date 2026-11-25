@@ -262,6 +262,8 @@ const assess = async (
   const reason = (() => {
     if (!policy.settings.automationEnabled) return "automation-paused";
     if (campaign.status !== "active") return "campaign-paused";
+    if (provider === "apollo" && !policy.settings.automaticApolloEnabled)
+      return "apollo-paused";
     if (history.some((run) => ["starting", "uncertain"].includes(run.status)))
       return "campaign-run-unresolved";
     if (

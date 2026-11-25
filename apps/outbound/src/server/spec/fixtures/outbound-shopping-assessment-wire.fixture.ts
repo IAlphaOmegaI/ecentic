@@ -134,6 +134,8 @@ const fixture = () => {
       answer: offer("answer", answerRaw, "USD 30"),
       page: offer("product", pageRaw, "USD 25"),
     },
+    answerQuoteId: catalog.quotes.find((quote) => quote.sourceId === "answer")!.id,
+    productQuoteId: catalog.quotes.find((quote) => quote.sourceId === "product")!.id,
     quoteIds: catalog.quotes
       .filter((quote) => quote.sourceId !== "ucp")
       .map((quote) => quote.id),

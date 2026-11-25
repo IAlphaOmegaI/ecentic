@@ -99,6 +99,31 @@ describe("November cold-launch policy", () => {
       playbookSchema.safeParse({ ...settings, verificationDays: 30 }).success,
     ).toBe(false);
   });
+  test("owner-approved old evidence keeps its date while missing or future evidence remains blocked", () => {
+    const policy = { ...settings, allowStaleEvidence: true };
+    const older = { ...prospect, evidenceCheckedAt: "2025-11-06T12:00:00Z" };
+    expect(prospectIssues(older, policy, now)).toEqual([]);
+    expect(older.evidenceCheckedAt).toBe("2025-11-06T12:00:00Z");
+    for (const patch of [
+      { evidence: "" },
+      { evidenceCheckedAt: "" },
+      { evidenceCheckedAt: "invalid" },
+      { evidenceCheckedAt: "2027-11-06T12:00:00Z" },
+      { productUrl: "" },
+    ])
+      expect(
+        prospectIssues({ ...older, ...patch }, policy, now),
+      ).toContainEqual({
+        code: "evidenceMissing",
+        field: "product",
+      });
+    expect(
+      prospectIssues({ ...older, emailStatus: "invalid" }, policy, now),
+    ).toContainEqual({ code: "emailUnverified", field: "email" });
+    expect(
+      prospectIssues({ ...older, relationship: "customer" }, policy, now),
+    ).toContainEqual({ code: "relationshipExcluded", field: "relationship" });
+  });
   test("uses fixed observation and consequence and rejects stronger copy", () => {
     const messages = renderMessages(prospect, settings);
     const first = messages[0];

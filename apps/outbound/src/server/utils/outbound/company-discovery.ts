@@ -239,6 +239,30 @@ export const normalizeApolloCompany = (
   };
 };
 
+/** Reuse actual provider fields before buying the same organization facts again. */
+export const savedApolloCompany = (
+  company: Pick<CompanyCandidate, "domain" | "sourceId" | "sourcePayload"> & {
+    source: CompanyCandidate["source"] | "saved";
+  },
+  criteria: CompanySearchCriteria,
+): CompanyCandidate | null => {
+  if (company.source !== "apollo") return null;
+  const saved = normalizeApolloCompany(company.sourcePayload);
+  if (
+    !saved ||
+    saved.domain !== normalizeDomain(company.domain) ||
+    saved.sourceId !== company.sourceId ||
+    !saved.country ||
+    (saved.teamSize === null &&
+      (criteria.teamSizeMin != null || criteria.teamSizeMax != null)) ||
+    (saved.annualRevenue === null &&
+      (criteria.annualRevenueMin != null || criteria.annualRevenueMax != null))
+  )
+    return null;
+  // Keep the original receipt and observation time; reuse is not a fresh check.
+  return { ...saved, sourcePayload: company.sourcePayload };
+};
+
 /** Clay's size and revenue fields are ranges; do not manufacture a point estimate. */
 export const normalizeClayCompany = (
   input: unknown,

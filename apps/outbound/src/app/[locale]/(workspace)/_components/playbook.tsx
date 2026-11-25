@@ -33,7 +33,7 @@ const groups = [
   {
     title: "automationTitle",
     icon: GaugeIcon,
-    keys: ["automationEnabled", "dailyCompanyTarget"],
+    keys: ["automationEnabled", "automaticApolloEnabled", "dailyCompanyTarget"],
   },
   {
     title: "linkedinAutomationTitle",
@@ -65,7 +65,11 @@ const groups = [
   {
     title: "researchTitle",
     icon: FileSearchIcon,
-    keys: ["researchInstructions", "requireShoppingEvidence"],
+    keys: [
+      "researchInstructions",
+      "requireShoppingEvidence",
+      "allowProductObservations",
+    ],
   },
   {
     title: "writingTitle",
@@ -143,6 +147,8 @@ const groups = [
       "excludedCompanies",
       "targetingNotes",
       "verificationDays",
+      "allowStaleEvidence",
+      "trustSavedContactVerification",
       "emailVerificationDays",
     ],
   },
@@ -152,6 +158,7 @@ const groups = [
     keys: [
       "weeklyTarget",
       "dailyCap",
+      "sendingRampEnabled",
       "minGapMinutes",
       "maxGapMinutes",
       "historyConfirmed",
@@ -232,15 +239,22 @@ export const PlaybookEditor = ({
       invalid: t("common.invalidField"),
       descriptions: {
         automationEnabled: t("playbook.automationHelp"),
+        automaticApolloEnabled: t("playbook.automaticApolloHelp"),
         dailyCompanyTarget: t("playbook.dailyCompanyTargetHelp"),
         linkedinAutomationEnabled: t("playbook.linkedinAutomationHelp"),
         linkedinAccountId: t("playbook.linkedinAccountHelp"),
         productCheckIntro: t("playbook.productCheckIntroHelp"),
         researchInstructions: t("playbook.researchInstructionsHelp"),
         requireShoppingEvidence: t("playbook.requireShoppingEvidenceHelp"),
+        allowProductObservations: t("playbook.allowProductObservationsHelp"),
         senderEmails: t("playbook.senderPoolHelp"),
         inactiveSenderEmails: t("playbook.inactiveSenderHelp"),
         verificationDays: t("playbook.productVerificationHelp"),
+        allowStaleEvidence: t("playbook.allowStaleEvidenceHelp"),
+        trustSavedContactVerification: t(
+          "playbook.trustSavedContactVerificationHelp",
+        ),
+        sendingRampEnabled: t("playbook.sendingRampHelp"),
         emailVerificationDays: t("playbook.emailVerificationHelp"),
         excludedCompanies: t("playbook.excludedCompaniesHelp"),
         targetingNotes: t("playbook.targetingNotesHelp"),
@@ -254,7 +268,12 @@ export const PlaybookEditor = ({
       },
       booleans: [
         "automationEnabled",
+        "automaticApolloEnabled",
         "requireShoppingEvidence",
+        "allowProductObservations",
+        "allowStaleEvidence",
+        "trustSavedContactVerification",
+        "sendingRampEnabled",
         "linkedinAutomationEnabled",
         "senderConfirmed",
         "humanizeDrafts",

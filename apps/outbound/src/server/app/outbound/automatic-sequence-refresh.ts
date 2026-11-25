@@ -4,6 +4,7 @@ import { randomUUID } from "node:crypto";
 import { type Result, resultify } from "@zenncore/utils";
 import { and, eq, lte, sql } from "drizzle-orm";
 import { z } from "zod";
+import { savedContactVerificationReady } from "@/lib/outbound-saved-contact";
 import {
   originalRefreshProduct,
   refreshFresh,
@@ -137,7 +138,8 @@ const enqueue = (prospectId?: string) =>
               new Date(Date.now() + 900000),
             ),
             prospectId ? eq(schema.outboundProspect.id, prospectId) : undefined,
-            sql`(${schema.outboundProspect.details}->>'emailStatus' <> 'verified' or coalesce(nullif(${schema.outboundProspect.details}->>'emailVerifiedAt','')::timestamptz,'epoch') < now() - (${policy.settings.emailVerificationDays} * interval '1 day') or coalesce(nullif(${schema.outboundProspect.details}->>'evidenceCheckedAt','')::timestamptz,'epoch') < now() - (${policy.settings.verificationDays} * interval '1 day') or coalesce(nullif(${schema.outboundProspect.details}->>'mxCheckedAt','')::timestamptz,'epoch') < now() - interval '1 day')`,
+            // The sending worker refreshes MX before claiming delivery; MX age alone needs no paid renewal.
+            sql`(${schema.outboundProspect.details}->>'emailStatus' <> 'verified' or ((${!policy.settings.trustSavedContactVerification} or coalesce(${schema.outboundProspect.details}->>'savedContactVerificationId','') = '') and coalesce(nullif(${schema.outboundProspect.details}->>'emailVerifiedAt','')::timestamptz,'epoch') < now() - (${policy.settings.emailVerificationDays} * interval '1 day')) or (${!policy.settings.allowStaleEvidence} and coalesce(nullif(${schema.outboundProspect.details}->>'evidenceCheckedAt','')::timestamptz,'epoch') < now() - (${policy.settings.verificationDays} * interval '1 day')))`,
             sql`not exists (select 1 from outbound_integration_job refresh where refresh.provider='automation' and refresh.input->>'operation'='sequenceRefresh' and refresh.prospect_id=${schema.outboundProspect.id} and refresh.input->>'prospectRevision'=${schema.outboundProspect.revision}::text)`,
           ),
           orderBy: [
@@ -185,10 +187,11 @@ const enqueue = (prospectId?: string) =>
         actor: "sequence-refresh",
         needEmail:
           prospect.details.emailStatus !== "verified" ||
-          !refreshFresh(
+          (!refreshFresh(
             prospect.details.emailVerifiedAt,
             policy.settings.emailVerificationDays,
-          ),
+          ) &&
+            !savedContactVerificationReady(prospect.details, policy.settings)),
         product,
       });
       value(
@@ -292,6 +295,21 @@ const claim = (prospectId?: string) =>
         );
         continue;
       }
+      if (
+        state.stage === "verify" &&
+        !context.policy.settings.automaticApolloEnabled
+      ) {
+        if (job.error !== "apollo-paused")
+          value(
+            await Jobs.update(
+              Environment.SERVER,
+              job.id,
+              { error: "apollo-paused", updatedAt: new Date() },
+              { tx: transaction },
+            ),
+          );
+        continue;
+      }
       const output = {
         ...state,
         lease: {
@@ -303,7 +321,7 @@ const claim = (prospectId?: string) =>
         await Jobs.update(
           Environment.SERVER,
           job.id,
-          { status: "starting", output, updatedAt: new Date() },
+          { status: "starting", output, error: null, updatedAt: new Date() },
           { tx: transaction },
         ),
       );

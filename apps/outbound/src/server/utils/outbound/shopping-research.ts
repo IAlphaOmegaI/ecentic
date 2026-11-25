@@ -133,6 +133,8 @@ export const assertShoppingEvidence = async (
   const problem = validateShoppingResearch(
     receipt.data,
     policy.settings.verificationDays,
+    Date.now(),
+    policy.settings,
   );
   if (problem) throw new ValidationError(problem);
   if (input.data.campaignId) {

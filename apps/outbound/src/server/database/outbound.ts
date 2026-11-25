@@ -187,7 +187,7 @@ export const outboundCampaignCompany = pgTable("outbound_campaign_company", {
   platform: text("platform").$type<"shopify" | "woocommerce" | null>(),
   teamSize: integer("team_size"),
   annualRevenue: bigint("annual_revenue", {mode: "number"}),
-  source: text("source").$type<"apollo" | "clay">().notNull(),
+  source: text("source").$type<"apollo" | "clay" | "saved">().notNull(),
   sourceId: text("source_id"),
   sourcePayload: jsonb("source_payload").$type<Record<string, unknown>>().notNull().default({}),
   status: text("status").$type<"candidate" | "added" | "excluded">().notNull().default("candidate"),

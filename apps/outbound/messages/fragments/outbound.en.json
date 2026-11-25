@@ -528,7 +528,12 @@
         "linkedinDailyMessages": "Maximum messages per day",
         "meetingBookingUrl": "Meeting booking link",
         "researchInstructions": "Research instructions",
-        "requireShoppingEvidence": "Require shopping evidence before drafting"
+        "requireShoppingEvidence": "Require shopping evidence before drafting",
+        "allowStaleEvidence": "Allow older saved research",
+        "sendingRampEnabled": "Increase sending volume gradually",
+        "trustSavedContactVerification": "Use saved contact verification",
+        "automaticApolloEnabled": "Allow automatic Apollo spending",
+        "allowProductObservations": "Allow truthful product observations"
       },
       "templateHelp": "Insert the supported variables shown below. They are filled from the prospect's saved details.",
       "variablesTitle": "Available variables",
@@ -558,7 +563,7 @@
       "noProductTitle": "No product data found",
       "inactiveSenderHelp": "Keep additional sender aliases here while their connections are pending. They can sync history when connected but cannot send until moved to the active list.",
       "emailVerificationHelp": "Maximum age of the provider’s actual verification receipt. Fetching an older record does not renew it.",
-      "productVerificationHelp": "Maximum age of the named product’s evidence at review and sending.",
+      "productVerificationHelp": "Maximum age of product evidence when older saved research is not allowed.",
       "excludedCompaniesHelp": "One exact company name or known alias per line. Matches company names, not website text.",
       "targetingNotesHelp": "Priorities and review guidance for staff. These notes do not add automatic eligibility checks.",
       "replyClaimNotesHelp": "Reference wording for replies and LinkedIn. These notes do not authorize claims in a first email.",
@@ -589,7 +594,12 @@
       "requireShoppingEvidenceHelp": "Hold drafting and approval until a supported shopping finding is recorded. An ingredient fact alone is not evidence of shopping friction.",
       "legacyFindingsTitle": "Legacy finding formulas",
       "legacyFindingsHelp": "Saved formulas for older product and missing-data checks. When shopping evidence is required, new drafts use the recorded shopping finding instead. These fields remain available for older workflows.",
-      "allowIncompleteHistoryHelp": "You can skip importing past campaigns. Someone may hear from us again; recorded opt-outs, bounces and exclusions still apply."
+      "allowIncompleteHistoryHelp": "You can skip importing past campaigns. Someone may hear from us again; recorded opt-outs, bounces and exclusions still apply.",
+      "allowStaleEvidenceHelp": "Use real saved research after its age limit. Original observation dates stay visible; missing evidence, replies and opt-outs still prevent sending.",
+      "sendingRampHelp": "Start at 15 emails a day and increase after completed sending days. Turn off to use your configured daily limit directly; bounce protection still applies.",
+      "trustSavedContactVerificationHelp": "Accept source-verified imported contacts without claiming a new verification or role check. Original dates, including unknown dates, are preserved.",
+      "automaticApolloHelp": "Use Apollo for new companies, enrichment and email verification. Turn off to work from saved records without new paid Apollo requests.",
+      "allowProductObservationsHelp": "A specific, supported product or shopping observation can start a conversation even when no problem is found. Never invent a discrepancy or sales impact."
     },
     "integrations": {
       "title": "Connect the right tools",
@@ -859,7 +869,7 @@
           "inactive": "This mailbox is inactive in the Playbook. It can sync replies. Move it to Sender inboxes before enabling sending."
         },
         "maximumDailyCap": "Target maximum per inbox per day",
-        "dailyCapHelp": "The target is capped at 50 and includes first emails and follow-ups. Mailboxes start at 15 per day. The limit rises by 5 only after a completed day reaches the current limit without an observed bounce. An observed bounce returns the limit to 15. A target does not guarantee sending volume or inbox reputation."
+        "dailyCapHelp": "Up to 50 first emails and follow-ups per inbox daily. The Playbook controls gradual increases; observed bounces reduce capacity."
       },
       "liveResearch": {
         "title": "Live shopping research",
@@ -1226,7 +1236,8 @@
         "provider-clay-plan-required": "Clay requires a paid plan for these company filters. Upgrade Clay before running this search.",
         "campaign-generation-invalid": "This Claude preview is no longer available. Generate a new preview before saving.",
         "campaign-playbook-changed": "The Playbook changed after this preview was generated. Generate a new preview before saving.",
-        "campaign-archived": "This campaign is archived. Change its status before generating criteria."
+        "campaign-archived": "This campaign is archived. Change its status before generating criteria.",
+        "apollo-paused": "Automatic Apollo requests are paused in the Playbook. Saved work can continue."
       },
       "objectiveHelp": "Describe the audience. Use the structured filters below for provider searches.",
       "qualificationHelp": "A staff review checklist. Provider search does not automatically verify these requirements.",
@@ -1245,7 +1256,8 @@
       "forms": {
         "changed": "This campaign changed. Your values are kept. Load the saved values before continuing.",
         "loadSaved": "Discard edits and load saved values"
-      }
+      },
+      "savedSource": "Saved contacts"
     },
     "warmup": {
       "title": "Warmup",
@@ -1560,7 +1572,8 @@
         "provider-uncertain": "The request may have been processed. Check its outcome before trying again.",
         "research-not-configured": "Connect the shopping research services in Integrations.",
         "shopping-research-held": "Shopping research did not establish a supported finding.",
-        "shopping-research-expired": "Shopping evidence has expired; capture it again."
+        "shopping-research-expired": "Shopping evidence has expired; capture it again.",
+        "apollo-paused": "Automatic Apollo requests are paused in the Playbook. Saved work can continue."
       },
       "deliveryBlockers": {
         "sendingPaused": "Sending is paused in the Playbook.",

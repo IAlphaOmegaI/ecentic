@@ -1,6 +1,7 @@
 import { resultify } from "@zenncore/utils";
 import { getDomain } from "tldts";
 import { z } from "zod";
+import { evidenceDateUsable } from "./outbound-evidence";
 import {
   DEFAULT_FINDING_COPY,
   FINDING_COPY_FIELDS,
@@ -10,6 +11,7 @@ import {
 } from "./outbound-finding-copy";
 import { productInsightSchema } from "./outbound-product-insight";
 import { isExcludedRole, matchesRole } from "./outbound-roles";
+import { savedContactVerificationReady } from "./outbound-saved-contact";
 import {
   DEFAULT_RESEARCH_INSTRUCTIONS,
   shoppingCopy,
@@ -143,13 +145,18 @@ export const playbookSchema = z
     optout: text.min(1).max(300),
     weeklyTarget: z.number().int().min(1).max(10000),
     dailyCap: z.number().int().min(1).max(50),
+    sendingRampEnabled: z.boolean().default(true),
+    automaticApolloEnabled: z.boolean().default(true),
     minGapMinutes: z.number().int().min(1).max(60),
     maxGapMinutes: z.number().int().min(1).max(120),
     followupOneDays: z.number().int().min(1).max(14),
     followupTwoDays: z.number().int().min(2).max(30),
     maxBodyWords: z.number().int().min(30).max(99),
     verificationDays: z.number().int().min(1).max(7),
+    allowStaleEvidence: z.boolean().default(false),
     emailVerificationDays: z.number().int().min(1).max(30).default(7),
+    trustSavedContactVerification: z.boolean().default(false),
+    allowProductObservations: z.boolean().default(false),
     allowedCountries: text.min(2).max(500),
     heldCountries: text.max(500),
     targetRoles: text.min(1).max(4000),
@@ -297,13 +304,18 @@ export const defaultPlaybook: Playbook = {
   optout: 'Reply "no" and I won\'t follow up.',
   weeklyTarget: 50,
   dailyCap: 15,
+  sendingRampEnabled: true,
+  automaticApolloEnabled: true,
   minGapMinutes: 12,
   maxGapMinutes: 28,
   followupOneDays: 3,
   followupTwoDays: 7,
   maxBodyWords: 99,
   verificationDays: 7,
+  allowStaleEvidence: false,
   emailVerificationDays: 7,
+  trustSavedContactVerification: false,
+  allowProductObservations: false,
   allowedCountries: "US",
   heldCountries: "DE, AT, CH, FR, ES, IT, NL, GB",
   targetRoles:
@@ -372,6 +384,9 @@ export const prospectSchema = z.object({
   evidenceCheckedAt: timestamp,
   findingReviewed: z.boolean().default(false),
   automationEvidenceId: z.union([z.string().uuid(), z.literal("")]).default(""),
+  savedContactVerificationId: z
+    .union([z.string().uuid(), z.literal("")])
+    .default(""),
   automationRefreshId: z.union([z.string().uuid(), z.literal("")]).default(""),
   shoppingResearchId: z.union([z.string().uuid(), z.literal("")]).default(""),
   shoppingFinding: shoppingFindingSchema.nullish(),
@@ -797,7 +812,8 @@ export const prospectIssues = (
     ...(!prospect.email ||
     prospect.emailStatus !== "verified" ||
     !prospect.emailSource ||
-    !fresh(prospect.emailVerifiedAt, settings.emailVerificationDays, now)
+    (!fresh(prospect.emailVerifiedAt, settings.emailVerificationDays, now) &&
+      !savedContactVerificationReady(prospect, settings, now.getTime()))
       ? [{ code: "emailUnverified", field: "email" }]
       : []),
     ...(/^(?:info|hello|contact|support|sales|admin|office|team|careers|jobs|noreply|no-reply)@/i.test(
@@ -813,8 +829,8 @@ export const prospectIssues = (
       ? [{ code: "mxUnknown", field: "mxProvider" }]
       : []),
     ...(!prospect.title ||
-    !prospect.roleSource ||
-    !fresh(prospect.roleCheckedAt, 30, now)
+    ((!prospect.roleSource || !fresh(prospect.roleCheckedAt, 30, now)) &&
+      !savedContactVerificationReady(prospect, settings, now.getTime()))
       ? [{ code: "roleUnverified", field: "title" }]
       : []),
     ...(isExcludedRole(role, splitList(settings.excludedRoles))
@@ -832,7 +848,7 @@ export const prospectIssues = (
     !prospect.productUrl ||
     !prospect.finding ||
     !prospect.evidence ||
-    !fresh(prospect.evidenceCheckedAt, settings.verificationDays, now)
+    !evidenceDateUsable(prospect.evidenceCheckedAt, settings, now.getTime())
       ? [{ code: "evidenceMissing", field: "product" }]
       : []),
     ...(personalLineForDraft(prospect, settings) &&

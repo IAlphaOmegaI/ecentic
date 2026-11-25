@@ -163,16 +163,16 @@ const amount = (value: unknown): number | null => {
  * Every schema.org Product / ProductGroup on one page, with the fields an AI
  * shopping agent reads. Malformed JSON in one block never discards the others.
  */
-export const extractProducts = (
+export const extractProductCandidates = (
   html: string,
   url: string,
-): ExtractedProduct[] => {
+): (ExtractedProduct & { subjectUrls: string[] })[] => {
   const nodes = jsonLdBlocks(html).flatMap((block) => {
     const parsed = resultify(() => JSON.parse(block) as unknown);
     return parsed.success ? collectProductNodes(parsed.data) : [];
   });
 
-  const extracted = nodes.map((node): ExtractedProduct => {
+  return nodes.map((node) => {
     const variants = variantNodes(node);
     // A field counts as published when it is on the group OR on any of its
     // variants: an agent reading this page would find it either way, and
@@ -184,6 +184,14 @@ export const extractProducts = (
 
     return {
       url,
+      subjectUrls: [
+        at(node, "url"),
+        at(node, "@id"),
+        ...offers.map((offer) => at(offer, "url")),
+      ].filter(
+        (value): value is string =>
+          typeof value === "string" && value.trim().length > 0,
+      ),
       isVariantGroup: typesOf(node).includes("ProductGroup"),
       hasVariants: variants.length > 0,
       name: text(at(node, "name")),
@@ -213,6 +221,13 @@ export const extractProducts = (
       snippet: truncate(JSON.stringify(node)),
     };
   });
+};
+
+export const extractProducts = (
+  html: string,
+  url: string,
+): ExtractedProduct[] => {
+  const extracted = extractProductCandidates(html, url);
 
   // A page routinely publishes the same item twice — once as `Product` for
   // older consumers and once as `ProductGroup` with the variants. Counting

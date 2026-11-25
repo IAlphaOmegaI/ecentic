@@ -23,6 +23,7 @@ import {
   researchRecoveryVersion,
   researchStateHash,
 } from "@/server/utils/outbound/automation-recovery";
+import { savedApolloCompany } from "@/server/utils/outbound/company-discovery";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import { productCategoryCorrection } from "@/server/utils/outbound/product-category";
 import { repository, resultifyRead } from "@/server/utils/repository";
@@ -294,6 +295,25 @@ const claim = (campaignId?: string, jobId?: string, researchReady = true) =>
             { tx: transaction },
           ),
         );
+        continue;
+      }
+      const requiresApollo =
+        state.stage === "enrich" ||
+        state.stage === "verify" ||
+        (state.stage === "companyFacts" &&
+          context.company &&
+          context.campaign &&
+          !savedApolloCompany(context.company, context.campaign.criteria));
+      if (!context.policy.settings.automaticApolloEnabled && requiresApollo) {
+        if (job.error !== "apollo-paused")
+          value(
+            await Jobs.update(
+              Environment.SERVER,
+              job.id,
+              { error: "apollo-paused", updatedAt: new Date() },
+              { tx: transaction },
+            ),
+          );
         continue;
       }
       const output: AutomationState & {
@@ -581,6 +601,130 @@ const fail = (claimed: AutomationClaim, error: Error) =>
     );
     if (!saved) throw new ConflictError("automation-job-missing");
     return saved;
+  });
+
+/** Resume one audited, rejected pre-contact request; no provider work or sending. */
+export const resumeProviderFailure = (
+  actor: string,
+  input: {
+    jobId: string;
+    expectedStateHash: string;
+    expectedInputHash: string;
+    dryRun?: boolean;
+  },
+) =>
+  transaction(async (transaction) => {
+    const parsed = z
+      .object({
+        jobId: z.string().uuid(),
+        expectedStateHash: z.string().regex(/^[a-f0-9]{64}$/),
+        expectedInputHash: z.string().regex(/^[a-f0-9]{64}$/),
+        dryRun: z.boolean().default(false),
+      })
+      .parse(input);
+    const job = value(
+      await Jobs.get(Environment.SERVER, parsed.jobId, { tx: transaction }),
+    );
+    if (
+      !job ||
+      job.provider !== "automation" ||
+      job.prospectId ||
+      researchStateHash(job.input) !== parsed.expectedInputHash
+    )
+      throw new ConflictError("provider-recovery-unavailable");
+    const savedInput = automationInputSchema.parse(job.input);
+    const state = automationStateSchema.parse(job.output);
+    const previous = z
+      .object({ version: z.literal(1), sourceStateHash: z.string() })
+      .safeParse(state["providerRecovery"]);
+    if (
+      previous.success &&
+      previous.data.sourceStateHash === parsed.expectedStateHash
+    )
+      return { job: view(job), repeated: true, dryRun: parsed.dryRun };
+    const provider =
+      state.stage === "companyFacts"
+        ? "apollo"
+        : state.stage === "startShoppingQuery"
+          ? "scrapellm"
+          : null;
+    if (
+      job.status !== "failed" ||
+      researchStateHash(job.output) !== parsed.expectedStateHash ||
+      !["provider-access", "provider-quota", "provider-rate-limit"].includes(
+        job.error ?? "",
+      ) ||
+      !provider ||
+      state["failureProvider"] !== provider ||
+      state.lease ||
+      state["prospectId"] ||
+      state["shoppingJob"] ||
+      state["shoppingAnswer"] ||
+      state["shoppingReceipt"] ||
+      state["people"] ||
+      state["selection"] ||
+      state.contactAttempts?.length
+    )
+      throw new ConflictError("provider-recovery-unavailable");
+    const context = await current(savedInput, transaction);
+    if (
+      context.reason ||
+      !context.company ||
+      context.company.status !== "candidate" ||
+      context.company.prospectId ||
+      context.company.domain !== savedInput.companyDomain
+    )
+      throw new ConflictError(
+        context.reason ?? "provider-recovery-unavailable",
+      );
+    const competing = value(
+      await Jobs.find(
+        Environment.SERVER,
+        {
+          where: and(
+            scoped(),
+            sql`${schema.outboundIntegrationJob.id} <> ${job.id}`,
+            sql`${schema.outboundIntegrationJob.input}->>'companyDomain' = ${savedInput.companyDomain}`,
+            sql`${schema.outboundIntegrationJob.status} in ('pending','starting','uncertain')`,
+          ),
+          limit: 1,
+        },
+        { tx: transaction },
+      ),
+    );
+    if (competing.length)
+      throw new ConflictError("provider-recovery-unavailable");
+    if (parsed.dryRun) return { job: view(job), repeated: false, dryRun: true };
+    const now = new Date();
+    const saved = value(
+      await Jobs.update(
+        Environment.SERVER,
+        job.id,
+        {
+          status: "pending",
+          error: null,
+          updatedAt: now,
+          output: {
+            ...state,
+            availableAt: now.toISOString(),
+            lease: null,
+            providerRecovery: {
+              version: 1,
+              actor,
+              provider,
+              requestedAt: now.toISOString(),
+              sourceStateHash: parsed.expectedStateHash,
+              sourceInputHash: parsed.expectedInputHash,
+              previousReason: job.error,
+              previousReceipt: state["failureReceipt"] ?? null,
+            },
+          },
+        },
+        { tx: transaction },
+      ),
+    );
+    if (!saved) throw new ConflictError("automation-job-missing");
+    return { job: view(saved), repeated: false, dryRun: false };
   });
 
 /** Requeue only a known, completed legacy contact miss; never retry an uncertain enrichment. */
@@ -986,7 +1130,10 @@ export const run = (
       enabled: true,
       processed: results.length,
       results,
-      blockers: research.ready ? [] : ["research-not-configured"],
+      blockers: [
+        ...(research.ready ? [] : ["research-not-configured"]),
+        ...(policy.settings.automaticApolloEnabled ? [] : ["apollo-paused"]),
+      ],
     };
   });
 

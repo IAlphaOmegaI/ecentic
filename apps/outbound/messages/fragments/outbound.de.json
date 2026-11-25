@@ -528,7 +528,12 @@
         "linkedinDailyMessages": "Maximale Nachrichten pro Tag",
         "meetingBookingUrl": "Link zur Terminbuchung",
         "researchInstructions": "Rechercheanweisungen",
-        "requireShoppingEvidence": "Belege zum Einkaufserlebnis vor der Texterstellung verlangen"
+        "requireShoppingEvidence": "Belege zum Einkaufserlebnis vor der Texterstellung verlangen",
+        "allowStaleEvidence": "Ältere gespeicherte Recherche zulassen",
+        "sendingRampEnabled": "Versandmenge schrittweise erhöhen",
+        "trustSavedContactVerification": "Gespeicherte Kontaktverifizierung verwenden",
+        "automaticApolloEnabled": "Automatische Apollo-Ausgaben erlauben",
+        "allowProductObservations": "Sachlich belegte Produktbeobachtungen erlauben"
       },
       "templateHelp": "Fügen Sie die unten aufgeführten Variablen ein. Sie werden aus den gespeicherten Angaben des Interessenten ausgefüllt.",
       "variablesTitle": "Verfügbare Variablen",
@@ -558,7 +563,7 @@
       "noProductTitle": "Keine Produktdaten gefunden",
       "inactiveSenderHelp": "Hinterlegen Sie hier weitere Absender-Aliasse, deren Verbindung noch aussteht. Nach der Verbindung können sie den Verlauf synchronisieren, aber erst nach der Aufnahme in die aktive Liste senden.",
       "emailVerificationHelp": "Höchstalter des tatsächlichen Verifizierungsnachweises des Anbieters. Der Abruf eines älteren Datensatzes erneuert ihn nicht.",
-      "productVerificationHelp": "Höchstalter der Nachweise zum genannten Produkt bei Prüfung und Versand.",
+      "productVerificationHelp": "Maximales Alter der Produktbelege, wenn ältere gespeicherte Recherche nicht zugelassen ist.",
       "excludedCompaniesHelp": "Ein genauer Unternehmensname oder bekannter Alias pro Zeile. Verglichen werden Unternehmensnamen, nicht Website-Texte.",
       "targetingNotesHelp": "Prioritäten und Prüfhinweise für das Team. Diese Notizen fügen keine automatischen Eignungsprüfungen hinzu.",
       "replyClaimNotesHelp": "Referenzformulierungen für Antworten und LinkedIn. Diese Notizen erlauben keine entsprechenden Aussagen in einer Erst-E-Mail.",
@@ -589,7 +594,12 @@
       "requireShoppingEvidenceHelp": "Halten Sie Texterstellung und Freigabe an, bis eine belegte Erkenntnis zum Einkaufserlebnis erfasst ist. Eine Information zu einem Inhaltsstoff allein belegt kein Kaufhindernis.",
       "legacyFindingsTitle": "Bisherige Erkenntnisvorlagen",
       "legacyFindingsHelp": "Gespeicherte Vorlagen für bisherige Produktprüfungen und Prüfungen auf fehlende Daten. Wenn Belege zum Einkaufserlebnis erforderlich sind, verwenden neue Entwürfe stattdessen die erfasste Erkenntnis zum Einkaufserlebnis. Diese Felder bleiben für bisherige Abläufe verfügbar.",
-      "allowIncompleteHistoryHelp": "Frühere Kampagnen müssen nicht importiert werden. Manche Personen erhalten dadurch möglicherweise erneut eine Nachricht. Erfasste Abmeldungen, unzustellbare Adressen und Ausschlüsse gelten weiterhin."
+      "allowIncompleteHistoryHelp": "Frühere Kampagnen müssen nicht importiert werden. Manche Personen erhalten dadurch möglicherweise erneut eine Nachricht. Erfasste Abmeldungen, unzustellbare Adressen und Ausschlüsse gelten weiterhin.",
+      "allowStaleEvidenceHelp": "Echte gespeicherte Recherche auch nach Ablauf der Altersgrenze verwenden. Die ursprünglichen Beobachtungsdaten bleiben sichtbar; fehlende Belege, Antworten und Abmeldungen verhindern weiterhin den Versand.",
+      "sendingRampHelp": "Mit 15 E-Mails pro Tag beginnen und nach abgeschlossenen Versandtagen erhöhen. Deaktivieren, um das konfigurierte Tageslimit direkt zu nutzen; der Schutz bei unzustellbaren E-Mails bleibt aktiv.",
+      "trustSavedContactVerificationHelp": "Als verifiziert importierte Kontakte zulassen, ohne eine neue Verifizierung oder Rollenprüfung zu behaupten. Ursprüngliche und unbekannte Datumsangaben bleiben erhalten.",
+      "automaticApolloHelp": "Apollo für neue Unternehmen, Anreicherung und E-Mail-Verifizierung nutzen. Deaktivieren, um mit gespeicherten Datensätzen ohne neue kostenpflichtige Apollo-Anfragen zu arbeiten.",
+      "allowProductObservationsHelp": "Eine konkrete, belegte Produkt- oder Einkaufsbeobachtung kann ein Gespräch eröffnen, auch wenn kein Problem gefunden wurde. Keine Abweichungen oder Umsatzauswirkungen erfinden."
     },
     "integrations": {
       "title": "Verbinden Sie die passenden Werkzeuge",
@@ -859,7 +869,7 @@
           "inactive": "Dieses Postfach ist im Kontaktleitfaden inaktiv. Es kann Antworten synchronisieren. Verschieben Sie es zu Absenderpostfächer, bevor Sie den Versand aktivieren."
         },
         "maximumDailyCap": "Angestrebtes Maximum pro Postfach und Tag",
-        "dailyCapHelp": "Das Ziel ist auf 50 begrenzt und umfasst Erstkontakte und Folge-E-Mails. Postfächer starten mit 15 pro Tag. Die Grenze steigt nur dann um 5, wenn ein abgeschlossener Tag die aktuelle Grenze ohne beobachteten Rückläufer erreicht hat. Ein beobachteter Rückläufer setzt die Grenze auf 15 zurück. Ein Ziel garantiert weder das Versandvolumen noch die Postfachreputation."
+        "dailyCapHelp": "Bis zu 50 Erstkontakte und Folge-E-Mails pro Postfach täglich. Das Playbook steuert die schrittweise Erhöhung; unzustellbare E-Mails reduzieren die Kapazität."
       },
       "liveResearch": {
         "title": "Live-Recherche zum Einkauf",
@@ -1226,7 +1236,8 @@
         "provider-clay-plan-required": "Clay erfordert für diese Unternehmensfilter einen kostenpflichtigen Tarif. Aktualisieren Sie den Tarif vor dieser Suche.",
         "campaign-generation-invalid": "Diese Claude-Vorschau ist nicht mehr verfügbar. Erstellen Sie vor dem Speichern eine neue Vorschau.",
         "campaign-playbook-changed": "Das Playbook hat sich seit der Erstellung dieser Vorschau geändert. Erstellen Sie vor dem Speichern eine neue Vorschau.",
-        "campaign-archived": "Diese Kampagne ist archiviert. Ändern Sie den Status, bevor Sie Kriterien generieren."
+        "campaign-archived": "Diese Kampagne ist archiviert. Ändern Sie den Status, bevor Sie Kriterien generieren.",
+        "apollo-paused": "Automatische Apollo-Anfragen sind im Playbook pausiert. Gespeicherte Arbeit kann fortgesetzt werden."
       },
       "objectiveHelp": "Beschreiben Sie die Zielgruppe. Nutzen Sie die strukturierten Filter unten für die Anbietersuche.",
       "qualificationHelp": "Prüfliste für das Team. Die Anbietersuche prüft diese Anforderungen nicht automatisch.",
@@ -1245,7 +1256,8 @@
       "forms": {
         "changed": "Diese Kampagne wurde geändert. Deine Werte bleiben erhalten. Lade die gespeicherten Werte, bevor du fortfährst.",
         "loadSaved": "Änderungen verwerfen und gespeicherte Werte laden"
-      }
+      },
+      "savedSource": "Gespeicherte Kontakte"
     },
     "warmup": {
       "title": "Warmup",
@@ -1560,7 +1572,8 @@
         "provider-uncertain": "Die Anfrage wurde möglicherweise verarbeitet. Prüfen Sie das Ergebnis, bevor Sie es erneut versuchen.",
         "research-not-configured": "Verbinden Sie die Dienste für die Einkaufsrecherche unter Integrationen.",
         "shopping-research-held": "Die Einkaufsrecherche hat keinen ausreichend belegten Befund ergeben.",
-        "shopping-research-expired": "Die Belege der Einkaufsrecherche sind abgelaufen. Erfassen Sie sie erneut."
+        "shopping-research-expired": "Die Belege der Einkaufsrecherche sind abgelaufen. Erfassen Sie sie erneut.",
+        "apollo-paused": "Automatische Apollo-Anfragen sind im Playbook pausiert. Gespeicherte Arbeit kann fortgesetzt werden."
       },
       "deliveryBlockers": {
         "sendingPaused": "Der Versand ist im Playbook pausiert.",

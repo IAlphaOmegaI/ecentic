@@ -147,6 +147,13 @@ export const request = async <Schema extends z.ZodType>(
         provider === "apollo" &&
         status === 422 &&
         typeof parsed.data.error === "string" &&
+        /\byou have insufficient credits\b/i.test(parsed.data.error)
+      )
+        return "insufficient_credits";
+      if (
+        provider === "apollo" &&
+        status === 422 &&
+        typeof parsed.data.error === "string" &&
         /cannot access advanced filters\b/i.test(parsed.data.error) &&
         /\bfree plan\b/i.test(parsed.data.error)
       )
@@ -164,26 +171,48 @@ export const request = async <Schema extends z.ZodType>(
           : /^[a-zA-Z0-9_-]{1,80}$/;
       return code && format.test(code) ? code : null;
     });
+    const providerCode = failure.success ? failure.data : null;
+    const rejection = (() => {
+      switch (providerCode) {
+        case "advanced_filters_require_plan":
+          return "access";
+        case "insufficient_credits":
+          return "quota";
+        default:
+          return code;
+      }
+    })();
+    // Only Unipile's own limiter supplies a reliable retry window.
+    const retryAfterSeconds =
+      provider === "unipile" &&
+      status === 429 &&
+      providerCode !== "api/too_many_requests"
+        ? null
+        : delay;
     return {
       success: false,
       error: new IntegrationError(
         provider,
-        failure.success && failure.data === "advanced_filters_require_plan"
-          ? "access"
-          : code,
-        failure.success && failure.data === "advanced_filters_require_plan"
+        rejection,
+        providerCode === "advanced_filters_require_plan"
           ? provider === "apollo"
             ? "Apollo requires a trial or paid plan for these company filters."
             : "Clay requires a paid plan for these company filters."
-          : `${provider} returned HTTP ${status}.`,
+          : providerCode === "insufficient_credits"
+            ? "Apollo has insufficient credits. Add credits or wait for the account's credit reset."
+            : `${provider} returned HTTP ${status}.`,
         status,
-        // Only Unipile's own limiter supplies a reliable retry window.
-        provider === "unipile" &&
-          status === 429 &&
-          (!failure.success || failure.data !== "api/too_many_requests")
-          ? null
-          : delay,
-        failure.success ? failure.data : null,
+        retryAfterSeconds,
+        providerCode,
+        // Persist the failure's meaning, never raw provider HTML, bodies or headers.
+        {
+          version: 1,
+          provider,
+          statusCode: status,
+          code: rejection,
+          providerCode,
+          retryAfterSeconds,
+        },
       ),
     };
   }

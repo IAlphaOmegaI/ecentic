@@ -3,6 +3,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { type Result, resultify } from "@zenncore/utils";
 import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
+import { lintMessages } from "@/lib/outbound";
 import {
   canReviewDraftAutomatically,
   draftReviewInputSchema,
@@ -201,7 +202,7 @@ const claim = () =>
           { tx: transaction },
         ),
       );
-    const readiness = sql`concat_ws('|', ${schema.outboundProspect.details}->>'emailVerifiedAt', ${schema.outboundProspect.details}->>'mxCheckedAt', ${schema.outboundProspect.details}->>'evidenceCheckedAt', ${schema.outboundProspect.details}->>'roleCheckedAt', ${schema.outboundProspect.details}->>'personalCheckedAt', ${String(policy.settings.senderConfirmed)}::text)`;
+    const readiness = sql`concat_ws('|', ${schema.outboundProspect.details}->>'emailVerifiedAt', ${schema.outboundProspect.details}->>'mxCheckedAt', ${schema.outboundProspect.details}->>'evidenceCheckedAt', ${schema.outboundProspect.details}->>'roleCheckedAt', ${schema.outboundProspect.details}->>'personalCheckedAt', ${String(policy.settings.senderConfirmed)}::text, ${policy.settings.allowStaleEvidence ? "allow-stale-evidence" : null}::text, ${policy.settings.trustSavedContactVerification ? "trust-saved-contact-verification" : null}::text, ${policy.settings.allowProductObservations ? "allow-product-observations" : null}::text)`;
     const resumed = sql`coalesce((select event.id from outbound_event event where event.prospect_id = ${schema.outboundProspect.id} and event.kind = 'review' order by event.created_at desc, event.id desc limit 1), '')`;
     const prospects = value(
       await Prospects.find(
@@ -242,6 +243,9 @@ const claim = () =>
     const readinessKey = draftReviewReadinessKey(
       prospect.details,
       policy.settings.senderConfirmed,
+      policy.settings.allowStaleEvidence,
+      policy.settings.trustSavedContactVerification,
+      policy.settings.allowProductObservations,
     );
     const resumeId = await Store.latestDraftReviewRequest(
       transaction,
@@ -249,7 +253,10 @@ const claim = () =>
     );
     const regenerate =
       prospect.playbookRevision !== policy.revision ||
-      prospect.messages.length !== 3;
+      prospect.messages.length !== 3 ||
+      lintMessages(prospect.messages, policy.settings, prospect.details).some(
+        (issue) => issue.code === "subjectLength",
+      );
     return value(
       await Jobs.create(
         Environment.SERVER,

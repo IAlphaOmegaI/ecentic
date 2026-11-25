@@ -24,6 +24,7 @@ import {
   validateShoppingResearch,
 } from "@/lib/outbound-shopping-research";
 import { preservesDraftControls } from "@/lib/outbound-writing";
+import { requireTestDatabase } from "./helpers/database";
 
 const endpoint = process.env.OUTBOUND_TEST_DATABASE_URL;
 const now = new Date("2026-11-16T18:00:00Z");
@@ -274,6 +275,37 @@ describe("source-bound shopping research validation", () => {
     other.sources.reverse();
     expect(validateShoppingResearch(other, 1, now.getTime())).toBeNull();
   });
+  test("explicit age tolerance accepts original captures without allowing missing, future or fabricated sources", () => {
+    const older = receipt();
+    const later = now.getTime() + 8 * 86_400_000;
+    expect(validateShoppingResearch(older, 7, later)).toContain("expired");
+    expect(
+      validateShoppingResearch(older, 7, later, { allowStaleEvidence: true }),
+    ).toBeNull();
+    expect(older.sources[0]?.checkedAt).toBe(now.toISOString());
+    const future = receipt();
+    const source = future.sources[0];
+    if (!source) throw new Error("Missing source fixture");
+    source.checkedAt = new Date(later + 120_000).toISOString();
+    expect(
+      validateShoppingResearch(future, 7, later, { allowStaleEvidence: true }),
+    ).toContain("future-dated");
+    const missing = receipt();
+    missing.sources = missing.sources.filter((source) => source.id !== "raw");
+    expect(
+      validateShoppingResearch(missing, 7, later, { allowStaleEvidence: true }),
+    ).toContain("unknown source");
+    const fabricated = receipt();
+    fabricated.selected.quotes[0] = {
+      sourceId: "visible",
+      quote: "An invented price",
+    };
+    expect(
+      validateShoppingResearch(fabricated, 7, later, {
+        allowStaleEvidence: true,
+      }),
+    ).toContain("quote");
+  });
   test("rejects unsupported quotes, nonexistent checkout and absent-UCP claims", () => {
     const changed = receipt();
     changed.selected.quotes[0] = {
@@ -344,13 +376,7 @@ describe.skipIf(!endpoint)(
   "isolated shopping evidence persistence and delivery gates",
   () => {
     beforeAll(async () => {
-      if (!endpoint) throw new Error("Disposable database required");
-      const url = new URL(endpoint);
-      if (
-        !["localhost", "127.0.0.1"].includes(url.hostname) ||
-        url.pathname !== "/outbound_test"
-      )
-        throw new Error("Local outbound_test only");
+      requireTestDatabase(endpoint);
       Object.assign(process.env, {
         DATABASE_URL: endpoint,
         CREDENTIAL_ENCRYPTION_KEY: Buffer.alloc(32, 19).toString("base64"),
@@ -439,6 +465,85 @@ describe.skipIf(!endpoint)(
         0,
       );
       expect(value(await runReview()).processed).toBe(0);
+    });
+    test("automatic review shortens an invalid subject without changing sourced body paragraphs", async () => {
+      const { store, db, schema } = active();
+      await automaticFixture();
+      const before = value(await store.readProspect(fixture.prospectId))!;
+      value(
+        await store.saveDraft("operator", {
+          prospect: before.id,
+          revision: before.revision,
+          subject: "The very long complete product title from the catalogue",
+          body: before.messages[0]!.body,
+          followupOne: before.messages[1]!.body,
+          followupTwo: before.messages[2]!.body,
+        }),
+      );
+      const generate = mock(generated);
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).approved).toBe(
+        1,
+      );
+      expect(generate).toHaveBeenCalledTimes(1);
+      const after = value(await store.readProspect(fixture.prospectId))!;
+      expect(after.status).toBe("approved");
+      expect(after.messages[0]!.subject).toBe("Trail Tote pricing");
+      expect(after.messages.map((message) => message.body)).toEqual(
+        before.messages.map((message) => message.body),
+      );
+      expect(await db.select().from(schema.outboundSendAttempt)).toHaveLength(
+        0,
+      );
+    });
+    test("enabling age tolerance resumes automatic review without inventing a fresh shopping capture", async () => {
+      const { store } = active();
+      await automaticFixture();
+      value(
+        await store.savePlaybook("operator", {
+          ...(await store.policy()).settings,
+          emailVerificationDays: 30,
+        }),
+      );
+      const before = value(await store.readProspect(fixture.prospectId));
+      if (!before) throw new Error("Missing researched draft");
+      setSystemTime(new Date(now.getTime() + 8 * 86_400_000));
+      const generate = mock(generated);
+      const checkMx = mock(async () => ({
+        success: true as const,
+        data: {
+          provider: "google" as const,
+          records: [],
+          checkedAt: new Date().toISOString(),
+        },
+      }));
+      expect(
+        value(await runReview({ maxDrafts: 1 }, generate, checkMx)).approved,
+      ).toBe(0);
+      const policy = await store.policy();
+      value(
+        await store.savePlaybook(
+          "owner",
+          {
+            ...policy.settings,
+            allowStaleEvidence: true,
+          },
+          policy.revision,
+        ),
+      );
+      expect(
+        value(await runReview({ maxDrafts: 1 }, generate, checkMx)).approved,
+      ).toBe(1);
+      const after = value(await store.readProspect(before.id));
+      expect(after?.status).toBe("approved");
+      expect(after?.details.shoppingResearchId).toBe(
+        before.details.shoppingResearchId,
+      );
+      expect(after?.details.evidenceCheckedAt).toBe(
+        before.details.evidenceCheckedAt,
+      );
+      expect(after?.details.shoppingFinding).toEqual(
+        before.details.shoppingFinding,
+      );
     });
     test("writing-only edits regenerate once, preserve immutable captures and automatically reapprove", async () => {
       const { store, review, db, schema } = active();
@@ -1269,6 +1374,135 @@ describe.skipIf(!endpoint)(
         (await store.generateDrafts("operator", { prospect: row.id })).success,
       ).toBe(false);
     });
+    test.each(["send", "revoke", "reply", "optout"] as const)(
+      "an older shopping finding can continue its approved thread while %s checks remain authoritative",
+      async (action) => {
+        const { store, research, db, schema } = active();
+        const policy = { ...settings, verificationDays: 1 };
+        value(await store.savePlaybook("operator", policy));
+        const saved = value(
+          await research.saveAndApply("operator", await input()),
+        );
+        const draft = value(
+          await store.generateDrafts("operator", {
+            prospect: fixture.prospectId,
+          }),
+        );
+        value(
+          await store.reviewProspect("operator", {
+            prospect: fixture.prospectId,
+            revision: draft.revision,
+            decision: "approve",
+          }),
+        );
+        value(
+          await store.savePlaybook("operator", {
+            ...policy,
+            sendingEnabled: true,
+          }),
+        );
+        const first = value(
+          await store.claimDelivery("operator", {
+            prospect: fixture.prospectId,
+            inbox: fixture.inboxId,
+          }),
+        );
+        value(
+          await store.dispatchDelivery("operator", first, async () => ({
+            success: true as const,
+            data: {
+              providerMessageId: "first-receipt",
+              threadId: "original-thread",
+            },
+          })),
+        );
+        const approved = value(await store.readProspect(fixture.prospectId));
+        if (!approved) throw new Error("Missing approved sequence");
+        const [original] = await db
+          .select()
+          .from(schema.outboundIntegrationJob)
+          .where(eq(schema.outboundIntegrationJob.id, saved.researchId));
+        const later = new Date(now.getTime() + 3 * 86_400_000 + 15 * 60_000);
+        setSystemTime(later);
+        await db
+          .update(schema.outboundInbox)
+          .set({ lastSyncedAt: later })
+          .where(eq(schema.outboundInbox.id, fixture.inboxId));
+        value(
+          await store.patchProspect(
+            "worker",
+            approved.id,
+            {
+              mxCheckedAt: later.toISOString(),
+            },
+            approved.revision,
+          ),
+        );
+        expect(
+          (
+            await store.claimDelivery("operator", {
+              prospect: approved.id,
+              inbox: fixture.inboxId,
+            })
+          ).success,
+        ).toBe(false);
+        const before = await store.policy();
+        const permitted = value(
+          await store.savePlaybook(
+            "owner",
+            {
+              ...before.settings,
+              allowStaleEvidence: true,
+            },
+            before.revision,
+          ),
+        );
+        expect(permitted.revision).toBe(before.revision);
+        const claim = value(
+          await store.claimDelivery("operator", {
+            prospect: approved.id,
+            inbox: fixture.inboxId,
+          }),
+        );
+        expect(claim.step).toBe(2);
+        expect(claim.threadId).toBe("original-thread");
+        if (action === "revoke")
+          value(
+            await store.savePlaybook("owner", {
+              ...(await store.policy()).settings,
+              allowStaleEvidence: false,
+            }),
+          );
+        if (action === "reply" || action === "optout")
+          value(
+            await store.recordOutcome("operator", {
+              prospect: approved.id,
+              kind: action,
+              note: "Fixture incoming outcome",
+            }),
+          );
+        const send = mock(async () => ({
+          success: true as const,
+          data: {
+            providerMessageId: "followup-receipt",
+            threadId: "original-thread",
+          },
+        }));
+        const sent = await store.dispatchDelivery("operator", claim, send);
+        expect(sent.success).toBe(action === "send");
+        expect(send).toHaveBeenCalledTimes(action === "send" ? 1 : 0);
+        const after = value(await store.readProspect(approved.id));
+        expect(after?.details.evidenceCheckedAt).toBe(
+          approved.details.evidenceCheckedAt,
+        );
+        expect(after?.messages).toEqual(approved.messages);
+        const [receipt] = await db
+          .select()
+          .from(schema.outboundIntegrationJob)
+          .where(eq(schema.outboundIntegrationJob.id, saved.researchId));
+        expect(receipt).toEqual(original);
+      },
+    );
     test("stale Playbook and tampered source receipts cannot be approved", async () => {
       const { store, research, db, schema } = active();
       const saved = value(

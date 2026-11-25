@@ -47,6 +47,9 @@ export const canReviewDraftAutomatically = (prospect: {
 export const draftReviewReadinessKey = (
   details: ProspectInput,
   senderConfirmed: boolean,
+  allowStaleEvidence = false,
+  trustSavedContactVerification = false,
+  allowProductObservations = false,
 ) =>
   [
     details.emailVerifiedAt,
@@ -55,4 +58,9 @@ export const draftReviewReadinessKey = (
     details.roleCheckedAt,
     details.personalCheckedAt,
     String(senderConfirmed),
+    ...(allowStaleEvidence ? ["allow-stale-evidence"] : []),
+    ...(trustSavedContactVerification
+      ? ["trust-saved-contact-verification"]
+      : []),
+    ...(allowProductObservations ? ["allow-product-observations"] : []),
   ].join("|");

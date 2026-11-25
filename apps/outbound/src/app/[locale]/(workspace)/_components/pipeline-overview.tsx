@@ -122,6 +122,25 @@ export const PipelineOverview = async () => {
         return "uncertain";
     }
   };
+  const stageLabel = (stage: string) => {
+    const aliases: Record<string, string> = {
+      preflight: "mx",
+      collect: "qualify",
+      location: "companyFacts",
+      applyCompany: "promote",
+      query: "startShoppingQuery",
+      poll: "pollShoppingQuery",
+      browser: "browseShopping",
+      assess: "assessShopping",
+      applyResearch: "applyShopping",
+    };
+    const key = aliases[stage] ?? stage;
+    return Object.hasOwn(messages.outbound.automation.stages, key)
+      ? messages.outbound.automation.stages[
+          key as keyof typeof messages.outbound.automation.stages
+        ]
+      : automation("unknownStage");
+  };
   return (
     <>
       <div className="grid grid-cols-2 gap-px border-accent-foreground border-b bg-accent-foreground lg:grid-cols-4">
@@ -298,7 +317,11 @@ export const PipelineOverview = async () => {
                   <div className="flex items-start justify-between gap-4">
                     <Link
                       className="min-w-0 truncate font-medium text-primary-text text-sm"
-                      href={`/campaigns/${work.campaignId}/companies/${work.companyId}`}
+                      href={
+                        work.prospectId
+                          ? `/prospects/${work.prospectId}`
+                          : `/campaigns/${work.campaignId}/companies/${work.companyId}`
+                      }
                     >
                       {work.company}
                     </Link>
@@ -307,14 +330,7 @@ export const PipelineOverview = async () => {
                     </span>
                   </div>
                   <p className="mt-2 text-foreground-dimmed text-sm">
-                    {Object.hasOwn(
-                      messages.outbound.automation.stages,
-                      work.stage,
-                    )
-                      ? messages.outbound.automation.stages[
-                          work.stage as keyof typeof messages.outbound.automation.stages
-                        ]
-                      : automation("unknownStage")}
+                    {stageLabel(work.stage)}
                   </p>
                   {work.reason && (
                     <p className="mt-2 text-sm">

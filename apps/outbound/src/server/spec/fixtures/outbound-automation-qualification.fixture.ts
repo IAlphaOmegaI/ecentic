@@ -190,37 +190,33 @@ globalThis.fetch = mock(async (_url, options) => {
       (message) => message.role === "user",
     )?.content ?? "{}",
   );
-  const sources = payload.sources as { url: string; excerpt: string }[];
+  const sources = payload.quoteCatalog as {
+    id: string;
+    url: string;
+    quote: string;
+  }[];
   const store = sources.find((source) => source.url === company.website);
   assert.ok(store);
-  const quote = {
-    url: company.website,
-    quote: state.invalidQuote
-      ? "Fabricated public claim never observed"
-      : "We make our own skincare products.",
-  };
+  const quote = state.invalidQuote ? "q_unknown_invented" : store.id;
+  const productQuote = sources.find(
+    (source) =>
+      source.url === `${company.website}/products/daily-face-cream` &&
+      source.quote.includes(product.description),
+  );
+  assert.ok(productQuote);
   const assessment = {
     decision: "qualified",
     reason: "Own skincare brand with an observed team.",
     productCategory: "face cream",
     ownBrandEvidence: quote,
-    physicalProductEvidence: {
-      url: company.website,
-      quote: "Our team of 15 creates physical face creams.",
-    },
-    establishedEvidence: {
-      url: company.website,
-      quote: "Our team of 15 creates physical face creams.",
-    },
+    physicalProductEvidence: store.id,
+    establishedEvidence: store.id,
     criteriaEvidence: [quote],
     criteriaSatisfied: true,
     productInsight: state.noInsight
       ? null
       : {
-          sourceUrl: state.invalidOutput
-            ? "not a URL"
-            : `${company.website}/products/daily-face-cream`,
-          sourceQuote: product.description,
+          quoteId: state.invalidOutput ? "q_unknown_product" : productQuote.id,
           feature: state.invalidInsight
             ? "clinically proven wrinkle prevention"
             : "a replaceable refill cartridge",
@@ -725,9 +721,12 @@ assert.equal(reads.length, beforeBlocked.reads);
 assert.equal(calls.length, beforeBlocked.calls);
 state.invalidQuote = true;
 const heldReplay = await Qualification.qualifyCompanyEvidence(replayInput);
-assert.ok(heldReplay.success && heldReplay.data.status === "hold");
-if (heldReplay.success && heldReplay.data.status === "hold")
-  assert.deepEqual(heldReplay.data.companyEvidence, evidence);
+assert.equal(heldReplay.success, false);
+if (!heldReplay.success)
+  assert.equal(
+    "code" in heldReplay.error && heldReplay.error.code,
+    "uncertain",
+  );
 assert.equal(reads.length, beforeBlocked.reads);
 state.invalidQuote = false;
 state.noInsight = false;

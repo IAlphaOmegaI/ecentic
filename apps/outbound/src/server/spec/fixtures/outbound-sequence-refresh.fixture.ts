@@ -10,15 +10,10 @@ import {
 import { defaultCampaignCriteria } from "@/lib/outbound-campaigns";
 import { sequenceRefreshStateSchema } from "@/lib/outbound-sequence-refresh";
 import type { SequenceRefreshDependencies } from "@/server/app/outbound/automatic-sequence-refresh";
+import { requireTestDatabase } from "../helpers/database";
 
 const endpoint = process.env.OUTBOUND_TEST_DATABASE_URL;
-if (!endpoint) throw new Error("Disposable database required");
-const url = new URL(endpoint);
-if (
-  !["127.0.0.1", "localhost"].includes(url.hostname) ||
-  url.pathname !== "/outbound_test"
-)
-  throw new Error("Only local outbound_test permitted");
+requireTestDatabase(endpoint);
 Object.assign(process.env, { DATABASE_URL: endpoint });
 mock.module("server-only", () => ({}));
 const { db, schema } = await import("@/server/database");
@@ -358,6 +353,108 @@ const dependencies = () => {
   };
   return { deps, counts };
 };
+// A spending pause must not discard checkpoints or stop polling a request already accepted.
+{
+  const f = await seed();
+  const { deps, counts } = dependencies();
+  const pausedSettings = { ...settings, sendingEnabled: false };
+  value(
+    await Store.savePlaybook("fixture", {
+      ...pausedSettings,
+      automaticApolloEnabled: false,
+    }),
+  );
+  value(await Refresh.run({ prospectId: f.id, maxSteps: 10 }, deps));
+  assert.equal(counts.product, 1);
+  assert.equal(counts.verify, 0);
+  const [paused] = await jobs();
+  assert(paused);
+  assert(paused.output);
+  assert.equal(paused.status, "pending");
+  assert.equal(paused.error, "apollo-paused");
+  assert.equal(paused.output["stage"], "verify");
+  assert.equal(paused.output["lease"], null);
+  value(await Refresh.run({ prospectId: f.id, maxSteps: 10 }, deps));
+  assert.deepEqual(await jobs(), [paused]);
+  assert.equal((await Store.policy()).revision, 1);
+  value(await Store.savePlaybook("fixture", pausedSettings));
+  value(await Refresh.run({ prospectId: f.id, maxSteps: 10 }, deps));
+  assert.equal(counts.verify, 1);
+  const [accepted] = await jobs();
+  assert(accepted);
+  assert(accepted.output);
+  assert.equal(accepted.id, paused.id);
+  assert.equal(accepted.output["stage"], "pollVerification");
+  assert.equal(accepted.error, null);
+  value(
+    await Store.savePlaybook("fixture", {
+      ...pausedSettings,
+      automaticApolloEnabled: false,
+    }),
+  );
+  await due();
+  value(await Refresh.run({ prospectId: f.id, maxSteps: 10 }, deps));
+  assert.equal(counts.verify, 1);
+  assert.equal(counts.poll, 1);
+  assert.equal(counts.apply, 1);
+  assert.equal((await jobs())[0]?.status, "complete");
+}
+// MX freshness is checked by the sender; it must not enqueue a paid refresh by itself.
+{
+  const f = await seed();
+  const { deps, counts } = dependencies();
+  value(
+    await Store.savePlaybook("fixture", {
+      ...settings,
+      sendingEnabled: false,
+      automaticApolloEnabled: false,
+      allowStaleEvidence: true,
+      emailVerificationDays: 30,
+    }),
+  );
+  // The email remains inside the configured 30-day window; only MX and product age are older.
+  const current = await Store.policy();
+  await db
+    .update(schema.outboundProspect)
+    .set({ playbookRevision: current.revision, status: "active" })
+    .where(eq(schema.outboundProspect.id, f.id));
+  value(await Refresh.run({ prospectId: f.id, maxSteps: 10 }, deps));
+  assert.equal((await jobs()).length, 0);
+  assert.equal(counts.product, 0);
+  assert.equal(counts.verify, 0);
+}
+// The saved-contact option applies to follow-ups too; a blank imported timestamp stays blank.
+{
+  const f = await seed();
+  const { deps, counts } = dependencies();
+  value(
+    await Store.savePlaybook("fixture", {
+      ...settings,
+      sendingEnabled: false,
+      automaticApolloEnabled: false,
+      allowStaleEvidence: true,
+      trustSavedContactVerification: true,
+    }),
+  );
+  const details = {
+    ...f.details,
+    emailVerifiedAt: "",
+    source: "legacy W46: Keaz Signals export 2026-11-10",
+    emailSource: "Keaz (email marked verified)",
+    savedContactVerificationId: randomUUID(),
+  };
+  await db
+    .update(schema.outboundProspect)
+    .set({ details })
+    .where(eq(schema.outboundProspect.id, f.id));
+  value(await Refresh.run({ prospectId: f.id, maxSteps: 10 }, deps));
+  assert.equal((await jobs()).length, 0);
+  assert.equal(counts.verify, 0);
+  assert.equal(
+    value(await Store.readProspect(f.id))?.details.emailVerifiedAt,
+    "",
+  );
+}
 // Actual Store transaction: new approval revision, same words/hash, immutable original source and sent receipt.
 {
   const f = await seed();

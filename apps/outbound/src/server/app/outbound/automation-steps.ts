@@ -13,7 +13,10 @@ import {
 import { shoppingResearchSchema } from "@/lib/outbound-shopping-research";
 import { ConflictError, ValidationError } from "@/server/utils/error";
 import * as Qualification from "@/server/utils/outbound/automation-qualification";
-import type { CompanyCandidate } from "@/server/utils/outbound/company-discovery";
+import {
+  type CompanyCandidate,
+  savedApolloCompany,
+} from "@/server/utils/outbound/company-discovery";
 import * as Draft from "@/server/utils/outbound/draft";
 import * as Capture from "@/server/utils/outbound/live-shopping";
 import * as MX from "@/server/utils/outbound/mx";
@@ -191,6 +194,7 @@ const shoppingReceipt = (claimed: AutomationClaim) => {
     shoppingEvidence(claimed),
     receipt,
     claimed.playbook.verificationDays,
+    claimed.playbook,
   );
   if (problem) throw new ValidationError(problem);
   return receipt;
@@ -224,7 +228,9 @@ export const execute = async (
           company: company.id,
         }),
       );
-      const facts = value(await Qualification.enrichCompany({ company }));
+      const facts =
+        savedApolloCompany(company, campaign.criteria) ??
+        value(await Qualification.enrichCompany({ company }));
       if (
         !facts ||
         normalizeDomain(facts.domain) !== company.domain ||

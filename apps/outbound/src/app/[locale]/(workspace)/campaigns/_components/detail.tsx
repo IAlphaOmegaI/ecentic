@@ -122,7 +122,12 @@ export const CampaignDetail = ({
     column.accessor("source", {
       header: t("source"),
       meta: { className: "w-24" },
-      cell: ({ getValue }) => (getValue() === "apollo" ? "Apollo" : "Clay"),
+      cell: ({ getValue }) =>
+        getValue() === "saved"
+          ? t("savedSource")
+          : getValue() === "apollo"
+            ? "Apollo"
+            : "Clay",
     }),
     column.accessor("annualRevenue", {
       header: t("revenue"),

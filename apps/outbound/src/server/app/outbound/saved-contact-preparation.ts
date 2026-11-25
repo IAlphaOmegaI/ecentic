@@ -1,0 +1,1765 @@
+import "server-only";
+import { randomUUID } from "node:crypto";
+import { type Result, resultify } from "@zenncore/utils";
+import { and, asc, eq, ne, sql } from "drizzle-orm";
+import { z } from "zod";
+import {
+  companyExcluded,
+  normalizeDomain,
+  prospectIssues,
+  prospectSchema,
+} from "@/lib/outbound";
+import {
+  campaignCountryMatches,
+  campaignDomainExcluded,
+  candidateExclusion,
+} from "@/lib/outbound-campaigns";
+import { isExcludedRole, matchesRole } from "@/lib/outbound-roles";
+import { db, schema, type TransactionScope } from "@/server/database";
+import { Environment } from "@/server/utils/environment";
+import { ConflictError, ValidationError } from "@/server/utils/error";
+import * as Qualification from "@/server/utils/outbound/automation-qualification";
+import {
+  browserClaimInterval,
+  browserRetryLimit,
+  sessionCreationRateLimit,
+} from "@/server/utils/outbound/firecrawl-cooldown";
+import { IntegrationError } from "@/server/utils/outbound/http";
+import * as Capture from "@/server/utils/outbound/live-shopping";
+import * as MX from "@/server/utils/outbound/mx";
+import * as Location from "@/server/utils/outbound/saved-contact-location";
+import { resolveBusinessTimezone } from "@/server/utils/outbound/saved-contact-timezone";
+import {
+  type PreparationInput,
+  type PreparationState,
+  paidPreparationStage,
+  preparationInputSchema,
+  preparationStageBudget,
+  preparationStateSchema,
+} from "@/server/utils/outbound/saved-preparation-contract";
+import * as Assessment from "@/server/utils/outbound/shopping-assessment";
+import { researchHash } from "@/server/utils/outbound/shopping-research";
+import { repository } from "@/server/utils/repository";
+import * as LeadResearch from "./lead-research";
+import * as Credentials from "./provider-credentials";
+import * as Store from "./store";
+
+const Jobs = repository(schema.outboundIntegrationJob);
+const Prospects = repository(schema.outboundProspect);
+const Campaigns = repository(schema.outboundCampaign);
+const Companies = repository(schema.outboundCampaignCompany);
+const Attempts = repository(schema.outboundSendAttempt);
+const value = <Data>(result: Result<Data, Error>): Data => {
+  if (!result.success) throw result.error;
+  return result.data as Data;
+};
+const transaction = <Data>(
+  operation: (transaction: TransactionScope) => Promise<Data>,
+) =>
+  resultify(() =>
+    db.transaction(async (transaction) => {
+      await transaction.execute(
+        sql`select pg_advisory_xact_lock(hashtext('ecentic-outbound-workspace'))`,
+      );
+      return operation(transaction);
+    }),
+  );
+const scope = and(
+  eq(schema.outboundIntegrationJob.provider, "automation"),
+  sql`${schema.outboundIntegrationJob.input}->>'operation' = 'savedContactPreparation'`,
+);
+const batchSchema = z.object({
+  operation: z.literal("savedContactPreparationBatch"),
+  campaignId: z.string().uuid(),
+  maxQueries: z.number().int().min(1).max(50),
+  requestedBy: z.string().min(1),
+});
+const budgetSchema = z.object({
+  queriesReserved: z.number().int().min(0).max(50).default(0),
+  paused: z.boolean().default(false),
+  failureProvider: z.string().optional(),
+  failureCode: z.string().optional(),
+  browserAvailableAt: z.string().datetime().optional(),
+});
+type Job = typeof schema.outboundIntegrationJob.$inferSelect;
+type Claim = { job: Job; input: PreparationInput; state: PreparationState };
+
+const companyFor = (prospect: typeof schema.outboundProspect.$inferSelect) => ({
+  id: prospect.companyId,
+  name: prospect.details.company,
+  domain: normalizeDomain(prospect.details.domain),
+  website:
+    prospect.details.website ||
+    `https://${normalizeDomain(prospect.details.domain)}`,
+  country: prospect.details.country,
+  platform: ["shopify", "woocommerce"].includes(prospect.details.platform)
+    ? (prospect.details.platform as "shopify" | "woocommerce")
+    : null,
+  teamSize: null,
+  annualRevenue: null,
+  source: "saved" as const,
+  sourceId: prospect.id,
+  sourcePayload: {
+    originalSource: prospect.details.source,
+    originalImportAt: prospect.createdAt.toISOString(),
+  },
+});
+
+/** This is checked before every stage, including each paid call and local write. */
+const eligible = async (
+  transaction: TransactionScope,
+  input: PreparationInput,
+  state: PreparationState,
+) => {
+  const policy = await Store.policy(transaction);
+  const prospect = value(
+    await Prospects.get(Environment.SERVER, input.prospectId, {
+      tx: transaction,
+    }),
+  );
+  const campaign = value(
+    await Campaigns.get(Environment.SERVER, input.campaignId, {
+      tx: transaction,
+    }),
+  );
+  if (
+    !policy.settings.automationEnabled ||
+    !policy.settings.trustSavedContactVerification
+  )
+    throw new ConflictError(
+      "Saved contact preparation is paused in the Playbook.",
+    );
+  if (
+    !prospect ||
+    prospect.revision !== state.prospectRevision ||
+    prospect.sentStep ||
+    !["candidate", "draft"].includes(prospect.status) ||
+    !["", "playbookChanged"].includes(prospect.holdReason)
+  )
+    throw new ConflictError(
+      "The saved contact changed, was held, or already entered outreach.",
+    );
+  if (
+    campaign?.status !== "active" ||
+    campaign.revision !== input.campaignRevision ||
+    policy.revision !== input.playbookRevision ||
+    (prospect.campaignId && prospect.campaignId !== campaign.id)
+  )
+    throw new ConflictError(
+      "The campaign or Playbook changed; review this preparation before continuing.",
+    );
+  const details = prospect.details;
+  const contact = prospectIssues(details, policy.settings).find((issue) =>
+    [
+      "domainInvalid",
+      "emailDomainMismatch",
+      "excludedCompany",
+      "relationshipExcluded",
+      "countryHeld",
+      "emailUnverified",
+      "sharedInbox",
+      "roleUnverified",
+      "roleExcluded",
+      "roleOutsideTarget",
+    ].includes(issue.code),
+  );
+  if (contact)
+    throw new ValidationError(
+      `Saved contact is not eligible: ${contact.code}.`,
+    );
+  if (
+    !campaignCountryMatches(campaign.criteria.countries, details.country) ||
+    campaignDomainExcluded(campaign.criteria, details.domain) ||
+    companyExcluded(policy.settings, details.company) ||
+    isExcludedRole(details.title, campaign.criteria.excludedRoles) ||
+    !campaign.criteria.targetRoles.some((role) =>
+      matchesRole(details.title, role),
+    )
+  )
+    throw new ValidationError(
+      "The saved contact does not match this campaign.",
+    );
+  await Store.assertAutomaticContactEvidence(transaction, prospect);
+  const reserved = value(
+    await Companies.find(
+      Environment.SERVER,
+      {
+        where: and(
+          eq(
+            schema.outboundCampaignCompany.domain,
+            normalizeDomain(details.domain),
+          ),
+          sql`((${schema.outboundCampaignCompany.campaignId} = ${campaign.id} and ${schema.outboundCampaignCompany.status} = 'excluded' and not (${schema.outboundCampaignCompany.reason} = 'existingProspect' and (${schema.outboundCampaignCompany.prospectId} is null or ${schema.outboundCampaignCompany.prospectId} = ${prospect.id}) and exists (select 1 from outbound_company original where original.id = ${prospect.companyId} and original.domain = ${schema.outboundCampaignCompany.domain}))) or (${schema.outboundCampaignCompany.campaignId} <> ${campaign.id} and ${schema.outboundCampaignCompany.status} in ('candidate', 'added')))`,
+        ),
+        limit: 1,
+      },
+      { tx: transaction },
+    ),
+  )[0];
+  if (reserved)
+    throw new ConflictError(
+      "This company is excluded here or reserved by another campaign.",
+    );
+  if (
+    state.stage !== "preflight" &&
+    (!state.mx || Date.now() - Date.parse(state.mx.checkedAt) >= 86_400_000)
+  )
+    throw new ConflictError(
+      "The saved contact's live MX receipt needs to be checked again.",
+    );
+  const context = value(
+    await Store.getEnrichmentContext(prospect.id, transaction),
+  );
+  if (context.suppressed)
+    throw new ConflictError("This person or company is suppressed.");
+  if (
+    value(
+      await Attempts.find(
+        Environment.SERVER,
+        {
+          where: eq(schema.outboundSendAttempt.prospectId, prospect.id),
+          limit: 1,
+        },
+        { tx: transaction },
+      ),
+    ).length
+  )
+    throw new ConflictError(
+      "An existing delivery attempt must be reconciled first.",
+    );
+  if (
+    value(
+      await Jobs.find(
+        Environment.SERVER,
+        {
+          where: and(
+            eq(schema.outboundIntegrationJob.provider, "linkedin"),
+            eq(schema.outboundIntegrationJob.prospectId, prospect.id),
+          ),
+          limit: 1,
+        },
+        { tx: transaction },
+      ),
+    ).length
+  )
+    throw new ConflictError(
+      "This contact already has a LinkedIn outreach attempt.",
+    );
+  const other = value(
+    await Prospects.find(
+      Environment.SERVER,
+      {
+        where: and(
+          eq(schema.outboundProspect.companyId, prospect.companyId),
+          ne(schema.outboundProspect.id, prospect.id),
+          sql`(${schema.outboundProspect.sentStep} > 0 or ${schema.outboundProspect.status} in ('approved', 'scheduled', 'replied', 'optedOut', 'bounced'))`,
+        ),
+        limit: 1,
+      },
+      { tx: transaction },
+    ),
+  )[0];
+  if (other)
+    throw new ConflictError(
+      "Another contact at this company already has outreach activity.",
+    );
+  return { policy, prospect, campaign, company: companyFor(prospect) };
+};
+
+export const enqueueSchema = z
+  .object({
+    batchId: z.string().uuid(),
+    campaignId: z.string().uuid(),
+    prospects: z.array(z.string().uuid()).min(1).max(200),
+    maxQueries: z.number().int().min(1).max(50),
+  })
+  .strict();
+
+/** Explicit opt-in only. Original prospect IDs and verification dates are retained. */
+export const enqueue = (actor: string, input: z.infer<typeof enqueueSchema>) =>
+  resultify(async () => {
+    const parsed = enqueueSchema.parse(input);
+    value(
+      await transaction(async (transaction) => {
+        const existing = value(
+          await Jobs.get(Environment.SERVER, parsed.batchId, {
+            tx: transaction,
+          }),
+        );
+        const settings = batchSchema.parse({
+          operation: "savedContactPreparationBatch",
+          campaignId: parsed.campaignId,
+          maxQueries: parsed.maxQueries,
+          requestedBy: actor,
+        });
+        if (existing) {
+          const prior = batchSchema.parse(existing.input);
+          if (
+            prior.campaignId !== settings.campaignId ||
+            prior.maxQueries !== settings.maxQueries
+          )
+            throw new ConflictError(
+              "The preparation batch already has different settings.",
+            );
+          return;
+        }
+        value(
+          await Jobs.create(
+            Environment.SERVER,
+            {
+              id: parsed.batchId,
+              provider: "automation",
+              requestId: `saved-contact-batch:${parsed.batchId}`,
+              status: "complete",
+              input: settings,
+              output: { queriesReserved: 0, paused: false },
+            },
+            { tx: transaction },
+          ),
+        );
+      }),
+    );
+    const results: {
+      prospectId: string;
+      jobId?: string;
+      repeated?: boolean;
+      error?: string;
+    }[] = [];
+    for (const prospectId of [...new Set(parsed.prospects)]) {
+      const saved = await resultify(async () => {
+        const existing = value(
+          await Jobs.find(Environment.SERVER, {
+            where: eq(
+              schema.outboundIntegrationJob.requestId,
+              `saved-contact-preparation:${prospectId}`,
+            ),
+            limit: 1,
+          }),
+        )[0];
+        if (existing) return { prospectId, jobId: existing.id, repeated: true };
+        const prospect = value(await Store.readProspect(prospectId));
+        if (!prospect) throw new ValidationError("Saved contact not found.");
+        const trusted = value(
+          await Store.trustSavedContact(actor, {
+            prospect: prospectId,
+            revision: prospect.revision,
+          }),
+        );
+        return value(
+          await transaction(async (transaction) => {
+            const policy = await Store.policy(transaction);
+            const campaign = value(
+              await Campaigns.get(Environment.SERVER, parsed.campaignId, {
+                tx: transaction,
+              }),
+            );
+            if (!campaign) throw new ValidationError("Campaign not found.");
+            const claim = preparationInputSchema.parse({
+              operation: "savedContactPreparation",
+              batchId: parsed.batchId,
+              prospectId,
+              campaignId: campaign.id,
+              campaignRevision: campaign.revision,
+              playbookRevision: policy.revision,
+              requestedBy: actor,
+            });
+            const state = preparationStateSchema.parse({
+              stage: "preflight",
+              prospectRevision: trusted.revision,
+              availableAt: new Date().toISOString(),
+              lease: null,
+            });
+            const context = await eligible(transaction, claim, state);
+            const duplicate = value(
+              await Jobs.find(
+                Environment.SERVER,
+                {
+                  where: and(
+                    scope,
+                    sql`${schema.outboundIntegrationJob.prospectId} in (select id from outbound_prospect where company_id = ${context.prospect.companyId})`,
+                  ),
+                  limit: 1,
+                },
+                { tx: transaction },
+              ),
+            )[0];
+            if (duplicate)
+              throw new ConflictError(
+                "This company already has a saved contact preparation. Reuse its existing job.",
+              );
+            const job = value(
+              await Jobs.create(
+                Environment.SERVER,
+                {
+                  provider: "automation",
+                  prospectId,
+                  requestId: `saved-contact-preparation:${prospectId}`,
+                  status: "pending",
+                  input: claim,
+                  output: state,
+                },
+                { tx: transaction },
+              ),
+            );
+            return { prospectId, jobId: job.id, repeated: false };
+          }),
+        );
+      });
+      results.push(
+        saved.success ? saved.data : { prospectId, error: saved.error.message },
+      );
+    }
+    return { batchId: parsed.batchId, maxQueries: parsed.maxQueries, results };
+  });
+
+const claim = (deadline: number, batchId?: string) =>
+  transaction(async (transaction) => {
+    const policy = await Store.policy(transaction);
+    if (
+      !policy.settings.automationEnabled ||
+      !policy.settings.trustSavedContactVerification
+    )
+      return null;
+    // Scheduling needs small metadata; raw captures are loaded only for the chosen job.
+    // Repository.find cannot project JSONB fields, so this read uses a narrow projection.
+    const jobs = await transaction
+      .select({
+        id: schema.outboundIntegrationJob.id,
+        status: schema.outboundIntegrationJob.status,
+        input: schema.outboundIntegrationJob.input,
+        output: sql<
+          Record<string, unknown>
+        >`${schema.outboundIntegrationJob.output} - ARRAY['companyEvidence','locationReceipts','qualification','query','shoppingJob','answer','browser','assessment','shoppingReceipt','collection','failureReceipt','originalQualification','originalCollection','originalLocation']::text[]`,
+      })
+      .from(schema.outboundIntegrationJob)
+      .where(
+        and(
+          scope,
+          sql`${schema.outboundIntegrationJob.status} in ('pending', 'starting')`,
+          ...(batchId
+            ? [
+                sql`${schema.outboundIntegrationJob.input}->>'batchId' = ${batchId}`,
+              ]
+            : []),
+        ),
+      )
+      .orderBy(asc(schema.outboundIntegrationJob.updatedAt))
+      .limit(200);
+    for (const job of jobs) {
+      const input = preparationInputSchema.parse(job.input);
+      const state = preparationStateSchema.parse(job.output);
+      if (
+        job.status === "starting" &&
+        state.lease &&
+        Date.parse(state.lease.expiresAt) > Date.now()
+      )
+        continue;
+      if (job.status === "starting" && paidPreparationStage(state.stage)) {
+        value(
+          await Jobs.update(
+            Environment.SERVER,
+            job.id,
+            {
+              status: "uncertain",
+              error:
+                "The paid stage lost its lease. Reconcile the existing receipt before any retry.",
+              updatedAt: new Date(),
+            },
+            { tx: transaction },
+          ),
+        );
+        continue;
+      }
+      if (
+        Date.parse(state.availableAt) > Date.now() ||
+        Date.now() + preparationStageBudget(state.stage) > deadline
+      )
+        continue;
+      const batch = value(
+        await Jobs.get(Environment.SERVER, input.batchId, { tx: transaction }),
+      );
+      const settings = batchSchema.parse(batch?.input);
+      const budget = budgetSchema.parse(batch?.output);
+      if (budget.paused && paidPreparationStage(state.stage)) continue;
+      if (
+        state.stage === "browser" &&
+        budget.browserAvailableAt &&
+        Date.parse(budget.browserAvailableAt) > Date.now()
+      )
+        continue;
+      const ready = await resultify(() => eligible(transaction, input, state));
+      if (!ready.success) {
+        value(
+          await Jobs.update(
+            Environment.SERVER,
+            job.id,
+            {
+              status: "failed",
+              error: ready.error.message,
+              updatedAt: new Date(),
+            },
+            { tx: transaction },
+          ),
+        );
+        continue;
+      }
+      if (
+        state.stage === "query" &&
+        (state.queryReservedAt || budget.queriesReserved >= settings.maxQueries)
+      ) {
+        if (state.queryReservedAt)
+          value(
+            await Jobs.update(
+              Environment.SERVER,
+              job.id,
+              {
+                status: "uncertain",
+                error:
+                  "A shopping query was already reserved. Reconcile that submission before continuing.",
+                updatedAt: new Date(),
+              },
+              { tx: transaction },
+            ),
+          );
+        continue;
+      }
+      const selected = value(
+        await Jobs.get(Environment.SERVER, job.id, { tx: transaction }),
+      );
+      if (!selected)
+        throw new ConflictError("The preparation job disappeared.");
+      const saved = preparationStateSchema.parse(selected.output);
+      const next = preparationStateSchema.parse({
+        ...saved,
+        lease: {
+          token: randomUUID(),
+          expiresAt: new Date(Date.now() + 180_000).toISOString(),
+        },
+        ...(state.stage === "query"
+          ? { queryReservedAt: new Date().toISOString() }
+          : {}),
+      });
+      if (state.stage === "query" || state.stage === "browser")
+        value(
+          await Jobs.update(
+            Environment.SERVER,
+            input.batchId,
+            {
+              output: {
+                ...budget,
+                ...(state.stage === "query"
+                  ? { queriesReserved: budget.queriesReserved + 1 }
+                  : {
+                      browserAvailableAt: new Date(
+                        Date.now() + browserClaimInterval,
+                      ).toISOString(),
+                    }),
+              },
+              updatedAt: new Date(),
+            },
+            { tx: transaction },
+          ),
+        );
+      value(
+        await Jobs.update(
+          Environment.SERVER,
+          job.id,
+          {
+            status: "starting",
+            output: next,
+            error: null,
+            updatedAt: new Date(),
+          },
+          { tx: transaction },
+        ),
+      );
+      return { job: selected, input, state: next } satisfies Claim;
+    }
+    return null;
+  });
+
+const owned = async (transaction: TransactionScope, claim: Claim) => {
+  const job = value(
+    await Jobs.get(Environment.SERVER, claim.job.id, { tx: transaction }),
+  );
+  const state = preparationStateSchema.parse(job?.output);
+  if (
+    job?.status !== "starting" ||
+    state.lease?.token !== claim.state.lease?.token ||
+    !state.lease ||
+    Date.parse(state.lease.expiresAt) <= Date.now() ||
+    state.stage !== claim.state.stage
+  )
+    throw new ConflictError("The saved contact preparation lease changed.");
+  return state;
+};
+const checkpoint = (
+  claim: Claim,
+  patch: Partial<PreparationState>,
+  status: "pending" | "complete" = "pending",
+) =>
+  transaction(async (transaction) => {
+    const state = await owned(transaction, claim);
+    // Keep provider receipts even if a reply or hold arrived during the external call.
+    const ready = await resultify(() =>
+      eligible(transaction, claim.input, state),
+    );
+    value(
+      await Jobs.update(
+        Environment.SERVER,
+        claim.job.id,
+        {
+          status: ready.success ? status : "failed",
+          output: preparationStateSchema.parse({
+            ...state,
+            ...patch,
+            lease: null,
+          }),
+          error: ready.success ? null : ready.error.message,
+          updatedAt: new Date(),
+        },
+        { tx: transaction },
+      ),
+    );
+  });
+const hasSavedBrowserAnswer = (state: PreparationState) =>
+  Boolean(
+    state.stage === "browser" &&
+      state.queryReservedAt &&
+      state.query &&
+      state.shoppingJob &&
+      state.answer &&
+      !state.browser &&
+      !state.shoppingReceipt &&
+      !state["assessment"] &&
+      researchHash(state.shoppingJob) === researchHash(state.answer.job) &&
+      researchHash(state.query) === researchHash(state.shoppingJob.query),
+  );
+const fail = (claim: Claim, error: Error) =>
+  transaction(async (transaction) => {
+    const state = await owned(transaction, claim);
+    const provider = error instanceof IntegrationError ? error : null;
+    const cooldown =
+      provider?.provider === "firecrawl" &&
+      provider.code === "rate-limit" &&
+      hasSavedBrowserAnswer(state) &&
+      state.browserRetries < browserRetryLimit
+        ? sessionCreationRateLimit(
+            provider.receipt,
+            provider.retryAfterSeconds,
+            state.browserRetries,
+          )
+        : null;
+    if (cooldown) {
+      const ready = await resultify(() =>
+        eligible(transaction, claim.input, state),
+      );
+      value(
+        await Jobs.update(
+          Environment.SERVER,
+          claim.job.id,
+          {
+            status: ready.success ? "pending" : "failed",
+            error: ready.success
+              ? "Firecrawl browser creation was rate limited; waiting to reuse the saved shopping answer."
+              : ready.error.message,
+            output: preparationStateSchema.parse({
+              ...state,
+              lease: null,
+              availableAt: cooldown.retryAt,
+              browserRetries: state.browserRetries + 1,
+              browserRateLimits: [...state.browserRateLimits, cooldown],
+              failureProvider: provider?.provider,
+              failureCode: provider?.code,
+              failureReceipt: provider?.receipt,
+            }),
+            updatedAt: new Date(),
+          },
+          { tx: transaction },
+        ),
+      );
+      if (ready.success) {
+        const batch = value(
+          await Jobs.get(Environment.SERVER, claim.input.batchId, {
+            tx: transaction,
+          }),
+        );
+        const budget = budgetSchema.parse(batch?.output);
+        value(
+          await Jobs.update(
+            Environment.SERVER,
+            claim.input.batchId,
+            {
+              output: {
+                ...budget,
+                browserAvailableAt: new Date(
+                  Math.max(
+                    Date.parse(budget.browserAvailableAt ?? "1970-01-01"),
+                    Date.parse(cooldown.retryAt),
+                  ),
+                ).toISOString(),
+              },
+              updatedAt: new Date(),
+            },
+            { tx: transaction },
+          ),
+        );
+      }
+      return;
+    }
+    const uncertain =
+      provider?.code === "uncertain" ||
+      (!provider && paidPreparationStage(state.stage));
+    value(
+      await Jobs.update(
+        Environment.SERVER,
+        claim.job.id,
+        {
+          status: uncertain ? "uncertain" : "failed",
+          error: error.message,
+          output: {
+            ...state,
+            lease: null,
+            ...(provider
+              ? {
+                  failureProvider: provider.provider,
+                  failureCode: provider.code,
+                  failureReceipt: provider.receipt,
+                }
+              : {}),
+          },
+          updatedAt: new Date(),
+        },
+        { tx: transaction },
+      ),
+    );
+    if (
+      provider &&
+      ["quota", "access", "rate-limit", "configuration"].includes(provider.code)
+    ) {
+      const batch = value(
+        await Jobs.get(Environment.SERVER, claim.input.batchId, {
+          tx: transaction,
+        }),
+      );
+      const budget = budgetSchema.parse(batch?.output);
+      value(
+        await Jobs.update(
+          Environment.SERVER,
+          claim.input.batchId,
+          {
+            output: {
+              ...budget,
+              paused: true,
+              failureProvider: provider.provider,
+              failureCode: provider.code,
+            },
+            error: provider.message,
+            updatedAt: new Date(),
+          },
+          { tx: transaction },
+        ),
+      );
+    }
+  });
+
+const key = async (
+  provider: "scrapellm" | "firecrawl",
+  resolve: typeof Credentials.resolveKey,
+) => {
+  const saved = value(await resolve(provider));
+  if (!saved)
+    throw new IntegrationError(
+      provider,
+      "configuration",
+      `Save ${provider} credentials before research.`,
+      409,
+    );
+  return saved;
+};
+type Dependencies = {
+  mx?: typeof MX.check;
+  collect?: typeof Qualification.collectCompanyEvidence;
+  location?: typeof Location.collectLocationReceipts;
+  qualify?: typeof Qualification.qualifyCompanyEvidence;
+  start?: typeof Capture.startQuery;
+  poll?: typeof Capture.pollQuery;
+  browse?: typeof Capture.inspectPages;
+  assess?: typeof Assessment.assess;
+  resolveKey?: typeof Credentials.resolveKey;
+};
+
+const execute = async (
+  claim: Claim,
+  deadline: number,
+  dependencies: Dependencies,
+) => {
+  const state = claim.state;
+  const context = value(
+    await transaction(async (transaction) => {
+      await owned(transaction, claim);
+      return eligible(transaction, claim.input, state);
+    }),
+  );
+  const { prospect, campaign, company, policy } = context;
+  const qualification = {
+    campaign,
+    company,
+    playbook: policy.settings,
+    deadline,
+  };
+  const next = (
+    stage: PreparationState["stage"],
+    patch: Partial<PreparationState> = {},
+  ) =>
+    checkpoint(claim, {
+      stage,
+      availableAt: new Date().toISOString(),
+      ...patch,
+    });
+  switch (state.stage) {
+    case "preflight": {
+      const mx = value(
+        await (dependencies.mx ?? MX.check)(prospect.details.email),
+      );
+      if (!["google", "other"].includes(mx.provider) || !mx.records.length)
+        throw new ValidationError(
+          "The saved email has no eligible live mail route.",
+        );
+      return next("collect", { mx });
+    }
+    case "collect": {
+      const evidence = value(
+        await (dependencies.collect ?? Qualification.collectCompanyEvidence)(
+          qualification,
+        ),
+      );
+      if ("status" in evidence)
+        return checkpoint(
+          claim,
+          {
+            collection: evidence,
+            lease: null,
+            heldReason: evidence.reason,
+            stage: "complete",
+          },
+          "complete",
+        );
+      const timezone = resolveBusinessTimezone(
+        evidence.receipts,
+        company.domain,
+      );
+      return next(timezone ? "qualify" : "location", {
+        companyEvidence: evidence,
+        ...(timezone ? { timezone } : {}),
+      });
+    }
+    case "location": {
+      const receipts = value(
+        await (dependencies.location ?? Location.collectLocationReceipts)({
+          website: company.website,
+          deadline,
+          existing: state.companyEvidence?.receipts ?? [],
+        }),
+      );
+      const timezone = resolveBusinessTimezone(receipts, company.domain);
+      if (!timezone)
+        return checkpoint(
+          claim,
+          {
+            locationReceipts: receipts,
+            stage: "complete",
+            heldReason:
+              "No unambiguous public business address was found for local sending hours.",
+          },
+          "complete",
+        );
+      return next("qualify", { locationReceipts: receipts, timezone });
+    }
+    case "qualify": {
+      const evidence = Qualification.companyEvidenceSchema.parse(
+        state.companyEvidence,
+      );
+      const result = value(
+        await (dependencies.qualify ?? Qualification.qualifyCompanyEvidence)({
+          ...qualification,
+          evidence,
+        }),
+      );
+      return result.status === "qualified"
+        ? next("applyCompany", { qualification: result })
+        : checkpoint(
+            claim,
+            {
+              qualification: result,
+              stage: "complete",
+              heldReason: result.reason,
+            },
+            "complete",
+          );
+    }
+    case "applyCompany":
+      return transaction(async (transaction) => {
+        await owned(transaction, claim);
+        const current = await eligible(transaction, claim.input, state);
+        const evidence = Qualification.companyEvidenceSchema.parse(
+          state.companyEvidence,
+        );
+        const qualified = state.qualification as
+          | Extract<Qualification.Qualification, { status: "qualified" }>
+          | undefined;
+        if (qualified?.status !== "qualified" || !state.mx || !state.timezone)
+          throw new ValidationError(
+            "Public qualification, MX, or business location receipts are missing.",
+          );
+        if (
+          candidateExclusion(campaign.criteria, {
+            ...company,
+            platform: evidence.platform,
+          })
+        )
+          throw new ValidationError(
+            "The public company evidence does not meet the campaign criteria.",
+          );
+        const existing = value(
+          await Companies.find(
+            Environment.SERVER,
+            {
+              where: and(
+                eq(schema.outboundCampaignCompany.campaignId, campaign.id),
+                eq(schema.outboundCampaignCompany.domain, company.domain),
+              ),
+              limit: 1,
+            },
+            { tx: transaction },
+          ),
+        )[0];
+        if (existing?.prospectId && existing.prospectId !== prospect.id)
+          throw new ConflictError(
+            "This company already belongs to another campaign prospect.",
+          );
+        const record = {
+          campaignId: campaign.id,
+          domain: company.domain,
+          name: company.name,
+          website: company.website,
+          country: company.country,
+          platform: evidence.platform,
+          source: existing?.source ?? ("saved" as const),
+          sourceId: existing?.sourceId ?? prospect.id,
+          sourcePayload: {
+            ...company.sourcePayload,
+            ...existing?.sourcePayload,
+            preparationJobId: claim.job.id,
+            businessHours: state.timezone,
+          },
+          status: "added" as const,
+          reason: "",
+          prospectId: prospect.id,
+          criteriaRevision: campaign.revision,
+          updatedAt: new Date(),
+        };
+        if (existing)
+          value(
+            await Companies.update(Environment.SERVER, existing.id, record, {
+              tx: transaction,
+            }),
+          );
+        else
+          value(
+            await Companies.create(Environment.SERVER, record, {
+              tx: transaction,
+            }),
+          );
+        // Verification identity/source and its original dates remain bound to the imported contact.
+        const details = prospectSchema.parse({
+          ...current.prospect.details,
+          id: prospect.id,
+          campaignId: campaign.id,
+          platform: evidence.platform,
+          product: evidence.product.name,
+          productUrl: evidence.product.url,
+          productCategory: qualified.details.productCategory,
+          legitEvidence: qualified.details.legitEvidence,
+          productInsight: qualified.details.productInsight,
+          personalLine: "",
+          personalSource: "",
+          personalPublishedAt: "",
+          personalCheckedAt: "",
+          mxProvider: state.mx.provider,
+          mxCheckedAt: state.mx.checkedAt,
+          timezone: state.timezone.timezone,
+        });
+        const saved = await Store.saveProspectWithin(
+          transaction,
+          claim.input.requestedBy,
+          details,
+        );
+        value(
+          await Prospects.update(
+            Environment.SERVER,
+            prospect.id,
+            { campaignId: campaign.id, updatedAt: new Date() },
+            { tx: transaction },
+          ),
+        );
+        const query = value(
+          Capture.prepareQuery({
+            product: evidence.product,
+            category: details.productCategory,
+            country:
+              campaign.criteria.countries.find((country) =>
+                campaignCountryMatches([country], details.country),
+              ) ?? details.country,
+          }),
+        );
+        value(
+          await Jobs.update(
+            Environment.SERVER,
+            claim.job.id,
+            {
+              status: "pending",
+              output: {
+                ...state,
+                stage: "query",
+                prospectRevision: saved.revision,
+                query,
+                lease: null,
+                availableAt: new Date().toISOString(),
+              },
+              updatedAt: new Date(),
+            },
+            { tx: transaction },
+          ),
+        );
+      });
+    case "query": {
+      const result = value(
+        await (dependencies.start ?? Capture.startQuery)({
+          apiKey: await key(
+            "scrapellm",
+            dependencies.resolveKey ?? Credentials.resolveKey,
+          ),
+          query: Capture.preparedQuerySchema.parse(state.query),
+          deadline,
+        }),
+      );
+      return next("poll", {
+        shoppingJob: result,
+        availableAt: new Date(Date.now() + 20_000).toISOString(),
+      });
+    }
+    case "poll": {
+      const job = Capture.aiJobSchema.parse(state.shoppingJob);
+      if (
+        state.polls >= 40 ||
+        Date.now() - Date.parse(job.submittedAt) > 86_400_000
+      )
+        throw new ValidationError(
+          "The existing shopping job needs reconciliation; no replacement query was submitted.",
+        );
+      const result = value(
+        await (dependencies.poll ?? Capture.pollQuery)({
+          apiKey: await key(
+            "scrapellm",
+            dependencies.resolveKey ?? Credentials.resolveKey,
+          ),
+          job,
+          deadline,
+        }),
+      );
+      return result.status === "pending"
+        ? next("poll", {
+            polls: state.polls + 1,
+            availableAt: new Date(Date.now() + 30_000).toISOString(),
+          })
+        : next("browser", { polls: state.polls + 1, answer: result.capture });
+    }
+    case "browser": {
+      const answer = Capture.aiCaptureSchema.parse(state.answer);
+      const browser = value(
+        await (dependencies.browse ?? Capture.inspectPages)({
+          apiKey: await key(
+            "firecrawl",
+            dependencies.resolveKey ?? Credentials.resolveKey,
+          ),
+          product: answer.job.query.product,
+          answer,
+          country: answer.job.query.country,
+          deadline,
+        }),
+      );
+      return browser.status === "captured"
+        ? next("assess", { browser })
+        : checkpoint(
+            claim,
+            { browser, stage: "complete", heldReason: browser.reason },
+            "complete",
+          );
+    }
+    case "assess": {
+      const browser = Capture.browserResearchSchema.parse(state.browser);
+      if (browser.status !== "captured")
+        throw new ValidationError("Browser evidence is not complete.");
+      const evidence = {
+        answer: Capture.aiCaptureSchema.parse(state.answer),
+        browser,
+      };
+      const assessed = value(
+        await (dependencies.assess ?? Assessment.assess)({
+          ...evidence,
+          playbook: policy.settings,
+          deadline,
+        }),
+      );
+      if (assessed.status !== "researched")
+        return checkpoint(
+          claim,
+          {
+            assessment: assessed,
+            stage: "complete",
+            heldReason: assessed.reason,
+          },
+          "complete",
+        );
+      const problem = Assessment.validateAutomaticResearch(
+        evidence,
+        assessed.receipt,
+        policy.settings.verificationDays,
+        policy.settings,
+      );
+      if (problem) throw new ValidationError(problem);
+      return next("applyResearch", {
+        assessment: assessed,
+        shoppingReceipt: assessed.receipt,
+      });
+    }
+    case "applyResearch": {
+      if (!state.shoppingReceipt || !state.lease)
+        throw new ValidationError(
+          "The saved shopping receipt or lease is missing.",
+        );
+      return LeadResearch.savePreparedAndApply(
+        claim.input.requestedBy,
+        {
+          requestId: claim.job.id,
+          prospectId: prospect.id,
+          expectedRevision: state.prospectRevision,
+          expectedPlaybookRevision: claim.input.playbookRevision,
+          receipt: state.shoppingReceipt,
+        },
+        { jobId: claim.job.id, leaseToken: state.lease.token },
+      );
+    }
+    case "draft":
+      return transaction(async (transaction) => {
+        await owned(transaction, claim);
+        await eligible(transaction, claim.input, state);
+        const saved = await Store.generateDraftsWithin(
+          transaction,
+          claim.input.requestedBy,
+          { prospect: prospect.id, expectedRevision: state.prospectRevision },
+        );
+        value(
+          await Jobs.update(
+            Environment.SERVER,
+            claim.job.id,
+            {
+              status: "complete",
+              output: {
+                ...state,
+                stage: "complete",
+                prospectRevision: saved.revision,
+                lease: null,
+                preparedAt: new Date().toISOString(),
+                draftIssues: saved.issues,
+              },
+              updatedAt: new Date(),
+            },
+            { tx: transaction },
+          ),
+        );
+      });
+    case "complete":
+      return checkpoint(claim, {}, "complete");
+  }
+};
+
+/** Resumes only explicitly seeded jobs. This worker never calls Apollo or sends email. */
+export const run = (
+  input: { maxSteps?: number; deadline?: number; batchId?: string } = {},
+  dependencies: Dependencies = {},
+) =>
+  resultify(async () => {
+    const deadline = input.deadline ?? Date.now() + 220_000;
+    const completed: { jobId: string; stage: string; status: string }[] = [];
+    for (const _ of Array.from({
+      length: Math.min(40, Math.max(1, input.maxSteps ?? 15)),
+    })) {
+      if (Date.now() + 10_000 >= deadline) break;
+      const selected = value(await claim(deadline, input.batchId));
+      if (!selected) break;
+      const result = await resultify(async () => {
+        const executed = await execute(selected, deadline, dependencies);
+        if (!executed.success) throw executed.error;
+      });
+      if (!result.success) value(await fail(selected, result.error));
+      completed.push({
+        jobId: selected.job.id,
+        stage: selected.state.stage,
+        status: result.success ? "checkpointed" : "held",
+      });
+    }
+    return { steps: completed.length, jobs: completed };
+  });
+
+export const reviewQualificationSchema = z
+  .object({
+    jobId: z.string().uuid(),
+    requestId: z.string().uuid(),
+    expectedUpdatedAt: z.string().datetime(),
+    assessment: Qualification.assessmentSchema,
+    note: z.string().trim().min(20).max(2000),
+  })
+  .strict();
+
+/** A reviewed quote correction resumes from saved public sources, never recreating provider work. */
+export const reviewQualification = (
+  actor: string,
+  input: z.infer<typeof reviewQualificationSchema>,
+) =>
+  transaction(async (transaction) => {
+    const parsed = reviewQualificationSchema.parse(input);
+    const job = value(
+      await Jobs.get(Environment.SERVER, parsed.jobId, { tx: transaction }),
+    );
+    const claim = preparationInputSchema.parse(job?.input);
+    const state = preparationStateSchema.parse(job?.output);
+    const correction = z
+      .object({ requestId: z.string().uuid(), assessmentHash: z.string() })
+      .safeParse(state["qualificationReview"]);
+    const assessmentHash = researchHash(parsed.assessment);
+    if (correction.success) {
+      if (
+        correction.data.requestId !== parsed.requestId ||
+        correction.data.assessmentHash !== assessmentHash
+      )
+        throw new ConflictError(
+          "This qualification already has a different reviewed correction.",
+        );
+      return { jobId: parsed.jobId, repeated: true };
+    }
+    if (
+      job?.provider !== "automation" ||
+      job.status !== "complete" ||
+      job.updatedAt.toISOString() !== parsed.expectedUpdatedAt ||
+      state.stage !== "complete" ||
+      state.queryReservedAt ||
+      state.shoppingJob ||
+      state.shoppingReceipt
+    )
+      throw new ConflictError(
+        "Only an unchanged public-qualification hold can be reviewed before a shopping submission.",
+      );
+    const original = z
+      .object({
+        status: z.literal("hold"),
+        assessment: Qualification.assessmentSchema,
+        usage: z.object({
+          inputTokens: z.number().nullable(),
+          outputTokens: z.number().nullable(),
+        }),
+        providerRequestId: z.string().nullable(),
+      })
+      .parse(state.qualification);
+    const context = await eligible(transaction, claim, state);
+    const evidence = Qualification.companyEvidenceSchema.parse(
+      state.companyEvidence,
+    );
+    const result = value(
+      Qualification.reviewCompanyEvidence(
+        {
+          campaign: context.campaign,
+          company: context.company,
+          playbook: context.policy.settings,
+          evidence,
+        },
+        {
+          assessment: parsed.assessment,
+          usage: original.usage,
+          providerRequestId: original.providerRequestId,
+        },
+      ),
+    );
+    if (result.status !== "qualified") throw new ValidationError(result.reason);
+    const updated = preparationStateSchema.parse({
+      ...state,
+      qualification: result,
+      originalQualification: state.qualification,
+      qualificationReview: {
+        requestId: parsed.requestId,
+        assessmentHash,
+        reviewedBy: actor,
+        reviewedAt: new Date().toISOString(),
+        note: parsed.note,
+      },
+      stage: "applyCompany",
+      lease: null,
+      heldReason: null,
+      availableAt: new Date().toISOString(),
+    });
+    value(
+      await Jobs.update(
+        Environment.SERVER,
+        job.id,
+        {
+          status: "pending",
+          output: updated,
+          error: null,
+          updatedAt: new Date(),
+        },
+        { tx: transaction },
+      ),
+    );
+    value(
+      await repository(schema.outboundEvent).create(
+        Environment.SERVER,
+        {
+          prospectId: claim.prospectId,
+          actor,
+          kind: "savedQualificationReviewed",
+          detail: parsed.note,
+          externalId: `saved-qualification-review:${parsed.requestId}`,
+        },
+        { tx: transaction },
+      ),
+    );
+    return { jobId: job.id, repeated: false };
+  });
+
+export const resumeLocationSchema = z
+  .object({
+    jobId: z.string().uuid(),
+    requestId: z.string().uuid(),
+    expectedUpdatedAt: z.string().datetime(),
+    reason: z.string().trim().min(20).max(2000),
+  })
+  .strict();
+
+/** Reinterprets a saved business address after a parser correction, without collecting it again. */
+export const resumeLocation = (
+  actor: string,
+  input: z.infer<typeof resumeLocationSchema>,
+) =>
+  transaction(async (transaction) => {
+    const parsed = resumeLocationSchema.parse(input);
+    const job = value(
+      await Jobs.get(Environment.SERVER, parsed.jobId, { tx: transaction }),
+    );
+    const claim = preparationInputSchema.parse(job?.input);
+    const state = preparationStateSchema.parse(job?.output);
+    const requestHash = researchHash({ ...parsed, actor });
+    const prior = z
+      .object({ requestId: z.string().uuid(), requestHash: z.string() })
+      .safeParse(state["locationReview"]);
+    if (prior.success) {
+      if (
+        prior.data.requestId !== parsed.requestId ||
+        prior.data.requestHash !== requestHash
+      )
+        throw new ConflictError(
+          "This location already has a different reviewed correction.",
+        );
+      return { jobId: parsed.jobId, repeated: true };
+    }
+    if (
+      job?.provider !== "automation" ||
+      job.status !== "complete" ||
+      job.updatedAt.toISOString() !== parsed.expectedUpdatedAt ||
+      state.stage !== "complete" ||
+      state["heldReason"] !==
+        "No unambiguous public business address was found for local sending hours." ||
+      state.lease !== null ||
+      state.polls !== 0 ||
+      state.browserRetries !== 0 ||
+      state.browserRateLimits.length !== 0 ||
+      [
+        "timezone",
+        "qualification",
+        "queryReservedAt",
+        "query",
+        "shoppingJob",
+        "answer",
+        "browser",
+        "assessment",
+        "shoppingReceipt",
+        "failureReceipt",
+        "originalLocation",
+      ].some((key) => state[key] !== undefined && state[key] !== null)
+    )
+      throw new ConflictError(
+        "Only an unchanged missing-address hold without paid work can be reviewed.",
+      );
+    const context = await eligible(transaction, claim, state);
+    const evidence = Qualification.companyEvidenceSchema.parse(
+      state.companyEvidence,
+    );
+    const timezone = resolveBusinessTimezone(
+      [...evidence.receipts, ...(state.locationReceipts ?? [])],
+      context.company.domain,
+    );
+    if (!timezone)
+      throw new ValidationError(
+        "The original saved sources do not establish an unambiguous business address.",
+      );
+    const now = new Date();
+    const updated = preparationStateSchema.parse({
+      ...state,
+      originalLocation: {
+        status: job.status,
+        input: job.input,
+        output: job.output,
+        error: job.error,
+        updatedAt: job.updatedAt.toISOString(),
+      },
+      locationReview: {
+        requestId: parsed.requestId,
+        requestHash,
+        reviewedBy: actor,
+        reviewedAt: now.toISOString(),
+        reason: parsed.reason,
+      },
+      timezone,
+      stage: "qualify",
+      lease: null,
+      heldReason: null,
+      availableAt: now.toISOString(),
+    });
+    value(
+      await Jobs.update(
+        Environment.SERVER,
+        job.id,
+        { status: "pending", output: updated, error: null, updatedAt: now },
+        { tx: transaction },
+      ),
+    );
+    value(
+      await repository(schema.outboundEvent).create(
+        Environment.SERVER,
+        {
+          prospectId: claim.prospectId,
+          actor,
+          kind: "savedLocationReviewed",
+          detail: parsed.reason,
+          externalId: `saved-location-review:${parsed.requestId}`,
+        },
+        { tx: transaction },
+      ),
+    );
+    return { jobId: job.id, repeated: false };
+  });
+
+export const retryCollectionSchema = z
+  .object({
+    jobId: z.string().uuid(),
+    requestId: z.string().uuid(),
+    expectedUpdatedAt: z.string().datetime(),
+    reason: z.string().trim().min(20).max(2000),
+  })
+  .strict();
+
+const missingProductReason =
+  "No unambiguous own-brand priced physical product was established from the bounded public pages.";
+
+/** An operator may retry a proven parser hold once, before any paid shopping work. */
+export const retryCollection = (
+  actor: string,
+  input: z.infer<typeof retryCollectionSchema>,
+) =>
+  transaction(async (transaction) => {
+    const parsed = retryCollectionSchema.parse(input);
+    const job = value(
+      await Jobs.get(Environment.SERVER, parsed.jobId, { tx: transaction }),
+    );
+    const claim = preparationInputSchema.parse(job?.input);
+    const state = preparationStateSchema.parse(job?.output);
+    const requestHash = researchHash({ ...parsed, actor });
+    const prior = z
+      .object({ requestId: z.string().uuid(), requestHash: z.string() })
+      .safeParse(state["collectionRetry"]);
+    if (prior.success) {
+      if (
+        prior.data.requestId !== parsed.requestId ||
+        prior.data.requestHash !== requestHash
+      )
+        throw new ConflictError(
+          "This collection already has a different reviewed retry.",
+        );
+      return { jobId: parsed.jobId, repeated: true };
+    }
+    if (
+      job?.provider !== "automation" ||
+      job.status !== "complete" ||
+      job.updatedAt.toISOString() !== parsed.expectedUpdatedAt ||
+      state.stage !== "complete" ||
+      state["heldReason"] !== missingProductReason ||
+      state.lease !== null ||
+      [
+        "companyEvidence",
+        "qualification",
+        "queryReservedAt",
+        "query",
+        "shoppingJob",
+        "answer",
+        "browser",
+        "assessment",
+        "shoppingReceipt",
+        "failureReceipt",
+        "originalCollection",
+      ].some((key) => state[key] !== undefined && state[key] !== null)
+    )
+      throw new ConflictError(
+        "Only an unchanged product-parser hold without shopping work can be retried.",
+      );
+    const collection = z
+      .object({
+        status: z.literal("hold"),
+        reason: z.literal(missingProductReason),
+        retryable: z.literal(false),
+        receipts: z.array(Qualification.sourceReceiptSchema).min(1).max(6),
+      })
+      .parse(state["collection"]);
+    const context = await eligible(transaction, claim, state);
+    if (
+      !collection.receipts.some(
+        (receipt) =>
+          receipt.kind === "product" &&
+          normalizeDomain(receipt.url) === context.company.domain &&
+          receipt.excerpt.trim().length >= 12 &&
+          /\/(?:products?|p|item|shop)\/[^/]+/i.test(
+            new URL(receipt.url).pathname,
+          ),
+      )
+    )
+      throw new ValidationError(
+        "The held collection has no original own-site product page to review.",
+      );
+    const now = new Date();
+    const updated = preparationStateSchema.parse({
+      ...state,
+      originalCollection: state["collection"],
+      collection: undefined,
+      collectionRetry: {
+        requestId: parsed.requestId,
+        requestHash,
+        previousUpdatedAt: parsed.expectedUpdatedAt,
+        reviewedBy: actor,
+        reviewedAt: now.toISOString(),
+        reason: parsed.reason,
+      },
+      stage: "collect",
+      lease: null,
+      heldReason: null,
+      availableAt: now.toISOString(),
+    });
+    value(
+      await Jobs.update(
+        Environment.SERVER,
+        job.id,
+        { status: "pending", output: updated, error: null, updatedAt: now },
+        { tx: transaction },
+      ),
+    );
+    value(
+      await repository(schema.outboundEvent).create(
+        Environment.SERVER,
+        {
+          prospectId: claim.prospectId,
+          actor,
+          kind: "savedCollectionRetryReviewed",
+          detail: parsed.reason,
+          externalId: `saved-collection-retry:${parsed.requestId}`,
+        },
+        { tx: transaction },
+      ),
+    );
+    return { jobId: job.id, repeated: false };
+  });
+
+export const browserRecoverySnapshot = (
+  job: Pick<Job, "status" | "input" | "output" | "error">,
+) =>
+  researchHash({
+    status: job.status,
+    input: job.input,
+    output: job.output,
+    error: job.error,
+  });
+
+export const resumeBrowserRateLimitSchema = z
+  .object({
+    jobId: z.string().uuid(),
+    requestId: z.string().uuid(),
+    expectedUpdatedAt: z.string().datetime(),
+    expectedJobHash: z.string().regex(/^[a-f0-9]{64}$/),
+    expectedBatchUpdatedAt: z.string().datetime(),
+    expectedBatchHash: z.string().regex(/^[a-f0-9]{64}$/),
+    reason: z.string().trim().min(20).max(2000),
+  })
+  .strict();
+
+/** Recover one saved session-create rejection; neither the answer nor query budget is reset. */
+export const resumeBrowserRateLimit = (
+  actor: string,
+  input: z.infer<typeof resumeBrowserRateLimitSchema>,
+) =>
+  transaction(async (transaction) => {
+    const parsed = resumeBrowserRateLimitSchema.parse(input);
+    const job = value(
+      await Jobs.get(Environment.SERVER, parsed.jobId, { tx: transaction }),
+    );
+    const claim = preparationInputSchema.parse(job?.input);
+    const state = preparationStateSchema.parse(job?.output);
+    const requestHash = researchHash({ ...parsed, actor });
+    const prior = z
+      .object({ requestId: z.string().uuid(), requestHash: z.string() })
+      .safeParse(state["browserRateLimitRecovery"]);
+    if (prior.success) {
+      if (
+        prior.data.requestId !== parsed.requestId ||
+        prior.data.requestHash !== requestHash
+      )
+        throw new ConflictError(
+          "This browser failure already has a different reviewed recovery.",
+        );
+      return { jobId: parsed.jobId, batchId: claim.batchId, repeated: true };
+    }
+    const batch = value(
+      await Jobs.get(Environment.SERVER, claim.batchId, { tx: transaction }),
+    );
+    const settings = batchSchema.parse(batch?.input);
+    const budget = budgetSchema.parse(batch?.output);
+    const now = new Date();
+    const cooldown = sessionCreationRateLimit(
+      state["failureReceipt"],
+      null,
+      state.browserRetries,
+      now.getTime(),
+    );
+    if (
+      job?.provider !== "automation" ||
+      job.status !== "failed" ||
+      job.updatedAt.toISOString() !== parsed.expectedUpdatedAt ||
+      browserRecoverySnapshot(job) !== parsed.expectedJobHash ||
+      !batch ||
+      batch.provider !== "automation" ||
+      batch.updatedAt.toISOString() !== parsed.expectedBatchUpdatedAt ||
+      browserRecoverySnapshot(batch) !== parsed.expectedBatchHash ||
+      settings.campaignId !== claim.campaignId ||
+      !budget.paused ||
+      budget.failureProvider !== "firecrawl" ||
+      budget.failureCode !== "rate-limit" ||
+      budget.queriesReserved < 1 ||
+      budget.queriesReserved > settings.maxQueries ||
+      state.lease !== null ||
+      state["failureProvider"] !== "firecrawl" ||
+      state["failureCode"] !== "rate-limit" ||
+      state.browserRetries >= browserRetryLimit ||
+      !hasSavedBrowserAnswer(state) ||
+      !cooldown
+    )
+      throw new ConflictError(
+        "Only an unchanged rejected Firecrawl session creation with its saved shopping answer can resume.",
+      );
+    const otherFailure = value(
+      await Jobs.find(
+        Environment.SERVER,
+        {
+          where: and(
+            scope,
+            ne(schema.outboundIntegrationJob.id, job.id),
+            eq(schema.outboundIntegrationJob.status, "failed"),
+            sql`${schema.outboundIntegrationJob.input}->>'batchId' = ${claim.batchId}`,
+            sql`${schema.outboundIntegrationJob.output}->>'failureCode' in ('quota', 'access', 'rate-limit', 'configuration')`,
+          ),
+          limit: 1,
+        },
+        { tx: transaction },
+      ),
+    )[0];
+    if (otherFailure)
+      throw new ConflictError(
+        "Another provider failure still pauses this batch; reconcile it before recovery.",
+      );
+    await eligible(transaction, claim, state);
+    value(
+      await Jobs.update(
+        Environment.SERVER,
+        job.id,
+        {
+          status: "pending",
+          error: null,
+          output: preparationStateSchema.parse({
+            ...state,
+            availableAt: cooldown.retryAt,
+            browserRetries: state.browserRetries + 1,
+            browserRateLimits: [...state.browserRateLimits, cooldown],
+            browserRateLimitRecovery: {
+              requestId: parsed.requestId,
+              requestHash,
+              previousJobHash: parsed.expectedJobHash,
+              previousBatchHash: parsed.expectedBatchHash,
+              reviewedBy: actor,
+              reviewedAt: now.toISOString(),
+              reason: parsed.reason,
+            },
+          }),
+          updatedAt: now,
+        },
+        { tx: transaction },
+      ),
+    );
+    value(
+      await Jobs.update(
+        Environment.SERVER,
+        batch.id,
+        {
+          error: null,
+          output: {
+            ...budget,
+            paused: false,
+            failureProvider: undefined,
+            failureCode: undefined,
+            browserAvailableAt: new Date(
+              Math.max(
+                Date.parse(budget.browserAvailableAt ?? "1970-01-01"),
+                Date.parse(cooldown.retryAt),
+              ),
+            ).toISOString(),
+          },
+          updatedAt: now,
+        },
+        { tx: transaction },
+      ),
+    );
+    value(
+      await repository(schema.outboundEvent).create(
+        Environment.SERVER,
+        {
+          prospectId: claim.prospectId,
+          actor,
+          kind: "savedBrowserRateLimitRecovered",
+          detail: parsed.reason,
+          externalId: `saved-browser-recovery:${parsed.requestId}`,
+        },
+        { tx: transaction },
+      ),
+    );
+    return {
+      jobId: job.id,
+      batchId: batch.id,
+      repeated: false,
+      availableAt: cooldown.retryAt,
+      queriesReserved: budget.queriesReserved,
+    };
+  });

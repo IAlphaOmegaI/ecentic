@@ -262,6 +262,66 @@ describe("bounded provider requests", () => {
       expect(result.error.message).not.toContain("sensitive");
     }
   });
+  test("Apollo credit exhaustion is actionable quota failure for search and enrichment", async () => {
+    const calls: string[] = [];
+    fetched(async (input) => {
+      calls.push(String(input));
+      return json(
+        {
+          error:
+            "You have insufficient credits! <a href='https://app.apollo.io/#/settings/plans/upgrade?source=api_credit_limit'>Upgrade your plan</a> to increase your number of lead credits.",
+          secret: "provider-debug-must-not-be-saved",
+        },
+        422,
+      );
+    });
+    for (const [path, method] of [
+      ["mixed_companies/search", "POST"],
+      ["organizations/enrich?domain=example.com", "GET"],
+    ]) {
+      const response = await request(
+        "apollo",
+        `https://api.apollo.io/api/v1/${path}`,
+        { method },
+        z.object({}),
+      );
+      expect(response).toMatchObject({
+        success: false,
+        error: {
+          code: "quota",
+          statusCode: 422,
+          providerCode: "insufficient_credits",
+          message:
+            "Apollo has insufficient credits. Add credits or wait for the account's credit reset.",
+          receipt: {
+            version: 1,
+            provider: "apollo",
+            statusCode: 422,
+            code: "quota",
+            providerCode: "insufficient_credits",
+            retryAfterSeconds: null,
+          },
+        },
+      });
+      expect(JSON.stringify(response)).not.toContain("<a");
+      expect(JSON.stringify(response)).not.toContain("provider-debug");
+    }
+    expect(calls).toHaveLength(2);
+  });
+  test("unrelated Apollo validation failures remain input errors", async () => {
+    fetched(async () => json({ error: "Invalid page number" }, 422));
+    expect(
+      await request(
+        "apollo",
+        "https://api.apollo.io/api/v1/mixed_companies/search",
+        { method: "POST" },
+        z.object({}),
+      ),
+    ).toMatchObject({
+      success: false,
+      error: { code: "input", statusCode: 422, providerCode: null },
+    });
+  });
   test("interrupted POST is uncertain and is never retried", async () => {
     const calls: unknown[] = [];
     fetched(async (...args) => {

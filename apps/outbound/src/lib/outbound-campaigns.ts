@@ -104,7 +104,7 @@ export type CampaignCompany = {
   platform: "shopify" | "woocommerce" | null;
   teamSize: number | null;
   annualRevenue: number | null;
-  source: DiscoveryProvider;
+  source: DiscoveryProvider | "saved";
   sourceId: string | null;
   status: "candidate" | "added" | "excluded";
   reason: string;

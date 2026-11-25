@@ -48,4 +48,27 @@ describe("email volume ramp", () => {
       ).dailyCap,
     ).toBe(50);
   });
+  test("an explicit ramp opt-out uses the configured cap and keeps the hard ceiling", () => {
+    expect(sendingCapacity(50, [], now, { rampEnabled: false })).toEqual({
+      target: 50,
+      dailyCap: 50,
+      rampHeld: false,
+    });
+    expect(sendingCapacity(8, [], now, { rampEnabled: false }).dailyCap).toBe(
+      8,
+    );
+    expect(sendingCapacity(500, [], now, { rampEnabled: false }).dailyCap).toBe(
+      50,
+    );
+  });
+  test("disabling the ramp does not override observed bounce protection", () => {
+    expect(
+      sendingCapacity(
+        50,
+        [{ day: "2026-11-14", accepted: 50, bounced: 1 }],
+        now,
+        { rampEnabled: false },
+      ),
+    ).toEqual({ target: 50, dailyCap: 15, rampHeld: true });
+  });
 });

@@ -8,7 +8,11 @@ import {
   prospectSchema,
   renderMessages,
 } from "@/lib/outbound";
-import type { ShoppingResearch } from "@/lib/outbound-shopping-research";
+import {
+  type ShoppingResearch,
+  shoppingFinding,
+} from "@/lib/outbound-shopping-research";
+import { applyDraftEdits } from "@/lib/outbound-writing";
 import type {
   AiCapture,
   BrowserResearch,
@@ -267,6 +271,8 @@ const selectionFixture = () => {
           marketAnchor: null,
         },
       },
+      answerQuoteId: catalog.quotes.find((quote) => quote.sourceId === "answer")!.id,
+      productQuoteId: catalog.quotes.find((quote) => quote.sourceId === "product")!.id,
       quoteIds: catalog.quotes
         .filter((quote) => ["answer", "product"].includes(quote.sourceId))
         .map((quote) => quote.id),
@@ -277,6 +283,39 @@ const selectionFixture = () => {
 };
 
 describe("assessment selects exact captured excerpts", () => {
+  test("the generation schema requires an actual answer and own-product excerpt for neutral observations", () => {
+    const { catalog, output } = selectionFixture();
+    const schema = assessmentWireSchema(catalog, { allowProductObservations: true });
+    const neutral = {
+      ...output,
+      selected: {
+        ...output.selected,
+        kind: "product-observation",
+        observation: "I was looking at linen totes and opened your product page.",
+        consequence: "The page lists large and small options.",
+        priceComparison: null,
+        quoteIds: [],
+      },
+    };
+    expect(schema.safeParse(neutral).success).toBe(true);
+    for (const selected of [
+      { ...neutral.selected, answerQuoteId: undefined },
+      { ...neutral.selected, productQuoteId: undefined },
+      { ...neutral.selected, answerQuoteId: neutral.selected.productQuoteId },
+      { ...neutral.selected, productQuoteId: neutral.selected.answerQuoteId },
+      { ...neutral.selected, productQuoteId: catalog.quotes.find((quote) => quote.sourceId === "ucp")!.id },
+    ]) expect(schema.safeParse({ ...neutral, selected }).success).toBe(false);
+    const projected = projectAssessment(catalog, neutral, 45, { allowProductObservations: true });
+    expect(projected.decision).toBe("supported");
+    expect(projected.selected?.sourceIds).toEqual(["answer", "product"]);
+    expect(projected.selected?.quotes).toEqual([
+      neutral.selected.answerQuoteId, neutral.selected.productQuoteId,
+    ].map((id) => {
+      const quote = catalog.quotes.find((quote) => quote.id === id)!;
+      return { sourceId: quote.sourceId, quote: quote.quote };
+    }));
+  });
+
   test("projects quote IDs into unchanged source text and server-owned scope", () => {
     const { evidence, catalog, output } = selectionFixture();
     const projected = projectAssessment(catalog, output);
@@ -323,12 +362,12 @@ describe("assessment selects exact captured excerpts", () => {
     },
   );
 
-  test("empty and duplicate selections produce a hold", () => {
+  test("missing required source selections and duplicate extras produce a hold", () => {
     const { catalog, output } = selectionFixture();
     expect(
       projectAssessment(catalog, {
         ...output,
-        selected: { ...output.selected, quoteIds: [] },
+        selected: { ...output.selected, answerQuoteId: undefined, quoteIds: [] },
       }),
     ).toMatchObject({ decision: "hold" });
     expect(
@@ -344,6 +383,7 @@ describe("assessment selects exact captured excerpts", () => {
 
   test("an answer plus unrelated source cannot substitute for a merchant excerpt", () => {
     const { evidence, catalog, output } = selectionFixture();
+    output.selected.productQuoteId = catalog.quotes.find((quote) => quote.sourceId === "ucp")!.id;
     output.selected.quoteIds = catalog.quotes
       .filter((quote) => ["answer", "ucp"].includes(quote.sourceId))
       .map((quote) => quote.id);
@@ -522,6 +562,8 @@ const priceScenario = (
         ...output.selected,
         observation: `I checked the ${answerOffer.variant} option. The answer showed ${answerOffer.price}, while your page showed ${pageOffer.price}.`,
         consequence: "Those are different prices for that option.",
+        answerQuoteId: answerId,
+        productQuoteId: pageId,
         quoteIds: [answerId, pageId],
         priceComparison: {
           answer: { ...answerOffer, quoteId: answerId },
@@ -951,3 +993,146 @@ test("assessment copy recovery keeps exact evidence and bounded Azure requests",
   expect(status).toBe(0);
   expect(output).toContain("Shopping assessment copy contracts passed");
 }, 30000);
+
+describe("opted-in truthful product observations", () => {
+  const observation = () => {
+    const { evidence, catalog, output } = selectionFixture();
+    return {
+      evidence,
+      catalog,
+      output: {
+        ...output,
+        reason: "The actual product offers a small and a large size.",
+        selected: {
+          ...output.selected,
+          kind: "product-observation",
+          observation:
+            "I was looking at your Linen tote and noticed the page offers a separate small option alongside the large one.",
+          consequence: "That is a useful detail when choosing a bag size.",
+          askAbout: "the Linen tote sizes",
+          priceComparison: null,
+        },
+      },
+    };
+  };
+  test("requires explicit permission and keeps actual capture dates and quotes", () => {
+    const { evidence, catalog, output } = observation();
+    expect(projectAssessment(catalog, output).decision).toBe("hold");
+    const selection = projectAssessment(catalog, output, 50, {
+      allowProductObservations: true,
+    });
+    expect(selection.decision).toBe("supported");
+    const assembled = assembleResearch(evidence, selection, 7, {
+      allowProductObservations: true,
+    });
+    if (!assembled.success || assembled.data.status !== "researched")
+      throw new Error("Expected researched observation");
+    expect(assembled.data.receipt.sources).toEqual([
+      evidence.answer.source,
+      ...evidence.browser.sources,
+    ]);
+    expect(assembled.data.receipt.selected.kind).toBe("product-observation");
+    expect(validateAutomaticResearch(evidence, assembled.data.receipt, 7)).toBe(
+      "Product observations are not enabled in the Playbook.",
+    );
+    expect(
+      validateAutomaticResearch(evidence, assembled.data.receipt, 7, {
+        allowProductObservations: true,
+      }),
+    ).toBeNull();
+  });
+  test("does not disguise an alleged problem or business impact as a neutral observation", () => {
+    const { evidence, catalog, output } = observation();
+    const selected = projectAssessment(
+      catalog,
+      {
+        ...output,
+        selected: {
+          ...output.selected,
+          consequence: "The wrong information is losing sales.",
+        },
+      },
+      50,
+      { allowProductObservations: true },
+    );
+    const assembled = assembleResearch(evidence, selected, 7, {
+      allowProductObservations: true,
+    });
+    expect(assembled.success && assembled.data.status).toBe("held");
+  });
+  test("a supported neutral finding survives the real template and draft lint without an invented issue", () => {
+    const { evidence, catalog, output } = observation();
+    const settings = {
+      ...defaultPlaybook,
+      allowProductObservations: true,
+      subjectTemplate: "Linen tote sizes",
+      bodyTemplate:
+        "Hi {first}!\n\n{finding}\n\n{consequence}\n\n{founderLine}\n\n{callToAction}\n\n{optout}\n\n{signature}",
+    };
+    const selected = projectAssessment(catalog, output, 50, settings);
+    const assembled = assembleResearch(evidence, selected, 7, settings);
+    if (!assembled.success || assembled.data.status !== "researched")
+      throw new Error("Expected researched observation");
+    const prospect = prospectSchema.parse({
+      company: "Sample Goods",
+      domain: "samplegoods.com",
+      country: "US",
+      first: "Alex",
+      name: "Alex Example",
+      product: evidence.answer.job.query.product.name,
+      productUrl: evidence.answer.job.query.product.url,
+      gap: "shopping-research",
+      finding: assembled.data.receipt.selected.observation,
+      shoppingResearchId: randomUUID(),
+      shoppingFinding: shoppingFinding(assembled.data.receipt),
+    });
+    const original = renderMessages(prospect, settings);
+    expect(lintMessages(original, settings, prospect)).toEqual([]);
+    const drafted = applyDraftEdits(prospect, settings, {
+      subject: "Linen tote options",
+      opening: "",
+    });
+    expect(drafted.issues).toEqual([]);
+    expect(drafted.messages[0]?.body).toBe(original[0]?.body);
+    expect(drafted.messages[0]?.body).toContain(output.selected.observation);
+    expect(drafted.messages[0]?.body).toContain(output.selected.consequence);
+    expect(drafted.messages[0]?.body).not.toMatch(
+      /missing|mismatch|incorrect|broken|lost sales|fix gaps/i,
+    );
+  });
+  test("keeps price-claim and source-integrity rules when no discrepancy is required", () => {
+    const { evidence, catalog, output } = observation();
+    expect(
+      projectAssessment(
+        catalog,
+        {
+          ...output,
+          selected: {
+            ...output.selected,
+            observation: "Your tote costs USD 99.",
+          },
+        },
+        50,
+        { allowProductObservations: true },
+      ).decision,
+    ).toBe("hold");
+    const selected = projectAssessment(catalog, output, 50, {
+      allowProductObservations: true,
+    });
+    const assembled = assembleResearch(evidence, selected, 7, {
+      allowProductObservations: true,
+    });
+    if (!assembled.success || assembled.data.status !== "researched")
+      throw new Error("Expected researched observation");
+    const altered = structuredClone(assembled.data.receipt);
+    altered.selected.quotes[0] = {
+      sourceId: "answer",
+      quote: "An invented recommendation.",
+    };
+    expect(
+      validateAutomaticResearch(evidence, altered, 7, {
+        allowProductObservations: true,
+      }),
+    ).not.toBeNull();
+  });
+});

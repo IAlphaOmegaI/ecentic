@@ -73,6 +73,53 @@ const fetched = (
 };
 
 describe("company discovery provider contracts", () => {
+  test("saved company receipts avoid repeat enrichment without inventing missing facts or dates", () => {
+    const sourcePayload = {
+      ...apolloCompany,
+      _outboundSource: "apollo-organization-enrichment",
+      _outboundObservedAt: "2026-10-01T10:00:00.000Z",
+    };
+    const company = {
+      domain: "example-brand.co.uk",
+      source: "apollo" as const,
+      sourceId: apolloCompany.id,
+      sourcePayload,
+    };
+    expect(Discovery.savedApolloCompany(company, criteria)).toMatchObject({
+      country: "GB",
+      teamSize: 23,
+      annualRevenue: 2_000_000,
+      sourcePayload,
+    });
+    expect(Discovery.savedApolloCompany(company, criteria)?.sourcePayload).toBe(
+      sourcePayload,
+    );
+    for (const changed of [
+      { ...company, domain: "another-company.com" },
+      { ...company, sourceId: "different-provider-record" },
+      { ...company, source: "clay" as const },
+      { ...company, sourcePayload: { ...sourcePayload, country: null } },
+      {
+        ...company,
+        sourcePayload: { ...sourcePayload, estimated_num_employees: null },
+      },
+      { ...company, sourcePayload: { ...sourcePayload, annual_revenue: null } },
+    ])
+      expect(Discovery.savedApolloCompany(changed, criteria)).toBeNull();
+    expect(
+      Discovery.savedApolloCompany(
+        {
+          ...company,
+          sourcePayload: {
+            ...sourcePayload,
+            estimated_num_employees: null,
+            annual_revenue: null,
+          },
+        },
+        { countries: ["GB"], platforms: ["woocommerce"] },
+      ),
+    ).toMatchObject({ country: "GB", teamSize: null, annualRevenue: null });
+  });
   test("Apollo matches the official CLI JSON body and preserves filter acknowledgements", async () => {
     const calls: { url: URL; options?: RequestInit }[] = [];
     fetched(async (input, options) => {

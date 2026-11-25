@@ -528,7 +528,12 @@
         "linkedinDailyMessages": "每日消息上限",
         "meetingBookingUrl": "会议预约链接",
         "researchInstructions": "调研说明",
-        "requireShoppingEvidence": "起草前必须具备购物体验证据"
+        "requireShoppingEvidence": "起草前必须具备购物体验证据",
+        "allowStaleEvidence": "允许使用较早保存的研究",
+        "sendingRampEnabled": "逐步增加发送量",
+        "trustSavedContactVerification": "使用已保存的联系人验证",
+        "automaticApolloEnabled": "允许自动使用Apollo付费请求",
+        "allowProductObservations": "允许真实的产品观察"
       },
       "templateHelp": "插入下方列出的支持变量。变量将根据潜在客户已保存的信息填写。",
       "variablesTitle": "可用变量",
@@ -558,7 +563,7 @@
       "noProductTitle": "未找到商品数据",
       "inactiveSenderHelp": "尚未连接的其他发件人别名可保存在此处。连接后可同步历史记录，但移入启用列表前不能发送。",
       "emailVerificationHelp": "服务商实际验证记录的最长有效期。重新获取旧记录不会更新验证日期。",
-      "productVerificationHelp": "审核和发送时，指定商品的依据自核查以来最多可经过的天数。",
+      "productVerificationHelp": "不允许使用较早研究时，产品证据的最长有效期。",
       "excludedCompaniesHelp": "每行输入一个准确的公司名称或已知别名。匹配公司名称，不匹配网站正文。",
       "targetingNotesHelp": "供团队参考的优先级和审核指引。这些备注不会增加自动资格检查。",
       "replyClaimNotesHelp": "供回复和 LinkedIn 使用的参考措辞。这些备注不代表允许在首封邮件中使用相关说法。",
@@ -589,7 +594,12 @@
       "requireShoppingEvidenceHelp": "在记录有证据支持的购物体验发现之前，暂停起草和批准。单独的成分信息不能证明购物存在障碍。",
       "legacyFindingsTitle": "旧版调研发现模板",
       "legacyFindingsHelp": "用于以往商品检查和数据缺失检查的已保存模板。启用购物体验证据要求后，新草稿将改用已记录的购物体验发现。这些字段仍保留供旧版流程使用。",
-      "allowIncompleteHistoryHelp": "可以跳过导入以往的营销活动。部分联系人可能会再次收到邮件；已记录的退订、退信和排除规则仍然有效。"
+      "allowIncompleteHistoryHelp": "可以跳过导入以往的营销活动。部分联系人可能会再次收到邮件；已记录的退订、退信和排除规则仍然有效。",
+      "allowStaleEvidenceHelp": "允许使用超过有效期的真实研究记录。原始观察日期保持可见；缺少证据、已回复或退订仍会阻止发送。",
+      "sendingRampHelp": "从每天15封开始，在完成发送日后逐步增加。关闭后直接使用已设置的每日上限；退信保护仍然有效。",
+      "trustSavedContactVerificationHelp": "接受导入来源标记为已验证的联系人，但不声称重新验证了联系人或职位。保留原始日期，包括未知日期。",
+      "automaticApolloHelp": "使用Apollo查找新公司、补充信息和验证邮箱。关闭后，仅使用已保存记录，不再发起新的Apollo付费请求。",
+      "allowProductObservationsHelp": "即使未发现问题，也可用有依据的具体产品或购物观察开启对话。不编造差异或销售影响。"
     },
     "integrations": {
       "title": "连接合适的工具",
@@ -859,7 +869,7 @@
           "inactive": "此邮箱在联系指南中已停用，但可以同步回复。启用发送前，请先将其移至“发件邮箱”。"
         },
         "maximumDailyCap": "每个邮箱的每日目标上限",
-        "dailyCapHelp": "目标上限为50封，包含首封邮件和跟进邮件。 邮箱从每天15封开始。只有在完整的一天中达到当前上限，且未观察到退信时，上限才会增加5封。观察到退信后，上限会恢复为15封。目标并不保证实际发送量或邮箱信誉。"
+        "dailyCapHelp": "每个邮箱每天最多发送50封首次邮件和跟进邮件。Playbook控制逐步增加发送量；出现退信会降低发送容量。"
       },
       "liveResearch": {
         "title": "实时购物调研",
@@ -1226,7 +1236,8 @@
         "provider-clay-plan-required": "这些企业筛选条件需要 Clay 付费套餐。请升级后再运行此搜索。",
         "campaign-generation-invalid": "此Claude预览已不可用。请先生成新的预览，再保存。",
         "campaign-playbook-changed": "此预览生成后，运营手册已更改。请先生成新的预览，再保存。",
-        "campaign-archived": "此活动已归档。请先更改状态，再生成条件。"
+        "campaign-archived": "此活动已归档。请先更改状态，再生成条件。",
+        "apollo-paused": "Playbook已暂停自动Apollo请求。已保存的工作仍可继续。"
       },
       "objectiveHelp": "描述目标受众。供应商搜索使用下方的结构化筛选条件。",
       "qualificationHelp": "供工作人员审核的清单。供应商搜索不会自动验证这些要求。",
@@ -1245,7 +1256,8 @@
       "forms": {
         "changed": "此广告系列已更改。你的输入已保留。请先加载已保存的值再继续。",
         "loadSaved": "放弃更改并加载已保存的值"
-      }
+      },
+      "savedSource": "已保存联系人"
     },
     "warmup": {
       "title": "邮箱预热",
@@ -1560,7 +1572,8 @@
         "provider-uncertain": "此请求可能已处理。请先确认结果再重试。",
         "research-not-configured": "请在“集成”中连接购物调研服务。",
         "shopping-research-held": "购物调研未获得有充分证据支持的发现。",
-        "shopping-research-expired": "购物证据已过期，请重新获取。"
+        "shopping-research-expired": "购物证据已过期，请重新获取。",
+        "apollo-paused": "Playbook已暂停自动Apollo请求。已保存的工作仍可继续。"
       },
       "deliveryBlockers": {
         "sendingPaused": "运营手册中的发送已暂停。",

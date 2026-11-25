@@ -17,6 +17,15 @@ import { db, schema } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
 import { ConflictError, ValidationError } from "@/server/utils/error";
 import {
+  aiCaptureSchema,
+  browserResearchSchema,
+} from "@/server/utils/outbound/live-shopping";
+import {
+  preparationInputSchema,
+  preparationStateSchema,
+} from "@/server/utils/outbound/saved-preparation-contract";
+import * as Assessment from "@/server/utils/outbound/shopping-assessment";
+import {
   researchHash,
   researchJobInputSchema,
   researchPolicyHash,
@@ -47,7 +56,7 @@ export const saveResearchSchema = z
 const save = (
   actor: string,
   input: z.infer<typeof saveResearchSchema>,
-  automatic?: { jobId: string; leaseToken: string },
+  automatic?: { jobId: string; leaseToken: string; kind?: "saved" },
 ) =>
   resultify(async () => {
     const parsed = saveResearchSchema.parse(input);
@@ -152,7 +161,58 @@ const save = (
         : null;
       if (prospect.campaignId && (!campaign || campaign.status === "archived"))
         throw new ConflictError("The campaign is unavailable for research.");
-      if (automatic) {
+      if (automatic?.kind === "saved") {
+        const job = value(
+          await Jobs.get(Environment.SERVER, automatic.jobId, {
+            tx: transaction,
+          }),
+        );
+        const claim = preparationInputSchema.safeParse(job?.input);
+        const state = preparationStateSchema.safeParse(job?.output);
+        if (
+          !claim.success ||
+          !state.success ||
+          job?.status !== "starting" ||
+          job.provider !== "automation" ||
+          job.prospectId !== prospect.id ||
+          state.data.stage !== "applyResearch" ||
+          state.data.lease?.token !== automatic.leaseToken ||
+          Date.parse(state.data.lease.expiresAt) <= Date.now() ||
+          state.data.prospectRevision !== prospect.revision ||
+          parsed.requestId !== job.id ||
+          researchHash(state.data.shoppingReceipt) !== receiptHash ||
+          claim.data.playbookRevision !== policy.revision ||
+          claim.data.campaignId !== campaign?.id ||
+          claim.data.campaignRevision !== campaign?.revision ||
+          campaign?.status !== "active" ||
+          !policy.settings.automationEnabled ||
+          !policy.settings.trustSavedContactVerification ||
+          !["candidate", "draft"].includes(prospect.status) ||
+          !["", "playbookChanged"].includes(prospect.holdReason)
+        )
+          throw new ConflictError(
+            "The saved contact research claim changed or was held.",
+          );
+        const browser = browserResearchSchema.parse(state.data.browser);
+        if (browser.status !== "captured")
+          throw new ValidationError("The browser capture is incomplete.");
+        const evidence = {
+          answer: aiCaptureSchema.parse(state.data.answer),
+          browser,
+        };
+        const problem = Assessment.validateAutomaticResearch(
+          evidence,
+          parsed.receipt,
+          policy.settings.verificationDays,
+          policy.settings,
+        );
+        if (problem) throw new ValidationError(problem);
+        const context = value(
+          await Store.getEnrichmentContext(prospect.id, transaction),
+        );
+        if (context.suppressed)
+          throw new ConflictError("This contact or company is suppressed.");
+      } else if (automatic) {
         const job = value(
           await Jobs.get(Environment.SERVER, automatic.jobId, {
             tx: transaction,
@@ -199,6 +259,8 @@ const save = (
       const problem = validateShoppingResearch(
         parsed.receipt,
         policy.settings.verificationDays,
+        Date.now(),
+        policy.settings,
       );
       if (problem) throw new ValidationError(problem);
       await Store.assertAutomaticContactEvidence(transaction, prospect);
@@ -219,6 +281,32 @@ const save = (
         automationRefreshId: "",
       });
       const saved = await Store.saveProspectWithin(transaction, actor, details);
+      if (automatic?.kind === "saved") {
+        const job = value(
+          await Jobs.get(Environment.SERVER, automatic.jobId, {
+            tx: transaction,
+          }),
+        );
+        const state = preparationStateSchema.parse(job?.output);
+        value(
+          await Jobs.update(
+            Environment.SERVER,
+            automatic.jobId,
+            {
+              status: "pending",
+              output: {
+                ...state,
+                stage: "draft",
+                prospectRevision: saved.revision,
+                lease: null,
+                availableAt: new Date().toISOString(),
+              },
+              updatedAt: new Date(),
+            },
+            { tx: transaction },
+          ),
+        );
+      }
       value(
         await Jobs.create(
           Environment.SERVER,
@@ -290,3 +378,8 @@ export const saveAutomaticAndApply = (
   input: z.infer<typeof saveResearchSchema>,
   claim: { jobId: string; leaseToken: string },
 ) => save(actor, input, claim);
+export const savePreparedAndApply = (
+  actor: string,
+  input: z.infer<typeof saveResearchSchema>,
+  claim: { jobId: string; leaseToken: string },
+) => save(actor, input, { ...claim, kind: "saved" });
