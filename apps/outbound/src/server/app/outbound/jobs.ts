@@ -1,7 +1,7 @@
 import "server-only";
 import { resultify } from "@zenncore/utils";
 import { and, desc, eq, inArray, sql } from "drizzle-orm";
-import { db, schema } from "@/server/database";
+import { db, schema, type TransactionScope } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
 import { ConflictError, NotFoundError } from "@/server/utils/error";
 import { repository, resultifyRead } from "@/server/utils/repository";
@@ -124,22 +124,29 @@ export const update = (
   input: Partial<Pick<Job, "requestId" | "status" | "output" | "error">>,
 ) => Jobs.update(Environment.SERVER, id, { ...input, updatedAt: new Date() });
 
-export const hasPendingWarmup = (email: string) =>
+export const hasPendingWarmup = (
+  email: string,
+  transaction?: TransactionScope,
+) =>
   resultify(
     async () =>
       value(
-        await Jobs.find(Environment.SERVER, {
-          where: and(
-            eq(schema.outboundIntegrationJob.provider, "warmbly"),
-            inArray(schema.outboundIntegrationJob.status, [
-              "starting",
-              "pending",
-              "uncertain",
-            ]),
-            sql`${schema.outboundIntegrationJob.input}->>'email' = ${email.trim().toLowerCase()}`,
-          ),
-          limit: 1,
-        }),
+        await Jobs.find(
+          Environment.SERVER,
+          {
+            where: and(
+              eq(schema.outboundIntegrationJob.provider, "warmbly"),
+              inArray(schema.outboundIntegrationJob.status, [
+                "starting",
+                "pending",
+                "uncertain",
+              ]),
+              sql`${schema.outboundIntegrationJob.input}->>'email' = ${email.trim().toLowerCase()}`,
+            ),
+            limit: 1,
+          },
+          { tx: transaction },
+        ),
       ).length > 0,
   );
 

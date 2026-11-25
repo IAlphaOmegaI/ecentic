@@ -82,6 +82,13 @@ The delivery worker can also inspect pending Warmbly journal entries before
 dispatch. Repeated Start cannot reset a running ramp, and a repeated Pause or
 Stop in the already-requested state sends no further lifecycle request.
 
+Campaign claims and dispatches inspect the remote Warmbly state before taking
+the workspace lock. Inside the transaction they recheck pending actions and the
+credential version on that same database connection. A configured connection's
+network check expires after 30 seconds; an unconfigured connection still requires
+matching credentials and no new local warmup action. Slow remote pagination cannot
+hold the workspace lock or require a second database connection from its holder.
+
 ## Reviewed source and licensing
 
 Reviewed [Warmbly](https://github.com/warmbly/warmbly) commit

@@ -12,7 +12,7 @@ requireTestDatabase(endpoint);
 Object.assign(process.env, { DATABASE_URL: endpoint });
 mock.module("server-only", () => ({}));
 mock.module("@/server/app/outbound/provider-credentials", () => ({
-  metadata: async () => ({ success: true, data: { configured: false } }),
+  metadata: async () => ({ success: true, data: { configured: false, version: "fixture-missing" } }),
 }));
 const { db, schema } = await import("@/server/database");
 await db.execute(sql`set client_min_messages to warning`);

@@ -30,6 +30,8 @@ export const smokeSuites = [
   "src/lib/spec/outbound-preparation.test.ts",
   "src/lib/spec/outbound-saved-contact.test.ts",
   "src/server/spec/outbound-store.test.ts",
+  "src/server/spec/outbound-worker-scheduling.test.ts",
+  "src/server/spec/outbound-warmup-guard.test.ts",
   "src/server/spec/outbound-pipeline.test.ts",
   "src/server/spec/outbound-prospects.test.ts",
   "src/server/spec/outbound-page-reads.test.ts",

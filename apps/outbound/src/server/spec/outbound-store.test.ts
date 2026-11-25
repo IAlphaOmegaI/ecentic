@@ -1375,6 +1375,236 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
       required(await store.readProspect(fixture.prospect))?.approvalHash,
     ).toBeNull();
   });
+  test("due selection filters sending windows before its limit and excludes future sequence dates", async () => {
+    const { db, schema } = active();
+    const Mailboxes = await import("@/server/app/outbound/transport-store");
+    const names = [
+      ...Array.from({ length: 105 }, (_, index) => `waiting-${index}`),
+      "ready-first",
+      "due-bump",
+      "future-bump",
+      "future-first",
+    ];
+    const companies = await db
+      .insert(schema.outboundCompany)
+      .values(
+        names.map((name) => ({
+          name,
+          domain: `${name}.com`,
+          website: `https://${name}.com`,
+          country: "US",
+          source: "fixture",
+        })),
+      )
+      .returning();
+    const people = await db
+      .insert(schema.outboundPerson)
+      .values(
+        companies.map((company) => ({
+          companyId: company.id,
+          identityKey: company.id,
+          name: "Jane Smith",
+          email: `jane@${company.domain}`,
+          title: "Head of Growth",
+        })),
+      )
+      .returning();
+    await db.insert(schema.outboundProspect).values(
+      companies.map((company) => {
+        const person = people.find((person) => person.companyId === company.id);
+        if (!person) throw new Error("Fixture person missing");
+        const waiting = company.name.startsWith("waiting");
+        const future = company.name.startsWith("future");
+        const followup = company.name.endsWith("bump");
+        return {
+          id: company.name,
+          companyId: company.id,
+          personId: person.id,
+          details: {
+            ...details(company.domain),
+            timezone: waiting ? "" : "America/New_York",
+          },
+          status: followup ? ("active" as const) : ("approved" as const),
+          sentStep: followup ? 1 : 0,
+          createdBy: actor,
+          nextSendAt: new Date(
+            now.getTime() +
+              (future ? 86_400_000 : waiting ? -120_000 : -60_000),
+          ),
+        };
+      }),
+    );
+    expect(
+      required(await Mailboxes.due({ allowUsMarketWindow: true }, now)).map(
+        (row) => row.id,
+      ),
+    ).toEqual(["due-bump", "ready-first"]);
+    const opened = required(
+      await Mailboxes.due(
+        { allowUsMarketWindow: true },
+        new Date("2026-11-09T18:00:00Z"),
+      ),
+    );
+    expect(opened).toHaveLength(100);
+    expect(opened[0]?.id).toBe("due-bump");
+    expect(opened.some((row) => row.id.startsWith("future"))).toBe(false);
+  });
+
+  test("warmup safety reads see pending actions and credential changes on their existing transaction", async () => {
+    const { db, schema } = active();
+    const Jobs = await import("@/server/app/outbound/jobs");
+    const Credentials = await import(
+      "@/server/app/outbound/provider-credentials"
+    );
+    await expect(
+      db.transaction(async (transaction) => {
+        await transaction.insert(schema.outboundIntegrationJob).values({
+          provider: "warmbly",
+          status: "pending",
+          input: { email: "sender@brand.com", operation: "start" },
+        });
+        await transaction.insert(schema.outboundProviderCredential).values({
+          provider: "warmbly",
+          apiKey: "fixture-warmbly-key",
+          configuration: {},
+          createdBy: actor,
+          updatedBy: actor,
+          validatedAt: now,
+          updatedAt: now,
+        });
+        expect(
+          required(
+            await Jobs.hasPendingWarmup("sender@brand.com", transaction),
+          ),
+        ).toBe(true);
+        const first = required(
+          await Credentials.metadata("warmbly", transaction, true),
+        );
+        expect(first.configured).toBe(true);
+        expect(first.version).toMatch(/^[a-f0-9]{64}$/);
+        await transaction
+          .update(schema.outboundProviderCredential)
+          .set({ updatedAt: new Date(now.getTime() + 1) })
+          .where(eq(schema.outboundProviderCredential.provider, "warmbly"));
+        const changed = required(
+          await Credentials.metadata("warmbly", transaction, true),
+        );
+        expect(changed.version).not.toBe(first.version);
+        throw new Error("Roll back the synthetic pending warmup action");
+      }),
+    ).rejects.toThrow("Roll back");
+  });
+
+  test("the fiftieth rolling-day send remains available when follow-ups are due tomorrow, while due bumps keep priority", async () => {
+    const { store, db, schema } = active();
+    const fixture = await approved();
+    required(
+      await store.savePlaybook(actor, {
+        ...settings,
+        sendingEnabled: true,
+        sendingRampEnabled: false,
+        dailyCap: 50,
+        minGapMinutes: 3,
+        maxGapMinutes: 4,
+      }),
+    );
+    await db
+      .update(schema.outboundInbox)
+      .set({ dailyCap: 50 })
+      .where(eq(schema.outboundInbox.id, fixture.inbox));
+    const [conversation] = await db
+      .insert(schema.outboundConversation)
+      .values({
+        prospectId: fixture.prospect,
+        channel: "email",
+        accountId: fixture.inbox,
+        accountLabel: senderFor(fixture.prospect, settings),
+        providerThreadId: "daily-capacity-fixture",
+        counterpart: details().email,
+      })
+      .returning();
+    if (!conversation) throw new Error("Fixture conversation missing");
+    const accepted = await db
+      .insert(schema.outboundConversationSend)
+      .values(
+        Array.from({ length: 50 }, (_, revision) => ({
+          conversationId: conversation.id,
+          revision,
+          status: "accepted" as const,
+          input: {
+            channel: "email",
+            accountId: fixture.inbox,
+            prospectId: fixture.prospect,
+          },
+          createdBy: actor,
+          createdAt: new Date(now.getTime() - 60_000),
+          completedAt: new Date(now.getTime() - 60_000),
+        })),
+      )
+      .returning();
+    const blocked = await store.claimDelivery(actor, fixture);
+    expect(blocked.success).toBe(false);
+    if (!blocked.success)
+      expect(blocked.error.message).toContain("rolling 24-hour cap");
+    const last = accepted.at(-1);
+    if (!last) throw new Error("Fixture send missing");
+    await db
+      .delete(schema.outboundConversationSend)
+      .where(eq(schema.outboundConversationSend.id, last.id));
+    const future = [];
+    for (let index = 0; index < 11; index++) {
+      const created = required(
+        await store.saveProspect(actor, details(`future-${index}.com`)),
+      );
+      future.push(created.prospect);
+      await db
+        .update(schema.outboundProspect)
+        .set({
+          status: "active",
+          sentStep: 1,
+          inboxId: fixture.inbox,
+          nextSendAt: new Date(now.getTime() + 23 * 3_600_000),
+        })
+        .where(eq(schema.outboundProspect.id, created.prospect));
+    }
+    const due = future[0];
+    if (!due) throw new Error("Fixture follow-up missing");
+    for (const nextSendAt of [now, new Date(now.getTime() - 3_600_000)]) {
+      await db
+        .update(schema.outboundProspect)
+        .set({ nextSendAt })
+        .where(eq(schema.outboundProspect.id, due));
+      const reserved = await store.claimDelivery(actor, fixture);
+      expect(reserved.success).toBe(false);
+      if (!reserved.success)
+        expect(reserved.error.message).toContain("reserved for due follow-ups");
+    }
+    await db
+      .update(schema.outboundProspect)
+      .set({ nextSendAt: new Date(now.getTime() + 23 * 3_600_000) })
+      .where(eq(schema.outboundProspect.id, due));
+    const claim = required(await store.claimDelivery(actor, fixture));
+    expect(claim.step).toBe(1);
+    const send = mock(async () => ({
+      success: true as const,
+      data: { providerMessageId: "fiftieth-send", threadId: "fiftieth-thread" },
+    }));
+    expect(
+      required(await store.dispatchDelivery(actor, claim, send)).status,
+    ).toBe("accepted");
+    expect(send).toHaveBeenCalledTimes(1);
+    const [inbox] = await db
+      .select()
+      .from(schema.outboundInbox)
+      .where(eq(schema.outboundInbox.id, fixture.inbox));
+    expect(inbox?.nextSendAt?.getTime()).toBeGreaterThanOrEqual(
+      now.getTime() + 3 * 60_000,
+    );
+    expect(inbox?.nextSendAt?.getTime()).toBeLessThanOrEqual(
+      now.getTime() + 4 * 60_000,
+    );
+  });
+
   test("accepted replies count toward the ramp and their bounces hold it", async () => {
     const { store, db, schema } = active();
     const prospect = required(await store.saveProspect(actor, details()));

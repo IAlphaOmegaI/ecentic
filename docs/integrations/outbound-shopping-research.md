@@ -3,7 +3,7 @@
 The Playbook's `researchInstructions` describes the per-lead research brief.
 `requireShoppingEvidence` defaults to `false` for existing saved configurations.
 When enabled, drafting, approval and delivery require a durable research receipt.
-An ingredient detail or a proposed check cannot satisfy that requirement.
+An ingredient detail or a proposed check alone cannot satisfy that requirement.
 Automatic company qualification can still establish business fit, but holds the
 lead before contact enrichment until actual shopping research is recorded.
 
@@ -42,8 +42,9 @@ alone never satisfies this automatic path.
 The model selects stable IDs from a bounded catalog of unchanged source excerpts;
 server code supplies the exact quotations and captured scope. Unknown IDs,
 duplicate selections and uninspected competitor IDs hold. Without an inspected
-competitor, the output schema permits only a contrast with the merchant's own
-product. The model cannot paraphrase a quote or invent observation metadata.
+competitor, the output schema permits a contrast with the merchant's own product
+or an explicitly enabled neutral product observation. The model cannot
+paraphrase a quote or invent observation metadata.
 
 Price claims additionally need exact local offer blocks from the answer and
 merchant page. The server checks matching variant, explicit currency and
@@ -63,6 +64,25 @@ must pass the same factual and copy checks again. Interrupted provider outcomes
 are never retried. Both completed request IDs and combined usage are retained.
 The assessor cannot discard evidence qualifiers to make it fit. Recipient-facing
 copy uses ordinary words; capture terminology stays in the supporting research.
+
+When `allowProductObservations` is enabled, a completed proposal rejected by a
+local comparison, price or recipient-wording check can instead receive one
+Azure-only neutral assessment. Its schema permits only `product-observation`,
+with no price comparison or competing products, and supplies only the unchanged
+shopper-answer and merchant-product excerpts. Every recipient-facing fact must
+come from its named source; merchant-only details cannot be attributed to the
+answer. Numeric percentages, including ingredient or clinical percentages, are
+held before drafting to match the email rules.
+
+There are at most two Azure calls in total: the initial assessment and either a
+copy revision or this neutral fallback, within the original deadline. It never
+repeats the shopping query or browser capture. Model-declared holds, damaged or
+future-dated captures, unknown initial outcomes and failed fallback checks do
+not start another attempt. The saved `neutralFallback` audit retains the initial
+structured output, projected assessment, rejection reason, attempt time and
+outcome; both known request IDs and usage are retained. An interrupted fallback
+stays held with an uncertain audit outcome for reconciliation. A successful
+fallback still passes the normal capture, drafting, approval and delivery gates.
 
 `saveAutomaticAndApply` shares the operator receipt validator but additionally
 checks the current automation lease, exact captured receipt, policy fingerprint,

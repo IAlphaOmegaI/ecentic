@@ -1,6 +1,7 @@
 import "server-only";
 import { resultify } from "@zenncore/utils";
 import {
+  inSendWindow,
   mailboxConnected,
   normalizeDomain,
   prospectIssues,
@@ -253,7 +254,7 @@ export const run = ({ dryRun = true }: { dryRun?: boolean } = {}) =>
     }
     const settings = (await Store.policy()).settings;
     const inboxes = value(await Mailboxes.list());
-    const prospects = value(await Mailboxes.due());
+    const prospects = value(await Mailboxes.due(settings));
     const budget = { researched: 0, inboxes: new Set<string>() };
     for (const prospect of prospects) {
       if (!dryRun && Date.now() >= deadline - 20_000) break;
@@ -263,6 +264,15 @@ export const run = ({ dryRun = true }: { dryRun?: boolean } = {}) =>
           (!prospect.inboxId || inbox.id === prospect.inboxId),
       );
       if (inbox && budget.inboxes.has(inbox.id)) continue;
+      // These cheap scheduling checks precede evidence/MX work and its run budget.
+      // The transaction repeats them immediately before reserving and sending.
+      const now = new Date();
+      if (
+        !inSendWindow(prospect.details, now, settings) ||
+        (prospect.nextSendAt && prospect.nextSendAt > now) ||
+        (inbox?.nextSendAt && inbox.nextSendAt > now)
+      )
+        continue;
       if (
         !inbox?.enabled ||
         !settings.sendingEnabled ||

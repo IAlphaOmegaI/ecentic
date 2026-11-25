@@ -100,7 +100,11 @@ import {
   linkedinHistoryReady,
 } from "@/server/utils/outbound/linkedin-ledger";
 import { assertShoppingEvidence } from "@/server/utils/outbound/shopping-research";
-import { assertWarmupPaused } from "@/server/utils/outbound/warmup-guard";
+import {
+  assertWarmupPreflight,
+  preflightWarmup,
+  type WarmupPreflight,
+} from "@/server/utils/outbound/warmup-guard";
 import { repository, resultifyRead } from "@/server/utils/repository";
 import * as Conversations from "./conversations";
 import { legacyHistory, mapLegacyProspect, parseImport } from "./import";
@@ -3854,6 +3858,7 @@ const deliveryGates = async (
   inbox: InboxRow,
   settings: Playbook,
   revision: number,
+  warmup: WarmupPreflight,
   currentAttempt?: AttemptRow,
 ) => {
   const now = new Date();
@@ -3910,7 +3915,7 @@ const deliveryGates = async (
     throw new ConflictError(
       "Confirm sender tests and history/exclusion checks before enabling delivery.",
     );
-  await assertWarmupPaused(inbox.email);
+  await assertWarmupPreflight(inbox.email, warmup, transaction);
   if (
     !inbox.enabled ||
     !mailboxConnected(inbox) ||
@@ -4230,16 +4235,13 @@ const deliveryGates = async (
           where: and(
             eq(schema.outboundProspect.inboxId, inbox.id),
             eq(schema.outboundProspect.status, "active"),
+            lte(schema.outboundProspect.nextSendAt, now),
           ),
         },
         { tx: transaction },
       ),
     );
-    const reserved = following.filter(
-      (sequence) =>
-        sequence.nextSendAt &&
-        sequence.nextSendAt.getTime() <= now.getTime() + 86400000,
-    ).length;
+    const reserved = following.length;
     if (count + reserved >= cap)
       throw new ConflictError(
         "Remaining capacity is reserved for due follow-ups.",
@@ -4251,65 +4253,77 @@ export const claimDelivery = (
   actor: string,
   input: { prospect: string; inbox: string },
 ) =>
-  transaction(async (transaction) => {
-    const prospect = await findProspect(transaction, input.prospect);
-    const inbox = requireData(
-      await Inboxes.get(Environment.SERVER, input.inbox, { tx: transaction }),
+  resultify(async () => {
+    const sender = requireData(
+      await Inboxes.get(Environment.SERVER, input.inbox),
     );
-    if (!inbox) throw new NotFoundError("Sender inbox not found.");
-    const current = await policy(transaction);
-    await deliveryGates(
-      transaction,
-      prospect,
-      inbox,
-      current.settings,
-      current.revision,
-    );
-    const now = new Date();
-    const attempt = requireData(
-      await Attempts.create(
-        Environment.SERVER,
-        {
-          prospectId: prospect.id,
-          inboxId: inbox.id,
-          step: prospect.sentStep + 1,
-          revision: prospect.revision,
-          messageId: `<${randomUUID()}@${inbox.email.split("@")[1]}>`,
-          status: "claimed",
-          contentHash: contentHash(
-            prospect.messages,
-            approvalManifest(prospect, current.settings, current.revision),
+    if (!sender) throw new NotFoundError("Sender inbox not found.");
+    const warmup = await preflightWarmup(sender.email);
+    return requireData(
+      await transaction(async (transaction) => {
+        const prospect = await findProspect(transaction, input.prospect);
+        const inbox = requireData(
+          await Inboxes.get(Environment.SERVER, input.inbox, {
+            tx: transaction,
+          }),
+        );
+        if (!inbox) throw new NotFoundError("Sender inbox not found.");
+        const current = await policy(transaction);
+        await deliveryGates(
+          transaction,
+          prospect,
+          inbox,
+          current.settings,
+          current.revision,
+          warmup,
+        );
+        const now = new Date();
+        const attempt = requireData(
+          await Attempts.create(
+            Environment.SERVER,
+            {
+              prospectId: prospect.id,
+              inboxId: inbox.id,
+              step: prospect.sentStep + 1,
+              revision: prospect.revision,
+              messageId: `<${randomUUID()}@${inbox.email.split("@")[1]}>`,
+              status: "claimed",
+              contentHash: contentHash(
+                prospect.messages,
+                approvalManifest(prospect, current.settings, current.revision),
+              ),
+            },
+            { tx: transaction },
           ),
-        },
-        { tx: transaction },
-      ),
-    );
-    requireData(
-      await Inboxes.update(
-        Environment.SERVER,
-        inbox.id,
-        {
-          nextSendAt: new Date(
-            now.getTime() +
-              randomInt(
-                current.settings.minGapMinutes,
-                current.settings.maxGapMinutes + 1,
-              ) *
-                60000,
+        );
+        requireData(
+          await Inboxes.update(
+            Environment.SERVER,
+            inbox.id,
+            {
+              nextSendAt: new Date(
+                now.getTime() +
+                  randomInt(
+                    current.settings.minGapMinutes,
+                    current.settings.maxGapMinutes + 1,
+                  ) *
+                    60000,
+              ),
+              updatedAt: now,
+            },
+            { tx: transaction },
           ),
-          updatedAt: now,
-        },
-        { tx: transaction },
-      ),
+        );
+        await event(
+          transaction,
+          actor,
+          "deliveryClaimed",
+          `Step ${attempt.step}; ${attempt.messageId}`,
+          prospect.id,
+        );
+        return deliveryClaim(transaction, prospect, attempt, current.settings);
+      }),
     );
-    await event(
-      transaction,
-      actor,
-      "deliveryClaimed",
-      `Step ${attempt.step}; ${attempt.messageId}`,
-      prospect.id,
-    );
-    return deliveryClaim(transaction, prospect, attempt, current.settings);
   });
 
 type Completion = {
@@ -4488,60 +4502,74 @@ export const dispatchDelivery = (
     claim: DeliveryClaim,
   ) => Promise<Result<{ providerMessageId: string; threadId: string }, Error>>,
 ) =>
-  transaction(async (transaction) => {
-    const attempt = requireData(
-      await Attempts.get(Environment.SERVER, input.attempt, {
-        tx: transaction,
+  resultify(async () => {
+    const reservation = requireData(
+      await Attempts.get(Environment.SERVER, input.attempt),
+    );
+    if (!reservation) throw new NotFoundError("Delivery attempt not found.");
+    const sender = requireData(
+      await Inboxes.get(Environment.SERVER, reservation.inboxId),
+    );
+    if (!sender) throw new NotFoundError("Sender inbox not found.");
+    const warmup = await preflightWarmup(sender.email);
+    return requireData(
+      await transaction(async (transaction) => {
+        const attempt = requireData(
+          await Attempts.get(Environment.SERVER, input.attempt, {
+            tx: transaction,
+          }),
+        );
+        if (!attempt) throw new NotFoundError("Delivery attempt not found.");
+        const prospect = await findProspect(transaction, attempt.prospectId);
+        const inbox = requireData(
+          await Inboxes.get(Environment.SERVER, attempt.inboxId, {
+            tx: transaction,
+          }),
+        );
+        if (!inbox) throw new NotFoundError("Sender inbox not found.");
+        if (
+          input.connectionVersion !== undefined &&
+          inbox.connectionVersion !== input.connectionVersion
+        )
+          throw new ConflictError(
+            "The sender connection changed before delivery. Review this attempt before continuing.",
+          );
+        const current = await policy(transaction);
+        await deliveryGates(
+          transaction,
+          prospect,
+          inbox,
+          current.settings,
+          current.revision,
+          warmup,
+          attempt,
+        );
+        const claim = await deliveryClaim(
+          transaction,
+          prospect,
+          attempt,
+          current.settings,
+        );
+        const sent = await resultify(() => send(claim));
+        if (!sent.success || !sent.data.success) {
+          const error = !sent.success
+            ? sent.error.message
+            : !sent.data.success
+              ? sent.data.error.message
+              : "Delivery outcome unknown.";
+          return completeWithin(transaction, actor, {
+            attempt: attempt.id,
+            status: "uncertain",
+            error,
+          });
+        }
+        return completeWithin(transaction, actor, {
+          attempt: attempt.id,
+          status: "accepted",
+          ...sent.data.data,
+        });
       }),
     );
-    if (!attempt) throw new NotFoundError("Delivery attempt not found.");
-    const prospect = await findProspect(transaction, attempt.prospectId);
-    const inbox = requireData(
-      await Inboxes.get(Environment.SERVER, attempt.inboxId, {
-        tx: transaction,
-      }),
-    );
-    if (!inbox) throw new NotFoundError("Sender inbox not found.");
-    if (
-      input.connectionVersion !== undefined &&
-      inbox.connectionVersion !== input.connectionVersion
-    )
-      throw new ConflictError(
-        "The sender connection changed before delivery. Review this attempt before continuing.",
-      );
-    const current = await policy(transaction);
-    await deliveryGates(
-      transaction,
-      prospect,
-      inbox,
-      current.settings,
-      current.revision,
-      attempt,
-    );
-    const claim = await deliveryClaim(
-      transaction,
-      prospect,
-      attempt,
-      current.settings,
-    );
-    const sent = await resultify(() => send(claim));
-    if (!sent.success || !sent.data.success) {
-      const error = !sent.success
-        ? sent.error.message
-        : !sent.data.success
-          ? sent.data.error.message
-          : "Delivery outcome unknown.";
-      return completeWithin(transaction, actor, {
-        attempt: attempt.id,
-        status: "uncertain",
-        error,
-      });
-    }
-    return completeWithin(transaction, actor, {
-      attempt: attempt.id,
-      status: "accepted",
-      ...sent.data.data,
-    });
   });
 
 export const getWeeklyReport = () =>

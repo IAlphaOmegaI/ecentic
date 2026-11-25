@@ -39,6 +39,11 @@ not advance the ramp. This measures actual volume, not reputation or inbox place
 Individual mailbox caps, pacing, weekly target,
 recipient windows and provider holds still apply. The worker runs every minute,
 with bounded preparation work and at most one attempt per inbox per tick.
+Only follow-ups whose scheduled time has arrived reserve capacity against first
+emails; tomorrow's follow-ups do not consume today's remaining slots. The queue
+filters due dates and currently open recipient windows before its row limit.
+Waiting contacts and paced inboxes do not spend the worker's research/MX budget.
+The final transaction still rechecks eligibility immediately before delivery.
 
 LinkedIn uses the explicitly selected saved Unipile account and its own limits;
 the email 50 target does not apply to LinkedIn. Automatic invitations and a single

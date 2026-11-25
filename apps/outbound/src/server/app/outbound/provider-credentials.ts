@@ -1,5 +1,6 @@
 import "server-only";
 
+import { createHash } from "node:crypto";
 import { type Result, resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
@@ -9,6 +10,7 @@ import {
   claudeModelSchema,
   DEFAULT_CLAUDE_MODEL,
 } from "@/lib/outbound-claude";
+import type { TransactionScope } from "@/server/database";
 import { outboundProviderCredential } from "@/server/database/outbound";
 import { credentialKeyIdentifier } from "@/server/utils/credential-encryption";
 import { ValidationError } from "@/server/utils/error";
@@ -36,7 +38,10 @@ type Metadata = {
   configuration: Configuration;
 };
 type Persistence = {
-  metadata: (provider: Provider) => Promise<Metadata | null>;
+  metadata: (
+    provider: Provider,
+    transaction?: TransactionScope,
+  ) => Promise<Metadata | null>;
   read: (provider: Provider) => Promise<Credential | null>;
   write: (
     provider: Provider,
@@ -198,8 +203,14 @@ export const createCredentialStore = (
     };
   };
   return {
-    metadata: async (provider: Provider = "unipile") => {
-      const result = await resultify(() => persistence.metadata(provider));
+    metadata: async (
+      provider: Provider = "unipile",
+      transaction?: TransactionScope,
+      includeVersion = false,
+    ) => {
+      const result = await resultify(() =>
+        persistence.metadata(provider, transaction),
+      );
       if (!result.success) return failure(provider, "save-failed");
       const fallback = environment(provider);
       const configuration = projectConfiguration(
@@ -216,7 +227,28 @@ export const createCredentialStore = (
           : ("missing" as const);
       return {
         success: true as const,
-        data: { configured, configuration, credentialStatus },
+        data: {
+          configured,
+          configuration,
+          credentialStatus,
+          ...(includeVersion
+            ? {
+                version: createHash("sha256")
+                  .update(
+                    JSON.stringify(
+                      result.data
+                        ? {
+                            updatedAt: result.data.updatedAt.toISOString(),
+                            validatedAt: result.data.validatedAt.toISOString(),
+                            configuration: result.data.configuration,
+                          }
+                        : fallback,
+                    ),
+                  )
+                  .digest("hex"),
+              }
+            : {}),
+        },
       };
     },
     resolve,
@@ -273,19 +305,21 @@ export const createCredentialStore = (
 };
 
 const persistence: Persistence = {
-  metadata: async (provider) => {
+  metadata: async (provider, transaction) => {
     const { db } = await import("@/server/database");
     const { resultifyRead } = await import("@/server/utils/repository");
-    const result = await resultifyRead(async () =>
-      db
-        .select({
-          validatedAt: outboundProviderCredential.validatedAt,
-          updatedAt: outboundProviderCredential.updatedAt,
-          configuration: outboundProviderCredential.configuration,
-        })
-        .from(outboundProviderCredential)
-        .where(eq(outboundProviderCredential.provider, provider))
-        .limit(1),
+    const result = await resultifyRead(
+      async () =>
+        (transaction ?? db)
+          .select({
+            validatedAt: outboundProviderCredential.validatedAt,
+            updatedAt: outboundProviderCredential.updatedAt,
+            configuration: outboundProviderCredential.configuration,
+          })
+          .from(outboundProviderCredential)
+          .where(eq(outboundProviderCredential.provider, provider))
+          .limit(1),
+      { tx: transaction },
     );
     if (!result.success) throw new Error("provider-key-save-failed");
     return result.data[0] ?? null;

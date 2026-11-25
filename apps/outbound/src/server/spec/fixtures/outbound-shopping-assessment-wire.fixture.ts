@@ -134,8 +134,11 @@ const fixture = () => {
       answer: offer("answer", answerRaw, "USD 30"),
       page: offer("product", pageRaw, "USD 25"),
     },
-    answerQuoteId: catalog.quotes.find((quote) => quote.sourceId === "answer")!.id,
-    productQuoteId: catalog.quotes.find((quote) => quote.sourceId === "product")!.id,
+    answerQuoteId: catalog.quotes.find((quote) => quote.sourceId === "answer")!
+      .id,
+    productQuoteId: catalog.quotes.find(
+      (quote) => quote.sourceId === "product",
+    )!.id,
     quoteIds: catalog.quotes
       .filter((quote) => quote.sourceId !== "ucp")
       .map((quote) => quote.id),
@@ -157,10 +160,13 @@ const fixture = () => {
 };
 const calls: {
   system: string;
+  schema: Record<string, unknown>;
   prompt: {
     findingWordBudget: number;
     previousAssessment?: unknown;
     quoteCatalog: unknown;
+    reassessmentMode?: string;
+    rejectionReason?: string;
   };
 }[] = [];
 const state: {
@@ -182,7 +188,11 @@ globalThis.fetch = mock(async (url, options) => {
   assert.equal(body.response_format.type, "json_schema");
   const system = body.messages[0].content;
   const prompt = JSON.parse(body.messages.at(-1).content);
-  calls.push({ system, prompt });
+  calls.push({
+    system,
+    prompt,
+    schema: body.response_format.json_schema.schema,
+  });
   state.afterCall?.();
   if (state.failAt === calls.length)
     return Response.json(
@@ -382,4 +392,298 @@ assert.equal(
 );
 Date.now = realNow;
 state.afterCall = undefined;
+
+const observationSettings = { ...playbook, allowProductObservations: true };
+const neutral = {
+  ...original.output,
+  reason: "The merchant explicitly lists a large Linen tote.",
+  selected: {
+    ...original.output.selected,
+    kind: "product-observation",
+    observation: "I was looking at linen totes and opened your product page.",
+    consequence: "The page lists a large option.",
+    priceComparison: null,
+  },
+};
+const falseComparison = {
+  ...original.output,
+  selected: { ...original.output.selected, priceComparison: null },
+};
+const fallback = value(
+  await run(original, [falseComparison, neutral], {
+    playbook: observationSettings,
+  }),
+);
+assert.equal(fallback.status, "researched");
+assert.equal(calls.length, 2);
+assert.deepEqual(fallback.neutralFallback?.originalOutput, falseComparison);
+assert.match(
+  fallback.neutralFallback?.originalReason ?? "",
+  /comparable local offer/,
+);
+assert.equal(fallback.neutralFallback?.outcome, "researched");
+assert.equal(fallback.neutralFallback?.originalAssessment.decision, "hold");
+assert.deepEqual(fallback.providerRequestIds, ["request-1", "request-2"]);
+assert.deepEqual(fallback.usage, { inputTokens: 40, outputTokens: 20 });
+const neutralCall = calls[1];
+assert.ok(neutralCall);
+assert.equal(neutralCall.prompt.reassessmentMode, "neutral");
+assert.deepEqual(neutralCall.prompt.previousAssessment, falseComparison);
+assert.match(neutralCall.system, /only neutral fallback/);
+assert.match(neutralCall.system, /merchant product excerpts/);
+assert.match(neutralCall.system, /Do not put numeric percentages/);
+assert.match(
+  neutralCall.system,
+  /ingredient concentrations.*clinical statistics/,
+);
+assert.match(neutralCall.system, /Attribute every fact to the source/);
+const neutralSchema = JSON.stringify(neutralCall.schema);
+assert.ok(!neutralSchema.includes('"product-data-gap"'));
+assert.ok(!neutralSchema.includes('"query-comparison"'));
+assert.ok(!neutralSchema.includes('"currencyAnchor"'));
+const neutralQuotes = neutralCall.prompt.quoteCatalog as { sourceId: string }[];
+assert.ok(
+  neutralQuotes.every((quote) =>
+    ["answer", "product"].includes(quote.sourceId),
+  ),
+);
+if (fallback.status === "researched") {
+  assert.deepEqual(fallback.receipt.sources, [
+    original.answer.source,
+    ...original.browser.sources,
+  ]);
+  assert.deepEqual(fallback.receipt.product, original.answer.job.query.product);
+  assert.equal(
+    fallback.receipt.queries[0]?.executedAt,
+    original.answer.executedAt,
+  );
+  assert.equal(fallback.receipt.selected.kind, "product-observation");
+  assert.deepEqual(fallback.receipt.competitors, []);
+}
+const competing = structuredClone(original);
+const competitorRaw: RawCapture = {
+  url: "https://otherbrand.com/products/tote",
+  body: "Other Brand Synthetic tote has woven polyester handles.",
+  status: 200,
+  receivedAt: original.answer.receivedAt,
+  sha256: createHash("sha256")
+    .update("Other Brand Synthetic tote has woven polyester handles.")
+    .digest("hex"),
+};
+competing.browser.raw.push(competitorRaw);
+competing.browser.sources.push({
+  id: "competitor",
+  kind: "competitor",
+  capture: "browser",
+  url: competitorRaw.url,
+  checkedAt: competitorRaw.receivedAt,
+  content: competitorRaw.body,
+  artifact: `sha256:${competitorRaw.sha256}`,
+});
+competing.browser.candidates.push({
+  name: "Other Brand",
+  product: "Synthetic tote",
+  url: competitorRaw.url,
+  sourceIds: ["competitor"],
+});
+const missingCompetitor = {
+  ...falseComparison,
+  selected: { ...falseComparison.selected, kind: "query-comparison" },
+};
+const recoveredComparison = value(
+  await run(competing, [missingCompetitor, neutral], {
+    playbook: observationSettings,
+  }),
+);
+assert.equal(recoveredComparison.status, "researched");
+assert.equal(calls.length, 2);
+assert.equal(
+  recoveredComparison.neutralFallback?.originalReason,
+  "A comparison needs an inspected competing product.",
+);
+assert.ok(
+  !JSON.stringify(calls[1]?.prompt.quoteCatalog).includes(competitorRaw.body),
+  "The neutral fallback receives no competing-product excerpt to misattribute.",
+);
+for (const proposal of [
+  {
+    ...original.output,
+    selected: {
+      ...original.output.selected,
+      observation: "The captured answer differs from the rendered page.",
+    },
+  },
+  {
+    ...neutral,
+    selected: {
+      ...neutral.selected,
+      observation: "The page says this tote is 100% linen.",
+    },
+  },
+  differentVariant,
+]) {
+  const repaired = value(
+    await run(original, [proposal, neutral], { playbook: observationSettings }),
+  );
+  assert.equal(repaired.status, "researched");
+  assert.equal(calls.length, 2);
+  assert.deepEqual(repaired.neutralFallback?.originalOutput, proposal);
+}
+assert.equal(value(await run(original, [falseComparison])).status, "held");
+assert.equal(
+  calls.length,
+  1,
+  "Neutral recovery requires explicit policy permission.",
+);
+const modelHold = {
+  decision: "hold",
+  reason: "No supported fact in the merchant text.",
+  selected: null,
+  competitors: [],
+};
+assert.equal(
+  value(await run(original, [modelHold], { playbook: observationSettings }))
+    .status,
+  "held",
+);
+assert.equal(
+  calls.length,
+  1,
+  "The model's own hold is not an automatic paid retry.",
+);
+assert.equal(
+  value(
+    await run(damaged, [falseComparison], { playbook: observationSettings }),
+  ).status,
+  "held",
+);
+assert.equal(calls.length, 1, "Corrupt capture hashes cannot buy a fallback.");
+const future = structuredClone(original);
+const futureProduct = future.browser.sources[0];
+assert.ok(futureProduct);
+futureProduct.checkedAt = new Date(Date.now() + 86400000).toISOString();
+assert.equal(
+  value(await run(future, [falseComparison], { playbook: observationSettings }))
+    .status,
+  "held",
+);
+assert.equal(calls.length, 1, "Future-dated evidence cannot buy a fallback.");
+const noRenderedPage = structuredClone(original);
+const httpProduct = noRenderedPage.browser.sources[0];
+assert.ok(httpProduct);
+httpProduct.capture = "http";
+assert.equal(
+  value(await run(noRenderedPage, [], { playbook: observationSettings }))
+    .status,
+  "held",
+);
+assert.equal(
+  calls.length,
+  0,
+  "HTTP-only evidence cannot form a rendered excerpt catalog.",
+);
+for (const replacement of [
+  {
+    ...neutral,
+    selected: {
+      ...neutral.selected,
+      consequence: "The wrong information is losing sales.",
+    },
+  },
+  {
+    ...neutral,
+    selected: {
+      ...neutral.selected,
+      consequence: "Your page lists this for USD 25.",
+    },
+  },
+  {
+    ...neutral,
+    selected: {
+      ...neutral.selected,
+      consequence: "This is 100 percent linen.",
+    },
+  },
+  {
+    ...neutral,
+    selected: {
+      ...neutral.selected,
+      consequence: "I bought one for my girlfriend.",
+    },
+  },
+  {
+    ...neutral,
+    selected: {
+      ...neutral.selected,
+      observation: "I checked your page. ".repeat(30),
+    },
+  },
+  modelHold,
+]) {
+  const failed = value(
+    await run(original, [falseComparison, replacement], {
+      playbook: observationSettings,
+    }),
+  );
+  assert.equal(failed.status, "held");
+  assert.equal(
+    calls.length,
+    2,
+    "A rejected neutral fallback must never buy a third assessment.",
+  );
+  assert.equal(failed.neutralFallback?.outcome, "held");
+  assert.deepEqual(failed.neutralFallback?.originalOutput, falseComparison);
+}
+const failedNeutral = value(
+  await run(original, [falseComparison, neutral], {
+    playbook: observationSettings,
+    failAt: 2,
+  }),
+);
+assert.equal(failedNeutral.status, "held");
+assert.equal(failedNeutral.neutralFallback?.outcome, "uncertain");
+assert.deepEqual(
+  failedNeutral.neutralFallback?.originalOutput,
+  falseComparison,
+);
+assert.equal(calls.length, 2);
+assert.deepEqual(failedNeutral.providerRequestIds, ["request-1"]);
+assert.deepEqual(failedNeutral.usage, {
+  inputTokens: null,
+  outputTokens: null,
+});
+const unknownInitial = await run(original, [falseComparison, neutral], {
+  playbook: observationSettings,
+  failAt: 1,
+});
+assert.equal(unknownInitial.success, false);
+assert.equal(
+  calls.length,
+  1,
+  "An unknown original provider outcome never starts a fallback.",
+);
+const invalidNeutralKind = value(
+  await run(original, [falseComparison, original.output], {
+    playbook: observationSettings,
+  }),
+);
+assert.equal(invalidNeutralKind.status, "held");
+assert.equal(invalidNeutralKind.neutralFallback?.outcome, "uncertain");
+assert.equal(
+  calls.length,
+  2,
+  "The constrained fallback schema rejects returning to a discrepancy.",
+);
+const brokenCopyThenNeutral = value(
+  await run(original, [original.long, falseComparison], {
+    playbook: observationSettings,
+  }),
+);
+assert.equal(brokenCopyThenNeutral.status, "held");
+assert.equal(brokenCopyThenNeutral.neutralFallback, undefined);
+assert.equal(
+  calls.length,
+  2,
+  "Copy recovery and neutral recovery cannot become a retry chain.",
+);
 console.info("Shopping assessment copy contracts passed");

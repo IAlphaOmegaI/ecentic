@@ -1,8 +1,9 @@
 import "server-only";
 import { resultify } from "@zenncore/utils";
-import { and, eq, inArray, or, sql } from "drizzle-orm";
+import { and, eq, inArray, isNull, lt, lte, or, sql } from "drizzle-orm";
 import { z } from "zod";
 import {
+  inSendWindow,
   mailboxConnected,
   normalizeDomain,
   registeredSender,
@@ -24,7 +25,7 @@ import {
   type Mail,
   messageIds,
 } from "@/server/utils/outbound/inbound";
-import { repository } from "@/server/utils/repository";
+import { repository, resultifyRead } from "@/server/utils/repository";
 import * as Store from "./store";
 
 const Inboxes = repository(schema.outboundInbox);
@@ -1102,11 +1103,52 @@ export const ingestBatch = (
     };
   });
 
-export const due = () =>
-  Prospects.find(Environment.SERVER, {
-    where: inArray(schema.outboundProspect.status, ["approved", "active"]),
-    orderBy: [{ column: schema.outboundProspect.nextSendAt, direction: "asc" }],
-    limit: 100,
+export const due = (
+  settings: { allowUsMarketWindow?: boolean } = {},
+  now = new Date(),
+) =>
+  resultify(async () => {
+    const prospect = schema.outboundProspect;
+    const ready = and(
+      inArray(prospect.status, ["approved", "active"]),
+      lt(prospect.sentStep, 3),
+      or(isNull(prospect.nextSendAt), lte(prospect.nextSendAt, now)),
+      or(eq(prospect.status, "approved"), lte(prospect.nextSendAt, now)),
+    );
+    const timezone = sql<string>`coalesce(${prospect.details}->>'timezone', '')`;
+    const country = sql<string>`coalesce(${prospect.details}->>'country', '')`;
+    // Evaluate each saved location once, before limiting full prospect payloads.
+    // Waiting market windows cannot hide an eligible contact behind the first page.
+    const locations = value(
+      await resultifyRead(() =>
+        db.selectDistinct({ timezone, country }).from(prospect).where(ready),
+      ),
+    );
+    const windows = locations.filter((location) =>
+      inSendWindow(location, now, settings),
+    );
+    if (!windows.length) return [];
+    return value(
+      await Prospects.find(Environment.SERVER, {
+        where: and(
+          ready,
+          or(
+            ...windows.map((location) =>
+              and(
+                eq(timezone, location.timezone),
+                eq(country, location.country),
+              ),
+            ),
+          ),
+        ),
+        orderBy: [
+          { column: prospect.sentStep, direction: "desc" },
+          { column: prospect.nextSendAt, direction: "asc" },
+          { column: prospect.id, direction: "asc" },
+        ],
+        limit: 100,
+      }),
+    );
   });
 
 export const withSyncLock = <T>(id: string, operation: () => Promise<T>) =>
