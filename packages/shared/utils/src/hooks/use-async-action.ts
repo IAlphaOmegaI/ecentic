@@ -1,7 +1,7 @@
-/** biome-ignore-all lint/correctness/useHookAtTopLevel: if the value of withTransition changes during render, let it error */
 "use client";
 
 import { useCallback, useState, useTransition } from "react";
+import { resultify } from "../helpers/result";
 import type { Prettify } from "../types";
 
 // biome-ignore lint/suspicious/noExplicitAny: function arguments can be of any type
@@ -20,40 +20,31 @@ export const useAsyncAction = <F extends AsyncAction<F>>(
   action: F,
   withTransition = true,
 ): UseAsyncActionReturn<F> => {
-  if (!withTransition) {
-    const [isPending, setIsPending] = useState(false);
-    const handledAction = useCallback(
-      async (...args: Parameters<F>): Promise<Awaited<ReturnType<F>>> => {
-        setIsPending(true);
-        const result = await action(...args);
-        setIsPending(false);
-        return result;
-      },
-      [action],
-    );
-
-    return [handledAction, isPending] as const;
-  }
-
   const [isPending, startTransition] = useTransition();
-  const [result, setResult] = useState<Awaited<ReturnType<F>> | null>(null);
+  const [pending, setPending] = useState(0);
+  const run = useCallback(
+    (...parameters: Parameters<F>): Promise<Awaited<ReturnType<F>>> =>
+      new Promise((resolve, reject) => {
+        const execute = async () => {
+          setPending((current) => current + 1);
+          const result = await resultify(async () => ({
+            value: await action(...parameters),
+          }));
+          setPending((current) => current - 1);
+          // Preserve the action's rejection for its caller without also
+          // rejecting React's transition callback with the same failure.
+          if (!result.success) {
+            reject(result.error);
+            return;
+          }
+          resolve(result.data.value);
+        };
 
-  const handledAction = useCallback(
-    async (...args: Parameters<F>): Promise<Awaited<ReturnType<F>>> => {
-      startTransition(async () => {
-        const result = await action(...args);
-        setResult(result);
-      });
-
-      // biome-ignore lint/style/noNonNullAssertion: result is guaranteed to be set
-      return result!;
-    },
-    [action, result],
+        if (withTransition) startTransition(execute);
+        else void execute();
+      }),
+    [action, withTransition],
   );
 
-  return [
-    // add as F if want to preserve the original action type
-    handledAction,
-    isPending,
-  ] as const;
+  return [run, isPending || pending > 0];
 };

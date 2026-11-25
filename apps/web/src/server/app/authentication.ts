@@ -193,29 +193,31 @@ export const signIn = withContext(
   "Authentication.signIn",
 );
 
-export const signOut = withContext(async (context) => {
-  const result = await resultify(
-    async () =>
-      await context.auth.signOut({
-        headers: await headers(),
-      }),
-  );
+export const signOut = withContext(
+  async (context, { locale = defaultLocale }: { locale?: Locale } = {}) => {
+    const resolvedLocale = isPublishedLocale(locale) ? locale : defaultLocale;
+    const result = await resultify(
+      async () =>
+        await context.auth.signOut({
+          headers: await headers(),
+        }),
+    );
 
-  // better-auth expires both the session token and its cookie cache here, so
-  // there is no cache of ours left to clear.
-  if (!result.success) return result;
+    // better-auth expires both the session token and its cookie cache here, so
+    // there is no cache of ours left to clear.
+    if (!result.success) return result;
 
-  // A store typed into the landing hero belongs to whoever typed it. On a
-  // shared device the next account to sign in must not import it.
-  (await cookies()).delete(ENTRY_COOKIE);
+    // A store typed into the landing hero belongs to whoever typed it. On a
+    // shared device the next account to sign in must not import it.
+    (await cookies()).delete(ENTRY_COOKIE);
 
-  // Redirect from the action itself. Sign-out is invoked from the settings page,
-  // so without this Next re-renders that page's server components in the same
-  // response — and they require the session we just destroyed, which threw
-  // UnauthenticatedError on every sign-out. A redirect skips the re-render
-  // (and its Stripe/database fan-out) entirely.
-  redirect("/sign-in");
-}, "Authentication.signOut");
+    // Sign-out can run from any authenticated page. Redirect from the action
+    // before Next re-renders that page with the session already destroyed,
+    // avoiding authentication errors and its Stripe/database fan-out.
+    redirect(localizePath("/sign-in", resolvedLocale));
+  },
+  "Authentication.signOut",
+);
 
 export const getCurrentUser = withAuthentication(async (context) => {
   return {

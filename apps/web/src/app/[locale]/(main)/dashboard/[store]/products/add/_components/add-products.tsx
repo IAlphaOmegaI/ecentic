@@ -36,7 +36,7 @@ import {
   onboardingErrorKey,
 } from "@/lib/onboarding-errors";
 import * as Csv from "@/server/app/integration/csv";
-import * as Store from "@/server/app/store";
+import * as Store from "@/server/app/store.actions";
 
 const PLATFORM_LABEL: Record<Exclude<Store.Type["platform"], "csv">, string> = {
   shopify: "Shopify",

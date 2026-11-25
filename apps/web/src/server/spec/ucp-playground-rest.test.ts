@@ -47,22 +47,25 @@ describe("UCP playground REST transport", () => {
   });
 
   test("selects a REST-only shopping service from discovery", async () => {
-    globalThis.fetch = (async () =>
-      Response.json({
-        ucp: {
-          version: "2026-04-08",
-          services: {
-            "dev.ucp.shopping": [
-              {
-                version: "2026-04-08",
-                transport: "rest",
-                endpoint: "https://merchant.example/ucp",
-              },
-            ],
+    globalThis.fetch = Object.assign(
+      async () =>
+        Response.json({
+          ucp: {
+            version: "2026-04-08",
+            services: {
+              "dev.ucp.shopping": [
+                {
+                  version: "2026-04-08",
+                  transport: "rest",
+                  endpoint: "https://merchant.example/ucp",
+                },
+              ],
+            },
+            payment_handlers: {},
           },
-          payment_handlers: {},
-        },
-      })) as typeof fetch;
+        }),
+      { preconnect: originalFetch.preconnect },
+    );
 
     await expect(resolveShoppingService("merchant.example/")).resolves.toEqual({
       success: true,

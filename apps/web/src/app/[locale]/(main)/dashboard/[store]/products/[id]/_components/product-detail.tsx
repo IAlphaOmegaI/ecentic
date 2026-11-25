@@ -65,7 +65,7 @@ import {
   onboardingErrorKey,
 } from "@/lib/onboarding-errors";
 import * as Audit from "@/server/app/intelligence/audit";
-import * as Optimization from "@/server/app/optimization";
+import * as Optimization from "@/server/app/optimization.actions";
 import type { ProductChannels as ProductChannelsData } from "@/server/utils/product-channels";
 import { DashboardEmptyState } from "../../../../_components/empty-state";
 import { StatusPill } from "../../../../_components/grid";

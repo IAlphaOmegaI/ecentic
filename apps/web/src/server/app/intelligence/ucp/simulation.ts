@@ -66,6 +66,7 @@ const score = (
   ucpIntel?: string,
 ): Promise<Verdict> =>
   AI.generate({
+    label: "ucp.simulation.score",
     model: MODEL,
     instructions: scoringSystem,
     prompt: scoringPrompt(product, competitor, ucpIntel),

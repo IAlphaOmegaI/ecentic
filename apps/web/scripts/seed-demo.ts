@@ -1108,6 +1108,7 @@ const seed = async () => {
         userId,
         accountId: userId,
         providerId: "credential",
+        issuer: "local:credential",
         password: hash,
       });
     }

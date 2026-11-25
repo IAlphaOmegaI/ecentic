@@ -143,6 +143,7 @@ const runPerspective = async (
 
   const generation = await resultify(() =>
     AI.generate({
+      label: "discovery.recommend",
       model: perspective.model,
       instructions: DISCOVERY_SYSTEM,
       prompt: buildPrompt(targetStore, query),

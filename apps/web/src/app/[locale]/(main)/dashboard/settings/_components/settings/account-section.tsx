@@ -10,21 +10,20 @@ import {
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { useMessages, useTranslations } from "next-intl";
+import { type AppConfig, useLocale, useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { z } from "zod";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useRouter } from "@/i18n/navigation";
+import * as Profile from "@/lib/profile";
 import * as Authentication from "@/server/app/authentication";
-import * as User from "@/server/app/user";
+import * as User from "@/server/app/user.actions";
 
 import { AccountDeletion } from "./lifecycle-controls";
 
-export const AccountSection = ({ user }: { user: User.Type }) => {
-  const router = useRouter();
+export const AccountSection = ({ user, roles }: AccountSection.Props) => {
   const toast = useToastManager();
   const translate = useTranslations("dashboard.settings.account");
-  const messages = useMessages();
 
   const profile = useMemo(
     () =>
@@ -62,20 +61,99 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
             label: "font-medium text-sm text-foreground",
           },
         }),
-        role: field({
+        jobTitle: field({
           shape: "select",
-          validator: z.literal(
-            messages.dashboard.settings.account.profile.roles,
-          ),
+          validator: Profile.profileSchema.shape.jobTitle,
           label: translate("profile.fields.role.label"),
+          items: roles,
           classList: {
             field: "sm:col-span-2",
             label: "font-medium text-sm text-foreground",
           },
         }),
       }) satisfies GenericForm,
-    [messages, translate],
+    [roles, translate],
   );
+
+  const [handleProfileSubmit, isProfilePending] = useAsyncAction(
+    async (data: FormEntries<typeof profile>) => {
+      const result = await User.updateProfile(data);
+
+      if (!result.success) {
+        toast.add({
+          title: translate("toast.error"),
+          description: result.error.message,
+          type: "error",
+        });
+        return;
+      }
+
+      toast.add({ title: translate("toast.profileSaved"), type: "success" });
+    },
+  );
+
+  return (
+    <div className="divide-y divide-accent-foreground">
+      <section className="grid lg:grid-cols-3">
+        <header className="border-accent-foreground border-b px-4 py-6 sm:px-6 lg:border-r lg:border-b-0">
+          <h3 className="font-semibold text-base text-foreground-rich">
+            {translate("profile.title")}
+          </h3>
+          <p className="mt-1 text-foreground-dimmed text-sm">
+            {translate("profile.description")}
+          </p>
+        </header>
+        <InferredForm
+          config={profile}
+          defaultValues={{
+            name: user.name,
+            surname: user.surname,
+            email: user.email,
+            jobTitle: (() => {
+              const title = Profile.profileSchema.shape.jobTitle.safeParse(
+                user.jobTitle,
+              );
+              return title.success ? title.data : "Other";
+            })(),
+          }}
+          onSubmit={handleProfileSubmit}
+          className="grid min-w-0 grid-cols-1 gap-4 px-4 pt-6 sm:grid-cols-2 sm:px-6 lg:col-span-2"
+        >
+          <div className="col-span-full -mx-4 flex justify-end border-accent-foreground border-t px-4 py-4 sm:-mx-6 sm:px-6">
+            <Button type="submit" color="primary" disabled={isProfilePending}>
+              {isProfilePending
+                ? translate("profile.action.saving")
+                : translate("profile.action.primary")}
+              {isProfilePending ? (
+                <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
+              ) : (
+                <ArrowRightIcon className="size-4" />
+              )}
+            </Button>
+          </div>
+        </InferredForm>
+      </section>
+
+      <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-6 sm:px-6">
+        <div className="min-w-0">
+          <h3 className="font-semibold text-base text-foreground-rich">
+            {translate("language.title")}
+          </h3>
+          <p className="mt-1 text-foreground-dimmed text-sm">
+            {translate("language.description")}
+          </p>
+        </div>
+        <LanguageSwitcher className="min-w-28 rounded-lg bg-background-dimmed px-3 hover:bg-background-dimmed" />
+      </div>
+    </div>
+  );
+};
+
+export const SecuritySection = () => {
+  const locale = useLocale();
+  const router = useRouter();
+  const toast = useToastManager();
+  const translate = useTranslations("dashboard.settings.account");
 
   const password = useMemo(
     () =>
@@ -111,23 +189,6 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
     [translate],
   );
 
-  const [handleProfileSubmit, isProfilePending] = useAsyncAction(
-    async (data: FormEntries<typeof profile>) => {
-      const result = await User.updateProfile(data);
-
-      if (!result.success) {
-        toast.add({
-          title: translate("toast.error"),
-          description: result.error.message,
-          type: "error",
-        });
-        return;
-      }
-
-      toast.add({ title: translate("toast.profileSaved"), type: "success" });
-    },
-  );
-
   const [handlePasswordSubmit, isPasswordPending] = useAsyncAction(
     async (data: FormEntries<typeof password>) => {
       if (data.newPassword !== data.confirmPassword) {
@@ -155,9 +216,9 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
   );
 
   const [handleSignOut, isSignOutPending] = useAsyncAction(async () => {
-    // On success the action redirects to /sign-in server-side and never returns
-    // a result, so only a failure lands here.
-    const result = await Authentication.signOut();
+    // On success the action redirects to the localized sign-in page server-side
+    // and never returns a result, so only a failure lands here.
+    const result = await Authentication.signOut({ locale });
 
     if (result && !result.success) {
       toast.add({
@@ -173,55 +234,6 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
 
   return (
     <div className="divide-y divide-accent-foreground">
-      <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-6 sm:px-6">
-        <div className="min-w-0">
-          <h3 className="font-semibold text-base text-foreground-rich">
-            {translate("language.title")}
-          </h3>
-          <p className="mt-1 text-foreground-dimmed text-sm">
-            {translate("language.description")}
-          </p>
-        </div>
-        <LanguageSwitcher className="min-w-28 rounded-lg bg-background-dimmed px-3 hover:bg-background-dimmed" />
-      </div>
-
-      <section className="grid lg:grid-cols-3">
-        <header className="border-accent-foreground border-b px-4 py-6 sm:px-6 lg:border-r lg:border-b-0">
-          <h3 className="font-semibold text-base text-foreground-rich">
-            {translate("profile.title")}
-          </h3>
-          <p className="mt-1 text-foreground-dimmed text-sm">
-            {translate("profile.description")}
-          </p>
-        </header>
-        <InferredForm
-          config={profile}
-          defaultValues={{
-            name: user.name,
-            surname: user.surname,
-            email: user.email,
-            // @ts-expect-error - user.role is not typed
-            role:
-              user.role ?? messages.dashboard.settings.account.profile.roles[0],
-          }}
-          onSubmit={handleProfileSubmit}
-          className="grid min-w-0 grid-cols-1 gap-4 px-4 pt-6 sm:grid-cols-2 sm:px-6 lg:col-span-2"
-        >
-          <div className="col-span-full -mx-4 flex justify-end border-accent-foreground border-t px-4 py-4 sm:-mx-6 sm:px-6">
-            <Button type="submit" color="primary" disabled={isProfilePending}>
-              {isProfilePending
-                ? translate("profile.action.saving")
-                : translate("profile.action.primary")}
-              {isProfilePending ? (
-                <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
-              ) : (
-                <ArrowRightIcon className="size-4" />
-              )}
-            </Button>
-          </div>
-        </InferredForm>
-      </section>
-
       <section className="grid lg:grid-cols-3">
         <header className="border-accent-foreground border-b px-4 py-6 sm:px-6 lg:border-r lg:border-b-0">
           <h3 className="font-semibold text-base text-foreground-rich">
@@ -297,3 +309,10 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
     </div>
   );
 };
+
+export namespace AccountSection {
+  export type Props = {
+    user: User.Type;
+    roles: AppConfig["Messages"]["signUp"]["roles"];
+  };
+}

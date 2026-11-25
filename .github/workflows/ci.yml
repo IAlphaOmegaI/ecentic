@@ -8,13 +8,42 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.14
       - run: bun install --frozen-lockfile
-      # - run: cd apps/web && bun run typecheck
-      # - run: bunx biome ci apps/web/src
-      # - run: cd apps/web && bun test src
+      - name: Build shared packages
+        run: bun run build:packages
+      - name: Generate Next route and message types
+        run: |
+          (cd apps/web && bunx next typegen)
+          (cd apps/outbound && bunx next typegen)
+      - name: Check workspace types
+        run: bun run typecheck
+      - name: Check source lint, formatting and imports
+        run: bun run lint:check
+      - name: Add disposable PostgreSQL test binaries
+        run: |
+          postgres_bins="$(pg_config --bindir)"
+          test -x "$postgres_bins/initdb"
+          test -x "$postgres_bins/pg_ctl"
+          test -x "$postgres_bins/postgres"
+          echo "$postgres_bins" >> "$GITHUB_PATH"
+      - name: Test applications and shared packages
+        run: bun run test
+        env:
+          NODE_ENV: test
+          BUN_OPTIONS: --no-env-file
+          DATABASE_URL: postgres://ci:unused@127.0.0.1:1/never_connect
+          OUTBOUND_TEST_DATABASE_URL: ""
+      - name: Check translations and theme tokens
+        working-directory: apps/web
+        run: |
+          bun run i18n:check
+          bun run design:theme
   # Posts in apps/web/content/blog publish on merge, so their checks gate the
   # PR, and run again on main for work pushed there directly. A job-level
   # filter rather than `paths:`, which would also skip `verify`; a change that
@@ -34,6 +63,10 @@ jobs:
             git diff --name-only "$BASE...HEAD" | grep -qE '^(apps/web/(content/blog/|public/blog/|scripts/check-blog-content\.ts$|src/server/utils/blog-content\.ts$|src/lib/blog-(html|redirects)\.ts$|package\.json$)|bun\.lock$)'; then
             echo "blog=true" >> "$GITHUB_OUTPUT"
           fi
+      - if: steps.changes.outputs.blog == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
       - if: steps.changes.outputs.blog == 'true'
         uses: oven-sh/setup-bun@v2
         with:

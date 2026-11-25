@@ -129,6 +129,6 @@ node_modules/.bin/next dev --port 3457
 
 ## What changed once it met the real deploy
 
-- **Run state is a Postgres table, `agents_state`, not Redis.** The Upstash database behind `UPSTASH_REDIS_REST_URL` no longer resolves (`absolute-pony-80073.upstash.io`, ENOTFOUND on 2026-10-30). `server/app/storefront/state.ts` creates the table on first use. It is not in `schema.ts` and has no migration, so `drizzle-kit push` will offer to drop it: move it into the schema if `/agents` outlives tonight.
+- **Run state is a Postgres table, `agents_state`, not Redis.** The Upstash database behind `UPSTASH_REDIS_REST_URL` no longer resolves (`absolute-pony-80073.upstash.io`, ENOTFOUND on 2026-10-30). The table is registered as `schema.agentsState`; apply `20261123120000_agents_state` through the `apps/web` migration owner before deploying to a fresh database. The additive migration preserves any table and saved runs created by earlier deployments. `server/app/storefront/state.ts` only reads/writes data and sweeps expired rows once per process; it no longer creates schema during requests. JSON values remain text, expiring runs/claims/counters retain their deadlines, and the bounded newest-first run list remains non-expiring.
 - **The rest of the app is affected by that dead Redis too.** `utils/rate-limit.ts` fails open, so its public limits are not enforced until a new Redis is set. `/agents` counts its own per-caller limit in the table.
 - **Firecrawl's plan runs two pages at a time**, about 1.5s a page, so it gets 40 URLs and the read gets 90s.

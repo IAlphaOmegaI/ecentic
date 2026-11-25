@@ -58,7 +58,7 @@ import { parseAsString, parseAsStringLiteral, useQueryStates } from "nuqs";
 import { useState } from "react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { callOnboardingAction } from "@/lib/onboarding-errors";
-import * as Optimization from "@/server/app/optimization";
+import * as Optimization from "@/server/app/optimization.actions";
 import { Crosshair } from "../../../_components/grid";
 import { listingQueue, matchesListing } from "./queue";
 import { OptimizeFeedback } from "./shell";

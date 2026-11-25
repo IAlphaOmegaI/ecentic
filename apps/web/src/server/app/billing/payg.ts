@@ -102,7 +102,7 @@ export const createPaymentSetupSession = withAuthentication(async (context) => {
       customer: customer.data,
       payment_method_types: ["card"],
       success_url: `${appHost}/dashboard/settings?payment=added`,
-      cancel_url: `${appHost}/dashboard/settings`,
+      cancel_url: `${appHost}/dashboard/settings?tab=billing`,
     }),
   );
 

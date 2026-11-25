@@ -65,7 +65,8 @@ export const ReviewQueueTable = ({
     },
     [currentHref, router],
   );
-  const clear = () => navigate({ ...currentQuery, q: "", status: "all", page: 1 });
+  const clear = () =>
+    navigate({ ...currentQuery, q: "", status: "all", page: 1 });
   const detailHref = useCallback(
     (id: string) => {
       const search = new URLSearchParams({

@@ -13,3 +13,11 @@ export const Environment = {
 };
 
 export type Environment = (typeof Environment)[keyof typeof Environment];
+
+/** Browser actions infer the domain arguments, excluding the internal environment overload. */
+export type ClientParameters<
+  Action extends (...parameters: never[]) => unknown,
+> =
+  Parameters<Action> extends [Environment, ...infer Arguments]
+    ? Arguments
+    : never;

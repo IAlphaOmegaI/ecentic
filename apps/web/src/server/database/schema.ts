@@ -1457,6 +1457,13 @@ export const rechargeAggregate = pgTable("recharge_aggregates", {
   asOf: timestamp("asOf", { mode: "date" }).notNull().defaultNow(),
 });
 
+/** Durable /agents runs, claims, counters and bounded lists. JSON stays text. */
+export const agentsState = pgTable("agents_state", {
+  key: text("key").primaryKey(),
+  value: text("value").notNull(),
+  expiresAt: timestamp("expires_at", { withTimezone: true, mode: "date" }),
+});
+
 /** Tables object for defineRelations and better-auth adapter */
 export const tables = {
   ...Outbound,
@@ -1498,6 +1505,7 @@ export const tables = {
   blogTranslation,
   dealRedemption,
   ucpOrder,
+  agentsState,
 };
 
 /** Relations */

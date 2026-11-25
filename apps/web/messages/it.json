@@ -2899,13 +2899,14 @@
     "settings": {
       "statusPill": "Account e workspace",
       "title": "Impostazioni",
-      "description": "Gestisci account, integrazioni e preferenze.",
+      "description": "Gestisci il profilo, l’accesso, i negozi collegati e la fatturazione del tuo account.",
       "tabs": {
-        "account": "Account",
-        "integrations": "Integrazioni",
+        "account": "Profilo",
+        "integrations": "Negozi collegati",
         "notifications": "Notifiche",
         "simulation": "Simulazione",
-        "billing": "Fatturazione"
+        "billing": "Piano e fatturazione",
+        "security": "Accesso e sicurezza"
       },
       "account": {
         "language": {
@@ -2929,7 +2930,7 @@
               "validation": "Email non valida"
             },
             "role": {
-              "label": "Ruolo"
+              "label": "Ruolo nella tua azienda"
             }
           },
           "roles": [
@@ -3059,7 +3060,7 @@
         "empty": "Nessun negozio ancora collegato.",
         "connected": "Collegato",
         "action": {
-          "sync": "Sincronizza ora",
+          "sync": "Sincronizza prodotti",
           "syncing": "Sincronizzazione…",
           "connectAnother": "Collega un altro negozio"
         },
@@ -3077,7 +3078,7 @@
           "active": "Attivo · {count, number} online",
           "linked": "Collegato",
           "setupInProgress": "Configurazione in corso",
-          "manage": "Gestisci →"
+          "manage": "Gestisci Google Shopping"
         },
         "publicImport": {
           "note": "Importato dal catalogo pubblico · sola lettura.",
@@ -3182,6 +3183,32 @@
             "description": "L'invito per il membro del team è stato inviato."
           }
         }
+      },
+      "workspace": {
+        "navigation": "Navigazione dell’account",
+        "description": "Gestisci il profilo, l’accesso, i negozi collegati e la fatturazione del tuo account.",
+        "sections": {
+          "account": {
+            "title": "Profilo",
+            "description": "I tuoi dati personali e la lingua preferita."
+          },
+          "security": {
+            "title": "Accesso e sicurezza",
+            "description": "Gestisci la password, esci o elimina il tuo account."
+          },
+          "integrations": {
+            "title": "Negozi collegati",
+            "description": "Gestisci il collegamento di ogni negozio, aggiorna i suoi prodotti e controlla i servizi collegati."
+          },
+          "billing": {
+            "title": "Piano e fatturazione",
+            "description": "Il piano, i dati di pagamento e le fatture di questo account."
+          }
+        },
+        "readOnly": "Catalogo di sola lettura",
+        "manageStore": "Apri negozio",
+        "services": "Servizi collegati",
+        "unavailable": "Stato non disponibile"
       }
     },
     "reports": {

@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 
 import { addMonths, startOfMonth } from "date-fns";
 import { and, eq, isNotNull } from "drizzle-orm";

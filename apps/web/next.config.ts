@@ -24,9 +24,6 @@ export default withSentryConfig(
     reactCompiler: true,
     typedRoutes: true,
     poweredByHeader: false,
-    typescript: {
-      ignoreBuildErrors: true,
-    },
     cacheComponents: true,
     partialPrefetching: true,
     serverExternalPackages: ["@sentry/server-utils"],

@@ -2,6 +2,17 @@
 
 Zod schema to form field inference and generation.
 
+## Public field contracts
+
+`GenericField<Interface>` is the discriminated union of the interface's field
+shapes, including custom fields. `RefinedProps<Value>` is exported for custom
+controls with a typed value and change callback. Field labels and descriptions
+accept a string or a render callback receiving `{ isFieldRequired, name }`.
+
+The web `InferredForm` callbacks receive values and a React Hook Form controller
+typed from the final schema returned by `extend`. An OTP field can supply its
+own `render` callback; otherwise the web renderer supplies the standard slots.
+
 ## Installation
 
 ```bash

@@ -62,6 +62,7 @@ Central navigation for product context, agent rules, and package/component docum
 
 ### If you are implementing or refactoring code
 
+- [Zenn audit and fixes, 23 November 2026](./audits/2026-11-23-zenn.md) — scope, repaired defects, verification and remaining convention debt
 - [Agent checklist](./agents/AGENTS-checklist.md)
 - [Code style rules](./agents/AGENTS-style.md)
 - [Component patterns](./agents/AGENTS-components.md)

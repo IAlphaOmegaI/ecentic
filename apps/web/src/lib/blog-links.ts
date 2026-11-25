@@ -110,7 +110,7 @@ export const localizeBlogHtmlLinks = (
     if (node.attrs.some((attribute) => attribute.name === "download"))
       return children;
     const href = node.attrs.find((attribute) => attribute.name === "href");
-    const location = node.sourceCodeLocation?.attrs?.href;
+    const location = node.sourceCodeLocation?.attrs?.["href"];
     if (!href || !location) return children;
     const localized = localizeArticleHref(href.value, context);
     if (localized === href.value) return children;

@@ -18,7 +18,7 @@ import {
   profileRoleValues,
   profileSourceValues,
 } from "@/lib/auth-profile-options";
-import * as User from "@/server/app/user";
+import * as User from "@/server/app/user.actions";
 import { AuthFeedback, useAuthFeedback } from "../../_components/auth-feedback";
 
 export const CompleteProfileForm = () => {

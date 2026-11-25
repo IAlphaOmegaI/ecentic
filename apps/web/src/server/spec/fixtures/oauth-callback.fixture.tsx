@@ -5,7 +5,9 @@ import {
   AuthFeedback,
   useAuthFeedback,
 } from "@/app/[locale]/(auth)/_components/auth-feedback";
+import { publishedLocales } from "@/i18n/locales";
 import { authCallbackErrorKey } from "@/lib/auth-errors";
+import { ENTRY_COOKIE } from "@/lib/redirect";
 import messages from "../../../../messages/en.json";
 
 type Body = {
@@ -17,12 +19,21 @@ type Body = {
 const state = {
   requests: [] as Body[],
   domain: "merchant.myshopify.com" as string | null,
+  signOutFailure: null as Error | null,
+  signOutHeaders: [] as Headers[],
+  deletedCookies: [] as string[],
 };
+const requestHeaders = new Headers({ "x-auth-fixture": "sign-out" });
 const context = {
   auth: {
     signInSocial: async ({ body }: { body: Body }) => {
       state.requests.push(body);
       return { url: "https://provider.example/authorize" };
+    },
+    signOut: async ({ headers }: { headers: Headers }) => {
+      state.signOutHeaders.push(headers);
+      if (state.signOutFailure) throw state.signOutFailure;
+      return { success: true };
     },
   },
 };
@@ -46,8 +57,11 @@ mock.module("../../app/integration/shopify/domain", () => ({
   resolveAdminHost: async () => state.domain,
 }));
 mock.module("next/headers", () => ({
-  headers: async () => new Headers(),
-  cookies: async () => ({ set: () => {}, delete: () => {} }),
+  headers: async () => requestHeaders,
+  cookies: async () => ({
+    set: () => {},
+    delete: (name: string) => state.deletedCookies.push(name),
+  }),
 }));
 mock.module("resend", () => ({
   Resend: class {
@@ -64,6 +78,52 @@ const Authentication = await import("../../app/authentication");
 beforeEach(() => {
   state.requests = [];
   state.domain = "merchant.myshopify.com";
+  state.signOutFailure = null;
+  state.signOutHeaders = [];
+  state.deletedCookies = [];
+});
+
+describe("localized sign-out", () => {
+  test("clears the entry cookie and redirects to every published locale", async () => {
+    for (const locale of publishedLocales) {
+      const destination = locale === "en" ? "/sign-in" : `/${locale}/sign-in`;
+      await expect(Authentication.signOut({ locale })).rejects.toMatchObject({
+        digest: expect.stringContaining(`;${destination};`),
+      });
+    }
+    expect(state.signOutHeaders).toEqual(
+      publishedLocales.map(() => requestHeaders),
+    );
+    expect(state.deletedCookies).toEqual(
+      publishedLocales.map(() => ENTRY_COOKIE),
+    );
+  });
+
+  test("missing and invalid caller locales fall back to the default sign-in route", async () => {
+    for (const payload of [
+      undefined,
+      {},
+      { locale: "unsupported" },
+      { locale: "//attacker.example" },
+      { locale: "../es" },
+      { locale: null },
+    ])
+      await expect(
+        Reflect.apply(Authentication.signOut, undefined, [payload]),
+      ).rejects.toMatchObject({
+        digest: expect.stringContaining(";/sign-in;"),
+      });
+  });
+
+  test("an auth failure returns a failed result without deleting the entry cookie or redirecting", async () => {
+    state.signOutFailure = new Error("Fixture sign-out failure");
+    expect(await Authentication.signOut({ locale: "fr" })).toMatchObject({
+      success: false,
+      error: state.signOutFailure,
+    });
+    expect(state.signOutHeaders).toEqual([requestHeaders]);
+    expect(state.deletedCookies).toEqual([]);
+  });
 });
 
 const callback = (body: Body | undefined) => {

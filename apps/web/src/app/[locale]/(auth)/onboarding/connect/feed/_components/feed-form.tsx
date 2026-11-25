@@ -18,7 +18,7 @@ import { useOnboardingError } from "@/app/[locale]/(auth)/onboarding/_components
 import { useRouter } from "@/i18n/navigation";
 import { callOnboardingAction } from "@/lib/onboarding-errors";
 import * as FeedIntegration from "@/server/app/integration/feed";
-import * as Store from "@/server/app/store";
+import * as Store from "@/server/app/store.actions";
 
 export const FeedForm = () => {
   const router = useRouter();
@@ -38,7 +38,6 @@ export const FeedForm = () => {
             .url(translate("feed.fields.feedUrl.validation")),
           label: translate("feed.fields.feedUrl.label"),
           placeholder: translate("feed.fields.feedUrl.placeholder"),
-          // @ts-expect-error - description is a function
           description: () => (
             <FieldDescription>
               {translate("feed.fields.feedUrl.description.before")}{" "}

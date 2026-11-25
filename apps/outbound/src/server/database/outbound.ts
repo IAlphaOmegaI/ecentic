@@ -17,7 +17,12 @@ import type {
   ProspectInput,
   ProspectStatus,
 } from "@/lib/outbound";
-import type { CampaignCriteria, CampaignDiscoveryState, CampaignStatus, CampaignRun } from "@/lib/outbound-campaigns";
+import type {
+  CampaignCriteria,
+  CampaignDiscoveryState,
+  CampaignRun,
+  CampaignStatus,
+} from "@/lib/outbound-campaigns";
 import type { LinkedInAccountStatus } from "@/lib/outbound-unipile";
 import type { MailboxCheck, WarmupPlan } from "@/lib/outbound-warmup";
 import { encryptedText } from "./encrypted-text";
@@ -33,7 +38,12 @@ export const outboundProviderCredential = pgTable(
       "outbound_provider_credential.apiKey",
     ).notNull(),
     configuration: jsonb("configuration")
-      .$type<{ routineId?: string; clientId?: string; model?: "claude-sonnet-5-5" | "claude-opus-5-5"; workspaceId?: string }>()
+      .$type<{
+        routineId?: string;
+        clientId?: string;
+        model?: "claude-sonnet-5-5" | "claude-opus-5-5";
+        workspaceId?: string;
+      }>()
       .notNull()
       .default({}),
     createdBy: text("created_by").notNull(),
@@ -67,19 +77,31 @@ export const outboundPlaybook = pgTable("outbound_playbook", {
   updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
 });
 
-export const outboundCampaign = pgTable("outbound_campaign", {
-  id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
-  name: text("name").notNull(),
-  status: text("status").$type<CampaignStatus>().notNull().default("draft"),
-  criteria: jsonb("criteria").$type<CampaignCriteria>().notNull(),
-  revision: integer("revision").notNull().default(1),
-  answers: text("answers").notNull().default(""),
-  discoveryState: jsonb("discovery_state").$type<CampaignDiscoveryState>().notNull().default({ apolloPage: 1, apolloExhausted: false, claySearchId: null, clayExhausted: false }),
-  createdBy: text("created_by").notNull(),
-  updatedBy: text("updated_by").notNull(),
-  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
-}, (table) => [index("outbound_campaign_status_idx").on(table.status)]);
+export const outboundCampaign = pgTable(
+  "outbound_campaign",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    name: text("name").notNull(),
+    status: text("status").$type<CampaignStatus>().notNull().default("draft"),
+    criteria: jsonb("criteria").$type<CampaignCriteria>().notNull(),
+    revision: integer("revision").notNull().default(1),
+    answers: text("answers").notNull().default(""),
+    discoveryState: jsonb("discovery_state")
+      .$type<CampaignDiscoveryState>()
+      .notNull()
+      .default({
+        apolloPage: 1,
+        apolloExhausted: false,
+        claySearchId: null,
+        clayExhausted: false,
+      }),
+    createdBy: text("created_by").notNull(),
+    updatedBy: text("updated_by").notNull(),
+    createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [index("outbound_campaign_status_idx").on(table.status)],
+);
 
 export const outboundCompany = pgTable("outbound_company", {
   id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
@@ -168,51 +190,83 @@ export const outboundProspect = pgTable(
   ],
 );
 
-export const outboundCampaignCompany = pgTable("outbound_campaign_company", {
-  id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
-  campaignId: text("campaign_id").notNull().references(() => outboundCampaign.id),
-  domain: text("domain").notNull(),
-  name: text("name").notNull(),
-  website: text("website").notNull(),
-  country: text("country"),
-  platform: text("platform").$type<"shopify" | "woocommerce" | null>(),
-  teamSize: integer("team_size"),
-  annualRevenue: bigint("annual_revenue", {mode: "number"}),
-  source: text("source").$type<"apollo" | "clay">().notNull(),
-  sourceId: text("source_id"),
-  sourcePayload: jsonb("source_payload").$type<Record<string, unknown>>().notNull().default({}),
-  status: text("status").$type<"candidate" | "added" | "excluded">().notNull().default("candidate"),
-  reason: text("reason").notNull().default(""),
-  prospectId: text("prospect_id").references(() => outboundProspect.id),
-  criteriaRevision: integer("criteria_revision").notNull(),
-  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
-}, (table) => [
-  uniqueIndex("outbound_campaign_company_domain_unique").on(table.campaignId, table.domain),
-  index("outbound_campaign_company_queue_idx").on(table.campaignId, table.status),
-  index("outbound_campaign_company_domain_idx").on(table.domain),
-]);
+export const outboundCampaignCompany = pgTable(
+  "outbound_campaign_company",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    campaignId: text("campaign_id")
+      .notNull()
+      .references(() => outboundCampaign.id),
+    domain: text("domain").notNull(),
+    name: text("name").notNull(),
+    website: text("website").notNull(),
+    country: text("country"),
+    platform: text("platform").$type<"shopify" | "woocommerce" | null>(),
+    teamSize: integer("team_size"),
+    annualRevenue: bigint("annual_revenue", { mode: "number" }),
+    source: text("source").$type<"apollo" | "clay">().notNull(),
+    sourceId: text("source_id"),
+    sourcePayload: jsonb("source_payload")
+      .$type<Record<string, unknown>>()
+      .notNull()
+      .default({}),
+    status: text("status")
+      .$type<"candidate" | "added" | "excluded">()
+      .notNull()
+      .default("candidate"),
+    reason: text("reason").notNull().default(""),
+    prospectId: text("prospect_id").references(() => outboundProspect.id),
+    criteriaRevision: integer("criteria_revision").notNull(),
+    createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("outbound_campaign_company_domain_unique").on(
+      table.campaignId,
+      table.domain,
+    ),
+    index("outbound_campaign_company_queue_idx").on(
+      table.campaignId,
+      table.status,
+    ),
+    index("outbound_campaign_company_domain_idx").on(table.domain),
+  ],
+);
 
-export const outboundCampaignRun = pgTable("outbound_campaign_run", {
-  id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
-  campaignId: text("campaign_id").notNull().references(() => outboundCampaign.id),
-  requestId: text("request_id").notNull().unique(),
-  provider: text("provider").$type<"apollo" | "clay">().notNull(),
-  operation: text("operation").$type<CampaignRun["operation"]>().notNull(),
-  status: text("status").$type<CampaignRun["status"]>().notNull().default("starting"),
-  criteriaRevision: integer("criteria_revision").notNull(),
-  criteria: jsonb("criteria").$type<CampaignCriteria>().notNull(),
-  cursor: jsonb("cursor").$type<Record<string, unknown>>().notNull(),
-  output: jsonb("output").$type<Record<string, unknown>>(),
-  companyCount: integer("company_count").notNull().default(0),
-  error: text("error"),
-  createdBy: text("created_by").notNull(),
-  startedAt: timestamp("started_at", { mode: "date" }).notNull().defaultNow(),
-  completedAt: timestamp("completed_at", { mode: "date" }),
-}, (table) => [
-  index("outbound_campaign_run_recent_idx").on(table.campaignId, table.startedAt),
-  uniqueIndex("outbound_campaign_run_open_unique").on(table.campaignId).where(sql`${table.status} in ('starting', 'uncertain')`),
-]);
+export const outboundCampaignRun = pgTable(
+  "outbound_campaign_run",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    campaignId: text("campaign_id")
+      .notNull()
+      .references(() => outboundCampaign.id),
+    requestId: text("request_id").notNull().unique(),
+    provider: text("provider").$type<"apollo" | "clay">().notNull(),
+    operation: text("operation").$type<CampaignRun["operation"]>().notNull(),
+    status: text("status")
+      .$type<CampaignRun["status"]>()
+      .notNull()
+      .default("starting"),
+    criteriaRevision: integer("criteria_revision").notNull(),
+    criteria: jsonb("criteria").$type<CampaignCriteria>().notNull(),
+    cursor: jsonb("cursor").$type<Record<string, unknown>>().notNull(),
+    output: jsonb("output").$type<Record<string, unknown>>(),
+    companyCount: integer("company_count").notNull().default(0),
+    error: text("error"),
+    createdBy: text("created_by").notNull(),
+    startedAt: timestamp("started_at", { mode: "date" }).notNull().defaultNow(),
+    completedAt: timestamp("completed_at", { mode: "date" }),
+  },
+  (table) => [
+    index("outbound_campaign_run_recent_idx").on(
+      table.campaignId,
+      table.startedAt,
+    ),
+    uniqueIndex("outbound_campaign_run_open_unique")
+      .on(table.campaignId)
+      .where(sql`${table.status} in ('starting', 'uncertain')`),
+  ],
+);
 
 export const outboundRevision = pgTable(
   "outbound_revision",
@@ -347,7 +401,17 @@ export const outboundSendAttempt = pgTable(
 
 export const outboundIntegrationJob = pgTable("outbound_integration_job", {
   id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
-  provider: text("provider").$type<"apollo" | "clay" | "warmbly" | "claude" | "automation" | "linkedin" | "conversation">().notNull(),
+  provider: text("provider")
+    .$type<
+      | "apollo"
+      | "clay"
+      | "warmbly"
+      | "claude"
+      | "automation"
+      | "linkedin"
+      | "conversation"
+    >()
+    .notNull(),
   prospectId: text("prospect_id").references(() => outboundProspect.id),
   requestId: text("request_id").unique(),
   status: text("status")
@@ -364,67 +428,119 @@ export const outboundMailboxReadiness = pgTable("outbound_mailbox_readiness", {
   id: text("email").primaryKey(),
   plan: jsonb("plan").$type<WarmupPlan>().notNull(),
   lastCheck: jsonb("last_check").$type<MailboxCheck>(),
-  dkimSelectors: jsonb("dkim_selectors").$type<string[]>().notNull().default([]),
+  dkimSelectors: jsonb("dkim_selectors")
+    .$type<string[]>()
+    .notNull()
+    .default([]),
   checkedAt: timestamp("checked_at", { mode: "date" }),
   updatedBy: text("updated_by").notNull(),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
 });
 
+export const outboundConversation = pgTable(
+  "outbound_conversation",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    prospectId: text("prospect_id")
+      .notNull()
+      .references(() => outboundProspect.id),
+    channel: text("channel").$type<"email" | "linkedin">().notNull(),
+    accountId: text("account_id").notNull(),
+    accountLabel: text("account_label").notNull(),
+    providerThreadId: text("provider_thread_id").notNull(),
+    counterpart: text("counterpart").notNull(),
+    subject: text("subject").notNull().default(""),
+    stage: text("stage")
+      .$type<
+        | "open"
+        | "interested"
+        | "question"
+        | "later"
+        | "notInterested"
+        | "meetingBooked"
+        | "meetingHeld"
+        | "closed"
+      >()
+      .notNull()
+      .default("open"),
+    needsReply: boolean("needs_reply").notNull().default(false),
+    revision: integer("revision").notNull().default(0),
+    draftBody: text("draft_body").notNull().default(""),
+    draftGeneratedAt: timestamp("draft_generated_at", { mode: "date" }),
+    draftBasedOnMessageId: text("draft_based_on_message_id"),
+    lastInboundAt: timestamp("last_inbound_at", { mode: "date" }),
+    lastOutboundAt: timestamp("last_outbound_at", { mode: "date" }),
+    createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("outbound_conversation_provider_uidx").on(
+      table.channel,
+      table.accountId,
+      table.providerThreadId,
+    ),
+    index("outbound_conversation_attention_idx").on(
+      table.needsReply,
+      table.updatedAt,
+    ),
+    index("outbound_conversation_prospect_idx").on(table.prospectId),
+  ],
+);
 
-export const outboundConversation = pgTable("outbound_conversation", {
-  id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
-  prospectId: text("prospect_id").notNull().references(() => outboundProspect.id),
-  channel: text("channel").$type<"email" | "linkedin">().notNull(),
-  accountId: text("account_id").notNull(),
-  accountLabel: text("account_label").notNull(),
-  providerThreadId: text("provider_thread_id").notNull(),
-  counterpart: text("counterpart").notNull(),
-  subject: text("subject").notNull().default(""),
-  stage: text("stage").$type<"open" | "interested" | "question" | "later" | "notInterested" | "meetingBooked" | "meetingHeld" | "closed">().notNull().default("open"),
-  needsReply: boolean("needs_reply").notNull().default(false),
-  revision: integer("revision").notNull().default(0),
-  draftBody: text("draft_body").notNull().default(""),
-  draftGeneratedAt: timestamp("draft_generated_at", { mode: "date" }),
-  draftBasedOnMessageId: text("draft_based_on_message_id"),
-  lastInboundAt: timestamp("last_inbound_at", { mode: "date" }),
-  lastOutboundAt: timestamp("last_outbound_at", { mode: "date" }),
-  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
-}, (table) => [
-  uniqueIndex("outbound_conversation_provider_uidx").on(table.channel, table.accountId, table.providerThreadId),
-  index("outbound_conversation_attention_idx").on(table.needsReply, table.updatedAt),
-  index("outbound_conversation_prospect_idx").on(table.prospectId),
-]);
+export const outboundConversationMessage = pgTable(
+  "outbound_conversation_message",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    conversationId: text("conversation_id")
+      .notNull()
+      .references(() => outboundConversation.id),
+    providerMessageId: text("provider_message_id").notNull(),
+    direction: text("direction").$type<"inbound" | "outbound">().notNull(),
+    bodyText: text("body_text").notNull(),
+    subject: text("subject").notNull().default(""),
+    from: text("from_address").notNull(),
+    to: text("to_address").notNull(),
+    rfcMessageId: text("rfc_message_id"),
+    isAutomated: boolean("is_automated").notNull().default(false),
+    truncated: boolean("truncated").notNull().default(false),
+    sentAt: timestamp("sent_at", { mode: "date" }).notNull(),
+    createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("outbound_conversation_message_provider_uidx").on(
+      table.conversationId,
+      table.providerMessageId,
+    ),
+    index("outbound_conversation_message_thread_idx").on(
+      table.conversationId,
+      table.sentAt,
+    ),
+  ],
+);
 
-export const outboundConversationMessage = pgTable("outbound_conversation_message", {
-  id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
-  conversationId: text("conversation_id").notNull().references(() => outboundConversation.id),
-  providerMessageId: text("provider_message_id").notNull(),
-  direction: text("direction").$type<"inbound" | "outbound">().notNull(),
-  bodyText: text("body_text").notNull(),
-  subject: text("subject").notNull().default(""),
-  from: text("from_address").notNull(),
-  to: text("to_address").notNull(),
-  rfcMessageId: text("rfc_message_id"),
-  isAutomated: boolean("is_automated").notNull().default(false),
-  truncated: boolean("truncated").notNull().default(false),
-  sentAt: timestamp("sent_at", { mode: "date" }).notNull(),
-  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
-}, (table) => [
-  uniqueIndex("outbound_conversation_message_provider_uidx").on(table.conversationId, table.providerMessageId),
-  index("outbound_conversation_message_thread_idx").on(table.conversationId, table.sentAt),
-]);
-
-export const outboundConversationSend = pgTable("outbound_conversation_send", {
-  id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
-  conversationId: text("conversation_id").notNull().references(() => outboundConversation.id),
-  revision: integer("revision").notNull(),
-  status: text("status").$type<"starting" | "accepted" | "failed" | "uncertain">().notNull(),
-  input: jsonb("input").$type<Record<string, unknown>>().notNull(),
-  providerMessageId: text("provider_message_id"),
-  error: text("error"),
-  createdBy: text("created_by").notNull(),
-  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
-  completedAt: timestamp("completed_at", { mode: "date" }),
-}, (table) => [uniqueIndex("outbound_conversation_send_revision_uidx").on(table.conversationId, table.revision)]);
+export const outboundConversationSend = pgTable(
+  "outbound_conversation_send",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    conversationId: text("conversation_id")
+      .notNull()
+      .references(() => outboundConversation.id),
+    revision: integer("revision").notNull(),
+    status: text("status")
+      .$type<"starting" | "accepted" | "failed" | "uncertain">()
+      .notNull(),
+    input: jsonb("input").$type<Record<string, unknown>>().notNull(),
+    providerMessageId: text("provider_message_id"),
+    error: text("error"),
+    createdBy: text("created_by").notNull(),
+    createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+    completedAt: timestamp("completed_at", { mode: "date" }),
+  },
+  (table) => [
+    uniqueIndex("outbound_conversation_send_revision_uidx").on(
+      table.conversationId,
+      table.revision,
+    ),
+  ],
+);

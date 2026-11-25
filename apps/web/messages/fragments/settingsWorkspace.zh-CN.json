@@ -1,0 +1,56 @@
+{
+  "dashboard": {
+    "settings": {
+      "description": "管理账户的个人资料、登录、已连接的商店和账单。",
+      "tabs": {
+        "account": "个人资料",
+        "security": "登录与安全",
+        "integrations": "已连接的商店",
+        "billing": "方案与账单"
+      },
+      "workspace": {
+        "navigation": "账户导航",
+        "description": "管理账户的个人资料、登录、已连接的商店和账单。",
+        "sections": {
+          "account": {
+            "title": "个人资料",
+            "description": "个人信息和首选语言。"
+          },
+          "security": {
+            "title": "登录与安全",
+            "description": "管理密码、退出登录或删除账户。"
+          },
+          "integrations": {
+            "title": "已连接的商店",
+            "description": "管理各商店的连接，刷新商品信息，并查看已连接的服务。"
+          },
+          "billing": {
+            "title": "方案与账单",
+            "description": "此账户的方案、付款信息和发票。"
+          }
+        },
+        "readOnly": "只读商品目录",
+        "manageStore": "打开商店",
+        "services": "已连接的服务",
+        "unavailable": "无法获取状态"
+      },
+      "account": {
+        "profile": {
+          "fields": {
+            "role": {
+              "label": "在企业中的角色"
+            }
+          }
+        }
+      },
+      "integrations": {
+        "action": {
+          "sync": "同步商品"
+        },
+        "google": {
+          "manage": "管理 Google Shopping"
+        }
+      }
+    }
+  }
+}

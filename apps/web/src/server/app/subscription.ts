@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 
 import { resultify } from "@zenncore/utils";
 import { schema } from "../database";
@@ -283,7 +283,7 @@ export const createBillingPortalSession = withAuthentication(
     const session = await resultify(() =>
       stripe().billingPortal.sessions.create({
         customer,
-        return_url: `${appHost}/dashboard/settings`,
+        return_url: `${appHost}/dashboard/settings?tab=billing`,
       }),
     );
 

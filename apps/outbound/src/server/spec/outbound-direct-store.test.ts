@@ -230,13 +230,34 @@ describe.skipIf(!endpoint)("isolated direct mailbox persistence", () => {
   test("additional domains connect only exact Playbook inboxes and remain disabled", async () => {
     const { store, mailboxes, direct } = active();
     const additionalEmail = "juri@additional-brand.com";
-    required(await store.savePlaybook(actor, { ...defaultPlaybook, senderEmails: additionalEmail }));
-    spyOn(direct, "verify").mockResolvedValue({ success: true, data: { email: additionalEmail } });
-    const connected = required(await mailboxes.connectDirect(actor, { email: additionalEmail, appPassword: password }));
-    expect(required(await mailboxes.read(connected.inboxId))).toMatchObject({ email: additionalEmail, enabled: false, syncMode: "full" });
-    const unregistered = await mailboxes.connectDirect(actor, { email: "other@additional-brand.com", appPassword: password });
+    required(
+      await store.savePlaybook(actor, {
+        ...defaultPlaybook,
+        senderEmails: additionalEmail,
+      }),
+    );
+    spyOn(direct, "verify").mockResolvedValue({
+      success: true,
+      data: { email: additionalEmail },
+    });
+    const connected = required(
+      await mailboxes.connectDirect(actor, {
+        email: additionalEmail,
+        appPassword: password,
+      }),
+    );
+    expect(required(await mailboxes.read(connected.inboxId))).toMatchObject({
+      email: additionalEmail,
+      enabled: false,
+      syncMode: "full",
+    });
+    const unregistered = await mailboxes.connectDirect(actor, {
+      email: "other@additional-brand.com",
+      appPassword: password,
+    });
     expect(unregistered.success).toBe(false);
-    if (!unregistered.success) expect(unregistered.error.message).toBe("direct-mailbox-not-registered");
+    if (!unregistered.success)
+      expect(unregistered.error.message).toBe("direct-mailbox-not-registered");
   });
 
   test("registered inactive mailbox connects and syncs without receiving the active sender identity or delivery permission", async () => {

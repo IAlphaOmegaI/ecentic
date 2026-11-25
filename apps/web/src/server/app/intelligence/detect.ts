@@ -143,6 +143,7 @@ export const stream = ({
         for (const _attempt of [0, 1, 2]) {
           const generation = await resultify(() =>
             AI.generate({
+              label: "detect.competitorsFallback",
               instructions: Judge.DETECTION_SYSTEM,
               prompt,
               output: z.object({ competitors: z.array(candidate) }),

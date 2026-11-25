@@ -9,7 +9,7 @@ import { useRouter } from "@/i18n/navigation";
 import { formatPlanPrice } from "@/lib/agent-api";
 import * as Payg from "@/server/app/billing/payg";
 import type * as PerformanceFee from "@/server/app/billing/performance-fee";
-import * as Subscription from "@/server/app/subscription";
+import * as Subscription from "@/server/app/subscription.actions";
 import { DashboardEmptyState } from "../../../_components/empty-state";
 
 type Props = {

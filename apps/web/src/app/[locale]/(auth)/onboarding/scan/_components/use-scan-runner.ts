@@ -4,7 +4,7 @@ import * as Sentry from "@sentry/nextjs";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as Simulate from "@/server/app/intelligence/simulate";
-import * as Scan from "@/server/app/scan";
+import * as Scan from "@/server/app/scan.actions";
 import { useOnboardingError } from "../../_components/use-onboarding-error";
 
 type ScanPhase = "pre" | "running" | "complete";

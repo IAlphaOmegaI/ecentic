@@ -12,7 +12,8 @@
     },
     "rules": {
       "complexity": {
-        "noForEach": "error"
+        "noForEach": "error",
+        "useLiteralKeys": "off"
       },
       "a11y": {
         "noSvgWithoutTitle": "off"
@@ -67,6 +68,9 @@
       "!**/.expo",
       "!**/.turbo",
       "!**/.vscode",
+      "!apps/*/src/components/hairline/kernel-style.css",
+      "!apps/*/src/components/hairline/rest",
+      "!apps/web/src/app/**/platform/_components/page-bodies/riffle-rest.json",
       "!apps/outbound/messages/*.d.json.ts"
     ]
   }

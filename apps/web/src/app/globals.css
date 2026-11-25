@@ -38,6 +38,9 @@ html:is(:lang(ja), :lang(zh-CN)) .marketing-site :is(h1, h2, h3, h4) {
   /* Expanded Judy and toast edges share the requested softer treatment.
      Ordinary controls retain the shared small/large radius foundations. */
   --radius-overlay: calc(var(--spacing) * 4);
+  /* The dashboard chrome casts inward onto its rounded content viewport. */
+  --inset-shadow-workspace: inset 0 var(--spacing) calc(var(--spacing) * 4)
+    color-mix(in oklab, var(--color-emphasis) 18%, transparent);
 }
 
 html {

@@ -2,7 +2,9 @@
 
 import {
   BarChartIcon,
+  FileIcon,
   GaugeIcon,
+  GearIcon,
   GlobeIcon,
   MenuIcon,
   RadarIcon,
@@ -25,10 +27,12 @@ import {
   SheetTrigger,
 } from "@zenncore/web/components/sheet";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
   type ComponentType,
   type ReactNode,
+  Suspense,
   useEffect,
   useRef,
   useState,
@@ -40,6 +44,10 @@ import {
   dashboardSections,
   resolveDashboardDestination,
 } from "@/lib/dashboard-destinations";
+import {
+  resolveSettingsSection,
+  settingsSections,
+} from "@/lib/dashboard-settings";
 
 const destinationIcons = {
   overview: SquareChartIcon,
@@ -76,123 +84,214 @@ export const SidebarNav = ({ store, productBadge }: SidebarNav.Props) => {
   }, [pathname, base]);
 
   return (
-    <nav
-      aria-label={translate("label")}
-      className="relative flex min-h-0 flex-1 flex-col overflow-hidden"
-    >
-      <Accordion
-        value={expanded}
-        onValueChange={setExpanded}
-        className="relative min-h-0 flex-1 justify-start gap-2 overflow-y-auto overscroll-contain pt-2 pb-6"
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+      <nav
+        aria-label={translate("label")}
+        className="relative flex min-h-0 flex-1 flex-col overflow-hidden"
       >
-        {dashboardDestinations.map((destination) => {
-          const grouped =
-            destination.key === "products" ||
-            destination.key === "research" ||
-            destination.key === "channels";
-          if (!grouped)
+        <Accordion
+          value={expanded}
+          onValueChange={setExpanded}
+          className="relative min-h-0 flex-1 justify-start gap-2 overflow-y-auto overscroll-contain pt-2 pb-6"
+        >
+          {dashboardDestinations.map((destination) => {
+            const grouped =
+              destination.key === "products" ||
+              destination.key === "research" ||
+              destination.key === "channels";
+            if (!grouped)
+              return (
+                <NavLink
+                  key={destination.key}
+                  href={`${base}${destination.segment}`}
+                  active={active === destination.key}
+                  icon={destinationIcons[destination.key]}
+                  label={translate(destination.key)}
+                />
+              );
+            const entries = dashboardSections[destination.key];
+            const selected = [...entries]
+              .reverse()
+              .find(
+                (entry) =>
+                  segment === entry.segment ||
+                  segment.startsWith(`${entry.segment}/`),
+              );
+            const Icon = destinationIcons[destination.key];
+            const current = active === destination.key;
             return (
-              <NavLink
+              <AccordionItem
                 key={destination.key}
-                href={`${base}${destination.segment}`}
-                active={active === destination.key}
-                icon={destinationIcons[destination.key]}
-                label={translate(destination.key)}
-              />
-            );
-          const entries = dashboardSections[destination.key];
-          const selected = [...entries]
-            .reverse()
-            .find(
-              (entry) =>
-                segment === entry.segment ||
-                segment.startsWith(`${entry.segment}/`),
-            );
-          const Icon = destinationIcons[destination.key];
-          const current = active === destination.key;
-          return (
-            <AccordionItem
-              key={destination.key}
-              value={destination.key}
-              className="mx-3 w-auto shrink-0 border-0"
-            >
-              <AccordionTrigger
-                classList={{
-                  trigger: {
-                    icon: "mr-0 size-4 shrink-0 transition-transform duration-200 ease-out group-data-panel-open:rotate-180 motion-reduce:transition-none",
-                  },
-                }}
-                className={cn(
-                  "group flex min-h-10 w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2",
-                  current
-                    ? "inset-shadow-background-rich/30 inset-shadow-sm bg-background-rich bg-linear-to-b from-primary-text/90 to-primary-text font-semibold text-background-rich"
-                    : "font-medium text-background-rich/75 hover:bg-background-rich/8 hover:text-background-rich",
-                )}
+                value={destination.key}
+                className="mx-3 w-auto shrink-0 border-0"
               >
-                <Icon aria-hidden className="size-5 shrink-0" />
-                <span className="min-w-0 flex-1 leading-snug">
-                  {translate(destination.key)}
-                </span>
-                {destination.key === "products" && (
-                  <span className="shrink-0 rounded-sm bg-background-rich/10 px-1.5 py-0.5 font-medium text-background-rich/80 text-xs tabular-nums">
-                    {productBadge}
-                  </span>
-                )}
-              </AccordionTrigger>
-              <AccordionPanel className="bg-transparent transition-[height,opacity] duration-200 ease-out data-ending-style:opacity-0 data-starting-style:opacity-0 motion-reduce:transition-none">
-                <div className="space-y-0.5 pt-1 pb-2 pl-8">
-                  {entries.map((entry) => (
-                    <Link
-                      key={entry.key}
-                      href={`${base}${entry.segment}`}
-                      aria-current={
-                        selected?.key === entry.key ? "page" : undefined
-                      }
-                      className={cn(
-                        "flex min-h-9 items-center rounded-lg px-3 py-1.5 text-sm leading-snug transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2",
-                        selected?.key === entry.key
-                          ? "bg-background-rich/12 font-semibold text-background-rich"
-                          : "text-background-rich/65 hover:bg-background-rich/8 hover:text-background-rich",
-                      )}
-                    >
-                      {sections(entry.key)}
-                    </Link>
-                  ))}
-                  {destination.key === "channels" && (
-                    <div className="mt-2 border-background-rich/10 border-t pt-2">
-                      <p className="px-3 pt-1 pb-2 font-medium text-background-rich/50 text-xs">
-                        {sections("developer")}
-                      </p>
-                      {dashboardDeveloperTools.map((entry) => (
-                        <Link
-                          key={entry.key}
-                          href={`${base}${entry.segment}`}
-                          aria-current={
-                            segment === entry.segment ? "page" : undefined
-                          }
-                          className={cn(
-                            "flex min-h-9 items-center rounded-lg px-3 py-1.5 text-sm leading-snug transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2",
-                            segment === entry.segment
-                              ? "bg-background-rich/12 font-semibold text-background-rich"
-                              : "text-background-rich/65 hover:bg-background-rich/8 hover:text-background-rich",
-                          )}
-                        >
-                          {sections(entry.key)}
-                        </Link>
-                      ))}
-                    </div>
+                <AccordionTrigger
+                  classList={{
+                    trigger: {
+                      icon: "mr-0 size-4 shrink-0 transition-transform duration-200 ease-out group-data-panel-open:rotate-180 motion-reduce:transition-none",
+                    },
+                  }}
+                  className={cn(
+                    "group flex min-h-10 w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2",
+                    current
+                      ? "inset-shadow-background-rich/30 inset-shadow-sm bg-background-rich bg-linear-to-b from-primary-text/90 to-primary-text font-semibold text-background-rich"
+                      : "font-medium text-background-rich/75 hover:bg-background-rich/8 hover:text-background-rich",
                   )}
-                </div>
-              </AccordionPanel>
-            </AccordionItem>
-          );
-        })}
-      </Accordion>
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-6 bg-linear-to-t from-emphasis to-transparent"
+                >
+                  <Icon aria-hidden className="size-5 shrink-0" />
+                  <span className="min-w-0 flex-1 leading-snug">
+                    {translate(destination.key)}
+                  </span>
+                  {destination.key === "products" && (
+                    <span className="shrink-0 rounded-sm bg-background-rich/10 px-1.5 py-0.5 font-medium text-background-rich/80 text-xs tabular-nums">
+                      {productBadge}
+                    </span>
+                  )}
+                </AccordionTrigger>
+                <AccordionPanel className="bg-transparent transition-[height,opacity] duration-200 ease-out data-ending-style:opacity-0 data-starting-style:opacity-0 motion-reduce:transition-none">
+                  <div className="space-y-0.5 pt-1 pb-2 pl-8">
+                    {entries.map((entry) => (
+                      <Link
+                        key={entry.key}
+                        href={`${base}${entry.segment}`}
+                        aria-current={
+                          selected?.key === entry.key ? "page" : undefined
+                        }
+                        className={cn(
+                          "flex min-h-9 items-center rounded-lg px-3 py-1.5 text-sm leading-snug transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2",
+                          selected?.key === entry.key
+                            ? "bg-background-rich/12 font-semibold text-background-rich"
+                            : "text-background-rich/65 hover:bg-background-rich/8 hover:text-background-rich",
+                        )}
+                      >
+                        {sections(entry.key)}
+                      </Link>
+                    ))}
+                    {destination.key === "channels" && (
+                      <div className="mt-2 border-background-rich/10 border-t pt-2">
+                        <p className="px-3 pt-1 pb-2 font-medium text-background-rich/50 text-xs">
+                          {sections("developer")}
+                        </p>
+                        {dashboardDeveloperTools.map((entry) => (
+                          <Link
+                            key={entry.key}
+                            href={`${base}${entry.segment}`}
+                            aria-current={
+                              segment === entry.segment ? "page" : undefined
+                            }
+                            className={cn(
+                              "flex min-h-9 items-center rounded-lg px-3 py-1.5 text-sm leading-snug transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2",
+                              segment === entry.segment
+                                ? "bg-background-rich/12 font-semibold text-background-rich"
+                                : "text-background-rich/65 hover:bg-background-rich/8 hover:text-background-rich",
+                            )}
+                          >
+                            {sections(entry.key)}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </AccordionPanel>
+              </AccordionItem>
+            );
+          })}
+        </Accordion>
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-6 bg-linear-to-t from-emphasis to-transparent"
+        />
+      </nav>
+    </div>
+  );
+};
+
+export const SettingsShortcut = () => {
+  const translate = useTranslations("dashboard.nav");
+  return (
+    <nav
+      aria-label={translate("settings")}
+      className="shrink-0 border-background-rich/10 border-t py-4"
+    >
+      <NavLink
+        href="/dashboard/settings"
+        active={false}
+        icon={GearIcon}
+        label={translate("settings")}
       />
     </nav>
+  );
+};
+
+export const AccountNavigation = () => {
+  const pathname = usePathname();
+  const translate = useTranslations("dashboard");
+  const settings = pathname === "/dashboard/settings";
+
+  return (
+    <nav
+      aria-label={translate("settings.workspace.navigation")}
+      className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto overscroll-contain py-4"
+    >
+      <NavLink
+        href="/dashboard"
+        active={pathname === "/dashboard"}
+        icon={ShoppingCartIcon}
+        label={translate("sidebar.allStores")}
+      />
+      <NavLink
+        href="/dashboard/reports"
+        active={pathname === "/dashboard/reports"}
+        icon={FileIcon}
+        label={translate("reports.title")}
+      />
+      <div className="mt-2 border-background-rich/10 border-t pt-4">
+        <NavLink
+          href="/dashboard/settings"
+          active={settings}
+          current="location"
+          icon={GearIcon}
+          label={translate("nav.settings")}
+        />
+        {settings && (
+          <Suspense fallback={<SettingsLinks selection="account" />}>
+            <SettingsSelection />
+          </Suspense>
+        )}
+      </div>
+    </nav>
+  );
+};
+
+const SettingsSelection = () => {
+  const parameters = useSearchParams();
+  return <SettingsLinks selection={resolveSettingsSection(parameters)} />;
+};
+
+const SettingsLinks = ({
+  selection,
+}: {
+  selection: ReturnType<typeof resolveSettingsSection>;
+}) => {
+  const translate = useTranslations("dashboard.settings.tabs");
+  return (
+    <div className="space-y-2 pt-2 pr-4 pb-4 pl-8">
+      {settingsSections.map((section) => (
+        <Link
+          key={section}
+          href={`/dashboard/settings?tab=${section}`}
+          aria-current={selection === section ? "page" : undefined}
+          className={cn(
+            "flex min-h-10 items-center rounded-lg px-4 py-2 text-sm leading-snug transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2",
+            selection === section
+              ? "bg-background-rich/12 font-semibold text-background-rich"
+              : "text-background-rich/65 hover:bg-background-rich/8 hover:text-background-rich",
+          )}
+        >
+          {translate(section)}
+        </Link>
+      ))}
+    </div>
   );
 };
 
@@ -202,16 +301,18 @@ const NavLink = ({
   icon: Icon,
   label,
   badge,
+  current = "page",
 }: {
   href: string;
   active: boolean;
   icon: ComponentType<{ className?: string }>;
   label: string;
   badge?: ReactNode;
+  current?: "page" | "location";
 }) => (
   <Link
     href={href}
-    aria-current={active ? "page" : undefined}
+    aria-current={active ? current : undefined}
     className={cn(
       "group relative mx-3 flex min-h-10 shrink-0 items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2",
       active
@@ -239,16 +340,18 @@ const NavLink = ({
 
 export const MobileSidebar = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
+  const parameters = useSearchParams();
+  const route = `${pathname}?${parameters.toString()}`;
   const [open, setOpen] = useState(false);
-  const previousPathname = useRef(pathname);
+  const previousRoute = useRef(route);
   const translate = useTranslations("nav.menu");
   const translateStores = useTranslations("dashboard.stores");
 
   useEffect(() => {
-    if (previousPathname.current === pathname) return;
-    previousPathname.current = pathname;
+    if (previousRoute.current === route) return;
+    previousRoute.current = route;
     setOpen(false);
-  }, [pathname]);
+  }, [route]);
 
   return (
     <div className="shrink-0 md:hidden">

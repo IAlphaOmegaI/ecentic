@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 
 import crypto from "node:crypto";
 import { and, eq, gt, isNull, or } from "drizzle-orm";

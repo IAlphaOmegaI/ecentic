@@ -1,7 +1,7 @@
-"use server";
+import "server-only";
 
 import { resultify } from "@zenncore/utils";
-import { and, count, eq } from "drizzle-orm";
+import { and, count, eq, inArray } from "drizzle-orm";
 import { revalidatePath, updateTag } from "next/cache";
 import { z } from "zod";
 import { db, schema } from "../database";
@@ -28,6 +28,19 @@ const { find, create, update, destroy } = repository(
 );
 
 export type Type = Document<typeof schema.listingOptimization>;
+
+export const findPublishedForProducts = withInstrumentation(
+  async (_, { products }: { products: string[] }) => {
+    if (products.length === 0) return { success: true, data: [] as Type[] };
+    return find(Environment.SERVER, {
+      where: and(
+        eq(schema.listingOptimization.status, "published"),
+        inArray(schema.listingOptimization.productId, products),
+      ),
+    });
+  },
+  "Optimization.findPublishedForProducts",
+);
 
 const PUBLISHABLE_PLATFORMS = new Set(["shopify", "woocommerce"]);
 const WIN_RATE_THRESHOLD = 55;
@@ -129,6 +142,7 @@ const generateImprovedListing = withContext(
   ) => {
     const result = await resultify(() =>
       AI.generate({
+        label: "optimization.listing",
         instructions: `You improve e-commerce product listings so AI shopping agents choose this product more often.
 Output a clearer, spec-rich title and an HTML description (use <p>, <ul><li> where helpful).
 Do not invent specifications that contradict the original; you may reorganize and emphasize existing facts.
@@ -629,6 +643,7 @@ export const generateStructuredData = withSubscription(
 
     const generated = await resultify(() =>
       AI.generate({
+        label: "optimization.schema",
         instructions: `You generate JSON-LD structured data (schema.org/Product) for e-commerce product pages to help AI shopping agents understand product details.
 Output a single valid JSON string. Include @context, @type, name, description, brand, sku, and offers (price, priceCurrency, availability).
 Do not invent specifications not present in the input.`,

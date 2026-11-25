@@ -42,17 +42,17 @@ const readJson = async (path: string) => {
 };
 
 const resolveToken = async () => {
-  if (process.env.VERCEL_TOKEN) return process.env.VERCEL_TOKEN;
+  if (process.env["VERCEL_TOKEN"]) return process.env["VERCEL_TOKEN"];
   const auth = await readJson(
     join(homedir(), "Library/Application Support/com.vercel.cli/auth.json"),
   );
-  const token = auth?.token;
+  const token = auth?.["token"];
   if (typeof token === "string" && token.length > 0) return token;
   throw new Error("No Vercel token. Run `vercel login` or set VERCEL_TOKEN.");
 };
 
 const resolveTeamId = async (token: string) => {
-  if (process.env.TEAM_ID) return process.env.TEAM_ID;
+  if (process.env["TEAM_ID"]) return process.env["TEAM_ID"];
   const response = await fetch("https://api.vercel.com/v2/teams", {
     headers: { Authorization: `Bearer ${token}` },
   });

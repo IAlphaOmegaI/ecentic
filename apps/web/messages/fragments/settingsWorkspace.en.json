@@ -1,0 +1,56 @@
+{
+  "dashboard": {
+    "settings": {
+      "description": "Manage your profile, sign-in, connected stores and billing across your account.",
+      "tabs": {
+        "account": "Profile",
+        "security": "Sign-in & security",
+        "integrations": "Connected stores",
+        "billing": "Plan & billing"
+      },
+      "workspace": {
+        "navigation": "Account navigation",
+        "description": "Manage your profile, sign-in, connected stores and billing across your account.",
+        "sections": {
+          "account": {
+            "title": "Profile",
+            "description": "Your personal details and preferred language."
+          },
+          "security": {
+            "title": "Sign-in & security",
+            "description": "Manage your password, sign out or delete your account."
+          },
+          "integrations": {
+            "title": "Connected stores",
+            "description": "Manage each store connection, refresh its products and check connected services."
+          },
+          "billing": {
+            "title": "Plan & billing",
+            "description": "Your plan, payment details and invoices for this account."
+          }
+        },
+        "readOnly": "Read-only catalog",
+        "manageStore": "Open store",
+        "services": "Connected services",
+        "unavailable": "Status unavailable"
+      },
+      "account": {
+        "profile": {
+          "fields": {
+            "role": {
+              "label": "Role at your business"
+            }
+          }
+        }
+      },
+      "integrations": {
+        "action": {
+          "sync": "Sync products"
+        },
+        "google": {
+          "manage": "Manage Google Shopping"
+        }
+      }
+    }
+  }
+}

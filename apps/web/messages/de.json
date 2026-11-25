@@ -2899,13 +2899,14 @@
     "settings": {
       "statusPill": "Konto & Arbeitsbereich",
       "title": "Einstellungen",
-      "description": "Verwalten Sie Ihr Konto, Integrationen und Einstellungen.",
+      "description": "Verwalten Sie Profil, Anmeldung, verbundene Shops und Abrechnung für Ihr Konto.",
       "tabs": {
-        "account": "Konto",
-        "integrations": "Integrationen",
+        "account": "Profil",
+        "integrations": "Verbundene Shops",
         "notifications": "Benachrichtigungen",
         "simulation": "Simulation",
-        "billing": "Abrechnung"
+        "billing": "Plan und Abrechnung",
+        "security": "Anmeldung und Sicherheit"
       },
       "account": {
         "language": {
@@ -2929,7 +2930,7 @@
               "validation": "Ungültige E-Mail-Adresse"
             },
             "role": {
-              "label": "Rolle"
+              "label": "Ihre Rolle im Unternehmen"
             }
           },
           "roles": [
@@ -3059,7 +3060,7 @@
         "empty": "Noch keine Shops verbunden.",
         "connected": "Verbunden",
         "action": {
-          "sync": "Jetzt synchronisieren",
+          "sync": "Produkte synchronisieren",
           "syncing": "Wird synchronisiert…",
           "connectAnother": "Weiteren Shop verbinden"
         },
@@ -3077,7 +3078,7 @@
           "active": "Aktiv · {count, number} live",
           "linked": "Verknüpft",
           "setupInProgress": "Einrichtung läuft",
-          "manage": "Verwalten →"
+          "manage": "Google Shopping verwalten"
         },
         "publicImport": {
           "note": "Aus dem öffentlichen Katalog importiert · schreibgeschützt.",
@@ -3182,6 +3183,32 @@
             "description": "Die Einladung an das Teammitglied wurde versendet."
           }
         }
+      },
+      "workspace": {
+        "navigation": "Kontonavigation",
+        "description": "Verwalten Sie Profil, Anmeldung, verbundene Shops und Abrechnung für Ihr Konto.",
+        "sections": {
+          "account": {
+            "title": "Profil",
+            "description": "Ihre persönlichen Angaben und Ihre bevorzugte Sprache."
+          },
+          "security": {
+            "title": "Anmeldung und Sicherheit",
+            "description": "Verwalten Sie Ihr Passwort, melden Sie sich ab oder löschen Sie Ihr Konto."
+          },
+          "integrations": {
+            "title": "Verbundene Shops",
+            "description": "Verwalten Sie die Verbindung jedes Shops, aktualisieren Sie dessen Produkte und prüfen Sie die verbundenen Dienste."
+          },
+          "billing": {
+            "title": "Plan und Abrechnung",
+            "description": "Ihr Plan, Ihre Zahlungsdaten und die Rechnungen für dieses Konto."
+          }
+        },
+        "readOnly": "Schreibgeschützter Katalog",
+        "manageStore": "Shop öffnen",
+        "services": "Verbundene Dienste",
+        "unavailable": "Status nicht verfügbar"
       }
     },
     "reports": {

@@ -1,5 +1,6 @@
 import { expect, mock, spyOn } from "bun:test";
 import { IntegrationError } from "@/server/utils/outbound/http";
+
 mock.module("server-only", () => ({}));
 const Credentials = await import("@/server/app/outbound/provider-credentials");
 const Jobs = await import("@/server/app/outbound/jobs");

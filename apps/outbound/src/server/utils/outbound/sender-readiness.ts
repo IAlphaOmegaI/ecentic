@@ -20,6 +20,10 @@ const domainSchema = z
   .string()
   .trim()
   .toLowerCase()
+  .refine(
+    (domain) => !/[\\/?#:@%\s]/u.test(domain),
+    "Enter a public sending domain.",
+  )
   .transform(domainToASCII)
   .refine(
     (domain) =>

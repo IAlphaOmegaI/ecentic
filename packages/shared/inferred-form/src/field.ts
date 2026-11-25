@@ -1,5 +1,6 @@
 import type { ClassList } from "@zenncore/utils";
 import type { EmptyObject, Prettify } from "@zenncore/utils/types";
+import type { ReactNode } from "react";
 import type * as z from "zod";
 import type { GenericProps, InferredProps } from "./inferred-props";
 import type { GenericInterface } from "./interface";
@@ -12,12 +13,25 @@ import type {
 
 export type { CreateCustomField, CustomField } from "./custom-field";
 
+type FieldContent =
+  | string
+  | ((context: { isFieldRequired: boolean; name: string }) => ReactNode);
+
 export type GenericFieldConfig = InferredFieldConfig<
   GenericInterface,
   GenericShape<GenericInterface>,
   GenericValidator,
   GenericProps
 >;
+
+export type GenericField<Interface extends GenericInterface> = {
+  [Shape in GenericShape<Interface>]: InferredFieldConfig<
+    Interface,
+    Shape,
+    InferredValidator<Interface, Shape>,
+    InferredProps<Interface, Shape, InferredValidator<Interface, Shape>>
+  >;
+}[GenericShape<Interface>];
 
 export type InferredFieldConfig<
   Interface extends GenericInterface,
@@ -31,8 +45,8 @@ export type InferredFieldConfig<
   defaultValue?: z.infer<Validator> | undefined;
 
   placeholder?: string;
-  label?: string;
-  description?: string;
+  label?: FieldContent;
+  description?: FieldContent;
 
   classList?: Prettify<
     ClassList<"root" | "label" | "description" | "error" | "field"> &

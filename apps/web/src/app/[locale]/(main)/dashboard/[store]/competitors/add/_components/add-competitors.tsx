@@ -16,7 +16,7 @@ import { MerchantTab } from "@/app/[locale]/(auth)/onboarding/competitors/_compo
 import { OffersTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/offers-tab";
 import { SearchTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/search-tab";
 import { UrlTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/url-tab";
-import * as Competitor from "@/server/app/competitor";
+import * as Competitor from "@/server/app/competitor.actions";
 import { DashboardEmptyState } from "../../../../_components/empty-state";
 
 export namespace AddCompetitors {

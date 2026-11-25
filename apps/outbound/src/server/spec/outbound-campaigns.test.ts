@@ -292,7 +292,10 @@ describe.skipIf(!endpoint)("campaign service on isolated Postgres", () => {
       ),
     );
     expect(result.run.status).toBe("uncertain");
-    const [saved] = await db.select({ output: schema.outboundCampaignRun.output }).from(schema.outboundCampaignRun).where(eq(schema.outboundCampaignRun.id, result.run.id));
+    const [saved] = await db
+      .select({ output: schema.outboundCampaignRun.output })
+      .from(schema.outboundCampaignRun)
+      .where(eq(schema.outboundCampaignRun.id, result.run.id));
     expect(saved?.output).toEqual({ receipt });
     expect(value(await campaigns.get({ id })).companies.total).toBe(0);
     expect(

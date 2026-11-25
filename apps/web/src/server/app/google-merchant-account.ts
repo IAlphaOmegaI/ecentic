@@ -3,13 +3,14 @@
 // is server-internal plumbing — server actions in `integration/` compose it
 // behind their own authentication and ownership checks.
 
-import { resultify } from "@zenncore/utils";
-import { db, schema } from "../database";
+import { eq } from "drizzle-orm";
+import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
-import type { Environment } from "../utils/environment";
+import { Environment } from "../utils/environment";
 import { RequestError } from "../utils/error";
 import type { Document, ExecuteOptions, Insertable } from "../utils/repository";
 import { repository } from "../utils/repository";
+import * as Store from "./store";
 
 export const {
   get,
@@ -48,9 +49,7 @@ export const getForStore = withAuthentication(
   async (context, { store: storeId }: { store: string }) => {
     // Ownership gate: a session alone must not read another user's store
     // record — this row carries the Google OAuth grant.
-    const store = await resultify(
-      async () => await db.query.store.findFirst({ where: { id: storeId } }),
-    );
+    const store = await Store.get(Environment.SERVER, storeId);
     if (!store.success) return store;
     if (!store.data || store.data.userId !== context.session.user.id)
       return {
@@ -58,12 +57,10 @@ export const getForStore = withAuthentication(
         error: new RequestError("Store not found"),
       };
 
-    const result = await resultify(
-      async () =>
-        await db.query.googleMerchantAccount.findFirst({
-          where: { storeId },
-        }),
-    );
+    const result = await find(Environment.SERVER, {
+      where: eq(schema.googleMerchantAccount.storeId, storeId),
+      limit: 1,
+    });
 
     if (!result.success) return result;
 
@@ -71,8 +68,8 @@ export const getForStore = withAuthentication(
     // through the integration actions, which resolve tokens internally.
     return {
       success: true as const,
-      data: result.data
-        ? { ...result.data, accessToken: null, refreshToken: null }
+      data: result.data[0]
+        ? { ...result.data[0], accessToken: null, refreshToken: null }
         : undefined,
     };
   },

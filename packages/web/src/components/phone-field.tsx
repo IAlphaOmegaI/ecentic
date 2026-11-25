@@ -352,7 +352,7 @@ export const PhoneFieldCountryCombobox = ({
         onOpenChange?.(open, event);
       }}
       onValueChange={(value, event) => {
-        setCountryConfig(value);
+        if (value) setCountryConfig(value);
         onValueChange?.(value, event);
       }}
     >

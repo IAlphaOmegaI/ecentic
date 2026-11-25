@@ -14,6 +14,7 @@ import { normalizeHostname } from "../../utils/tracking";
 import * as GoogleMerchantAccount from "../google-merchant-account";
 import * as GoogleMerchantOffer from "../google-merchant-offer";
 import * as GoogleMerchantUcp from "../google-merchant-ucp";
+import * as Optimization from "../optimization";
 import * as Product from "../product";
 import * as Store from "../store";
 
@@ -1055,17 +1056,16 @@ export const pushOverrides = withAuthentication(
         },
       };
 
-    const optimizations = await db.query.listingOptimization.findMany({
-      where: {
-        status: "published",
-        productId: {
-          in: withExternalId.map((product) => product.id),
-        },
+    const optimizations = await Optimization.findPublishedForProducts(
+      Environment.SERVER,
+      {
+        products: withExternalId.map((product) => product.id),
       },
-    });
+    );
+    if (!optimizations.success) return optimizations;
 
     const optimizationByProduct = new Map(
-      optimizations.map((optimization) => [
+      optimizations.data.map((optimization) => [
         optimization.productId,
         optimization,
       ]),
@@ -1853,6 +1853,15 @@ export const setReturnPolicy = withAuthentication(
         ),
       };
 
+    // Resolve the catalog currency before deleting any existing policy. A
+    // failed catalog read must not become a USD policy or leave a policy gap.
+    const products = await Product.find(Environment.SERVER, {
+      where: eq(schema.product.storeId, storeId),
+      limit: 1,
+    });
+    if (!products.success) return products;
+    const currencyCode = products.data[0]?.currency ?? "USD";
+
     // Replace = delete-and-recreate, the only edit the API offers. Only ever
     // reached on the merchant's explicit submit. The deleted bodies are kept
     // so a failed create can restore them — never leave the merchant with no
@@ -1867,14 +1876,6 @@ export const setReturnPolicy = withAuthentication(
       if (!deleted.success) return deleted;
       removedPolicies.push(policy);
     }
-
-    // Free return shipping must be an explicit zero price (live validator);
-    // the currency rides along for display, taken from the store's catalog.
-    const firstProduct = await resultify(async () =>
-      db.query.product.findFirst({ where: { storeId } }),
-    );
-    const currencyCode =
-      (firstProduct.success ? firstProduct.data?.currency : null) ?? "USD";
 
     const created = await GoogleMerchantAPI.createReturnPolicy(
       resolved.accessToken,
@@ -2232,14 +2233,18 @@ const runVerification = async (
       },
     };
 
-  const optimizations = await db.query.listingOptimization.findMany({
-    where: {
-      status: "published",
-      productId: { in: pending.data.map((offer) => offer.productId) },
+  const optimizations = await Optimization.findPublishedForProducts(
+    Environment.SERVER,
+    {
+      products: pending.data.map((offer) => offer.productId),
     },
-  });
+  );
+  if (!optimizations.success) return optimizations;
   const optimizationByProduct = new Map(
-    optimizations.map((optimization) => [optimization.productId, optimization]),
+    optimizations.data.map((optimization) => [
+      optimization.productId,
+      optimization,
+    ]),
   );
 
   const ucpRows = await GoogleMerchantUcp.find(Environment.SERVER, {
