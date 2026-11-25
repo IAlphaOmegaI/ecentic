@@ -1775,11 +1775,24 @@ describe.skipIf(!endpoint)("isolated campaign automation ledger", () => {
     expect(execute).toHaveBeenCalledTimes(2);
     expect(await jobs()).toHaveLength(2);
   });
-  test.each([false, true])(
-    "the real stage workflow preserves atomic draft revisions (concurrent edit: %s)",
-    async (concurrentEdit) => {
+  test.each([
+    { provider: "google", enabled: false, concurrentEdit: false },
+    { provider: "google", enabled: false, concurrentEdit: true },
+    { provider: "microsoft", enabled: true, concurrentEdit: false },
+    { provider: "microsoft", enabled: false, concurrentEdit: false },
+    { provider: "unknown", enabled: true, concurrentEdit: false },
+  ] as const)(
+    "the real stage workflow enforces current mail-host policy and atomic draft revisions (%j)",
+    async ({ provider, enabled, concurrentEdit }) => {
       const { automation, qualification, providers, draft, mx, db, schema } =
         active();
+      if (enabled)
+        value(
+          await active().store.savePlaybook("fixture", {
+            ...settings,
+            allowMicrosoftRecipients: true,
+          }),
+        );
       const now = new Date().toISOString();
       const person = {
         id: "person_fixture",
@@ -1915,7 +1928,7 @@ describe.skipIf(!endpoint)("isolated campaign automation ledger", () => {
       });
       spyOn(mx, "check").mockResolvedValue({
         success: true,
-        data: { provider: "google", checkedAt: now, records: [] },
+        data: { provider, checkedAt: now, records: [] },
       });
       spyOn(draft, "generateDraft").mockImplementation(
         async (details, policy) => ({
@@ -1951,6 +1964,18 @@ describe.skipIf(!endpoint)("isolated campaign automation ledger", () => {
         })
         .where(eq(schema.outboundIntegrationJob.id, pending.id));
       const second = value(await automation.run({ maxSteps: 20 }));
+      if (provider === "unknown" || (provider === "microsoft" && !enabled)) {
+        expect(second.results.at(-1)).toMatchObject({
+          stage: "applyMx",
+          status: "held",
+          reason: "mx-held",
+        });
+        expect(draft.generateDraft).not.toHaveBeenCalled();
+        expect(await db.select().from(schema.outboundSendAttempt)).toHaveLength(
+          0,
+        );
+        return;
+      }
       if (concurrentEdit) {
         const [changed] = await db.select().from(schema.outboundProspect);
         const [job] = await jobs();

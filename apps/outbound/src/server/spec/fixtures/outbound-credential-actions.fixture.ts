@@ -1,5 +1,6 @@
 import { mock, spyOn } from "bun:test";
 import assert from "node:assert/strict";
+import { defaultPlaybook, prospectSchema } from "@/lib/outbound";
 import { Environment } from "@/server/utils/environment";
 import { ValidationError } from "@/server/utils/error";
 
@@ -227,4 +228,137 @@ assert.deepEqual(await Actions.getClayStatus(), {
   success: true,
   data: { configured: true, routineConfigured: true },
 });
+// Staff actions must check the current recipient-host preference before reserving paid work.
+const Store = await import("@/server/app/outbound/store");
+const timestamp = new Date().toISOString();
+const details = prospectSchema.parse({
+  company: "Sample Goods",
+  domain: "samplegoods.test",
+  website: "https://samplegoods.test",
+  country: "US",
+  platform: "shopify",
+  name: "Alex Smith",
+  first: "Alex",
+  title: "Head of Growth",
+  email: "alex@samplegoods.test",
+  emailStatus: "verified",
+  emailSource: "Fixture verified source",
+  emailVerifiedAt: timestamp,
+  mxProvider: "microsoft",
+  mxCheckedAt: timestamp,
+  product: "Linen tote",
+  productUrl: "https://samplegoods.test/products/tote",
+  gap: "barcode-missing-from-page-data",
+  finding: "The saved product page has no barcode field.",
+  evidence: "The saved product page has a priced own-brand linen tote.",
+  evidenceCheckedAt: timestamp,
+  findingReviewed: true,
+});
+const enrichmentPolicy = {
+  ...defaultPlaybook,
+  bodyTemplate: "Hi {first}, I was looking at {product}.",
+};
+const prospectId = "d3013043-3e41-40e5-b97f-833886827380";
+spyOn(Store, "getEnrichmentContext").mockImplementation(async () => ({
+  success: true,
+  data: {
+    prospect: {
+      id: prospectId,
+      companyId: "company-fixture",
+      personId: "person-fixture",
+      campaignId: null,
+      details,
+      status: "candidate",
+      messages: [],
+      revision: 1,
+      playbookRevision: 1,
+      approvedAt: null,
+      approvedBy: null,
+      approvalHash: null,
+      holdReason: "",
+      linkedinStatus: "research",
+      linkedinDraft: "",
+      linkedinNextActionAt: null,
+      linkedinNote: "",
+      firstSentAt: null,
+      lastSentAt: null,
+      nextSendAt: null,
+      sentStep: 0,
+      inboxId: null,
+      threadId: null,
+      createdBy: "fixture",
+      createdAt: new Date(timestamp),
+      updatedAt: new Date(timestamp),
+    },
+    settings: enrichmentPolicy,
+    suppressed: false,
+    lastContactedAt: null,
+  },
+}));
+reserve.mockImplementation(async () => {
+  throw new ValidationError("fixture-reservation-reached");
+});
+const enrichApollo = spyOn(Providers, "enrichApolloPerson").mockImplementation(
+  async () => {
+    throw new Error("This fixture never requests paid contact enrichment");
+  },
+);
+const verifyApollo = spyOn(Providers, "verifyApolloEmails").mockImplementation(
+  async () => {
+    throw new Error("This fixture never requests paid email verification");
+  },
+);
+assert.equal((await Actions.verifyProspect({ prospectId })).success, false);
+assert.equal(reserve.mock.calls.length, 0);
+enrichmentPolicy.allowMicrosoftRecipients = true;
+assert.deepEqual(await Actions.verifyProspect({ prospectId }), {
+  success: false,
+  error: { name: "validation-error", message: "fixture-reservation-reached" },
+});
+assert.equal(reserve.mock.calls.length, 1);
+details.mxProvider = "unknown";
+enrichmentPolicy.allowMicrosoftRecipients = false;
+assert.deepEqual(await Actions.verifyProspect({ prospectId }), {
+  success: false,
+  error: { name: "validation-error", message: "fixture-reservation-reached" },
+});
+assert.equal(reserve.mock.calls.length, 2);
+details.email = "";
+details.emailSource = "";
+assert.deepEqual(await Actions.enrichProspect({ prospectId }), {
+  success: false,
+  error: { name: "validation-error", message: "fixture-reservation-reached" },
+});
+assert.equal(reserve.mock.calls.length, 3);
+details.email = "alex@samplegoods.test";
+details.emailSource = "Fixture verified source";
+assert.equal(
+  (await Actions.startClay({ prospectIds: [prospectId] })).success,
+  false,
+);
+assert.equal(reserve.mock.calls.length, 3);
+details.mxProvider = "microsoft";
+enrichmentPolicy.allowMicrosoftRecipients = true;
+details.emailStatus = "unknown";
+assert.equal(
+  (await Actions.startClay({ prospectIds: [prospectId] })).success,
+  false,
+);
+assert.equal(reserve.mock.calls.length, 3);
+details.emailStatus = "verified";
+details.mxCheckedAt = "2000-01-01T00:00:00.000Z";
+assert.equal(
+  (await Actions.startClay({ prospectIds: [prospectId] })).success,
+  false,
+);
+assert.equal(reserve.mock.calls.length, 3);
+details.mxCheckedAt = timestamp;
+assert.deepEqual(await Actions.startClay({ prospectIds: [prospectId] }), {
+  success: false,
+  error: { name: "validation-error", message: "fixture-reservation-reached" },
+});
+assert.equal(reserve.mock.calls.length, 4);
+assert.equal(enrichApollo.mock.calls.length, 0);
+assert.equal(verifyApollo.mock.calls.length, 0);
+assert.equal(startClay.mock.calls.length, 0);
 console.log("Credential action authorization passed");

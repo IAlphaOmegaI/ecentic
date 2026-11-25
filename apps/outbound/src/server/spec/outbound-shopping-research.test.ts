@@ -1211,6 +1211,95 @@ describe.skipIf(!endpoint)(
         expect(generate).not.toHaveBeenCalled();
       },
     );
+    test("enabling Microsoft recipients retries a known eligibility hold without regenerating its existing words", async () => {
+      const { store } = active();
+      const original = value(await store.readProspect(fixture.prospectId));
+      if (!original) throw new Error("Fixture prospect missing");
+      value(
+        await store.patchProspect(
+          "operator",
+          original.id,
+          { mxProvider: "microsoft" },
+          original.revision,
+        ),
+      );
+      await automaticFixture();
+      const before = value(await store.readProspect(original.id));
+      if (!before) throw new Error("Fixture prospect missing");
+      const generate = mock(generated);
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).approved).toBe(
+        0,
+      );
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).processed).toBe(
+        0,
+      );
+      expect(generate).not.toHaveBeenCalled();
+      const policy = await store.policy();
+      expect(
+        value(
+          await store.savePlaybook(
+            "operator",
+            { ...policy.settings, allowMicrosoftRecipients: true },
+            policy.revision,
+          ),
+        ).revision,
+      ).toBe(policy.revision);
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).approved).toBe(
+        1,
+      );
+      expect(generate).not.toHaveBeenCalled();
+      const after = value(await store.readProspect(original.id));
+      if (!after) throw new Error("Fixture prospect missing");
+      expect(after.revision).toBe(before.revision);
+      expect(after.messages).toEqual(before.messages);
+      expect(after.details).toEqual(before.details);
+      expect(after.status).toBe("approved");
+    });
+    test("opted-in Microsoft drafts refresh expired MX from actual DNS before approval", async () => {
+      const { store } = active();
+      const original = value(await store.readProspect(fixture.prospectId));
+      if (!original) throw new Error("Fixture prospect missing");
+      value(
+        await store.patchProspect(
+          "operator",
+          original.id,
+          { mxProvider: "microsoft" },
+          original.revision,
+        ),
+      );
+      await automaticFixture();
+      const policy = await store.policy();
+      value(
+        await store.savePlaybook(
+          "operator",
+          { ...policy.settings, allowMicrosoftRecipients: true },
+          policy.revision,
+        ),
+      );
+      const before = value(await store.readProspect(original.id));
+      if (!before) throw new Error("Fixture prospect missing");
+      setSystemTime(new Date(now.getTime() + 2 * 86_400_000));
+      const checkMx = mock(async () => ({
+        success: true as const,
+        data: {
+          provider: "microsoft" as const,
+          records: [],
+          checkedAt: new Date().toISOString(),
+        },
+      }));
+      const generate = mock(generated);
+      expect(
+        value(await runReview({ maxDrafts: 1 }, generate, checkMx)).approved,
+      ).toBe(1);
+      expect(checkMx).toHaveBeenCalledTimes(1);
+      expect(generate).not.toHaveBeenCalled();
+      const after = value(await store.readProspect(original.id));
+      if (!after) throw new Error("Fixture prospect missing");
+      expect(after.revision).toBe(before.revision);
+      expect(after.messages).toEqual(before.messages);
+      expect(after.details.mxProvider).toBe("microsoft");
+      expect(after.details.mxCheckedAt).toBe(new Date().toISOString());
+    });
     test("a hold racing a changed-provider DNS response is preserved", async () => {
       const { store } = active();
       await automaticFixture();

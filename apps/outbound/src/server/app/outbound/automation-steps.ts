@@ -3,7 +3,12 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import type { Result } from "@zenncore/utils";
 import { z } from "zod";
-import { normalizeDomain, prospectSchema, splitList } from "@/lib/outbound";
+import {
+  normalizeDomain,
+  prospectSchema,
+  recipientMailHostAllowed,
+  splitList,
+} from "@/lib/outbound";
 import {
   type AutomationStage,
   type AutomationState,
@@ -818,7 +823,7 @@ export const execute = async (
         })
         .parse(state["mx"]);
       if (
-        ["unknown", "microsoft"].includes(checked.provider) ||
+        !recipientMailHostAllowed(checked.provider, playbook) ||
         !fresh(checked.checkedAt, 1)
       )
         return { stage: "applyMx", reason: "mx-held" };

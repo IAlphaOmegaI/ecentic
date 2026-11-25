@@ -205,6 +205,8 @@ of a definitively rejected provider request retains its saved checkpoint and aud
 | `allowStaleEvidence` | `false` | Allows genuine saved product and shopping observations beyond the configured age limit. Missing, future-dated or changed receipts still fail. |
 | `trustSavedContactVerification` | `false` | Allows an explicitly accepted, source-verified legacy contact and saved role to retain their original verification dates, including unknown dates. An immutable receipt binds the imported identity; this is not a new verification. Live MX, targeting, reply and suppression checks remain. |
 | `allowProductObservations` | `false` | Allows a specific, truthful neutral product observation when no discrepancy is supported. Actual shopper-query and browser receipts remain required; invented issues, price discrepancies and sales-impact claims are not permitted as neutral observations. |
+| `allowUsMarketWindow` | `false` | Allows contacts recorded in the US with no known timezone to use Monday–Thursday, 18:00–21:00 UTC, without inventing a city or timezone. Known timezones retain 08:00–14:00 local sending. |
+| `allowMicrosoftRecipients` | `false` | Allows verified Microsoft-hosted work addresses through the recipient-host check. Unknown hosts, verification, current MX, replies, suppression and all other eligibility checks remain enforced. |
 
 On 25 November 2026 the owner chose a configured 50-message inbox cap without
 the gradual ramp, paused new automatic Apollo spending, and enabled the stale
@@ -218,9 +220,13 @@ provider accepted the message; it does not establish inbox delivery.
 
 Country settings determine application eligibility; they do not grant legal
 permission to contact someone. The initial allowed country is `US`; the default
-held list is `DE, AT, CH, FR, ES, IT, NL, GB`. Microsoft-hosted recipients,
-unknown mail hosts, shared inboxes, excluded roles and non-cold relationships
-cannot pass the cold-email checks. Stale or undated verification fails unless
+held list is `DE, AT, CH, FR, ES, IT, NL, GB`. Microsoft-hosted recipients are
+held by default. The Playbook’s **Allow verified Microsoft recipients** option
+permits those recipients when every other email check passes. It changes
+recipient eligibility only, preserves approved copy and the Playbook revision,
+and does not add Microsoft sender transports. Unknown mail hosts, shared
+inboxes, excluded roles and non-cold relationships still cannot pass the
+cold-email checks. Stale or undated verification fails unless
 the explicit saved-contact policy and its bound import receipt apply. Qualification,
 current-role and product evidence must be recorded with their sources.
 
@@ -231,18 +237,20 @@ opening must have a publication date within nine months and a source reviewed
 when a new draft is prepared; following up does not invent or renew that date.
 Imported records cannot assert the staff's finding-review confirmation.
 
-The automatic product checker reads raw HTML and preserves possible findings
-as held candidates. It cannot establish absence after JavaScript renders. Staff
-must review raw and rendered product data, the finding-specific exceptions, and
-any matching retail product before confirming the finding in Prospects. The
-delivery worker respects that dated confirmation within its configured validity;
-it never substitutes a raw fetch timestamp for a rendered review. Expired
-confirmations require review again. A live rendered-page collector is future work.
+The legacy raw-HTML product checker preserves possible findings as held
+candidates; it cannot establish absence after JavaScript renders. Its findings
+require review of rendered data and any relevant retail product. The separate
+[live shopping pipeline](outbound-shopping-research.md) captures the actual
+shopper answer and rendered product page before selecting an evidenced finding
+or an explicitly enabled neutral observation. Both paths preserve their original
+observation dates. A raw fetch never renews a rendered review, and expired
+evidence requires renewal unless the Playbook explicitly permits aged evidence.
 
 Apollo paid enrichment and verification, and Clay runs, check company policy,
 relationships, prior contact, suppression and reviewed finding evidence before
 reserving a provider job. Clay role/team inputs include title and company and
-also require a usable email receipt and current non-Microsoft MX result. Clay
+also require a usable email receipt and a current mail-host check allowed by
+the Playbook recipient policy. Clay
 remains optional; these checks do not create a callable routine or enable result
 application. See the [launch decisions](outbound-launch-decisions.md) for current
 account, history and implementation boundaries.
@@ -287,11 +295,17 @@ independently establish that the records are complete.
 ### Preparing explicitly selected saved contacts
 
 `server/app/outbound/saved-contact-preparation.ts` exposes an internal
-`enqueue(actor, { batchId, campaignId, prospects, maxQueries })` operation and
+`enqueue(actor, { batchId, campaignId, prospects, maxQueries, startsAt? })` operation and
 a bounded `run({ batchId?, maxSteps?, deadline? })` worker. The prepare cron
 resumes only these explicitly seeded jobs. Existing imported prospect IDs,
 source-verification receipts and original observation dates remain intact;
 the worker never calls Apollo or sends mail directly.
+
+The optional `startsAt` timestamp schedules a batch in UTC. It is immutable for
+that batch ID and checked again at every claim, including after a retry changes
+an individual job's availability. Future jobs do not displace due work from the
+claim window. The query budget belongs to the batch for its entire lifetime;
+midnight and replaying an enqueue request never renew it.
 
 Each job checkpoints live MX, public product evidence, a source-bound business
 address for local sending hours, qualification, one ScrapeLLM query, its poll

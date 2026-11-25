@@ -534,7 +534,8 @@
         "trustSavedContactVerification": "使用已保存的联系人验证",
         "automaticApolloEnabled": "允许自动使用Apollo付费请求",
         "allowProductObservations": "允许真实的产品观察",
-        "allowUsMarketWindow": "时区未知时使用美国统一发送时段"
+        "allowUsMarketWindow": "时区未知时使用美国统一发送时段",
+        "allowMicrosoftRecipients": "允许已验证的 Microsoft 收件人"
       },
       "templateHelp": "插入下方列出的支持变量。变量将根据潜在客户已保存的信息填写。",
       "variablesTitle": "可用变量",
@@ -601,7 +602,8 @@
       "trustSavedContactVerificationHelp": "接受导入来源标记为已验证的联系人，但不声称重新验证了联系人或职位。保留原始日期，包括未知日期。",
       "automaticApolloHelp": "使用Apollo查找新公司、补充信息和验证邮箱。关闭后，仅使用已保存记录，不再发起新的Apollo付费请求。",
       "allowProductObservationsHelp": "即使未发现问题，也可用有依据的具体产品或购物观察开启对话。不编造差异或销售影响。",
-      "allowUsMarketWindowHelp": "对于国家记录为美国且未保存时区的联系人，允许在周一至周四18:00–21:00 UTC发送。这是您选择的市场时段，并非已验证的个人所在地。已知时区仍使用当地时间08:00–14:00。默认关闭。"
+      "allowUsMarketWindowHelp": "对于国家记录为美国且未保存时区的联系人，允许在周一至周四18:00–21:00 UTC发送。这是您选择的市场时段，并非已验证的个人所在地。已知时区仍使用当地时间08:00–14:00。默认关闭。",
+      "allowMicrosoftRecipientsHelp": "允许向由 Microsoft 托管的已验证工作邮箱发送邮件。邮件服务未知、地址未验证、已回复、退订及其他发送检查仍然有效。默认关闭。"
     },
     "integrations": {
       "title": "连接合适的工具",

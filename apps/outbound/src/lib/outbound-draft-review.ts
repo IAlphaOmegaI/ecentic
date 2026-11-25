@@ -51,6 +51,7 @@ export const draftReviewReadinessKey = (
   trustSavedContactVerification = false,
   allowProductObservations = false,
   allowUsMarketWindow = false,
+  allowMicrosoftRecipients = false,
 ) =>
   [
     details.emailVerifiedAt,
@@ -65,4 +66,5 @@ export const draftReviewReadinessKey = (
       : []),
     ...(allowProductObservations ? ["allow-product-observations"] : []),
     ...(allowUsMarketWindow ? ["allow-us-market-window"] : []),
+    ...(allowMicrosoftRecipients ? ["allow-microsoft-recipients"] : []),
   ].join("|");

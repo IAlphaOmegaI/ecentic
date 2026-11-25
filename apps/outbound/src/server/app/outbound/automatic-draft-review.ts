@@ -1,9 +1,9 @@
 import "server-only";
 import { createHash, randomUUID } from "node:crypto";
 import { type Result, resultify } from "@zenncore/utils";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
-import { lintMessages } from "@/lib/outbound";
+import { lintMessages, recipientMailHostAllowed } from "@/lib/outbound";
 import {
   canReviewDraftAutomatically,
   draftReviewInputSchema,
@@ -63,7 +63,12 @@ const refreshExpiredMx = async (
               eq(schema.outboundProspect.status, "draft"),
               eq(schema.outboundProspect.sentStep, 0),
               sql`${schema.outboundProspect.holdReason} in ('', 'playbookChanged')`,
-              sql`${schema.outboundProspect.details}->>'mxProvider' in ('google', 'other')`,
+              inArray(
+                sql<string>`${schema.outboundProspect.details}->>'mxProvider'`,
+                (["google", "microsoft", "other"] as const).filter((provider) =>
+                  recipientMailHostAllowed(provider, policy.settings),
+                ),
+              ),
               sql`coalesce(nullif(${schema.outboundProspect.details}->>'mxCheckedAt', '')::timestamptz, 'epoch') <= ${new Date(Date.now() - 86_400_000).toISOString()}::timestamptz`,
               sql`exists (select 1 from outbound_campaign campaign where campaign.id = ${schema.outboundProspect.campaignId} and campaign.status = 'active')`,
               sql`not exists (select 1 from outbound_integration_job job where job.prospect_id = ${schema.outboundProspect.id} and job.provider = 'automation' and job.status in ('pending', 'starting', 'uncertain'))`,
@@ -202,7 +207,7 @@ const claim = () =>
           { tx: transaction },
         ),
       );
-    const readiness = sql`concat_ws('|', ${schema.outboundProspect.details}->>'emailVerifiedAt', ${schema.outboundProspect.details}->>'mxCheckedAt', ${schema.outboundProspect.details}->>'evidenceCheckedAt', ${schema.outboundProspect.details}->>'roleCheckedAt', ${schema.outboundProspect.details}->>'personalCheckedAt', ${String(policy.settings.senderConfirmed)}::text, ${policy.settings.allowStaleEvidence ? "allow-stale-evidence" : null}::text, ${policy.settings.trustSavedContactVerification ? "trust-saved-contact-verification" : null}::text, ${policy.settings.allowProductObservations ? "allow-product-observations" : null}::text, ${policy.settings.allowUsMarketWindow ? "allow-us-market-window" : null}::text)`;
+    const readiness = sql`concat_ws('|', ${schema.outboundProspect.details}->>'emailVerifiedAt', ${schema.outboundProspect.details}->>'mxCheckedAt', ${schema.outboundProspect.details}->>'evidenceCheckedAt', ${schema.outboundProspect.details}->>'roleCheckedAt', ${schema.outboundProspect.details}->>'personalCheckedAt', ${String(policy.settings.senderConfirmed)}::text, ${policy.settings.allowStaleEvidence ? "allow-stale-evidence" : null}::text, ${policy.settings.trustSavedContactVerification ? "trust-saved-contact-verification" : null}::text, ${policy.settings.allowProductObservations ? "allow-product-observations" : null}::text, ${policy.settings.allowUsMarketWindow ? "allow-us-market-window" : null}::text, ${policy.settings.allowMicrosoftRecipients ? "allow-microsoft-recipients" : null}::text)`;
     const resumed = sql`coalesce((select event.id from outbound_event event where event.prospect_id = ${schema.outboundProspect.id} and event.kind = 'review' order by event.created_at desc, event.id desc limit 1), '')`;
     const prospects = value(
       await Prospects.find(
@@ -247,6 +252,7 @@ const claim = () =>
       policy.settings.trustSavedContactVerification,
       policy.settings.allowProductObservations,
       policy.settings.allowUsMarketWindow,
+      policy.settings.allowMicrosoftRecipients,
     );
     const resumeId = await Store.latestDraftReviewRequest(
       transaction,

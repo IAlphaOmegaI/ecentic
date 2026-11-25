@@ -6,6 +6,7 @@ import {
   inSendWindow,
   mailboxConnected,
   normalizeDomain,
+  recipientMailHostAllowed,
   registeredSender,
   senderPool,
 } from "@/lib/outbound";
@@ -1105,16 +1106,26 @@ export const ingestBatch = (
   });
 
 export const due = (
-  settings: { allowUsMarketWindow?: boolean } = {},
+  settings: {
+    allowUsMarketWindow?: boolean;
+    allowMicrosoftRecipients?: boolean;
+  } = {},
   now = new Date(),
 ) =>
   resultify(async () => {
     const prospect = schema.outboundProspect;
+    const allowedHosts = (
+      ["google", "microsoft", "other", "unknown"] as const
+    ).filter((provider) => recipientMailHostAllowed(provider, settings));
     const ready = and(
       inArray(prospect.status, ["approved", "active"]),
       lt(prospect.sentStep, 3),
       or(isNull(prospect.nextSendAt), lte(prospect.nextSendAt, now)),
       or(eq(prospect.status, "approved"), lte(prospect.nextSendAt, now)),
+      inArray(
+        sql<string>`coalesce(${prospect.details}->>'mxProvider', 'unknown')`,
+        allowedHosts,
+      ),
     );
     const timezone = sql<string>`coalesce(${prospect.details}->>'timezone', '')`;
     const country = sql<string>`coalesce(${prospect.details}->>'country', '')`;

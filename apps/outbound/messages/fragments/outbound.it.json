@@ -534,7 +534,8 @@
         "trustSavedContactVerification": "Usa la verifica dei contatti salvata",
         "automaticApolloEnabled": "Consenti spese automatiche su Apollo",
         "allowProductObservations": "Consenti osservazioni veritiere sui prodotti",
-        "allowUsMarketWindow": "Usare una fascia USA quando il fuso orario è sconosciuto"
+        "allowUsMarketWindow": "Usare una fascia USA quando il fuso orario è sconosciuto",
+        "allowMicrosoftRecipients": "Consenti destinatari Microsoft verificati"
       },
       "templateHelp": "Inserisci le variabili supportate indicate sotto. Verranno compilate con i dati salvati del potenziale cliente.",
       "variablesTitle": "Variabili disponibili",
@@ -601,7 +602,8 @@
       "trustSavedContactVerificationHelp": "Accetta i contatti importati contrassegnati come verificati dalla fonte, senza dichiarare una nuova verifica del contatto o del ruolo. Le date originali, comprese quelle sconosciute, vengono conservate.",
       "automaticApolloHelp": "Usa Apollo per nuove aziende, arricchimento e verifica delle email. Disattiva per lavorare sui dati salvati senza nuove richieste Apollo a pagamento.",
       "allowProductObservationsHelp": "Un’osservazione specifica e supportata su un prodotto o una ricerca può avviare una conversazione anche senza problemi rilevati. Non inventare discrepanze o effetti sulle vendite.",
-      "allowUsMarketWindowHelp": "Per i contatti registrati negli Stati Uniti senza fuso orario salvato, consentire gli invii da lunedì a giovedì, dalle 18:00 alle 21:00 UTC. È la fascia di mercato scelta, non una posizione personale verificata. I fusi orari noti mantengono gli invii dalle 08:00 alle 14:00 locali. Disattivato per impostazione predefinita."
+      "allowUsMarketWindowHelp": "Per i contatti registrati negli Stati Uniti senza fuso orario salvato, consentire gli invii da lunedì a giovedì, dalle 18:00 alle 21:00 UTC. È la fascia di mercato scelta, non una posizione personale verificata. I fusi orari noti mantengono gli invii dalle 08:00 alle 14:00 locali. Disattivato per impostazione predefinita.",
+      "allowMicrosoftRecipientsHelp": "Consente indirizzi email di lavoro verificati ospitati da Microsoft. Restano validi i controlli su provider sconosciuti, indirizzi non verificati, risposte, disiscrizioni e tutti gli altri requisiti di invio. Disattivato per impostazione predefinita."
     },
     "integrations": {
       "title": "Collega gli strumenti giusti",

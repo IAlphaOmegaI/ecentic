@@ -141,6 +141,7 @@ const groups = [
     keys: [
       "allowedCountries",
       "heldCountries",
+      "allowMicrosoftRecipients",
       "targetRoles",
       "excludedRoles",
       "excludedDomains",
@@ -257,6 +258,7 @@ export const PlaybookEditor = ({
         ),
         sendingRampEnabled: t("playbook.sendingRampHelp"),
         allowUsMarketWindow: t("playbook.allowUsMarketWindowHelp"),
+        allowMicrosoftRecipients: t("playbook.allowMicrosoftRecipientsHelp"),
         emailVerificationDays: t("playbook.emailVerificationHelp"),
         excludedCompanies: t("playbook.excludedCompaniesHelp"),
         targetingNotes: t("playbook.targetingNotesHelp"),
@@ -277,6 +279,7 @@ export const PlaybookEditor = ({
         "trustSavedContactVerification",
         "sendingRampEnabled",
         "allowUsMarketWindow",
+        "allowMicrosoftRecipients",
         "linkedinAutomationEnabled",
         "senderConfirmed",
         "humanizeDrafts",

@@ -51,6 +51,9 @@ describe("accepted imported contact evidence", () => {
     );
     expect(original).not.toBe(trusted);
     expect(trusted).not.toBe(observations);
+    expect(
+      draftReviewReadinessKey(prospect, true, true, true, true, false, true),
+    ).not.toBe(observations);
   });
   test("explicit opt-in accepts unknown original dates without writing fresh dates", () => {
     expect(prospectIssues(prospect, settings, now)).toEqual([]);
@@ -111,6 +114,26 @@ describe("accepted imported contact evidence", () => {
           (issue) => issue.code,
         ),
       ).toContain(code);
+  });
+
+  test("the Microsoft preference retains the original saved verification requirements", () => {
+    const microsoft = { ...prospect, mxProvider: "microsoft" as const };
+    const optedIn = { ...settings, allowMicrosoftRecipients: true };
+    expect(prospectIssues(microsoft, optedIn, now)).toEqual([]);
+    expect(
+      prospectIssues(
+        { ...microsoft, savedContactVerificationId: "" },
+        optedIn,
+        now,
+      ).map(({ code }) => code),
+    ).toContain("emailUnverified");
+    expect(
+      prospectIssues(
+        { ...microsoft, emailStatus: "unknown" },
+        optedIn,
+        now,
+      ).map(({ code }) => code),
+    ).toContain("emailUnverified");
   });
 
   test("receipt binds contact identity and actual dates while later product research may change", () => {

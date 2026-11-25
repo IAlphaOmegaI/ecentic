@@ -41,6 +41,7 @@ import {
   playbookSchema,
   prospectIssues,
   prospectSchema,
+  recipientMailHostAllowed,
   renderMessages,
   reviewSchema,
   type Suppression,
@@ -1039,7 +1040,7 @@ const prospectItem = (
                 eq(schema.outboundIntegrationJob.status, "failed"),
                 sql`${schema.outboundIntegrationJob.input}->>'prospectRevision' = ${String(row.revision)}`,
                 sql`${schema.outboundIntegrationJob.input}->>'playbookRevision' = ${String(configuration.revision)}`,
-                sql`${schema.outboundIntegrationJob.input}->>'readinessKey' = ${draftReviewReadinessKey(row.details, configuration.settings.senderConfirmed, configuration.settings.allowStaleEvidence, configuration.settings.trustSavedContactVerification, configuration.settings.allowProductObservations, configuration.settings.allowUsMarketWindow)}`,
+                sql`${schema.outboundIntegrationJob.input}->>'readinessKey' = ${draftReviewReadinessKey(row.details, configuration.settings.senderConfirmed, configuration.settings.allowStaleEvidence, configuration.settings.trustSavedContactVerification, configuration.settings.allowProductObservations, configuration.settings.allowUsMarketWindow, configuration.settings.allowMicrosoftRecipients)}`,
                 sql`${schema.outboundIntegrationJob.input}->>'resumeId' = ${resumeId}`,
               ),
             ),
@@ -1395,6 +1396,7 @@ export const savePlaybookWithin = async (
       dailyCap,
       sendingRampEnabled,
       allowUsMarketWindow,
+      allowMicrosoftRecipients,
       automaticApolloEnabled,
       trustSavedContactVerification,
       allowProductObservations,
@@ -2817,7 +2819,7 @@ export const assertAutomaticDraftReviewReady = async (
       !(
         allowExpiredMx &&
         issue.code === "mxUnknown" &&
-        ["google", "other"].includes(prospect.details.mxProvider)
+        recipientMailHostAllowed(prospect.details.mxProvider, current.settings)
       ),
   );
   if (issues.length)
@@ -2928,6 +2930,7 @@ export const applyAutomaticDraftReview = (input: {
         current.settings.trustSavedContactVerification,
         current.settings.allowProductObservations,
         current.settings.allowUsMarketWindow,
+        current.settings.allowMicrosoftRecipients,
       ) !== scope.readinessKey ||
       (await latestDraftReviewRequest(transaction, prospect.id)) !==
         scope.resumeId ||

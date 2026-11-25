@@ -534,7 +534,8 @@
         "trustSavedContactVerification": "Usar la verificación de contactos guardada",
         "automaticApolloEnabled": "Permitir gasto automático en Apollo",
         "allowProductObservations": "Permitir observaciones veraces sobre productos",
-        "allowUsMarketWindow": "Usar una franja para EE. UU. si se desconoce la zona horaria"
+        "allowUsMarketWindow": "Usar una franja para EE. UU. si se desconoce la zona horaria",
+        "allowMicrosoftRecipients": "Permitir destinatarios verificados de Microsoft"
       },
       "templateHelp": "Inserta las variables admitidas que aparecen abajo. Se rellenan con los datos guardados del prospecto.",
       "variablesTitle": "Variables disponibles",
@@ -601,7 +602,8 @@
       "trustSavedContactVerificationHelp": "Acepta contactos importados que la fuente marcó como verificados, sin afirmar que se han vuelto a verificar ni que se ha revisado su cargo. Se conservan las fechas originales, incluidas las desconocidas.",
       "automaticApolloHelp": "Usa Apollo para nuevas empresas, enriquecimiento y verificación de correos. Desactívalo para trabajar con registros guardados sin nuevas solicitudes de pago a Apollo.",
       "allowProductObservationsHelp": "Una observación concreta y respaldada sobre un producto o una búsqueda puede iniciar una conversación aunque no se encuentre ningún problema. Nunca inventes discrepancias ni efectos en las ventas.",
-      "allowUsMarketWindowHelp": "Para contactos registrados en Estados Unidos sin zona horaria guardada, permitir de lunes a jueves, de 18:00 a 21:00 UTC. Es la franja de mercado que eliges, no una ubicación personal verificada. Las zonas horarias conocidas mantienen los envíos de 08:00 a 14:00 hora local. Desactivado por defecto."
+      "allowUsMarketWindowHelp": "Para contactos registrados en Estados Unidos sin zona horaria guardada, permitir de lunes a jueves, de 18:00 a 21:00 UTC. Es la franja de mercado que eliges, no una ubicación personal verificada. Las zonas horarias conocidas mantienen los envíos de 08:00 a 14:00 hora local. Desactivado por defecto.",
+      "allowMicrosoftRecipientsHelp": "Permite direcciones de correo de trabajo verificadas alojadas en Microsoft. Siguen aplicándose los bloqueos por proveedor desconocido, direcciones sin verificar, respuestas, bajas y todas las demás comprobaciones de envío. Desactivado por defecto."
     },
     "integrations": {
       "title": "Conecta las herramientas adecuadas",

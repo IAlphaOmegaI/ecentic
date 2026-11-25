@@ -493,6 +493,97 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
     }
     expect((await store.claimDelivery(actor, fixture)).success).toBe(true);
   });
+  test("toggling Microsoft recipient eligibility preserves approved content, revisions and schedules", async () => {
+    const { store, db, schema } = active();
+    const fixture = await approved();
+    const before = required(await store.readProspect(fixture.prospect));
+    const policy = await store.policy();
+    const revisions = await db
+      .select()
+      .from(schema.outboundRevision)
+      .where(eq(schema.outboundRevision.prospectId, fixture.prospect));
+    for (const allowMicrosoftRecipients of [true, false]) {
+      const saved = required(
+        await store.savePlaybook(
+          actor,
+          { ...policy.settings, allowMicrosoftRecipients },
+          policy.revision,
+        ),
+      );
+      expect(saved.revision).toBe(policy.revision);
+      expect(required(await store.readProspect(fixture.prospect))).toEqual(
+        before,
+      );
+      expect(
+        await db
+          .select()
+          .from(schema.outboundRevision)
+          .where(eq(schema.outboundRevision.prospectId, fixture.prospect)),
+      ).toEqual(revisions);
+    }
+    expect((await store.claimDelivery(actor, fixture)).success).toBe(true);
+  });
+  test("verified Microsoft delivery requires opt-in and rechecks it immediately before transport", async () => {
+    const { store, db, schema } = active();
+    const created = required(
+      await store.saveProspect(actor, {
+        ...details(),
+        mxProvider: "microsoft",
+      }),
+    );
+    const draft = required(await store.generateDrafts(actor, created));
+    const review = {
+      ...created,
+      revision: draft.revision,
+      decision: "approve" as const,
+    };
+    expect((await store.reviewProspect(actor, review)).success).toBe(false);
+    const policy = await store.policy();
+    const saved = required(
+      await store.savePlaybook(
+        actor,
+        {
+          ...policy.settings,
+          allowMicrosoftRecipients: true,
+          sendingEnabled: true,
+        },
+        policy.revision,
+      ),
+    );
+    expect(saved.revision).toBe(policy.revision);
+    required(await store.reviewProspect(actor, review));
+    const inbox = (
+      await db
+        .select()
+        .from(schema.outboundInbox)
+        .where(
+          eq(schema.outboundInbox.email, senderFor(created.prospect, settings)),
+        )
+    )[0];
+    if (!inbox) throw new Error("Assigned inbox missing");
+    const claim = required(
+      await store.claimDelivery(actor, { ...created, inbox: inbox.id }),
+    );
+    const before = required(await store.readProspect(created.prospect));
+    required(
+      await store.savePlaybook(
+        actor,
+        { ...(await store.policy()).settings, allowMicrosoftRecipients: false },
+        policy.revision,
+      ),
+    );
+    expect(required(await store.readProspect(created.prospect))).toEqual(
+      before,
+    );
+    const send = mock(async () => ({
+      success: true as const,
+      data: { providerMessageId: "must-not-send", threadId: "must-not-send" },
+    }));
+    expect((await store.dispatchDelivery(actor, claim, send)).success).toBe(
+      false,
+    );
+    expect(send).not.toHaveBeenCalled();
+  });
   test("unknown-zone US delivery waits for the market window and rechecks the preference at dispatch", async () => {
     const { store, db, schema } = active();
     required(
@@ -1803,7 +1894,7 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
       expect(over.error.message).toContain("rolling 24-hour cap");
   });
 
-  test("due selection filters sending windows before its limit and excludes future sequence dates", async () => {
+  test("due selection filters sending windows and recipient mail-host policy before its limit", async () => {
     const { db, schema } = active();
     const Mailboxes = await import("@/server/app/outbound/transport-store");
     const names = [
@@ -1876,6 +1967,33 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
     expect(opened).toHaveLength(100);
     expect(opened[0]?.id).toBe("due-bump");
     expect(opened.some((row) => row.id.startsWith("future"))).toBe(false);
+    await db
+      .update(schema.outboundProspect)
+      .set({
+        details: sql`${schema.outboundProspect.details} || '{"timezone":"America/New_York","mxProvider":"microsoft"}'::jsonb`,
+      })
+      .where(sql`${schema.outboundProspect.id} like 'waiting-%'`);
+    await db
+      .update(schema.outboundProspect)
+      .set({
+        details: sql`${schema.outboundProspect.details} || '{"mxProvider":"unknown"}'::jsonb`,
+      })
+      .where(eq(schema.outboundProspect.id, "waiting-0"));
+    expect(required(await Mailboxes.due({}, now)).map(({ id }) => id)).toEqual([
+      "due-bump",
+      "ready-first",
+    ]);
+    const microsoftAllowed = required(
+      await Mailboxes.due({ allowMicrosoftRecipients: true }, now),
+    );
+    expect(microsoftAllowed).toHaveLength(100);
+    expect(microsoftAllowed[0]?.id).toBe("due-bump");
+    expect(
+      microsoftAllowed.some((row) => row.details.mxProvider === "microsoft"),
+    ).toBe(true);
+    expect(
+      microsoftAllowed.some((row) => row.details.mxProvider === "unknown"),
+    ).toBe(false);
   });
 
   test("warmup safety reads see pending actions and credential changes on their existing transaction", async () => {

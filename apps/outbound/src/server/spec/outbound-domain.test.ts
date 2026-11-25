@@ -48,6 +48,43 @@ const prospect = prospectSchema.parse({
 });
 
 describe("outbound eligibility", () => {
+  test("Microsoft recipients require an explicit opt-in and verified email evidence", () => {
+    const microsoft = { ...prospect, mxProvider: "microsoft" as const };
+    const optedIn = { ...settings, allowMicrosoftRecipients: true };
+    expect(defaultPlaybook.allowMicrosoftRecipients).toBe(false);
+    const { allowMicrosoftRecipients, ...legacy } = settings;
+    expect(playbookSchema.parse(legacy).allowMicrosoftRecipients).toBe(false);
+    expect(
+      prospectIssues(microsoft, settings, now).map(({ code }) => code),
+    ).toContain("microsoftHeld");
+    expect(prospectIssues(microsoft, optedIn, now)).toEqual([]);
+    for (const emailStatus of [
+      "unknown",
+      "guessed",
+      "catchAll",
+      "invalid",
+      "stale",
+    ] as const)
+      expect(
+        prospectIssues({ ...microsoft, emailStatus }, optedIn, now).map(
+          ({ code }) => code,
+        ),
+      ).toContain("emailUnverified");
+    for (const patch of [
+      { mxProvider: "unknown" as const },
+      { mxCheckedAt: "2026-11-07T17:00:00Z" },
+    ])
+      expect(
+        prospectIssues({ ...microsoft, ...patch }, optedIn, now).map(
+          ({ code }) => code,
+        ),
+      ).toContain("mxUnknown");
+    expect(
+      prospectIssues({ ...microsoft, emailVerifiedAt: "" }, optedIn, now).map(
+        ({ code }) => code,
+      ),
+    ).toContain("emailUnverified");
+  });
   test("explicit email caps allow51 up to100 without changing defaults", () => {
     expect(defaultPlaybook.dailyCap).toBe(15);
     for (const dailyCap of [51, 100])

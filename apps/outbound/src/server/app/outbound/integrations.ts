@@ -6,6 +6,7 @@ import {
   companyExcluded,
   normalizeDomain,
   prospectIssues,
+  recipientMailHostAllowed,
   splitList,
 } from "@/lib/outbound";
 import { evidenceDateUsable } from "@/lib/outbound-evidence";
@@ -95,9 +96,13 @@ const eligibleForEnrichment = async (id: string, roleCheck = false) => {
     throw new ValidationError(
       "Review a current product finding on this company's domain before spending on contact lookup or enrichment.",
     );
-  if (details.mxProvider === "microsoft")
+  // Initial Apollo lookup can precede having an email address to check MX for.
+  if (
+    details.mxProvider === "microsoft" &&
+    !recipientMailHostAllowed(details.mxProvider, settings)
+  )
     throw new ValidationError(
-      "Microsoft-hosted recipients remain held. No paid lookup was started.",
+      "Check an enabled recipient mail host before enrichment. No paid lookup was started.",
     );
   if (
     roleCheck &&
@@ -112,7 +117,7 @@ const eligibleForEnrichment = async (id: string, roleCheck = false) => {
       !fresh(details.mxCheckedAt, 1))
   )
     throw new ValidationError(
-      "Clay's role check needs a sourced contact and title, a current verified work-email receipt, and a checked non-Microsoft mail host. No routine was started.",
+      "Clay's role check needs a sourced contact and title, a current verified work-email receipt, and a checked enabled mail host. No routine was started.",
     );
   return row;
 };

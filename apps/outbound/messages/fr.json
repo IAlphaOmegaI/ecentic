@@ -534,7 +534,8 @@
         "trustSavedContactVerification": "Utiliser la vérification enregistrée des contacts",
         "automaticApolloEnabled": "Autoriser les dépenses automatiques Apollo",
         "allowProductObservations": "Autoriser les observations produit véridiques",
-        "allowUsMarketWindow": "Utiliser un créneau américain si le fuseau horaire est inconnu"
+        "allowUsMarketWindow": "Utiliser un créneau américain si le fuseau horaire est inconnu",
+        "allowMicrosoftRecipients": "Autoriser les destinataires Microsoft vérifiés"
       },
       "templateHelp": "Insérez les variables prises en charge ci-dessous. Elles sont renseignées à partir des informations enregistrées du prospect.",
       "variablesTitle": "Variables disponibles",
@@ -601,7 +602,8 @@
       "trustSavedContactVerificationHelp": "Acceptez les contacts importés marqués comme vérifiés par leur source, sans prétendre à une nouvelle vérification du contact ou de son poste. Les dates originales, y compris inconnues, sont conservées.",
       "automaticApolloHelp": "Utilisez Apollo pour de nouvelles entreprises, l’enrichissement et la vérification des e-mails. Désactivez cette option pour travailler sur les données enregistrées sans nouvelles requêtes Apollo payantes.",
       "allowProductObservationsHelp": "Une observation précise et étayée sur un produit ou une recherche peut ouvrir une conversation même si aucun problème n’est trouvé. Ne jamais inventer d’écart ni d’effet sur les ventes.",
-      "allowUsMarketWindowHelp": "Pour les contacts enregistrés aux États-Unis sans fuseau horaire, autoriser les envois du lundi au jeudi, de 18:00 à 21:00 UTC. Il s’agit du créneau de marché choisi, pas d’une localisation personnelle vérifiée. Les fuseaux connus conservent les envois de 08:00 à 14:00, heure locale. Désactivé par défaut."
+      "allowUsMarketWindowHelp": "Pour les contacts enregistrés aux États-Unis sans fuseau horaire, autoriser les envois du lundi au jeudi, de 18:00 à 21:00 UTC. Il s’agit du créneau de marché choisi, pas d’une localisation personnelle vérifiée. Les fuseaux connus conservent les envois de 08:00 à 14:00, heure locale. Désactivé par défaut.",
+      "allowMicrosoftRecipientsHelp": "Autorisez les adresses professionnelles vérifiées hébergées par Microsoft. Les fournisseurs inconnus, les adresses non vérifiées, les réponses, les désinscriptions et toutes les autres vérifications continuent de bloquer les envois concernés. Désactivé par défaut."
     },
     "integrations": {
       "title": "Connectez les bons outils",

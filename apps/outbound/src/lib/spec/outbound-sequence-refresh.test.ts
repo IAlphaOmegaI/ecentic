@@ -92,6 +92,52 @@ const fixture = () => {
   return { input, state, details, now };
 };
 describe("automatic sequence refresh receipts", () => {
+  test("Microsoft refresh receipts follow opt-in while verification and unknown MX stay held", () => {
+    const f = fixture();
+    if (!f.state.mx || !f.state.verificationResult?.results[0])
+      throw new Error("fixture");
+    f.state.mx.provider = "microsoft";
+    const settings = { ...defaultPlaybook, allowMicrosoftRecipients: true };
+    expect(
+      validateSequenceRefreshReceipts(
+        f.input,
+        f.state,
+        f.details,
+        defaultPlaybook,
+        f.now,
+      ),
+    ).toEqual({ reason: "sequence-mx-held" });
+    expect(
+      validateSequenceRefreshReceipts(
+        f.input,
+        f.state,
+        f.details,
+        settings,
+        f.now,
+      ),
+    ).toMatchObject({ patch: { mxProvider: "microsoft" } });
+    f.state.mx.provider = "unknown";
+    expect(
+      validateSequenceRefreshReceipts(
+        f.input,
+        f.state,
+        f.details,
+        settings,
+        f.now,
+      ),
+    ).toEqual({ reason: "sequence-mx-held" });
+    f.state.mx.provider = "microsoft";
+    f.state.verificationResult.results[0].status = "unknown";
+    expect(
+      validateSequenceRefreshReceipts(
+        f.input,
+        f.state,
+        f.details,
+        settings,
+        f.now,
+      ),
+    ).toEqual({ reason: "sequence-verification-held" });
+  });
   test("renews only receipt fields for unchanged original facts", () => {
     const f = fixture();
     const result = validateSequenceRefreshReceipts(

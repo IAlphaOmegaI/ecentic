@@ -2,6 +2,7 @@ import { expect, mock, setSystemTime } from "bun:test";
 import {
   defaultPlaybook,
   inSendWindow,
+  type ProspectInput,
   prospectIssues,
   prospectSchema,
 } from "@/lib/outbound";
@@ -70,6 +71,7 @@ const prospects = [
 ];
 const checked: string[] = [];
 const claimed: string[] = [];
+const mailHost = { provider: "google" as ProspectInput["mxProvider"] };
 let researches = 0;
 mock.module("@/server/app/outbound/transport-store", () => ({
   list: async () => ({ success: true, data: [inbox] }),
@@ -107,7 +109,7 @@ mock.module("@/server/utils/outbound/mx", () => ({
     checked.push(email);
     return {
       success: true,
-      data: { provider: "google", checkedAt: now.toISOString() },
+      data: { provider: mailHost.provider, checkedAt: now.toISOString() },
     };
   },
 }));
@@ -148,5 +150,25 @@ expect(await Worker.run({ dryRun: false })).toMatchObject({
 expect(checked).toEqual([]);
 expect(claimed).toEqual([]);
 expect(researches).toBe(0);
+inbox.nextSendAt = null;
+mailHost.provider = "microsoft";
+expect(await Worker.run({ dryRun: false })).toMatchObject({
+  success: true,
+  data: { sent: 0 },
+});
+expect(claimed).toEqual([]);
+settings.allowMicrosoftRecipients = true;
+expect(await Worker.run({ dryRun: false })).toMatchObject({
+  success: true,
+  data: { sent: 1 },
+});
+expect(claimed).toEqual(["ready"]);
+claimed.length = 0;
+mailHost.provider = "unknown";
+expect(await Worker.run({ dryRun: false })).toMatchObject({
+  success: true,
+  data: { sent: 0 },
+});
+expect(claimed).toEqual([]);
 setSystemTime();
 console.log("Worker scheduling prefilters passed");

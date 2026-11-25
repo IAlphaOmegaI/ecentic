@@ -1,5 +1,9 @@
 import { z } from "zod";
-import type { Playbook, ProspectInput } from "./outbound";
+import {
+  type Playbook,
+  type ProspectInput,
+  recipientMailHostAllowed,
+} from "./outbound";
 import { validateProductInsight } from "./outbound-product-insight";
 import { savedContactVerificationReady } from "./outbound-saved-contact";
 
@@ -239,7 +243,7 @@ export const validateSequenceRefreshReceipts = (
     return { reason: "sequence-verification-held" };
   if (
     !state.mx ||
-    ["unknown", "microsoft"].includes(state.mx.provider) ||
+    !recipientMailHostAllowed(state.mx.provider, settings) ||
     !refreshFresh(state.mx.checkedAt, 1, now)
   )
     return { reason: "sequence-mx-held" };

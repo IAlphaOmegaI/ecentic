@@ -5,6 +5,7 @@ import {
   mailboxConnected,
   normalizeDomain,
   prospectIssues,
+  recipientMailHostAllowed,
   senderFor,
 } from "@/lib/outbound";
 import { usesFindingFormula } from "@/lib/outbound-finding-copy";
@@ -345,7 +346,7 @@ export const run = ({ dryRun = true }: { dryRun?: boolean } = {}) =>
         result.held += 1;
         continue;
       }
-      if (mx.data.provider === "microsoft" || mx.data.provider === "unknown") {
+      if (!recipientMailHostAllowed(mx.data.provider, settings)) {
         result.held += 1;
         continue;
       }

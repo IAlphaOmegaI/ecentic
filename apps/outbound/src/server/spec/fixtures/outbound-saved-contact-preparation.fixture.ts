@@ -1,4 +1,4 @@
-import { mock } from "bun:test";
+import { mock, setSystemTime } from "bun:test";
 import assert from "node:assert/strict";
 import { createHash, randomUUID } from "node:crypto";
 import { eq, sql } from "drizzle-orm";
@@ -393,13 +393,25 @@ db.$client.options.debug = (_, query, parameters) => {
 const beforeCachedBatch = { ...calls };
 try {
   assert.equal(value(await run(cachedBatch.batchId)).steps, 0);
-  assert.equal(batchReads.length, 2, "one projected job read and one batch read");
+  assert.equal(
+    batchReads.length,
+    2,
+    "one projected job read and one batch read",
+  );
   assert.equal(value(await run(cachedBatch.batchId)).steps, 0);
-  assert.equal(batchReads.length, 4, "each transaction must read a fresh budget");
+  assert.equal(
+    batchReads.length,
+    4,
+    "each transaction must read a fresh budget",
+  );
 } finally {
   db.$client.options.debug = debug;
 }
-assert.deepEqual(calls, beforeCachedBatch, "a paused batch must not call providers");
+assert.deepEqual(
+  calls,
+  beforeCachedBatch,
+  "a paused batch must not call providers",
+);
 assert.equal(
   (
     await db
@@ -2129,5 +2141,203 @@ assert.equal(
       .where(eq(schema.outboundEvent.kind, "savedGiftNavigationRetried"))
   ).length,
   1,
+);
+// Microsoft delivery is opt-in and must remain enabled at every subsequent stage.
+const microsoftMx: Parameters<typeof Preparation.run>[1] = {
+  mx: async () => ({
+    success: true,
+    data: {
+      provider: "microsoft",
+      checkedAt: new Date().toISOString(),
+      records: ["saved.test.mail.protection.outlook.com"],
+    },
+  }),
+};
+const setMicrosoft = async (enabled: boolean) => {
+  const policy = await Store.policy();
+  const saved = value(
+    await Store.savePlaybook(
+      "fixture-operator",
+      { ...policy.settings, allowMicrosoftRecipients: enabled },
+      policy.revision,
+    ),
+  );
+  assert.equal(saved.revision, policy.revision);
+};
+const disabledMicrosoft = await seed();
+value(await Preparation.enqueue("fixture-operator", disabledMicrosoft));
+const beforeDisabledMicrosoft = { ...calls };
+value(await run(disabledMicrosoft.batchId, microsoftMx));
+assert.equal((await jobFor(firstProspect(disabledMicrosoft))).status, "failed");
+assert.deepEqual(calls, beforeDisabledMicrosoft);
+const enabledMicrosoft = await seed();
+await setMicrosoft(true);
+value(await Preparation.enqueue("fixture-operator", enabledMicrosoft));
+value(await run(enabledMicrosoft.batchId, microsoftMx, 1));
+assert.equal(
+  (await jobFor(firstProspect(enabledMicrosoft))).output?.["stage"],
+  "collect",
+);
+await setMicrosoft(false);
+const beforeRevokedMicrosoft = { ...calls };
+value(await run(enabledMicrosoft.batchId, microsoftMx));
+assert.equal((await jobFor(firstProspect(enabledMicrosoft))).status, "failed");
+assert.deepEqual(calls, beforeRevokedMicrosoft);
+const verifiedMicrosoft = await seed();
+await setMicrosoft(true);
+value(await Preparation.enqueue("fixture-operator", verifiedMicrosoft));
+const beforeVerifiedMicrosoft = { ...calls };
+value(await run(verifiedMicrosoft.batchId, microsoftMx));
+await release();
+value(await run(verifiedMicrosoft.batchId, microsoftMx));
+const microsoftProspect = value(
+  await Store.readProspect(firstProspect(verifiedMicrosoft)),
+);
+assert.equal(microsoftProspect?.status, "draft");
+assert.equal(microsoftProspect?.details.mxProvider, "microsoft");
+assert.equal(microsoftProspect?.details.emailVerifiedAt, "");
+assert.ok(microsoftProspect?.details.savedContactVerificationId);
+assert.equal(calls.start - beforeVerifiedMicrosoft.start, 1);
+const unknownMx = await seed();
+await setMicrosoft(true);
+value(await Preparation.enqueue("fixture-operator", unknownMx));
+const beforeUnknownMx = { ...calls };
+value(
+  await run(unknownMx.batchId, {
+    mx: async () => ({
+      success: true,
+      data: {
+        provider: "unknown",
+        checkedAt: new Date().toISOString(),
+        records: ["unknown.saved.test"],
+      },
+    }),
+  }),
+);
+assert.equal((await jobFor(firstProspect(unknownMx))).status, "failed");
+assert.deepEqual(calls, beforeUnknownMx);
+
+// Scheduling is a batch barrier, even when a recovery makes a stage available early.
+setSystemTime(new Date("2026-11-25T23:59:00.000Z"));
+const scheduled = {
+  ...(await seed(2)),
+  maxQueries: 1,
+  startsAt: "2026-11-26T00:05:00Z",
+};
+const scheduledResult = value(
+  await Preparation.enqueue("fixture-operator", scheduled),
+);
+assert.equal(scheduledResult.startsAt, "2026-11-26T00:05:00.000Z");
+assert.equal(
+  (await jobFor(firstProspect(scheduled))).output?.["availableAt"],
+  scheduledResult.startsAt,
+);
+const beforeScheduled = { ...calls };
+value(await run(scheduled.batchId));
+await release();
+value(await run(scheduled.batchId));
+assert.deepEqual(calls, beforeScheduled);
+assert.equal(
+  (await firecrawlBatch(scheduled.batchId)).output?.["queriesReserved"],
+  0,
+);
+assert.equal(
+  (
+    await Preparation.enqueue("fixture-operator", {
+      ...scheduled,
+      startsAt: "2026-11-25T23:59:00Z",
+    })
+  ).success,
+  false,
+);
+assert.equal(
+  value(await Preparation.enqueue("fixture-operator", scheduled)).results[0]
+    ?.repeated,
+  true,
+);
+setSystemTime(new Date("2026-11-26T23:59:50.000Z"));
+value(await run(scheduled.batchId));
+assert.equal(calls.start - beforeScheduled.start, 1);
+const reserved = (await Promise.all(scheduled.prospects.map(jobFor))).find(
+  (job) => job.output?.["stage"] === "poll",
+);
+assert.ok(
+  reserved?.prospectId,
+  "One accepted query must await its existing poll",
+);
+const reservedAt = reserved.output?.["queryReservedAt"];
+const scheduledOriginalQuery = reserved.output?.["shoppingJob"];
+const budgetBeforeMidnight = await firecrawlBatch(scheduled.batchId);
+assert.equal(budgetBeforeMidnight.output?.["queriesReserved"], 1);
+setSystemTime(new Date("2026-11-27T00:00:30.000Z"));
+assert.equal(
+  value(await Preparation.enqueue("fixture-operator", scheduled)).results[0]
+    ?.repeated,
+  true,
+);
+assert.deepEqual(
+  (await firecrawlBatch(scheduled.batchId)).output,
+  budgetBeforeMidnight.output,
+);
+await release();
+value(await run(scheduled.batchId));
+const completedScheduled = await jobFor(reserved.prospectId);
+assert.equal(completedScheduled.status, "complete");
+assert.equal(completedScheduled.output?.["queryReservedAt"], reservedAt);
+assert.deepEqual(
+  completedScheduled.output?.["shoppingJob"],
+  scheduledOriginalQuery,
+);
+assert.equal(calls.start - beforeScheduled.start, 1);
+assert.equal(calls.browse - beforeScheduled.browse, 1);
+assert.equal(
+  (await firecrawlBatch(scheduled.batchId)).output?.["queriesReserved"],
+  1,
+);
+assert.equal(
+  (await firecrawlBatch(scheduled.batchId)).input?.["startsAt"],
+  "2026-11-26T00:05:00.000Z",
+);
+setSystemTime();
+
+// A full page of future jobs must not hide due work from another explicit batch.
+const scheduleQueue = await seed(2);
+const futureQueue = {
+  ...scheduleQueue,
+  prospects: [firstProspect(scheduleQueue)],
+  startsAt: new Date(Date.now() + 86_400_000).toISOString(),
+};
+value(await Preparation.enqueue("fixture-operator", futureQueue));
+const futureQueueJob = await jobFor(firstProspect(scheduleQueue));
+await db.insert(schema.outboundIntegrationJob).values(
+  Array.from({ length: 199 }, () => ({
+    provider: "automation" as const,
+    status: "pending" as const,
+    prospectId: futureQueueJob.prospectId,
+    requestId: randomUUID(),
+    input: futureQueueJob.input,
+    output: futureQueueJob.output,
+    updatedAt: new Date(0),
+  })),
+);
+const dueProspect = scheduleQueue.prospects[1];
+assert.ok(dueProspect);
+value(
+  await Preparation.enqueue("fixture-operator", {
+    ...scheduleQueue,
+    batchId: randomUUID(),
+    prospects: [dueProspect],
+  }),
+);
+value(
+  await Preparation.run(
+    { maxSteps: 1, deadline: Date.now() + 240_000 },
+    dependencies,
+  ),
+);
+assert.equal((await jobFor(dueProspect)).output?.["stage"], "collect");
+assert.equal(
+  (await jobFor(firstProspect(scheduleQueue))).output?.["stage"],
+  "preflight",
 );
 console.log("Saved contact preparation contracts passed");

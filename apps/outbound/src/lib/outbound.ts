@@ -149,6 +149,7 @@ export const playbookSchema = z
     dailyCap: z.number().int().min(1).max(MAX_DAILY_EMAILS),
     sendingRampEnabled: z.boolean().default(true),
     allowUsMarketWindow: z.boolean().default(false),
+    allowMicrosoftRecipients: z.boolean().default(false),
     automaticApolloEnabled: z.boolean().default(true),
     minGapMinutes: z.number().int().min(1).max(60),
     maxGapMinutes: z.number().int().min(1).max(120),
@@ -309,6 +310,7 @@ export const defaultPlaybook: Playbook = {
   dailyCap: 15,
   sendingRampEnabled: true,
   allowUsMarketWindow: false,
+  allowMicrosoftRecipients: false,
   automaticApolloEnabled: true,
   minGapMinutes: 12,
   maxGapMinutes: 28,
@@ -407,6 +409,13 @@ export const prospectSchema = z.object({
   lang: z.enum(["en", "de", "es", "it"]).default("en"),
 });
 export type ProspectInput = z.infer<typeof prospectSchema>;
+
+export const recipientMailHostAllowed = (
+  provider: ProspectInput["mxProvider"],
+  settings: { allowMicrosoftRecipients?: boolean } = {},
+) =>
+  provider !== "unknown" &&
+  (provider !== "microsoft" || settings.allowMicrosoftRecipients === true);
 
 export type Message = {
   step: 1 | 2 | 3;
@@ -825,7 +834,8 @@ export const prospectIssues = (
     )
       ? [{ code: "sharedInbox", field: "email" }]
       : []),
-    ...(prospect.mxProvider === "microsoft"
+    ...(prospect.mxProvider === "microsoft" &&
+    !recipientMailHostAllowed(prospect.mxProvider, settings)
       ? [{ code: "microsoftHeld", field: "mxProvider" }]
       : []),
     ...(prospect.mxProvider === "unknown" ||

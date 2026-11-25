@@ -8,6 +8,7 @@ import {
   normalizeDomain,
   prospectIssues,
   prospectSchema,
+  recipientMailHostAllowed,
 } from "@/lib/outbound";
 import {
   campaignCountryMatches,
@@ -83,6 +84,7 @@ const batchSchema = z.object({
   operation: z.literal("savedContactPreparationBatch"),
   campaignId: z.string().uuid(),
   maxQueries: z.number().int().min(1).max(50),
+  startsAt: z.string().datetime().optional(),
   requestedBy: z.string().min(1),
 });
 const budgetSchema = z.object({
@@ -234,6 +236,15 @@ const eligible = async (
     );
   if (
     state.stage !== "preflight" &&
+    state.mx &&
+    (!recipientMailHostAllowed(state.mx.provider, policy.settings) ||
+      !state.mx.records.length)
+  )
+    throw new ConflictError(
+      "The saved contact's mail host is not enabled in the current Playbook.",
+    );
+  if (
+    state.stage !== "preflight" &&
     (!state.mx || Date.now() - Date.parse(state.mx.checkedAt) >= 86_400_000)
   )
     throw new ConflictError(
@@ -304,6 +315,11 @@ export const enqueueSchema = z
     campaignId: z.string().uuid(),
     prospects: z.array(z.string().uuid()).min(1).max(200),
     maxQueries: z.number().int().min(1).max(50),
+    startsAt: z
+      .string()
+      .datetime({ offset: true })
+      .transform((timestamp) => new Date(timestamp).toISOString())
+      .optional(),
   })
   .strict();
 
@@ -322,13 +338,15 @@ export const enqueue = (actor: string, input: z.infer<typeof enqueueSchema>) =>
           operation: "savedContactPreparationBatch",
           campaignId: parsed.campaignId,
           maxQueries: parsed.maxQueries,
+          startsAt: parsed.startsAt,
           requestedBy: actor,
         });
         if (existing) {
           const prior = batchSchema.parse(existing.input);
           if (
             prior.campaignId !== settings.campaignId ||
-            prior.maxQueries !== settings.maxQueries
+            prior.maxQueries !== settings.maxQueries ||
+            prior.startsAt !== settings.startsAt
           )
             throw new ConflictError(
               "The preparation batch already has different settings.",
@@ -398,7 +416,7 @@ export const enqueue = (actor: string, input: z.infer<typeof enqueueSchema>) =>
             const state = preparationStateSchema.parse({
               stage: "preflight",
               prospectRevision: trusted.revision,
-              availableAt: new Date().toISOString(),
+              availableAt: parsed.startsAt ?? new Date().toISOString(),
               lease: null,
             });
             const context = await eligible(transaction, claim, state);
@@ -441,7 +459,12 @@ export const enqueue = (actor: string, input: z.infer<typeof enqueueSchema>) =>
         saved.success ? saved.data : { prospectId, error: saved.error.message },
       );
     }
-    return { batchId: parsed.batchId, maxQueries: parsed.maxQueries, results };
+    return {
+      batchId: parsed.batchId,
+      maxQueries: parsed.maxQueries,
+      startsAt: parsed.startsAt,
+      results,
+    };
   });
 
 const claim = (deadline: number, batchId?: string) =>
@@ -468,6 +491,7 @@ const claim = (deadline: number, batchId?: string) =>
         and(
           scope,
           sql`${schema.outboundIntegrationJob.status} in ('pending', 'starting')`,
+          sql`(${schema.outboundIntegrationJob.status} = 'starting' or (${schema.outboundIntegrationJob.output}->>'availableAt')::timestamptz <= ${new Date().toISOString()}::timestamptz)`,
           ...(batchId
             ? [
                 sql`${schema.outboundIntegrationJob.input}->>'batchId' = ${batchId}`,
@@ -516,7 +540,9 @@ const claim = (deadline: number, batchId?: string) =>
         continue;
       if (!batches.has(input.batchId)) {
         const batch = value(
-          await Jobs.get(Environment.SERVER, input.batchId, { tx: transaction }),
+          await Jobs.get(Environment.SERVER, input.batchId, {
+            tx: transaction,
+          }),
         );
         batches.set(input.batchId, {
           settings: batchSchema.parse(batch?.input),
@@ -525,6 +551,9 @@ const claim = (deadline: number, batchId?: string) =>
       }
       // The workspace lock keeps this snapshot stable; a budget write returns immediately.
       const { settings, budget } = batches.get(input.batchId)!;
+      // The batch barrier survives a retry that makes an individual stage available early.
+      if (settings.startsAt && Date.parse(settings.startsAt) > Date.now())
+        continue;
       const savedAnswerMayContinue =
         budget.paused &&
         budget.failureProvider === "scrapellm" &&
@@ -1026,7 +1055,10 @@ const execute = async (
       const mx = value(
         await (dependencies.mx ?? MX.check)(prospect.details.email),
       );
-      if (!["google", "other"].includes(mx.provider) || !mx.records.length)
+      if (
+        !recipientMailHostAllowed(mx.provider, policy.settings) ||
+        !mx.records.length
+      )
         throw new ValidationError(
           "The saved email has no eligible live mail route.",
         );
