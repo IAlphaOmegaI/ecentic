@@ -490,11 +490,20 @@ describe.skipIf(!endpoint)(
       expect(send).not.toHaveBeenCalled();
     });
     test("an uncertain provider response is retained and blocks another send even after editing", async () => {
-      const { direct, sending, conversations } = active();
+      const { direct, sending, conversations, db, schema } = active();
       const saved = await save();
+      const smtp = { command: "DATA", code: "ETIMEDOUT", responseCode: null };
       const send = spyOn(direct, "send").mockResolvedValue({
         success: false,
-        error: new IntegrationError("google", "uncertain", "fixture timeout"),
+        error: new IntegrationError(
+          "google",
+          "uncertain",
+          "direct-mailbox-unavailable",
+          502,
+          null,
+          null,
+          { smtp },
+        ),
       });
       expect(
         value(
@@ -518,6 +527,17 @@ describe.skipIf(!endpoint)(
         value(await conversations.get({ id: fixture.threadId })).sendAttempts[0]
           ?.status,
       ).toBe("uncertain");
+      const [audit] = await db
+        .select()
+        .from(schema.outboundEvent)
+        .where(eq(schema.outboundEvent.kind, "deliveryTransportFailure"));
+      expect(JSON.parse(audit?.detail ?? "null")).toMatchObject({
+        version: 1,
+        transport: "smtp",
+        source: "conversation",
+        ...smtp,
+      });
+      expect(audit?.detail).not.toContain("private-secret");
     });
     test("one generation request UUID incurs at most one Azure call and respects booking-stage controls", async () => {
       const { ai, conversations } = active();

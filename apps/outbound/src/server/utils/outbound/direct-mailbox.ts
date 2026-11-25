@@ -17,6 +17,7 @@ import { z } from "zod";
 import { loadDirectMessage } from "./direct-mailbox-mime";
 import { IntegrationError } from "./http";
 import { type Mail, messageIds } from "./inbound";
+import { type SmtpFailure, sanitizeSmtpFailure } from "./smtp-failure";
 
 const MESSAGE_LIMIT = 25;
 const SOURCE_LIMIT = 2_000_000;
@@ -123,12 +124,16 @@ export type DirectMailboxClients = {
 
 const failure = (
   kind: "invalid" | "authentication" | "unavailable" | "uncertain",
+  smtp: SmtpFailure | null = null,
 ) =>
   new IntegrationError(
     "google",
     kind === "invalid" ? "input" : kind === "authentication" ? "access" : kind,
     `direct-mailbox-${kind === "uncertain" ? "unavailable" : kind}`,
     kind === "invalid" ? 422 : kind === "authentication" ? 401 : 502,
+    null,
+    null,
+    smtp ? { smtp } : null,
   );
 const isAuthenticationFailure = (error: unknown) => {
   const parsed = z
@@ -149,8 +154,9 @@ const isAuthenticationFailure = (error: unknown) => {
 };
 const sanitize = (error: unknown, sending = false) => {
   if (error instanceof IntegrationError) return error;
-  if (isAuthenticationFailure(error)) return failure("authentication");
-  return failure(sending ? "uncertain" : "unavailable");
+  const smtp = sending ? sanitizeSmtpFailure(error) : null;
+  if (isAuthenticationFailure(error)) return failure("authentication", smtp);
+  return failure(sending ? "uncertain" : "unavailable", smtp);
 };
 const bounded = async <Data>(
   operation: () => Promise<Data>,

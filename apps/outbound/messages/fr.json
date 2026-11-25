@@ -871,7 +871,7 @@
           "inactive": "Cette boîte mail est inactive dans le guide. Elle peut synchroniser les réponses. Déplacez-la vers Boîtes d’envoi avant d’activer l’envoi."
         },
         "maximumDailyCap": "Maximum visé par boîte et par jour",
-        "dailyCapHelp": "Jusqu’à 50 premiers e-mails et relances par boîte et par jour. Le Playbook contrôle la progression ; les rebonds réduisent la capacité."
+        "dailyCapHelp": "Jusqu’à {maximum} premiers e-mails et relances par boîte et par jour. Le Playbook contrôle la progression ; les rebonds réduisent la capacité."
       },
       "liveResearch": {
         "title": "Recherche d’achat en direct",

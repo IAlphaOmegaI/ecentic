@@ -9,6 +9,7 @@ import {
   registeredSender,
   senderPool,
 } from "@/lib/outbound";
+import { MAX_DAILY_EMAILS } from "@/lib/outbound-capacity";
 import { db, schema, type TransactionScope } from "@/server/database";
 import { credentialKeyIdentifier } from "@/server/utils/credential-encryption";
 import { Environment } from "@/server/utils/environment";
@@ -290,12 +291,12 @@ export const configure = (
         .object({
           inboxId: z.string().uuid(),
           enabled: z.boolean(),
-          dailyCap: z.number().int().min(1).max(50),
+          dailyCap: z.number().int().min(1).max(MAX_DAILY_EMAILS),
         })
         .safeParse(input);
       if (!parsed.success)
         throw new ValidationError(
-          "Choose an inbox and a daily cap from 1 to 50.",
+          `Choose an inbox and a daily cap from 1 to ${MAX_DAILY_EMAILS}.`,
         );
       await transaction.execute(
         sql`select pg_advisory_xact_lock(hashtext('ecentic-outbound-workspace'))`,

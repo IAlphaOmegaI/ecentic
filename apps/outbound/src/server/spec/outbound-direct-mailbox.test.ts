@@ -423,6 +423,43 @@ describe("direct Google SMTP sends", () => {
     expect(result.error.message).toBe("direct-mailbox-authentication");
   });
 
+  test("retains only bounded SMTP provenance without changing send outcomes", async () => {
+    for (const [command, code, responseCode, outcome] of [
+      ["RCPT TO", "EENVELOPE", 550, "uncertain"],
+      ["DATA", "EMESSAGE", 451, "uncertain"],
+      ["AUTH PLAIN", "EAUTH", 535, "access"],
+      ["CONN", "ETIMEDOUT", null, "uncertain"],
+    ] as const) {
+      const { adapter, state } = fixture();
+      state.sendError = Object.assign(new Error(credentials.appPassword), {
+        command,
+        code,
+        responseCode,
+        response: `private reply for ${recipient}`,
+        recipient,
+        envelope: { from: credentials.email, to: [recipient] },
+        raw: input.raw,
+      });
+      const result = await adapter.send(input);
+      if (result.success) throw new Error("Expected SMTP failure");
+      expect(result.error.code).toBe(outcome);
+      expect(result.error.receipt).toEqual({
+        smtp: { command, code, responseCode },
+      });
+      expect(result.error.message).toBe(
+        outcome === "access"
+          ? "direct-mailbox-authentication"
+          : "direct-mailbox-unavailable",
+      );
+      expect(result.error.cause).toBeUndefined();
+      const serialized = JSON.stringify(result.error);
+      for (const secret of [credentials.appPassword, recipient, input.raw])
+        expect(serialized).not.toContain(secret);
+      expect(state.sends).toHaveLength(1);
+      expect(state.smtpClosed).toBe(1);
+    }
+  });
+
   test("aborts the active SMTP send when its operation deadline expires", async () => {
     const { adapter, state } = fixture([], 10);
     state.sendWaitForAbort = true;

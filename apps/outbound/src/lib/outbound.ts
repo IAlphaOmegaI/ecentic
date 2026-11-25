@@ -1,5 +1,6 @@
 import { getDomain } from "tldts";
 import { z } from "zod";
+import { MAX_DAILY_EMAILS } from "./outbound-capacity";
 import { evidenceDateUsable } from "./outbound-evidence";
 import {
   DEFAULT_FINDING_COPY,
@@ -145,7 +146,7 @@ export const playbookSchema = z
     postalAddress: text.min(10).max(500),
     optout: text.min(1).max(300),
     weeklyTarget: z.number().int().min(1).max(10000),
-    dailyCap: z.number().int().min(1).max(50),
+    dailyCap: z.number().int().min(1).max(MAX_DAILY_EMAILS),
     sendingRampEnabled: z.boolean().default(true),
     allowUsMarketWindow: z.boolean().default(false),
     automaticApolloEnabled: z.boolean().default(true),

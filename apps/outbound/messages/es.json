@@ -871,7 +871,7 @@
           "inactive": "Este buzón está inactivo en la guía. Puede sincronizar respuestas. Muévelo a Buzones de envío antes de activar el envío."
         },
         "maximumDailyCap": "Máximo objetivo por buzón al día",
-        "dailyCapHelp": "Hasta 50 correos iniciales y de seguimiento por buzón al día. El Playbook controla los aumentos graduales; los rebotes reducen la capacidad."
+        "dailyCapHelp": "Hasta {maximum} correos iniciales y de seguimiento por buzón al día. El Playbook controla los aumentos graduales; los rebotes reducen la capacidad."
       },
       "liveResearch": {
         "title": "Investigación de compras en vivo",

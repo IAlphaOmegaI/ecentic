@@ -48,6 +48,17 @@ const prospect = prospectSchema.parse({
 });
 
 describe("outbound eligibility", () => {
+  test("explicit email caps allow51 up to100 without changing defaults", () => {
+    expect(defaultPlaybook.dailyCap).toBe(15);
+    for (const dailyCap of [51, 100])
+      expect(playbookSchema.parse({ ...settings, dailyCap }).dailyCap).toBe(
+        dailyCap,
+      );
+    for (const dailyCap of [0, 101, 1.5])
+      expect(playbookSchema.safeParse({ ...settings, dailyCap }).success).toBe(
+        false,
+      );
+  });
   test("unknown US timezone readiness follows only the explicit market-window preference", () => {
     const contact = { ...prospect, timezone: "" };
     const enabled = { ...settings, allowUsMarketWindow: true };

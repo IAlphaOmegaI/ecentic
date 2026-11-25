@@ -101,6 +101,11 @@ import {
 } from "@/server/utils/outbound/linkedin-ledger";
 import { assertShoppingEvidence } from "@/server/utils/outbound/shopping-research";
 import {
+  type SmtpFailure,
+  smtpFailureFrom,
+  smtpFailureSchema,
+} from "@/server/utils/outbound/smtp-failure";
+import {
   assertWarmupPreflight,
   preflightWarmup,
   type WarmupPreflight,
@@ -722,6 +727,34 @@ const event = async (
       { tx: transaction },
     ),
   );
+
+/** A versioned diagnostic event, separate from immutable content and outcome status. */
+export const recordSmtpFailureWithin = async (
+  transaction: TransactionScope,
+  input: {
+    actor: string;
+    prospectId: string;
+    attemptId: string;
+    source: "sequence" | "conversation" | "mailbox-test";
+    smtpFailure: unknown;
+  },
+) => {
+  const diagnostic = smtpFailureSchema.safeParse(input.smtpFailure);
+  if (!diagnostic.success) return;
+  await event(
+    transaction,
+    input.actor,
+    "deliveryTransportFailure",
+    JSON.stringify({
+      version: 1,
+      transport: "smtp",
+      attemptId: input.attemptId,
+      source: input.source,
+      ...diagnostic.data,
+    }),
+    input.prospectId,
+  );
+};
 
 const suppressed = (details: ProspectInput, entries: SuppressionRow[]) =>
   entries.some((entry) =>
@@ -4064,14 +4097,17 @@ const deliveryGates = async (
         {
           where: and(
             inArray(schema.outboundProspect.companyId, others),
-            inArray(schema.outboundProspect.status, [
-              "approved",
-              "active",
-              "replied",
-              "finished",
-              "optedOut",
-              "bounced",
-            ]),
+            or(
+              inArray(schema.outboundProspect.status, [
+                "approved",
+                "active",
+                "replied",
+                "finished",
+                "optedOut",
+                "bounced",
+              ]),
+              sql`exists (select 1 from ${schema.outboundSendAttempt} where ${schema.outboundSendAttempt.prospectId} = ${schema.outboundProspect.id} and ${schema.outboundSendAttempt.status} = 'uncertain')`,
+            ),
           ),
         },
         { tx: transaction },
@@ -4095,7 +4131,7 @@ const deliveryGates = async (
       {
         where: and(
           eq(schema.outboundSendAttempt.inboxId, inbox.id),
-          inArray(schema.outboundSendAttempt.status, ["claimed", "uncertain"]),
+          eq(schema.outboundSendAttempt.status, "claimed"),
         ),
       },
       { tx: transaction },
@@ -4104,6 +4140,10 @@ const deliveryGates = async (
   if (outstanding.some((attempt) => attempt.id !== currentAttempt?.id))
     throw new ConflictError(
       "The sender has an unresolved delivery reservation. Reconcile it before another send.",
+    );
+  if (attempts.some((attempt) => attempt.status === "uncertain"))
+    throw new ConflictError(
+      "This recipient has an uncertain delivery. Reconcile it before continuing this sequence.",
     );
   if (
     attempts.some(
@@ -4134,6 +4174,10 @@ const deliveryGates = async (
       { tx: transaction },
     ),
   );
+  if (daily.filter((attempt) => attempt.status === "uncertain").length >= 2)
+    throw new ConflictError(
+      "Two delivery attempts are uncertain within 24 hours. Check the sender transport before continuing.",
+    );
   const replies = requireData(
     await ConversationSends.find(
       Environment.SERVER,
@@ -4332,6 +4376,7 @@ type Completion = {
   providerMessageId?: string;
   threadId?: string;
   error?: string;
+  smtpFailure?: SmtpFailure | null;
 };
 const completeWithin = async (
   transaction: TransactionScope,
@@ -4487,6 +4532,14 @@ const completeWithin = async (
     input.error || `Step ${attempt.step}; ${attempt.messageId}`,
     prospect.id,
   );
+  if (input.status !== "accepted")
+    await recordSmtpFailureWithin(transaction, {
+      actor,
+      prospectId: prospect.id,
+      attemptId: attempt.id,
+      source: attempt.test ? "mailbox-test" : "sequence",
+      smtpFailure: input.smtpFailure,
+    });
   return { attempt: attempt.id, status: input.status };
 };
 export const completeDeliveryWithin = completeWithin;
@@ -4552,15 +4605,16 @@ export const dispatchDelivery = (
         );
         const sent = await resultify(() => send(claim));
         if (!sent.success || !sent.data.success) {
-          const error = !sent.success
-            ? sent.error.message
+          const failure = !sent.success
+            ? sent.error
             : !sent.data.success
-              ? sent.data.error.message
-              : "Delivery outcome unknown.";
+              ? sent.data.error
+              : new Error("Delivery outcome unknown.");
           return completeWithin(transaction, actor, {
             attempt: attempt.id,
             status: "uncertain",
-            error,
+            error: failure.message,
+            smtpFailure: smtpFailureFrom(failure),
           });
         }
         return completeWithin(transaction, actor, {

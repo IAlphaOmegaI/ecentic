@@ -41,6 +41,7 @@ import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { useRouter } from "@/i18n/navigation";
 import type { Inbox, Prospect } from "@/lib/outbound";
+import { MAX_DAILY_EMAILS } from "@/lib/outbound-capacity";
 import * as Outbound from "@/server/app/outbound";
 import * as Connections from "@/server/app/outbound/integrations";
 import type { Person } from "@/server/utils/outbound/providers";
@@ -1160,9 +1161,11 @@ const InboxEditor = ({ inbox }: { inbox: Inbox }) => {
           }),
           dailyCap: field({
             shape: "number",
-            validator: z.number().int().min(1).max(50),
+            validator: z.number().int().min(1).max(MAX_DAILY_EMAILS),
             label: t("integrations.mailbox.maximumDailyCap"),
-            description: t("integrations.mailbox.dailyCapHelp"),
+            description: t("integrations.mailbox.dailyCapHelp", {
+              maximum: MAX_DAILY_EMAILS,
+            }),
           }),
         }}
         defaultValues={{ enabled: inbox.enabled, dailyCap: inbox.dailyCap }}

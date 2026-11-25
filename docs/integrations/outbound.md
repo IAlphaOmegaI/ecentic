@@ -29,7 +29,7 @@ original message quoted by follow-ups. Replies use the actual selected mailbox
 or LinkedIn chat. Inbound replies and opt-outs stop cold follow-ups across both
 channels. Opening a timeline never sends or retries anything.
 
-Email targets may be set up to 50 messages per inbox per rolling 24 hours, including
+Email targets may be set up to 100 messages per inbox per rolling 24 hours, including
 follow-ups and conversational replies. With `sendingRampEnabled` (the default),
 the effective limit starts at 15 (or a lower configured target) and rises by 5
 only after a completed UTC day reached its then-current cap. Disabling the ramp
@@ -44,6 +44,14 @@ emails; tomorrow's follow-ups do not consume today's remaining slots. The queue
 filters due dates and currently open recipient windows before its row limit.
 Waiting contacts and paced inboxes do not spend the worker's research/MX budget.
 The final transaction still rechecks eligibility immediately before delivery.
+A claimed attempt blocks the inbox while its transport is in flight. A single
+uncertain attempt remains held on its recipient, is never retried automatically,
+and counts toward rolling capacity; unrelated recipients can continue. Two
+uncertain attempts started within the rolling 24 hours pause the inbox for
+transport review. Older uncertainty retains its recipient hold without indefinitely
+blocking unrelated deliveries. Unresolved conversation replies remain an inbox hold.
+Raising a cap does not mark an uncertain attempt failed or erase its capacity use.
+
 
 LinkedIn uses the explicitly selected saved Unipile account and its own limits;
 the email 50 target does not apply to LinkedIn. Automatic invitations and a single
@@ -193,7 +201,7 @@ of a definitively rejected provider request retains its saved checkpoint and aud
 | Setting | Default | Effect |
 | --- | --- | --- |
 | `automaticApolloEnabled` | `true` | Enables new automatic company searches, organization/contact enrichment and email verification. When off, stages needing new paid Apollo requests remain pending; saved facts, free identity search and polling an already accepted request can continue. Manual provider actions remain explicit. |
-| `sendingRampEnabled` | `true` | Uses the observed-volume ramp described above. When off, the lower of the workspace and inbox caps applies directly, up to 50; bounce protection remains active. |
+| `sendingRampEnabled` | `true` | Uses the observed-volume ramp described above. When off, the lower of the workspace and inbox caps applies directly, up to 100; bounce protection remains active. |
 | `allowStaleEvidence` | `false` | Allows genuine saved product and shopping observations beyond the configured age limit. Missing, future-dated or changed receipts still fail. |
 | `trustSavedContactVerification` | `false` | Allows an explicitly accepted, source-verified legacy contact and saved role to retain their original verification dates, including unknown dates. An immutable receipt binds the imported identity; this is not a new verification. Live MX, targeting, reply and suppression checks remain. |
 | `allowProductObservations` | `false` | Allows a specific, truthful neutral product observation when no discrepancy is supported. Actual shopper-query and browser receipts remain required; invented issues, price discrepancies and sales-impact claims are not permitted as neutral observations. |
@@ -458,6 +466,11 @@ older contacts and suppressions from Instantly.
 SMTP uses the existing exact-message approval and immutable attempt ledger,
 including stable RFC Message-IDs and reply references. Only an accepted SMTP
 receipt or a matching provider Sent message can reconcile an uncertain attempt.
+SMTP failures retain only an allowlisted command, error code and numeric response
+code in a versioned `deliveryTransportFailure` audit event. Raw server responses,
+credentials, envelopes and message content are discarded. These diagnostics do
+not change delivery status or authorize a retry; a timeout can remain ambiguous
+even when its reported command is `CONN`.
 No automatic retry or locally appended Sent copy is used to assert acceptance.
 Connecting does not enable delivery or transfer Instantly campaigns.
 

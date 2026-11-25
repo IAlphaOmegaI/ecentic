@@ -871,7 +871,7 @@
           "inactive": "This mailbox is inactive in the Playbook. It can sync replies. Move it to Sender inboxes before enabling sending."
         },
         "maximumDailyCap": "Target maximum per inbox per day",
-        "dailyCapHelp": "Up to 50 first emails and follow-ups per inbox daily. The Playbook controls gradual increases; observed bounces reduce capacity."
+        "dailyCapHelp": "Up to {maximum} first emails and follow-ups per inbox daily. The Playbook controls gradual increases; observed bounces reduce capacity."
       },
       "liveResearch": {
         "title": "Live shopping research",

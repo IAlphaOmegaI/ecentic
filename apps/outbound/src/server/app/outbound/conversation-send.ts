@@ -14,6 +14,7 @@ import * as Google from "@/server/utils/outbound/google";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import { addresses, type Mail } from "@/server/utils/outbound/inbound";
 import { assertLinkedinCapacity } from "@/server/utils/outbound/linkedin-capacity";
+import { smtpFailureFrom } from "@/server/utils/outbound/smtp-failure";
 import * as Unipile from "@/server/utils/outbound/unipile";
 import { repository } from "@/server/utils/repository";
 import * as Conversations from "./conversations";
@@ -487,6 +488,13 @@ export const send = (actor: string, input: unknown) =>
               { tx: transaction },
             ),
           );
+          await Store.recordSmtpFailureWithin(transaction, {
+            actor,
+            prospectId: manifest.prospectId,
+            attemptId: saved.id,
+            source: "conversation",
+            smtpFailure: smtpFailureFrom(sent.error),
+          });
           return {
             id: manifest.conversationId,
             attempt: saved.id,

@@ -23,6 +23,7 @@ import {
   type Mail,
   messageIds,
 } from "@/server/utils/outbound/inbound";
+import { smtpFailureFrom } from "@/server/utils/outbound/smtp-failure";
 import { assertWarmupPaused } from "@/server/utils/outbound/warmup-guard";
 import { repository } from "@/server/utils/repository";
 import * as Conversations from "./conversations";
@@ -552,6 +553,7 @@ export const start = (
                   status === "uncertain"
                     ? "Mailbox test outcome needs reconciliation."
                     : "Mailbox test did not send.",
+                smtpFailure: smtpFailureFrom(sent.error),
               }),
         });
         const completedAt = new Date();

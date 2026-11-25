@@ -12,6 +12,7 @@ import { eq, sql } from "drizzle-orm";
 import { defaultPlaybook, prospectSchema } from "@/lib/outbound";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import type { Mail } from "@/server/utils/outbound/inbound";
+import { requireTestDatabase } from "./helpers/database";
 
 const endpoint = process.env.OUTBOUND_TEST_DATABASE_URL;
 const originalFetch = globalThis.fetch;
@@ -113,12 +114,7 @@ const reply = async (overrides: Partial<Mail> = {}): Promise<Mail> => {
 describe.skipIf(!endpoint)("isolated owner mailbox setup test", () => {
   beforeAll(async () => {
     if (!endpoint) throw new Error("Disposable database required");
-    const url = new URL(endpoint);
-    if (
-      !["localhost", "127.0.0.1"].includes(url.hostname) ||
-      url.pathname !== "/outbound_test"
-    )
-      throw new Error("Local outbound_test only");
+    requireTestDatabase(endpoint);
     Object.assign(process.env, {
       DATABASE_URL: endpoint,
       CREDENTIAL_ENCRYPTION_KEY: Buffer.alloc(32, 19).toString("base64"),
@@ -279,6 +275,46 @@ describe.skipIf(!endpoint)("isolated owner mailbox setup test", () => {
     ).toBe("uncertain");
     expect(sends).toHaveLength(0);
     expect((await tests.confirm("owner", request())).success).toBe(false);
+  });
+
+  test("mailbox test preserves structured SMTP provenance and its uncertain outcome", async () => {
+    const { tests, db, schema } = active();
+    const smtp = { command: "DATA", code: "ETIMEDOUT", responseCode: null };
+    const send = mock(async () => ({
+      success: false as const,
+      error: new IntegrationError(
+        "google",
+        "uncertain",
+        "direct-mailbox-unavailable",
+        502,
+        null,
+        null,
+        { smtp },
+      ),
+    }));
+    expect(
+      value(await tests.start("owner", request(), { ...dependencies, send }))
+        .status,
+    ).toBe("uncertain");
+    const [attempt] = await db.select().from(schema.outboundSendAttempt);
+    expect(attempt?.status).toBe("uncertain");
+    expect(attempt?.error).toBe("Mailbox test outcome needs reconciliation.");
+    const [audit] = await db
+      .select()
+      .from(schema.outboundEvent)
+      .where(eq(schema.outboundEvent.kind, "deliveryTransportFailure"));
+    expect(JSON.parse(audit?.detail ?? "null")).toEqual({
+      version: 1,
+      transport: "smtp",
+      source: "mailbox-test",
+      attemptId: attempt?.id,
+      ...smtp,
+    });
+    expect(
+      value(await tests.start("owner", request(), { ...dependencies, send }))
+        .status,
+    ).toBe("uncertain");
+    expect(send).toHaveBeenCalledTimes(1);
   });
 
   test("actual matching reply uses normal ingestion, stops sequence, and confirms only senderTested", async () => {

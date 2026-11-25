@@ -11,6 +11,7 @@ import {
 import { eq, sql } from "drizzle-orm";
 import { defaultPlaybook, prospectSchema, senderFor } from "@/lib/outbound";
 import { LEGACY_CONTACT_IMPORT_ACTOR } from "@/lib/outbound-saved-contact";
+import { IntegrationError } from "@/server/utils/outbound/http";
 import { requireTestDatabase } from "./helpers/database";
 
 const endpoint = process.env.OUTBOUND_TEST_DATABASE_URL;
@@ -1021,6 +1022,62 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
       "held",
     );
   });
+  test("SMTP diagnostics survive dispatch as a sanitized audit without enabling replay", async () => {
+    const { store, db, schema } = active();
+    const fixture = await approved();
+    const claim = required(await store.claimDelivery(actor, fixture));
+    const smtp = { command: "RCPT TO", code: "EENVELOPE", responseCode: 550 };
+    const send = mock(async () => ({
+      success: false as const,
+      error: new IntegrationError(
+        "google",
+        "uncertain",
+        "direct-mailbox-unavailable",
+        502,
+        null,
+        null,
+        { smtp },
+      ),
+    }));
+    expect(
+      required(await store.dispatchDelivery(actor, claim, send)).status,
+    ).toBe("uncertain");
+    const [attempt] = await db.select().from(schema.outboundSendAttempt);
+    expect(attempt).toMatchObject({
+      status: "uncertain",
+      error: "direct-mailbox-unavailable",
+    });
+    const [audit] = await db
+      .select()
+      .from(schema.outboundEvent)
+      .where(eq(schema.outboundEvent.kind, "deliveryTransportFailure"));
+    expect(JSON.parse(audit?.detail ?? "null")).toEqual({
+      version: 1,
+      transport: "smtp",
+      attemptId: claim.attempt,
+      source: "sequence",
+      ...smtp,
+    });
+    expect((await store.dispatchDelivery(actor, claim, send)).success).toBe(
+      false,
+    );
+    expect(send).toHaveBeenCalledTimes(1);
+    await db.transaction(async (transaction) => {
+      await store.recordSmtpFailureWithin(transaction, {
+        actor,
+        prospectId: fixture.prospect,
+        attemptId: claim.attempt,
+        source: "sequence",
+        smtpFailure: { ...smtp, response: "private-secret" },
+      });
+    });
+    expect(
+      await db
+        .select()
+        .from(schema.outboundEvent)
+        .where(eq(schema.outboundEvent.kind, "deliveryTransportFailure")),
+    ).toHaveLength(1);
+  });
   test("all three steps keep the original sender, thread, footer and first-send schedule", async () => {
     const { store, db, schema } = active();
     const fixture = await approved();
@@ -1375,6 +1432,377 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
       required(await store.readProspect(fixture.prospect))?.approvalHash,
     ).toBeNull();
   });
+  const pendingDelivery = async (
+    inbox: string,
+    domain: string,
+    status: "claimed" | "uncertain",
+    createdAt = new Date(now.getTime() - 60_000),
+  ) => {
+    const { store, db, schema } = active();
+    const created = required(await store.saveProspect(actor, details(domain)));
+    await db
+      .update(schema.outboundProspect)
+      .set({ status: "held", holdReason: "deliveryUncertain", inboxId: inbox })
+      .where(eq(schema.outboundProspect.id, created.prospect));
+    const [attempt] = await db
+      .insert(schema.outboundSendAttempt)
+      .values({
+        prospectId: created.prospect,
+        inboxId: inbox,
+        step: 1,
+        revision: 0,
+        messageId: `<${created.prospect}@fixture.com>`,
+        status,
+        contentHash: "fixture-pending-content",
+        createdAt,
+      })
+      .returning();
+    if (!attempt) throw new Error("Fixture attempt missing");
+    return { ...created, attempt };
+  };
+
+  test("one uncertain message stays quarantined while an unrelated recipient can send", async () => {
+    const { store } = active();
+    const fixture = await approved();
+    const pending = await pendingDelivery(
+      fixture.inbox,
+      "quarantined.com",
+      "uncertain",
+    );
+    expect((await store.claimDelivery(actor, fixture)).success).toBe(true);
+    const held = required(await store.readProspect(pending.prospect));
+    expect(held?.status).toBe("held");
+    expect(held?.sentStep).toBe(0);
+    expect(
+      (
+        await store.claimDelivery(actor, {
+          prospect: pending.prospect,
+          inbox: fixture.inbox,
+        })
+      ).success,
+    ).toBe(false);
+  });
+
+  test("uncertainty blocks the same recipient even if its visible status is restored", async () => {
+    const { store, db, schema } = active();
+    const fixture = await approved();
+    await db.insert(schema.outboundSendAttempt).values({
+      prospectId: fixture.prospect,
+      inboxId: fixture.inbox,
+      step: 1,
+      revision: fixture.revision,
+      messageId: "<uncertain-same@fixture.com>",
+      status: "uncertain",
+      contentHash: "fixture-pending-content",
+      createdAt: new Date(now.getTime() - 25 * 3_600_000),
+    });
+    const result = await store.claimDelivery(actor, fixture);
+    expect(result.success).toBe(false);
+    if (!result.success)
+      expect(result.error.message).toContain(
+        "recipient has an uncertain delivery",
+      );
+  });
+
+  test("changing the contact at a company cannot escape its uncertain first email", async () => {
+    const { store, db, schema } = active();
+    const fixture = await approved();
+    const claim = required(await store.claimDelivery(actor, fixture));
+    required(
+      await store.dispatchDelivery(actor, claim, async () => ({
+        success: false,
+        error: new Error("Fixture unknown transport outcome"),
+      })),
+    );
+    const changed = required(
+      await store.saveProspect(actor, {
+        ...details(),
+        id: fixture.prospect,
+        name: "Jill Smith",
+        first: "Jill",
+        email: "jill@samplegoods.com",
+      }),
+    );
+    expect(changed.prospect).toBe(fixture.prospect);
+    const revised = required(await store.generateDrafts(actor, changed));
+    required(
+      await store.reviewProspect(actor, {
+        ...changed,
+        revision: revised.revision,
+        decision: "approve",
+      }),
+    );
+    const result = await store.claimDelivery(actor, {
+      ...changed,
+      inbox: fixture.inbox,
+    });
+    expect(result.success).toBe(false);
+    if (!result.success)
+      expect(result.error.message).toContain(
+        "recipient has an uncertain delivery",
+      );
+    const oldIdentity = await db
+      .select()
+      .from(schema.outboundPerson)
+      .where(eq(schema.outboundPerson.email, details().email));
+    expect(oldIdentity).toHaveLength(1);
+  });
+
+  test("a claimed transport reserves the entire inbox regardless of age", async () => {
+    const { store } = active();
+    const fixture = await approved();
+    await pendingDelivery(
+      fixture.inbox,
+      "claimedgoods.com",
+      "claimed",
+      new Date(now.getTime() - 25 * 3_600_000),
+    );
+    const result = await store.claimDelivery(actor, fixture);
+    expect(result.success).toBe(false);
+    if (!result.success)
+      expect(result.error.message).toContain("unresolved delivery reservation");
+  });
+
+  test("two recent uncertain attempts stop the transport; older uncertainty stays a recipient hold", async () => {
+    const { store, db, schema } = active();
+    const fixture = await approved();
+    const first = await pendingDelivery(
+      fixture.inbox,
+      "uncertain-one.com",
+      "uncertain",
+    );
+    const second = await pendingDelivery(
+      fixture.inbox,
+      "uncertain-two.com",
+      "uncertain",
+    );
+    const held = await store.claimDelivery(actor, fixture);
+    expect(held.success).toBe(false);
+    if (!held.success)
+      expect(held.error.message).toContain(
+        "Two delivery attempts are uncertain",
+      );
+    await db
+      .update(schema.outboundSendAttempt)
+      .set({ createdAt: new Date(now.getTime() - 24 * 3_600_000 - 1) })
+      .where(eq(schema.outboundSendAttempt.id, first.attempt.id));
+    expect((await store.claimDelivery(actor, fixture)).success).toBe(true);
+    expect(required(await store.readProspect(first.prospect))?.status).toBe(
+      "held",
+    );
+    expect(required(await store.readProspect(second.prospect))?.status).toBe(
+      "held",
+    );
+  });
+
+  test("final dispatch stops if a second uncertain attempt appears after claim", async () => {
+    const { store } = active();
+    const fixture = await approved();
+    await pendingDelivery(fixture.inbox, "first-uncertain.com", "uncertain");
+    const claim = required(await store.claimDelivery(actor, fixture));
+    await pendingDelivery(fixture.inbox, "second-uncertain.com", "uncertain");
+    const send = mock(async () => ({
+      success: true as const,
+      data: { providerMessageId: "must-not-send", threadId: "must-not-send" },
+    }));
+    const result = await store.dispatchDelivery(actor, claim, send);
+    expect(result.success).toBe(false);
+    if (!result.success)
+      expect(result.error.message).toContain(
+        "Two delivery attempts are uncertain",
+      );
+    expect(send).not.toHaveBeenCalled();
+  });
+
+  test("an uncertain email cannot be retried through another company alias", async () => {
+    const { store, db, schema } = active();
+    const fixture = await approved();
+    const pending = await pendingDelivery(
+      fixture.inbox,
+      "same-person-other-company.com",
+      "uncertain",
+    );
+    const held = required(await store.readProspect(pending.prospect));
+    if (!held) throw new Error("Fixture held prospect missing");
+    await db
+      .update(schema.outboundPerson)
+      .set({ email: details().email })
+      .where(eq(schema.outboundPerson.id, held.personId));
+    const result = await store.claimDelivery(actor, fixture);
+    expect(result.success).toBe(false);
+    if (!result.success)
+      expect(result.error.message).toContain("recipient belongs to another");
+  });
+
+  test("uncertainty consumes capacity and51 is an explicit limit without revoking approved content", async () => {
+    const { store, db, schema } = active();
+    const Mailboxes = await import("@/server/app/outbound/transport-store");
+    const fixture = await approved();
+    const pending = await pendingDelivery(
+      fixture.inbox,
+      "uncertain-capacity.com",
+      "uncertain",
+    );
+    const policy = await store.policy();
+    const before = required(await store.readProspect(fixture.prospect));
+    required(
+      await store.savePlaybook(
+        actor,
+        {
+          ...policy.settings,
+          sendingRampEnabled: false,
+          dailyCap: 50,
+          minGapMinutes: 3,
+          maxGapMinutes: 4,
+        },
+        policy.revision,
+      ),
+    );
+    required(
+      await Mailboxes.configure(actor, {
+        inboxId: fixture.inbox,
+        enabled: true,
+        dailyCap: 50,
+      }),
+    );
+    const [conversation] = await db
+      .insert(schema.outboundConversation)
+      .values({
+        prospectId: fixture.prospect,
+        channel: "email",
+        accountId: fixture.inbox,
+        accountLabel: senderFor(fixture.prospect, settings),
+        providerThreadId: "uncertain-capacity-fixture",
+        counterpart: details().email,
+      })
+      .returning();
+    if (!conversation) throw new Error("Fixture conversation missing");
+    await db.insert(schema.outboundConversationSend).values(
+      Array.from({ length: 49 }, (_, revision) => ({
+        conversationId: conversation.id,
+        revision,
+        status: "accepted" as const,
+        input: {
+          channel: "email",
+          accountId: fixture.inbox,
+          prospectId: fixture.prospect,
+        },
+        createdBy: actor,
+        createdAt: new Date(now.getTime() - 60_000),
+        completedAt: new Date(now.getTime() - 60_000),
+      })),
+    );
+    const full = await store.claimDelivery(actor, fixture);
+    expect(full.success).toBe(false);
+    if (!full.success)
+      expect(full.error.message).toContain("rolling 24-hour cap");
+    required(
+      await store.savePlaybook(
+        actor,
+        {
+          ...policy.settings,
+          sendingRampEnabled: false,
+          dailyCap: 51,
+          minGapMinutes: 3,
+          maxGapMinutes: 4,
+        },
+        policy.revision,
+      ),
+    );
+    required(
+      await Mailboxes.configure(actor, {
+        inboxId: fixture.inbox,
+        enabled: true,
+        dailyCap: 51,
+      }),
+    );
+    expect(
+      (
+        await Mailboxes.configure(actor, {
+          inboxId: fixture.inbox,
+          enabled: true,
+          dailyCap: 101,
+        })
+      ).success,
+    ).toBe(false);
+    expect((await store.policy()).revision).toBe(policy.revision);
+    expect(required(await store.readProspect(fixture.prospect))).toEqual(
+      before,
+    );
+    const claim = required(await store.claimDelivery(actor, fixture));
+    expect(
+      required(
+        await store.dispatchDelivery(actor, claim, async () => ({
+          success: true,
+          data: {
+            providerMessageId: "accepted-fifty",
+            threadId: "accepted-fifty-thread",
+          },
+        })),
+      ).status,
+    ).toBe("accepted");
+    const [stillUncertain] = await db
+      .select()
+      .from(schema.outboundSendAttempt)
+      .where(eq(schema.outboundSendAttempt.id, pending.attempt.id));
+    expect(stillUncertain?.status).toBe("uncertain");
+    const next = {
+      ...details("nextgoods.com"),
+      product: "Cozy throw blanket",
+      productUrl: "https://nextgoods.com/products/blanket",
+      finding: "The blanket page has no fabric weight listed.",
+      evidence: "The fabric description and blanket dimensions were inspected.",
+    };
+    const companyId = crypto.randomUUID();
+    const personId = crypto.randomUUID();
+    let prospectId = crypto.randomUUID();
+    while (
+      senderFor(prospectId, settings) !== senderFor(fixture.prospect, settings)
+    )
+      prospectId = crypto.randomUUID();
+    await db.insert(schema.outboundCompany).values({
+      id: companyId,
+      name: next.company,
+      domain: next.domain,
+      website: `https://${next.domain}`,
+      country: next.country,
+      source: "fixture",
+    });
+    await db.insert(schema.outboundPerson).values({
+      id: personId,
+      companyId,
+      identityKey: next.email,
+      name: next.name,
+      email: next.email,
+      title: next.title,
+    });
+    await db.insert(schema.outboundProspect).values({
+      id: prospectId,
+      companyId,
+      personId,
+      details: next,
+      createdBy: actor,
+    });
+    const nextDraft = required(
+      await store.generateDrafts(actor, { prospect: prospectId }),
+    );
+    required(
+      await store.reviewProspect(actor, {
+        prospect: prospectId,
+        revision: nextDraft.revision,
+        decision: "approve",
+      }),
+    );
+    setSystemTime(new Date(now.getTime() + 5 * 60_000));
+    const over = await store.claimDelivery(actor, {
+      prospect: prospectId,
+      inbox: fixture.inbox,
+    });
+    expect(over.success).toBe(false);
+    if (!over.success)
+      expect(over.error.message).toContain("rolling 24-hour cap");
+  });
+
   test("due selection filters sending windows before its limit and excludes future sequence dates", async () => {
     const { db, schema } = active();
     const Mailboxes = await import("@/server/app/outbound/transport-store");

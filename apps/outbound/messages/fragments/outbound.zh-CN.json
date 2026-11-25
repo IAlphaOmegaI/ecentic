@@ -871,7 +871,7 @@
           "inactive": "此邮箱在联系指南中已停用，但可以同步回复。启用发送前，请先将其移至“发件邮箱”。"
         },
         "maximumDailyCap": "每个邮箱的每日目标上限",
-        "dailyCapHelp": "每个邮箱每天最多发送50封首次邮件和跟进邮件。Playbook控制逐步增加发送量；出现退信会降低发送容量。"
+        "dailyCapHelp": "每个邮箱每天最多发送{maximum}封首次邮件和跟进邮件。Playbook控制逐步增加发送量；出现退信会降低发送容量。"
       },
       "liveResearch": {
         "title": "实时购物调研",

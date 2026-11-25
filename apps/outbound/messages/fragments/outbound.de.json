@@ -871,7 +871,7 @@
           "inactive": "Dieses Postfach ist im Kontaktleitfaden inaktiv. Es kann Antworten synchronisieren. Verschieben Sie es zu Absenderpostfächer, bevor Sie den Versand aktivieren."
         },
         "maximumDailyCap": "Angestrebtes Maximum pro Postfach und Tag",
-        "dailyCapHelp": "Bis zu 50 Erstkontakte und Folge-E-Mails pro Postfach täglich. Das Playbook steuert die schrittweise Erhöhung; unzustellbare E-Mails reduzieren die Kapazität."
+        "dailyCapHelp": "Bis zu {maximum} Erstkontakte und Folge-E-Mails pro Postfach täglich. Das Playbook steuert die schrittweise Erhöhung; unzustellbare E-Mails reduzieren die Kapazität."
       },
       "liveResearch": {
         "title": "Live-Recherche zum Einkauf",

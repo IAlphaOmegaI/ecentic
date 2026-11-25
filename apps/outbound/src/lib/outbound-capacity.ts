@@ -1,4 +1,5 @@
 export type SendingDay = { day: string; accepted: number; bounced: number };
+export const MAX_DAILY_EMAILS = 100;
 
 /** Observed sending volume is a pacing input, never proof of inbox placement. */
 export const sendingCapacity = (
@@ -7,7 +8,7 @@ export const sendingCapacity = (
   now = new Date(),
   { rampEnabled = true }: { rampEnabled?: boolean } = {},
 ) => {
-  const ceiling = Math.max(1, Math.min(50, Math.floor(target)));
+  const ceiling = Math.max(1, Math.min(MAX_DAILY_EMAILS, Math.floor(target)));
   const today = now.toISOString().slice(0, 10);
   const history = days
     .filter((day) => /^\d{4}-\d{2}-\d{2}$/.test(day.day) && day.day < today)

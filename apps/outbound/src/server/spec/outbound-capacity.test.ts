@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { sendingCapacity } from "@/lib/outbound-capacity";
+import { MAX_DAILY_EMAILS, sendingCapacity } from "@/lib/outbound-capacity";
 
 const now = new Date("2026-11-15T20:00:00Z");
 describe("email volume ramp", () => {
@@ -39,14 +39,14 @@ describe("email volume ramp", () => {
     expect(
       sendingCapacity(
         500,
-        Array.from({ length: 12 }, (_, index) => ({
-          day: `2026-11-${String(index + 1).padStart(2, "0")}`,
-          accepted: 50,
+        Array.from({ length: 30 }, (_, index) => ({
+          day: `2026-10-${String(index + 1).padStart(2, "0")}`,
+          accepted: 100,
           bounced: 0,
         })),
         now,
       ).dailyCap,
-    ).toBe(50);
+    ).toBe(MAX_DAILY_EMAILS);
   });
   test("an explicit ramp opt-out uses the configured cap and keeps the hard ceiling", () => {
     expect(sendingCapacity(50, [], now, { rampEnabled: false })).toEqual({
@@ -57,8 +57,11 @@ describe("email volume ramp", () => {
     expect(sendingCapacity(8, [], now, { rampEnabled: false }).dailyCap).toBe(
       8,
     );
+    expect(sendingCapacity(51, [], now, { rampEnabled: false }).dailyCap).toBe(
+      51,
+    );
     expect(sendingCapacity(500, [], now, { rampEnabled: false }).dailyCap).toBe(
-      50,
+      MAX_DAILY_EMAILS,
     );
   });
   test("disabling the ramp does not override observed bounce protection", () => {

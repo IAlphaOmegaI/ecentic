@@ -871,7 +871,7 @@
           "inactive": "Questa casella è inattiva nella guida. Può sincronizzare le risposte. Spostala in Caselle del mittente prima di attivare l’invio."
         },
         "maximumDailyCap": "Massimo obiettivo per casella al giorno",
-        "dailyCapHelp": "Fino a 50 prime email e follow-up per casella al giorno. Il Playbook controlla gli aumenti graduali; i mancati recapiti riducono la capacità."
+        "dailyCapHelp": "Fino a {maximum} prime email e follow-up per casella al giorno. Il Playbook controlla gli aumenti graduali; i mancati recapiti riducono la capacità."
       },
       "liveResearch": {
         "title": "Ricerca acquisti in tempo reale",
