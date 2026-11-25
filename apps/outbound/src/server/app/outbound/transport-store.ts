@@ -3,7 +3,6 @@ import { resultify } from "@zenncore/utils";
 import { and, eq, inArray, isNull, lt, lte, or, sql } from "drizzle-orm";
 import { z } from "zod";
 import {
-  inSendWindow,
   mailboxConnected,
   normalizeDomain,
   recipientMailHostAllowed,
@@ -11,6 +10,7 @@ import {
   senderPool,
 } from "@/lib/outbound";
 import { MAX_DAILY_EMAILS } from "@/lib/outbound-capacity";
+import { sendWindowClosesAt } from "@/lib/outbound-scheduling";
 import { db, schema, type TransactionScope } from "@/server/database";
 import { credentialKeyIdentifier } from "@/server/utils/credential-encryption";
 import { Environment } from "@/server/utils/environment";
@@ -1136,25 +1136,26 @@ export const due = (
         db.selectDistinct({ timezone, country }).from(prospect).where(ready),
       ),
     );
-    const windows = locations.filter((location) =>
-      inSendWindow(location, now, settings),
-    );
+    const windows = locations.flatMap((location) => {
+      const closesAt = sendWindowClosesAt(location, now, settings);
+      return closesAt ? [{ ...location, closesAt }] : [];
+    });
     if (!windows.length) return [];
+    const matchesWindow = (location: (typeof windows)[number]) =>
+      and(eq(timezone, location.timezone), eq(country, location.country));
+    const closesAt = sql`case ${sql.join(
+      windows.map(
+        (location) =>
+          sql`when ${matchesWindow(location)} then ${location.closesAt.toISOString()}::timestamptz`,
+      ),
+      sql` `,
+    )} end`;
     return value(
       await Prospects.find(Environment.SERVER, {
-        where: and(
-          ready,
-          or(
-            ...windows.map((location) =>
-              and(
-                eq(timezone, location.timezone),
-                eq(country, location.country),
-              ),
-            ),
-          ),
-        ),
+        where: and(ready, or(...windows.map(matchesWindow))),
         orderBy: [
           { column: prospect.sentStep, direction: "desc" },
+          { column: closesAt, direction: "asc" },
           { column: prospect.nextSendAt, direction: "asc" },
           { column: prospect.id, direction: "asc" },
         ],

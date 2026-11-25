@@ -64,3 +64,27 @@ export const inSendWindow = (
     hour < window.endHour
   );
 };
+
+/** Find the exclusive end of the currently open window using the same timezone rules. */
+export const sendWindowClosesAt = (
+  location: ContactLocation | string,
+  now = new Date(),
+  policy: SchedulingPolicy = {},
+) => {
+  if (!inSendWindow(location, now, policy)) return null;
+  const interval = 30 * 60_000;
+  // Bracket the first closed interval, rather than assuming a fixed UTC offset.
+  // Both supported windows close within twelve hours, including DST changes.
+  const closed = Array.from(
+    { length: 24 },
+    (_, index) => now.getTime() + (index + 1) * interval,
+  ).find((timestamp) => !inSendWindow(location, new Date(timestamp), policy));
+  if (closed === undefined) return null;
+  const bounds = { open: Math.max(now.getTime(), closed - interval), closed };
+  while (bounds.closed - bounds.open > 1) {
+    const middle = Math.floor((bounds.open + bounds.closed) / 2);
+    if (inSendWindow(location, new Date(middle), policy)) bounds.open = middle;
+    else bounds.closed = middle;
+  }
+  return new Date(bounds.closed);
+};

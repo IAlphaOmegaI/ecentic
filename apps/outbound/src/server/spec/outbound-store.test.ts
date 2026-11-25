@@ -1996,6 +1996,113 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
     ).toBe(false);
   });
 
+  test("due follow-ups retain priority while expiring recipient windows sort before the100-row limit", async () => {
+    const { db, schema } = active();
+    const Mailboxes = await import("@/server/app/outbound/transport-store");
+    const entries = [
+      ...Array.from({ length: 105 }, (_, index) => ({
+        id: `market-${String(index).padStart(3, "0")}`,
+        timezone: "",
+        sentStep: 0,
+        due: "2026-11-09T13:00:00Z",
+      })),
+      {
+        id: "chicago-first-b",
+        timezone: "America/Chicago",
+        sentStep: 0,
+        due: "2026-11-09T18:00:00Z",
+      },
+      {
+        id: "chicago-first-a",
+        timezone: "America/Chicago",
+        sentStep: 0,
+        due: "2026-11-09T18:00:00Z",
+      },
+      {
+        id: "los-angeles-first",
+        timezone: "America/Los_Angeles",
+        sentStep: 0,
+        due: "2026-11-09T12:00:00Z",
+      },
+      {
+        id: "early-bump",
+        timezone: "America/Chicago",
+        sentStep: 1,
+        due: "2026-11-09T18:00:00Z",
+      },
+      {
+        id: "late-bump",
+        timezone: "America/Los_Angeles",
+        sentStep: 2,
+        due: "2026-11-09T18:00:00Z",
+      },
+    ];
+    const companies = await db
+      .insert(schema.outboundCompany)
+      .values(
+        entries.map((entry) => ({
+          id: entry.id,
+          name: entry.id,
+          domain: `${entry.id}.com`,
+          website: `https://${entry.id}.com`,
+          country: "US",
+          source: "fixture",
+        })),
+      )
+      .returning();
+    const people = await db
+      .insert(schema.outboundPerson)
+      .values(
+        companies.map((company) => ({
+          companyId: company.id,
+          identityKey: company.id,
+          name: "Jane Smith",
+          email: `jane@${company.domain}`,
+          title: "Head of Growth",
+        })),
+      )
+      .returning();
+    await db.insert(schema.outboundProspect).values(
+      entries.map((entry) => {
+        const person = people.find((row) => row.companyId === entry.id);
+        if (!person) throw new Error("Fixture person missing");
+        return {
+          id: entry.id,
+          companyId: entry.id,
+          personId: person.id,
+          details: { ...details(`${entry.id}.com`), timezone: entry.timezone },
+          status: entry.sentStep ? ("active" as const) : ("approved" as const),
+          sentStep: entry.sentStep,
+          createdBy: actor,
+          nextSendAt: new Date(entry.due),
+        };
+      }),
+    );
+    const settings = { allowUsMarketWindow: true };
+    const queue = required(
+      await Mailboxes.due(settings, new Date("2026-11-09T19:00:00Z")),
+    );
+    expect(queue).toHaveLength(100);
+    expect(queue.slice(0, 5).map(({ id }) => id)).toEqual([
+      "late-bump",
+      "early-bump",
+      "chicago-first-a",
+      "chicago-first-b",
+      "market-000",
+    ]);
+    expect(queue.some(({ id }) => id === "los-angeles-first")).toBe(false);
+    expect(
+      required(
+        await Mailboxes.due(settings, new Date("2026-11-09T20:00:00Z")),
+      ).some(({ id }) => id.startsWith("chicago") || id === "early-bump"),
+    ).toBe(false);
+    expect(
+      required(
+        await Mailboxes.due(settings, new Date("2026-11-09T21:00:00Z")),
+      ).map(({ id }) => id),
+    ).toEqual(["late-bump", "los-angeles-first"]);
+  });
+
   test("warmup safety reads see pending actions and credential changes on their existing transaction", async () => {
     const { db, schema } = active();
     const Jobs = await import("@/server/app/outbound/jobs");

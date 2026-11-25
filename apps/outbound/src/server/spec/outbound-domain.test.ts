@@ -14,6 +14,7 @@ import {
   senderPool,
   templateIssues,
 } from "@/lib/outbound";
+import { sendWindowClosesAt } from "@/lib/outbound-scheduling";
 import {
   legacyHistory,
   mapLegacyProspect,
@@ -334,6 +335,63 @@ describe("outbound concrete drafts", () => {
 });
 
 describe("outbound scheduling and import", () => {
+  test.each([
+    ["2026-03-02T17:23:45.678Z", "America/Chicago", "2026-03-02T20:00:00.000Z"],
+    ["2026-03-09T17:23:45.678Z", "America/Chicago", "2026-03-09T19:00:00.000Z"],
+    ["2026-10-26T17:23:45.678Z", "America/Chicago", "2026-10-26T19:00:00.000Z"],
+    ["2026-11-02T17:23:45.678Z", "America/Chicago", "2026-11-02T20:00:00.000Z"],
+    [
+      "2026-11-25T19:23:45.678Z",
+      "America/Los_Angeles",
+      "2026-11-25T22:00:00.000Z",
+    ],
+    ["2026-11-09T03:23:45.678Z", "Asia/Kathmandu", "2026-11-09T08:15:00.000Z"],
+  ])(
+    "sending deadline follows the real timezone offset at %s (%s)",
+    (at, timezone, deadline) => {
+      const end = sendWindowClosesAt(timezone, new Date(at));
+      expect(end?.toISOString()).toBe(deadline);
+      expect(inSendWindow(timezone, new Date(Date.parse(deadline) - 1))).toBe(
+        true,
+      );
+      expect(inSendWindow(timezone, new Date(deadline))).toBe(false);
+    },
+  );
+  test("only currently eligible US market and known timezone windows have deadlines", () => {
+    const policy = { allowUsMarketWindow: true };
+    const now = new Date("2026-11-25T19:59:59.999Z");
+    const market = { timezone: "", country: " US " };
+    expect(sendWindowClosesAt(market, now, policy)?.toISOString()).toBe(
+      "2026-11-25T21:00:00.000Z",
+    );
+    expect(
+      sendWindowClosesAt("America/Chicago", now, policy)?.toISOString(),
+    ).toBe("2026-11-25T20:00:00.000Z");
+    expect(
+      sendWindowClosesAt(
+        "America/Chicago",
+        new Date("2026-11-25T20:00:00Z"),
+        policy,
+      ),
+    ).toBeNull();
+    expect(sendWindowClosesAt(market, now)).toBeNull();
+    expect(
+      sendWindowClosesAt({ ...market, timezone: "invalid" }, now, policy),
+    ).toBeNull();
+    expect(
+      sendWindowClosesAt({ ...market, country: "GB" }, now, policy),
+    ).toBeNull();
+    expect(
+      sendWindowClosesAt(market, new Date("2026-11-27T19:00:00Z"), policy),
+    ).toBeNull();
+    expect(
+      sendWindowClosesAt(
+        "America/Los_Angeles",
+        new Date("2026-11-25T15:59:59Z"),
+        policy,
+      ),
+    ).toBeNull();
+  });
   test.each(["2026-01-05", "2026-07-06"])(
     "US market-window boundaries are exact in winter and summer (%s)",
     (day) => {

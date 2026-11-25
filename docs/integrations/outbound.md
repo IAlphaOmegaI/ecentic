@@ -186,6 +186,10 @@ email; the delivery preview includes the postal footer and quoted history.
 
 Defaults are 50 first emails per week, no more than 15 messages per inbox per
 rolling 24 hours, a randomized 12–28 minute gap, and follow-ups on days 3 and 7.
+Within each sequence step, the eligible queue prioritizes business windows
+that close sooner, then the original due time and prospect ID. Due follow-ups
+retain their existing priority over first emails. These rules apply before the
+queue's row limit and never shorten inbox pacing or extend sending hours.
 The daily limit includes follow-ups and reserved/failed attempts. A weekly target
 is not a guarantee of capacity. The first-email copy has a configurable maximum
 of 99 words, before the separately displayed postal footer. Sending starts off.
