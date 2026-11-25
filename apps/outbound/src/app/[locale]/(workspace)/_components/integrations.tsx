@@ -1164,7 +1164,7 @@ const InboxEditor = ({ inbox }: { inbox: Inbox }) => {
             validator: z.number().int().min(1).max(MAX_DAILY_EMAILS),
             label: t("integrations.mailbox.maximumDailyCap"),
             description: t("integrations.mailbox.dailyCapHelp", {
-              maximum: MAX_DAILY_EMAILS,
+              maximum: String(MAX_DAILY_EMAILS),
             }),
           }),
         }}
