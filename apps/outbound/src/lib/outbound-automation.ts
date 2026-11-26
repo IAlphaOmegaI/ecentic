@@ -3,6 +3,7 @@ import { z } from "zod";
 export const automationStageSchema = z.enum([
   "companyFacts",
   "qualify",
+  "browseProduct",
   "researchQuery",
   "startShoppingQuery",
   "pollShoppingQuery",
@@ -49,6 +50,10 @@ export const automationStateSchema = z
     stage: automationStageSchema,
     availableAt: z.string().datetime(),
     contactAttempts: contactAttemptsSchema.optional(),
+    shoppingQueryCount: z.number().int().min(0).max(2).optional(),
+    shoppingQueryIntent: z
+      .enum(["unbranded-specific", "unbranded-broad"])
+      .optional(),
     lease: z
       .object({ token: z.string().uuid(), expiresAt: z.string().datetime() })
       .nullable(),

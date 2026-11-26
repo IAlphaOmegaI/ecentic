@@ -72,6 +72,20 @@ const qualificationSchema = z
     receipts: z.array(Qualification.sourceReceiptSchema),
   })
   .passthrough();
+const qualifiedProduct = (state: AutomationState) => {
+  const qualification = qualificationSchema.parse(state["qualification"]);
+  const product = z
+    .object({
+      product: z.string().min(1),
+      productUrl: z.url(),
+      productCategory: z.string().min(1),
+    })
+    .parse(qualification.details);
+  return {
+    product: { name: product.product, url: product.productUrl },
+    category: product.productCategory,
+  };
+};
 const selectionSchema = z
   .object({
     status: z.literal("selected"),
@@ -204,6 +218,25 @@ const shoppingReceipt = (claimed: AutomationClaim) => {
   if (problem) throw new ValidationError(problem);
   return receipt;
 };
+const broaderShoppingResearchSupported = (claimed: AutomationClaim) => {
+  // The automatic validator binds the receipt to the saved raw captures again.
+  const receipt = shoppingReceipt(claimed);
+  const answer = Capture.aiCaptureSchema.parse(claimed.state["shoppingAnswer"]);
+  const query = receipt.queries[receipt.selected.queryIndex];
+  return (
+    receipt.selected.kind === "no-gap" &&
+    receipt.discovery?.queryIndex === receipt.selected.queryIndex &&
+    receipt.discovery.completeness.status === "complete" &&
+    answer.completeness?.status === "complete" &&
+    receipt.discovery.merchantPresent === true &&
+    receipt.discovery.merchantPosition === 1 &&
+    query?.intent === "unbranded-specific" &&
+    answer.job.query.intent === "unbranded-specific" &&
+    query.query === answer.job.query.prompt &&
+    fresh(query.executedAt, 7) &&
+    fresh(receipt.discovery.checkedAt, 7)
+  );
+};
 const requiredKey = async (provider: "scrapellm" | "firecrawl") => {
   const key = value(await Credentials.resolveKey(provider));
   if (!key)
@@ -300,7 +333,7 @@ export const execute = async (
       return qualification.status === "qualified"
         ? {
             stage: playbook.requireShoppingEvidence
-              ? "researchQuery"
+              ? "browseProduct"
               : "findContacts",
             output: {
               qualification: qualified,
@@ -335,27 +368,104 @@ export const execute = async (
             output: { qualification },
           };
     }
-    case "researchQuery": {
-      const qualification = qualificationSchema.parse(state["qualification"]);
-      const product = z
-        .object({
-          product: z.string().min(1),
-          productUrl: z.url(),
-          productCategory: z.string().min(1),
-        })
-        .parse(qualification.details);
-      const query = value(
-        Capture.prepareQuery({
-          product: { name: product.product, url: product.productUrl },
-          category: product.productCategory,
-          country: company.country ?? "US",
-          surface: "google_ai_mode",
+    case "browseProduct": {
+      value(
+        await Campaigns.researchContext({
+          campaign: campaign.id,
+          company: company.id,
         }),
       );
+      const product = qualifiedProduct(state);
+      const saved = Capture.browserResearchSchema.safeParse(
+        state["shoppingProductBrowser"],
+      );
+      const browser =
+        saved.success && saved.data.status === "captured"
+          ? saved.data
+          : value(
+              await Capture.inspectProduct({
+                apiKey: await requiredKey("firecrawl"),
+                product: product.product,
+                country: company.country ?? "US",
+                deadline,
+              }),
+            );
+      return browser.status === "captured"
+        ? {
+            stage: "researchQuery",
+            output: { shoppingProductBrowser: browser },
+          }
+        : {
+            stage: "browseProduct",
+            reason: "shopping-research-held",
+            output: { shoppingProductBrowser: browser },
+          };
+    }
+    case "researchQuery": {
+      const product = qualifiedProduct(state);
+      // An acknowledged legacy query is polled unchanged, never replaced by a new purchase.
+      const job = Capture.aiJobSchema.safeParse(state["shoppingJob"]);
+      if (state["shoppingJob"] && !job.success)
+        throw new ValidationError(
+          "Reconcile the saved research submission before planning another query.",
+        );
+      if (job.success)
+        return {
+          stage: "pollShoppingQuery",
+          output: { shoppingQueryCount: state.shoppingQueryCount ?? 1 },
+        };
+      const browser = Capture.browserResearchSchema.safeParse(
+        state["shoppingProductBrowser"],
+      );
+      if (!browser.success || browser.data.status !== "captured")
+        return { stage: "browseProduct" };
+      const count = state.shoppingQueryCount ?? 0;
+      if (count >= 2)
+        return {
+          stage: "researchQuery",
+          reason: "shopping-query-limit",
+        };
+      const intent = state.shoppingQueryIntent ?? "unbranded-specific";
+      const previous = Capture.preparedQuerySchema.safeParse(
+        state["shoppingQuery"],
+      );
+      if (intent === "unbranded-broad") {
+        if (
+          count !== 1 ||
+          !broaderShoppingResearchSupported(claimed) ||
+          !previous.success
+        )
+          return {
+            stage: "researchQuery",
+            reason: "shopping-broader-search-not-supported",
+          };
+      }
+      const generation = value(
+        await Capture.generateShopperQuery({
+          ...product,
+          country: company.country ?? "US",
+          merchant: { name: company.name, domain: company.domain },
+          browser: browser.data,
+          intent,
+          ...(intent === "unbranded-broad" && previous.success
+            ? { previousQuestion: previous.data.prompt }
+            : {}),
+          deadline,
+        }),
+      );
+      if (generation.status === "held")
+        return {
+          stage: "researchQuery",
+          reason: "shopping-query-held",
+          output: { shoppingQueryGeneration: generation },
+        };
       return {
         stage: "startShoppingQuery",
         output: {
-          shoppingQuery: query,
+          shoppingQuery: generation.query,
+          shoppingQueryGeneration: generation.generation,
+          shoppingQueryCount: count + 1,
+          shoppingQueryIntent: intent,
           shoppingPolicyHash: researchPolicyHash(playbook),
           shoppingRequestId: randomUUID(),
           shoppingPolls: 0,
@@ -370,6 +480,64 @@ export const execute = async (
         }),
       );
       const query = Capture.preparedQuerySchema.parse(state["shoppingQuery"]);
+      const saved = Capture.aiJobSchema.safeParse(state["shoppingJob"]);
+      if (state["shoppingJob"] && !saved.success)
+        throw new ValidationError(
+          "Reconcile the saved research submission before starting another query.",
+        );
+      if (saved.success) {
+        if (
+          saved.data.query.prompt !== query.prompt ||
+          saved.data.query.product.url !== query.product.url
+        )
+          throw new ConflictError(
+            "The saved research job belongs to another query.",
+          );
+        return {
+          stage: "pollShoppingQuery",
+          output: { shoppingQueryCount: state.shoppingQueryCount ?? 1 },
+        };
+      }
+      // This is only a never-submitted legacy plan; an uncertain stage is never leased again.
+      if (!query.intent || query.intent === "exact-product" || !query.basis)
+        return {
+          stage: "browseProduct",
+          output: { legacyShoppingQuery: query },
+        };
+      const browser = Capture.browserResearchSchema.parse(
+        state["shoppingProductBrowser"],
+      );
+      if (
+        browser.status !== "captured" ||
+        state.shoppingQueryIntent !== query.intent ||
+        state.shoppingQueryCount !==
+          (query.intent === "unbranded-broad" ? 2 : 1) ||
+        !z.string().uuid().safeParse(state["shoppingRequestId"]).success
+      )
+        throw new ValidationError(
+          "The shopper query has no saved research reservation.",
+        );
+      const problem = Capture.validateShopperQuery({
+        query,
+        ...qualifiedProduct(state),
+        merchant: { name: company.name, domain: company.domain },
+        browser,
+      });
+      if (problem)
+        return {
+          stage: "startShoppingQuery",
+          reason: "shopping-query-held",
+          output: { shoppingQueryValidation: problem },
+        };
+      if (
+        query.intent === "unbranded-broad" &&
+        (state.shoppingQueryCount !== 2 ||
+          !broaderShoppingResearchSupported(claimed))
+      )
+        return {
+          stage: "startShoppingQuery",
+          reason: "shopping-broader-search-not-supported",
+        };
       if (
         query.product.url !==
           qualificationSchema.parse(state["qualification"]).details
@@ -445,12 +613,19 @@ export const execute = async (
         }),
       );
       const answer = Capture.aiCaptureSchema.parse(state["shoppingAnswer"]);
+      const productCapture = Capture.browserResearchSchema.safeParse(
+        state["shoppingProductBrowser"],
+      );
       const browser = value(
         await Capture.inspectPages({
           apiKey: await requiredKey("firecrawl"),
           product: answer.job.query.product,
           answer,
           country: answer.job.query.country,
+          ...(productCapture.success &&
+          productCapture.data.status === "captured"
+            ? { productCapture: productCapture.data }
+            : {}),
           deadline,
         }),
       );

@@ -1,6 +1,7 @@
 import { getDomain } from "tldts";
 import { z } from "zod";
 import { MAX_DAILY_EMAILS } from "./outbound-capacity";
+import type { WritingSnapshot } from "./outbound-composition";
 import { evidenceDateUsable } from "./outbound-evidence";
 import {
   DEFAULT_FINDING_COPY,
@@ -422,6 +423,7 @@ export type Message = {
   afterDays: number;
   subject: string;
   body: string;
+  writing?: WritingSnapshot;
 };
 export type Issue = { code: string; field: string };
 export type Prospect = ProspectInput & {

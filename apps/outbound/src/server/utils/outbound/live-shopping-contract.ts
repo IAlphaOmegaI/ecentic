@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { shoppingResearchSchema } from "@/lib/outbound-shopping-research";
+import {
+  shoppingCaptureCompletenessSchema,
+  shoppingQueryBasisSchema,
+  shoppingQueryIntentSchema,
+  shoppingResearchSchema,
+} from "@/lib/outbound-shopping-research";
 
 export const publicUrlSchema = z
   .string()
@@ -22,6 +27,17 @@ export const preparedQuerySchema = z
     country: z.string().regex(/^[A-Z]{2}$/),
     surface: z.enum(["google_ai_mode", "chatgpt"]),
     prompt: z.string().trim().min(1).max(4000),
+    intent: shoppingQueryIntentSchema.optional(),
+    basis: shoppingQueryBasisSchema.optional(),
+    // Saved company identity, never a name inferred by the query model.
+    merchant: z
+      .object({
+        name: z.string().trim().min(1).max(300),
+        domain: z.string().trim().min(1).max(253),
+        aliases: z.array(z.string().trim().min(1).max(300)).max(30),
+      })
+      .strict()
+      .optional(),
   })
   .strict();
 export type PreparedQuery = z.infer<typeof preparedQuerySchema>;
@@ -55,6 +71,8 @@ export const aiCaptureSchema = z
     executedAt: z.string().datetime(),
     receivedAt: z.string().datetime(),
     answer: z.string().min(1).max(200_000),
+    // Historical captures without this proof remain unknown, not complete.
+    completeness: shoppingCaptureCompletenessSchema.optional(),
     source: sourceSchema,
     // Direct answer citations only. Organic search results are not recommendations.
     links: z

@@ -365,6 +365,270 @@ const browserRequest =
     );
   };
 
+const capturedProduct = async () => {
+  const captured = value(
+    await Shopping.inspectProduct(
+      { apiKey, product, country: "US" },
+      {
+        now,
+        safeUrl: async () => true,
+        page,
+        request: browserRequest([], (_url, body) => ({
+          success: true,
+          stdout: JSON.stringify({
+            ...body,
+            text: "Trail Tote is a large linen tote. Reusable shopping tote bags for everyday errands.",
+          }),
+        })),
+      },
+    ),
+  );
+  if (captured.status !== "captured") throw new Error(captured.reason);
+  return captured;
+};
+
+describe("unbranded questions before search spend", () => {
+  const context = async () => ({
+    product,
+    category: "linen totes",
+    country: "US",
+    merchant: { name: "Merchant Goods", domain: "merchant.example" },
+    browser: await capturedProduct(),
+    deadline: time + 45_000,
+  });
+  const selection = (prompt: string) => ({
+    question: "large linen tote",
+    category: "tote",
+    attribute: "large",
+    excerptIds: [JSON.parse(prompt).excerpts[0].id],
+  });
+
+  test("captures the merchant before an answer exists and reuses it without a second browser session", async () => {
+    const browser = await capturedProduct();
+    expect(browser.sources.map((source) => source.id)).toEqual([
+      "ucp",
+      "product-browser",
+    ]);
+    expect(browser.candidates).toEqual([]);
+    const reused = value(
+      await Shopping.inspectPages(
+        {
+          apiKey,
+          product,
+          answer: await capture(),
+          productCapture: browser,
+          competitorUrls: [],
+          country: "US",
+        },
+        {
+          now,
+          safeUrl: async () => true,
+          page: async () => {
+            throw new Error("Unexpected page fetch");
+          },
+          request: async () => {
+            throw new Error("Unexpected browser spend");
+          },
+        },
+      ),
+    );
+    expect(reused.status).toBe("captured");
+    expect(reused.sources).toEqual(browser.sources);
+    const changed = structuredClone(browser);
+    const changedProduct = changed.sources[1];
+    if (!changedProduct) throw new Error("Missing product fixture");
+    changedProduct.content += " Invented reusable proof.";
+    expect(
+      Shopping.reusableProductCapture({ browser: changed, product, now: time }),
+    ).toBeNull();
+  });
+
+  test("reuses persisted captures with empty structured data and an empty UCP 404", async () => {
+    const browser = value(
+      await Shopping.inspectProduct(
+        { apiKey, product, country: "US" },
+        {
+          now,
+          safeUrl: async () => true,
+          page: async (url) => ({
+            success: true,
+            data: { url, status: 404, body: "", headers: new Headers() },
+          }),
+          request: browserRequest([], (_url, body) => ({
+            success: true,
+            stdout: JSON.stringify({ ...body, structured: [] }),
+          })),
+        },
+      ),
+    );
+    expect(browser.status).toBe("captured");
+    expect(
+      Shopping.reusableProductCapture({
+        browser: Shopping.browserResearchSchema.parse(
+          JSON.parse(JSON.stringify(browser)),
+        ),
+        product,
+        now: time,
+      }),
+    ).not.toBeNull();
+  });
+
+  test("saves the exact rendered basis, prompt hash and authoritative identity", async () => {
+    const input = await context();
+    const result = value(
+      await Shopping.generateShopperQuery(input, {
+        now,
+        generate: async ({ prompt }) => selection(prompt),
+      }),
+    );
+    expect(result.status).toBe("prepared");
+    if (result.status !== "prepared") throw new Error(result.reason);
+    expect(result.query).toMatchObject({
+      intent: "unbranded-specific",
+      prompt: "large linen tote",
+      merchant: { ...input.merchant, aliases: [] },
+      basis: { category: "tote", attribute: "large" },
+    });
+    expect(result.query.basis?.promptHash).toMatch(/^[a-f0-9]{64}$/);
+    expect(result.generation.attempts).toBe(1);
+    expect(
+      Shopping.validateShopperQuery({ ...input, query: result.query }, time),
+    ).toBeNull();
+    const altered = structuredClone(result.query);
+    const changedExcerpt = altered.basis?.excerpts[0];
+    if (changedExcerpt) changedExcerpt.quote += " false text";
+    expect(
+      Shopping.validateShopperQuery({ ...input, query: altered }, time),
+    ).toContain("changed");
+  });
+
+  test("holds stale or future rendered evidence before generation or purchase", async () => {
+    const input = await context();
+    const original = value(
+      await Shopping.generateShopperQuery(input, {
+        now,
+        generate: async ({ prompt }) => selection(prompt),
+      }),
+    );
+    if (original.status !== "prepared") throw new Error(original.reason);
+    for (const checkedNow of [time + 7 * 86_400_000 + 1, time - 1]) {
+      expect(
+        Shopping.validateShopperQuery(
+          { ...input, query: original.query },
+          checkedNow,
+        ),
+      ).toContain("7 days");
+      const calls: number[] = [];
+      const generated = value(
+        await Shopping.generateShopperQuery(
+          { ...input, deadline: checkedNow + 45_000 },
+          {
+            now: () => checkedNow,
+            generate: async ({ prompt }) => {
+              calls.push(1);
+              return selection(prompt);
+            },
+          },
+        ),
+      );
+      expect(generated.status).toBe("held");
+      expect(generated.generation.attempts).toBe(0);
+      expect(calls).toHaveLength(0);
+    }
+    expect(
+      Shopping.validateShopperQuery(
+        { ...input, query: original.query },
+        time + 7 * 86_400_000,
+      ),
+    ).toBeNull();
+  });
+
+  test.each([
+    ["Merchant Goods linen tote", "tote", "linen"],
+    ["merchant large linen tote", "tote", "large"],
+    ["trail large linen tote", "tote", "large"],
+    ["large tote", "tote", "large"],
+    ["large linen tote bag for every single shopping trip", "tote", "large"],
+    ["eco linen tote", "tote", "eco"],
+    ["cheap large linen tote", "tote", "large"],
+    ["waterproof large linen tote", "tote", "large"],
+    ["large linen tote for girlfriend", "tote", "large"],
+    ["large linen bag", "tote", "large"],
+  ])(
+    "rejects %s twice and holds without weakening the contract",
+    async (question, category, attribute) => {
+      const calls: string[] = [];
+      const result = value(
+        await Shopping.generateShopperQuery(await context(), {
+          now,
+          generate: async ({ prompt, instructions }) => {
+            calls.push(instructions);
+            return { ...selection(prompt), question, category, attribute };
+          },
+        }),
+      );
+      expect(result.status).toBe("held");
+      expect(result.generation.attempts).toBe(2);
+      expect(calls).toHaveLength(2);
+      expect(calls[0]).toBe(calls[1]);
+    },
+  );
+
+  test("repairs one completed invalid question and never retries an interrupted generation", async () => {
+    const calls: string[] = [];
+    const repaired = value(
+      await Shopping.generateShopperQuery(await context(), {
+        now,
+        generate: async ({ prompt }) => {
+          calls.push(prompt);
+          return {
+            ...selection(prompt),
+            question:
+              calls.length === 1
+                ? "trail large linen tote"
+                : "large linen tote",
+          };
+        },
+      }),
+    );
+    expect(repaired.status).toBe("prepared");
+    expect(repaired.generation.attempts).toBe(2);
+    expect(JSON.parse(calls[1] ?? "{}").validationFailure).toContain(
+      "distinctive",
+    );
+    const interrupted: number[] = [];
+    const failed = await Shopping.generateShopperQuery(await context(), {
+      now,
+      generate: async () => {
+        interrupted.push(1);
+        throw new Error("socket closed");
+      },
+    });
+    expect(failed.success).toBe(false);
+    if (!failed.success) expect(failed.error.code).toBe("uncertain");
+    expect(interrupted).toHaveLength(1);
+  });
+
+  test("will not repeat an already bought question for broad research", async () => {
+    const result = value(
+      await Shopping.generateShopperQuery(
+        {
+          ...(await context()),
+          intent: "unbranded-broad",
+          previousQuestion: "large linen tote",
+        },
+        {
+          now,
+          generate: async ({ prompt }) => selection(prompt),
+        },
+      ),
+    );
+    expect(result.status).toBe("held");
+    if (result.status === "held") expect(result.reason).toContain("repeat");
+    expect(result.generation.attempts).toBe(2);
+  });
+});
+
 describe("rendered browser research", () => {
   test("preserves an automatically selected numeric variant as the actual browser source", async () => {
     const calls: { url: string; options: RequestInit }[] = [];

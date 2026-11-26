@@ -32,6 +32,10 @@ const Preparation = await import(
   "@/server/app/outbound/saved-contact-preparation"
 );
 const Assessment = await import("@/server/utils/outbound/shopping-assessment");
+const Capture = await import("@/server/utils/outbound/live-shopping");
+const { projectBrowserExecution } = await import(
+  "@/server/utils/outbound/live-shopping-browser"
+);
 const value = <Data>(
   result: { success: true; data: Data } | { success: false; error: Error },
 ): Data => {
@@ -196,7 +200,88 @@ const captured = (job: AiJob) => {
   };
   return { answer, browser };
 };
-const calls = { start: 0, poll: 0, collect: 0, browse: 0, qualify: 0 };
+const productCapture = (product: { name: string; url: string }) => {
+  const timestamp = new Date().toISOString();
+  const rendered = {
+    url: product.url,
+    status: 200,
+    checkedAt: timestamp,
+    title: product.name,
+    headings: [product.name],
+    text: `${product.name} Large $25.00 USD, one-time purchase.`,
+    structured: [JSON.stringify({ "@type": "Product", name: product.name })],
+    selected: ["Large"],
+    locale: "en-US",
+    screenshot: "c3ludGhldGljLWZpeHR1cmU=",
+  };
+  const body = JSON.stringify({
+    success: true,
+    stdout: JSON.stringify(rendered),
+    exitCode: 0,
+  });
+  const execution: RawCapture = {
+    url: `https://api.firecrawl.dev/v2/interact/${randomUUID()}/execute`,
+    status: 200,
+    body,
+    sha256: createHash("sha256").update(body).digest("hex"),
+    receivedAt: timestamp,
+  };
+  const projected = projectBrowserExecution({
+    capture: execution,
+    url: product.url,
+    id: "product-browser",
+    productName: product.name,
+    startedAt: timestamp,
+  });
+  assert.ok(projected);
+  const ucpRaw: RawCapture = {
+    url: `${new URL(product.url).origin}/.well-known/ucp`,
+    status: 404,
+    body: "Not Found",
+    sha256: createHash("sha256").update("Not Found").digest("hex"),
+    receivedAt: timestamp,
+  };
+  const browser: Extract<BrowserResearch, { status: "captured" }> = {
+    status: "captured",
+    sources: [
+      projected.source,
+      {
+        id: "ucp",
+        kind: "ucp",
+        capture: "http",
+        url: ucpRaw.url,
+        checkedAt: timestamp,
+        content: "HTTP 404\nNot Found",
+        artifact: `sha256:${ucpRaw.sha256}`,
+      },
+    ],
+    raw: [execution, ucpRaw],
+    ucp: {
+      url: ucpRaw.url,
+      status: "notObserved",
+      httpStatus: 404,
+      capabilities: [],
+      sourceIds: ["ucp"],
+    },
+    checkout: {
+      status: "notTested",
+      sourceIds: [],
+      notes: "No checkout interaction.",
+    },
+    candidates: [],
+    limitations: [],
+  };
+  return browser;
+};
+const calls = {
+  start: 0,
+  poll: 0,
+  collect: 0,
+  browse: 0,
+  qualify: 0,
+  inspectProduct: 0,
+  generateQuery: 0,
+};
 const dependencies: Parameters<typeof Preparation.run>[1] = {
   resolveKey: async () => ({ success: true, data: "synthetic-fixture-key" }),
   mx: async () => ({
@@ -239,7 +324,36 @@ const dependencies: Parameters<typeof Preparation.run>[1] = {
     };
     return { success: true, data: qualified };
   },
+  inspectProduct: async ({ product }) => {
+    calls.inspectProduct += 1;
+    return { success: true, data: productCapture(product) };
+  },
+  generateQuery: async (input) => {
+    calls.generateQuery += 1;
+    return Capture.generateShopperQuery(input, {
+      generate: async ({ prompt }) => ({
+        question: "large linen tote",
+        category: "tote",
+        attribute: "large",
+        excerptIds: [JSON.parse(prompt).excerpts[0].id],
+      }),
+    });
+  },
   start: async ({ query }) => {
+    if (query.intent?.startsWith("unbranded-")) {
+      const saved = (
+        await db
+          .select({ output: schema.outboundIntegrationJob.output })
+          .from(schema.outboundIntegrationJob)
+          .where(
+            sql`${schema.outboundIntegrationJob.input}->>'operation' = 'savedContactPreparation' and ${schema.outboundIntegrationJob.output}->'query'->'product'->>'url' = ${query.product.url}`,
+          )
+      )[0]?.output;
+      assert.deepEqual(saved?.["query"], query);
+      assert.ok(saved?.["productCapture"]);
+      assert.ok(saved?.["queryReservedAt"]);
+      assert.equal(saved?.["shoppingQueryCount"], 1);
+    }
     calls.start += 1;
     return {
       success: true,
@@ -336,9 +450,26 @@ assert.equal(
   true,
 );
 value(await run(first.batchId));
-assert.equal(calls.start, 1);
+assert.equal(
+  calls.start,
+  1,
+  JSON.stringify(await jobFor(firstProspect(first))),
+);
 const pending = await jobFor(firstProspect(first));
 assert.equal(pending.output?.["stage"], "poll");
+assert.equal(calls.inspectProduct, 1);
+assert.equal(calls.generateQuery, 1);
+assert.equal(pending.output?.["shoppingQueryCount"], 1);
+assert.equal(pending.output?.["shoppingQueryIntent"], "unbranded-specific");
+assert.equal(
+  (pending.output?.["query"] as { prompt?: string }).prompt,
+  "large linen tote",
+);
+assert.ok(pending.output?.["productCapture"]);
+assert.ok(
+  (pending.output?.["query"] as { basis?: { promptHash?: string } }).basis
+    ?.promptHash,
+);
 await release();
 value(await run(first.batchId));
 const finished = await jobFor(firstProspect(first));

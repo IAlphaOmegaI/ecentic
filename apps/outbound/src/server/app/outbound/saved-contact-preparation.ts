@@ -119,6 +119,49 @@ const companyFor = (prospect: typeof schema.outboundProspect.$inferSelect) => ({
   },
 });
 
+const broaderSearchProblem = (state: PreparationState) => {
+  const previous = state.shoppingHistory?.[0];
+  if (
+    !previous ||
+    previous.query.intent !== "unbranded-specific" ||
+    previous.shoppingReceipt.selected.kind !== "no-gap" ||
+    previous.shoppingReceipt.discovery?.merchantPresent !== true ||
+    previous.shoppingReceipt.discovery.merchantPosition !== 1 ||
+    previous.shoppingReceipt.discovery.completeness.status !== "complete" ||
+    previous.browser.status !== "captured" ||
+    researchHash(previous.query) !== researchHash(previous.shoppingJob.query) ||
+    researchHash(previous.shoppingJob) !== researchHash(previous.answer.job)
+  )
+    return "A broader search requires a complete first search with the store first and correct.";
+  return Assessment.validateAutomaticResearch(
+    { answer: previous.answer, browser: previous.browser },
+    previous.shoppingReceipt,
+    7,
+  );
+};
+
+const discoveryQueryProblem = (
+  state: PreparationState,
+  details: typeof schema.outboundProspect.$inferSelect.details,
+  company: ReturnType<typeof companyFor>,
+) => {
+  if (!state.query || !state.query.intent?.startsWith("unbranded-"))
+    return "A validated unbranded shopper question is required before research spending.";
+  if (state.productCapture?.status !== "captured")
+    return "The shopper question needs a saved rendered product page.";
+  if (state.query.intent === "unbranded-broad") {
+    const problem = broaderSearchProblem(state);
+    if (problem) return problem;
+  }
+  return Capture.validateShopperQuery({
+    query: state.query,
+    product: { name: details.product, url: details.productUrl },
+    category: details.productCategory,
+    merchant: { name: company.name, domain: company.domain },
+    browser: state.productCapture,
+  });
+};
+
 /** This is checked before every stage, including each paid call and local write. */
 const eligible = async (
   transaction: TransactionScope,
@@ -167,6 +210,8 @@ const eligible = async (
     [
       "qualify",
       "applyCompany",
+      "renderedProduct",
+      "generateQuery",
       "query",
       "poll",
       "browser",
@@ -484,7 +529,7 @@ const claim = (deadline: number, batchId?: string) =>
         input: schema.outboundIntegrationJob.input,
         output: sql<
           Record<string, unknown>
-        >`${schema.outboundIntegrationJob.output} - ARRAY['companyEvidence','locationReceipts','qualification','query','shoppingJob','answer','browser','assessment','shoppingReceipt','collection','failureReceipt','originalQualification','originalCollection','originalLocation','originalQualificationCollection','originalGiftNavigationCollection']::text[]`,
+        >`${schema.outboundIntegrationJob.output} - ARRAY['companyEvidence','locationReceipts','qualification','query','productCapture','shoppingHistory','unpaidExactQuery','shoppingJob','answer','browser','assessment','shoppingReceipt','collection','failureReceipt','originalQualification','originalCollection','originalLocation','originalQualificationCollection','originalGiftNavigationCollection']::text[]`,
       })
       .from(schema.outboundIntegrationJob)
       .where(
@@ -571,7 +616,7 @@ const claim = (deadline: number, batchId?: string) =>
       )
         continue;
       if (
-        state.stage === "browser" &&
+        ["browser", "renderedProduct"].includes(state.stage) &&
         budget.browserAvailableAt &&
         Date.parse(budget.browserAvailableAt) > Date.now()
       )
@@ -600,6 +645,76 @@ const claim = (deadline: number, batchId?: string) =>
       const saved = preparationStateSchema.parse(selected.output);
       if (savedAnswerMayContinue && !hasAcceptedShoppingAnswer(saved)) continue;
       const rejectedQueryMayRetry = hasRejectedQueryRetry(saved);
+      // A previously prepared exact-name question has not earned permission to spend.
+      // Existing reserved submissions and captured answers retain their original route.
+      if (
+        saved.stage === "query" &&
+        !saved.queryReservedAt &&
+        !saved.shoppingJob &&
+        !saved.answer &&
+        !["unbranded-specific", "unbranded-broad"].includes(
+          saved.query?.intent ?? "",
+        )
+      ) {
+        const { query: unpaidExactQuery, ...retained } = saved;
+        value(
+          await Jobs.update(
+            Environment.SERVER,
+            job.id,
+            {
+              output: {
+                ...retained,
+                unpaidExactQuery,
+                shoppingQueryIntent: "unbranded-specific",
+                shoppingQueryCount: saved.shoppingQueryCount ?? 0,
+                stage:
+                  saved.productCapture?.status === "captured"
+                    ? "generateQuery"
+                    : "renderedProduct",
+                lease: null,
+                availableAt: new Date().toISOString(),
+              },
+              updatedAt: new Date(),
+            },
+            { tx: transaction },
+          ),
+        );
+        continue;
+      }
+      if (saved.stage === "query" && !saved.queryReservedAt) {
+        const problem = discoveryQueryProblem(
+          saved,
+          ready.data.prospect.details,
+          ready.data.company,
+        );
+        const count = saved.shoppingQueryCount ?? 0;
+        const repeated =
+          saved.query?.intent === "unbranded-specific"
+            ? count !== 0
+            : count !== 1;
+        if (problem || repeated || count >= 2) {
+          value(
+            await Jobs.update(
+              Environment.SERVER,
+              job.id,
+              {
+                status: "complete",
+                output: {
+                  ...saved,
+                  stage: "complete",
+                  lease: null,
+                  heldReason:
+                    problem ??
+                    "The saved per-lead search count does not permit another query.",
+                },
+                updatedAt: new Date(),
+              },
+              { tx: transaction },
+            ),
+          );
+          continue;
+        }
+      }
       if (
         state.stage === "query" &&
         !rejectedQueryMayRetry &&
@@ -632,10 +747,17 @@ const claim = (deadline: number, batchId?: string) =>
               queryReservedAt:
                 saved.queryReservedAt ?? new Date().toISOString(),
               queryRetryPending: false,
+              ...(saved.query?.intent?.startsWith("unbranded-")
+                ? {
+                    shoppingQueryCount:
+                      (saved.shoppingQueryCount ?? 0) +
+                      (rejectedQueryMayRetry ? 0 : 1),
+                  }
+                : {}),
             }
           : {}),
       });
-      if (["query", "poll", "browser"].includes(state.stage))
+      if (["query", "poll", "browser", "renderedProduct"].includes(state.stage))
         value(
           await Jobs.update(
             Environment.SERVER,
@@ -657,7 +779,7 @@ const claim = (deadline: number, batchId?: string) =>
                       ).toISOString(),
                     }
                   : {}),
-                ...(state.stage === "browser"
+                ...(["browser", "renderedProduct"].includes(state.stage)
                   ? {
                       browserAvailableAt: new Date(
                         Date.now() + browserClaimInterval,
@@ -747,6 +869,12 @@ const hasSavedBrowserAnswer = (state: PreparationState) =>
   !state.browser &&
   !state.shoppingReceipt &&
   !state["assessment"];
+const hasUncapturedProduct = (state: PreparationState) =>
+  state.stage === "renderedProduct" &&
+  !state.productCapture &&
+  !state.queryReservedAt &&
+  !state.shoppingJob &&
+  !state.answer;
 const hasUnacceptedQuery = (state: PreparationState) =>
   state.stage === "query" &&
   Boolean(state.queryReservedAt && state.query) &&
@@ -872,15 +1000,19 @@ const fail = (claim: Claim, error: Error) =>
       }
       return;
     }
+    const productPreflight = hasUncapturedProduct(state);
+    const browserRetries = productPreflight
+      ? (state.productBrowserRetries ?? 0)
+      : state.browserRetries;
     const cooldown =
       provider?.provider === "firecrawl" &&
       provider.code === "rate-limit" &&
-      hasSavedBrowserAnswer(state) &&
-      state.browserRetries < browserRetryLimit
+      (hasSavedBrowserAnswer(state) || productPreflight) &&
+      browserRetries < browserRetryLimit
         ? sessionCreationRateLimit(
             provider.receipt,
             provider.retryAfterSeconds,
-            state.browserRetries,
+            browserRetries,
           )
         : null;
     if (cooldown) {
@@ -894,14 +1026,24 @@ const fail = (claim: Claim, error: Error) =>
           {
             status: ready.success ? "pending" : "failed",
             error: ready.success
-              ? "Firecrawl browser creation was rate limited; waiting to reuse the saved shopping answer."
+              ? "Firecrawl browser creation was rate limited; waiting to resume the saved research stage."
               : ready.error.message,
             output: preparationStateSchema.parse({
               ...state,
               lease: null,
               availableAt: cooldown.retryAt,
-              browserRetries: state.browserRetries + 1,
-              browserRateLimits: [...state.browserRateLimits, cooldown],
+              ...(productPreflight
+                ? {
+                    productBrowserRetries: browserRetries + 1,
+                    productBrowserRateLimits: [
+                      ...(state.productBrowserRateLimits ?? []),
+                      cooldown,
+                    ],
+                  }
+                : {
+                    browserRetries: browserRetries + 1,
+                    browserRateLimits: [...state.browserRateLimits, cooldown],
+                  }),
               failureProvider: provider?.provider,
               failureCode: provider?.code,
               failureReceipt: provider?.receipt,
@@ -1015,6 +1157,8 @@ type Dependencies = {
   collect?: typeof Qualification.collectCompanyEvidence;
   location?: typeof Location.collectLocationReceipts;
   qualify?: typeof Qualification.qualifyCompanyEvidence;
+  inspectProduct?: typeof Capture.inspectProduct;
+  generateQuery?: typeof Capture.generateShopperQuery;
   start?: typeof Capture.startQuery;
   poll?: typeof Capture.pollQuery;
   browse?: typeof Capture.inspectPages;
@@ -1261,16 +1405,6 @@ const execute = async (
             { tx: transaction },
           ),
         );
-        const query = value(
-          Capture.prepareQuery({
-            product: evidence.product,
-            category: details.productCategory,
-            country:
-              campaign.criteria.countries.find((country) =>
-                campaignCountryMatches([country], details.country),
-              ) ?? details.country,
-          }),
-        );
         value(
           await Jobs.update(
             Environment.SERVER,
@@ -1279,9 +1413,10 @@ const execute = async (
               status: "pending",
               output: {
                 ...state,
-                stage: "query",
+                stage: "renderedProduct",
                 prospectRevision: saved.revision,
-                query,
+                shoppingQueryIntent: "unbranded-specific",
+                shoppingQueryCount: 0,
                 lease: null,
                 availableAt: new Date().toISOString(),
               },
@@ -1291,7 +1426,92 @@ const execute = async (
           ),
         );
       });
+    case "renderedProduct": {
+      if (state.productCapture?.status === "captured")
+        return next("generateQuery");
+      const capture = value(
+        await (dependencies.inspectProduct ?? Capture.inspectProduct)({
+          apiKey: await key(
+            "firecrawl",
+            dependencies.resolveKey ?? Credentials.resolveKey,
+          ),
+          product: {
+            name: prospect.details.product,
+            url: prospect.details.productUrl,
+          },
+          country:
+            campaign.criteria.countries.find((country) =>
+              campaignCountryMatches([country], prospect.details.country),
+            ) ?? prospect.details.country,
+          deadline,
+        }),
+      );
+      return capture.status === "captured"
+        ? next("generateQuery", { productCapture: capture })
+        : checkpoint(
+            claim,
+            {
+              productCapture: capture,
+              stage: "complete",
+              heldReason: capture.reason,
+            },
+            "complete",
+          );
+    }
+    case "generateQuery": {
+      if (state.productCapture?.status !== "captured")
+        throw new ValidationError(
+          "The question needs a saved rendered product page.",
+        );
+      if (state.shoppingQueryIntent === "unbranded-broad") {
+        const problem = broaderSearchProblem(state);
+        if (problem)
+          return checkpoint(
+            claim,
+            { stage: "complete", heldReason: problem },
+            "complete",
+          );
+      }
+      const generated = value(
+        await (dependencies.generateQuery ?? Capture.generateShopperQuery)({
+          product: {
+            name: prospect.details.product,
+            url: prospect.details.productUrl,
+          },
+          category: prospect.details.productCategory,
+          country:
+            campaign.criteria.countries.find((country) =>
+              campaignCountryMatches([country], prospect.details.country),
+            ) ?? prospect.details.country,
+          merchant: { name: company.name, domain: company.domain },
+          browser: state.productCapture,
+          intent: state.shoppingQueryIntent ?? "unbranded-specific",
+          ...(state.shoppingHistory?.[0]
+            ? { previousQuestion: state.shoppingHistory[0].query.prompt }
+            : {}),
+          deadline,
+        }),
+      );
+      return generated.status === "prepared"
+        ? next("query", {
+            query: generated.query,
+            queryGeneration: generated.generation,
+          })
+        : checkpoint(
+            claim,
+            {
+              queryGeneration: generated.generation,
+              stage: "complete",
+              heldReason: generated.reason,
+            },
+            "complete",
+          );
+    }
     case "query": {
+      if (state.query?.intent?.startsWith("unbranded-")) {
+        const problem = discoveryQueryProblem(state, prospect.details, company);
+        if (problem) throw new ValidationError(problem);
+      }
       const result = value(
         await (dependencies.start ?? Capture.startQuery)({
           apiKey: await key(
@@ -1344,6 +1564,9 @@ const execute = async (
           product: answer.job.query.product,
           answer,
           country: answer.job.query.country,
+          ...(state.productCapture?.status === "captured"
+            ? { productCapture: state.productCapture }
+            : {}),
           deadline,
         }),
       );

@@ -1,6 +1,7 @@
 import "server-only";
 
 import { setTimeout as delay } from "node:timers/promises";
+import { isDeepStrictEqual } from "node:util";
 import { type Result, resultify } from "@zenncore/utils";
 import { z } from "zod";
 import { productCaptureUrlMatches } from "@/lib/outbound-shopping-research";
@@ -16,6 +17,7 @@ import {
   publicUrlSchema,
   type RawCapture,
   type Source,
+  sourceSchema,
 } from "./live-shopping-contract";
 import {
   type Dependencies,
@@ -175,7 +177,7 @@ export const projectBrowserExecution = ({
     !normalize(visible).includes(normalize(productName))
   )
     return null;
-  const source: Source = {
+  const source = sourceSchema.parse({
     id,
     kind: id === "product-browser" ? "product" : "competitor",
     capture: "browser",
@@ -183,7 +185,7 @@ export const projectBrowserExecution = ({
     checkedAt: rendered.data.checkedAt,
     content: `${visible.slice(0, 12000)}\nRendered product data:\n${rendered.data.structured.join("\n").slice(0, 5500)}`,
     artifact: `sha256:${capture.sha256}`,
-  };
+  });
   return { source, rendered: rendered.data };
 };
 
@@ -200,18 +202,91 @@ const safe = async (url: string, dependencies: BrowserDependencies) => {
   return checked.success && checked.data;
 };
 
-export const inspectPages = async (
+type CapturedBrowser = Extract<BrowserResearch, { status: "captured" }>;
+
+/** Reuse only original, intact merchant captures, with their original dates. */
+export const reusableProductCapture = ({
+  browser,
+  product,
+  now = Date.now(),
+}: {
+  browser: BrowserResearch;
+  product: { name: string; url: string };
+  now?: number;
+}): CapturedBrowser | null => {
+  const parsed = browserResearchSchema.safeParse(browser);
+  if (!parsed.success || parsed.data.status !== "captured") return null;
+  const saved = parsed.data;
+  if (saved.raw.some((capture) => digest(capture.body) !== capture.sha256))
+    return null;
+  const merchant = saved.sources.find(
+    (source) => source.id === "product-browser" && source.kind === "product",
+  );
+  const profile = saved.sources.find(
+    (source) => source.id === "ucp" && source.kind === "ucp",
+  );
+  if (!merchant || !profile || !publicUrlSchema.safeParse(product.url).success)
+    return null;
+  const execution = saved.raw.find(
+    (capture) =>
+      merchant.artifact === `sha256:${capture.sha256}` &&
+      capture.url.endsWith("/execute"),
+  );
+  const profileRaw = saved.raw.find(
+    (capture) =>
+      profile.artifact === `sha256:${capture.sha256}` &&
+      capture.url === profile.url,
+  );
+  const projected = execution
+    ? projectBrowserExecution({
+        capture: execution,
+        url: product.url,
+        id: "product-browser",
+        productName: product.name,
+        startedAt: execution.receivedAt,
+        now,
+      })
+    : null;
+  const profileUrl = `${new URL(product.url).origin}/.well-known/ucp`;
+  if (
+    !projected ||
+    !execution ||
+    !isDeepStrictEqual(projected.source, merchant) ||
+    !profileRaw ||
+    profile.url !== profileUrl ||
+    profileRaw.url !== profileUrl ||
+    profile.capture !== "http" ||
+    profile.checkedAt !== profileRaw.receivedAt ||
+    profile.content !==
+      `HTTP ${profileRaw.status}\n${profileRaw.body}`.slice(0, 18000).trim() ||
+    saved.ucp.url !== profileUrl ||
+    saved.ucp.httpStatus !== profileRaw.status ||
+    !isDeepStrictEqual(saved.ucp.sourceIds, [profile.id]) ||
+    saved.checkout.status !== "notTested"
+  )
+    return null;
+  return {
+    ...saved,
+    sources: [profile, merchant],
+    raw: [profileRaw, execution],
+    candidates: [],
+  };
+};
+
+const inspectResearch = async (
   {
     apiKey,
     product,
     answer: input,
+    productCapture,
     competitorUrls,
     country,
     deadline: supplied,
   }: {
     apiKey: string;
     product: { name: string; url: string };
-    answer: AiCapture;
+    answer?: AiCapture;
+    productCapture?: CapturedBrowser;
     competitorUrls?: string[];
     country: string;
     deadline?: number;
@@ -220,13 +295,16 @@ export const inspectPages = async (
 ): Promise<Result<BrowserResearch, IntegrationError>> => {
   const now = dependencies.now ?? Date.now;
   const deadline = Math.min(supplied ?? now() + 115_000, now() + 115_000);
-  const sources: Source[] = [];
-  const raw: RawCapture[] = [];
+  const saved = productCapture
+    ? reusableProductCapture({ browser: productCapture, product, now: now() })
+    : null;
+  const sources: Source[] = saved ? [...saved.sources] : [];
+  const raw: RawCapture[] = saved ? [...saved.raw] : [];
   const held = (reason: string): Result<BrowserResearch, IntegrationError> => ({
     success: true,
     data: { status: "held", reason, sources, raw },
   });
-  const answer = aiCaptureSchema.safeParse(input);
+  const answer = input ? aiCaptureSchema.safeParse(input) : null;
   if (!keyValid(apiKey))
     return {
       success: false,
@@ -238,10 +316,12 @@ export const inspectPages = async (
       ),
     };
   if (
-    !answer.success ||
-    product.url !== answer.data.job.query.product.url ||
-    product.name !== answer.data.job.query.product.name ||
-    country !== answer.data.job.query.country ||
+    (answer &&
+      (!answer.success ||
+        product.url !== answer.data.job.query.product.url ||
+        product.name !== answer.data.job.query.product.name ||
+        country !== answer.data.job.query.country)) ||
+    (productCapture && !saved) ||
     !/^[A-Z]{2}$/.test(country)
   )
     return {
@@ -249,7 +329,7 @@ export const inspectPages = async (
       error: new IntegrationError(
         "firecrawl",
         "input",
-        "Browser research must match the product and country of the captured shopper query.",
+        "Browser research must match the product and any original query or product capture.",
         422,
       ),
     };
@@ -296,66 +376,92 @@ export const inspectPages = async (
       return null;
     return robots;
   };
-  const robots = await allowed(product.url);
-  if (!robots)
-    return held(
-      "The merchant's robots rules or access response do not permit product inspection.",
-    );
   const origin = new URL(product.url).origin;
-  const ucpUrl = `${origin}/.well-known/ucp`;
-  if (
-    robots.page.status === 200 &&
-    blockedByRobots(robots.page.body, "/.well-known/ucp")
-  )
-    return held(
-      "The merchant's robots rules do not permit the required UCP check.",
+  const profileCapture = await (async () => {
+    if (saved) return saved.ucp;
+    const robots = await allowed(product.url);
+    if (!robots)
+      return held(
+        "The merchant's robots rules or access response do not permit product inspection.",
+      );
+    const ucpUrl = `${origin}/.well-known/ucp`;
+    if (
+      robots.page.status === 200 &&
+      blockedByRobots(robots.page.body, "/.well-known/ucp")
+    )
+      return held(
+        "The merchant's robots rules do not permit the required UCP check.",
+      );
+    const profile = await read(ucpUrl, 200_000);
+    if (!profile || profile.page.url !== ucpUrl)
+      return held(
+        "The merchant's UCP endpoint could not be captured at its stated URL.",
+      );
+    const profileSource: Source = {
+      id: "ucp",
+      kind: "ucp",
+      url: ucpUrl,
+      capture: "http",
+      checkedAt: profile.receipt.receivedAt,
+      content: `HTTP ${profile.page.status}\n${profile.page.body}`.slice(
+        0,
+        18000,
+      ),
+      artifact: `sha256:${profile.receipt.sha256}`,
+    };
+    sources.push(profileSource);
+    const parsedProfile = resultify(
+      () => JSON.parse(profile.page.body) as unknown,
     );
-  const profile = await read(ucpUrl, 200_000);
-  if (!profile || profile.page.url !== ucpUrl)
-    return held(
-      "The merchant's UCP endpoint could not be captured at its stated URL.",
-    );
-  const profileSource: Source = {
-    id: "ucp",
-    kind: "ucp",
-    url: ucpUrl,
-    capture: "http",
-    checkedAt: profile.receipt.receivedAt,
-    content: `HTTP ${profile.page.status}\n${profile.page.body}`.slice(
-      0,
-      18000,
-    ),
-    artifact: `sha256:${profile.receipt.sha256}`,
-  };
-  sources.push(profileSource);
-  const parsedProfile = resultify(
-    () => JSON.parse(profile.page.body) as unknown,
-  );
-  const ucpProfile = parsedProfile.success
-    ? z
-        .object({
-          ucp: z.object({ capabilities: z.record(z.string(), z.unknown()) }),
-        })
-        .safeParse(parsedProfile.data)
-    : null;
-  const capabilities = ucpProfile?.success
-    ? Object.keys(ucpProfile.data.ucp.capabilities).slice(0, 50)
-    : [];
-  const access = classifyPageAccess(profile.page);
-  const ucp = {
-    url: ucpUrl,
-    status:
-      profile.page.status === 200 && capabilities.length
-        ? ("present" as const)
-        : profile.page.status === 404
-          ? ("notObserved" as const)
-          : access.kind === "challenged"
-            ? ("blocked" as const)
-            : ("unknown" as const),
-    httpStatus: profile.page.status,
-    capabilities,
-    sourceIds: [profileSource.id],
-  };
+    const ucpProfile = parsedProfile.success
+      ? z
+          .object({
+            ucp: z.object({ capabilities: z.record(z.string(), z.unknown()) }),
+          })
+          .safeParse(parsedProfile.data)
+      : null;
+    const capabilities = ucpProfile?.success
+      ? Object.keys(ucpProfile.data.ucp.capabilities).slice(0, 50)
+      : [];
+    const access = classifyPageAccess(profile.page);
+    return {
+      url: ucpUrl,
+      status:
+        profile.page.status === 200 && capabilities.length
+          ? ("present" as const)
+          : profile.page.status === 404
+            ? ("notObserved" as const)
+            : access.kind === "challenged"
+              ? ("blocked" as const)
+              : ("unknown" as const),
+      httpStatus: profile.page.status,
+      capabilities,
+      sourceIds: [profileSource.id],
+    };
+  })();
+  if ("success" in profileCapture) return profileCapture;
+  const ucp = profileCapture;
+  const links = answer?.success ? answer.data.links : [];
+  const requested = competitorUrls ?? links.map((entry) => entry.url);
+  const linked = new Set(links.map((entry) => entry.url));
+  const targets = [...new Set(requested)]
+    .filter((url) => {
+      if (!linked.has(url) || !publicUrlSchema.safeParse(url).success)
+        return false;
+      const address = new URL(url);
+      return (
+        address.origin !== origin &&
+        address.pathname !== "/" &&
+        address.pathname !== "/goto" &&
+        !/(?:^|\.)(?:google\.[a-z.]+|chatgpt\.com|openai\.com|scrapellm\.com|firecrawl\.dev)$/.test(
+          address.hostname,
+        )
+      );
+    })
+    .slice(0, 2);
+  // A complete product capture is useful on its own; no synthetic answer or
+  // second merchant session is required when the answer cites no comparison.
+  if (saved && !targets.length) return { success: true, data: saved };
 
   const creation = await providerJson(
     "firecrawl",
@@ -397,10 +503,12 @@ export const inspectPages = async (
     BrowserResearch,
     { status: "captured" }
   >["candidates"] = [];
-  const limitations: string[] = [
-    "A fresh provider browser inspected public pages without signing in. No cart, checkout, purchase or form submission was performed. Country is requested routing; market and availability are not established by routing alone.",
-    "The browser allowed only GET and HEAD requests and blocked cross-origin navigation. Features requiring other network methods were not exercised; missing content under these restrictions is not evidence of a merchant defect.",
-  ];
+  const limitations: string[] = saved
+    ? [...saved.limitations]
+    : [
+        "A fresh provider browser inspected public pages without signing in. No cart, checkout, purchase or form submission was performed. Country is requested routing; market and availability are not established by routing alone.",
+        "The browser allowed only GET and HEAD requests and blocked cross-origin navigation. Features requiring other network methods were not exercised; missing content under these restrictions is not evidence of a merchant defect.",
+      ];
   const inspect = async (url: string, id: string) => {
     if (deadline - now() < 25_000) return null;
     const execution = await providerJson(
@@ -442,33 +550,17 @@ export const inspectPages = async (
 
   // Await cleanup even when browser execution throws. TTL is the backstop if deletion cannot reach the provider.
   const inspected = await resultify(async (): Promise<BrowserResearch> => {
-    const merchant = await inspect(product.url, "product-browser");
-    if (!merchant)
-      return {
-        status: "held",
-        reason:
-          "The merchant product could not be verified in the rendered browser capture.",
-        sources,
-        raw,
-      };
-    const requested =
-      competitorUrls ?? answer.data.links.map((entry) => entry.url);
-    const linked = new Set(answer.data.links.map((entry) => entry.url));
-    const targets = [...new Set(requested)]
-      .filter((url) => {
-        if (!linked.has(url) || !publicUrlSchema.safeParse(url).success)
-          return false;
-        const address = new URL(url);
-        return (
-          address.origin !== origin &&
-          address.pathname !== "/" &&
-          address.pathname !== "/goto" &&
-          !/(?:^|\.)(?:google\.[a-z.]+|chatgpt\.com|openai\.com|scrapellm\.com|firecrawl\.dev)$/.test(
-            address.hostname,
-          )
-        );
-      })
-      .slice(0, 2);
+    if (!saved) {
+      const merchant = await inspect(product.url, "product-browser");
+      if (!merchant)
+        return {
+          status: "held",
+          reason:
+            "The merchant product could not be verified in the rendered browser capture.",
+          sources,
+          raw,
+        };
+    }
     for (const [index, target] of targets.entries()) {
       const permitted = await allowed(target);
       if (!permitted) {
@@ -538,3 +630,28 @@ export const inspectPages = async (
     ? { success: true, data: validated.data }
     : held("The browser evidence did not pass the capture contract.");
 };
+
+/** Capture the rendered merchant page and UCP before choosing a paid search. */
+export const inspectProduct = (
+  input: {
+    apiKey: string;
+    product: { name: string; url: string };
+    country: string;
+    deadline?: number;
+  },
+  dependencies: BrowserDependencies = {},
+) => inspectResearch(input, dependencies);
+
+/** Only actual answer citations can cause a comparison-page inspection. */
+export const inspectPages = (
+  input: {
+    apiKey: string;
+    product: { name: string; url: string };
+    answer: AiCapture;
+    productCapture?: CapturedBrowser;
+    competitorUrls?: string[];
+    country: string;
+    deadline?: number;
+  },
+  dependencies: BrowserDependencies = {},
+) => inspectResearch(input, dependencies);

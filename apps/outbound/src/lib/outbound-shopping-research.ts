@@ -10,6 +10,103 @@ const url = z.url().refine((value) => {
   return parsed.protocol === "https:" && !parsed.username && !parsed.password;
 }, "Use a public HTTPS source URL.");
 const identifiers = z.array(text(80)).min(1).max(12);
+const digest = z.string().regex(/^[a-f0-9]{64}$/);
+
+export const shoppingQueryIntentSchema = z.enum([
+  "exact-product",
+  "unbranded-specific",
+  "unbranded-broad",
+]);
+export type ShoppingQueryIntent = z.infer<typeof shoppingQueryIntentSchema>;
+
+export const shoppingQueryBasisSchema = z
+  .object({
+    category: text(150),
+    attribute: text(300),
+    excerpts: z
+      .array(
+        z
+          .object({
+            id: text(80),
+            sourceId: text(80),
+            // Excerpt IDs include the original whitespace in their hash.
+            quote: z.string().min(1).max(2000),
+          })
+          .strict(),
+      )
+      .min(1)
+      .max(12),
+    promptHash: digest,
+  })
+  .strict();
+export type ShoppingQueryBasis = z.infer<typeof shoppingQueryBasisSchema>;
+
+export const shoppingCaptureCompletenessSchema = z
+  .object({
+    status: z.enum(["complete", "truncated", "blocked", "empty", "uncertain"]),
+    reason: text(1500).nullable(),
+  })
+  .strict();
+export type ShoppingCaptureCompleteness = z.infer<
+  typeof shoppingCaptureCompletenessSchema
+>;
+
+/** Presence is a server result over the full answer and cited links, never model output. */
+export const shoppingDiscoverySchema = z
+  .object({
+    queryIndex: z.number().int().min(0).max(4),
+    sourceId: text(80),
+    answerHash: digest,
+    linksHash: digest,
+    checkedAt: z.string().datetime(),
+    completeness: shoppingCaptureCompletenessSchema,
+    merchantPresent: z.boolean().nullable(),
+    merchantPosition: z.number().int().min(1).max(1000).nullable(),
+    totalListed: z.number().int().min(0).max(1000).nullable(),
+    listed: z
+      .array(
+        z
+          .object({
+            name: text(300),
+            kind: z.enum(["brand", "retailer", "marketplace"]),
+            position: z.number().int().min(1).max(1000),
+            price: text(100).nullable(),
+            excerptIds: identifiers,
+          })
+          .strict(),
+      )
+      .max(50),
+    description: text(1500).nullable(),
+    matchedAliases: z.array(text(300)).max(50),
+    presenceMethod: z.literal("server-v1"),
+  })
+  .strict();
+export type ShoppingDiscovery = z.infer<typeof shoppingDiscoverySchema>;
+
+/** Receipts store observed facts only; relevance and narrative belong to writing. */
+export const shoppingClaimSchema = z
+  .object({
+    id: text(80),
+    type: z.literal("observed"),
+    kind: z.enum([
+      "query",
+      "name",
+      "price",
+      "position",
+      "count",
+      "merchant-presence",
+      "description",
+      "product-attribute",
+    ]),
+    value: text(1500),
+    sourceIds: identifiers,
+    excerptIds: identifiers,
+    queryIndex: z.number().int().min(0).max(4).nullable(),
+    qualifiers: z.array(text(300)).max(12),
+  })
+  .strict();
+export type ShoppingClaim = z.infer<typeof shoppingClaimSchema>;
+
 export const shoppingFindingSchema = z.object({
   kind: z.enum([
     "query-comparison",
@@ -17,6 +114,9 @@ export const shoppingFindingSchema = z.object({
     "ucp-gap",
     "product-data-gap",
     "product-observation",
+    "discovery-absence",
+    "discovery-outranked",
+    "no-gap",
   ]),
   observation: text(1200),
   consequence: text(600),
@@ -63,11 +163,16 @@ export const shoppingResearchSchema = z
             status: z.enum(["observed", "blocked", "unavailable"]),
             sourceIds: identifiers,
             coverage: text(1500),
+            // Missing metadata stays missing on historical receipts.
+            intent: shoppingQueryIntentSchema.optional(),
+            basis: shoppingQueryBasisSchema.optional(),
           })
           .strict(),
       )
       .min(1)
       .max(5),
+    discovery: shoppingDiscoverySchema.optional(),
+    claims: z.array(shoppingClaimSchema).max(100).optional(),
     ucp: z
       .object({
         url,

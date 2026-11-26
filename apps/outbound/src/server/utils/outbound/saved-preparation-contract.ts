@@ -37,6 +37,8 @@ export const preparationStateSchema = z
       "location",
       "qualify",
       "applyCompany",
+      "renderedProduct",
+      "generateQuery",
       "query",
       "poll",
       "browser",
@@ -67,6 +69,16 @@ export const preparationStateSchema = z
       .array(browserRateLimitSchema)
       .max(browserRetryLimit)
       .default([]),
+    productBrowserRetries: z
+      .number()
+      .int()
+      .min(0)
+      .max(browserRetryLimit)
+      .optional(),
+    productBrowserRateLimits: z
+      .array(browserRateLimitSchema)
+      .max(browserRetryLimit)
+      .optional(),
     mx: z
       .object({
         provider: z.enum(["google", "microsoft", "other", "unknown"]),
@@ -86,6 +98,27 @@ export const preparationStateSchema = z
       .optional(),
     qualification: z.record(z.string(), z.unknown()).optional(),
     query: preparedQuerySchema.optional(),
+    productCapture: browserResearchSchema.optional(),
+    queryGeneration: z
+      .object({ attempts: z.number().int().min(0).max(2) })
+      .optional(),
+    shoppingQueryIntent: z
+      .enum(["unbranded-specific", "unbranded-broad"])
+      .optional(),
+    shoppingQueryCount: z.number().int().min(0).max(2).optional(),
+    shoppingHistory: z
+      .array(
+        z.object({
+          query: preparedQuerySchema,
+          shoppingJob: aiJobSchema,
+          answer: aiCaptureSchema,
+          browser: browserResearchSchema,
+          shoppingReceipt: shoppingResearchSchema,
+          queryReservedAt: z.string().datetime(),
+        }),
+      )
+      .max(1)
+      .optional(),
     shoppingJob: aiJobSchema.optional(),
     answer: aiCaptureSchema.optional(),
     browser: browserResearchSchema.optional(),
@@ -96,7 +129,14 @@ export type PreparationInput = z.infer<typeof preparationInputSchema>;
 export type PreparationState = z.infer<typeof preparationStateSchema>;
 
 export const paidPreparationStage = (stage: PreparationState["stage"]) =>
-  ["qualify", "query", "browser", "assess"].includes(stage);
+  [
+    "qualify",
+    "renderedProduct",
+    "generateQuery",
+    "query",
+    "browser",
+    "assess",
+  ].includes(stage);
 
 export const preparationStageBudget = (stage: PreparationState["stage"]) => {
   switch (stage) {
@@ -105,8 +145,10 @@ export const preparationStageBudget = (stage: PreparationState["stage"]) => {
     case "location":
       return 40_000;
     case "browser":
+    case "renderedProduct":
       return 120_000;
     case "qualify":
+    case "generateQuery":
     case "assess":
       return 50_000;
     case "query":

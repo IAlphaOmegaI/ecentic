@@ -4,7 +4,6 @@ import { type Result, resultify } from "@zenncore/utils";
 import { z } from "zod";
 import * as HTTP from "@/server/utils/http";
 import { IntegrationError } from "./http";
-import { shoppingPollUrl, shoppingQueryUrl } from "./scrapellm-cooldown";
 import {
   type AiCapture,
   type AiJob,
@@ -21,6 +20,7 @@ import {
   keyValid,
   providerJson,
 } from "./live-shopping-http";
+import { shoppingPollUrl, shoppingQueryUrl } from "./scrapellm-cooldown";
 
 type CaptureDependencies = Dependencies & { page?: typeof HTTP.page };
 const failure = (
@@ -458,3 +458,12 @@ export const validateFirecrawlCredentials = async (
         ),
       };
 };
+
+export {
+  generateShopperQuery,
+  type ShopperQueryDependencies,
+  type ShopperQueryInput,
+  type ShopperQuerySelection,
+  shopperQueryExcerpts,
+  validateShopperQuery,
+} from "./shopper-query";
