@@ -25,8 +25,12 @@ import {
   LINKEDIN_STATUSES,
   type Playbook,
   type Prospect,
-  renderMessages,
 } from "@/lib/outbound";
+import {
+  renderLinkedInResult,
+  writingSnapshotSchema,
+} from "@/lib/outbound-composition";
+import { copyVerdictProblem } from "@/lib/outbound-copy-quality";
 import * as Outbound from "@/server/app/outbound";
 import {
   Multiline,
@@ -51,21 +55,16 @@ export const LinkedInEditor = ({
   const router = useRouter();
   const [leaving, setLeaving] = useState(false);
   const [dirty, setDirty] = useState(false);
-  const variables: Record<string, unknown> = { ...playbook, ...prospect };
-  const missingDetails = [
-    ...playbook.linkedinTemplate.matchAll(/\{([^{}]+)\}/g),
-  ].some((match) => {
-    const value = variables[match[1] ?? ""];
-    return typeof value !== "string" || !value.trim();
-  });
+  const writing = writingSnapshotSchema.safeParse(
+    prospect.messages[0]?.writing,
+  );
+  const rendered =
+    writing.success && !copyVerdictProblem(writing.data.quality)
+      ? renderLinkedInResult(prospect, playbook, writing.data.parts)
+      : null;
   const initialDraft =
     prospect.linkedinDraft ||
-    (missingDetails
-      ? ""
-      : (renderMessages(prospect, {
-          ...playbook,
-          bodyTemplate: playbook.linkedinTemplate,
-        })[0]?.body ?? ""));
+    (rendered?.status === "ready" ? rendered.text : "");
   const initial = {
     status: prospect.linkedinStatus,
     draft: initialDraft,
@@ -162,7 +161,7 @@ export const LinkedInEditor = ({
                 validator: z.string().max(4000),
                 label: t("linkedin.fields.draft"),
                 description:
-                  !prospect.linkedinDraft && missingDetails
+                  !prospect.linkedinDraft && rendered?.status !== "ready"
                     ? t("linkedin.missingTemplateDetails")
                     : undefined,
               }),

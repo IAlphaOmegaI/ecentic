@@ -426,6 +426,44 @@ export const canonicalSequenceInput = (
   };
 };
 
+/** The LinkedIn note reuses the reviewed result; it never creates another finding or biography. */
+export const renderLinkedInResult = (
+  prospect: ProspectInput,
+  settings: Playbook,
+  parts: WriterParts,
+): { status: "ready"; text: string } | AssemblyHold => {
+  const parsed = writerPartsSchema.safeParse(parts);
+  if (!parsed.success)
+    return hold("Review the sequence before preparing a LinkedIn note.");
+  const variables: Variables = {
+    first: prospect.first,
+    name: prospect.name,
+    company: prospect.company,
+    product: prospect.product,
+    queryTopic: parsed.data.subject,
+    opening: "",
+    result: parsed.data.result,
+    relevance: "",
+    followupFact: "",
+    founderLine: "",
+    callToAction: "",
+    optout: "",
+    signature: "",
+  };
+  const problem = templateProblem(
+    "LinkedIn",
+    settings.linkedinTemplate,
+    variables,
+    ["result"],
+    ["first", "name", "company", "product", "queryTopic", "result"],
+  );
+  if (problem) return hold(problem);
+  const text = render(settings.linkedinTemplate, variables);
+  return text.length > 3000
+    ? hold("The LinkedIn note exceeds 3,000 characters.")
+    : { status: "ready", text };
+};
+
 /** Pure assembly: never falls back to the legacy template or removes a writer-owned part. */
 export const assembleSequence = (
   prospect: ProspectInput,

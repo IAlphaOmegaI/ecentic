@@ -5,7 +5,7 @@ import { eq, sql } from "drizzle-orm";
 import {
   defaultPlaybook,
   prospectSchema,
-  renderMessages,
+  renderHistoricalMessages as renderMessages,
 } from "@/lib/outbound";
 import { defaultCampaignCriteria } from "@/lib/outbound-campaigns";
 import { sequenceRefreshStateSchema } from "@/lib/outbound-sequence-refresh";

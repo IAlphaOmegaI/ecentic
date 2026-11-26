@@ -9,7 +9,7 @@ import {
   playbookSchema,
   prospectIssues,
   prospectSchema,
-  renderMessages,
+  renderHistoricalMessages as renderMessages,
   senderFor,
   senderIdentity,
   senderPool,

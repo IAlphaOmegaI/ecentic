@@ -1,7 +1,20 @@
 import { getDomain } from "tldts";
 import { z } from "zod";
 import { MAX_DAILY_EMAILS } from "./outbound-capacity";
-import type { WritingSnapshot } from "./outbound-composition";
+import {
+  assembleSequence,
+  canonicalSequenceInput,
+  compositionSentences,
+  FOLLOWUP_BUMP,
+  type WriterParts,
+  type WritingSnapshot,
+  writingSnapshotSchema,
+} from "./outbound-composition";
+import {
+  copyPhrasePresent,
+  copyVerdictProblem,
+  deterministicCopyIssues,
+} from "./outbound-copy-quality";
 import { evidenceDateUsable } from "./outbound-evidence";
 import {
   DEFAULT_FINDING_COPY,
@@ -16,6 +29,7 @@ import { savedContactVerificationReady } from "./outbound-saved-contact";
 import { resolveSendingWindow } from "./outbound-scheduling";
 import {
   DEFAULT_RESEARCH_INSTRUCTIONS,
+  type ShoppingResearch,
   shoppingCopy,
   shoppingFindingSchema,
 } from "./outbound-shopping-research";
@@ -75,6 +89,11 @@ export const TEMPLATE_VARIABLES = [
   "callToAction",
   "optout",
   "signature",
+  "opening",
+  "result",
+  "relevance",
+  "queryTopic",
+  "followupFact",
 ] as const;
 
 const text = z.string().trim();
@@ -567,7 +586,7 @@ export const templateIssues = (value: string): Issue[] => {
   }));
 };
 
-const renderDraft = (prospect: ProspectInput, policy: Playbook) => {
+const renderHistoricalDraft = (prospect: ProspectInput, policy: Playbook) => {
   const settings = settingsForSender(
     policy,
     prospect.assignedSenderEmail ?? policy.fromEmail,
@@ -596,6 +615,11 @@ const renderDraft = (prospect: ProspectInput, policy: Playbook) => {
     callToAction: settings.callToAction,
     optout: settings.optout,
     signature: settings.signature,
+    opening: "{opening}",
+    result: "{result}",
+    relevance: "{relevance}",
+    queryTopic: prospect.product,
+    followupFact: "{followupFact}",
   };
   const render = (template: string, personalLine = prospect.personalLine) =>
     template
@@ -639,24 +663,351 @@ const renderDraft = (prospect: ProspectInput, policy: Playbook) => {
   return { messages, personalLine };
 };
 
-export const renderMessages = (prospect: ProspectInput, settings: Playbook) =>
-  renderDraft(prospect, settings).messages;
+/** Historical import/read previews only. Runtime generation must use the durable writer. */
+export const renderHistoricalMessages = (
+  prospect: ProspectInput,
+  settings: Playbook,
+) => renderHistoricalDraft(prospect, settings).messages;
+
+/** Missing or held writing context returns no messages, never a legacy first email. */
+export const renderMessages = (
+  prospect: ProspectInput,
+  policy: Playbook,
+  writing?: { receipt: ShoppingResearch; parts: WriterParts },
+): Message[] => {
+  if (!writing) return [];
+  const settings = settingsForSender(
+    policy,
+    prospect.assignedSenderEmail ?? policy.fromEmail,
+  );
+  const assembled = assembleSequence(
+    prospect,
+    writing.receipt,
+    settings,
+    writing.parts,
+  );
+  return assembled.status === "ready" ? assembled.messages : [];
+};
 
 /** The optional opening is the only content omitted to meet the saved word limit. */
 export const personalLineForDraft = (
   prospect: ProspectInput,
   settings: Playbook,
-) => renderDraft(prospect, settings).personalLine;
+) => renderHistoricalDraft(prospect, settings).personalLine;
+
+const usesWriterFormula = (messages: Message[], settings: Playbook) =>
+  messages.some((message) => message.writing !== undefined) ||
+  /\{(?:opening|result|relevance|queryTopic|followupFact)\}/.test(
+    [
+      settings.subjectTemplate,
+      settings.bodyTemplate,
+      settings.followupOneTemplate,
+    ].join("\n"),
+  );
+
+/** Structural fallback for client views that carry only the prospect's compact finding. */
+const writtenTemplateMessages = (
+  prospect: ProspectInput,
+  settings: Playbook,
+  writing: WritingSnapshot,
+  kind: ShoppingResearch["selected"]["kind"] | undefined,
+) => {
+  const issues: Issue[] = [];
+  const founderLine =
+    kind === "product-data-gap"
+      ? settings.founderLine
+      : ["discovery-absence", "discovery-outranked", "query-comparison"].some(
+            (candidate) => candidate === kind,
+          )
+        ? settings.productCheckIntro
+        : "";
+  if (!founderLine)
+    issues.push({ code: "templateControlsChanged", field: "founderLine" });
+  const variables: Record<string, string> = {
+    first: prospect.first,
+    name: prospect.name,
+    company: prospect.company,
+    product: prospect.product,
+    queryTopic: writing.queryTopic,
+    opening: writing.parts.opening,
+    result: writing.parts.result,
+    relevance: writing.parts.relevance,
+    followupFact: writing.parts.followupFact || FOLLOWUP_BUMP,
+    founderLine,
+    callToAction: settings.callToAction,
+    optout: settings.optout,
+    signature: settings.signature,
+  };
+  const identity = ["first", "name", "company", "product", "queryTopic"];
+  const fixed = ["founderLine", "callToAction", "optout", "signature"];
+  const parts = ["opening", "result", "relevance"];
+  const templates = [
+    {
+      field: "subjectTemplate",
+      text: settings.subjectTemplate,
+      required: [],
+      allowed: ["product", "queryTopic"],
+    },
+    {
+      field: "bodyTemplate",
+      text: settings.bodyTemplate,
+      required: [...parts, ...fixed],
+      allowed: [...identity, ...parts, ...fixed],
+    },
+    {
+      field: "followupOneTemplate",
+      text: settings.followupOneTemplate,
+      required: ["followupFact", "callToAction", "optout", "signature"],
+      allowed: [
+        ...identity,
+        "followupFact",
+        "callToAction",
+        "optout",
+        "signature",
+      ],
+    },
+    {
+      field: "followupTwoTemplate",
+      text: settings.followupTwoTemplate,
+      required: ["optout", "signature"],
+      allowed: [...identity, "callToAction", "optout", "signature"],
+    },
+  ];
+  for (const template of templates) {
+    const tokens = [...template.text.matchAll(/\{([^{}]+)\}/g)].map(
+      (match) => match[1] ?? "",
+    );
+    if (
+      !template.text.trim() ||
+      template.required.some(
+        (required) => tokens.filter((token) => token === required).length !== 1,
+      )
+    )
+      issues.push({ code: "templateControlsChanged", field: template.field });
+    if (
+      tokens.some((token) => !template.allowed.includes(token)) ||
+      /[{}]/.test(template.text.replace(/\{[^{}]+\}/g, ""))
+    )
+      issues.push({ code: "unknownVariable", field: template.field });
+    if (
+      tokens.some(
+        (token) =>
+          !variables[token]?.trim() || /[{}]/.test(variables[token] ?? ""),
+      )
+    )
+      issues.push({ code: "unresolvedVariable", field: template.field });
+    if (template.field !== "subjectTemplate") {
+      const paragraphs = template.text
+        .replace(/\r\n?/g, "\n")
+        .split(/\n[ \t]*\n/)
+        .map((paragraph) => paragraph.trim())
+        .filter(Boolean);
+      if (
+        paragraphs.at(-1) !== "{signature}" ||
+        paragraphs.some(
+          (paragraph) =>
+            paragraph.includes("{optout}") && paragraph !== "{optout}",
+        ) ||
+        paragraphs.some(
+          (paragraph) =>
+            paragraph.includes("{founderLine}") &&
+            !["{founderLine}", "{founderLine} {callToAction}"].includes(
+              paragraph,
+            ),
+        )
+      )
+        issues.push({ code: "templateControlsChanged", field: template.field });
+    }
+  }
+  if (!/\{(?:queryTopic|product)\}/.test(settings.subjectTemplate))
+    issues.push({ code: "templateControlsChanged", field: "subjectTemplate" });
+  const render = (template: string) =>
+    template
+      .replace(/\r\n?/g, "\n")
+      .replace(
+        /\{([^{}]+)\}/g,
+        (original, key: string) => variables[key] ?? original,
+      )
+      .trim();
+  const subject = render(settings.subjectTemplate);
+  const messages: Message[] = [
+    { step: 1, afterDays: 0, subject, body: render(settings.bodyTemplate) },
+    {
+      step: 2,
+      afterDays: settings.followupOneDays,
+      subject: `Re: ${subject}`,
+      body: render(settings.followupOneTemplate),
+    },
+    {
+      step: 3,
+      afterDays: settings.followupTwoDays,
+      subject: `Re: ${subject}`,
+      body: render(settings.followupTwoTemplate),
+    },
+  ];
+  return { messages, issues };
+};
+
+const lintWrittenSequence = (
+  messages: Message[],
+  settings: Playbook,
+  prospect?: ProspectInput,
+  receipt?: ShoppingResearch,
+): Issue[] => {
+  const issues: Issue[] = [];
+  const writing = writingSnapshotSchema.safeParse(messages[0]?.writing);
+  if (!writing.success)
+    issues.push({ code: "writingRequired", field: "message1" });
+  else {
+    if (
+      writing.data.parts.subject !== writing.data.queryTopic ||
+      messages.slice(1).some((message) => message.writing !== undefined)
+    )
+      issues.push({ code: "writingChanged", field: "message1" });
+    if (copyVerdictProblem(writing.data.quality))
+      issues.push({ code: "copyQuality", field: "message1" });
+    for (const [part, words, sentences] of [
+      ["opening", 22, 1],
+      ["result", 30, 2],
+      ["relevance", 28, 3],
+      ["followupFact", 25, 1],
+    ] as const) {
+      if (countWords(writing.data.parts[part]) > words)
+        issues.push({ code: "wordLimit", field: part });
+      if (
+        compositionSentences(writing.data.parts[part]).length > sentences ||
+        /[\r\n]/.test(writing.data.parts[part])
+      )
+        issues.push({ code: "sentenceLength", field: part });
+    }
+    if (prospect) {
+      const expected = writtenTemplateMessages(
+        prospect,
+        settings,
+        writing.data,
+        receipt?.selected.kind ?? prospect.shoppingFinding?.kind,
+      );
+      issues.push(...expected.issues);
+      const actual = canonicalSequenceInput(messages);
+      const original = canonicalSequenceInput(expected.messages);
+      if (
+        actual.status !== "ready" ||
+        original.status !== "ready" ||
+        actual.canonicalText !== original.canonicalText
+      )
+        issues.push({ code: "writingChanged", field: "message1" });
+      if (
+        receipt &&
+        deterministicCopyIssues({
+          prospect,
+          receipt,
+          playbook: settings,
+          parts: writing.data.parts,
+          messages,
+        }).length
+      )
+        issues.push({ code: "copyQuality", field: "message1" });
+    } else issues.push({ code: "templateControlsChanged", field: "message1" });
+  }
+  if (canonicalSequenceInput(messages).status !== "ready")
+    issues.push({ code: "emptyMessage", field: "message1" });
+  for (const message of messages) {
+    const field = `message${message.step}`;
+    const content = `${message.subject}\n${message.body}`;
+    if (!message.subject.trim() || !message.body.trim())
+      issues.push({ code: "emptyMessage", field });
+    if (
+      message.step === 1 &&
+      (countWords(message.subject) < 2 ||
+        countWords(message.subject) > 5 ||
+        message.subject !== message.subject.toLowerCase() ||
+        /[\p{N}?]/u.test(message.subject))
+    )
+      issues.push({ code: "subjectLength", field });
+    if (
+      message.step === 1 &&
+      prospect &&
+      [prospect.company, prospect.domain.split(".")[0] ?? ""].some((name) =>
+        copyPhrasePresent(message.subject, name),
+      )
+    )
+      issues.push({ code: "claimNotAllowed", field });
+    if (
+      message.step === 1 &&
+      countWords(message.body) > Math.min(99, settings.maxBodyWords)
+    )
+      issues.push({ code: "wordLimit", field });
+    if (
+      compositionSentences(message.body).some(
+        (sentence) => countWords(sentence) > 25,
+      )
+    )
+      issues.push({ code: "sentenceLength", field });
+    if (/[{}]|\[name\]|\bTODO\b/i.test(content))
+      issues.push({ code: "unresolvedVariable", field });
+    if (/[\u2013\u2014]|&[mn]dash;|&#(?:821[12]|x201[34]);/i.test(content))
+      issues.push({ code: "dash", field });
+    if (
+      /https?:|www\.|mailto:|(?:^|[\s<(])(?:[\p{L}\p{N}][\p{L}\p{N}-]*\.)+[\p{L}]{2,63}(?:[/?#][^\s]*)?/imu.test(
+        content,
+      )
+    )
+      issues.push({ code: "link", field });
+    if (/^\s*[-*•]\s/m.test(message.body))
+      issues.push({ code: "bullet", field });
+    if (/(?:[©®™]\uFE0F|(?![©®™])\p{Extended_Pictographic})/u.test(content))
+      issues.push({ code: "emoji", field });
+    if (
+      splitList(settings.bannedPhrases).some((phrase) =>
+        copyPhrasePresent(content, phrase),
+      )
+    )
+      issues.push({ code: "bannedPhrase", field });
+    if (
+      (message.step === 1 &&
+        splitList(settings.firstEmailBlockedClaims).some((phrase) =>
+          copyPhrasePresent(content, phrase),
+        )) ||
+      /\b(?:lost|losing)\s+sales\b|\brevenue\b|\binvisible\b|\b(?:can't|can’t|cannot|can not)\s+(?:see|read)\b|\b(?:took|stole)\s+(?:(?:the|a|your)\s+)?sales?\b|%|\bpercent(?:age)?s?\b/iu.test(
+        content,
+      )
+    )
+      issues.push({ code: "claimNotAllowed", field });
+    const paragraphs = message.body
+      .replace(/\r\n?/g, "\n")
+      .split(/\n[ \t]*\n/)
+      .map((paragraph) => paragraph.trim());
+    if (!paragraphs.includes(settings.optout))
+      issues.push({ code: "optoutMissing", field });
+    if (paragraphs.at(-1) !== settings.signature)
+      issues.push({ code: "signatureMissing", field });
+    if (
+      /!/.test(message.subject) ||
+      /!/.test(
+        message.body.replace(/^(?:Hey|Hi|Hello|Dear) [^!\r\n]+!\r?\n/u, ""),
+      )
+    )
+      issues.push({ code: "exclamation", field });
+  }
+  return [
+    ...new Map(
+      issues.map((issue) => [`${issue.code}:${issue.field}`, issue]),
+    ).values(),
+  ];
+};
 
 export const lintMessages = (
   messages: Message[],
   policy: Playbook,
   prospect?: ProspectInput,
+  receipt?: ShoppingResearch,
 ): Issue[] => {
   const settings = settingsForSender(
     policy,
     prospect?.assignedSenderEmail ?? policy.fromEmail,
   );
+  if (usesWriterFormula(messages, settings))
+    return lintWrittenSequence(messages, settings, prospect, receipt);
   return messages.flatMap((message) => {
     const field = `message${message.step}`;
     const content = `${message.subject}\n${message.body}`;
@@ -667,7 +1018,7 @@ export const lintMessages = (
           ? findingCopy(prospect, settings)
           : null;
     const rendered = prospect
-      ? (renderMessages(prospect, settings)[0]?.body ?? "")
+      ? (renderHistoricalMessages(prospect, settings)[0]?.body ?? "")
       : "";
     const original =
       prospect &&

@@ -5,7 +5,7 @@ import {
   lintMessages,
   playbookSchema,
   prospectSchema,
-  renderMessages,
+  renderHistoricalMessages as renderMessages,
 } from "@/lib/outbound";
 import {
   applyDraftEdits,
@@ -28,7 +28,7 @@ const prospect = prospectSchema.parse({
   evidence: "The visible product details list one size.",
 });
 
-describe("saved writing formula", () => {
+describe("historical saved writing formula", () => {
   test("editable fragments preserve every rendered paragraph, follow-up and meeting control", () => {
     const settings = {
       ...defaultPlaybook,

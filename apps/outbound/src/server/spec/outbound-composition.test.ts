@@ -5,6 +5,7 @@ import {
   canonicalSequenceInput,
   FOLLOWUP_BUMP,
   preflightWriterAssembly,
+  renderLinkedInResult,
 } from "@/lib/outbound-composition";
 import { validateShoppingResearch } from "@/lib/outbound-shopping-research";
 import {
@@ -199,6 +200,28 @@ describe("observed facts and writer-owned narrative", () => {
 });
 
 describe("sequence assembly and real word budgets", () => {
+  test("LinkedIn reuses the reviewed result and cannot render an author's biography", () => {
+    const fixture = writerFixture();
+    expect(
+      renderLinkedInResult(fixture.prospect, fixture.policy, fixture.parts),
+    ).toEqual({
+      status: "ready",
+      text: `Hi Jamie, ${fixture.parts.result} Would be good to connect.`,
+    });
+    for (const linkedinTemplate of [
+      "Hi {first}, {founderLine} {result}",
+      "Hi {first}, {finding}",
+      "Hi {first}, {result} {result}",
+    ]) {
+      expect(
+        renderLinkedInResult(
+          fixture.prospect,
+          { ...fixture.policy, linkedinTemplate },
+          fixture.parts,
+        ).status,
+      ).toBe("held");
+    }
+  });
   test("fixed sender paragraphs and empty-fact bump are exact", () => {
     const fixture = writerFixture();
     const result = assembleSequence(

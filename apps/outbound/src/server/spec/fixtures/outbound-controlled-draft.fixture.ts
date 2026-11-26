@@ -4,7 +4,7 @@ import type { z } from "zod";
 import {
   defaultPlaybook,
   prospectSchema,
-  renderMessages,
+  renderHistoricalMessages as renderMessages,
 } from "@/lib/outbound";
 
 mock.module("server-only", () => ({}));

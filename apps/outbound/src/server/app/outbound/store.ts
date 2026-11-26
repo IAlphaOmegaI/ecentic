@@ -41,7 +41,7 @@ import {
   prospectIssues,
   prospectSchema,
   recipientMailHostAllowed,
-  renderMessages,
+  renderHistoricalMessages,
   reviewSchema,
   type Suppression,
   senderFor,
@@ -3400,7 +3400,7 @@ export const applyAutomaticDraftMx = (input: {
   });
 
 /** A historical review cannot promote arbitrary client-shaped writing metadata. */
-const assertAppliedCompositionWithin = async (
+export const assertAppliedCompositionWithin = async (
   transaction: TransactionScope,
   prospect: ProspectRow,
   requirePassing = true,
@@ -3903,7 +3903,7 @@ const importFrozen = async (
       typeof row["body"] === "string" &&
       Boolean(row["subject"].trim() && row["body"].trim());
     const messages = drafted
-      ? renderMessages(details, settings).map((message) => ({
+      ? renderHistoricalMessages(details, settings).map((message) => ({
           ...message,
           subject:
             message.step === 1
@@ -4142,7 +4142,7 @@ export const importProspects = (
       ) {
         const prospect = await findProspect(transaction, imported.prospect);
         const current = await policy(transaction);
-        const messages = renderMessages(
+        const messages = renderHistoricalMessages(
           prospect.details,
           settingsForProspect(prospect, current.settings),
         );

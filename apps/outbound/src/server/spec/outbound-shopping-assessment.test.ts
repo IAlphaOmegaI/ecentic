@@ -6,7 +6,7 @@ import {
   defaultPlaybook,
   lintMessages,
   prospectSchema,
-  renderMessages,
+  renderHistoricalMessages as renderMessages,
 } from "@/lib/outbound";
 import {
   type ShoppingResearch,
@@ -901,7 +901,7 @@ describe("finding copy fits its email without dropping qualifications", () => {
     ).toBe(0);
   });
 
-  test("uses available space above 45 words without changing fixed copy or the final body limit", () => {
+  test("historical assessment copy uses available space above 45 words without changing fixed copy or the final body limit", () => {
     const { catalog, output } = priceScenario();
     const playbook = {
       ...defaultPlaybook,
@@ -1121,7 +1121,7 @@ describe("opted-in truthful product observations", () => {
     });
     expect(assembled.success && assembled.data.status).toBe("held");
   });
-  test("a supported neutral finding survives the real template and draft lint without an invented issue", () => {
+  test("historical neutral finding renders its saved template without an invented issue", () => {
     const { evidence, catalog, output } = observation();
     const settings = {
       ...defaultPlaybook,

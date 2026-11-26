@@ -862,38 +862,99 @@ try {
     ),
   );
   const approvalSaved = value(await save(approvedCopy, passingOutput));
-  // Task 8 removes the old recipient-fragment equality rule centrally.
-  rejected(
+  value(
     await Store.reviewProspect(actor, {
       prospect: approvedCopy.id,
       revision: approvalSaved.revision,
       decision: "approve",
     }),
-    /findingCopyChanged/,
   );
-  assert.equal((await row(approvedCopy.id)).status, "draft");
-  const initialApproval = await snapshot();
-  await db
-    .update(schema.outboundProspect)
-    .set({ sentStep: 1 })
-    .where(eq(schema.outboundProspect.id, approvedCopy.id));
-  rejected(
-    await Store.reviewProspect(actor, {
-      prospect: approvedCopy.id,
-      revision: approvalSaved.revision,
-      decision: "approve",
-    }),
-    /findingCopyChanged/,
-  );
-  assert.deepEqual((await snapshot()).revisions, initialApproval.revisions);
-  await db
-    .update(schema.outboundProspect)
-    .set({ sentStep: 0 })
-    .where(eq(schema.outboundProspect.id, approvedCopy.id));
   const exactApproved = await row(approvedCopy.id);
+  assert.equal(exactApproved.status, "approved");
+  assert.equal(exactApproved.revision, approvalSaved.revision);
+  assert.equal(
+    exactApproved.messages[0]?.writing?.revision,
+    approvalSaved.revision,
+  );
+  assert.equal(exactApproved.messages[0]?.writing?.quality?.passed, true);
+  const approvedPolicy = await Store.policy();
+  const exactHash = Store.contentHash(
+    exactApproved.messages,
+    Store.approvalManifest(
+      exactApproved,
+      approvedPolicy.settings,
+      approvedPolicy.revision,
+    ),
+  );
+  assert.equal(exactApproved.approvalHash, exactHash);
+  const exactRevision = (await snapshot()).revisions.find(
+    (entry) =>
+      entry.prospectId === exactApproved.id &&
+      entry.revision === approvalSaved.revision,
+  );
+  assert.ok(exactRevision?.approvedAt);
+  assert.equal(exactRevision.contentHash, exactHash);
   const [approvedFirst, approvedFollowup, approvedLast] =
     exactApproved.messages;
-  assert.ok(approvedFirst && approvedFollowup && approvedLast);
+  assert.ok(approvedFirst?.writing && approvedFollowup && approvedLast);
+  const changedText = exactApproved.messages.map((message) =>
+    message.step === 1
+      ? { ...message, body: `${message.body} An unverified edit.` }
+      : message,
+  );
+  await db
+    .update(schema.outboundProspect)
+    .set({ messages: changedText })
+    .where(eq(schema.outboundProspect.id, approvedCopy.id));
+  rejected(
+    await Store.reviewProspect(actor, {
+      prospect: approvedCopy.id,
+      revision: approvalSaved.revision,
+      decision: "approve",
+    }),
+    /trusted writing result/,
+  );
+  const changedVerdict = exactApproved.messages.map((message) =>
+    message.writing
+      ? {
+          ...message,
+          writing: {
+            ...message.writing,
+            quality: message.writing.quality
+              ? {
+                  ...message.writing.quality,
+                  criteria: message.writing.quality.criteria.map(
+                    (criterion, index) =>
+                      index === 0
+                        ? {
+                            ...criterion,
+                            reason:
+                              "A client supplied this replacement verdict.",
+                          }
+                        : criterion,
+                  ),
+                }
+              : null,
+          },
+        }
+      : message,
+  );
+  await db
+    .update(schema.outboundProspect)
+    .set({ messages: changedVerdict })
+    .where(eq(schema.outboundProspect.id, approvedCopy.id));
+  rejected(
+    await Store.reviewProspect(actor, {
+      prospect: approvedCopy.id,
+      revision: approvalSaved.revision,
+      decision: "approve",
+    }),
+    /trusted writing result/,
+  );
+  await db
+    .update(schema.outboundProspect)
+    .set({ messages: exactApproved.messages })
+    .where(eq(schema.outboundProspect.id, approvedCopy.id));
   const manualSaved = value(
     await Store.saveDraft(actor, {
       prospect: approvedCopy.id,
@@ -915,7 +976,123 @@ try {
     /trusted writing result/,
   );
   console.log(
-    "PASS exact copy passes quality up to task 8 legacy lint; edited copy cannot reuse its verdict",
+    "PASS exact passing copy approves with its current revision and hash; edited text or verdict cannot reuse approval",
+  );
+
+  const sentCopy = await seed(false, true);
+  const sentOutput = value(
+    await Composition.composeForProspect(
+      actor,
+      { prospectId: sentCopy.id },
+      { generate: async () => sentCopy.parts, judge: passingCopyJudge },
+    ),
+  );
+  const sentSaved = value(await save(sentCopy, sentOutput));
+  value(
+    await Store.reviewProspect(actor, {
+      prospect: sentCopy.id,
+      revision: sentSaved.revision,
+      decision: "approve",
+    }),
+  );
+  const sentApproved = await row(sentCopy.id);
+  assert.ok(sentApproved.approvalHash);
+  const sentRevision = (await snapshot()).revisions.find(
+    (entry) =>
+      entry.prospectId === sentCopy.id && entry.revision === sentSaved.revision,
+  );
+  assert.ok(sentRevision);
+  const inbox = (
+    await db
+      .insert(schema.outboundInbox)
+      .values({
+        email: sentCopy.policy.fromEmail,
+        fromName: sentCopy.policy.fromName,
+        signer: sentCopy.policy.signature,
+      })
+      .returning()
+  )[0];
+  assert.ok(inbox);
+  const delivered = (
+    await db
+      .insert(schema.outboundSendAttempt)
+      .values({
+        prospectId: sentCopy.id,
+        inboxId: inbox.id,
+        step: 1,
+        revision: sentSaved.revision,
+        messageId: `synthetic-${randomUUID()}`,
+        providerMessageId: "synthetic-offline-delivery",
+        status: "accepted",
+        contentHash: sentApproved.approvalHash,
+        completedAt: new Date(),
+      })
+      .returning()
+  )[0];
+  assert.ok(delivered);
+  await db
+    .update(schema.outboundProspect)
+    .set({
+      status: "active",
+      sentStep: 1,
+      inboxId: inbox.id,
+      threadId: "synthetic-thread",
+      firstSentAt: new Date(),
+      lastSentAt: new Date(),
+    })
+    .where(eq(schema.outboundProspect.id, sentCopy.id));
+  const [sentFirst, sentFollowup, sentLast] = sentApproved.messages;
+  assert.ok(sentFirst && sentFollowup && sentLast);
+  rejected(
+    await Store.saveDraft(actor, {
+      prospect: sentCopy.id,
+      revision: sentSaved.revision,
+      subject: sentFirst.subject,
+      body: `${sentFirst.body} A retroactive edit.`,
+      followupOne: sentFollowup.body,
+      followupTwo: sentLast.body,
+    }),
+    /Previously sent message text is immutable/,
+  );
+  rejected(
+    await save(sentCopy, sentOutput, sentSaved.revision),
+    /sent sequence/,
+  );
+  const followupSaved = value(
+    await Store.saveDraft(actor, {
+      prospect: sentCopy.id,
+      revision: sentSaved.revision,
+      subject: sentFirst.subject,
+      body: sentFirst.body,
+      followupOne: `${sentFollowup.body} An operator follow-up edit.`,
+      followupTwo: sentLast.body,
+    }),
+  );
+  const preservedRevision = (await snapshot()).revisions.find(
+    (entry) => entry.id === sentRevision.id,
+  );
+  assert.equal(preservedRevision?.contentHash, sentRevision.contentHash);
+  assert.deepEqual(preservedRevision?.messages, sentRevision.messages);
+  assert.deepEqual(
+    (
+      await db
+        .select()
+        .from(schema.outboundSendAttempt)
+        .where(eq(schema.outboundSendAttempt.id, delivered.id))
+    )[0],
+    delivered,
+  );
+  assert.equal((await row(sentCopy.id)).messages[0]?.body, sentFirst.body);
+  rejected(
+    await Store.reviewProspect(actor, {
+      prospect: sentCopy.id,
+      revision: followupSaved.revision,
+      decision: "approve",
+    }),
+    /trusted writing result/,
+  );
+  console.log(
+    "PASS sent text, original revision metadata and delivery hash remain immutable after a remaining-follow-up edit",
   );
 
   const variety = await seed(false, true);
@@ -985,14 +1162,14 @@ try {
   assert.equal(refreshedPolicy.revision, policySaved.revision + 1);
   assert.equal((await jobs()).length, 1);
   assert.equal((await row(policyOnly.id)).playbookRevision, 2);
-  rejected(
+  value(
     await Store.reviewProspect(actor, {
       prospect: policyOnly.id,
       revision: refreshedPolicy.revision,
       decision: "approve",
     }),
-    /findingCopyChanged/,
   );
+  assert.equal((await row(policyOnly.id)).status, "approved");
   console.log(
     "PASS unrelated policy revision reuses copy in a current approval manifest",
   );

@@ -9,10 +9,11 @@ import {
   inSendWindow,
   normalizeDomain,
   prospectIssues,
-  renderMessages,
   splitList,
   templateIssues,
 } from "@/lib/outbound";
+import { renderLinkedInResult } from "@/lib/outbound-composition";
+import { copyPhrasePresent } from "@/lib/outbound-copy-quality";
 import { db, schema, type TransactionScope } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
 import { ConflictError } from "@/server/utils/error";
@@ -345,6 +346,7 @@ const eligible = async (
     return hold("linkedin-prospect-stopped");
   await Store.assertCampaignActive(transaction, prospect);
   await Store.assertAutomaticEvidence(transaction, prospect);
+  await Store.assertAppliedCompositionWithin(transaction, prospect);
   const campaign = value(
     await Campaigns.get(Environment.SERVER, prospect.campaignId, {
       tx: transaction,
@@ -573,14 +575,20 @@ const reserve = async (prospectId: string, provider: Provider, now: Date) => {
     /\{founderLine\}/.test(context.policy.settings.linkedinTemplate)
   )
     return hold("linkedin-persona-mismatch");
+  const writing = context.prospect.messages[0]?.writing;
+  const rendered = writing
+    ? renderLinkedInResult(
+        context.prospect.details,
+        context.policy.settings,
+        writing.parts,
+      )
+    : null;
   const text =
     action === "invite"
       ? ""
-      : (renderMessages(context.prospect.details, {
-          ...context.policy.settings,
-          bodyTemplate: context.policy.settings.linkedinTemplate,
-          signature: context.account.name,
-        })[0]?.body ?? "");
+      : rendered?.status === "ready"
+        ? rendered.text
+        : "";
   if (
     action === "message" &&
     (!text ||
@@ -588,7 +596,7 @@ const reserve = async (prospectId: string, provider: Provider, now: Date) => {
       templateIssues(text).length ||
       /[{}]/.test(text) ||
       splitList(context.policy.settings.bannedPhrases).some((phrase) =>
-        text.toLowerCase().includes(phrase.toLowerCase()),
+        copyPhrasePresent(text, phrase),
       ))
   )
     return hold("linkedin-message-invalid");

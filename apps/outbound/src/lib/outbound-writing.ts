@@ -6,7 +6,7 @@ import {
   type Playbook,
   type ProspectInput,
   personalLineForDraft,
-  renderMessages,
+  renderHistoricalMessages as renderMessages,
 } from "./outbound";
 import {
   type WriterBudget,
