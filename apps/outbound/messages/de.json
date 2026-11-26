@@ -873,7 +873,19 @@
           "inactive": "Dieses Postfach ist im Kontaktleitfaden inaktiv. Es kann Antworten synchronisieren. Verschieben Sie es zu Absenderpostfächer, bevor Sie den Versand aktivieren."
         },
         "maximumDailyCap": "Angestrebtes Maximum pro Postfach und Tag",
-        "dailyCapHelp": "Bis zu {maximum} Erstkontakte und Folge-E-Mails pro Postfach täglich. Das Playbook steuert die schrittweise Erhöhung; unzustellbare E-Mails reduzieren die Kapazität."
+        "dailyCapHelp": "Bis zu {maximum} Erstkontakte und Folge-E-Mails pro Postfach täglich. Das Playbook steuert die schrittweise Erhöhung; unzustellbare E-Mails reduzieren die Kapazität.",
+        "profile": {
+          "fromName": "Absendername",
+          "signature": "Signatur",
+          "founderLine": "Allgemeine Vorstellung",
+          "productCheckIntro": "Vorstellung bei Produktrecherchen",
+          "voiceNotes": "Stilhinweise",
+          "help": "Beschreiben Sie nur die eigene Rolle und Erfahrung dieser Person. Dieses Profil ersetzt für dieses Postfach die Vorstellung und den Stil des primären Absenders.",
+          "pause": "Postfach pausieren",
+          "title": "Absenderprofil",
+          "activationPending": "Aktivierung angefordert. Dieses Postfach startet automatisch, sobald der Verlauf synchronisiert ist und die Prüfungen bestanden sind.",
+          "cancelActivation": "Aktivierung abbrechen"
+        }
       },
       "liveResearch": {
         "title": "Live-Recherche zum Einkauf",
@@ -962,7 +974,9 @@
       "platformHeld": "Wählen Sie Shopify oder WooCommerce für diese Kaltakquise-Kampagne aus.",
       "shoppingResearchRequired": "Erfassen Sie eine belegte Erkenntnis zum Einkaufserlebnis, bevor Sie diese Nachricht erstellen oder freigeben.",
       "automaticReviewFailed": "Die automatischen Prüfungen konnten diesen Entwurf nicht freigeben. Prüfe die Belege und die Nachricht und speichere deine Korrekturen.",
-      "automaticReviewUncertain": "Eine frühere Entwurfsanfrage muss geklärt werden, bevor die automatische Prüfung fortgesetzt werden kann."
+      "automaticReviewUncertain": "Eine frühere Entwurfsanfrage muss geklärt werden, bevor die automatische Prüfung fortgesetzt werden kann.",
+      "senderIdentityMissing": "Speichern Sie vor dem Entwurf den eigenen Namen, die Signatur und die Vorstellungen dieses Postfachs.",
+      "senderProfileChanged": "Das Absenderprofil wurde geändert. Prüfen Sie diesen ungesendeten Entwurf vor der Freigabe."
     },
     "preparation": {
       "action": {
@@ -1819,7 +1833,8 @@
         "connection": "Das Sendekonto ist nicht verfügbar oder benötigt eine neue Antwortsynchronisierung. Prüfen Sie Integrationen.",
         "controls": "Der Vorschlag entspricht nicht den gespeicherten Antwortregeln. Verfassen und prüfen Sie die Antwort selbst.",
         "generic": "Diese Aktion konnte nicht abgeschlossen werden. Aktualisieren Sie das Gespräch und versuchen Sie es erneut.",
-        "authentication": "Deine Sitzung ist abgelaufen. Melde dich im neuen Tab an und versuche es hier erneut. Deine Änderungen bleiben erhalten."
+        "authentication": "Deine Sitzung ist abgelaufen. Melde dich im neuen Tab an und versuche es hier erneut. Deine Änderungen bleiben erhalten.",
+        "archived": "Stelle diese Unterhaltung wieder her, bevor du eine Antwort bearbeitest oder sendest."
       },
       "newestFirst": "Neueste Nachrichten zuerst",
       "direction": {
@@ -1843,7 +1858,8 @@
         "all": "Alle Aktivitäten",
         "needsReply": "Antwort ausstehend",
         "sent": "Gesendet",
-        "scheduled": "Geplant"
+        "scheduled": "Geplant",
+        "archived": "Archiviert"
       },
       "replyAccount": "Antworten von",
       "activity": {
@@ -1868,6 +1884,14 @@
         "sending": "Wird gesendet…",
         "signIn": "Erneut anmelden",
         "followUpsPaused": "Beim Speichern dieses Status wird die automatische Kontaktaufnahme per E-Mail und LinkedIn für diese Person pausiert. Erneutes Öffnen startet sie nicht wieder."
+      },
+      "archive": {
+        "action": "Unterhaltung archivieren",
+        "restore": "Unterhaltung wiederherstellen",
+        "help": "Das Archivieren bewahrt den Verlauf und stoppt die automatische Kontaktaufnahme mit dieser Person.",
+        "archivedHelp": "Archivierte Unterhaltungen behalten ihren Verlauf. Die Wiederherstellung macht sie wieder sichtbar; die automatische Kontaktaufnahme bleibt pausiert.",
+        "saved": "Unterhaltung archiviert.",
+        "restored": "Unterhaltung wiederhergestellt. Die automatische Kontaktaufnahme bleibt pausiert."
       }
     }
   }

@@ -105,6 +105,11 @@ metrics and short paths to the next action. White data surfaces sit on a quiet n
 Do not import giant marketing heroes, ambient ASCII or decorative bento arrangements into
 routine product work. Product identity, status and evidence have priority over illustration.
 
+Outbound's charcoal workspace shell fills the viewport on desktop and mobile. Do not surround
+the app with a white outer gutter, rounded outer frame or drop shadow. Keep the rounded content
+surface and useful internal table and section dividers. This applies to the shared workspace
+shell across all Outbound pages.
+
 ### Channel checks and technical tools
 
 Give each tool one obvious entry task. Agentic starts with the store, scan status and a single

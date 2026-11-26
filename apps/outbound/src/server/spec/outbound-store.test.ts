@@ -31,6 +31,14 @@ const settings = {
   senderTested: true,
   senderEmails:
     "juri1@joinecentic.com\njuri2@joinecentic.com\njuri3@joinecentic.com\njuri4@joinecentic.com",
+  senderProfiles: [1, 2, 3, 4].map((number) => ({
+    email: `juri${number}@joinecentic.com`,
+    fromName: defaultPlaybook.fromName,
+    signature: defaultPlaybook.signature,
+    founderLine: defaultPlaybook.founderLine,
+    productCheckIntro: defaultPlaybook.productCheckIntro,
+    voiceNotes: defaultPlaybook.voiceNotes,
+  })),
 };
 const details = (domain = "samplegoods.com") =>
   prospectSchema.parse({
@@ -422,6 +430,467 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
     expect(claim.manifest.sender).toBe(senderFor(fixture.prospect, settings));
     expect(claim.message.body).toContain(settings.postalAddress);
     expect((await store.claimDelivery(actor, fixture)).success).toBe(false);
+  });
+  test("editing an unrelated sender profile preserves an exact existing approval", async () => {
+    const { store, db, schema } = active();
+    const fixture = await approved();
+    const before = required(await store.readProspect(fixture.prospect));
+    if (!before) throw new Error("Missing prospect");
+    const policy = await store.policy();
+    const added = {
+      email: "mario@joinecentic.com",
+      fromName: "Mario",
+      signature: "Mario",
+      founderLine: "I'm Mario from ecentic.",
+      productCheckIntro: "I'm Mario from ecentic.",
+      voiceNotes: "Speak plainly.",
+    };
+    required(
+      await store.savePlaybook(actor, {
+        ...policy.settings,
+        inactiveSenderEmails: added.email,
+        senderProfiles: [...policy.settings.senderProfiles, added],
+      }),
+    );
+    const after = required(await store.readProspect(fixture.prospect));
+    expect(after?.status).toBe("approved");
+    expect(after?.approvalHash).toBe(before.approvalHash);
+    expect(after?.revision).toBe(before.revision);
+    expect((await store.policy()).revision).toBe(policy.revision);
+    expect(after?.messages).toEqual(before.messages);
+    const versions = await db
+      .select()
+      .from(schema.outboundRevision)
+      .where(eq(schema.outboundRevision.prospectId, fixture.prospect));
+    expect(versions.at(-1)?.revokedAt).toBeNull();
+    expect((await store.claimDelivery(actor, fixture)).success).toBe(true);
+  });
+  test("four explicit sender activations preserve a legacy primary sender's exact active follow-up", async () => {
+    const { store, db, schema } = active();
+    const mailboxes = await import("@/server/app/outbound/transport-store");
+    const profiles = ["Xhurian", "Mario", "Arbi", "Alvi"].map(
+      (name, index) => ({
+        email: `${["xhuri", "mario", "arbi", "alvi"][index]}@joinecentic.com`,
+        fromName: name,
+        signature: name,
+        founderLine: `I'm ${name} from ecentic.`,
+        productCheckIntro: `I'm ${name} from ecentic. We help stores with product details.`,
+        voiceNotes: "Use clear, friendly wording.",
+      }),
+    );
+    const legacy = {
+      ...settings,
+      fromEmail: "iseld@joinecentic.com",
+      senderEmails: "iseld@joinecentic.com",
+      inactiveSenderEmails: profiles.map((profile) => profile.email).join("\n"),
+      senderProfiles: [],
+      fromName: "Iseld",
+      signature: "Iseld",
+      founderLine: "I'm Iseld, formerly with Shopify Plus.",
+      productCheckIntro: "I'm Iseld, formerly with Shopify Plus.",
+    };
+    required(await store.savePlaybook(actor, legacy));
+    const primary = (
+      await db
+        .insert(schema.outboundInbox)
+        .values({
+          email: legacy.fromEmail,
+          fromName: legacy.fromName,
+          signer: legacy.signature,
+          enabled: true,
+          refreshToken: "fixture-refresh",
+          lastSyncedAt: now,
+        })
+        .returning()
+    )[0];
+    if (!primary) throw new Error("Missing primary inbox");
+    const created = required(await store.saveProspect(actor, details()));
+    const draft = required(await store.generateDrafts(actor, created));
+    required(
+      await store.reviewProspect(actor, {
+        ...created,
+        revision: draft.revision,
+        decision: "approve",
+      }),
+    );
+    required(
+      await store.savePlaybook(actor, { ...legacy, sendingEnabled: true }),
+    );
+    const claim = required(
+      await store.claimDelivery(actor, { ...created, inbox: primary.id }),
+    );
+    required(
+      await store.dispatchDelivery(actor, claim, async () => ({
+        success: true,
+        data: {
+          providerMessageId: "legacy-primary-first",
+          threadId: "legacy-primary-thread",
+        },
+      })),
+    );
+    const before = required(await store.readProspect(created.prospect));
+    if (!before) throw new Error("Missing original sequence");
+    const { assignedSenderEmail: _assignment, ...oldDetails } = before.details;
+    await db
+      .update(schema.outboundProspect)
+      .set({ details: oldDetails })
+      .where(eq(schema.outboundProspect.id, before.id));
+    const revision = (await store.policy()).revision;
+    const original = (
+      await db
+        .select()
+        .from(schema.outboundRevision)
+        .where(eq(schema.outboundRevision.prospectId, before.id))
+    )[0];
+    expect(original?.manifest.senderProfile).toBeUndefined();
+    for (const profile of profiles) {
+      const inbox = (
+        await db
+          .insert(schema.outboundInbox)
+          .values({
+            email: profile.email,
+            fromName: profile.email,
+            signer: "",
+            enabled: false,
+            dailyCap: 9,
+            refreshToken: "fixture-refresh",
+            lastSyncedAt: now,
+          })
+          .returning()
+      )[0];
+      if (!inbox) throw new Error("Missing secondary inbox");
+      expect(
+        (
+          await mailboxes.configure(actor, {
+            inboxId: inbox.id,
+            enabled: true,
+            dailyCap: 9,
+          })
+        ).success,
+      ).toBe(false);
+      const { email: _email, ...editable } = profile;
+      required(
+        await mailboxes.configure(actor, {
+          inboxId: inbox.id,
+          enabled: true,
+          dailyCap: 9,
+          profile: editable,
+        }),
+      );
+      expect(required(await mailboxes.read(inbox.id))).toMatchObject({
+        enabled: true,
+        fromName: profile.fromName,
+        signer: profile.signature,
+        dailyCap: 9,
+      });
+    }
+    const after = required(await store.readProspect(before.id));
+    expect(after).toMatchObject({
+      status: "active",
+      inboxId: primary.id,
+      revision: before.revision,
+      approvalHash: before.approvalHash,
+      messages: before.messages,
+    });
+    expect(after?.details.assignedSenderEmail).toBe(legacy.fromEmail);
+    expect((await store.policy()).revision).toBe(revision);
+    expect((await store.policy()).settings.fromName).toBe("Iseld");
+    const later = "2026-11-12T17:00:00Z";
+    setSystemTime(new Date(later));
+    required(
+      await store.patchProspect(
+        actor,
+        before.id,
+        {
+          mxCheckedAt: later,
+          evidenceCheckedAt: later,
+          emailVerifiedAt: later,
+        },
+        before.revision,
+      ),
+    );
+    await db
+      .update(schema.outboundInbox)
+      .set({ lastSyncedAt: new Date(later) })
+      .where(eq(schema.outboundInbox.id, primary.id));
+    const followup = required(
+      await store.claimDelivery(actor, {
+        prospect: before.id,
+        inbox: primary.id,
+      }),
+    );
+    expect(followup.step).toBe(2);
+    expect(followup.manifest.sender).toBe(legacy.fromEmail);
+    expect(followup.manifest.fromName).toBe("Iseld");
+    expect(followup.manifest.signature).toBe("Iseld");
+  });
+  test("changing an assigned identity holds only its unsent approved draft", async () => {
+    const { store } = active();
+    const fixture = await approved();
+    const before = required(await store.readProspect(fixture.prospect));
+    if (!before) throw new Error("Missing prospect");
+    const current = await store.policy();
+    const email = before.details.assignedSenderEmail;
+    required(
+      await store.savePlaybook(actor, {
+        ...current.settings,
+        senderProfiles: current.settings.senderProfiles.map((profile) =>
+          profile.email === email
+            ? { ...profile, productCheckIntro: "I'm a team member at ecentic." }
+            : profile,
+        ),
+      }),
+    );
+    const held = required(await store.readProspect(fixture.prospect));
+    expect(held?.status).toBe("held");
+    expect(held?.holdReason).toBe("senderProfileChanged");
+    expect(held?.approvalHash).toBeNull();
+    expect(held?.messages).toEqual(before.messages);
+    expect((await store.policy()).revision).toBe(current.revision);
+    expect((await store.claimDelivery(actor, fixture)).success).toBe(false);
+  });
+  test("a started sender identity cannot change while its sequence is active", async () => {
+    const { store } = active();
+    const fixture = await sentSequence();
+    const before = required(await store.readProspect(fixture.prospect));
+    const policy = await store.policy();
+    const changed = await store.savePlaybook(actor, {
+      ...policy.settings,
+      senderProfiles: policy.settings.senderProfiles.map((profile) =>
+        profile.email === before?.details.assignedSenderEmail
+          ? { ...profile, signature: "Somebody else" }
+          : profile,
+      ),
+    });
+    expect(changed.success).toBe(false);
+    expect(required(await store.readProspect(fixture.prospect))).toMatchObject({
+      status: "active",
+      inboxId: fixture.inbox,
+      approvalHash: before?.approvalHash,
+      messages: before?.messages,
+    });
+    expect((await store.policy()).settings.senderProfiles).toEqual(
+      policy.settings.senderProfiles,
+    );
+  });
+  test("secondary drafts bind their own author through approval and recheck identity at dispatch", async () => {
+    const { store, db, schema } = active();
+    const identity = {
+      email: "mario@joinecentic.com",
+      fromName: "Mario",
+      signature: "Mario",
+      founderLine: "I'm Mario from ecentic.",
+      productCheckIntro:
+        "I'm Mario from ecentic. We help stores with product details.",
+      voiceNotes: "Use plain language.",
+    };
+    const policy = {
+      ...settings,
+      senderEmails: identity.email,
+      senderProfiles: [identity],
+    };
+    required(await store.savePlaybook(actor, policy));
+    const inbox = (
+      await db
+        .insert(schema.outboundInbox)
+        .values({
+          email: identity.email,
+          fromName: identity.fromName,
+          signer: identity.signature,
+          enabled: true,
+          refreshToken: "fixture-refresh",
+          lastSyncedAt: now,
+        })
+        .returning()
+    )[0];
+    if (!inbox) throw new Error("Missing sender");
+    const prospect = required(
+      await store.saveProspect(actor, {
+        ...details(),
+        assignedSenderEmail: defaultPlaybook.fromEmail,
+      }),
+    );
+    const draft = required(await store.generateDrafts(actor, prospect));
+    const prepared = required(await store.readProspect(prospect.prospect));
+    expect(prepared?.details.assignedSenderEmail).toBe(identity.email);
+    expect(prepared?.messages[0]?.body).toContain(identity.founderLine);
+    expect(prepared?.messages[0]?.body.endsWith(identity.signature)).toBe(true);
+    required(
+      await store.reviewProspect(actor, {
+        ...prospect,
+        revision: draft.revision,
+        decision: "approve",
+      }),
+    );
+    required(
+      await store.savePlaybook(actor, { ...policy, sendingEnabled: true }),
+    );
+    const claim = required(
+      await store.claimDelivery(actor, { ...prospect, inbox: inbox.id }),
+    );
+    expect(claim.manifest).toMatchObject({
+      sender: identity.email,
+      fromName: identity.fromName,
+      signature: identity.signature,
+      senderProfile: {
+        founderLine: identity.founderLine,
+        productCheckIntro: identity.productCheckIntro,
+      },
+    });
+    await db
+      .update(schema.outboundInbox)
+      .set({ fromName: "Iseld" })
+      .where(eq(schema.outboundInbox.id, inbox.id));
+    const calls: string[] = [];
+    const dispatched = await store.dispatchDelivery(actor, claim, async () => {
+      calls.push("send");
+      return {
+        success: true,
+        data: {
+          providerMessageId: "should-not-send",
+          threadId: "wrong-author",
+        },
+      };
+    });
+    expect(dispatched.success).toBe(false);
+    expect(calls).toEqual([]);
+  });
+  test("removing a pinned sender from the pool stops its reserved delivery without reassigning it", async () => {
+    const { store } = active();
+    const fixture = await approved();
+    const claim = required(await store.claimDelivery(actor, fixture));
+    const before = required(await store.readProspect(fixture.prospect));
+    const policy = await store.policy();
+    const pool = policy.settings.senderEmails
+      .split("\n")
+      .filter((email) => email !== claim.manifest.sender);
+    required(
+      await store.savePlaybook(actor, {
+        ...policy.settings,
+        senderEmails: pool.join("\n"),
+        inactiveSenderEmails: claim.manifest.sender,
+      }),
+    );
+    const calls: string[] = [];
+    const sent = await store.dispatchDelivery(actor, claim, async () => {
+      calls.push("send");
+      return {
+        success: true,
+        data: { providerMessageId: "unwanted", threadId: "unwanted" },
+      };
+    });
+    expect(sent.success).toBe(false);
+    expect(calls).toEqual([]);
+    expect(
+      required(await store.readProspect(fixture.prospect))?.details
+        .assignedSenderEmail,
+    ).toBe(before?.details.assignedSenderEmail);
+  });
+  test("an inbox can be disabled with its unchanged profile while global sending stays enabled", async () => {
+    const { store } = active();
+    const mailboxes = await import("@/server/app/outbound/transport-store");
+    const fixture = await approved();
+    const inbox = required(await mailboxes.read(fixture.inbox));
+    if (!inbox) throw new Error("Missing inbox");
+    const profile = settings.senderProfiles.find(
+      (profile) => profile.email === inbox.email,
+    );
+    if (!profile) throw new Error("Missing profile");
+    const { email: _email, ...editable } = profile;
+    required(
+      await mailboxes.configure(actor, {
+        inboxId: inbox.id,
+        enabled: false,
+        dailyCap: inbox.dailyCap,
+        profile: editable,
+      }),
+    );
+    expect(required(await mailboxes.read(inbox.id))?.enabled).toBe(false);
+    expect((await store.policy()).settings.sendingEnabled).toBe(true);
+    expect((await store.claimDelivery(actor, fixture)).success).toBe(false);
+  });
+  test("a stale Playbook form cannot erase newly activated senders, but current pool edits remain possible", async () => {
+    const { store, db, schema } = active();
+    await approved();
+    const opened = await store.policy();
+    const identity = {
+      email: "mario@joinecentic.com",
+      fromName: "Mario",
+      signature: "Mario",
+      founderLine: "I'm Mario from ecentic.",
+      productCheckIntro: "I'm Mario from ecentic.",
+      voiceNotes: "Keep it clear.",
+    };
+    await db
+      .insert(schema.outboundInbox)
+      .values({
+        email: identity.email,
+        fromName: identity.fromName,
+        signer: identity.signature,
+        enabled: true,
+        refreshToken: "fixture-refresh",
+        lastSyncedAt: now,
+      });
+    required(
+      await store.savePlaybook(actor, {
+        ...opened.settings,
+        senderEmails: `${opened.settings.senderEmails}\n${identity.email}`,
+        senderProfiles: [...opened.settings.senderProfiles, identity],
+      }),
+    );
+    const stale = await store.savePlaybookForm(actor, {
+      settings: opened.settings,
+      expectedRevision: opened.revision,
+      expectedSenderPool: {
+        senderEmails: opened.settings.senderEmails,
+        inactiveSenderEmails: opened.settings.inactiveSenderEmails,
+      },
+    });
+    expect(stale.success).toBe(false);
+    expect((await store.policy()).settings.senderEmails).toContain(
+      identity.email,
+    );
+    const current = await store.policy();
+    required(
+      await store.savePlaybookForm(actor, {
+        settings: {
+          ...current.settings,
+          senderProfiles: [],
+          senderEmails: opened.settings.senderEmails,
+          inactiveSenderEmails: identity.email,
+        },
+        expectedRevision: current.revision,
+        expectedSenderPool: {
+          senderEmails: current.settings.senderEmails,
+          inactiveSenderEmails: current.settings.inactiveSenderEmails,
+        },
+      }),
+    );
+    expect((await store.policy()).settings.senderEmails).toBe(
+      opened.settings.senderEmails,
+    );
+    expect((await store.policy()).settings.senderProfiles).toEqual(
+      current.settings.senderProfiles,
+    );
+    const baseline = await store.policy();
+    required(
+      await store.savePlaybook(actor, {
+        ...baseline.settings,
+        callToAction: "Would this be worth discussing?",
+      }),
+    );
+    const changed = await store.savePlaybookForm(actor, {
+      settings: baseline.settings,
+      expectedRevision: baseline.revision,
+      expectedSenderPool: {
+        senderEmails: baseline.settings.senderEmails,
+        inactiveSenderEmails: baseline.settings.inactiveSenderEmails,
+      },
+    });
+    expect(changed.success).toBe(false);
+    expect((await store.policy()).settings.callToAction).toBe(
+      "Would this be worth discussing?",
+    );
   });
   test("changing the company discovery target preserves approved messages and schedules", async () => {
     const { store, db, schema } = active();

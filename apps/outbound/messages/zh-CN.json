@@ -873,7 +873,19 @@
           "inactive": "此邮箱在联系指南中已停用，但可以同步回复。启用发送前，请先将其移至“发件邮箱”。"
         },
         "maximumDailyCap": "每个邮箱的每日目标上限",
-        "dailyCapHelp": "每个邮箱每天最多发送{maximum}封首次邮件和跟进邮件。Playbook控制逐步增加发送量；出现退信会降低发送容量。"
+        "dailyCapHelp": "每个邮箱每天最多发送{maximum}封首次邮件和跟进邮件。Playbook控制逐步增加发送量；出现退信会降低发送容量。",
+        "profile": {
+          "fromName": "发件人姓名",
+          "signature": "签名",
+          "founderLine": "通用自我介绍",
+          "productCheckIntro": "产品研究自我介绍",
+          "voiceNotes": "语气说明",
+          "help": "仅填写此人本人的职位和经历。此邮箱将使用该档案，替代主要发件人的自我介绍和语气。",
+          "pause": "暂停邮箱",
+          "title": "发件人档案",
+          "activationPending": "已请求启用。历史记录同步且状态检查通过后，此邮箱将自动启用。",
+          "cancelActivation": "取消启用"
+        }
       },
       "liveResearch": {
         "title": "实时购物调研",
@@ -962,7 +974,9 @@
       "platformHeld": "请为此次陌生客户开发活动选择 Shopify 或 WooCommerce。",
       "shoppingResearchRequired": "起草或批准此消息前，请记录有证据支持的购物体验发现。",
       "automaticReviewFailed": "自动检查未能批准此草稿。请检查证据和消息，然后保存修改。",
-      "automaticReviewUncertain": "必须核实先前草稿请求的结果，才能恢复自动审核。"
+      "automaticReviewUncertain": "必须核实先前草稿请求的结果，才能恢复自动审核。",
+      "senderIdentityMissing": "起草前请保存此邮箱本人的姓名、签名和自我介绍。",
+      "senderProfileChanged": "发件人档案已更改。请在批准前检查这份未发送的草稿。"
     },
     "preparation": {
       "action": {
@@ -1819,7 +1833,8 @@
         "connection": "发送账号不可用，或需要重新同步回复。请检查“集成”。",
         "controls": "回复建议未通过已保存的回复规则检查。请手动撰写并审核回复。",
         "generic": "无法完成此操作。请刷新对话后重试。",
-        "authentication": "会话已过期。请在新标签页中重新登录，然后回到这里重试。你的编辑内容已保留。"
+        "authentication": "会话已过期。请在新标签页中重新登录，然后回到这里重试。你的编辑内容已保留。",
+        "archived": "编辑或发送回复前，请先恢复此会话。"
       },
       "newestFirst": "最新消息在前",
       "direction": {
@@ -1843,7 +1858,8 @@
         "all": "全部活动",
         "needsReply": "待回复",
         "sent": "发送记录",
-        "scheduled": "已安排"
+        "scheduled": "已安排",
+        "archived": "已归档"
       },
       "replyAccount": "回复账号",
       "activity": {
@@ -1868,6 +1884,14 @@
         "sending": "正在发送…",
         "signIn": "重新登录",
         "followUpsPaused": "保存此阶段后，系统将暂停对此人的自动邮件和 LinkedIn 联系。重新打开对话不会自动恢复。"
+      },
+      "archive": {
+        "action": "归档会话",
+        "restore": "恢复会话",
+        "help": "归档会保留历史记录，并停止向此人自动发送消息。",
+        "archivedHelp": "已归档的会话会保留历史记录。恢复后会重新显示会话，但自动发送仍保持暂停。",
+        "saved": "会话已归档。",
+        "restored": "会话已恢复。自动发送仍保持暂停。"
       }
     }
   }

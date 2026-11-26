@@ -122,7 +122,12 @@ const inboxes = await Store.getInboxSummaries();
 assert.ok(inboxes.success);
 if (inboxes.success)
   assert.deepEqual(inboxes.data, [
-    { ...inbox, lastSyncedAt: now.toISOString() },
+    {
+      ...inbox,
+      lastSyncedAt: now.toISOString(),
+      activationRequestedAt: null,
+      profile: null,
+    },
   ]);
 const inboxQuery = queries.find(
   (query) => query.table === schema.outboundInbox,

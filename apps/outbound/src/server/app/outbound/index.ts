@@ -79,8 +79,17 @@ export const getPlaybook = withAuthorization(
 
 export const savePlaybook = withAuthorization(
   [UserRole.STAFF],
-  async (context, input: Playbook) =>
-    Store.savePlaybook(context.session.user.id, input),
+  async (
+    context,
+    input: {
+      settings: Playbook;
+      expectedRevision: number;
+      expectedSenderPool: Pick<
+        Playbook,
+        "senderEmails" | "inactiveSenderEmails"
+      >;
+    },
+  ) => Store.savePlaybookForm(context.session.user.id, input),
   "Outbound.savePlaybook",
 );
 export const saveProspect = withAuthorization(

@@ -6,7 +6,7 @@ import {
   normalizeDomain,
   prospectIssues,
   recipientMailHostAllowed,
-  senderFor,
+  senderForProspect,
 } from "@/lib/outbound";
 import { usesFindingFormula } from "@/lib/outbound-finding-copy";
 import { ConflictError } from "@/server/utils/error";
@@ -34,158 +34,172 @@ export const syncInbox = (
   inboxId: string,
   { deadline }: { deadline?: number } = {},
 ) =>
-  Mailboxes.withSyncLock(inboxId, async () => {
-    assertSyncBudget(deadline);
-    const inbox = value(await Mailboxes.read(inboxId));
-    if (!inbox || !mailboxConnected(inbox))
-      throw new ConflictError("Connect this inbox before synchronizing.");
-    if (inbox.transport === "google-app-password") {
-      if (!inbox.appPassword)
-        throw new ConflictError("Reconnect this mailbox.");
-      const page = await Direct.syncPage({
-        email: inbox.email,
-        appPassword: inbox.appPassword,
-        checkpoint: inbox.mailboxCheckpoint,
-      });
-      if (!page.success) {
-        value(
-          await Mailboxes.updateSync(inbox, {
-            error:
-              "Mailbox synchronization failed. Check the connection before delivery resumes.",
-          }),
-        );
-        throw page.error;
-      }
-      value(
-        await Mailboxes.ingestBatch(
-          inbox,
-          page.data.messages,
-          {
-            mailboxCheckpoint: page.data.checkpoint,
-            syncMode: page.data.complete ? null : "full",
-            lastSyncedAt: page.data.complete ? new Date() : null,
-            error: page.data.complete
-              ? null
-              : "Mailbox history is being reconciled; delivery remains paused.",
-          },
-          deadline,
-        ),
-      );
-      return {
-        complete: page.data.complete,
-        processed: page.data.messages.length,
-      };
-    }
-    const token = value(await Mailboxes.access(inbox));
-    assertSyncBudget(deadline);
-    const profile = value(await Google.getProfile({ accessToken: token }));
-    const mode = inbox.syncMode ?? (inbox.historyId ? "history" : "full");
-    const start =
-      inbox.syncStartHistoryId ?? inbox.historyId ?? profile.historyId;
-    if (!inbox.syncMode)
-      value(
-        await Mailboxes.updateSync(inbox, {
-          syncMode: mode,
-          syncStartHistoryId: start,
-          syncPageToken: null,
-        }),
-      );
-    assertSyncBudget(deadline);
-    const listing =
-      mode === "history"
-        ? await Google.listHistory({
-            accessToken: token,
-            startHistoryId: start,
-            pageToken: inbox.syncPageToken ?? undefined,
-          })
-        : await Google.listMessages({
-            accessToken: token,
-            query: "newer_than:180d",
-            pageToken: inbox.syncPageToken ?? undefined,
-          });
-    if (!listing.success) {
-      if (mode === "history" && listing.error.statusCode === 404) {
-        value(
-          await Mailboxes.updateSync(inbox, {
-            syncMode: "full",
-            syncStartHistoryId: profile.historyId,
-            syncPageToken: null,
-            lastSyncedAt: null,
-            error:
-              "Mailbox history expired; historical reconciliation is in progress.",
-          }),
-        );
-        return { complete: false, processed: 0 };
-      }
-      value(
-        await Mailboxes.updateSync(inbox, { error: listing.error.message }),
-      );
-      throw listing.error;
-    }
-    // Apply every provider reference in bounded batches. Only the final batch may advance its page cursor.
-    const next = listing.data.nextPageToken;
-    const patch: NonNullable<Parameters<typeof Mailboxes.ingestBatch>[2]> = next
-      ? {
-          syncPageToken: next,
-          error: "Mailbox reconciliation is continuing; delivery is paused.",
-        }
-      : mode === "full"
-        ? {
-            historyId: start,
-            syncMode: "history",
-            syncStartHistoryId: start,
-            syncPageToken: null,
-            error: "Historical mail processed; checking subsequent arrivals.",
-          }
-        : {
-            historyId:
-              "historyId" in listing.data
-                ? listing.data.historyId
-                : profile.historyId,
-            syncMode: null,
-            syncPageToken: null,
-            syncStartHistoryId: null,
-            lastSyncedAt: new Date(),
-            error: null,
-          };
-    const offsets = Array.from(
-      { length: Math.max(1, Math.ceil(listing.data.messages.length / 25)) },
-      (_, index) => index * 25,
-    );
-    for (const offset of offsets) {
-      const messages: Awaited<ReturnType<typeof Google.getMessage>>[] = [];
-      for (const reference of listing.data.messages.slice(
-        offset,
-        offset + 25,
-      )) {
+  resultify(async () => {
+    const synced = value(
+      await Mailboxes.withSyncLock(inboxId, async () => {
         assertSyncBudget(deadline);
-        messages.push(
-          await Google.getMessage({
-            accessToken: token,
-            message: reference.id,
-          }),
+        const inbox = value(await Mailboxes.read(inboxId));
+        if (!inbox || !mailboxConnected(inbox))
+          throw new ConflictError("Connect this inbox before synchronizing.");
+        if (inbox.transport === "google-app-password") {
+          if (!inbox.appPassword)
+            throw new ConflictError("Reconnect this mailbox.");
+          const page = await Direct.syncPage({
+            email: inbox.email,
+            appPassword: inbox.appPassword,
+            checkpoint: inbox.mailboxCheckpoint,
+          });
+          if (!page.success) {
+            value(
+              await Mailboxes.updateSync(inbox, {
+                error:
+                  "Mailbox synchronization failed. Check the connection before delivery resumes.",
+              }),
+            );
+            throw page.error;
+          }
+          value(
+            await Mailboxes.ingestBatch(
+              inbox,
+              page.data.messages,
+              {
+                mailboxCheckpoint: page.data.checkpoint,
+                syncMode: page.data.complete ? null : "full",
+                lastSyncedAt: page.data.complete ? new Date() : null,
+                error: page.data.complete
+                  ? null
+                  : "Mailbox history is being reconciled; delivery remains paused.",
+              },
+              deadline,
+            ),
+          );
+          return {
+            complete: page.data.complete,
+            processed: page.data.messages.length,
+          };
+        }
+        const token = value(await Mailboxes.access(inbox));
+        assertSyncBudget(deadline);
+        const profile = value(await Google.getProfile({ accessToken: token }));
+        const mode = inbox.syncMode ?? (inbox.historyId ? "history" : "full");
+        const start =
+          inbox.syncStartHistoryId ?? inbox.historyId ?? profile.historyId;
+        if (!inbox.syncMode)
+          value(
+            await Mailboxes.updateSync(inbox, {
+              syncMode: mode,
+              syncStartHistoryId: start,
+              syncPageToken: null,
+            }),
+          );
+        assertSyncBudget(deadline);
+        const listing =
+          mode === "history"
+            ? await Google.listHistory({
+                accessToken: token,
+                startHistoryId: start,
+                pageToken: inbox.syncPageToken ?? undefined,
+              })
+            : await Google.listMessages({
+                accessToken: token,
+                query: "newer_than:180d",
+                pageToken: inbox.syncPageToken ?? undefined,
+              });
+        if (!listing.success) {
+          if (mode === "history" && listing.error.statusCode === 404) {
+            value(
+              await Mailboxes.updateSync(inbox, {
+                syncMode: "full",
+                syncStartHistoryId: profile.historyId,
+                syncPageToken: null,
+                lastSyncedAt: null,
+                error:
+                  "Mailbox history expired; historical reconciliation is in progress.",
+              }),
+            );
+            return { complete: false, processed: 0 };
+          }
+          value(
+            await Mailboxes.updateSync(inbox, { error: listing.error.message }),
+          );
+          throw listing.error;
+        }
+        // Apply every provider reference in bounded batches. Only the final batch may advance its page cursor.
+        const next = listing.data.nextPageToken;
+        const patch: NonNullable<Parameters<typeof Mailboxes.ingestBatch>[2]> =
+          next
+            ? {
+                syncPageToken: next,
+                error:
+                  "Mailbox reconciliation is continuing; delivery is paused.",
+              }
+            : mode === "full"
+              ? {
+                  historyId: start,
+                  syncMode: "history",
+                  syncStartHistoryId: start,
+                  syncPageToken: null,
+                  error:
+                    "Historical mail processed; checking subsequent arrivals.",
+                }
+              : {
+                  historyId:
+                    "historyId" in listing.data
+                      ? listing.data.historyId
+                      : profile.historyId,
+                  syncMode: null,
+                  syncPageToken: null,
+                  syncStartHistoryId: null,
+                  lastSyncedAt: new Date(),
+                  error: null,
+                };
+        const offsets = Array.from(
+          { length: Math.max(1, Math.ceil(listing.data.messages.length / 25)) },
+          (_, index) => index * 25,
         );
-      }
-      const failed = messages.find((message) => !message.success);
-      if (failed && !failed.success) {
-        value(
-          await Mailboxes.updateSync(inbox, { error: failed.error.message }),
-        );
-        throw failed.error;
-      }
-      value(
-        await Mailboxes.ingestBatch(
-          inbox,
-          messages.map(value),
-          offset === offsets.at(-1) ? patch : undefined,
-          deadline,
-        ),
-      );
-    }
-    return {
-      complete: !next && mode !== "full",
-      processed: listing.data.messages.length,
-    };
+        for (const offset of offsets) {
+          const messages: Awaited<ReturnType<typeof Google.getMessage>>[] = [];
+          for (const reference of listing.data.messages.slice(
+            offset,
+            offset + 25,
+          )) {
+            assertSyncBudget(deadline);
+            messages.push(
+              await Google.getMessage({
+                accessToken: token,
+                message: reference.id,
+              }),
+            );
+          }
+          const failed = messages.find((message) => !message.success);
+          if (failed && !failed.success) {
+            value(
+              await Mailboxes.updateSync(inbox, {
+                error: failed.error.message,
+              }),
+            );
+            throw failed.error;
+          }
+          value(
+            await Mailboxes.ingestBatch(
+              inbox,
+              messages.map(value),
+              offset === offsets.at(-1) ? patch : undefined,
+              deadline,
+            ),
+          );
+        }
+        return {
+          complete: !next && mode !== "full",
+          processed: listing.data.messages.length,
+        };
+      }),
+    );
+    if (!synced.complete) return synced;
+    const activation = await Mailboxes.completePendingActivation(inboxId);
+    return activation.success
+      ? synced
+      : { ...synced, error: activation.error.message };
   });
 
 export const prioritizeInboxSync = (
@@ -261,7 +275,7 @@ export const run = ({ dryRun = true }: { dryRun?: boolean } = {}) =>
       if (!dryRun && Date.now() >= deadline - 20_000) break;
       const inbox = inboxes.find(
         (inbox) =>
-          inbox.email === senderFor(prospect.id, settings) &&
+          inbox.email === senderForProspect(prospect, settings) &&
           (!prospect.inboxId || inbox.id === prospect.inboxId),
       );
       if (inbox && budget.inboxes.has(inbox.id)) continue;

@@ -49,7 +49,7 @@ import {
   type ClaudeConfiguration,
   ClaudeConnection,
 } from "../integrations/_components/claude-connection";
-import { Notice, Submit, useMutation } from "./common";
+import { Multiline, Notice, Submit, useMutation } from "./common";
 import { ProspectEditor } from "./prospects";
 
 type ConnectionStatus = Extract<
@@ -1135,6 +1135,50 @@ const InboxEditor = ({ inbox }: { inbox: Inbox }) => {
           text: t("integrations.mailbox.errors.inactive"),
         }
       : mutation.notice;
+  const config = {
+    fromName: field({
+      shape: "text",
+      validator: z.string().trim().min(1).max(100),
+      label: t("integrations.mailbox.profile.fromName"),
+    }),
+    signature: field({
+      shape: "text",
+      validator: z.string().trim().min(1).max(100),
+      label: t("integrations.mailbox.profile.signature"),
+    }),
+    founderLine: field({
+      shape: "custom",
+      Component: Multiline,
+      validator: z.string().trim().min(1).max(500),
+      label: t("integrations.mailbox.profile.founderLine"),
+    }),
+    productCheckIntro: field({
+      shape: "custom",
+      Component: Multiline,
+      validator: z.string().trim().min(1).max(500),
+      label: t("integrations.mailbox.profile.productCheckIntro"),
+      description: t("integrations.mailbox.profile.help"),
+    }),
+    voiceNotes: field({
+      shape: "custom",
+      Component: Multiline,
+      validator: z.string().trim().max(6000),
+      label: t("integrations.mailbox.profile.voiceNotes"),
+    }),
+    enabled: field({
+      shape: "checkbox",
+      validator: z.boolean(),
+      label: t("common.enabled"),
+    }),
+    dailyCap: field({
+      shape: "number",
+      validator: z.number().int().min(1).max(MAX_DAILY_EMAILS),
+      label: t("integrations.mailbox.maximumDailyCap"),
+      description: t("integrations.mailbox.dailyCapHelp", {
+        maximum: String(MAX_DAILY_EMAILS),
+      }),
+    }),
+  };
   return (
     <div className="border-accent-foreground border-t pt-5">
       <p className="flex items-center gap-2 break-all font-medium text-sm">
@@ -1152,34 +1196,94 @@ const InboxEditor = ({ inbox }: { inbox: Inbox }) => {
               })
             : t("integrations.pending"))}
       </p>
+      {inbox.activationRequestedAt && (
+        <p className="mt-2 text-primary text-sm">
+          {t("integrations.mailbox.profile.activationPending")}
+        </p>
+      )}
       <InferredForm
-        config={{
-          enabled: field({
-            shape: "checkbox",
-            validator: z.boolean(),
-            label: t("common.enabled"),
-          }),
-          dailyCap: field({
-            shape: "number",
-            validator: z.number().int().min(1).max(MAX_DAILY_EMAILS),
-            label: t("integrations.mailbox.maximumDailyCap"),
-            description: t("integrations.mailbox.dailyCapHelp", {
-              maximum: String(MAX_DAILY_EMAILS),
-            }),
-          }),
+        config={config}
+        renderFields={false}
+        key={`${inbox.id}:${inbox.enabled}:${inbox.activationRequestedAt ?? "none"}`}
+        defaultValues={{
+          enabled: inbox.enabled || Boolean(inbox.activationRequestedAt),
+          dailyCap: inbox.dailyCap,
+          fromName:
+            inbox.profile?.fromName ??
+            (inbox.fromName === inbox.email ? "" : inbox.fromName),
+          signature: inbox.profile?.signature ?? inbox.signer,
+          founderLine: inbox.profile?.founderLine ?? "",
+          productCheckIntro: inbox.profile?.productCheckIntro ?? "",
+          voiceNotes: inbox.profile?.voiceNotes ?? "",
         }}
-        defaultValues={{ enabled: inbox.enabled, dailyCap: inbox.dailyCap }}
-        onSubmit={(values) =>
+        onSubmit={({ enabled, dailyCap, ...profile }) =>
           mutation.run(() =>
-            Connections.configureInbox({ inboxId: inbox.id, ...values }),
+            Connections.configureInbox({
+              inboxId: inbox.id,
+              enabled,
+              dailyCap,
+              profile,
+            }),
           )
         }
         className="mt-5 max-w-lg space-y-4"
       >
+        <Accordion defaultValue={inbox.profile ? [] : ["sender-profile"]}>
+          <AccordionItem value="sender-profile" className="border-b-0">
+            <AccordionTrigger>
+              {t("integrations.mailbox.profile.title")}
+            </AccordionTrigger>
+            <AccordionPanel className="space-y-4 pb-4">
+              {(
+                [
+                  "fromName",
+                  "signature",
+                  "founderLine",
+                  "productCheckIntro",
+                  "voiceNotes",
+                ] as const
+              ).map((name) => (
+                <InferredFormField key={name} name={name} {...config[name]} />
+              ))}
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
+        <InferredFormField
+          name="enabled"
+          {...config.enabled}
+          className="w-full"
+        />
+        <InferredFormField
+          name="dailyCap"
+          {...config.dailyCap}
+          className="w-full"
+        />
         <div className="flex flex-wrap gap-4">
           <Submit pending={mutation.pending}>
             {t("integrations.gmail.action.quaternary")}
           </Submit>
+          {(inbox.enabled || inbox.activationRequestedAt) && (
+            <Button
+              type="button"
+              variant="soft"
+              disabled={mutation.pending}
+              onClick={() =>
+                mutation.run(() =>
+                  Connections.configureInbox({
+                    inboxId: inbox.id,
+                    enabled: false,
+                    dailyCap: inbox.dailyCap,
+                  }),
+                )
+              }
+            >
+              {t(
+                inbox.activationRequestedAt
+                  ? "integrations.mailbox.profile.cancelActivation"
+                  : "integrations.mailbox.profile.pause",
+              )}
+            </Button>
+          )}
           <Button
             type="button"
             variant="soft"

@@ -4,7 +4,12 @@ import { createHash, randomUUID } from "node:crypto";
 import { type Result, resultify } from "@zenncore/utils";
 import { and, eq, inArray, or, sql } from "drizzle-orm";
 import { z } from "zod";
-import { mailboxConnected, normalizeDomain } from "@/lib/outbound";
+import {
+  mailboxConnected,
+  normalizeDomain,
+  senderIdentity,
+  senderProfileSchema,
+} from "@/lib/outbound";
 import { conversationSendSchema } from "@/lib/outbound-conversations";
 import { schema, type TransactionScope } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
@@ -115,6 +120,7 @@ const manifestSchema = z.object({
   providerThreadId: z.string().min(1),
   from: z.string().min(1),
   fromName: z.string(),
+  senderIdentity: senderProfileSchema.optional(),
   subject: z.string(),
   body: z.string().min(1).max(10000),
   revision: z.number().int(),
@@ -138,6 +144,7 @@ const allowed = async (
   const thread = await Conversations.requireConversation(id, transaction);
   if (thread.revision !== revision)
     throw new ConflictError("conversation-changed");
+  if (thread.archivedAt) throw new ConflictError("conversation-archived");
   if (["notInterested", "closed"].includes(thread.stage))
     throw new ConflictError("conversation-closed");
   const prospect = value(
@@ -222,8 +229,10 @@ export const send = (actor: string, input: unknown) =>
             inbox.syncMode ||
             !inbox.lastSyncedAt ||
             Date.now() - inbox.lastSyncedAt.getTime() > 600_000 ||
-            inbox.fromName !== policy.settings.fromName ||
-            inbox.signer !== policy.settings.signature)
+            inbox.fromName !==
+              senderIdentity(inbox.email, policy.settings)?.fromName ||
+            inbox.signer !==
+              senderIdentity(inbox.email, policy.settings)?.signature)
         )
           throw new ConflictError("conversation-inbox-unavailable");
         if (
@@ -267,6 +276,12 @@ export const send = (actor: string, input: unknown) =>
           providerThreadId: thread.providerThreadId,
           from: inbox?.email ?? account?.providerUserId ?? "",
           fromName: inbox?.fromName ?? account?.name ?? "",
+          ...(inbox
+            ? {
+                senderIdentity:
+                  senderIdentity(inbox.email, policy.settings) ?? undefined,
+              }
+            : {}),
           subject,
           body: thread.draftBody,
           revision: thread.revision,
@@ -380,6 +395,13 @@ export const send = (actor: string, input: unknown) =>
               inbox.connectionVersion !== manifest.connectionVersion ||
               inbox.email !== manifest.from ||
               inbox.fromName !== manifest.fromName ||
+              (manifest.senderIdentity &&
+                JSON.stringify(
+                  senderIdentity(
+                    inbox.email,
+                    (await Store.policy(transaction)).settings,
+                  ),
+                ) !== JSON.stringify(manifest.senderIdentity)) ||
               inbox.error ||
               inbox.syncMode
             )

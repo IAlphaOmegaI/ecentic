@@ -11,14 +11,19 @@ import {
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { useRouter } from "@/i18n/navigation";
-export type ConversationView = "all" | "needsReply" | "sent" | "scheduled";
+export type ConversationView =
+  | "all"
+  | "needsReply"
+  | "sent"
+  | "scheduled"
+  | "archived";
 export const ConversationViews = ({ view }: { view: ConversationView }) => {
   const t = useTranslations("outbound.conversations");
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const items = (["all", "needsReply", "sent", "scheduled"] as const).map(
-    (value) => ({ value, label: t(`views.${value}`) }),
-  );
+  const items = (
+    ["all", "needsReply", "sent", "scheduled", "archived"] as const
+  ).map((value) => ({ value, label: t(`views.${value}`) }));
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 border-accent-foreground border-b px-4 py-4 sm:px-6">
       <Select
@@ -30,7 +35,9 @@ export const ConversationViews = ({ view }: { view: ConversationView }) => {
             router.push(
               selected === "needsReply"
                 ? "/replies?needsReply=1"
-                : selected === "sent" || selected === "scheduled"
+                : selected === "sent" ||
+                    selected === "scheduled" ||
+                    selected === "archived"
                   ? `/replies?view=${selected}`
                   : "/replies",
               { scroll: false },

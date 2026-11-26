@@ -10,6 +10,10 @@ import {
   settledConversationSend,
   unconfirmedConversationSend,
 } from "../outbound-conversation-editor";
+import {
+  conversationHref,
+  parseConversationQuery,
+} from "../outbound-conversation-view";
 import type { ConversationDetail } from "../outbound-conversations";
 
 const detail = {
@@ -213,3 +217,31 @@ test("real conversation controls save, retain failed edits and survive refreshed
   expect(status).toBe(0);
   expect(output).toContain("Conversation editor DOM contracts passed");
 }, 30000);
+
+test("archive state changes preserve saved content and refresh into the correct visibility", () => {
+  const state = conversationEditorState(detail);
+  const next = applyConversationSave(
+    state,
+    { id: state.id, revision: 3 },
+    { archivedAt: "2026-11-26T14:00:00.000Z" },
+  );
+  expect(next).toMatchObject({
+    archivedAt: "2026-11-26T14:00:00.000Z",
+    savedBody: state.savedBody,
+    savedStage: state.savedStage,
+  });
+  expect(conversationErrorKey({ message: "conversation-archived" })).toBe(
+    "archived",
+  );
+});
+
+test("archived navigation preserves archive mode across searches and pagination", () => {
+  const query = parseConversationQuery({
+    view: "archived",
+    q: "Saved",
+    page: "2",
+  });
+  expect(query.archived).toBe(true);
+  expect(conversationHref(query)).toBe("/replies?view=archived&q=Saved&page=2");
+  expect(parseConversationQuery({}).archived).toBe(false);
+});

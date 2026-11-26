@@ -186,6 +186,485 @@ describe.skipIf(!endpoint)(
       fixture.threadId = value(await ingest()).id;
     });
     afterEach(() => mock.restore());
+    test("the additive archive migration preserves existing rows and is safe to apply twice", async () => {
+      const { db } = active();
+      const migration = await Bun.file(
+        new URL(
+          "../../../../../apps/web/drizzle/20261126160000_outbound_conversation_archive/migration.sql",
+          import.meta.url,
+        ),
+      ).text();
+      await db.transaction(async (transaction) => {
+        await transaction.execute(
+          sql`create temporary table outbound_conversation (id text primary key) on commit drop`,
+        );
+        await transaction.execute(
+          sql`insert into outbound_conversation (id) values ('retained-thread')`,
+        );
+        await transaction.execute(sql.raw(migration));
+        await transaction.execute(sql.raw(migration));
+        const rows = await transaction.execute(
+          sql`select id, archived_at from outbound_conversation`,
+        );
+        expect(rows).toHaveLength(1);
+        expect(rows[0]).toMatchObject({
+          id: "retained-thread",
+          archived_at: null,
+        });
+      });
+    });
+    test("archive hides the thread, pauses both sequences and preserves its stage, drafts and complete history", async () => {
+      const { db, schema, conversations, actions, store } = active();
+      await save("Keep this staff reply intact.");
+      const before = value(await conversations.get({ id: fixture.threadId }));
+      const saved = value(
+        await actions.archiveConversation(Environment.CLIENT, {
+          id: fixture.threadId,
+          expectedRevision: before.thread.revision,
+          archived: true,
+        }),
+      );
+      const after = value(await conversations.get({ id: fixture.threadId }));
+      expect(saved.revision).toBe(before.thread.revision + 1);
+      expect(after.thread.archivedAt).toBe(saved.archivedAt);
+      expect(after.thread.stage).toBe(before.thread.stage);
+      expect(after.thread.needsReply).toBe(false);
+      expect(after.messages).toEqual(before.messages);
+      expect(after.draft).toEqual(before.draft);
+      expect(value(await conversations.list()).total).toBe(0);
+      expect(value(await conversations.list({ needsReply: true })).total).toBe(
+        0,
+      );
+      const archived = value(await conversations.list({ archived: true }));
+      expect(archived.total).toBe(1);
+      expect(archived.items[0]?.threadId).toBe(fixture.threadId);
+      expect(value(await conversations.summary()).needsReply).toBe(0);
+      const [prospect] = await db.select().from(schema.outboundProspect);
+      expect(prospect).toMatchObject({
+        status: "held",
+        nextSendAt: null,
+        approvedAt: null,
+        linkedinStatus: "closed",
+        linkedinNextActionAt: null,
+      });
+      if (!prospect) throw new Error("Missing prospect");
+      await expect(
+        db.transaction((transaction) =>
+          store.assertCampaignActive(transaction, prospect),
+        ),
+      ).rejects.toThrow("conversation-archived");
+      const events = await db
+        .select()
+        .from(schema.outboundEvent)
+        .where(eq(schema.outboundEvent.kind, "conversationArchived"));
+      expect(events).toHaveLength(1);
+      expect(events[0]?.actor).toBe("stage-staff-fixture");
+      const repeated = value(
+        await conversations.setArchived("fixture", {
+          id: fixture.threadId,
+          expectedRevision: saved.revision,
+          archived: true,
+        }),
+      );
+      expect(repeated.revision).toBe(saved.revision);
+    });
+    test("archive actions reject stale revisions and unauthorized callers before changing any thread", async () => {
+      const { actions, conversations } = active();
+      const before = value(await conversations.get({ id: fixture.threadId }));
+      const input = {
+        id: fixture.threadId,
+        archived: true,
+        expectedRevision: before.thread.revision,
+      };
+      const stale = await actions.archiveConversation(Environment.CLIENT, {
+        ...input,
+        expectedRevision: input.expectedRevision - 1,
+      });
+      expect(stale).toMatchObject({
+        success: false,
+        error: { message: "conversation-changed" },
+      });
+      session.authenticated = false;
+      expect(
+        await actions.archiveConversation(Environment.CLIENT, input),
+      ).toMatchObject({
+        success: false,
+        error: { name: "unauthenticated-error" },
+      });
+      Object.assign(session, { authenticated: true, role: "user" });
+      expect(
+        await actions.archiveConversation(Environment.SERVER, input),
+      ).toMatchObject({
+        success: false,
+        error: { name: "unauthorized-error" },
+      });
+      expect(value(await conversations.get({ id: fixture.threadId }))).toEqual(
+        before,
+      );
+    });
+    test("archived replies cannot be edited, generated or sent and restoring never restarts cold outreach", async () => {
+      const { conversations, sending, direct, ai, db, schema } = active();
+      const draft = await save();
+      const saved = value(
+        await conversations.setArchived("fixture", {
+          id: fixture.threadId,
+          expectedRevision: draft.revision,
+          archived: true,
+        }),
+      );
+      const send = spyOn(direct, "send");
+      const generate = spyOn(ai, "generate");
+      const input = { id: fixture.threadId, expectedRevision: saved.revision };
+      for (const result of [
+        await conversations.updateStage("fixture", {
+          ...input,
+          stage: "interested",
+        }),
+        await conversations.saveDraft("fixture", { ...input, body: "Changed" }),
+        await conversations.generateReply("fixture", {
+          ...input,
+          requestId: crypto.randomUUID(),
+        }),
+        await sending.send("fixture", input),
+      ])
+        expect(result).toMatchObject({
+          success: false,
+          error: { message: "conversation-archived" },
+        });
+      expect(send).not.toHaveBeenCalled();
+      expect(generate).not.toHaveBeenCalled();
+      value(
+        await conversations.setArchived("fixture", {
+          ...input,
+          archived: false,
+        }),
+      );
+      expect(value(await conversations.list()).total).toBe(1);
+      expect(value(await conversations.list({ archived: true })).total).toBe(0);
+      const [prospect] = await db.select().from(schema.outboundProspect);
+      expect(prospect).toMatchObject({
+        status: "held",
+        nextSendAt: null,
+        approvedAt: null,
+        linkedinStatus: "closed",
+      });
+    });
+    test("archive between reply reservation and dispatch prevents transport without rewriting the reserved message", async () => {
+      const { conversations, sending, mailboxes, direct, db, schema } =
+        active();
+      const draft = await save(
+        "A reviewed reply that must not send after archive.",
+      );
+      await db
+        .update(schema.outboundInbox)
+        .set({ transport: "gmail-oauth", refreshToken: "fixture-refresh" })
+        .where(eq(schema.outboundInbox.id, fixture.inboxId));
+      const google = await import("@/server/utils/outbound/google");
+      const googleSend = spyOn(google, "sendMessage");
+      const directSend = spyOn(direct, "send");
+      spyOn(mailboxes, "access").mockImplementation(async () => {
+        value(
+          await conversations.setArchived("fixture", {
+            id: fixture.threadId,
+            expectedRevision: draft.revision,
+            archived: true,
+          }),
+        );
+        return { success: true, data: "fixture-access" };
+      });
+      const result = value(
+        await sending.send("fixture", {
+          id: fixture.threadId,
+          expectedRevision: draft.revision,
+        }),
+      );
+      expect(result.status).toBe("failed");
+      expect(googleSend).not.toHaveBeenCalled();
+      expect(directSend).not.toHaveBeenCalled();
+      const detail = value(await conversations.get({ id: fixture.threadId }));
+      expect(detail.sendAttempts[0]).toMatchObject({
+        status: "failed",
+        body: "A reviewed reply that must not send after archive.",
+      });
+      expect(detail.thread.archivedAt).not.toBeNull();
+    });
+    test("archive while generation is running records the response without overwriting the retained draft", async () => {
+      const { conversations, ai } = active();
+      const draft = await save("Keep this original reply.");
+      spyOn(ai, "generate").mockImplementation(async (input) => {
+        value(
+          await conversations.setArchived("fixture", {
+            id: fixture.threadId,
+            expectedRevision: draft.revision,
+            archived: true,
+          }),
+        );
+        return input.output.parse({
+          body: "A model reply that arrived too late.",
+        });
+      });
+      const result = value(
+        await conversations.generateReply("fixture", {
+          id: fixture.threadId,
+          expectedRevision: draft.revision,
+          requestId: crypto.randomUUID(),
+        }),
+      );
+      expect(result).toMatchObject({ applied: false });
+      const detail = value(await conversations.get({ id: fixture.threadId }));
+      expect(detail.draft.body).toBe("Keep this original reply.");
+      expect(detail.thread.archivedAt).not.toBeNull();
+    });
+    test.each(["replied", "optedOut", "bounced"] as const)(
+      "archive and restore preserve the existing %s stop",
+      async (status) => {
+        const { db, schema, conversations } = active();
+        await db
+          .update(schema.outboundProspect)
+          .set({
+            status,
+            holdReason: "Original stop",
+            linkedinStatus: "replied",
+          })
+          .where(eq(schema.outboundProspect.id, fixture.prospectId));
+        const before = value(await conversations.get({ id: fixture.threadId }));
+        const saved = value(
+          await conversations.setArchived("fixture", {
+            id: fixture.threadId,
+            expectedRevision: before.thread.revision,
+            archived: true,
+          }),
+        );
+        value(
+          await conversations.setArchived("fixture", {
+            id: fixture.threadId,
+            expectedRevision: saved.revision,
+            archived: false,
+          }),
+        );
+        const [prospect] = await db.select().from(schema.outboundProspect);
+        expect(prospect).toMatchObject({
+          status,
+          holdReason: "Original stop",
+          linkedinStatus: "replied",
+          nextSendAt: null,
+        });
+        if (status !== "replied")
+          expect(
+            value(await conversations.get({ id: fixture.threadId })).thread
+              .needsReply,
+          ).toBe(false);
+      },
+    );
+    test("only a genuinely newer human reply resurfaces an archived thread without restarting outreach", async () => {
+      const { conversations, db, schema } = active();
+      const before = value(await conversations.get({ id: fixture.threadId }));
+      const closed = value(
+        await conversations.updateStage("fixture", {
+          id: fixture.threadId,
+          expectedRevision: before.thread.revision,
+          stage: "closed",
+        }),
+      );
+      const saved = value(
+        await conversations.setArchived("fixture", {
+          id: fixture.threadId,
+          expectedRevision: closed.revision,
+          archived: true,
+        }),
+      );
+      if (!saved.archivedAt) throw new Error("Missing archive timestamp");
+      value(
+        await ingest(
+          "older_human",
+          "Older reply",
+          new Date(Date.parse(saved.archivedAt) - 1000),
+          "reply",
+        ),
+      );
+      expect(value(await conversations.list()).total).toBe(0);
+      value(
+        await ingest(
+          "out_of_office",
+          "I am away",
+          new Date(Date.parse(saved.archivedAt) + 1000),
+          "ooo",
+        ),
+      );
+      expect(value(await conversations.list()).total).toBe(0);
+      value(
+        await ingest(
+          "new_human",
+          "Can you explain this?",
+          new Date(Date.parse(saved.archivedAt) + 2000),
+          "reply",
+        ),
+      );
+      const after = value(await conversations.get({ id: fixture.threadId }));
+      expect(after.thread).toMatchObject({
+        archivedAt: null,
+        needsReply: true,
+        stage: "closed",
+      });
+      expect(value(await conversations.list({ needsReply: true })).total).toBe(
+        1,
+      );
+      const [prospect] = await db.select().from(schema.outboundProspect);
+      expect(prospect).toMatchObject({
+        status: "held",
+        nextSendAt: null,
+        approvedAt: null,
+      });
+    });
+    test.each(["optedOut", "bounced", "notInterested"] as const)(
+      "a newer classified reply does not reopen the archived %s stop",
+      async (stop) => {
+        const { conversations, db, schema } = active();
+        if (stop === "notInterested")
+          await db
+            .update(schema.outboundConversation)
+            .set({ stage: "notInterested" })
+            .where(eq(schema.outboundConversation.id, fixture.threadId));
+        else
+          await db
+            .update(schema.outboundProspect)
+            .set({ status: stop })
+            .where(eq(schema.outboundProspect.id, fixture.prospectId));
+        const before = value(await conversations.get({ id: fixture.threadId }));
+        value(
+          await conversations.setArchived("fixture", {
+            id: fixture.threadId,
+            expectedRevision: before.thread.revision,
+            archived: true,
+          }),
+        );
+        value(
+          await ingest(
+            "late_suppressed_reply",
+            "A classified reply",
+            new Date(Date.now() + 1000),
+            "reply",
+          ),
+        );
+        const after = value(await conversations.get({ id: fixture.threadId }));
+        expect(after.thread.archivedAt).not.toBeNull();
+        expect(after.thread.needsReply).toBe(false);
+        expect(value(await conversations.list()).total).toBe(0);
+      },
+    );
+    test.each(["email", "domain"] as const)(
+      "a saved %s suppression also prevents archived reply resurfacing",
+      async (scope) => {
+        const { conversations, db, schema } = active();
+        const before = value(await conversations.get({ id: fixture.threadId }));
+        value(
+          await conversations.setArchived("fixture", {
+            id: fixture.threadId,
+            expectedRevision: before.thread.revision,
+            archived: true,
+          }),
+        );
+        await db.insert(schema.outboundSuppression).values({
+          scope,
+          value: scope === "email" ? "jane@samplegoods.com" : "samplegoods.com",
+          reason: "Existing suppression",
+          createdBy: "fixture",
+        });
+        value(
+          await ingest(
+            "suppressed_human_reply",
+            "A classified reply",
+            new Date(Date.now() + 1000),
+            "reply",
+          ),
+        );
+        const after = value(await conversations.get({ id: fixture.threadId }));
+        expect(after.thread.archivedAt).not.toBeNull();
+        expect(after.thread.needsReply).toBe(false);
+        expect(value(await conversations.list()).total).toBe(0);
+      },
+    );
+    test.each(["optout", "bounce"] as const)(
+      "an archived %s event preserves suppression and stays out of the active inbox",
+      async (outcome) => {
+        const { conversations } = active();
+        const before = value(await conversations.get({ id: fixture.threadId }));
+        value(
+          await conversations.setArchived("fixture", {
+            id: fixture.threadId,
+            expectedRevision: before.thread.revision,
+            archived: true,
+          }),
+        );
+        value(
+          await ingest(
+            "stopped_event",
+            "Stop",
+            new Date(Date.now() + 1000),
+            outcome,
+          ),
+        );
+        const after = value(await conversations.get({ id: fixture.threadId }));
+        expect(after.thread.archivedAt).not.toBeNull();
+        expect(after.thread.needsReply).toBe(false);
+        expect(after.thread.stage).toBe(
+          outcome === "optout" ? "notInterested" : "closed",
+        );
+        expect(value(await conversations.list()).total).toBe(0);
+      },
+    );
+    test("archived and active channels stay in separate lists with the correct selected thread", async () => {
+      const { conversations } = active();
+      const email = value(await conversations.get({ id: fixture.threadId }));
+      value(
+        await conversations.setArchived("fixture", {
+          id: fixture.threadId,
+          expectedRevision: email.thread.revision,
+          archived: true,
+        }),
+      );
+      const other = value(
+        await conversations.ingest({
+          prospectId: fixture.prospectId,
+          channel: "linkedin",
+          accountId: "fixture-linkedin",
+          accountLabel: "LinkedIn",
+          providerThreadId: "linkedin-thread",
+          counterpart: "fixture-user",
+          message: {
+            providerMessageId: "linkedin-reply",
+            direction: "inbound",
+            bodyText: "A second conversation",
+            from: "fixture-user",
+            to: "fixture-account",
+            sentAt: new Date(),
+          },
+        }),
+      );
+      expect(value(await conversations.list()).items[0]).toMatchObject({
+        threadId: other.id,
+        threadCount: 1,
+        channels: ["linkedin"],
+      });
+      expect(
+        value(await conversations.list({ archived: true })).items[0],
+      ).toMatchObject({
+        threadId: fixture.threadId,
+        threadCount: 1,
+        channels: ["email"],
+      });
+      expect(
+        value(await conversations.get({ id: fixture.prospectId })).thread.id,
+      ).toBe(other.id);
+      expect(
+        value(
+          await conversations.get({
+            id: fixture.prospectId,
+            threadId: fixture.threadId,
+          }),
+        ).thread.id,
+      ).toBe(fixture.threadId);
+    });
     test("stores actual full bodies and deduplicates provider messages before changing revision", async () => {
       const { conversations } = active();
       const body = "Detailed answer. ".repeat(300);

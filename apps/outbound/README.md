@@ -22,6 +22,22 @@ command creates a verified staff identity and a hashed credential together,
 rejects existing addresses, and does not send email. Staff identities are shared
 with ecentic; the command does not enable public registration.
 
+## Conversation archive
+
+Archive is separate from the conversation stage. Archiving keeps the complete
+message history and draft, removes that thread from All and Needs reply, and
+pauses its prospect's automatic email and LinkedIn outreach. Archived conversations
+remain available in the Archived view. Restore changes visibility only: it never
+restarts outreach or clears a reply, bounce or opt-out stop. A newer classified
+human reply resurfaces an archived thread; historic imports, automated replies,
+out-of-office notices, bounces and opt-outs do not.
+
+The archive action checks the selected thread's revision and records an audit
+event. Apply the additive `20261126160000_outbound_conversation_archive` migration
+before deploying code that reads `archived_at`. The isolated smoke database builds
+from the updated schema; conversation tests also check the migration twice against
+an existing temporary table to verify preservation and idempotence.
+
 ## Build and deploy
 
 ```sh

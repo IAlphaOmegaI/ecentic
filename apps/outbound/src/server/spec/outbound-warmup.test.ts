@@ -70,6 +70,34 @@ describe("sender readiness evidence", () => {
     );
     expect(checked.success && checked.data.dkim.state).toBe("unknown");
   });
+  test("DKIM joins strings within one TXT record without joining separate records", async () => {
+    const encoded = generateKeyPairSync("rsa", { modulusLength: 2048 })
+      .publicKey.export({ format: "der", type: "spki" })
+      .toString("base64");
+    const record = `v=DKIM1; k=rsa; p=${encoded}`;
+    const chunks = [record.slice(0, 255), record.slice(255)];
+    const base = resolver(records);
+    const check = (answers: string[][]) =>
+      checkSendingDomain(
+        { domain: "brand.com", dkimSelectors: ["google"] },
+        {
+          ...base,
+          resolveTxt: (hostname) =>
+            hostname === "google._domainkey.brand.com"
+              ? Promise.resolve(answers)
+              : base.resolveTxt(hostname),
+        },
+      );
+    const joined = await check([chunks]);
+    expect(joined.success && joined.data.dkim).toMatchObject({
+      state: "present",
+      records: [record],
+    });
+    const separate = await check(chunks.map((chunk) => [chunk]));
+    expect(separate.success && separate.data.dkim.state).toBe("invalid");
+    const duplicate = await check([chunks, chunks]);
+    expect(duplicate.success && duplicate.data.dkim.state).toBe("invalid");
+  });
   test("multiple SPF records and permissive all are invalid", async () => {
     const multiple = await checkSendingDomain(
       { domain: "brand.com" },
@@ -168,6 +196,9 @@ describe("sender readiness evidence", () => {
       "host.internal",
       "https://brand.com",
       "brand.com/path",
+      "brand.com\\path",
+      "brand.com?query=value",
+      "brand.com#fragment",
     ])
       expect(
         (await checkSendingDomain({ domain }, resolver(records))).success,

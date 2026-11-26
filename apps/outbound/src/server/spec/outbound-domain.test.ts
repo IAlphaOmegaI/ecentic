@@ -11,10 +11,13 @@ import {
   prospectSchema,
   renderMessages,
   senderFor,
+  senderIdentity,
   senderPool,
+  settingsForSender,
   templateIssues,
 } from "@/lib/outbound";
 import { sendWindowClosesAt } from "@/lib/outbound-scheduling";
+import { buildDraftPrompt } from "@/lib/outbound-writing";
 import {
   legacyHistory,
   mapLegacyProspect,
@@ -242,6 +245,55 @@ describe("outbound concrete drafts", () => {
       senderFor("prospect-17", settings),
     );
     expect(senderPool(defaultPlaybook)).toEqual([defaultPlaybook.fromEmail]);
+  });
+  test("secondary sender rendering and prompts cannot inherit the primary biography", () => {
+    const identity = {
+      email: "mario@joinecentic.com",
+      fromName: "Mario",
+      signature: "Mario",
+      founderLine: "I'm Mario from ecentic.",
+      productCheckIntro:
+        "I'm Mario from ecentic. We help stores with product details.",
+      voiceNotes: "Keep the wording friendly.",
+    };
+    const policy = {
+      ...settings,
+      fromName: "Iseld",
+      signature: "Iseld",
+      voiceNotes: "Write as Iseld, a former Shopify employee.",
+      founderLine: "I'm Iseld, formerly with Shopify Plus.",
+      productCheckIntro: "I'm Iseld, formerly with Shopify Plus.",
+      senderProfiles: [identity],
+    };
+    const contact = { ...prospect, assignedSenderEmail: identity.email };
+    const messages = renderMessages(contact, policy);
+    expect(messages[0]?.body).toContain(identity.founderLine);
+    expect(messages[0]?.body.endsWith("Mario")).toBe(true);
+    expect(JSON.stringify(messages)).not.toMatch(/Iseld|Shopify Plus/);
+    const selected = settingsForSender(policy, identity.email);
+    const prompt = JSON.stringify(buildDraftPrompt(contact, selected));
+    expect(prompt).toContain("actual author is Mario");
+    expect(prompt).not.toContain("Write as Iseld");
+    const wrong = messages.map((message) =>
+      message.step === 1
+        ? {
+            ...message,
+            body: message.body.replace(
+              identity.founderLine,
+              policy.founderLine,
+            ),
+          }
+        : message,
+    );
+    expect(
+      lintMessages(wrong, policy, contact).some(
+        (issue) => issue.code === "templateControlsChanged",
+      ),
+    ).toBe(true);
+    expect(senderIdentity("unknown@joinecentic.com", policy)).toBeNull();
+    expect(
+      settingsForSender(policy, "unknown@joinecentic.com").productCheckIntro,
+    ).toBe("");
   });
   test("review and send use identical footer and quoted first-message text", () => {
     const messages = renderMessages(prospect, settings);

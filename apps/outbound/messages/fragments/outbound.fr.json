@@ -873,7 +873,19 @@
           "inactive": "Cette boîte mail est inactive dans le guide. Elle peut synchroniser les réponses. Déplacez-la vers Boîtes d’envoi avant d’activer l’envoi."
         },
         "maximumDailyCap": "Maximum visé par boîte et par jour",
-        "dailyCapHelp": "Jusqu’à {maximum} premiers e-mails et relances par boîte et par jour. Le Playbook contrôle la progression ; les rebonds réduisent la capacité."
+        "dailyCapHelp": "Jusqu’à {maximum} premiers e-mails et relances par boîte et par jour. Le Playbook contrôle la progression ; les rebonds réduisent la capacité.",
+        "profile": {
+          "fromName": "Nom de l’expéditeur",
+          "signature": "Signature",
+          "founderLine": "Présentation générale",
+          "productCheckIntro": "Présentation pour la recherche produit",
+          "voiceNotes": "Consignes de style",
+          "help": "Indiquez uniquement le rôle et l’expérience de cette personne. Ce profil remplace la présentation et le style de l’expéditeur principal pour cette boîte.",
+          "pause": "Mettre la boîte en pause",
+          "title": "Profil de l’expéditeur",
+          "activationPending": "Activation demandée. Cette boîte démarrera automatiquement une fois son historique synchronisé et les vérifications réussies.",
+          "cancelActivation": "Annuler l’activation"
+        }
       },
       "liveResearch": {
         "title": "Recherche d’achat en direct",
@@ -962,7 +974,9 @@
       "platformHeld": "Sélectionnez Shopify ou WooCommerce pour cette campagne de prospection à froid.",
       "shoppingResearchRequired": "Enregistrez un constat étayé sur le parcours d’achat avant de rédiger ou d’approuver ce message.",
       "automaticReviewFailed": "Les vérifications automatiques n’ont pas pu approuver ce brouillon. Vérifiez les preuves et le message, puis enregistrez vos corrections.",
-      "automaticReviewUncertain": "Le résultat d’une précédente demande de brouillon doit être vérifié avant de reprendre la validation automatique."
+      "automaticReviewUncertain": "Le résultat d’une précédente demande de brouillon doit être vérifié avant de reprendre la validation automatique.",
+      "senderIdentityMissing": "Enregistrez le nom, la signature et les présentations propres à cette boîte avant de rédiger.",
+      "senderProfileChanged": "Le profil de l’expéditeur a changé. Vérifiez ce brouillon non envoyé avant de l’approuver."
     },
     "preparation": {
       "action": {
@@ -1819,7 +1833,8 @@
         "connection": "Le compte d’envoi est indisponible ou doit synchroniser ses réponses. Consultez Intégrations.",
         "controls": "La suggestion n’a pas respecté les règles de réponse enregistrées. Rédigez et relisez vous-même la réponse.",
         "generic": "Cette action n’a pas pu être effectuée. Actualisez la conversation et réessayez.",
-        "authentication": "Votre session a expiré. Connectez-vous dans le nouvel onglet, puis réessayez ici. Vos modifications sont conservées."
+        "authentication": "Votre session a expiré. Connectez-vous dans le nouvel onglet, puis réessayez ici. Vos modifications sont conservées.",
+        "archived": "Restaurez cette conversation avant de modifier ou d’envoyer une réponse."
       },
       "newestFirst": "Messages les plus récents en premier",
       "direction": {
@@ -1843,7 +1858,8 @@
         "all": "Toute l’activité",
         "needsReply": "Réponse attendue",
         "sent": "Envoyés",
-        "scheduled": "Planifiés"
+        "scheduled": "Planifiés",
+        "archived": "Archivées"
       },
       "replyAccount": "Répondre depuis",
       "activity": {
@@ -1868,6 +1884,14 @@
         "sending": "Envoi en cours…",
         "signIn": "Se reconnecter",
         "followUpsPaused": "Enregistrer cette étape met en pause la prospection automatique par email et LinkedIn pour cette personne. Rouvrir la conversation ne la relance pas."
+      },
+      "archive": {
+        "action": "Archiver la conversation",
+        "restore": "Restaurer la conversation",
+        "help": "L’archivage conserve l’historique et arrête les messages automatiques destinés à cette personne.",
+        "archivedHelp": "Les conversations archivées conservent leur historique. La restauration les rend de nouveau visibles ; les messages automatiques restent suspendus.",
+        "saved": "Conversation archivée.",
+        "restored": "Conversation restaurée. Les messages automatiques restent suspendus."
       }
     }
   }

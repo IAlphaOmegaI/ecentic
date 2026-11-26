@@ -7,6 +7,7 @@ import {
   normalizeDomain,
   prospectSchema,
   recipientMailHostAllowed,
+  settingsForProspect,
   splitList,
 } from "@/lib/outbound";
 import {
@@ -1047,7 +1048,12 @@ export const execute = async (
       const qualification = qualificationSchema.parse(state["qualification"]);
       if (productCategoryCorrection(qualification))
         return { stage: "draft", normalizeProductCategory: true };
-      const draft = value(await Draft.generateDraft(row.details, playbook));
+      const draft = value(
+        await Draft.generateDraft(
+          row.details,
+          settingsForProspect(row, playbook),
+        ),
+      );
       return draft.issues.length
         ? { stage: "draft", reason: "draft-held", output: { draft } }
         : { stage: "applyDraft", output: { draft } };

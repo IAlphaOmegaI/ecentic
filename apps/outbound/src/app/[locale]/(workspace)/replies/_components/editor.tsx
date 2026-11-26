@@ -36,7 +36,7 @@ export const ConversationEditor = ({
   const router = useRouter();
   const [state, setState] = useState(() => conversationEditorState(detail));
   const [operation, setOperation] = useState<
-    "stage" | "draft" | "send" | "generate" | null
+    "stage" | "draft" | "send" | "generate" | "archive" | null
   >(null);
   const [refreshing, startRefresh] = useTransition();
   const dirty = conversationEditorDirty(state);
@@ -84,8 +84,14 @@ export const ConversationEditor = ({
       attempt.status === "starting" || attempt.status === "uncertain",
   );
   const closed = ["notInterested", "closed"].includes(detail.thread.stage);
+  const archived = Boolean(state.archivedAt);
   const locked =
-    pending || state.stale || unresolved || closed || Boolean(unconfirmedSend);
+    pending ||
+    state.stale ||
+    unresolved ||
+    closed ||
+    archived ||
+    Boolean(unconfirmedSend);
   useEffect(() => {
     try {
       setRequestId(sessionStorage.getItem(requestStorageKey));
@@ -100,12 +106,13 @@ export const ConversationEditor = ({
       error?: unknown;
     }>,
     onSuccess: (data: Data) => void,
-    kind: "stage" | "draft" | "send" | "generate",
+    kind: "stage" | "draft" | "send" | "generate" | "archive",
   ) => {
     if (running.current || pending || state.stale) return;
     running.current = true;
     setOperation(kind);
-    const report = kind === "stage" ? setStageNotice : setNotice;
+    const report =
+      kind === "stage" || kind === "archive" ? setStageNotice : setNotice;
     report(null);
     const response = await resultify(operation);
     running.current = false;
@@ -126,7 +133,7 @@ export const ConversationEditor = ({
       );
       setAuthenticationRequired(
         reason === "authentication"
-          ? kind === "stage"
+          ? kind === "stage" || kind === "archive"
             ? "stage"
             : "reply"
           : null,
@@ -202,6 +209,60 @@ export const ConversationEditor = ({
         threads={detail.threads}
         disabled={dirty.body || dirty.stage || pending}
       />
+      <section className="space-y-2">
+        <Button
+          variant="soft"
+          color="neutral"
+          disabled={
+            pending ||
+            state.stale ||
+            dirty.body ||
+            dirty.stage ||
+            Boolean(unconfirmedSend)
+          }
+          onClick={() => {
+            void run(
+              () =>
+                Conversations.archiveConversation(Environment.CLIENT, {
+                  id: state.id,
+                  archived: !archived,
+                  expectedRevision: state.revision,
+                }),
+              (receipt) => {
+                if (!conversationSaveReceipt(state, receipt)) {
+                  setState((current) => ({ ...current, stale: true }));
+                  setStageNotice({ error: true, text: t("error.changed") });
+                } else {
+                  setState((current) =>
+                    applyConversationSave(current, receipt, {
+                      archivedAt: receipt.archivedAt,
+                    }),
+                  );
+                  setStageNotice({
+                    error: false,
+                    text: t(
+                      receipt.archivedAt ? "archive.saved" : "archive.restored",
+                    ),
+                  });
+                }
+                refresh();
+              },
+              "archive",
+            );
+          }}
+        >
+          {operation === "archive" && (
+            <LoaderIcon
+              aria-hidden
+              className="size-4 animate-spin motion-reduce:animate-none"
+            />
+          )}
+          {t(archived ? "archive.restore" : "archive.action")}
+        </Button>
+        <p className="text-foreground-dimmed text-xs leading-5">
+          {t(archived ? "archive.archivedHelp" : "archive.help")}
+        </p>
+      </section>
       {state.stale && (
         <div className="space-y-2">
           <p role="status" className="text-foreground-dimmed text-sm leading-5">
@@ -252,7 +313,7 @@ export const ConversationEditor = ({
                 value,
                 label: t(`stage.${value}`),
               })),
-              disabled: pending || state.stale,
+              disabled: pending || state.stale || archived,
             }),
           }}
           defaultValues={{ stage: state.stage }}
@@ -291,7 +352,7 @@ export const ConversationEditor = ({
             type="submit"
             variant="soft"
             color="neutral"
-            disabled={pending || state.stale || !dirty.stage}
+            disabled={pending || state.stale || archived || !dirty.stage}
           >
             {operation === "stage" && (
               <LoaderIcon
@@ -388,7 +449,7 @@ export const ConversationEditor = ({
         {closed && (
           <p className="text-foreground-dimmed text-sm">{t("error.closed")}</p>
         )}
-        <fieldset disabled={pending} className="min-w-0">
+        <fieldset disabled={pending || archived} className="min-w-0">
           <InferredForm
             key={`draft:${state.revision}`}
             config={{

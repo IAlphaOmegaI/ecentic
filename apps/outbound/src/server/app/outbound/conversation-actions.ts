@@ -3,6 +3,7 @@
 import type { z } from "zod";
 import type {
   ConversationQuery,
+  conversationArchiveSchema,
   conversationDraftSchema,
   conversationGenerateSchema,
   conversationSendSchema,
@@ -20,7 +21,8 @@ export const listConversations = withAuthorization(
 );
 export const getConversation = withAuthorization(
   [UserRole.STAFF],
-  async (_, input: { id: string; threadId?: string; page?: number }) => Conversations.get(input),
+  async (_, input: { id: string; threadId?: string; page?: number }) =>
+    Conversations.get(input),
   "Outbound.getConversation",
 );
 export const updateConversationStage = withAuthorization(
@@ -28,6 +30,12 @@ export const updateConversationStage = withAuthorization(
   async ({ session }, input: z.infer<typeof conversationStageSchema>) =>
     Conversations.updateStage(session.user.id, input),
   "Outbound.updateConversationStage",
+);
+export const archiveConversation = withAuthorization(
+  [UserRole.STAFF],
+  async ({ session }, input: z.infer<typeof conversationArchiveSchema>) =>
+    Conversations.setArchived(session.user.id, input),
+  "Outbound.archiveConversation",
 );
 export const generateConversationReply = withAuthorization(
   [UserRole.STAFF],

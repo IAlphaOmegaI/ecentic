@@ -7,7 +7,11 @@ import {
   normalizeDomain,
   recipientMailHostAllowed,
   registeredSender,
+  type SenderProfile,
+  senderIdentity,
   senderPool,
+  senderProfileSchema,
+  splitList,
 } from "@/lib/outbound";
 import { MAX_DAILY_EMAILS } from "@/lib/outbound-capacity";
 import { sendWindowClosesAt } from "@/lib/outbound-scheduling";
@@ -125,17 +129,24 @@ const persistConnection = async (
         };
       })();
       const activeSender = senderPool(settings).includes(email);
+      const identity = senderIdentity(email, settings);
       const input = {
         email,
         transport: credentials.transport,
         // An inactive mailbox has no active sender profile. Connecting it must
         // not assign the current pool's identity to a different real person.
-        fromName: activeSender
-          ? settings.fromName
-          : (previous?.fromName ?? email),
-        signer: activeSender ? settings.signature : (previous?.signer ?? ""),
-        dailyCap: settings.dailyCap,
+        fromName:
+          activeSender && identity
+            ? identity.fromName
+            : (previous?.fromName ?? email),
+        signer:
+          activeSender && identity
+            ? identity.signature
+            : (previous?.signer ?? ""),
+        dailyCap: previous?.dailyCap ?? settings.dailyCap,
         enabled: false,
+        activationRequestedAt: null,
+        activationConnectionVersion: null,
         ...secrets,
         historyId: null,
         syncMode: "full" as const,
@@ -284,7 +295,13 @@ export const updateSync = (
 
 export const configure = (
   actor: string,
-  input: { inboxId: string; enabled: boolean; dailyCap: number },
+  input: {
+    inboxId: string;
+    enabled: boolean;
+    dailyCap: number;
+    profile?: Omit<SenderProfile, "email">;
+  },
+  activation?: { connectionVersion: number; requestedAt: string },
 ) =>
   resultify(() =>
     db.transaction(async (transaction) => {
@@ -293,6 +310,7 @@ export const configure = (
           inboxId: z.string().uuid(),
           enabled: z.boolean(),
           dailyCap: z.number().int().min(1).max(MAX_DAILY_EMAILS),
+          profile: senderProfileSchema.omit({ email: true }).optional(),
         })
         .safeParse(input);
       if (!parsed.success)
@@ -308,48 +326,127 @@ export const configure = (
         }),
       );
       if (!inbox) throw new NotFoundError("Inbox not found.");
-      const settings = (await Store.policy(transaction)).settings;
-      if (input.enabled && !senderPool(settings).includes(inbox.email))
-        throw new ConflictError("direct-mailbox-inactive");
       if (
-        input.enabled &&
-        (!mailboxConnected(inbox) ||
-          inbox.error ||
-          !inbox.lastSyncedAt ||
-          Date.now() - inbox.lastSyncedAt.getTime() > 10 * 60_000)
+        activation &&
+        (inbox.connectionVersion !== activation.connectionVersion ||
+          inbox.activationConnectionVersion !== activation.connectionVersion ||
+          inbox.activationRequestedAt?.toISOString() !== activation.requestedAt)
       )
         throw new ConflictError(
-          "Finish a successful inbox synchronization before enabling it.",
+          "The pending inbox activation changed or was cancelled.",
         );
+      const settings = (await Store.policy(transaction)).settings;
+      if (input.enabled && !registeredSender(inbox.email, settings))
+        throw new ConflictError("direct-mailbox-inactive");
+      const identity = parsed.data.profile
+        ? { ...parsed.data.profile, email: inbox.email }
+        : senderIdentity(inbox.email, settings);
+      if (input.enabled && !identity)
+        throw new ValidationError(
+          "Save this inbox's sender name, signature and introductions before enabling it.",
+        );
+      if (input.enabled && !mailboxConnected(inbox))
+        throw new ConflictError(
+          "Connect this inbox before requesting activation.",
+        );
+      const pending =
+        input.enabled &&
+        Boolean(
+          inbox.error ||
+            inbox.syncMode ||
+            !inbox.lastSyncedAt ||
+            Date.now() - inbox.lastSyncedAt.getTime() > 10 * 60_000,
+        );
+      const enabled = input.enabled && !pending;
+      const dailyCap = activation ? inbox.dailyCap : input.dailyCap;
       value(
         await Inboxes.update(
           Environment.SERVER,
           inbox.id,
           {
-            enabled: input.enabled,
-            dailyCap: input.dailyCap,
-            ...(senderPool(settings).includes(inbox.email)
-              ? { fromName: settings.fromName, signer: settings.signature }
+            enabled,
+            activationRequestedAt: pending
+              ? (inbox.activationRequestedAt ?? new Date())
+              : null,
+            activationConnectionVersion: pending
+              ? inbox.connectionVersion
+              : null,
+            dailyCap,
+            ...(identity
+              ? { fromName: identity.fromName, signer: identity.signature }
               : {}),
             updatedAt: new Date(),
           },
           { tx: transaction },
         ),
       );
+      if (
+        parsed.data.profile ||
+        (enabled && !senderPool(settings).includes(inbox.email))
+      )
+        await Store.savePlaybookWithin(transaction, actor, {
+          ...settings,
+          senderProfiles:
+            identity && parsed.data.profile
+              ? [
+                  ...settings.senderProfiles.filter(
+                    (profile) => profile.email !== inbox.email,
+                  ),
+                  identity,
+                ]
+              : settings.senderProfiles,
+          senderEmails: enabled
+            ? [...new Set([...senderPool(settings), inbox.email])].join("\n")
+            : settings.senderEmails,
+          inactiveSenderEmails: enabled
+            ? splitList(settings.inactiveSenderEmails)
+                .filter((email) => email.toLowerCase() !== inbox.email)
+                .join("\n")
+            : settings.inactiveSenderEmails,
+        });
       value(
         await Events.create(
           Environment.SERVER,
           {
             actor,
             kind: "inboxConfigured",
-            detail: `${inbox.email}: ${input.enabled ? "enabled" : "disabled"}, cap ${input.dailyCap}.`,
+            detail: `${inbox.email}: ${pending ? "activation requested after synchronization" : enabled ? "enabled" : "disabled"}, cap ${dailyCap}.`,
           },
           { tx: transaction },
         ),
       );
-      return { inboxId: inbox.id };
+      return { inboxId: inbox.id, enabled, pending };
     }),
   );
+
+/** Consume only the current connection's durable request, after the sync transaction has committed. */
+export const completePendingActivation = (id: string) =>
+  resultify(async () => {
+    const inbox = value(await read(id));
+    if (
+      !inbox?.activationRequestedAt ||
+      inbox.activationConnectionVersion !== inbox.connectionVersion
+    )
+      return { activated: false };
+    if (
+      inbox.error ||
+      inbox.syncMode ||
+      !inbox.lastSyncedAt ||
+      Date.now() - inbox.lastSyncedAt.getTime() > 600_000
+    )
+      return { activated: false };
+    const activated = value(
+      await configure(
+        "outbound-mailbox-activation",
+        { inboxId: inbox.id, enabled: true, dailyCap: inbox.dailyCap },
+        {
+          connectionVersion: inbox.connectionVersion,
+          requestedAt: inbox.activationRequestedAt.toISOString(),
+        },
+      ),
+    );
+    return { activated: activated.enabled };
+  });
 
 export const disconnect = (actor: string, id: string) =>
   resultify(() =>
@@ -361,6 +458,8 @@ export const disconnect = (actor: string, id: string) =>
         .update(schema.outboundInbox)
         .set({
           enabled: false,
+          activationRequestedAt: null,
+          activationConnectionVersion: null,
           accessToken: null,
           refreshToken: null,
           appPassword: null,

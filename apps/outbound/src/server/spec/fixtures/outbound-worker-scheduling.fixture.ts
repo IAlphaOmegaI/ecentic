@@ -82,6 +82,10 @@ mock.module("@/server/app/outbound/transport-store", () => ({
     data: await action(),
   }),
   ingestBatch: async () => ({ success: true, data: {} }),
+  completePendingActivation: async () => ({
+    success: true,
+    data: { activated: false },
+  }),
 }));
 mock.module("@/server/utils/outbound/direct-mailbox", () => ({
   syncPage: async () => ({

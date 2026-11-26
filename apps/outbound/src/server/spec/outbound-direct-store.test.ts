@@ -13,6 +13,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { defaultPlaybook, prospectSchema } from "@/lib/outbound";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import type { Mail } from "@/server/utils/outbound/inbound";
+import { requireTestDatabase } from "./helpers/database";
 
 const endpoint = process.env.OUTBOUND_TEST_DATABASE_URL;
 const environment = new Map(
@@ -72,12 +73,7 @@ const message = (overrides: Partial<Mail> = {}): Mail => ({
 describe.skipIf(!endpoint)("isolated direct mailbox persistence", () => {
   beforeAll(async () => {
     if (!endpoint) throw new Error("Disposable database required");
-    const url = new URL(endpoint);
-    if (
-      !["localhost", "127.0.0.1"].includes(url.hostname) ||
-      url.pathname !== "/outbound_test"
-    )
-      throw new Error("Only the local outbound_test database is permitted");
+    requireTestDatabase(endpoint);
     Object.assign(process.env, {
       DATABASE_URL: endpoint,
       CREDENTIAL_ENCRYPTION_KEY: Buffer.alloc(32, 19).toString("base64"),
@@ -198,14 +194,14 @@ describe.skipIf(!endpoint)("isolated direct mailbox persistence", () => {
       JSON.stringify(required(await store.getWorkspace()).inboxes),
     ).not.toContain(password);
     expect(
-      (
+      required(
         await mailboxes.configure(actor, {
           inboxId: inbox.id,
           enabled: true,
           dailyCap: 5,
-        })
-      ).success,
-    ).toBe(false);
+        }),
+      ),
+    ).toMatchObject({ enabled: false, pending: true });
   });
 
   test("unregistered mailbox and invalid credentials have separate errors before verification", async () => {
@@ -230,13 +226,34 @@ describe.skipIf(!endpoint)("isolated direct mailbox persistence", () => {
   test("additional domains connect only exact Playbook inboxes and remain disabled", async () => {
     const { store, mailboxes, direct } = active();
     const additionalEmail = "juri@additional-brand.com";
-    required(await store.savePlaybook(actor, { ...defaultPlaybook, senderEmails: additionalEmail }));
-    spyOn(direct, "verify").mockResolvedValue({ success: true, data: { email: additionalEmail } });
-    const connected = required(await mailboxes.connectDirect(actor, { email: additionalEmail, appPassword: password }));
-    expect(required(await mailboxes.read(connected.inboxId))).toMatchObject({ email: additionalEmail, enabled: false, syncMode: "full" });
-    const unregistered = await mailboxes.connectDirect(actor, { email: "other@additional-brand.com", appPassword: password });
+    required(
+      await store.savePlaybook(actor, {
+        ...defaultPlaybook,
+        senderEmails: additionalEmail,
+      }),
+    );
+    spyOn(direct, "verify").mockResolvedValue({
+      success: true,
+      data: { email: additionalEmail },
+    });
+    const connected = required(
+      await mailboxes.connectDirect(actor, {
+        email: additionalEmail,
+        appPassword: password,
+      }),
+    );
+    expect(required(await mailboxes.read(connected.inboxId))).toMatchObject({
+      email: additionalEmail,
+      enabled: false,
+      syncMode: "full",
+    });
+    const unregistered = await mailboxes.connectDirect(actor, {
+      email: "other@additional-brand.com",
+      appPassword: password,
+    });
     expect(unregistered.success).toBe(false);
-    if (!unregistered.success) expect(unregistered.error.message).toBe("direct-mailbox-not-registered");
+    if (!unregistered.success)
+      expect(unregistered.error.message).toBe("direct-mailbox-not-registered");
   });
 
   test("registered inactive mailbox connects and syncs without receiving the active sender identity or delivery permission", async () => {
@@ -290,7 +307,7 @@ describe.skipIf(!endpoint)("isolated direct mailbox persistence", () => {
     });
     expect(enabled.success).toBe(false);
     if (enabled.success) throw new Error("Inactive delivery enabled");
-    expect(enabled.error.message).toBe("direct-mailbox-inactive");
+    expect(enabled.error.message).toContain("sender name");
     required(
       await mailboxes.configure(actor, {
         inboxId: connected.inboxId,

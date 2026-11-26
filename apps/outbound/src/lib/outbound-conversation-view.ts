@@ -29,11 +29,13 @@ export const parseConversationQuery = (
     stage:
       conversationQuerySchema.shape.stage.safeParse(single("stage")).data ??
       "all",
+    archived: single("view") === "archived",
     needsReply: single("needsReply") === "1",
   });
 };
 export const conversationHref = (query: ConversationQuery = {}) => {
   const parameters = new URLSearchParams();
+  if (query.archived) parameters.set("view", "archived");
   if (query.q) parameters.set("q", query.q);
   if (query.channel && query.channel !== "all")
     parameters.set("channel", query.channel);

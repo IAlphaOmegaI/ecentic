@@ -9,6 +9,7 @@ import {
   type Message,
   mailboxConnected,
   prospectSchema,
+  senderIdentity,
   senderPool,
 } from "@/lib/outbound";
 import { db, schema, type TransactionScope } from "@/server/database";
@@ -170,8 +171,8 @@ const inboxForTest = async (transaction: TransactionScope, inboxId: string) => {
     !mailboxConnected(inbox) ||
     !inbox.appPassword ||
     !senderPool(policy.settings).includes(inbox.email) ||
-    inbox.fromName !== policy.settings.fromName ||
-    inbox.signer !== policy.settings.signature ||
+    inbox.fromName !== senderIdentity(inbox.email, policy.settings)?.fromName ||
+    inbox.signer !== senderIdentity(inbox.email, policy.settings)?.signature ||
     inbox.syncMode ||
     inbox.error ||
     !inbox.lastSyncedAt ||

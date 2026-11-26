@@ -873,7 +873,19 @@
           "inactive": "This mailbox is inactive in the Playbook. It can sync replies. Move it to Sender inboxes before enabling sending."
         },
         "maximumDailyCap": "Target maximum per inbox per day",
-        "dailyCapHelp": "Up to {maximum} first emails and follow-ups per inbox daily. The Playbook controls gradual increases; observed bounces reduce capacity."
+        "dailyCapHelp": "Up to {maximum} first emails and follow-ups per inbox daily. The Playbook controls gradual increases; observed bounces reduce capacity.",
+        "profile": {
+          "fromName": "Sender name",
+          "signature": "Signature",
+          "founderLine": "General introduction",
+          "productCheckIntro": "Product research introduction",
+          "voiceNotes": "Voice notes",
+          "help": "Write only this person’s own role and experience. This profile replaces the primary sender’s introduction and voice for this inbox.",
+          "pause": "Pause inbox",
+          "title": "Sender profile",
+          "activationPending": "Activation requested. This inbox will start automatically after its history is synchronized and health checks pass.",
+          "cancelActivation": "Cancel activation"
+        }
       },
       "liveResearch": {
         "title": "Live shopping research",
@@ -962,7 +974,9 @@
       "platformHeld": "Select Shopify or WooCommerce for this cold campaign.",
       "shoppingResearchRequired": "Record a supported shopping finding before drafting or approving this message.",
       "automaticReviewFailed": "Automatic checks could not approve this draft. Check the evidence and message, then save your corrections.",
-      "automaticReviewUncertain": "An earlier draft request needs reconciliation before automatic review can resume."
+      "automaticReviewUncertain": "An earlier draft request needs reconciliation before automatic review can resume.",
+      "senderIdentityMissing": "Save this inbox’s own name, signature and introductions before drafting.",
+      "senderProfileChanged": "The sender profile changed. Review this unsent draft before approving it."
     },
     "preparation": {
       "action": {
@@ -1819,7 +1833,8 @@
         "connection": "The sending account is unavailable or needs a fresh reply sync. Check Integrations.",
         "controls": "The suggestion did not pass the saved reply controls. Write and review the reply yourself.",
         "generic": "We could not complete this action. Refresh the conversation and try again.",
-        "authentication": "Your session expired. Sign in again in the new tab, then retry here. Your edits are kept."
+        "authentication": "Your session expired. Sign in again in the new tab, then retry here. Your edits are kept.",
+        "archived": "Restore this conversation before editing or sending a reply."
       },
       "newestFirst": "Newest messages first",
       "direction": {
@@ -1843,7 +1858,8 @@
         "all": "All activity",
         "needsReply": "Needs a reply",
         "sent": "Sent",
-        "scheduled": "Scheduled"
+        "scheduled": "Scheduled",
+        "archived": "Archived"
       },
       "replyAccount": "Reply from",
       "activity": {
@@ -1868,6 +1884,14 @@
         "sending": "Sending…",
         "signIn": "Sign in again",
         "followUpsPaused": "Saving this stage pauses automatic email and LinkedIn outreach to this person. Reopening does not restart it."
+      },
+      "archive": {
+        "action": "Archive conversation",
+        "restore": "Restore conversation",
+        "help": "Archive keeps the history and stops automatic outreach for this person.",
+        "archivedHelp": "Archived conversations keep their history. Restoring makes this thread visible again; automatic outreach stays paused.",
+        "saved": "Conversation archived.",
+        "restored": "Conversation restored. Automatic outreach remains paused."
       }
     }
   }

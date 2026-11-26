@@ -25,7 +25,7 @@ export const ConversationThreadSelector = ({
   const [pending, startTransition] = useTransition();
   const items = threads.map((thread) => ({
     value: thread.id,
-    label: `${t(`channel.${thread.channel}`)} · ${thread.accountLabel}${thread.needsReply ? ` · ${t("needsReply")}` : ""}`,
+    label: `${t(`channel.${thread.channel}`)} · ${thread.accountLabel}${thread.archivedAt ? ` · ${t("views.archived")}` : thread.needsReply ? ` · ${t("needsReply")}` : ""}`,
   }));
   return (
     <div className="mb-6 space-y-2">
