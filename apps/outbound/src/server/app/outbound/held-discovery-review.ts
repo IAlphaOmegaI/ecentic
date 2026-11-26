@@ -2,11 +2,33 @@ import "server-only";
 
 import { randomUUID } from "node:crypto";
 import { type Result, resultify } from "@zenncore/utils";
-import { and, asc, eq, inArray, isNotNull, isNull, sql } from "drizzle-orm";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  inArray,
+  isNotNull,
+  isNull,
+  ne,
+  sql,
+} from "drizzle-orm";
 import { z } from "zod";
-import { normalizeDomain } from "@/lib/outbound";
+import {
+  normalizeDomain,
+  playbookSchema,
+  prospectSchema,
+  settingsForProspect,
+} from "@/lib/outbound";
+import { writingSnapshotSchema } from "@/lib/outbound-composition";
+import {
+  copyVerdictProblem,
+  hasCompleteCopyVerdict,
+} from "@/lib/outbound-copy-quality";
+import { rebuildWritingProposal } from "@/lib/outbound-rebuild-policy";
 import { db, schema, type TransactionScope } from "@/server/database";
 import { ConflictError, ValidationError } from "@/server/utils/error";
+import * as Draft from "@/server/utils/outbound/draft";
 import { browserClaimInterval } from "@/server/utils/outbound/firecrawl-cooldown";
 import {
   HELD_REVIEW_MANIFEST_HASH,
@@ -19,19 +41,28 @@ import {
   heldReviewBudgetSchema,
   heldReviewInputSchema,
   heldReviewManifestSchema,
+  heldReviewPreviewContextSchema,
+  heldReviewPreviewSchema,
   heldReviewStageBudget,
   heldReviewStateSchema,
+  heldReviewWrittenSchema,
 } from "@/server/utils/outbound/held-review-contract";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import * as Capture from "@/server/utils/outbound/live-shopping";
 import { shoppingPollLimit } from "@/server/utils/outbound/scrapellm-cooldown";
 import * as Assessment from "@/server/utils/outbound/shopping-assessment";
 import {
+  compositionProspectHash,
+  writingPolicyHash,
+} from "@/server/utils/outbound/shopping-policy";
+import {
   broaderSearchProblem,
   completedShoppingQuerySchema,
 } from "@/server/utils/outbound/shopping-query-history";
-import { researchPolicyHash } from "@/server/utils/outbound/shopping-research";
-import * as LeadResearch from "./lead-research";
+import {
+  researchHash,
+  researchPolicyHash,
+} from "@/server/utils/outbound/shopping-research";
 import * as Credentials from "./provider-credentials";
 import * as Composition from "./sequence-composition";
 import { claimShoppingProviderSlot } from "./shopping-provider-pacing";
@@ -47,7 +78,8 @@ export type HeldReviewDependencies = {
   browse?: typeof Capture.inspectPages;
   assess?: typeof Assessment.assess;
   resolveKey?: typeof Credentials.resolveKey;
-  compose?: typeof Composition.composeForProspect;
+  generate?: Draft.CompositionDependencies["generate"];
+  judge?: Draft.CompositionDependencies["judge"];
 };
 const value = <Data>(result: Result<Data, Error>): Data => {
   if (!result.success) throw result.error;
@@ -204,6 +236,33 @@ const eligible = async (
     throw new ConflictError(
       "The research policy changed after this held review was created.",
     );
+  const preview = state.previewContext;
+  if (preview) {
+    const proposed = rebuildWritingProposal(policy.settings);
+    const settings = settingsForProspect(prospect, proposed);
+    const details = prospectSchema.parse({
+      ...prospect.details,
+      id: prospect.id,
+      assignedSenderEmail: settings.fromEmail,
+    });
+    if (
+      preview.prospectRevision !== prospect.revision ||
+      preview.playbookRevision !== policy.revision ||
+      preview.prospectHash !== compositionProspectHash(details) ||
+      preview.baseWritingPolicyHash !==
+        writingPolicyHash(settingsForProspect(prospect, policy.settings), {
+          globalVoiceNotes: policy.settings.voiceNotes,
+        }) ||
+      preview.writingPolicyHash !==
+        writingPolicyHash(settings, {
+          globalVoiceNotes: proposed.voiceNotes,
+        }) ||
+      preview.receiptHash !== researchHash(state.shoppingReceipt)
+    )
+      throw new ConflictError(
+        "The held preview identity, receipt or sender policy changed.",
+      );
+  }
   const context = value(await Store.getEnrichmentContext(prospect.id, scope));
   if (context.suppressed)
     throw new ConflictError("This contact or company is suppressed.");
@@ -244,6 +303,7 @@ export const inspect = (manifest: HeldReviewManifest) =>
       maximumSubmissions: 42,
       maximumPerContact: 2,
       sends: 0,
+      executionMode: "unapplied" as const,
     };
   });
 
@@ -344,13 +404,6 @@ export const start = (actor: string, manifest: HeldReviewManifest) =>
         output: state,
       });
     }
-    await scope.insert(schema.outboundEvent).values({
-      actor,
-      kind: "heldDiscoveryReview",
-      detail:
-        "Started the approved 21-contact review. Maximum 42 submissions; all holds retained.",
-      externalId: requestId,
-    });
     return { batchId, repeated: false };
   });
 
@@ -461,6 +514,24 @@ const claimNext = (batchId: string, deadline: number) =>
           })
           .where(eq(schema.outboundIntegrationJob.id, id));
         continue;
+      }
+      if (state.stage === "draft") {
+        const [writing] = await scope
+          .select({ id: schema.outboundIntegrationJob.id })
+          .from(schema.outboundIntegrationJob)
+          .where(
+            and(
+              eq(schema.outboundIntegrationJob.provider, "automation"),
+              ne(schema.outboundIntegrationJob.id, id),
+              eq(schema.outboundIntegrationJob.status, "starting"),
+              sql`${schema.outboundIntegrationJob.input}->>'operation' = 'heldDiscoveryReview'`,
+              sql`${schema.outboundIntegrationJob.input}->>'batchId' = ${batchId}`,
+              sql`${schema.outboundIntegrationJob.output}->>'stage' = 'draft'`,
+              sql`${schema.outboundIntegrationJob.output}->'lease'->>'expiresAt' > ${new Date().toISOString()}`,
+            ),
+          )
+          .limit(1);
+        if (writing) continue;
       }
       if (state.stage === "query") {
         if (state.queryReservedAt) {
@@ -849,89 +920,217 @@ const execute = async (
           });
         }
       }
-      return next("applyResearch", { shoppingReceipt: receipt });
+      return receipt.selected.kind === "no-gap"
+        ? held("No gap found. Try another product.", {
+            shoppingReceipt: receipt,
+          })
+        : next("draft", { shoppingReceipt: receipt });
     }
     case "applyResearch":
-      return LeadResearch.saveHeldAndApply(
-        input.requestedBy,
-        {
-          requestId: claim.job.id,
-          prospectId: input.prospectId,
-          expectedRevision: state.prospectRevision,
-          expectedPlaybookRevision: input.playbookRevision,
-          receipt: captureReceipt(state),
-          captureJobId: claim.job.id,
-        },
-        {
-          jobId: claim.job.id,
-          leaseToken: z.string().uuid().parse(state.lease?.token),
-        },
+    case "applyDraft":
+      throw new ValidationError(
+        "A compatible release is required before applying held research or previews.",
       );
     case "draft": {
       const receipt = captureReceipt(state);
       if (["no-gap", "product-observation"].includes(receipt.selected.kind))
         return held("This research has no eligible finding for a preview.");
+      const context = value(
+        await transaction(async (scope) => {
+          const current = await owns(scope, claim);
+          const ready = await eligible(scope, input, current);
+          if (
+            current.previewContext ||
+            current.draftBeforeJudge ||
+            current.preview
+          )
+            throw new ConflictError(
+              "A preview already started. Reconcile its saved result without repurchasing the writer.",
+            );
+          const answer = Capture.aiCaptureSchema.parse(current.answer);
+          const browser = Capture.browserResearchSchema.parse(current.browser);
+          if (browser.status !== "captured")
+            throw new ValidationError(
+              "The preview browser evidence is incomplete.",
+            );
+          const problem = Assessment.validateAutomaticResearch(
+            { answer, browser },
+            receipt,
+            ready.policy.settings.verificationDays,
+            ready.policy.settings,
+          );
+          if (problem) throw new ValidationError(problem);
+          const proposedPolicy = playbookSchema.parse(
+            rebuildWritingProposal(ready.policy.settings),
+          );
+          const settings = settingsForProspect(ready.prospect, proposedPolicy);
+          const prospect = prospectSchema.parse({
+            ...ready.prospect.details,
+            id: ready.prospect.id,
+            assignedSenderEmail: settings.fromEmail,
+          });
+          const staged = await scope
+            .select({
+              writing: sql<unknown>`${schema.outboundIntegrationJob.output}->'preview'->'messages'->0->'writing'`,
+            })
+            .from(schema.outboundIntegrationJob)
+            .where(
+              and(
+                eq(schema.outboundIntegrationJob.provider, "automation"),
+                eq(schema.outboundIntegrationJob.status, "complete"),
+                ne(schema.outboundIntegrationJob.id, claim.job.id),
+                sql`${schema.outboundIntegrationJob.input}->>'operation' = 'heldDiscoveryReview'`,
+                sql`${schema.outboundIntegrationJob.input}->>'batchId' = ${input.batchId}`,
+                sql`${schema.outboundIntegrationJob.output}->'preview' is not null`,
+              ),
+            )
+            .orderBy(desc(schema.outboundIntegrationJob.updatedAt))
+            .limit(9);
+          const stagedPeers = staged.flatMap(({ writing }) => {
+            const parsed = writingSnapshotSchema.safeParse(writing);
+            return parsed.success
+              ? [
+                  {
+                    opening: parsed.data.parts.opening,
+                    ...parsed.data.narrative,
+                  },
+                ]
+              : [];
+          });
+          const peers = [
+            ...stagedPeers,
+            ...value(
+              await Composition.recentCompositionPeers(
+                ready.prospect,
+                null,
+                scope,
+              ),
+            ),
+          ].slice(0, 9);
+          const previewContext = heldReviewPreviewContextSchema.parse({
+            status: "unapplied",
+            prospect,
+            prospectRevision: ready.prospect.revision,
+            playbookRevision: ready.policy.revision,
+            proposedPolicy,
+            globalVoiceNotes: proposedPolicy.voiceNotes,
+            receiptHash: researchHash(receipt),
+            writingPolicyHash: writingPolicyHash(settings, {
+              globalVoiceNotes: proposedPolicy.voiceNotes,
+            }),
+            baseWritingPolicyHash: writingPolicyHash(
+              settingsForProspect(ready.prospect, ready.policy.settings),
+              { globalVoiceNotes: ready.policy.settings.voiceNotes },
+            ),
+            prospectHash: compositionProspectHash(prospect),
+            peers,
+          });
+          await scope
+            .update(schema.outboundIntegrationJob)
+            .set({
+              output: heldReviewStateSchema.parse({
+                ...current,
+                previewContext,
+              }),
+              updatedAt: new Date(),
+            })
+            .where(eq(schema.outboundIntegrationJob.id, claim.job.id));
+          return previewContext;
+        }),
+      );
       const composed = value(
-        await (dependencies.compose ?? Composition.composeForProspect)(
-          input.requestedBy,
+        await Draft.composeSequence(
+          context.prospect,
+          receipt,
+          context.proposedPolicy,
           {
-            prospectId: input.prospectId,
-            expectedRevision: state.prospectRevision,
-            expectedPlaybookRevision: input.playbookRevision,
-            preview: true,
+            generate: dependencies.generate,
+            judge: dependencies.judge,
+            deadline,
+            peers: context.peers,
+            globalVoiceNotes: context.globalVoiceNotes,
+            onWritten: async (draft) => {
+              const mayJudge = value(
+                await transaction(async (scope) => {
+                  const currentJob = await jobAt(scope, claim.job.id);
+                  const current = heldReviewStateSchema.parse(
+                    currentJob.output,
+                  );
+                  if (
+                    !current.lease ||
+                    current.lease.token !== state.lease?.token
+                  )
+                    throw new ConflictError(
+                      "The preview writer result belongs to a superseded lease.",
+                    );
+                  const ready = await resultify(() =>
+                    eligible(scope, input, current),
+                  );
+                  const active =
+                    currentJob.status === "starting" &&
+                    Date.parse(current.lease.expiresAt) > Date.now();
+                  const reason = !active
+                    ? "The writer completed after its lease expired. Its text is retained without another writer purchase."
+                    : ready.success
+                      ? null
+                      : ready.error.message;
+                  const draftBeforeJudge = heldReviewWrittenSchema.parse({
+                    parts: draft.parts,
+                    messages: draft.messages,
+                    generation: { attempts: draft.attempts },
+                    writerCompletedAt: new Date().toISOString(),
+                  });
+                  await scope
+                    .update(schema.outboundIntegrationJob)
+                    .set({
+                      status: !active
+                        ? "uncertain"
+                        : reason
+                          ? "failed"
+                          : "starting",
+                      output: heldReviewStateSchema.parse({
+                        ...current,
+                        draftBeforeJudge,
+                        ...(reason ? { lease: null, heldReason: reason } : {}),
+                      }),
+                      ...(reason ? { error: reason } : {}),
+                      updatedAt: new Date(),
+                    })
+                    .where(eq(schema.outboundIntegrationJob.id, claim.job.id));
+                  return reason;
+                }),
+              );
+              if (mayJudge) throw new ConflictError(mayJudge);
+            },
           },
         ),
       );
-      return next("applyDraft", { composition: composed.composition });
-    }
-    case "applyDraft":
-      return transaction(async (scope) => {
-        await owns(scope, claim);
-        await eligible(scope, input, state);
-        if (!state.composition)
-          throw new ValidationError(
-            "The completed preview reference is missing.",
-          );
-        const saved = await Store.saveComposedDraftWithin(
-          scope,
-          input.requestedBy,
-          {
-            prospect: input.prospectId,
-            revision: state.prospectRevision,
-            compositionJobId: state.composition.jobId,
-          },
+      const writing = composed.messages[0]?.writing;
+      if (
+        !writing ||
+        !hasCompleteCopyVerdict(writing.quality) ||
+        writing.receiptHash !== context.receiptHash ||
+        writing.writingPolicyHash !== context.writingPolicyHash
+      )
+        throw new ValidationError(
+          "The completed preview does not match its saved copy context.",
         );
-        const [prospect] = await scope
-          .select({
-            status: schema.outboundProspect.status,
-            holdReason: schema.outboundProspect.holdReason,
-            nextSendAt: schema.outboundProspect.nextSendAt,
-          })
-          .from(schema.outboundProspect)
-          .where(eq(schema.outboundProspect.id, input.prospectId));
-        if (
-          prospect?.status !== "held" ||
-          prospect.holdReason !== HELD_REVIEW_REASON ||
-          prospect.nextSendAt !== null
-        )
-          throw new ConflictError(
-            "The preview did not preserve the exact review hold.",
-          );
-        await scope
-          .update(schema.outboundIntegrationJob)
-          .set({
-            status: "complete",
-            output: heldReviewStateSchema.parse({
-              ...state,
-              stage: "complete",
-              prospectRevision: saved.revision,
-              lease: null,
-              ...(saved.copyProblem ? { heldReason: saved.copyProblem } : {}),
-            }),
-            updatedAt: new Date(),
-          })
-          .where(eq(schema.outboundIntegrationJob.id, claim.job.id));
+      const preview = heldReviewPreviewSchema.parse({
+        ...context,
+        ...composed,
+        parts: writing.parts,
       });
+      const problem = copyVerdictProblem(writing.quality);
+      return checkpoint(
+        claim,
+        {
+          stage: "complete",
+          preview,
+          ...(problem ? { heldReason: `Copy: ${problem}` } : {}),
+        },
+        "complete",
+      );
+    }
     case "complete":
       return checkpoint(claim, {}, "complete");
   }
@@ -1037,6 +1236,7 @@ export const status = (batchId: string) =>
       );
     return {
       batchId,
+      executionMode: "unapplied" as const,
       ...batch.budget,
       maximumSubmissions: batch.input.maxQueries,
       counts: {

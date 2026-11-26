@@ -1,5 +1,10 @@
 import { createHash } from "node:crypto";
 import { z } from "zod";
+import { playbookSchema, prospectSchema } from "@/lib/outbound";
+import {
+  writerPartsSchema,
+  writingSnapshotSchema,
+} from "@/lib/outbound-composition";
 import { compositionReferenceSchema } from "@/lib/outbound-sequence-composition";
 import { shoppingResearchSchema } from "@/lib/outbound-shopping-research";
 import {
@@ -59,6 +64,62 @@ export const heldReviewInputSchema = z
     merchant: z.object({ name: z.string().min(1), domain: z.string().min(1) }),
   })
   .strict();
+const digest = z.string().regex(/^[a-f0-9]{64}$/);
+const previewMessageSchema = z
+  .object({
+    step: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+    afterDays: z.number().int().nonnegative(),
+    subject: z.string().min(1),
+    body: z.string().min(1),
+    writing: writingSnapshotSchema.optional(),
+  })
+  .strict();
+const previewGenerationSchema = z
+  .object({ attempts: z.number().int().min(1).max(2) })
+  .strict();
+export const heldReviewPreviewContextSchema = z
+  .object({
+    status: z.literal("unapplied"),
+    prospect: prospectSchema,
+    prospectRevision: z.number().int().nonnegative(),
+    playbookRevision: z.number().int().nonnegative(),
+    proposedPolicy: playbookSchema,
+    globalVoiceNotes: z.string(),
+    receiptHash: digest,
+    writingPolicyHash: digest,
+    baseWritingPolicyHash: digest,
+    prospectHash: digest,
+    peers: z
+      .array(
+        z
+          .object({
+            opening: z.string(),
+            relationship: z.string().nullable(),
+            occasion: z.string().nullable(),
+          })
+          .strict(),
+      )
+      .max(9),
+  })
+  .strict();
+export const heldReviewWrittenSchema = z
+  .object({
+    parts: writerPartsSchema,
+    messages: z.array(previewMessageSchema).length(3),
+    generation: previewGenerationSchema,
+    writerCompletedAt: z.string().datetime(),
+  })
+  .strict();
+export const heldReviewPreviewSchema = heldReviewPreviewContextSchema
+  .extend({
+    parts: writerPartsSchema,
+    messages: z.array(previewMessageSchema).length(3),
+    generation: previewGenerationSchema,
+    issues: z
+      .array(z.object({ code: z.string(), field: z.string() }).strict())
+      .max(100),
+  })
+  .strict();
 export const heldReviewStateSchema = z
   .object({
     stage: z.enum([
@@ -94,6 +155,9 @@ export const heldReviewStateSchema = z
     shoppingHistory: shoppingQueryHistorySchema.optional(),
     composition: compositionReferenceSchema.optional(),
     researchId: z.string().uuid().optional(),
+    previewContext: heldReviewPreviewContextSchema.optional(),
+    draftBeforeJudge: heldReviewWrittenSchema.optional(),
+    preview: heldReviewPreviewSchema.optional(),
     heldReason: z.string().optional(),
     failureReceipt: z.record(z.string(), z.unknown()).nullable().optional(),
   })

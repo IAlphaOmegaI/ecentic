@@ -2,8 +2,10 @@ import { mock, setSystemTime, spyOn } from "bun:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { and, eq, ne, sql } from "drizzle-orm";
+import { z } from "zod";
 import { prospectSchema } from "@/lib/outbound";
 import { defaultCampaignCriteria } from "@/lib/outbound-campaigns";
+import type { WriterParts } from "@/lib/outbound-composition";
 import type { HeldReviewDependencies } from "@/server/app/outbound/held-discovery-review";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import { requireTestDatabase } from "../helpers/database";
@@ -19,7 +21,7 @@ const manifest = Contract.heldReviewManifestSchema.parse({
   approvedHoldReason: Contract.HELD_REVIEW_REASON,
 });
 // Only the authorization digest is replaced in this isolated synthetic process.
-// All raw capture, claim, lease, Store and LeadResearch validators remain real.
+// All raw capture, claim, lease, writer and quality validators remain real.
 mock.module("@/server/utils/outbound/held-review-contract", () => ({
   ...Contract,
   HELD_REVIEW_MANIFEST_HASH: Contract.heldManifestHash(ids),
@@ -31,7 +33,6 @@ await db.execute(
   sql`truncate outbound_integration_job, outbound_send_attempt, outbound_event, outbound_revision, outbound_prospect, outbound_person, outbound_company, outbound_suppression, outbound_inbox, outbound_playbook, outbound_campaign_company, outbound_campaign cascade`,
 );
 const Review = await import("@/server/app/outbound/held-discovery-review");
-const Composition = await import("@/server/app/outbound/sequence-composition");
 const { claimShoppingProviderSlot } = await import(
   "@/server/app/outbound/shopping-provider-pacing"
 );
@@ -145,6 +146,17 @@ for (const [index, id] of ids.entries()) {
 }
 const first = ids[0];
 assert.ok(first);
+const originalProspects = await db
+  .select()
+  .from(schema.outboundProspect)
+  .orderBy(schema.outboundProspect.id);
+const originalRevisions = await db
+  .select()
+  .from(schema.outboundRevision)
+  .orderBy(
+    schema.outboundRevision.prospectId,
+    schema.outboundRevision.revision,
+  );
 const allJobs = () => db.select().from(schema.outboundIntegrationJob);
 assert.equal(value(await Review.inspect(manifest)).exactHolds, 21);
 assert.equal((await allJobs()).length, 0, "dry run must not create a job");
@@ -183,12 +195,23 @@ const parkExcept = async (prospectId: string) => {
   );
 };
 await parkExcept(first);
-const calls = { starts: 0, polls: 0, browser: 0, product: 0, writer: 0 };
+const calls = {
+  starts: 0,
+  polls: 0,
+  browser: 0,
+  product: 0,
+  writer: 0,
+  judge: 0,
+};
 let firstNoGap = true;
 let secondNoGap = false;
 let uncertainStart = false;
 let lateStart = false;
 let observeExpiredStart = false;
+let uncertainJudge = false;
+let failedJudge = false;
+let duplicateParts: WriterParts | undefined;
+let changeSenderDuringWriting = false;
 const network = spyOn(globalThis, "fetch").mockImplementation(
   Object.assign(
     async () => {
@@ -251,21 +274,58 @@ const dependencies: HeldReviewDependencies = {
     return { success: true, data: productCapture };
   },
   assess: heldAssessment,
-  compose: (who, input) =>
-    Composition.composeForProspect(who, input, {
-      generate: async () => {
-        calls.writer += 1;
-        return {
-          subject: "linen carry bags",
-          opening: 'My sister needed bags, so I asked for "linen carry bags".',
-          result:
-            "It picked Canvas Works and Harbor Label. Sample Goods didn't come up.",
-          relevance: "That's the kind of search a new customer starts with.",
-          followupFact: "",
-        };
-      },
-      judge: passingCopyJudge,
-    }),
+  generate: async ({ prompt }) => {
+    calls.writer += 1;
+    if (changeSenderDuringWriting)
+      await db
+        .update(schema.outboundPlaybook)
+        .set({
+          settings: { ...settings, fromName: "Changed synthetic author" },
+        })
+        .where(eq(schema.outboundPlaybook.id, "default"));
+    if (duplicateParts) return duplicateParts;
+    const query = z
+      .object({ observedQuery: z.object({ query: z.string() }) })
+      .parse(JSON.parse(prompt)).observedQuery.query;
+    const relationship =
+      ["sister", "friend", "brother", "father"][calls.writer - 1] ?? "mother";
+    return {
+      subject: "linen bags",
+      opening: `My ${relationship} needed bags, so I asked for "${query}".`,
+      result:
+        "It picked Canvas Works and Harbor Label. Sample Goods didn't come up.",
+      relevance: "That's the kind of search a new customer starts with.",
+      followupFact: "",
+    };
+  },
+  judge: async () => {
+    calls.judge += 1;
+    const [writing] = await db
+      .select()
+      .from(schema.outboundIntegrationJob)
+      .where(
+        and(
+          eq(schema.outboundIntegrationJob.status, "starting"),
+          sql`${schema.outboundIntegrationJob.output}->>'stage' = 'draft'`,
+        ),
+      );
+    assert.ok(writing);
+    assert.ok(
+      Contract.heldReviewStateSchema.parse(writing.output).draftBeforeJudge,
+      "Valid writer text must be durable before the judge is invoked.",
+    );
+    if (uncertainJudge) throw new Error("Synthetic interrupted judge.");
+    const verdict = await passingCopyJudge();
+    return failedJudge
+      ? {
+          ...verdict,
+          naturalVoice: {
+            passed: false,
+            reason: "Synthetic voice review failed.",
+          },
+        }
+      : verdict;
+  },
 };
 const tick = async () => {
   setSystemTime(new Date(Date.now() + 31_000));
@@ -298,7 +358,21 @@ assert.equal(
 assert.equal(completed.shoppingReceipt?.selected.kind, "discovery-absence");
 assert.equal(calls.starts, 2);
 assert.equal(calls.writer, 1);
-assert.ok(completed.composition && completed.researchId);
+assert.equal(completed.composition, undefined);
+assert.equal(completed.researchId, undefined);
+assert.ok(completed.preview && completed.draftBeforeJudge);
+assert.equal(completed.preview.status, "unapplied");
+assert.equal(completed.preview.messages[0]?.writing?.quality?.passed, true);
+assert.equal(completed.preview.messages[0]?.writing?.revision, null);
+assert.equal(completed.preview.prospectRevision, 1);
+assert.deepEqual(completed.preview.parts, completed.draftBeforeJudge.parts);
+const afterCompleted = { ...calls };
+assert.equal((await tick()).advanced, false);
+assert.deepEqual(
+  calls,
+  afterCompleted,
+  "Completed previews never repurchase a writer, judge or search.",
+);
 const [saved] = await db
   .select()
   .from(schema.outboundProspect)
@@ -309,7 +383,9 @@ assert.equal(saved.holdReason, Contract.HELD_REVIEW_REASON);
 assert.equal(saved.nextSendAt, null);
 assert.equal(saved.approvedAt, null);
 assert.equal(saved.messages.length, 3);
-assert.equal(saved.messages[0]?.writing?.quality?.passed, true);
+assert.deepEqual(saved.messages, oldMessages);
+assert.equal(saved.revision, 1);
+assert.equal(saved.details.shoppingResearchId, "");
 assert.equal(saved.details.personalLine, "");
 const originals = await db
   .select()
@@ -560,21 +636,21 @@ for (const [target, campaignId, patch] of [
   );
 }
 
-// Applying a held receipt replays its full raw proof and rejects an altered saved capture.
+// Staging a preview replays its full raw proof and rejects an altered saved capture.
 const tamperedTarget = ids[11];
 assert.ok(tamperedTarget);
 await parkExcept(tamperedTarget);
 for (let step = 0; step < 15; step += 1) {
   if (
     Contract.heldReviewStateSchema.parse((await jobFor(tamperedTarget)).output)
-      .stage === "applyResearch"
+      .stage === "draft"
   )
     break;
   await tick();
 }
 const tamperedJob = await jobFor(tamperedTarget);
 const tamperedState = Contract.heldReviewStateSchema.parse(tamperedJob.output);
-assert.equal(tamperedState.stage, "applyResearch");
+assert.equal(tamperedState.stage, "draft");
 const originalRaw = tamperedState.answer?.raw[0];
 assert.ok(originalRaw);
 originalRaw.body += " synthetic tampering";
@@ -608,6 +684,93 @@ assert.equal(calls.starts, startsBeforeWatched + 1);
 lateStart = false;
 observeExpiredStart = false;
 
+// A disconnected judge retains validated writer output and never repurchases it.
+const interruptedTarget = ids[13];
+assert.ok(interruptedTarget);
+await parkExcept(interruptedTarget);
+uncertainJudge = true;
+const interrupted = await finish(interruptedTarget);
+assert.equal(interrupted.status, "uncertain");
+const interruptedState = Contract.heldReviewStateSchema.parse(
+  interrupted.output,
+);
+assert.ok(interruptedState.previewContext && interruptedState.draftBeforeJudge);
+assert.equal(interruptedState.preview, undefined);
+const afterInterrupted = { ...calls };
+for (let retry = 0; retry < 3; retry += 1) await tick();
+assert.deepEqual(calls, afterInterrupted);
+uncertainJudge = false;
+
+// A completed failed verdict is a durable unapplied preview, not a repeat purchase.
+const failedTarget = ids[14];
+assert.ok(failedTarget);
+await parkExcept(failedTarget);
+failedJudge = true;
+const failedPreview = await finish(failedTarget);
+assert.equal(failedPreview.status, "complete");
+const failedPreviewState = Contract.heldReviewStateSchema.parse(
+  failedPreview.output,
+);
+assert.equal(
+  failedPreviewState.preview?.messages[0]?.writing?.quality?.passed,
+  false,
+);
+assert.match(failedPreviewState.heldReason ?? "", /^Copy:/);
+const afterFailed = { ...calls };
+await tick();
+assert.deepEqual(calls, afterFailed);
+failedJudge = false;
+
+// Staged previews participate in the same first-nine variety checks, even though
+// no published prospect message has received the new opening.
+const repeatedTarget = ids[15];
+assert.ok(repeatedTarget && failedPreviewState.preview);
+await parkExcept(repeatedTarget);
+duplicateParts = failedPreviewState.preview.parts;
+const beforeRepeated = { ...calls };
+const repeated = await finish(repeatedTarget);
+assert.equal(repeated.status, "failed");
+assert.match(
+  repeated.error ?? "",
+  /opening:.*(?:within ten|already used|repeated)/,
+);
+assert.equal(
+  calls.writer,
+  beforeRepeated.writer + 2,
+  "One bounded repair may not bypass staged opening variety.",
+);
+assert.equal(calls.judge, beforeRepeated.judge);
+assert.ok(
+  Contract.heldReviewStateSchema
+    .parse(repeated.output)
+    .previewContext?.peers.some(
+      (peer) => peer.opening === duplicateParts?.opening,
+    ),
+);
+duplicateParts = undefined;
+const afterRepeated = { ...calls };
+await tick();
+assert.deepEqual(calls, afterRepeated);
+
+// A sender edit after the writer started stops the judge and retains its text.
+const senderChangedTarget = ids[16];
+assert.ok(senderChangedTarget);
+await parkExcept(senderChangedTarget);
+changeSenderDuringWriting = true;
+const judgesBeforeSenderEdit = calls.judge;
+const senderChanged = await finish(senderChangedTarget);
+assert.equal(senderChanged.status, "failed");
+assert.match(senderChanged.error ?? "", /sender policy changed/);
+assert.ok(
+  Contract.heldReviewStateSchema.parse(senderChanged.output).draftBeforeJudge,
+);
+assert.equal(calls.judge, judgesBeforeSenderEdit);
+changeSenderDuringWriting = false;
+await db
+  .update(schema.outboundPlaybook)
+  .set({ settings })
+  .where(eq(schema.outboundPlaybook.id, "default"));
+
 // Independent operations share one durable slot, including concurrent claims.
 const pacing = () =>
   db.transaction(async (scope) => {
@@ -636,6 +799,29 @@ assert.ok(
       prospect.details.assignedSenderEmail === settings.fromEmail,
   ),
 );
+assert.deepEqual(
+  await db
+    .select()
+    .from(schema.outboundProspect)
+    .orderBy(schema.outboundProspect.id),
+  originalProspects,
+  "Staging must not write any original prospect field, timestamp, revision or message.",
+);
+assert.deepEqual(
+  await db
+    .select()
+    .from(schema.outboundRevision)
+    .orderBy(
+      schema.outboundRevision.prospectId,
+      schema.outboundRevision.revision,
+    ),
+  originalRevisions,
+);
+assert.equal((await db.select().from(schema.outboundEvent)).length, 0);
+assert.deepEqual(
+  (await db.select().from(schema.outboundPlaybook))[0]?.settings,
+  settings,
+);
 assert.equal(
   (
     await db
@@ -648,6 +834,6 @@ assert.equal(
 setSystemTime();
 assert.equal(network.mock.calls.length, 0);
 console.log(
-  "Held discovery review contracts passed: exact manifest, durable broad branch, real proof apply, trusted held preview, no-gap, uncertain and budget.",
+  "Held discovery review contracts passed: exact manifest, durable broad branch, unapplied preview, unchanged live rows, no-gap, uncertain writer/judge and budget.",
 );
 process.exit(0);
