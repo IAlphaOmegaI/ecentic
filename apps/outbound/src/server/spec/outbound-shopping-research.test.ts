@@ -10,12 +10,7 @@ import {
 } from "bun:test";
 import { randomUUID } from "node:crypto";
 import { eq, sql } from "drizzle-orm";
-import {
-  defaultPlaybook,
-  lintMessages,
-  prospectSchema,
-  renderMessages,
-} from "@/lib/outbound";
+import { defaultPlaybook, lintMessages, prospectSchema } from "@/lib/outbound";
 import { defaultCampaignCriteria } from "@/lib/outbound-campaigns";
 import { draftReviewReadinessKey } from "@/lib/outbound-draft-review";
 import {
@@ -24,8 +19,16 @@ import {
   shoppingResearchSchema,
   validateShoppingResearch,
 } from "@/lib/outbound-shopping-research";
-import { preservesDraftControls } from "@/lib/outbound-writing";
 import { requireTestDatabase } from "./helpers/database";
+import {
+  draftSyntheticProspect,
+  prepareSyntheticShoppingEvidence,
+} from "./helpers/outbound-shopping-db-fixture";
+import {
+  syntheticWriterParts,
+  syntheticWritingPolicy,
+} from "./helpers/outbound-shopping-fixture";
+import { passingCopyJudge } from "./helpers/outbound-writer-fixture";
 
 const endpoint = process.env.OUTBOUND_TEST_DATABASE_URL;
 const now = new Date("2026-11-16T18:00:00Z");
@@ -146,7 +149,7 @@ const value = <Data>(
   if (!result.success) throw result.error;
   return result.data;
 };
-const settings = {
+const settings = syntheticWritingPolicy({
   ...defaultPlaybook,
   requireShoppingEvidence: true,
   subjectTemplate: "Trail Tote pricing",
@@ -156,19 +159,22 @@ const settings = {
   historyConfirmed: true,
   competingSendersPaused: true,
   senderTested: true,
+});
+const fixture = {
+  prospectId: "",
+  inboxId: "",
+  receipt: null as ShoppingResearch | null,
 };
-const fixture = { prospectId: "", inboxId: "" };
-const input = async (captured = receipt()) => {
-  const { store } = active();
-  const row = value(await store.readProspect(fixture.prospectId));
-  if (!row) throw new Error("Missing prospect");
-  return {
-    requestId: randomUUID(),
-    prospectId: row.id,
-    expectedRevision: row.revision,
-    expectedPlaybookRevision: (await store.policy()).revision,
-    receipt: captured,
-  };
+const input = async () => {
+  const prepared = value(
+    await prepareSyntheticShoppingEvidence(
+      "operator",
+      { prospect: fixture.prospectId },
+      { now: now.getTime() },
+    ),
+  );
+  fixture.receipt = prepared.request.receipt;
+  return prepared.request;
 };
 
 const automaticFixture = async () => {
@@ -242,7 +248,7 @@ const automaticFixture = async () => {
   );
   const saved = value(await research.saveAndApply("operator", await input()));
   value(
-    await store.generateDrafts("operator", { prospect: fixture.prospectId }),
+    await draftSyntheticProspect("operator", { prospect: fixture.prospectId }),
   );
   value(
     await store.savePlaybook("operator", {
@@ -253,10 +259,11 @@ const automaticFixture = async () => {
   return { campaign, research: saved.researchId };
 };
 const generated: typeof import("@/server/utils/outbound/draft").generateDraft =
-  async (prospect, playbook) => ({
-    success: true as const,
-    data: { messages: renderMessages(prospect, playbook), issues: [] },
-  });
+  async (prospect, playbook) =>
+    active().draft.composeSequence(prospect, fixture.receipt, playbook, {
+      generate: async () => syntheticWriterParts(prospect, fixture.receipt!),
+      judge: passingCopyJudge,
+    });
 
 const runReview = (
   options: Parameters<
@@ -552,7 +559,7 @@ describe.skipIf(!endpoint)(
       );
       expect(value(await runReview()).processed).toBe(0);
     });
-    test("automatic review shortens an invalid subject without changing sourced body paragraphs", async () => {
+    test("automatic review restores canonical copy from its durable result without buying it again", async () => {
       const { store, db, schema } = active();
       await automaticFixture();
       const before = value(await store.readProspect(fixture.prospectId))!;
@@ -570,10 +577,10 @@ describe.skipIf(!endpoint)(
       expect(value(await runReview({ maxDrafts: 1 }, generate)).approved).toBe(
         1,
       );
-      expect(generate).toHaveBeenCalledTimes(1);
+      expect(generate).not.toHaveBeenCalled();
       const after = value(await store.readProspect(fixture.prospectId))!;
       expect(after.status).toBe("approved");
-      expect(after.messages[0]!.subject).toBe("Trail Tote pricing");
+      expect(after.messages[0]!.subject).toBe("linen bags");
       expect(after.messages.map((message) => message.body)).toEqual(
         before.messages.map((message) => message.body),
       );
@@ -581,7 +588,7 @@ describe.skipIf(!endpoint)(
         0,
       );
     });
-    test("enabling age tolerance resumes automatic review without inventing a fresh shopping capture", async () => {
+    test("age tolerance never waives stale discovery search evidence", async () => {
       const { store } = active();
       await automaticFixture();
       value(
@@ -618,9 +625,10 @@ describe.skipIf(!endpoint)(
       );
       expect(
         value(await runReview({ maxDrafts: 1 }, generate, checkMx)).approved,
-      ).toBe(1);
+      ).toBe(0);
       const after = value(await store.readProspect(before.id));
-      expect(after?.status).toBe("approved");
+      expect(after?.approvedAt).toBeNull();
+      expect(generate).not.toHaveBeenCalled();
       expect(after?.details.shoppingResearchId).toBe(
         before.details.shoppingResearchId,
       );
@@ -664,7 +672,7 @@ describe.skipIf(!endpoint)(
       expect(after.messages[0]?.body).toContain(
         "I'm Juri, the founder of ecentic.",
       );
-      expect(after.messages[0]?.body).toContain(receipt().selected.observation);
+      expect(after.messages[0]?.body).toContain("Canvas Works");
       expect(after.details.shoppingResearchId).toBe(context.research);
       const [unchanged] = await db
         .select()
@@ -735,8 +743,8 @@ describe.skipIf(!endpoint)(
           const draft = await generated(...arguments_);
           if (!draft.success) return draft;
           draft.data.messages[0]!.body = draft.data.messages[0]!.body.replace(
-            "$40",
-            "$50",
+            "Canvas Works",
+            "Invented Shop",
           );
           return draft;
         },
@@ -1066,7 +1074,7 @@ describe.skipIf(!endpoint)(
         .select()
         .from(schema.outboundIntegrationJob)
         .where(eq(schema.outboundIntegrationJob.status, "uncertain"));
-      expect(job?.input["operation"]).toBe("draftReview");
+      expect(job?.input["operation"]).toBe("sequenceComposition");
       const item = value(await store.getReviewItem({ id: fixture.prospectId }));
       expect(
         item?.prospect.issues.some(
@@ -1172,7 +1180,7 @@ describe.skipIf(!endpoint)(
         ),
       );
       value(await research.saveAndApply("operator", await input()));
-      value(await store.generateDrafts("operator", { prospect: row.id }));
+      value(await draftSyntheticProspect("operator", { prospect: row.id }));
       expect(value(await runReview({ maxDrafts: 1 }, generated)).approved).toBe(
         1,
       );
@@ -1477,31 +1485,30 @@ describe.skipIf(!endpoint)(
         ).success,
       ).toBe(false);
     });
-    test("selected source paragraphs survive normal drafting and manual approval", async () => {
+    test("observed fact ledger supports writer copy and manual approval", async () => {
       const { store, research } = active();
       value(await research.saveAndApply("operator", await input()));
       const row = value(await store.readProspect(fixture.prospectId));
       if (!row) throw new Error("Missing prospect");
-      const first = renderMessages(row.details, settings)[0]!;
-      expect(first.body).toContain(receipt().selected.observation);
+      const composed = value(await generated(row.details, settings));
+      const first = composed.messages[0]!;
+      expect(first.body).toContain("Canvas Works");
       expect(first.body).not.toContain("I'd check");
       expect(
-        preservesDraftControls(
-          first.body.replace("$40", "$50"),
-          first.body,
-          settings,
-          row.details,
-        ),
-      ).toBe(false);
-      expect(
         lintMessages(
-          [{ ...first, body: first.body.replace("$40", "$50") }],
+          [
+            {
+              ...first,
+              body: first.body.replace("Canvas Works", "Invented Shop"),
+            },
+          ],
           settings,
           row.details,
-        ).some((issue) => issue.code === "findingCopyChanged"),
+          fixture.receipt!,
+        ).some((issue) => issue.code === "writingChanged"),
       ).toBe(true);
       const draft = value(
-        await store.generateDrafts("operator", { prospect: row.id }),
+        await draftSyntheticProspect("operator", { prospect: row.id }),
       );
       value(
         await store.reviewProspect("operator", {
@@ -1516,7 +1523,7 @@ describe.skipIf(!endpoint)(
       const { store, research } = active();
       value(await research.saveAndApply("operator", await input()));
       const draft = value(
-        await store.generateDrafts("operator", {
+        await draftSyntheticProspect("operator", {
           prospect: fixture.prospectId,
         }),
       );
@@ -1533,7 +1540,7 @@ describe.skipIf(!endpoint)(
         inbox: fixture.inboxId,
       });
       expect(claim.success).toBe(false);
-      if (!claim.success) expect(claim.error.message).toContain("expired");
+      if (!claim.success) expect(claim.error.message).toContain("fresh search");
       setSystemTime(now);
       const row = value(await store.readProspect(fixture.prospectId));
       if (!row) throw new Error("Missing prospect");
@@ -1546,7 +1553,8 @@ describe.skipIf(!endpoint)(
         ),
       );
       expect(
-        (await store.generateDrafts("operator", { prospect: row.id })).success,
+        (await draftSyntheticProspect("operator", { prospect: row.id }))
+          .success,
       ).toBe(false);
     });
     test.each(["send", "revoke", "reply", "optout"] as const)(
@@ -1559,7 +1567,7 @@ describe.skipIf(!endpoint)(
           await research.saveAndApply("operator", await input()),
         );
         const draft = value(
-          await store.generateDrafts("operator", {
+          await draftSyntheticProspect("operator", {
             prospect: fixture.prospectId,
           }),
         );
@@ -1705,7 +1713,7 @@ describe.skipIf(!endpoint)(
         .where(eq(schema.outboundIntegrationJob.id, job.id));
       expect(
         (
-          await store.generateDrafts("operator", {
+          await draftSyntheticProspect("operator", {
             prospect: fixture.prospectId,
           })
         ).success,
@@ -1722,7 +1730,7 @@ describe.skipIf(!endpoint)(
       );
       expect(
         (
-          await store.generateDrafts("operator", {
+          await draftSyntheticProspect("operator", {
             prospect: fixture.prospectId,
           })
         ).success,

@@ -9,19 +9,20 @@ import {
   spyOn,
   test,
 } from "bun:test";
-import { createHash, randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import { eq, sql } from "drizzle-orm";
-import { defaultPlaybook, renderMessages } from "@/lib/outbound";
+import { defaultPlaybook } from "@/lib/outbound";
 import { IntegrationError } from "@/server/utils/outbound/http";
-import type {
-  AiCapture,
-  AiJob,
-  BrowserResearch,
-  RawCapture,
-  Source,
-} from "@/server/utils/outbound/live-shopping-contract";
+import { requireTestDatabase } from "./helpers/database";
+import {
+  buildSyntheticShoppingEvidence,
+  syntheticWriterParts,
+  syntheticWritingPolicy,
+} from "./helpers/outbound-shopping-fixture";
+import { passingCopyJudge } from "./helpers/outbound-writer-fixture";
 
-const endpoint = process.env["OUTBOUND_RESEARCH_TEST_DATABASE_URL"];
+const endpoint = process.env.OUTBOUND_TEST_DATABASE_URL;
+
 const now = new Date("2026-11-19T18:00:00Z");
 const product = {
   name: "Linen tote",
@@ -57,7 +58,7 @@ const value = <Data>(
   if (!result.success) throw result.error;
   return result.data;
 };
-const settings = {
+const settings = syntheticWritingPolicy({
   ...defaultPlaybook,
   automationEnabled: true,
   requireShoppingEvidence: true,
@@ -78,76 +79,7 @@ const settings = {
     productCheckIntro: defaultPlaybook.productCheckIntro,
     voiceNotes: defaultPlaybook.voiceNotes,
   })),
-};
-const raw = (url: string, body: string): RawCapture => ({
-  url,
-  body,
-  status: 200,
-  receivedAt: new Date().toISOString(),
-  sha256: createHash("sha256").update(body).digest("hex"),
 });
-const source = (
-  id: string,
-  kind: Source["kind"],
-  capture: Source["capture"],
-  original: RawCapture,
-): Source => ({
-  id,
-  kind,
-  capture,
-  url: original.url,
-  checkedAt: original.receivedAt,
-  content: original.body,
-  artifact: `sha256:${original.sha256}`,
-});
-const answer = (job: AiJob): AiCapture => {
-  const original = raw(
-    "https://www.google.com/search?q=linen+tote",
-    "Sample Goods Linen tote costs $40.00 USD.",
-  );
-  return {
-    job,
-    executedAt: new Date().toISOString(),
-    receivedAt: new Date().toISOString(),
-    answer: original.body,
-    source: source("answer", "search", "provider", original),
-    links: [{ url: product.url, title: product.name, snippet: original.body }],
-    cached: false,
-    raw: [original],
-  };
-};
-const browser = (): Extract<BrowserResearch, { status: "captured" }> => {
-  const rendered = raw(
-    product.url,
-    "Linen tote by Sample Goods. Current price $30.00 USD for the one-size linen tote.",
-  );
-  const ucp = raw(
-    "https://samplegoods.com/.well-known/ucp",
-    "Not found. UCP capability is unknown.",
-  );
-  return {
-    status: "captured",
-    sources: [
-      source("product", "product", "browser", rendered),
-      source("ucp", "ucp", "http", ucp),
-    ],
-    raw: [rendered, ucp],
-    candidates: [],
-    limitations: ["One answer and one product; checkout was not tested."],
-    ucp: {
-      url: ucp.url,
-      status: "unknown",
-      httpStatus: 200,
-      capabilities: [],
-      sourceIds: ["ucp"],
-    },
-    checkout: {
-      status: "notTested",
-      sourceIds: [],
-      notes: "No checkout interaction.",
-    },
-  };
-};
 const state = {
   ready: true,
   noAngle: false,
@@ -155,15 +87,24 @@ const state = {
   startError: null as IntegrationError | null,
   afterStart: null as (() => Promise<void>) | null,
 };
-const fixture = { campaignId: "", companyId: "" };
+const fixture = {
+  campaignId: "",
+  companyId: "",
+  capture: null as Awaited<
+    ReturnType<typeof buildSyntheticShoppingEvidence>
+  > | null,
+};
 const jobs = async () =>
   active().db.select().from(active().schema.outboundIntegrationJob);
 const currentJob = async () => {
-  const job = (await jobs()).find((job) => job.provider === "automation");
+  const job = (await jobs()).find(
+    (job) => job.input["operation"] === "campaignAutomation",
+  );
   if (!job) throw new Error("Missing automation job");
   return job;
 };
 const advance = async (maxSteps = 20) => {
+  setSystemTime(new Date(Date.now() + 15_000));
   const { db, schema, automation } = active();
   for (const job of (await jobs()).filter(
     (job) => job.provider === "automation" && job.status === "pending",
@@ -274,6 +215,24 @@ const configure = () => {
       providerRequestId: "fixture",
     },
   });
+  const originalGenerate = capture.generateShopperQuery;
+  const originalPoll = capture.pollQuery;
+  const originalAssess = assessment.assess;
+  const originalCompose = draft.composeSequence;
+  spyOn(capture, "inspectProduct").mockImplementation(async () => ({
+    success: true,
+    data: fixture.capture!.evidence.browser,
+  }));
+  spyOn(capture, "generateShopperQuery").mockImplementation(async (input) =>
+    originalGenerate(input, {
+      generate: async ({ prompt }) => ({
+        question: "large linen tote bags",
+        category: "tote",
+        attribute: "large",
+        excerptIds: [JSON.parse(prompt).excerpts[0].id],
+      }),
+    }),
+  );
   spyOn(capture, "startQuery").mockImplementation(async ({ query }) => {
     if (state.startError) return { success: false, error: state.startError };
     if (state.afterStart) await state.afterStart();
@@ -285,52 +244,62 @@ const configure = () => {
   spyOn(capture, "pollQuery").mockImplementation(async ({ job }) =>
     state.pendingPoll
       ? { success: true, data: { status: "pending" } }
-      : { success: true, data: { status: "captured", capture: answer(job) } },
+      : originalPoll(
+          { apiKey: "synthetic", job },
+          {
+            request: async () => ({
+              success: true,
+              data: Response.json({
+                job_id: job.id,
+                status: "done",
+                scraper: job.query.surface,
+                prompt: job.query.prompt,
+                country: "US",
+                completed_at: new Date().toISOString(),
+                result: {
+                  scraper: job.query.surface,
+                  status: "done",
+                  cached: false,
+                  result_markdown:
+                    "1. Canvas Works — Large carry bag.\n2. Harbor Label — Cotton shopper.",
+                  citations: [],
+                },
+              }),
+            }),
+          },
+        ),
   );
   spyOn(capture, "inspectPages").mockImplementation(async () => ({
     success: true,
-    data: browser(),
+    data: fixture.capture!.evidence.browser,
   }));
-  spyOn(assessment, "assess").mockImplementation(async (input) => {
-    const selected = {
-      kind: "product-data-gap" as const,
-      observation:
-        "I searched for linen tote bags and the answer put your Linen tote at $40. Then I opened your product page and saw $30 for the same tote.",
-      consequence: "That lower price did not appear in the answer I saw.",
-      askAbout: "the Linen tote price",
-      scope:
-        "One captured answer and rendered product page; market and checkout were not established.",
-      sourceIds: ["answer", "product"],
-      quotes: [
-        { sourceId: "answer", quote: "Linen tote costs $40.00 USD" },
-        { sourceId: "product", quote: "Current price $30.00 USD" },
-      ],
-    };
-    const output = {
-      decision: state.noAngle ? ("hold" as const) : ("supported" as const),
-      reason: state.noAngle
-        ? "No material discrepancy was established."
-        : "Exact price discrepancy",
-      selected: state.noAngle ? null : selected,
-      competitors: [],
-    };
-    const assembled = value(
-      assessment.assembleResearch(
-        input,
-        output,
-        input.playbook.verificationDays,
-      ),
-    );
-    return {
-      success: true,
-      data: {
-        ...assembled,
-        assessment: output,
-        usage: { inputTokens: 10, outputTokens: 10 },
-        providerRequestId: "fixture",
+  spyOn(assessment, "assess").mockImplementation(async (input) =>
+    originalAssess(input, {
+      generate: async () => {
+        const catalog = assessment.createAssessmentCatalog(input);
+        const answerQuote = catalog.quotes.find(
+          (q) => q.sourceId === catalog.answerSourceId,
+        )!;
+        const pageQuote = catalog.quotes.find(
+          (q) => q.sourceId === catalog.productSourceId,
+        )!;
+        return {
+          ...fixture.capture!.selection,
+          decision: state.noAngle ? "hold" : "supported",
+          reason: state.noAngle
+            ? "No supported angle."
+            : "Exact synthetic facts.",
+          listed: ["Canvas Works", "Harbor Label"].map((name) => ({
+            name,
+            kind: "brand" as const,
+            quoteId: answerQuote.id,
+            price: null,
+          })),
+          productAttributes: [{ value: "large", quoteId: pageQuote.id }],
+        };
       },
-    };
-  });
+    }),
+  );
   const person = {
     id: "person_fixture",
     name: "Jane Smith",
@@ -386,24 +355,21 @@ const configure = () => {
     success: true,
     data: { provider: "google", checkedAt: now.toISOString(), records: [] },
   });
-  spyOn(draft, "generateDraft").mockImplementation(async (details, policy) => ({
-    success: true,
-    data: { messages: renderMessages(details, policy), issues: [] },
-  }));
+  spyOn(draft, "composeSequence").mockImplementation(
+    async (details, receipt, policy, dependencies) =>
+      originalCompose(details, receipt, policy, {
+        ...dependencies,
+        generate: async () => syntheticWriterParts(details, receipt!),
+        judge: passingCopyJudge,
+      }),
+  );
 };
 
 describe.skipIf(!endpoint)(
   "live shopping research in the durable company pipeline",
   () => {
     beforeAll(async () => {
-      if (!endpoint)
-        throw new Error("Dedicated local research database required");
-      const location = new URL(endpoint);
-      if (
-        !["localhost", "127.0.0.1"].includes(location.hostname) ||
-        location.pathname !== "/outbound_research_test"
-      )
-        throw new Error("Local outbound_research_test only");
+      requireTestDatabase(endpoint);
       Object.assign(process.env, {
         DATABASE_URL: endpoint,
         CREDENTIAL_ENCRYPTION_KEY: Buffer.alloc(32, 19).toString("base64"),
@@ -459,6 +425,16 @@ describe.skipIf(!endpoint)(
         pendingPoll: false,
         startError: null,
         afterStart: null,
+      });
+      fixture.capture = await buildSyntheticShoppingEvidence({
+        prospect: {
+          company: "Sample Goods",
+          domain: "samplegoods.com",
+          product: product.name,
+          productUrl: product.url,
+        },
+        now: now.getTime(),
+        pageText: "Linen tote is a large linen bag.",
       });
       configure();
     });
@@ -557,7 +533,7 @@ describe.skipIf(!endpoint)(
       expect((await advance()).results.at(-1)?.status).toBe("complete");
       const [prospect] = await db.select().from(schema.outboundProspect);
       expect(prospect?.status).toBe("approved");
-      expect(prospect?.details.shoppingFinding?.kind).toBe("product-data-gap");
+      expect(prospect?.details.shoppingFinding?.kind).toBe("discovery-absence");
       expect(prospect?.details.shoppingResearchId).toEqual(expect.any(String));
       expect(prospect?.approvedBy).toBe("automatic:outbound-automation");
       expect(await db.select().from(schema.outboundSendAttempt)).toHaveLength(
@@ -567,7 +543,7 @@ describe.skipIf(!endpoint)(
       expect(capture.inspectPages).toHaveBeenCalledTimes(1);
       expect(providers.searchApolloPeople).toHaveBeenCalledTimes(1);
       expect(providers.verifyApolloEmails).toHaveBeenCalledTimes(1);
-      expect(draft.generateDraft).toHaveBeenCalledTimes(1);
+      expect(draft.composeSequence).toHaveBeenCalledTimes(1);
       expect((await advance()).processed).toBe(0);
     });
     test("no supported shopping angle holds before buying contacts or creating a prospect", async () => {
@@ -578,7 +554,7 @@ describe.skipIf(!endpoint)(
         "shopping-research-held",
       );
       expect(providers.searchApolloPeople).not.toHaveBeenCalled();
-      expect(draft.generateDraft).not.toHaveBeenCalled();
+      expect(draft.composeSequence).not.toHaveBeenCalled();
       expect(await db.select().from(schema.outboundProspect)).toHaveLength(0);
       expect((await advance()).processed).toBe(0);
     });
@@ -625,7 +601,7 @@ describe.skipIf(!endpoint)(
       "cooldown leaves queued %s capture work unclaimed",
       async (stage) => {
         const { automation, readiness, assessment, capture } = active();
-        if (stage === "startShoppingQuery") await advance(3);
+        if (stage === "startShoppingQuery") await advance(4);
         else {
           await advance();
           if (stage === "browseShopping") await advance(1);
@@ -661,7 +637,7 @@ describe.skipIf(!endpoint)(
     );
     test("a cooldown appearing after claim delays capture execution without submitting", async () => {
       const { readiness, capture } = active();
-      expect((await advance(3)).results.at(-1)?.stage).toBe(
+      expect((await advance(4)).results.at(-1)?.stage).toBe(
         "startShoppingQuery",
       );
       let checks = 0;
@@ -682,7 +658,7 @@ describe.skipIf(!endpoint)(
       expect(result.results.at(-1)?.stage).toBe("startShoppingQuery");
       expect(result.results.at(-1)?.status).toBe("queued");
       expect((await currentJob()).output?.["availableAt"]).toBe(
-        new Date(now.getTime() + 60_000).toISOString(),
+        new Date(Date.now() + 60_000).toISOString(),
       );
       expect(capture.startQuery).not.toHaveBeenCalled();
       expect(capture.inspectPages).not.toHaveBeenCalled();
@@ -713,7 +689,7 @@ describe.skipIf(!endpoint)(
         expect(retry.output?.["shoppingPollError"]).toBe(code);
         expect(retry.output?.["availableAt"]).toBe(
           new Date(
-            now.getTime() + (code === "rate-limit" ? 300_000 : 60_000),
+            Date.now() + (code === "rate-limit" ? 300_000 : 60_000),
           ).toISOString(),
         );
         expect(

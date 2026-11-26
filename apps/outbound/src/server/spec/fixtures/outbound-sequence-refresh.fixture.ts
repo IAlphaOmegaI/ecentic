@@ -397,7 +397,9 @@ const dependencies = () => {
   assert.equal(counts.verify, 1);
   assert.equal(counts.poll, 1);
   assert.equal(counts.apply, 1);
-  assert.equal((await jobs())[0]?.status, "complete");
+  assert.equal((await jobs())[0]?.status, "failed");
+  assert.match((await jobs())[0]?.error ?? "", /^Copy:/);
+  assert.equal(value(await Store.readProspect(f.id))?.status, "held");
 }
 // MX freshness is checked by the sender; it must not enqueue a paid refresh by itself.
 {
@@ -455,7 +457,7 @@ const dependencies = () => {
     "",
   );
 }
-// Actual Store transaction: new approval revision, same words/hash, immutable original source and sent receipt.
+// A historical sequence without trusted copy stays held; captured receipts and sent words remain immutable.
 {
   const f = await seed();
   const { deps, counts } = dependencies();
@@ -475,20 +477,24 @@ const dependencies = () => {
   assert.equal(counts.apply, 1);
   const refreshed = value(await Store.readProspect(f.id));
   assert(refreshed);
-  assert.equal(refreshed.revision, 3);
-  assert.equal(refreshed.approvalHash, f.hash);
+  assert.equal(refreshed.revision, original.revision);
+  assert.equal(refreshed.approvalHash, original.approvalHash);
   assert.deepEqual(refreshed.messages, f.messages);
   assert.equal(refreshed.details.email, f.details.email);
   assert.equal(refreshed.details.evidence, f.details.evidence);
-  assert.notEqual(
+  assert.equal(
     refreshed.details.evidenceCheckedAt,
     f.details.evidenceCheckedAt,
   );
-  assert.equal(refreshed.status, "active");
+  assert.equal(refreshed.status, "held");
   const records = await jobs();
   assert.equal(records.length, 1);
-  assert.equal(records[0]?.status, "complete");
-  assert.equal(refreshed.details.automationRefreshId, records[0]?.id);
+  assert.equal(records[0]?.status, "failed");
+  assert.match(records[0]?.error ?? "", /^Copy:/);
+  assert.equal(
+    refreshed.details.automationRefreshId,
+    original.details.automationRefreshId,
+  );
   const prior = (
     await db
       .select()
@@ -517,8 +523,10 @@ const dependencies = () => {
   value(await Refresh.run({ prospectId: f.id, maxSteps: 10 }, deps));
   assert.equal(counts.verify, 1);
   assert.equal(counts.apply, 1);
-  await db.transaction((transaction) =>
-    Store.assertAutomaticEvidence(transaction, refreshed),
+  await assert.rejects(() =>
+    db.transaction((transaction) =>
+      Store.assertAppliedCompositionWithin(transaction, refreshed),
+    ),
   );
 }
 // Ambiguous billable response remains one uncertain job, even if someone restores the sequence status.
@@ -637,9 +645,11 @@ const dependencies = () => {
   value(await Refresh.run({ prospectId: f.id, maxSteps: 10 }, deps));
   assert.equal(counts.verify, 1);
   assert.equal(counts.apply, 1);
-  assert.equal((await jobs())[0]?.status, "complete");
+  assert.equal((await jobs())[0]?.status, "failed");
+  assert.match((await jobs())[0]?.error ?? "", /^Copy:/);
+  assert.equal(value(await Store.readProspect(f.id))?.status, "held");
 }
-// Concurrent cron ticks share one reservation and one new immutable approval.
+// Concurrent cron ticks share one reservation and cannot renew an uncomposed legacy sequence.
 {
   const f = await seed();
   const { deps, counts } = dependencies();
@@ -655,7 +665,8 @@ const dependencies = () => {
     Refresh.run({ prospectId: f.id, maxSteps: 10 }, deps),
   ]).then((results) => results.forEach(value));
   assert.equal(counts.apply, 1);
-  assert.equal(value(await Store.readProspect(f.id))?.revision, 3);
+  assert.equal(value(await Store.readProspect(f.id))?.revision, 2);
+  assert.equal(value(await Store.readProspect(f.id))?.status, "held");
 }
 console.log("Sequence refresh coordinator contracts passed (7 scenarios)");
 await db.$client.end({ timeout: 1 });

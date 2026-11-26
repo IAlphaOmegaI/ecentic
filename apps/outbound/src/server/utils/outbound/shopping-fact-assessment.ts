@@ -15,7 +15,6 @@ import * as AI from "@/server/utils/ai";
 import { IntegrationError } from "./http";
 import {
   computeDiscoveryBase,
-  matchMerchantText,
   replayShoppingCapture,
 } from "./live-shopping-ai";
 import { reusableProductCapture } from "./live-shopping-browser";
@@ -165,6 +164,16 @@ export const orderedAnswerEntries = (answer: string) => {
       .trim(),
     heading: match[4] ?? "",
   }));
+};
+
+/** A name mentioned in explanatory prose is not the identity of the list entry. */
+const namesRecommendation = (heading: string, name: string) => {
+  const title = tokens(heading).join(" ");
+  const identity = tokens(name).join(" ");
+  return (
+    Boolean(identity) &&
+    (title === identity || title.startsWith(`${identity} `))
+  );
 };
 
 const priceQualifiers = (value: string) =>
@@ -391,10 +400,10 @@ export const projectFactAssessment = (
   const ordered = orderedAnswerEntries(replay.answerText);
   const merchant = answer.job.query.merchant;
   const matchedEntries = merchant
-    ? ordered.filter(
-        (entry) =>
-          matchMerchantText(entry.text, merchant, answer.job.query.product)
-            .length,
+    ? ordered.filter((entry) =>
+        [merchant.name, merchant.domain, ...merchant.aliases].some((name) =>
+          namesRecommendation(entry.heading, name),
+        ),
       )
     : [];
   const merchantEntry =
@@ -434,7 +443,8 @@ export const projectFactAssessment = (
       );
     const entries = ordered.filter(
       (entry) =>
-        entry.text.includes(item.name) && quote.quote.includes(entry.heading),
+        namesRecommendation(entry.heading, item.name) &&
+        quote.quote.includes(entry.heading),
     );
     if (entries.length !== 1)
       return held(
@@ -814,6 +824,11 @@ export const assessFacts = async (
 ): Promise<Result<AssessmentResult, Error>> => {
   const now = dependencies.now ?? Date.now;
   const deadline = Math.min(input.deadline, now() + 45_000);
+  if (!input.answer.job.query.intent)
+    return {
+      success: true,
+      data: { status: "held", reason: "needs-unbranded-search", attempts: 0 },
+    };
   const prepared = resultify(() => ({
     catalog: createAssessmentCatalog(input),
     base: computeDiscoveryBase({ answer: input.answer }, now()),

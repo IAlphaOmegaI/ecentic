@@ -60,6 +60,7 @@ import { repository } from "@/server/utils/repository";
 import * as LeadResearch from "./lead-research";
 import * as Credentials from "./provider-credentials";
 import * as Composition from "./sequence-composition";
+import { claimShoppingProviderSlot } from "./shopping-provider-pacing";
 import * as Store from "./store";
 
 const Jobs = repository(schema.outboundIntegrationJob);
@@ -735,6 +736,11 @@ const claim = (deadline: number, batchId?: string) =>
           );
         continue;
       }
+      if (
+        ["query", "poll"].includes(state.stage) &&
+        !(await claimShoppingProviderSlot(transaction))
+      )
+        continue;
       const next = preparationStateSchema.parse({
         ...saved,
         lease: {

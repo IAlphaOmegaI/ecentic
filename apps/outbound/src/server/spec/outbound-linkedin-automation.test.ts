@@ -11,8 +11,9 @@ import {
 import { randomUUID } from "node:crypto";
 import { eq, sql } from "drizzle-orm";
 import { defaultPlaybook, prospectSchema } from "@/lib/outbound";
-import { shoppingResearchSchema } from "@/lib/outbound-shopping-research";
 import { IntegrationError } from "@/server/utils/outbound/http";
+import { requireTestDatabase } from "./helpers/database";
+import { syntheticWritingPolicy } from "./helpers/outbound-shopping-fixture";
 
 const endpoint = process.env.OUTBOUND_TEST_DATABASE_URL;
 const now = new Date("2026-11-16T17:00:00.000Z");
@@ -23,6 +24,7 @@ const modules: {
   linkedin?: typeof import("@/server/app/outbound/linkedin-automation");
   research?: typeof import("@/server/app/outbound/lead-research");
   ledger?: typeof import("@/server/utils/outbound/linkedin-ledger");
+  fixtures?: typeof import("./helpers/outbound-shopping-db-fixture");
 } = {};
 const active = () => {
   if (
@@ -31,7 +33,8 @@ const active = () => {
     !modules.campaigns ||
     !modules.linkedin ||
     !modules.research ||
-    !modules.ledger
+    !modules.ledger ||
+    !modules.fixtures
   )
     throw new Error("Fixture not loaded");
   return {
@@ -41,6 +44,7 @@ const active = () => {
     linkedin: modules.linkedin,
     research: modules.research,
     ledger: modules.ledger,
+    fixtures: modules.fixtures,
   };
 };
 const value = <Data>(
@@ -49,7 +53,7 @@ const value = <Data>(
   if (!result.success) throw result.error;
   return result.data;
 };
-const settings = {
+const settings = syntheticWritingPolicy({
   ...defaultPlaybook,
   automationEnabled: true,
   linkedinAutomationEnabled: true,
@@ -58,8 +62,14 @@ const settings = {
   historyConfirmed: true,
   competingSendersPaused: true,
   senderTested: true,
+});
+const fixture = {
+  prospectId: "",
+  companyId: "",
+  campaignId: "",
+  sourceId: "",
+  copyRevision: 0,
 };
-const fixture = { prospectId: "", companyId: "", campaignId: "", sourceId: "" };
 const provider = () => ({
   getAccount: mock(async () => ({
     success: true as const,
@@ -135,117 +145,28 @@ const resetDue = async () =>
     .db.update(active().schema.outboundProspect)
     .set({ linkedinNextActionAt: null })
     .where(eq(active().schema.outboundProspect.id, fixture.prospectId));
-const applyShoppingResearch = async () => {
-  const { db, schema, store, research } = active();
-  const current = await store.policy();
+const draftCurrent = async () =>
   value(
-    await store.savePlaybook("fixture", {
-      ...current.settings,
-      requireShoppingEvidence: true,
+    await active().fixtures.draftSyntheticProspect("fixture", {
+      prospectId: fixture.prospectId,
     }),
   );
-  const [prospect] = await db
-    .select()
-    .from(schema.outboundProspect)
-    .where(eq(schema.outboundProspect.id, fixture.prospectId));
-  if (!prospect) throw new Error("Missing fixture prospect");
-  const policy = await store.policy();
-  return value(
-    await research.saveAndApply("fixture", {
-      requestId: randomUUID(),
-      prospectId: prospect.id,
-      expectedRevision: prospect.revision,
-      expectedPlaybookRevision: policy.revision,
-      receipt: shoppingResearchSchema.parse({
-        product: {
-          name: "Linen tote",
-          url: "https://samplegoods.com/products/tote",
-        },
-        sources: [
-          {
-            id: "raw",
-            kind: "product",
-            url: "https://samplegoods.com/products/tote",
-            checkedAt: now.toISOString(),
-            capture: "http",
-            content: "Linen tote SKU LARGE Offer price 25.00 USD",
-            artifact: "fixture/raw.json",
-          },
-          {
-            id: "visible",
-            kind: "product",
-            url: "https://samplegoods.com/products/tote",
-            checkedAt: now.toISOString(),
-            capture: "browser",
-            content:
-              "Linen tote Large $30.00. Small $25.00 is a separate option.",
-            artifact: "fixture/product.png",
-          },
-          {
-            id: "query",
-            kind: "search",
-            url: "https://www.google.com/search?q=large+linen+tote",
-            checkedAt: now.toISOString(),
-            capture: "browser",
-            content:
-              "large linen tote: Sample Goods Linen tote. Market not established.",
-            artifact: "fixture/query.png",
-          },
-          {
-            id: "ucp",
-            kind: "ucp",
-            url: "https://samplegoods.com/.well-known/ucp",
-            checkedAt: now.toISOString(),
-            capture: "http",
-            content: "404 Not Found",
-            artifact: "fixture/ucp.txt",
-          },
-        ],
-        queries: [
-          {
-            query: "large linen tote",
-            surface: "Google AI Mode",
-            market: "unknown",
-            interfaceLocale: "en-US",
-            signedOut: true,
-            executedAt: now.toISOString(),
-            status: "observed",
-            sourceIds: ["query"],
-            coverage: "One observed answer, not a controlled market test.",
-          },
-        ],
-        ucp: {
-          url: "https://samplegoods.com/.well-known/ucp",
-          status: "notObserved",
-          httpStatus: 404,
-          capabilities: [],
-          sourceIds: ["ucp"],
-        },
-        checkout: {
-          status: "notTested",
-          sourceIds: [],
-          notes: "No checkout interaction.",
-        },
-        competitors: [],
-        selected: {
-          kind: "product-data-gap",
-          observation:
-            "Your large Linen tote shows $30 on the page, while its product data lists $25.",
-          consequence: "Should those prices match for the large size?",
-          askAbout: "the large Linen tote",
-          scope:
-            "One exact variant. No checkout test or measured sales impact.",
-          queryIndex: 0,
-          sourceIds: ["visible", "raw"],
-          quotes: [
-            { sourceId: "visible", quote: "Linen tote Large $30.00" },
-            { sourceId: "raw", quote: "SKU LARGE Offer price 25.00 USD" },
-          ],
-        },
-      }),
+const applyShoppingResearch = async () => {
+  const { fixtures, store } = active();
+  value(
+    await fixtures.saveSyntheticShoppingEvidence("fixture", {
+      prospectId: fixture.prospectId,
     }),
   );
+  const drafted = await draftCurrent();
+  const prospect = value(await store.getProspect(fixture.prospectId));
+  if (!prospect) throw new Error("Missing researched LinkedIn prospect");
+  return {
+    revision: drafted.revision,
+    researchId: prospect.details.shoppingResearchId,
+  };
 };
+
 const create = async () => {
   const { db, schema, store, campaigns } = active();
   value(await store.savePlaybook("fixture", settings));
@@ -279,6 +200,7 @@ const create = async () => {
     roleCheckedAt: now.toISOString(),
     timezone: "America/New_York",
     product: "Linen tote",
+    productCategory: "linen bags",
     productUrl: "https://samplegoods.com/products/tote",
     gap: "product-published-data",
     finding: "your product page lists Linen tote",
@@ -379,6 +301,7 @@ const create = async () => {
     campaignId: campaign.id,
     sourceId,
   });
+  fixture.copyRevision = (await draftCurrent()).revision;
 };
 
 describe.skipIf(!endpoint)(
@@ -386,12 +309,7 @@ describe.skipIf(!endpoint)(
   () => {
     beforeAll(async () => {
       if (!endpoint) throw new Error("Disposable database required");
-      const location = new URL(endpoint);
-      if (
-        !["localhost", "127.0.0.1"].includes(location.hostname) ||
-        location.pathname !== "/outbound_test"
-      )
-        throw new Error("Local outbound_test only");
+      requireTestDatabase(endpoint);
       Object.assign(process.env, {
         DATABASE_URL: endpoint,
         CREDENTIAL_ENCRYPTION_KEY: Buffer.alloc(32, 19).toString("base64"),
@@ -405,6 +323,7 @@ describe.skipIf(!endpoint)(
       );
       modules.research = await import("@/server/app/outbound/lead-research");
       modules.ledger = await import("@/server/utils/outbound/linkedin-ledger");
+      modules.fixtures = await import("./helpers/outbound-shopping-db-fixture");
     });
     beforeEach(async () => {
       setSystemTime(now);
@@ -444,7 +363,7 @@ describe.skipIf(!endpoint)(
       expect(job?.input).toMatchObject({
         text: "",
         action: "invite",
-        prospectRevision: 0,
+        prospectRevision: fixture.copyRevision,
         qualificationJobId: fixture.sourceId,
       });
       expect(job?.output?.["providerInvitationId"]).toBe("invitation_fixture");
@@ -459,14 +378,15 @@ describe.skipIf(!endpoint)(
         .update(schema.outboundCampaign)
         .set({ revision: 2 })
         .where(eq(schema.outboundCampaign.id, fixture.campaignId));
-      const research = await applyShoppingResearch();
+      await applyShoppingResearch();
       const policy = await store.policy();
       value(
         await store.savePlaybook("fixture", {
           ...policy.settings,
-          linkedinTemplate: "Hi {first}. {finding} {signature}",
+          linkedinTemplate: "Hi {first}. {result}",
         }),
       );
+      const refreshed = await draftCurrent();
       const transport = provider();
       const person = value(await transport.resolveUser());
       transport.resolveUser.mockResolvedValue({
@@ -478,17 +398,19 @@ describe.skipIf(!endpoint)(
       const [job] = await rows();
       expect(job?.input).toMatchObject({
         qualificationJobId: fixture.sourceId,
-        prospectRevision: research.revision,
+        prospectRevision: refreshed.revision,
         campaignRevision: 2,
         playbookRevision: (await store.policy()).revision,
-        text: "Hi Jane. Your large Linen tote shows $30 on the page, while its product data lists $25. Account Owner",
+        text: "Hi Jane. It named Canvas Works and Harbor Label. Sample Goods didn't come up.",
       });
       const [source] = await db
         .select()
         .from(schema.outboundIntegrationJob)
         .where(eq(schema.outboundIntegrationJob.id, fixture.sourceId));
       expect(source?.input["campaignRevision"]).toBe(1);
-      expect(source?.input["playbookRevision"]).toBeLessThan(policy.revision);
+      expect(source?.input["playbookRevision"]).toBeLessThan(
+        (await store.policy()).revision,
+      );
       expect(source?.output?.["prospectRevision"]).toBe(0);
     });
     test.each([
@@ -592,13 +514,25 @@ describe.skipIf(!endpoint)(
       expect(transport.sendInvitation).not.toHaveBeenCalled();
       expect(await rows()).toHaveLength(0);
     });
-    test("published-data prospects still require their original source revisions", async () => {
-      const { store, linkedin } = active();
+    test("legacy product-only drafts cannot bypass current trusted copy after a policy change", async () => {
+      const { store, linkedin, db, schema } = active();
+      const prospect = value(await store.getProspect(fixture.prospectId));
+      if (!prospect) throw new Error("Missing legacy prospect");
+      await db
+        .update(schema.outboundProspect)
+        .set({
+          details: {
+            ...prospect.details,
+            gap: "product-published-data",
+            shoppingResearchId: "",
+          },
+        })
+        .where(eq(schema.outboundProspect.id, fixture.prospectId));
       const policy = await store.policy();
       value(
         await store.savePlaybook("fixture", {
           ...policy.settings,
-          linkedinTemplate: "Hi {first}. {finding} {signature}",
+          linkedinTemplate: "Hi {first}. {result}",
         }),
       );
       const transport = provider();
@@ -703,7 +637,7 @@ describe.skipIf(!endpoint)(
       const message = (await rows()).find(
         (job) => job.input["action"] === "message",
       );
-      expect(message?.input["text"]).toContain("Linen tote");
+      expect(message?.input["text"]).toContain("Canvas Works and Harbor Label");
       expect(message?.output?.["providerMessageId"]).toBe("message_fixture");
       await resetDue();
       await linkedin.run({}, transport);
@@ -905,7 +839,7 @@ describe.skipIf(!endpoint)(
       expect(result.held[0]?.reason).toBe("linkedin-capacity");
       expect(transport.sendInvitation).not.toHaveBeenCalled();
     });
-    test("LinkedIn templates cannot borrow the email founder story and signatures use the actual account", async () => {
+    test("LinkedIn notes reuse the reviewed result and keep the actual account without an email biography", async () => {
       const { db, schema, linkedin } = active();
       const transport = provider();
       const person = value(await transport.resolveUser());
@@ -913,29 +847,30 @@ describe.skipIf(!endpoint)(
         success: true,
         data: { ...person, specifics: { network_distance: "FIRST_DEGREE" } },
       });
-      await db
-        .update(schema.outboundPlaybook)
-        .set({
-          settings: {
-            ...settings,
-            linkedinTemplate: "Hi {first}. {founderLine}",
-          },
-        });
-      expect(value(await linkedin.run({}, transport)).held[0]?.reason).toBe(
-        "linkedin-persona-mismatch",
-      );
+      await db.update(schema.outboundPlaybook).set({
+        settings: {
+          ...settings,
+          linkedinTemplate: "Hi {first}. {founderLine}",
+        },
+      });
+      expect(value(await linkedin.run({}, transport)).accepted).toBe(0);
       expect(transport.startChat).not.toHaveBeenCalled();
       await resetDue();
-      await db
-        .update(schema.outboundPlaybook)
-        .set({
-          settings: {
-            ...settings,
-            linkedinTemplate: "Hi {first}. {signature}",
-          },
-        });
+      await db.update(schema.outboundPlaybook).set({
+        settings: {
+          ...settings,
+          linkedinTemplate: "Hi {first}. {result}",
+        },
+      });
+      await draftCurrent();
       expect(value(await linkedin.run({}, transport)).accepted).toBe(1);
-      expect((await rows())[0]?.input["text"]).toBe("Hi Jane. Account Owner");
+      const [sent] = await rows();
+      expect(sent?.input["accountId"]).toBe("acc_fixture");
+      expect(sent?.input["accountUserId"]).toBe("account_user");
+      expect(sent?.input["text"]).toBe(
+        "Hi Jane. It named Canvas Works and Harbor Label. Sample Goods didn't come up.",
+      );
+      expect(sent?.input["text"]).not.toContain("Shopify Plus");
     });
     test("manual LinkedIn replies consume the same account message cap", async () => {
       const { db, schema, linkedin } = active();
@@ -957,21 +892,19 @@ describe.skipIf(!endpoint)(
         })
         .returning();
       if (!thread) throw new Error("Missing conversation");
-      await db
-        .insert(schema.outboundConversationSend)
-        .values(
-          Array.from(
-            { length: settings.linkedinDailyMessages },
-            (_, revision) => ({
-              conversationId: thread.id,
-              revision,
-              status: "accepted" as const,
-              input: { channel: "linkedin", accountId: "acc_fixture" },
-              createdBy: "fixture",
-              createdAt: new Date(now.getTime() - 3_600_000),
-            }),
-          ),
-        );
+      await db.insert(schema.outboundConversationSend).values(
+        Array.from(
+          { length: settings.linkedinDailyMessages },
+          (_, revision) => ({
+            conversationId: thread.id,
+            revision,
+            status: "accepted" as const,
+            input: { channel: "linkedin", accountId: "acc_fixture" },
+            createdBy: "fixture",
+            createdAt: new Date(now.getTime() - 3_600_000),
+          }),
+        ),
+      );
       expect(value(await linkedin.run({}, transport)).held[0]?.reason).toBe(
         "linkedin-capacity",
       );

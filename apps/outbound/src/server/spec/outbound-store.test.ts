@@ -8,11 +8,13 @@ import {
   setSystemTime,
   test,
 } from "bun:test";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { defaultPlaybook, prospectSchema, senderFor } from "@/lib/outbound";
 import { LEGACY_CONTACT_IMPORT_ACTOR } from "@/lib/outbound-saved-contact";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import { requireTestDatabase } from "./helpers/database";
+import { draftSyntheticProspect } from "./helpers/outbound-shopping-db-fixture";
+import { syntheticWritingPolicy } from "./helpers/outbound-shopping-fixture";
 
 const endpoint = process.env.OUTBOUND_TEST_DATABASE_URL;
 const enabled = Boolean(endpoint);
@@ -23,7 +25,7 @@ const modules: {
   database?: typeof import("@/server/database");
   conversations?: typeof import("@/server/app/outbound/conversations");
 } = {};
-const settings = {
+const settings = syntheticWritingPolicy({
   ...defaultPlaybook,
   senderConfirmed: true,
   historyConfirmed: true,
@@ -39,12 +41,13 @@ const settings = {
     productCheckIntro: defaultPlaybook.productCheckIntro,
     voiceNotes: defaultPlaybook.voiceNotes,
   })),
-};
+});
 const details = (domain = "samplegoods.com") =>
   prospectSchema.parse({
     company: "Sample Goods",
     domain,
     country: "US",
+    platform: "shopify",
     name: "Jane Smith",
     first: "Jane",
     title: "Head of Growth",
@@ -79,10 +82,12 @@ const required = <T>(
   if (!result.success) throw result.error;
   return result.data;
 };
-const approved = async () => {
+const approved = async (policySettings = settings) => {
   const { store, db, schema } = active();
+  if (policySettings !== settings)
+    required(await store.savePlaybook(actor, policySettings));
   const created = required(await store.saveProspect(actor, details()));
-  const draft = required(await store.generateDrafts(actor, created));
+  const draft = required(await draftSyntheticProspect(actor, created));
   required(
     await store.reviewProspect(actor, {
       ...created,
@@ -100,7 +105,10 @@ const approved = async () => {
   )[0];
   if (!inbox) throw new Error("Assigned sender not found");
   required(
-    await store.savePlaybook(actor, { ...settings, sendingEnabled: true }),
+    await store.savePlaybook(actor, {
+      ...policySettings,
+      sendingEnabled: true,
+    }),
   );
   return { ...created, inbox: inbox.id, revision: draft.revision };
 };
@@ -128,7 +136,6 @@ const claimedFollowup = async () => {
       fixture.prospect,
       {
         mxCheckedAt: date,
-        evidenceCheckedAt: date,
         emailVerifiedAt: date,
       },
       fixture.revision,
@@ -159,7 +166,7 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
     setSystemTime(now);
     const { store, db, schema } = active();
     await db.execute(
-      sql`truncate outbound_integration_job, outbound_send_attempt, outbound_event, outbound_revision, outbound_prospect, outbound_person, outbound_company, outbound_suppression, outbound_inbox, outbound_playbook cascade`,
+      sql`truncate outbound_campaign_company, outbound_campaign, outbound_integration_job, outbound_send_attempt, outbound_event, outbound_revision, outbound_prospect, outbound_person, outbound_company, outbound_suppression, outbound_inbox, outbound_playbook cascade`,
     );
     required(await store.savePlaybook(actor, settings));
     for (const email of settings.senderEmails.split("\n"))
@@ -210,7 +217,7 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
     if (!stored) throw new Error("Saved prospect missing");
     expect(stored.details.emailVerifiedAt).toBe("");
     expect(stored.details.roleCheckedAt).toBe("");
-    const draft = required(await store.generateDrafts(actor, imported));
+    const draft = required(await draftSyntheticProspect(actor, repeated));
     expect(
       (
         await store.reviewProspect(actor, {
@@ -225,19 +232,17 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
         title: "VP Marketing",
       }),
     );
-    const changedDraft = required(await store.generateDrafts(actor, imported));
+    const changedDraft = await draftSyntheticProspect(actor, changed);
+    expect(changedDraft.success).toBe(false);
+    if (!changedDraft.success)
+      expect(changedDraft.error.message).toContain(
+        "research no longer matches",
+      );
     expect(
-      (
-        await store.reviewProspect(actor, {
-          ...changed,
-          revision: changedDraft.revision,
-          decision: "approve",
-        })
-      ).success,
+      (await store.reviewProspect(actor, { ...changed, decision: "approve" }))
+        .success,
     ).toBe(false);
-    expect((await store.trustSavedContact(actor, changedDraft)).success).toBe(
-      false,
-    );
+    expect((await store.trustSavedContact(actor, changed)).success).toBe(false);
   });
 
   test("manual labels and disabled policy cannot accept an imported verification receipt", async () => {
@@ -275,14 +280,17 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
           expectedRevision: imported.revision,
         }),
       ),
-    ).rejects.toThrow("changed or was held");
-    const draft = await db.transaction((transaction) =>
-      store.generateDraftsWithin(transaction, actor, {
-        prospect: imported.prospect,
-        expectedRevision: accepted.revision,
-      }),
-    );
-    expect(draft.revision).toBe(accepted.revision + 1);
+    ).rejects.toThrow("completed writing job");
+    await expect(
+      db.transaction((transaction) =>
+        store.generateDraftsWithin(transaction, actor, {
+          prospect: imported.prospect,
+          expectedRevision: accepted.revision,
+        }),
+      ),
+    ).rejects.toThrow("completed writing job");
+    const draft = required(await draftSyntheticProspect(actor, accepted));
+    expect(draft.revision).toBeGreaterThan(accepted.revision);
     await db
       .update(schema.outboundProspect)
       .set({ status: "held", holdReason: "operator hold" })
@@ -294,7 +302,7 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
           expectedRevision: draft.revision,
         }),
       ),
-    ).rejects.toThrow("changed or was held");
+    ).rejects.toThrow("completed writing job");
   });
 
   test("preparation reads suppression in its existing transaction", async () => {
@@ -319,7 +327,7 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
     const { store, db, schema } = active();
     const imported = await savedContact();
     const accepted = required(await store.trustSavedContact(actor, imported));
-    const draft = required(await store.generateDrafts(actor, imported));
+    const draft = required(await draftSyntheticProspect(actor, accepted));
     required(
       await store.reviewProspect(actor, {
         ...imported,
@@ -505,7 +513,7 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
     )[0];
     if (!primary) throw new Error("Missing primary inbox");
     const created = required(await store.saveProspect(actor, details()));
-    const draft = required(await store.generateDrafts(actor, created));
+    const draft = required(await draftSyntheticProspect(actor, created));
     required(
       await store.reviewProspect(actor, {
         ...created,
@@ -603,7 +611,6 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
         before.id,
         {
           mxCheckedAt: later,
-          evidenceCheckedAt: later,
           emailVerifiedAt: later,
         },
         before.revision,
@@ -710,7 +717,7 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
         assignedSenderEmail: defaultPlaybook.fromEmail,
       }),
     );
-    const draft = required(await store.generateDrafts(actor, prospect));
+    const draft = required(await draftSyntheticProspect(actor, prospect));
     const prepared = required(await store.readProspect(prospect.prospect));
     expect(prepared?.details.assignedSenderEmail).toBe(identity.email);
     expect(prepared?.messages[0]?.body).toContain(identity.founderLine);
@@ -821,16 +828,14 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
       productCheckIntro: "I'm Mario from ecentic.",
       voiceNotes: "Keep it clear.",
     };
-    await db
-      .insert(schema.outboundInbox)
-      .values({
-        email: identity.email,
-        fromName: identity.fromName,
-        signer: identity.signature,
-        enabled: true,
-        refreshToken: "fixture-refresh",
-        lastSyncedAt: now,
-      });
+    await db.insert(schema.outboundInbox).values({
+      email: identity.email,
+      fromName: identity.fromName,
+      signer: identity.signature,
+      enabled: true,
+      refreshToken: "fixture-refresh",
+      lastSyncedAt: now,
+    });
     required(
       await store.savePlaybook(actor, {
         ...opened.settings,
@@ -1000,7 +1005,7 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
         mxProvider: "microsoft",
       }),
     );
-    const draft = required(await store.generateDrafts(actor, created));
+    const draft = required(await draftSyntheticProspect(actor, created));
     const review = {
       ...created,
       revision: draft.revision,
@@ -1064,7 +1069,7 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
     const created = required(
       await store.saveProspect(actor, { ...details(), timezone: "" }),
     );
-    const drafted = required(await store.generateDrafts(actor, created));
+    const drafted = required(await draftSyntheticProspect(actor, created));
     required(
       await store.reviewProspect(actor, {
         ...created,
@@ -1640,7 +1645,11 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
   });
   test("all three steps keep the original sender, thread, footer and first-send schedule", async () => {
     const { store, db, schema } = active();
-    const fixture = await approved();
+    const fixture = await approved({
+      ...settings,
+      followupOneDays: 2,
+      followupTwoDays: 3,
+    });
     const first = required(await store.claimDelivery(actor, fixture));
     required(
       await store.dispatchDelivery(actor, first, async () => ({
@@ -1652,15 +1661,15 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
       })),
     );
     for (const [step, date] of [
-      [2, "2026-11-12T17:00:00Z"],
-      [3, "2026-11-16T17:00:00Z"],
+      [2, "2026-11-11T17:00:00Z"],
+      [3, "2026-11-12T17:00:00Z"],
     ] as const) {
       setSystemTime(new Date(date));
       required(
         await store.patchProspect(
           actor,
           fixture.prospect,
-          { mxCheckedAt: date, evidenceCheckedAt: date, emailVerifiedAt: date },
+          { mxCheckedAt: date, emailVerifiedAt: date },
           fixture.revision,
         ),
       );
@@ -1715,7 +1724,6 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
         fixture.prospect,
         {
           mxCheckedAt: date,
-          evidenceCheckedAt: date,
           emailVerifiedAt: date,
         },
         fixture.revision,
@@ -1739,7 +1747,7 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
   test("closed and replied prospects cannot be revived by drafting", async () => {
     const { store } = active();
     const created = required(await store.saveProspect(actor, details()));
-    const draft = required(await store.generateDrafts(actor, created));
+    const draft = required(await draftSyntheticProspect(actor, created));
     const row = required(await store.readProspect(created.prospect));
     if (!row) throw new Error("Missing prospect");
     required(
@@ -1749,7 +1757,7 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
         note: "Human reply received",
       }),
     );
-    expect((await store.generateDrafts(actor, created)).success).toBe(false);
+    expect((await draftSyntheticProspect(actor, created)).success).toBe(false);
     expect(
       (
         await store.saveDraft(actor, {
@@ -1766,7 +1774,7 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
       "replied",
     );
   });
-  test("follow-up quotes retain the original accepted address after a playbook change", async () => {
+  test("sent history retains its original address while an unreviewed follow-up edit stays held", async () => {
     const { store, db, schema } = active();
     const fixture = await approved();
     const first = required(await store.claimDelivery(actor, fixture));
@@ -1787,7 +1795,6 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
         fixture.prospect,
         {
           mxCheckedAt: date.toISOString(),
-          evidenceCheckedAt: date.toISOString(),
         },
         fixture.revision,
       ),
@@ -1808,20 +1815,32 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
         followupTwo: "Jane?",
       }),
     );
-    required(
-      await store.reviewProspect(actor, {
-        ...fixture,
-        revision: draft.revision,
-        decision: "approve",
-      }),
-    );
+    expect(
+      (
+        await store.reviewProspect(actor, {
+          ...fixture,
+          revision: draft.revision,
+          decision: "approve",
+        })
+      ).success,
+    ).toBe(false);
     await db.update(schema.outboundInbox).set({ lastSyncedAt: date });
     required(
       await store.savePlaybook(actor, { ...changed, sendingEnabled: true }),
     );
-    const next = required(await store.claimDelivery(actor, fixture));
-    expect(next.message.body).toContain(`> ${settings.postalAddress}`);
-    expect(next.message.body).not.toContain(changed.postalAddress);
+    expect((await store.claimDelivery(actor, fixture)).success).toBe(false);
+    const original = (
+      await db
+        .select()
+        .from(schema.outboundRevision)
+        .where(
+          and(
+            eq(schema.outboundRevision.prospectId, fixture.prospect),
+            eq(schema.outboundRevision.revision, fixture.revision),
+          ),
+        )
+    )[0];
+    expect(original?.manifest?.postalAddress).toBe(settings.postalAddress);
     const snapshot = required(await store.getWorkspace()).prospects.find(
       (prospect) => prospect.id === fixture.prospect,
     );
@@ -1950,21 +1969,47 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
     ]);
     expect(report.bySource.map(({ source }) => source)).toEqual(["manual"]);
   });
-  test("batch approval rejects repeated subjects and observations", async () => {
+  test("trusted distinct openings may share approved relevance and query topics", async () => {
     const { store } = active();
     await approved();
     const other = required(
       await store.saveProspect(actor, details("anothergoods.com")),
     );
-    const draft = required(await store.generateDrafts(actor, other));
+    const draft = required(await draftSyntheticProspect(actor, other));
     const review = await store.reviewProspect(actor, {
       ...other,
       revision: draft.revision,
       decision: "approve",
     });
-    expect(review.success).toBe(false);
-    if (!review.success)
-      expect(review.error.message).toContain("duplicateSubject");
+    expect(review.success).toBe(true);
+    const first = required(await store.getWorkspace()).prospects.find(
+      (prospect) => prospect.id !== other.prospect,
+    );
+    const second = required(await store.readProspect(other.prospect));
+    expect(second?.messages[0]?.subject).toBe(first?.messages[0]?.subject);
+    expect(second?.messages[0]?.writing?.parts.relevance).toBe(
+      first?.messages[0]?.writing?.parts.relevance,
+    );
+    expect(second?.messages[0]?.writing?.parts.opening).not.toBe(
+      first?.messages[0]?.writing?.parts.opening,
+    );
+  });
+  test("a repeated trusted opening cannot be purchased into a second approval", async () => {
+    const { store } = active();
+    const first = await approved();
+    const original = required(await store.readProspect(first.prospect));
+    const parts = original?.messages[0]?.writing?.parts;
+    if (!parts) throw new Error("Trusted fixture writer parts missing.");
+    const other = required(
+      await store.saveProspect(actor, details("repeatedgoods.com")),
+    );
+    const repeated = await draftSyntheticProspect(actor, other, { parts });
+    expect(repeated.success).toBe(false);
+    if (!repeated.success)
+      expect(repeated.error.message).toContain("already used");
+    const stored = required(await store.readProspect(other.prospect));
+    expect(stored?.approvedAt).toBeNull();
+    expect(stored?.messages).toHaveLength(0);
   });
   test("same-fact receipts preserve approval; changed findings revoke it", async () => {
     const { store } = active();
@@ -2084,23 +2129,20 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
       }),
     );
     expect(changed.prospect).toBe(fixture.prospect);
-    const revised = required(await store.generateDrafts(actor, changed));
-    required(
-      await store.reviewProspect(actor, {
-        ...changed,
-        revision: revised.revision,
-        decision: "approve",
-      }),
-    );
-    const result = await store.claimDelivery(actor, {
-      ...changed,
-      inbox: fixture.inbox,
-    });
-    expect(result.success).toBe(false);
-    if (!result.success)
-      expect(result.error.message).toContain(
-        "recipient has an uncertain delivery",
+    const revised = await draftSyntheticProspect(actor, changed);
+    expect(revised.success).toBe(false);
+    if (!revised.success)
+      expect(revised.error.message).toContain(
+        "Reconcile existing delivery attempts",
       );
+    expect(
+      (await store.reviewProspect(actor, { ...changed, decision: "approve" }))
+        .success,
+    ).toBe(false);
+    expect(
+      (await store.claimDelivery(actor, { ...changed, inbox: fixture.inbox }))
+        .success,
+    ).toBe(false);
     const oldIdentity = await db
       .select()
       .from(schema.outboundPerson)
@@ -2308,6 +2350,7 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
     expect(stillUncertain?.status).toBe("uncertain");
     const next = {
       ...details("nextgoods.com"),
+      website: "https://nextgoods.com",
       product: "Cozy throw blanket",
       productUrl: "https://nextgoods.com/products/blanket",
       finding: "The blanket page has no fabric weight listed.",
@@ -2344,7 +2387,7 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
       createdBy: actor,
     });
     const nextDraft = required(
-      await store.generateDrafts(actor, { prospect: prospectId }),
+      await draftSyntheticProspect(actor, { prospect: prospectId }),
     );
     required(
       await store.reviewProspect(actor, {

@@ -7,6 +7,7 @@ import {
   preflightWriterAssembly,
   renderLinkedInResult,
 } from "@/lib/outbound-composition";
+import { deterministicCopyIssues } from "@/lib/outbound-copy-quality";
 import { validateShoppingResearch } from "@/lib/outbound-shopping-research";
 import {
   compositionPrompt,
@@ -130,6 +131,110 @@ describe("observed facts and writer-owned narrative", () => {
         result: "Birch didn't come up. It picked Sample Goods.",
       }).length,
     ).toBeGreaterThan(0);
+  });
+
+  test("quoted names and prices retain their observed order and owner", () => {
+    const fixture = writerFixture();
+    for (const [result, expected] of [
+      [
+        'It picked "Birch" and "Alder". Sample Goods didn\'t come up.',
+        /reordered/,
+      ],
+      [
+        'It picked Birch at "around $36". Sample Goods didn\'t come up.',
+        /price belongs/,
+      ],
+    ] as const) {
+      const parts = { ...fixture.parts, result };
+      expect(
+        issuesFor(fixture, parts).some((issue) => expected.test(issue)),
+      ).toBe(true);
+      const assembled = assembleSequence(
+        fixture.prospect,
+        fixture.receipt,
+        fixture.policy,
+        parts,
+      );
+      expect(assembled.status).toBe("ready");
+      if (assembled.status !== "ready") continue;
+      expect(
+        deterministicCopyIssues({
+          ...fixture,
+          playbook: fixture.policy,
+          parts,
+          messages: assembled.messages,
+        }).some((issue) => expected.test(issue)),
+      ).toBe(true);
+    }
+    for (const result of [
+      'It picked "Alder" and "Birch". Sample Goods didn\'t come up.',
+      'It picked Alder at "around $36". Sample Goods didn\'t come up.',
+    ])
+      expect(issuesFor(fixture, { ...fixture.parts, result })).toEqual([]);
+  });
+
+  test("an identical amount on another result cannot remove a captured qualifier", () => {
+    const fixture = writerFixture();
+    const claims = fixture.receipt.claims;
+    const birch = fixture.receipt.discovery?.listed[1];
+    const price = claims?.find((claim) => claim.kind === "price");
+    if (!claims || !birch || !price)
+      throw new Error("Missing synthetic prices.");
+    birch.price = "$36";
+    claims.push({ ...price, id: "birch-price", value: "$36", qualifiers: [] });
+    expect(
+      issuesFor(fixture, {
+        ...fixture.parts,
+        result: "It picked Alder at $36. Sample Goods didn't come up.",
+      }).some((issue) => /qualifier/.test(issue)),
+    ).toBe(true);
+    for (const result of [
+      "It picked Alder at around $36. Sample Goods didn't come up.",
+      "It picked Birch at $36. Sample Goods didn't come up.",
+    ])
+      expect(issuesFor(fixture, { ...fixture.parts, result })).toEqual([]);
+
+    birch.price = "around $42";
+    const birchPrice = claims.find((claim) => claim.id === "birch-price");
+    if (!birchPrice) throw new Error("Missing synthetic second price.");
+    birchPrice.value = "around $42";
+    birchPrice.qualifiers = ["around"];
+    expect(
+      issuesFor(fixture, {
+        ...fixture.parts,
+        result:
+          "It picked Alder at around $36 and Birch at $42. Sample Goods didn't come up.",
+      }).some((issue) => /qualifier/.test(issue)),
+    ).toBe(true);
+  });
+
+  test("comparison qualifiers stay bound to their answer or page source", () => {
+    const fixture = writerFixture();
+    const claims = fixture.receipt.claims;
+    const price = claims?.find((claim) => claim.kind === "price");
+    if (!claims || !price) throw new Error("Missing synthetic price claims.");
+    fixture.receipt.selected.kind = "query-comparison";
+    claims.push({
+      ...price,
+      id: "page-price",
+      value: "$36",
+      qualifiers: [],
+      sourceIds: ["product"],
+      excerptIds: ["page-excerpt"],
+      queryIndex: null,
+    });
+    expect(
+      issuesFor(fixture, {
+        ...fixture.parts,
+        result: "The answer listed $36. Your page showed around $36.",
+      }).some((issue) => /qualifier/.test(issue)),
+    ).toBe(true);
+    expect(
+      issuesFor(fixture, {
+        ...fixture.parts,
+        result: "The answer listed around $36. Your page showed $36.",
+      }),
+    ).toEqual([]);
   });
 
   test("business-loss claims and two product attributes cannot replace relevance", () => {

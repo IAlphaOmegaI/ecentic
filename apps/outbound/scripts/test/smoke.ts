@@ -59,6 +59,24 @@ export const smokeSuites = [
   "src/server/spec/outbound-saved-contact-preparation.test.ts",
   "src/server/spec/outbound-saved-contact-location.test.ts",
   "src/server/spec/outbound-saved-contact-timezone.test.ts",
+  "src/server/spec/outbound-shopping-facts.test.ts",
+  "src/server/spec/outbound-shopping-fixture.test.ts",
+  "src/server/spec/outbound-shopper-query-identity.test.ts",
+  "src/server/spec/outbound-rebuild-policy.test.ts",
+  "src/server/spec/outbound-writing-policy.test.ts",
+  "src/server/spec/outbound-writing.test.ts",
+  "src/server/spec/outbound-azure-draft.test.ts",
+  "src/server/spec/outbound-controlled-draft.test.ts",
+  "src/server/spec/outbound-compose-sequence.test.ts",
+  "src/server/spec/outbound-composition.test.ts",
+  "src/server/spec/outbound-copy-quality.test.ts",
+  "src/server/spec/outbound-written-lint.test.ts",
+  "src/server/spec/outbound-sequence-composition.test.ts",
+  "src/server/spec/outbound-copy-review-callers.test.ts",
+  "src/server/spec/outbound-funnel.test.ts",
+  "src/server/spec/outbound-held-discovery-review.test.ts",
+  "src/server/spec/outbound-live-research-pipeline.test.ts",
+  "src/server/spec/outbound-linkedin-automation.test.ts",
 ] as const;
 
 export const smokeEnvironment = (
@@ -112,7 +130,16 @@ export const readSmokeReport = (xml: string) => {
   };
 };
 
-const run = async () => {
+export const runSmoke = async (suites: readonly string[] = smokeSuites) => {
+  if (
+    !suites.length ||
+    suites.some(
+      (file) => !/^src\/(?:server|lib)\/spec\/[a-z0-9-]+\.test\.ts$/.test(file),
+    )
+  )
+    throw new Error(
+      "Choose one or more Outbound spec files for an isolated run.",
+    );
   const app = resolve(import.meta.dir, "../..");
   const identifier = randomBytes(6).toString("hex");
   const name = `outbound_smoke_${identifier}`;
@@ -167,7 +194,7 @@ const run = async () => {
     for (const statement of statements) await database.unsafe(statement);
     await database.end();
     const environment = smokeEnvironment(endpoint.href, process.env);
-    for (const file of smokeSuites) {
+    for (const file of suites) {
       const started = Date.now();
       const report = resolve(directory, `${file.split("/").at(-1)}.xml`);
       const execution = Bun.spawn(
@@ -235,7 +262,7 @@ const run = async () => {
   const passed =
     outcome.success &&
     cleanup.success &&
-    results.length === smokeSuites.length &&
+    results.length === suites.length &&
     results.every((result) => result.passed);
   await writeFile(
     resolve(directory, "summary.json"),
@@ -260,4 +287,7 @@ const run = async () => {
   return passed ? 0 : 1;
 };
 
-if (import.meta.main) process.exitCode = await run();
+if (import.meta.main) {
+  const requested = process.argv.slice(2);
+  process.exitCode = await runSmoke(requested.length ? requested : smokeSuites);
+}

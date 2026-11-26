@@ -5,6 +5,7 @@ import { eq, sql } from "drizzle-orm";
 import { defaultPlaybook, prospectSchema } from "@/lib/outbound";
 import { defaultCampaignCriteria } from "@/lib/outbound-campaigns";
 import { LEGACY_CONTACT_IMPORT_ACTOR } from "@/lib/outbound-saved-contact";
+import { shoppingResearchSchema } from "@/lib/outbound-shopping-research";
 import type {
   CompanyEvidence,
   Qualification,
@@ -22,6 +23,12 @@ import {
   shoppingQueryUrl,
 } from "@/server/utils/outbound/scrapellm-cooldown";
 import { requireTestDatabase } from "../helpers/database";
+import {
+  buildSyntheticShoppingCapture,
+  syntheticWriterParts,
+  syntheticWritingPolicy,
+} from "../helpers/outbound-shopping-fixture";
+import { passingCopyJudge } from "../helpers/outbound-writer-fixture";
 
 const endpoint = requireTestDatabase(process.env.OUTBOUND_TEST_DATABASE_URL);
 Object.assign(process.env, { DATABASE_URL: endpoint });
@@ -43,7 +50,7 @@ const value = <Data>(
   return result.data;
 };
 const settings = {
-  ...defaultPlaybook,
+  ...syntheticWritingPolicy(defaultPlaybook),
   automationEnabled: true,
   trustSavedContactVerification: true,
   requireShoppingEvidence: true,
@@ -133,145 +140,57 @@ const evidence = (domain: string): CompanyEvidence => {
     ],
   };
 };
-const captured = (job: AiJob) => {
-  const timestamp = new Date().toISOString();
-  const domain = new URL(job.query.product.url).origin;
-  const raw = (url: string, body: string, status = 200): RawCapture => ({
-    url,
-    body,
-    status,
-    receivedAt: timestamp,
-    sha256: createHash("sha256").update(body).digest("hex"),
-  });
-  const source = (
-    id: string,
-    kind: Source["kind"],
-    capture: Source["capture"],
-    raw: RawCapture,
-  ): Source => ({
-    id,
-    kind,
-    capture,
-    url: raw.url,
-    content: raw.body,
-    checkedAt: timestamp,
-    artifact: `sha256:${raw.sha256}`,
-  });
-  const answerRaw = raw(
-    "https://www.google.com/search?q=linen+tote",
-    "Saved Goods Linen tote costs $30 for the large variant. USD, one-time purchase.",
-  );
-  const productRaw = raw(
-    job.query.product.url,
-    "Linen tote Large $25.00. USD, one-time purchase. Small is a separate option.",
-  );
-  const ucpRaw = raw(`${domain}/.well-known/ucp`, "404 Not Found", 404);
-  const answer: AiCapture = {
-    job,
-    executedAt: timestamp,
-    receivedAt: timestamp,
-    answer: answerRaw.body,
-    source: source("answer", "search", "provider", answerRaw),
-    links: [],
-    cached: false,
-    raw: [answerRaw],
-  };
-  const browser: Extract<BrowserResearch, { status: "captured" }> = {
-    status: "captured",
-    sources: [
-      source("product", "product", "browser", productRaw),
-      source("ucp", "ucp", "http", ucpRaw),
-    ],
-    raw: [productRaw, ucpRaw],
-    ucp: {
-      url: ucpRaw.url,
-      status: "notObserved",
-      httpStatus: 404,
-      capabilities: [],
-      sourceIds: ["ucp"],
+const productCaptures = new Map<
+  string,
+  Extract<BrowserResearch, { status: "captured" }>
+>();
+const productCapture = async (product: { name: string; url: string }) => {
+  const domain = new URL(product.url).hostname;
+  const captured = await buildSyntheticShoppingCapture({
+    prospect: {
+      company: `Saved Goods ${domain.match(/\d+/)?.[0] ?? "0"}`,
+      domain,
+      product: product.name,
+      productUrl: product.url,
     },
-    checkout: {
-      status: "notTested",
-      sourceIds: [],
-      notes: "No checkout interaction.",
-    },
-    candidates: [],
-    limitations: ["Market was not independently established."],
-  };
-  return { answer, browser };
+  });
+  productCaptures.set(product.url, captured.evidence.browser);
+  return captured.evidence.browser;
 };
-const productCapture = (product: { name: string; url: string }) => {
+const captured = async (job: AiJob) => {
   const timestamp = new Date().toISOString();
-  const rendered = {
-    url: product.url,
-    status: 200,
-    checkedAt: timestamp,
-    title: product.name,
-    headings: [product.name],
-    text: `${product.name} Large $25.00 USD, one-time purchase.`,
-    structured: [JSON.stringify({ "@type": "Product", name: product.name })],
-    selected: ["Large"],
-    locale: "en-US",
-    screenshot: "c3ludGhldGljLWZpeHR1cmU=",
-  };
-  const body = JSON.stringify({
-    success: true,
-    stdout: JSON.stringify(rendered),
-    exitCode: 0,
-  });
-  const execution: RawCapture = {
-    url: `https://api.firecrawl.dev/v2/interact/${randomUUID()}/execute`,
-    status: 200,
-    body,
-    sha256: createHash("sha256").update(body).digest("hex"),
-    receivedAt: timestamp,
-  };
-  const projected = projectBrowserExecution({
-    capture: execution,
-    url: product.url,
-    id: "product-browser",
-    productName: product.name,
-    startedAt: timestamp,
-  });
-  assert.ok(projected);
-  const ucpRaw: RawCapture = {
-    url: `${new URL(product.url).origin}/.well-known/ucp`,
-    status: 404,
-    body: "Not Found",
-    sha256: createHash("sha256").update("Not Found").digest("hex"),
-    receivedAt: timestamp,
-  };
-  const browser: Extract<BrowserResearch, { status: "captured" }> = {
-    status: "captured",
-    sources: [
-      projected.source,
+  const polled = value(
+    await Capture.pollQuery(
+      { apiKey: "synthetic", job },
       {
-        id: "ucp",
-        kind: "ucp",
-        capture: "http",
-        url: ucpRaw.url,
-        checkedAt: timestamp,
-        content: "HTTP 404\nNot Found",
-        artifact: `sha256:${ucpRaw.sha256}`,
+        request: async () => ({
+          success: true,
+          data: Response.json({
+            job_id: job.id,
+            status: "done",
+            scraper: job.query.surface,
+            prompt: job.query.prompt,
+            country: job.query.country,
+            completed_at: timestamp,
+            result: {
+              scraper: job.query.surface,
+              status: "done",
+              cached: false,
+              result_markdown:
+                "1. Canvas Works — Large carry bag.\n2. Harbor Label — Cotton shopper.",
+              citations: [],
+            },
+          }),
+        }),
       },
-    ],
-    raw: [execution, ucpRaw],
-    ucp: {
-      url: ucpRaw.url,
-      status: "notObserved",
-      httpStatus: 404,
-      capabilities: [],
-      sourceIds: ["ucp"],
-    },
-    checkout: {
-      status: "notTested",
-      sourceIds: [],
-      notes: "No checkout interaction.",
-    },
-    candidates: [],
-    limitations: [],
-  };
-  return browser;
+    ),
+  );
+  if (polled.status !== "captured")
+    throw new Error("Expected synthetic completed answer.");
+  const browser =
+    productCaptures.get(job.query.product.url) ??
+    (await productCapture(job.query.product));
+  return { answer: polled.capture, browser };
 };
 const calls = {
   start: 0,
@@ -326,14 +245,14 @@ const dependencies: Parameters<typeof Preparation.run>[1] = {
   },
   inspectProduct: async ({ product }) => {
     calls.inspectProduct += 1;
-    return { success: true, data: productCapture(product) };
+    return { success: true, data: await productCapture(product) };
   },
   generateQuery: async (input) => {
     calls.generateQuery += 1;
     return Capture.generateShopperQuery(input, {
       generate: async ({ prompt }) => ({
-        question: "large linen tote",
-        category: "tote",
+        question: "large linen bags",
+        category: "bag",
         attribute: "large",
         excerptIds: [JSON.parse(prompt).excerpts[0].id],
       }),
@@ -364,40 +283,58 @@ const dependencies: Parameters<typeof Preparation.run>[1] = {
     calls.poll += 1;
     return {
       success: true,
-      data: { status: "captured", capture: captured(job).answer },
+      data: { status: "captured", capture: (await captured(job)).answer },
     };
   },
   browse: async ({ answer }) => {
     calls.browse += 1;
-    return { success: true, data: captured(answer.job).browser };
+    return { success: true, data: (await captured(answer.job)).browser };
   },
-  assess: async ({ answer, browser }) =>
-    Assessment.assembleResearch(
-      { answer, browser },
-      {
+  assess: async (input) => {
+    const catalog = Assessment.createAssessmentCatalog(input);
+    const answerQuoteId = catalog.quotes.find(
+      (quote) => quote.sourceId === catalog.answerSourceId,
+    )?.id;
+    const productQuoteId = catalog.quotes.find(
+      (quote) => quote.sourceId === catalog.productSourceId,
+    )?.id;
+    assert.ok(answerQuoteId && productQuoteId);
+    return Assessment.assess(input, {
+      generate: async () => ({
         decision: "supported",
-        reason: "A variant-specific price difference was observed.",
-        competitors: [],
-        selected: {
-          kind: "product-data-gap",
-          observation:
-            "The answer puts the large Linen tote at $30, while the product page shows $25.",
-          consequence: "Should those two prices match for the large size?",
-          askAbout: "the large Linen tote",
-          scope:
-            "One captured answer and rendered product page. The response market and checkout were not established.",
-          sourceIds: ["answer", "product"],
-          quotes: [
-            {
-              sourceId: "answer",
-              quote: "Linen tote costs $30 for the large variant",
-            },
-            { sourceId: "product", quote: "Linen tote Large $25.00" },
-          ],
-        },
+        reason: "Source-bound synthetic absence.",
+        listed: ["Canvas Works", "Harbor Label"].map((name) => ({
+          name,
+          kind: "brand",
+          quoteId: answerQuoteId,
+          price: null,
+        })),
+        description: null,
+        productAttributes: [{ quoteId: productQuoteId, value: "large" }],
+        priceComparison: null,
+        correctness: null,
+        pageDataIssue: null,
+      }),
+    });
+  },
+  compose: async (actor, request) => {
+    const Composition = await import(
+      "@/server/app/outbound/sequence-composition"
+    );
+    return Composition.composeForProspect(actor, request, {
+      generate: async () => {
+        const receipt = shoppingResearchSchema.parse(
+          (await jobFor(request.prospectId)).output?.["shoppingReceipt"],
+        );
+        const prospect = value(await Store.readProspect(request.prospectId));
+        assert.ok(prospect);
+        const variant =
+          Number(prospect.details.domain.match(/\d+/)?.[0] ?? "0") % 10;
+        return syntheticWriterParts(prospect.details, receipt, variant);
       },
-      14,
-    ),
+      judge: passingCopyJudge,
+    });
+  },
 };
 const firstProspect = (batch: { prospects: string[] }) => {
   const prospect = batch.prospects[0];
@@ -424,8 +361,15 @@ const releaseJobs = async () => {
     sql`update outbound_integration_job set output = jsonb_set(output, '{availableAt}', to_jsonb('2000-01-01T00:00:00.000Z'::text)) where input->>'operation' = 'savedContactPreparation' and status = 'pending'`,
   );
 };
-const release = async () => {
+const release = async (releaseProductBrowser = true) => {
   await releaseJobs();
+  if (releaseProductBrowser)
+    await db.execute(
+      sql`update outbound_integration_job set output = jsonb_set(output, '{browserAvailableAt}', to_jsonb('2000-01-01T00:00:00.000Z'::text)) where input->>'operation' = 'savedContactPreparationBatch' and coalesce(output->>'browserAvailableAt','') < '2099-01-01T00:00:00.000Z'`,
+    );
+  await db.execute(
+    sql`update outbound_integration_job set output = jsonb_set(output, '{availableAt}', to_jsonb('2000-01-01T00:00:00.000Z'::text)) where input->>'operation' = 'shoppingProviderPacing'`,
+  );
   await db.execute(
     sql`update outbound_integration_job set output = jsonb_set(output, '{scrapellmAvailableAt}', to_jsonb('2000-01-01T00:00:00.000Z'::text)) where input->>'operation' = 'savedContactPreparationBatch'`,
   );
@@ -461,19 +405,25 @@ assert.equal(calls.inspectProduct, 1);
 assert.equal(calls.generateQuery, 1);
 assert.equal(pending.output?.["shoppingQueryCount"], 1);
 assert.equal(pending.output?.["shoppingQueryIntent"], "unbranded-specific");
-assert.equal(
-  (pending.output?.["query"] as { prompt?: string }).prompt,
-  "large linen tote",
+const pendingQuery = Capture.preparedQuerySchema.parse(
+  pending.output?.["query"],
 );
+assert.equal(pendingQuery.prompt, "large linen bags");
 assert.ok(pending.output?.["productCapture"]);
-assert.ok(
-  (pending.output?.["query"] as { basis?: { promptHash?: string } }).basis
-    ?.promptHash,
-);
+assert.ok(pendingQuery.basis?.promptHash);
 await release();
 value(await run(first.batchId));
 const finished = await jobFor(firstProspect(first));
-assert.equal(finished.status, "complete", JSON.stringify(finished));
+assert.equal(
+  finished.status,
+  "complete",
+  JSON.stringify({
+    status: finished.status,
+    stage: finished.output?.["stage"],
+    error: finished.error,
+    held: finished.output?.["heldReason"],
+  }),
+);
 assert.equal(finished.output?.["stage"], "complete");
 assert.equal(calls.start, 1);
 assert.equal(calls.collect, 1);
@@ -1295,7 +1245,7 @@ assert.deepEqual(marketResumed.output?.["schedulingWindow"], {
   endHour: 21,
 });
 assert.deepEqual(calls, beforeMarketCalls);
-value(await run(marketReview.batchId, {}, 2));
+value(await run(marketReview.batchId, {}, 4));
 assert.equal(
   (await jobFor(firstProspect(marketReview))).output?.["stage"],
   "query",
@@ -1422,7 +1372,7 @@ assert.equal(
   value(await run(throttled.batchId, { browse: rejectedBrowser })).steps,
   0,
 );
-await release();
+await release(false);
 assert.equal(
   value(await run(throttled.batchId, { browse: rejectedBrowser })).steps,
   0,
@@ -1535,7 +1485,23 @@ assert.equal(calls.start, startsBeforeThrottle + 1);
 // One shared batch pacing reservation prevents two workers from starting browsers together.
 const paced = await seed(2);
 value(await Preparation.enqueue("fixture-operator", paced));
-// Hold browser starts while the independently paced query/poll stages finish.
+// Product-page preflight is now a browser stage too; finish it before isolating answer-page pacing.
+for (let cycle = 0; cycle < 40; cycle += 1) {
+  if (
+    (await Promise.all(paced.prospects.map(jobFor))).every(
+      (job) => job.output?.["productCapture"],
+    )
+  )
+    break;
+  await release();
+  value(await run(paced.batchId, {}, 1));
+}
+assert.ok(
+  (await Promise.all(paced.prospects.map(jobFor))).every(
+    (job) => job.output?.["productCapture"],
+  ),
+);
+// Hold answer-browser starts while the independently paced query/poll stages finish.
 await db.execute(
   sql`update outbound_integration_job set output = jsonb_set(output, '{browserAvailableAt}', to_jsonb('2099-01-01T00:00:00.000Z'::text)) where id = ${paced.batchId}`,
 );
@@ -2410,8 +2376,11 @@ assert.deepEqual(
   (await firecrawlBatch(scheduled.batchId)).output,
   budgetBeforeMidnight.output,
 );
-await release();
-value(await run(scheduled.batchId));
+for (let cycle = 0; cycle < 4; cycle += 1) {
+  await release();
+  value(await run(scheduled.batchId));
+  if ((await jobFor(reserved.prospectId)).status === "complete") break;
+}
 const completedScheduled = await jobFor(reserved.prospectId);
 assert.equal(completedScheduled.status, "complete");
 assert.equal(completedScheduled.output?.["queryReservedAt"], reservedAt);

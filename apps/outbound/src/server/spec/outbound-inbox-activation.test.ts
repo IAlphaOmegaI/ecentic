@@ -13,6 +13,8 @@ import {
 import { eq, sql } from "drizzle-orm";
 import { defaultPlaybook, prospectSchema } from "@/lib/outbound";
 import { requireTestDatabase } from "./helpers/database";
+import { draftSyntheticProspect } from "./helpers/outbound-shopping-db-fixture";
+import { syntheticWritingPolicy } from "./helpers/outbound-shopping-fixture";
 
 const endpoint = process.env.OUTBOUND_TEST_DATABASE_URL;
 const now = new Date("2026-11-09T17:00:00Z");
@@ -88,23 +90,26 @@ describe("durable inbox activation", () => {
     setSystemTime(now);
     const { db, schema, store } = active();
     await db.execute(
-      sql`truncate outbound_integration_job, outbound_send_attempt, outbound_event, outbound_revision, outbound_prospect, outbound_person, outbound_company, outbound_suppression, outbound_inbox, outbound_playbook cascade`,
+      sql`truncate outbound_campaign_company, outbound_campaign, outbound_integration_job, outbound_send_attempt, outbound_event, outbound_revision, outbound_prospect, outbound_person, outbound_company, outbound_suppression, outbound_inbox, outbound_playbook cascade`,
     );
     value(
-      await store.savePlaybook(actor, {
-        ...defaultPlaybook,
-        fromEmail: "iseld@joinecentic.com",
-        senderEmails: "iseld@joinecentic.com",
-        inactiveSenderEmails: email,
-        fromName: "Iseld",
-        signature: "Iseld",
-        founderLine: "I'm Iseld, formerly with Shopify Plus.",
-        productCheckIntro: "I'm Iseld, formerly with Shopify Plus.",
-        senderConfirmed: true,
-        historyConfirmed: true,
-        competingSendersPaused: true,
-        senderTested: true,
-      }),
+      await store.savePlaybook(
+        actor,
+        syntheticWritingPolicy({
+          ...defaultPlaybook,
+          fromEmail: "iseld@joinecentic.com",
+          senderEmails: "iseld@joinecentic.com",
+          inactiveSenderEmails: email,
+          fromName: "Iseld",
+          signature: "Iseld",
+          founderLine: "I'm Iseld, formerly with Shopify Plus.",
+          productCheckIntro: "I'm Iseld, formerly with Shopify Plus.",
+          senderConfirmed: true,
+          historyConfirmed: true,
+          competingSendersPaused: true,
+          senderTested: true,
+        }),
+      ),
     );
     await db.insert(schema.outboundInbox).values({
       email: "iseld@joinecentic.com",
@@ -199,6 +204,7 @@ describe("durable inbox activation", () => {
             timezone: "America/New_York",
             mxProvider: "google",
             mxCheckedAt: now.toISOString(),
+            platform: "shopify",
             product: "Linen tote",
             productUrl: "https://samplegoods.com/products/tote",
             finding: "The page lists one size without its dimensions.",
@@ -208,7 +214,7 @@ describe("durable inbox activation", () => {
           }),
         ),
       );
-      const draft = value(await store.generateDrafts(actor, saved));
+      const draft = value(await draftSyntheticProspect(actor, saved));
       value(
         await store.reviewProspect(actor, {
           ...saved,

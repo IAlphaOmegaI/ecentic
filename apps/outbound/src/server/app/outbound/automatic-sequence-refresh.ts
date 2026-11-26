@@ -434,12 +434,21 @@ const execute = async (
         policy.settings,
       );
       if ("reason" in validation) return { state, reason: validation.reason };
-      value(
-        await dependencies.apply({
-          jobId: claim.job.id,
-          leaseToken: claim.state.lease.token,
-        }),
-      );
+      const applied = await dependencies.apply({
+        jobId: claim.job.id,
+        leaseToken: claim.state.lease.token,
+      });
+      // Store validation is a known local decision, even when Result transports
+      // its error without the concrete subclass prototype. It cannot mean a
+      // provider accepted an unknown request.
+      if (!applied.success && applied.error.name === ValidationError.errorName)
+        return {
+          state,
+          reason: applied.error.message.startsWith("Copy:")
+            ? applied.error.message
+            : `Copy: ${applied.error.message}`,
+        };
+      value(applied);
       return { applied: true };
     }
     case "complete":

@@ -1,84 +1,82 @@
 import { mock } from "bun:test";
 import assert from "node:assert/strict";
-import type { z } from "zod";
 import {
-  defaultPlaybook,
-  prospectSchema,
-  renderHistoricalMessages as renderMessages,
-} from "@/lib/outbound";
+  passingCopyJudge,
+  writerFixture,
+} from "../helpers/outbound-writer-fixture";
 
 mock.module("server-only", () => ({}));
-const state = {
-  calls: 0,
-  fail: false,
-  blocked: false,
-  edits: {
-    subject: "Linen tote question",
-    opening: "Your linen tote caught my eye.",
-  },
-};
-mock.module("@/server/utils/ai", () => ({
-  generate: async ({ output }: { output: z.ZodType }) => {
-    state.calls += 1;
-    if (state.fail) throw new Error("Interrupted fixture request");
-    return output.parse(state.edits);
-  },
-}));
-mock.module("@/server/utils/outbound/shopping-research", () => ({
-  evidenceForDraft: async () =>
-    state.blocked
-      ? { success: false, error: new Error("Research not valid") }
-      : { success: true, data: null },
-}));
-const { generateDraft } = await import("@/server/utils/outbound/draft");
-const prospect = prospectSchema.parse({
-  company: "Sample Goods",
-  name: "Jane Smith",
-  first: "Jane",
-  domain: "samplegoods.com",
-  country: "US",
-  product: "Linen tote",
-  finding: "The product page lists one size without dimensions.",
-  evidence: "Visible product capture.",
-});
-const settings = {
-  ...defaultPlaybook,
-  subjectTemplate: "Linen tote details",
-  maxBodyWords: 200,
-};
-const original = renderMessages(prospect, settings);
-const result = await generateDraft(prospect, settings);
+const { composeSequence } = await import("@/server/utils/outbound/draft");
+const fixture = writerFixture();
+const generate = mock(async () => fixture.parts);
+const judge = mock(passingCopyJudge);
+const result = await composeSequence(
+  fixture.prospect,
+  fixture.receipt,
+  fixture.policy,
+  { generate, judge },
+);
 if (!result.success) throw result.error;
-assert.equal(result.success, true);
 assert.deepEqual(result.data.issues, []);
-assert.equal(
-  result.data.messages[0]!.body.replace(`${state.edits.opening}\n\n`, ""),
-  original[0]!.body,
+assert.equal(result.data.messages.length, 3);
+assert.ok(result.data.messages[0]?.body.includes(fixture.parts.opening));
+assert.ok(result.data.messages[0]?.body.includes(fixture.parts.result));
+assert.ok(
+  result.data.messages[0]?.body.includes(fixture.policy.productCheckIntro),
 );
-assert.equal(state.calls, 1);
+assert.ok(result.data.messages[0]?.writing?.quality?.passed);
+assert.equal(generate.mock.calls.length, 1);
+assert.equal(judge.mock.calls.length, 1);
 
-const held = await generateDraft(
-  { ...prospect, finding: "Protected observed product facts ".repeat(80) },
-  { ...settings, maxBodyWords: 99 },
+const held = await composeSequence(
+  fixture.prospect,
+  fixture.receipt,
+  {
+    ...fixture.policy,
+    productCheckIntro: "Immutable founder text ".repeat(80),
+  },
+  { generate, judge },
 );
-if (!held.success) throw held.error;
-assert.equal(held.success, true);
-assert.ok(held.data.issues.some((issue) => issue.code === "wordLimit"));
+assert.equal(held.success, false);
 assert.equal(
-  state.calls,
+  generate.mock.calls.length,
   1,
-  "Invalid immutable body must not spend a model call",
+  "Fixed controls that leave no writing budget must hold before a model call",
 );
-
-state.blocked = true;
-assert.equal((await generateDraft(prospect, settings)).success, false);
-assert.equal(state.calls, 1, "Evidence gate must still precede drafting");
-state.blocked = false;
-state.fail = true;
-assert.equal((await generateDraft(prospect, settings)).success, false);
 assert.equal(
-  state.calls,
-  2,
-  "Interrupted model request must not retry or manufacture a draft",
+  (
+    await composeSequence(fixture.prospect, null, fixture.policy, {
+      generate,
+      judge,
+    })
+  ).success,
+  false,
+);
+assert.equal(
+  generate.mock.calls.length,
+  1,
+  "A missing receipt must hold before drafting",
+);
+const interrupted = mock(async () => {
+  throw new Error("Interrupted fixture request");
+});
+assert.equal(
+  (
+    await composeSequence(fixture.prospect, fixture.receipt, fixture.policy, {
+      generate: interrupted,
+      judge,
+    })
+  ).success,
+  false,
+);
+assert.equal(
+  interrupted.mock.calls.length,
+  1,
+  "An uncertain writer request is not retried",
+);
+assert.equal(
+  judge.mock.calls.length,
+  1,
+  "A failed writer must not purchase copy review",
 );
 console.info("Controlled draft contracts passed");

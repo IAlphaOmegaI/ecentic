@@ -1,7 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import { type Result, resultify } from "@zenncore/utils";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, isNotNull, isNull, sql } from "drizzle-orm";
 import { z } from "zod";
 import { normalizeDomain, prospectSchema } from "@/lib/outbound";
 import {
@@ -16,6 +16,15 @@ import {
 import { db, schema } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
 import { ConflictError, ValidationError } from "@/server/utils/error";
+import {
+  HELD_REVIEW_MANIFEST_HASH,
+  HELD_REVIEW_REASON,
+  heldManifestHash,
+  heldReviewBatchSchema,
+  heldReviewBudgetSchema,
+  heldReviewInputSchema,
+  heldReviewStateSchema,
+} from "@/server/utils/outbound/held-review-contract";
 import {
   aiCaptureSchema,
   browserResearchSchema,
@@ -58,7 +67,7 @@ export const saveResearchSchema = z
 const save = (
   actor: string,
   input: z.infer<typeof saveResearchSchema>,
-  automatic?: { jobId: string; leaseToken: string; kind?: "saved" },
+  automatic?: { jobId: string; leaseToken: string; kind?: "saved" | "held" },
 ) =>
   resultify(async () => {
     const parsed = saveResearchSchema.parse(input);
@@ -171,7 +180,86 @@ const save = (
         : null;
       if (prospect.campaignId && (!campaign || campaign.status === "archived"))
         throw new ConflictError("The campaign is unavailable for research.");
-      if (automatic?.kind === "saved") {
+      if (automatic?.kind === "held") {
+        const job = value(
+          await Jobs.get(Environment.SERVER, automatic.jobId, {
+            tx: transaction,
+          }),
+        );
+        const claim = heldReviewInputSchema.safeParse(job?.input);
+        const state = heldReviewStateSchema.safeParse(job?.output);
+        if (
+          !claim.success ||
+          !state.success ||
+          job?.status !== "starting" ||
+          job.provider !== "automation" ||
+          job.prospectId !== prospect.id ||
+          claim.data.prospectId !== prospect.id ||
+          claim.data.requestedBy !== actor ||
+          state.data.stage !== "applyResearch" ||
+          state.data.lease?.token !== automatic.leaseToken ||
+          Date.parse(state.data.lease.expiresAt) <= Date.now() ||
+          state.data.prospectRevision !== prospect.revision ||
+          parsed.requestId !== job.id ||
+          researchHash(state.data.shoppingReceipt) !== receiptHash ||
+          claim.data.playbookRevision !== policy.revision ||
+          claim.data.researchPolicyHash !==
+            researchPolicyHash(policy.settings) ||
+          claim.data.campaignId !== (campaign?.id ?? null) ||
+          claim.data.campaignRevision !== (campaign?.revision ?? null) ||
+          claim.data.manifestHash !== HELD_REVIEW_MANIFEST_HASH ||
+          prospect.status !== "held" ||
+          prospect.holdReason !== HELD_REVIEW_REASON ||
+          prospect.approvedAt ||
+          prospect.approvedBy ||
+          prospect.approvalHash ||
+          prospect.nextSendAt
+        )
+          throw new ConflictError(
+            "The held review claim, original hold or saved policy changed.",
+          );
+        const batch = value(
+          await Jobs.get(Environment.SERVER, claim.data.batchId, {
+            tx: transaction,
+          }),
+        );
+        const manifest = heldReviewBatchSchema.safeParse(batch?.input);
+        const budget = heldReviewBudgetSchema.safeParse(batch?.output);
+        if (
+          batch?.provider !== "automation" ||
+          !manifest.success ||
+          !budget.success ||
+          budget.data.paused ||
+          manifest.data.requestedBy !== actor ||
+          manifest.data.manifestHash !== HELD_REVIEW_MANIFEST_HASH ||
+          heldManifestHash(manifest.data.manifest.prospectIds) !==
+            HELD_REVIEW_MANIFEST_HASH ||
+          !manifest.data.manifest.prospectIds.includes(prospect.id)
+        )
+          throw new ConflictError(
+            "The explicit held review batch is unavailable.",
+          );
+        const context = value(
+          await Store.getEnrichmentContext(prospect.id, transaction),
+        );
+        if (context.suppressed)
+          throw new ConflictError("This contact or company is suppressed.");
+        const approved = await transaction
+          .select({ id: schema.outboundRevision.id })
+          .from(schema.outboundRevision)
+          .where(
+            and(
+              eq(schema.outboundRevision.prospectId, prospect.id),
+              isNotNull(schema.outboundRevision.approvedAt),
+              isNull(schema.outboundRevision.revokedAt),
+            ),
+          )
+          .limit(1);
+        if (approved.length)
+          throw new ConflictError(
+            "The held prospect still has an active approval.",
+          );
+      } else if (automatic?.kind === "saved") {
         const job = value(
           await Jobs.get(Environment.SERVER, automatic.jobId, {
             tx: transaction,
@@ -279,11 +367,16 @@ const save = (
         const automaticInput = automationInputSchema.safeParse(
           captureJob?.input,
         );
+        const heldInput = heldReviewInputSchema.safeParse(captureJob?.input);
         const validIdentity = savedInput.success
           ? savedInput.data.prospectId === prospect.id &&
             savedInput.data.campaignId === prospect.campaignId
-          : automaticInput.success &&
-            automaticInput.data.campaignId === prospect.campaignId;
+          : heldInput.success
+            ? heldInput.data.prospectId === prospect.id &&
+              heldInput.data.campaignId === prospect.campaignId &&
+              heldInput.data.manifestHash === HELD_REVIEW_MANIFEST_HASH
+            : automaticInput.success &&
+              automaticInput.data.campaignId === prospect.campaignId;
         if (
           captureJob?.provider !== "automation" ||
           captureJob.prospectId !== prospect.id ||
@@ -295,20 +388,24 @@ const save = (
           );
         const captured = captureJob.output ?? {};
         const answer = aiCaptureSchema.parse(
-          savedInput.success ? captured["answer"] : captured["shoppingAnswer"],
+          savedInput.success || heldInput.success
+            ? captured["answer"]
+            : captured["shoppingAnswer"],
         );
         if (!captureMatchesMerchant(answer, prospect.details, parsed.receipt))
           throw new ValidationError(
             "The saved shopper query belongs to an earlier or different company identity.",
           );
         const browser = browserResearchSchema.parse(
-          savedInput.success
+          savedInput.success || heldInput.success
             ? captured["browser"]
             : captured["shoppingBrowser"],
         );
         if (
           browser.status !== "captured" ||
-          researchHash(captured["shoppingReceipt"]) !== receiptHash
+          researchHash(
+            shoppingResearchSchema.parse(captured["shoppingReceipt"]),
+          ) !== receiptHash
         )
           throw new ValidationError(
             "The discovery receipt does not match its completed captures.",
@@ -347,7 +444,36 @@ const save = (
         automationRefreshId: "",
       });
       const saved = await Store.saveProspectWithin(transaction, actor, details);
-      if (automatic?.kind === "saved") {
+      if (automatic?.kind === "held") {
+        const job = value(
+          await Jobs.get(Environment.SERVER, automatic.jobId, {
+            tx: transaction,
+          }),
+        );
+        const state = heldReviewStateSchema.parse(job?.output);
+        const complete = ["no-gap", "product-observation"].includes(
+          finding.kind,
+        );
+        value(
+          await Jobs.update(
+            Environment.SERVER,
+            automatic.jobId,
+            {
+              status: complete ? "complete" : "pending",
+              output: heldReviewStateSchema.parse({
+                ...state,
+                stage: complete ? "complete" : "draft",
+                prospectRevision: saved.revision,
+                researchId: identifier,
+                lease: null,
+                availableAt: new Date().toISOString(),
+              }),
+              updatedAt: new Date(),
+            },
+            { tx: transaction },
+          ),
+        );
+      } else if (automatic?.kind === "saved") {
         const job = value(
           await Jobs.get(Environment.SERVER, automatic.jobId, {
             tx: transaction,
@@ -450,3 +576,10 @@ export const savePreparedAndApply = (
   input: z.infer<typeof saveResearchSchema>,
   claim: { jobId: string; leaseToken: string },
 ) => save(actor, input, { ...claim, kind: "saved" });
+
+/** Explicit 21-prospect research review; preserves its original hold and cannot approve. */
+export const saveHeldAndApply = (
+  actor: string,
+  input: z.infer<typeof saveResearchSchema>,
+  claim: { jobId: string; leaseToken: string },
+) => save(actor, input, { ...claim, kind: "held" });

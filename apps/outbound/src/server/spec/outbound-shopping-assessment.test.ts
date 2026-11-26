@@ -1025,7 +1025,7 @@ describe("finding copy fits its email without dropping qualifications", () => {
   });
 });
 
-test("assessment copy recovery keeps exact evidence and bounded Azure requests", async () => {
+test("fact assessment selects immutable quotes with one repair and bounded Azure requests", async () => {
   const execution = Bun.spawn(
     [
       process.execPath,
@@ -1052,7 +1052,7 @@ test("assessment copy recovery keeps exact evidence and bounded Azure requests",
   ]);
   expect(error).toBe("");
   expect(status).toBe(0);
-  expect(output).toContain("Shopping assessment copy contracts passed");
+  expect(output).toContain("Shopping fact assessment wire contracts passed");
 }, 30000);
 
 describe("opted-in truthful product observations", () => {

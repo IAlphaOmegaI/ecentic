@@ -81,7 +81,9 @@ const MessagePreview = ({
           {t(title)}
         </h3>
         <span className="text-foreground-dimmed text-xs tabular-nums">
-          {t("review.composition.words", { count: countWords(message.body) })}
+          {t("review.composition.words", {
+            count: String(countWords(message.body)),
+          })}
         </span>
       </header>
       <p className="break-words font-medium text-sm">{message.subject}</p>
@@ -313,8 +315,8 @@ export const ReviewEditor = ({
         <p className="text-sm leading-6">
           {outcome === "ranked"
             ? t("review.composition.ranked", {
-                position: research?.position ?? "—",
-                total: research?.total ?? "—",
+                position: String(research?.position ?? "—"),
+                total: String(research?.total ?? "—"),
               })
             : t(`review.composition.${outcome}`)}
         </p>
@@ -525,7 +527,9 @@ export const ReviewEditor = ({
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="font-semibold text-sm">
             {t("review.composition.current")} ·{" "}
-            {t("review.composition.revision", { revision: prospect.revision })}
+            {t("review.composition.revision", {
+              revision: String(prospect.revision),
+            })}
           </h2>
           {previous && (
             <Button
@@ -572,7 +576,7 @@ export const ReviewEditor = ({
               <h2 className="mt-6 font-semibold text-sm">
                 {t("review.composition.previous")} ·{" "}
                 {t("review.composition.revision", {
-                  revision: previous.revision,
+                  revision: String(previous.revision),
                 })}
               </h2>
               {previous.messages.map((message) => (

@@ -207,6 +207,31 @@ const alternate =
   "1. Canvas Works — Large carry bag.\n2. Harbor Label — Cotton shopper.";
 
 describe("fact-only shopping assessment", () => {
+  test("legacy exact-name captures still need the first discovery query, even with a page defect", async () => {
+    const input = await fixture(
+      "Aster Goods Marlow Tote.",
+      "Marlow Tote large linen bag.",
+      ['{"@type":"Product","name":"Marlow Tote","gtin13":"1234567890123"}'],
+    );
+    delete input.evidence.answer.job.query.intent;
+    const generated = mock(async () => {
+      throw new Error("No provider call expected.");
+    });
+    const result = value(
+      await assess(
+        {
+          ...input.evidence,
+          playbook: defaultPlaybook,
+          deadline: input.now + 45_000,
+        },
+        { now: () => input.now, generate: generated },
+      ),
+    );
+    expect(result.status).toBe("held");
+    if (result.status === "held")
+      expect(result.reason).toBe("needs-unbranded-search");
+    expect(generated).not.toHaveBeenCalled();
+  });
   test("builds an absence ledger from exact names and revalidates every field", async () => {
     const input = await fixture(alternate);
     input.selection.listed = ["Canvas Works", "Harbor Label"].map((name) => ({
@@ -273,6 +298,33 @@ describe("fact-only shopping assessment", () => {
     expect(
       projectFactAssessment(input.evidence, input.selection, input.now).status,
     ).toBe("held");
+  });
+
+  test("a merchant mentioned after or within another recommendation is not its listed identity", async () => {
+    for (const answer of [
+      `${alternate}\n3. Cedar — Cotton shopper.\n\nOther stores like Aster Goods were not included.`,
+      `${alternate}\n3. Cedar — Similar bags to Aster Goods.`,
+    ]) {
+      const input = await fixture(answer);
+      input.selection.listed = [
+        "Canvas Works",
+        "Harbor Label",
+        "Aster Goods",
+      ].map((name) => ({
+        name,
+        kind: "brand",
+        quoteId: input.answerQuoteId,
+        price: null,
+      }));
+      const result = projectFactAssessment(
+        input.evidence,
+        input.selection,
+        input.now,
+      );
+      expect(result.status).toBe("held");
+      if (result.status === "held")
+        expect(result.reason).toContain("ordered answer entry");
+    }
   });
 
   test("no-gap needs the full first merchant entry supported by the page", async () => {

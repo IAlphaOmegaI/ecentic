@@ -29,6 +29,7 @@ import { productCategoryCorrection } from "@/server/utils/outbound/product-categ
 import { repository, resultifyRead } from "@/server/utils/repository";
 import * as Steps from "./automation-steps";
 import * as ResearchReadiness from "./research-readiness";
+import { claimShoppingProviderSlot } from "./shopping-provider-pacing";
 import * as Store from "./store";
 
 const Jobs = repository(schema.outboundIntegrationJob);
@@ -316,6 +317,11 @@ const claim = (campaignId?: string, jobId?: string, researchReady = true) =>
           );
         continue;
       }
+      if (
+        ["startShoppingQuery", "pollShoppingQuery"].includes(state.stage) &&
+        !(await claimShoppingProviderSlot(transaction))
+      )
+        continue;
       const output: AutomationState & {
         lease: { token: string; expiresAt: string };
       } = {

@@ -438,6 +438,26 @@ try {
   assert.equal(edited.searchesPerApproved, 1.5);
   await db.execute(sql`update outbound_revision set approved_at = null`);
   assert.equal(value(await Funnel.read(1)).searchesPerApproved, null);
+  // The held review is measured under its honest operation name. Its copied
+  // provider receipts still count as one acknowledged purchase per provider ID.
+  await job(
+    blocked.id,
+    {
+      shoppingReceipt: receipt("no-gap"),
+      shoppingJob: query("held-review-second"),
+      answer: { job: query("held-review-second") },
+      shoppingHistory: [{ shoppingJob: query("search-b1") }],
+    },
+    "complete",
+    "heldDiscoveryReview",
+    new Date(now.getTime() + 1),
+  );
+  const heldReview = value(await Funnel.read(1));
+  assert.equal(heldReview.contactsIn, 6);
+  assert.equal(heldReview.researched, 4);
+  assert.equal(heldReview.noGap, 2);
+  assert.equal(heldReview.blocked, 1);
+  assert.equal(heldReview.searchesPurchased, 4);
   console.log(
     "Measured funnel contracts passed: deduped purchases, current copy, historical approvals, accepted transport, human replies and held meetings.",
   );

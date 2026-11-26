@@ -222,7 +222,7 @@ const RelevanceLines = ({
           >
             <TextareaInput
               rows={3}
-              aria-label={t("relevanceLine", { number: index + 1 })}
+              aria-label={t("relevanceLine", { number: String(index + 1) })}
             />
           </Textarea>
           <Button
@@ -230,7 +230,7 @@ const RelevanceLines = ({
             variant="ghost"
             disabled={disabled}
             onClick={() => update(lines.filter((_, row) => row !== index))}
-            aria-label={t("removeRelevanceLine", { number: index + 1 })}
+            aria-label={t("removeRelevanceLine", { number: String(index + 1) })}
           >
             {t("removeLine")}
           </Button>

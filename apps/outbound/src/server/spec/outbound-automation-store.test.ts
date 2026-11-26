@@ -10,13 +10,15 @@ import {
 } from "bun:test";
 import { createHash } from "node:crypto";
 import { eq, sql } from "drizzle-orm";
-import {
-  defaultPlaybook,
-  prospectSchema,
-  renderMessages,
-} from "@/lib/outbound";
+import { defaultPlaybook, prospectSchema } from "@/lib/outbound";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import { requireTestDatabase } from "./helpers/database";
+import { saveSyntheticShoppingEvidence } from "./helpers/outbound-shopping-db-fixture";
+import {
+  syntheticWriterParts,
+  syntheticWritingPolicy,
+} from "./helpers/outbound-shopping-fixture";
+import { passingCopyJudge } from "./helpers/outbound-writer-fixture";
 
 const endpoint = process.env.OUTBOUND_TEST_DATABASE_URL;
 const modules: {
@@ -67,7 +69,7 @@ const value = <Data>(
   if (!result.success) throw result.error;
   return result.data;
 };
-const settings = {
+const settings = syntheticWritingPolicy({
   ...defaultPlaybook,
   automationEnabled: true,
   senderConfirmed: true,
@@ -84,7 +86,7 @@ const settings = {
     productCheckIntro: defaultPlaybook.productCheckIntro,
     voiceNotes: defaultPlaybook.voiceNotes,
   })),
-};
+});
 const fixture = { campaignId: "", companyId: "" };
 const create = async (domain = "samplegoods.com") => {
   const { db, schema, campaigns } = active();
@@ -1142,7 +1144,7 @@ describe.skipIf(!endpoint)("isolated campaign automation ledger", () => {
       ).toBe("beauty and personal care");
     },
   );
-  test("the normal draft stage corrects broad categories before spending on a draft", async () => {
+  test("the normal draft stage corrects broad categories but holds legacy product-only evidence before buying copy", async () => {
     const { automation, db, schema, draft } = active();
     const job = await undatedVerificationJob();
     await db
@@ -1153,12 +1155,7 @@ describe.skipIf(!endpoint)("isolated campaign automation ledger", () => {
         output: { ...job.output, stage: "draft" },
       })
       .where(eq(schema.outboundIntegrationJob.id, job.id));
-    const generate = spyOn(draft, "generateDraft").mockImplementation(
-      async (details, policy) => ({
-        success: true,
-        data: { messages: renderMessages(details, policy), issues: [] },
-      }),
-    );
+    const generate = spyOn(draft, "composeSequence");
     expect(
       value(await automation.run({ jobId: job.id, maxSteps: 1 })).results.at(-1)
         ?.stage,
@@ -1171,9 +1168,11 @@ describe.skipIf(!endpoint)("isolated campaign automation ledger", () => {
     expect(
       value(await automation.run({ jobId: job.id, maxSteps: 1 })).results.at(-1)
         ?.stage,
-    ).toBe("applyDraft");
-    expect(generate).toHaveBeenCalledTimes(1);
-    expect(generate.mock.calls[0]?.[0].productCategory).toBe("Multi-Stick");
+    ).toBe("draft");
+    expect(generate).not.toHaveBeenCalled();
+    expect((await jobs()).find((entry) => entry.id === job.id)?.status).toBe(
+      "failed",
+    );
   });
   test("a verified-but-undated result rechecks only its original request and never submits verification again", async () => {
     const { automation, providers, db, schema } = active();
@@ -1938,37 +1937,52 @@ describe.skipIf(!endpoint)("isolated campaign automation ledger", () => {
         success: true,
         data: { provider, checkedAt: now, records: [] },
       });
-      spyOn(draft, "generateDraft").mockImplementation(
-        async (details, policy) => ({
-          success: true,
-          data: { messages: renderMessages(details, policy), issues: [] },
-        }),
+      const originalCompose = draft.composeSequence;
+      spyOn(draft, "composeSequence").mockImplementation(
+        async (details, receipt, policy, dependencies) =>
+          originalCompose(details, receipt, policy, {
+            ...dependencies,
+            generate: async () => syntheticWriterParts(details, receipt!),
+            judge: passingCopyJudge,
+          }),
       );
       if (concurrentEdit) {
         const store = active().store;
-        const original = store.saveDraft;
-        spyOn(store, "saveDraft").mockImplementation(async (actor, input) => {
-          const result = await original(actor, input);
-          if (result.success)
-            value(
-              await store.patchProspect(
-                "concurrent-staff",
-                result.data.prospect,
-                { email: "different@samplegoods.com" },
-                result.data.revision,
-              ),
-            );
-          return result;
-        });
+        const original = store.saveComposedDraft;
+        spyOn(store, "saveComposedDraft").mockImplementation(
+          async (actor, input) => {
+            const result = await original(actor, input);
+            if (result.success)
+              value(
+                await store.patchProspect(
+                  "concurrent-staff",
+                  result.data.prospect,
+                  { email: "different@samplegoods.com" },
+                  result.data.revision,
+                ),
+              );
+            return result;
+          },
+        );
       }
       const first = value(await automation.run({ maxSteps: 20 }));
       expect(first.results.at(-1)?.stage).toBe("pollVerification");
       const [pending] = await jobs();
       if (!pending) throw new Error("Missing job");
+      const prospectId = pending.output?.["prospectId"];
+      if (typeof prospectId !== "string")
+        throw new Error("Missing selected prospect");
+      const researched = value(
+        await saveSyntheticShoppingEvidence("fixture", { prospectId }),
+      );
       await db
         .update(schema.outboundIntegrationJob)
         .set({
-          output: { ...pending.output, availableAt: new Date(0).toISOString() },
+          output: {
+            ...pending.output,
+            prospectRevision: researched.revision,
+            availableAt: new Date(0).toISOString(),
+          },
         })
         .where(eq(schema.outboundIntegrationJob.id, pending.id));
       const second = value(await automation.run({ maxSteps: 20 }));
@@ -1978,7 +1992,7 @@ describe.skipIf(!endpoint)("isolated campaign automation ledger", () => {
           status: "held",
           reason: "mx-held",
         });
-        expect(draft.generateDraft).not.toHaveBeenCalled();
+        expect(draft.composeSequence).not.toHaveBeenCalled();
         expect(await db.select().from(schema.outboundSendAttempt)).toHaveLength(
           0,
         );
@@ -1986,7 +2000,9 @@ describe.skipIf(!endpoint)("isolated campaign automation ledger", () => {
       }
       if (concurrentEdit) {
         const [changed] = await db.select().from(schema.outboundProspect);
-        const [job] = await jobs();
+        const job = (await jobs()).find(
+          (entry) => entry.input["operation"] === "campaignAutomation",
+        );
         expect(second.results.at(-1)?.status).toBe("held");
         expect(changed?.details.email).toBe("different@samplegoods.com");
         expect(changed?.approvedBy).toBeNull();
@@ -2007,7 +2023,7 @@ describe.skipIf(!endpoint)("isolated campaign automation ledger", () => {
       expect(providers.enrichApolloPerson).toHaveBeenCalledTimes(1);
       expect(qualification.qualifyCompany).toHaveBeenCalledTimes(1);
       expect(value(await automation.run({ maxSteps: 20 })).processed).toBe(0);
-      expect(draft.generateDraft).toHaveBeenCalledTimes(1);
+      expect(draft.composeSequence).toHaveBeenCalledTimes(1);
     },
   );
 });

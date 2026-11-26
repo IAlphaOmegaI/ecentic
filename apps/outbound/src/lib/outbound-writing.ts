@@ -517,13 +517,12 @@ const ledgerIssues = (
     )
   )
     issues.push(`${field}: a quotation is not in the observed ledger.`);
-  const factual = quoted.reduce(
-    (copy, quote) => withoutPhrase(copy, quote),
-    text,
-  );
+  // Quoting a captured value does not remove its source or ordering obligations.
+  // Only the actual search question is narrative context rather than a result.
+  const factual = withoutPhrase(text, query).replace(/["“”]/g, "");
   const priceClaims = claims.filter((claim) => claim.kind === "price");
   for (const amount of money(factual)) {
-    const matches = priceClaims.filter((claim) =>
+    let matches = priceClaims.filter((claim) =>
       money(claim.value).some(
         (saved) => copyNormal(saved.text) === copyNormal(amount.text),
       ),
@@ -546,27 +545,15 @@ const ledgerIssues = (
             before.toLowerCase().lastIndexOf(right.name.toLowerCase()) -
             before.toLowerCase().lastIndexOf(left.name.toLowerCase()),
         )[0];
-      if (
-        !named?.price ||
-        !money(named.price).some(
-          (saved) => copyNormal(saved.text) === copyNormal(amount.text),
-        )
-      )
+      matches = matches.filter(
+        (claim) =>
+          named?.price && copyNormal(claim.value) === copyNormal(named.price),
+      );
+      if (!matches.length)
         issues.push(
           `${field}: the price belongs to a different named result or is unbound.`,
         );
-    }
-    const local = factual.slice(
-      Math.max(0, amount.index - 30),
-      amount.index + amount.text.length,
-    );
-    if (
-      !matches.some((claim) =>
-        claim.qualifiers.every((qualifier) => hasPhrase(local, qualifier)),
-      )
-    )
-      issues.push(`${field}: a price lost its captured qualifier.`);
-    if (receipt.selected.kind === "query-comparison") {
+    } else {
       const cues = [
         ...factual
           .slice(0, amount.index)
@@ -576,9 +563,9 @@ const ledgerIssues = (
       ];
       const cue = cues.at(-1)?.[0] ?? "";
       const page = /page|site/i.test(cue);
-      if (
-        !cue ||
-        !matches.some((claim) =>
+      matches = matches.filter(
+        (claim) =>
+          cue &&
           claim.sourceIds.some((id) =>
             page
               ? receipt.sources.some(
@@ -586,12 +573,24 @@ const ledgerIssues = (
                 )
               : id === receipt.discovery?.sourceId,
           ),
-        )
-      )
+      );
+      if (!matches.length)
         issues.push(
           `${field}: a compared price is attributed to the wrong source or has no source.`,
         );
     }
+    const beforePrice = factual.slice(0, amount.index);
+    if (
+      matches.length &&
+      !matches.some((claim) =>
+        claim.qualifiers.every((qualifier) =>
+          new RegExp(`${phrasePattern(qualifier).source}\\s*$`, "iu").test(
+            beforePrice,
+          ),
+        ),
+      )
+    )
+      issues.push(`${field}: a price lost its captured qualifier.`);
   }
   const entities = [
     ...(receipt.discovery?.listed ?? []).map((entry) => ({

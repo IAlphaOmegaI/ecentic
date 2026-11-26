@@ -48,7 +48,7 @@ export const read = (playbookRevision: number) =>
           select job.*,
             coalesce(nullif(output->'shoppingReceipt', 'null'::jsonb), nullif(output->'receipt', 'null'::jsonb)) as receipt
           from research_jobs job
-          where operation in ('leadResearch', 'campaignAutomation', 'savedContactPreparation')
+          where operation in ('leadResearch', 'campaignAutomation', 'savedContactPreparation', 'heldDiscoveryReview')
         ), latest_research as (
           select distinct on (contact_id) contact_id,
             receipt->'selected'->>'kind' as kind,

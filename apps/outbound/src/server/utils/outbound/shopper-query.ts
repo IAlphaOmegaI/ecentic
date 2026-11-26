@@ -114,6 +114,59 @@ const ordinaryTitleWords = new Set(
     .map(stem),
 );
 
+const businessIdentityWords = new Set([
+  "co",
+  "company",
+  "inc",
+  "incorporated",
+  "ltd",
+  "limited",
+  "llc",
+  "store",
+  "shop",
+  "good",
+  "brand",
+  "official",
+  "com",
+  "www",
+]);
+
+const distinctiveMerchantWords = (merchant: Merchant) => [
+  ...new Set(
+    [
+      merchant.name,
+      ...(merchant.aliases ?? []),
+      ...merchant.domain.split(".").slice(0, -1),
+    ]
+      .flatMap(words)
+      .map(stem)
+      .filter(
+        (word) =>
+          word.length > 1 &&
+          !ordinaryTitleWords.has(word) &&
+          !businessIdentityWords.has(word),
+      ),
+  ),
+];
+
+// An ordinary word can be part of an identity too. It only supports a product
+// attribute/category when the rendered page also states it outside that name.
+const withoutMerchantIdentity = (text: string, merchant: Merchant) => {
+  let value = ` ${words(text).map(stem).join(" ")} `;
+  const names = [
+    merchant.name,
+    ...(merchant.aliases ?? []),
+    ...merchant.domain.split(".").slice(0, -1),
+  ]
+    .map((name) => words(name).map(stem).join(" "))
+    .filter(Boolean)
+    .sort((left, right) => right.length - left.length);
+  for (const name of names)
+    while (value.includes(` ${name} `))
+      value = value.replaceAll(` ${name} `, " ");
+  return value;
+};
+
 const merchantIdentity = ({ merchant, product }: QueryContext) => {
   const domain = normalizeDomain(product.url);
   if (!domain || domain !== normalizeDomain(merchant.domain)) return null;
@@ -201,7 +254,11 @@ export const validateShopperQuery = (
   const compactQuestion = normalizedQuestion.replaceAll(" ", "");
   const brandNames = [merchant.name, ...merchant.aliases];
   const domainLabels = merchant.domain.split(".").slice(0, -1);
+  const merchantWords = new Set(distinctiveMerchantWords(merchant));
   if (
+    words(query.prompt)
+      .map(stem)
+      .some((word) => merchantWords.has(word)) ||
     brandNames.some((name) => {
       const key = normalized(name);
       return key && phrasePresent(normalizedQuestion, key);
@@ -244,12 +301,24 @@ export const validateShopperQuery = (
   )
     return "The question basis changed or cites an unknown rendered excerpt.";
   if (
-    !selected.some((excerpt) => phrasePresent(excerpt.quote, basis.category)) ||
-    !selected.some((excerpt) => phrasePresent(excerpt.quote, basis.attribute))
+    !selected.some((excerpt) =>
+      phrasePresent(
+        withoutMerchantIdentity(excerpt.quote, merchant),
+        basis.category,
+      ),
+    ) ||
+    !selected.some((excerpt) =>
+      phrasePresent(
+        withoutMerchantIdentity(excerpt.quote, merchant),
+        basis.attribute,
+      ),
+    )
   )
     return "The category and use or occasion need exact support in the rendered product excerpts.";
   const selectedWords = new Set(
-    selected.flatMap((excerpt) => words(excerpt.quote).map(stem)),
+    selected.flatMap((excerpt) =>
+      words(withoutMerchantIdentity(excerpt.quote, merchant)).map(stem),
+    ),
   );
   const functionWords = new Set([
     "a",
@@ -320,7 +389,8 @@ const instructions = [
   "queryStyle is a preference for supported uses or occasions only. It cannot override any grounding, identity or validation rule.",
   "Use a category noun plus exactly one use, occasion or attribute explicitly stated on the product page.",
   "Return 3 to 7 ordinary words, naturally typed by a shopper and readable inside quotation marks.",
-  "Do not include the merchant brand, any alias or domain label, or a distinctive product-title word.",
+  "Do not include the merchant brand, any alias or domain label, any distinctive word from those identities, or a distinctive product-title word.",
+  "A category or attribute must be stated outside the merchant name and aliases; a word in a brand name is not product evidence.",
   "The category and attribute must each appear as a contiguous phrase in both the question and a selected excerpt; singular/plural changes are allowed.",
   "Every meaningful word in the question must occur in a selected rendered excerpt. Do not add price, superiority or recipient modifiers outside the selected category and attribute.",
   "Select supplied excerptIds only. Do not invent or rewrite an excerpt, use, occasion, claim or product.",
@@ -404,6 +474,7 @@ export const generateShopperQuery = async (
       forbiddenTitleWords: words(input.product.name).filter(
         (word) => !ordinaryTitleWords.has(stem(word)),
       ),
+      forbiddenMerchantWords: distinctiveMerchantWords(merchant),
       previousInvalidSelection: previous?.selection ?? null,
       validationFailure: previous?.reason ?? null,
     });

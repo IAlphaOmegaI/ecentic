@@ -11,6 +11,7 @@ import {
   gte,
   inArray,
   isNotNull,
+  isNull,
   lte,
   notInArray,
   or,
@@ -24,7 +25,6 @@ import {
   defaultPlaybook,
   deliveredBody,
   draftSchema,
-  draftSimilarityIssues,
   type Inbox,
   type Issue,
   inSendWindow,
@@ -1392,6 +1392,7 @@ const revoke = async (
         where: and(
           eq(schema.outboundRevision.prospectId, prospect.id),
           eq(schema.outboundRevision.revision, prospect.revision),
+          isNull(schema.outboundRevision.revokedAt),
         ),
       },
       { tx: transaction },
@@ -2776,27 +2777,8 @@ const reviewProspectWithin = async (
       await Suppressions.find(Environment.SERVER, {}, { tx: transaction }),
     );
     const issues = issuesFor(prospect, current.settings, entries);
-    const peers = requireData(
-      await Prospects.find(
-        Environment.SERVER,
-        {
-          where: inArray(schema.outboundProspect.status, [
-            "approved",
-            "active",
-          ]),
-        },
-        { tx: transaction },
-      ),
-    );
-    issues.push(
-      ...draftSimilarityIssues(
-        prospect.messages,
-        peers
-          .filter((peer) => peer.id !== prospect.id)
-          .map((peer) => peer.messages),
-        settingsForProspect(prospect, current.settings),
-      ),
-    );
+    // The trusted composition check above owns current opening/relationship variety.
+    // Approved relevance and short query-topic subjects can truthfully repeat.
     if (issues.length)
       throw new ValidationError(
         `Resolve the review checks before approving: ${issues.map((issue) => issue.code).join(", ")}`,

@@ -18,6 +18,8 @@ import {
 import type * as Providers from "@/server/utils/outbound/company-discovery";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import { requireTestDatabase } from "./helpers/database";
+import { draftSyntheticProspect } from "./helpers/outbound-shopping-db-fixture";
+import { syntheticWritingPolicy } from "./helpers/outbound-shopping-fixture";
 
 const actor = "campaign-fixture-staff";
 const endpoint = process.env.OUTBOUND_TEST_DATABASE_URL;
@@ -201,7 +203,18 @@ describe.skipIf(!endpoint)("campaign service on isolated Postgres", () => {
     await db.execute(
       sql`truncate outbound_campaign_run, outbound_campaign_company, outbound_campaign, outbound_prospect, outbound_company, outbound_person, outbound_event, outbound_revision, outbound_suppression, outbound_playbook, outbound_inbox cascade`,
     );
-    value(await store.savePlaybook(actor, defaultPlaybook));
+    value(
+      await store.savePlaybook(
+        actor,
+        syntheticWritingPolicy({
+          ...defaultPlaybook,
+          senderConfirmed: true,
+          historyConfirmed: true,
+          competingSendersPaused: true,
+          senderTested: true,
+        }),
+      ),
+    );
   });
   test("separate campaign lists reserve a company once across concurrent audiences", async () => {
     const { campaigns } = active();
@@ -720,21 +733,40 @@ describe.skipIf(!endpoint)("campaign service on isolated Postgres", () => {
           domain: company.domain,
           country: "US",
           name: "Jane Smith",
+          first: "Jane",
+          email: `jane@${company.domain}`,
+          emailStatus: "verified",
+          emailVerifiedAt: new Date().toISOString(),
+          emailSource: "synthetic:verified-contact",
+          roleSource: `https://${company.domain}/team`,
+          roleCheckedAt: new Date().toISOString(),
+          timezone: "America/New_York",
+          mxProvider: "google",
+          mxCheckedAt: new Date().toISOString(),
+          product: "Linen tote",
+          productUrl: `https://${company.domain}/products/tote`,
+          legitEvidence: "Synthetic physical-product catalogue.",
           title: "Head of Growth",
           platform: "shopify",
         }),
       }),
     );
-    await db
-      .update(schema.outboundProspect)
-      .set({
-        status: "approved",
-        approvedAt: new Date(),
-        approvedBy: actor,
-        approvalHash: "approved-fixture",
-        nextSendAt: new Date(),
-      })
-      .where(eq(schema.outboundProspect.id, saved.prospect));
+    value(
+      await campaigns.update(actor, {
+        id,
+        expectedRevision: 1,
+        name: "Active audience",
+        status: "active",
+      }),
+    );
+    const drafted = value(await draftSyntheticProspect(actor, saved));
+    value(
+      await store.reviewProspect(actor, {
+        prospect: saved.prospect,
+        revision: drafted.revision,
+        decision: "approve",
+      }),
+    );
     const inbox = (
       await db
         .insert(schema.outboundInbox)
@@ -756,7 +788,7 @@ describe.skipIf(!endpoint)("campaign service on isolated Postgres", () => {
     );
     const approval = await store.reviewProspect(actor, {
       prospect: saved.prospect,
-      revision: 0,
+      revision: drafted.revision,
       decision: "approve",
     });
     const delivery = await store.claimDelivery(actor, {
@@ -886,14 +918,28 @@ describe.skipIf(!endpoint)("campaign service on isolated Postgres", () => {
           domain: company.domain,
           country: "US",
           name: "Jane Smith",
+          first: "Jane",
+          email: `jane@${company.domain}`,
+          emailStatus: "verified",
+          emailVerifiedAt: new Date().toISOString(),
+          emailSource: "synthetic:verified-contact",
+          roleSource: `https://${company.domain}/team`,
+          roleCheckedAt: new Date().toISOString(),
+          timezone: "America/New_York",
+          mxProvider: "google",
+          mxCheckedAt: new Date().toISOString(),
+          product: "Linen tote",
+          productUrl: `https://${company.domain}/products/tote`,
+          legitEvidence: "Synthetic physical-product catalogue.",
           platform: "shopify",
           title: "Head of Growth",
         }),
       }),
     );
+    const drafted = value(await draftSyntheticProspect(actor, saved));
     const approval = await store.reviewProspect(actor, {
       prospect: saved.prospect,
-      revision: 0,
+      revision: drafted.revision,
       decision: "approve",
     });
     expect(approval.success).toBe(false);

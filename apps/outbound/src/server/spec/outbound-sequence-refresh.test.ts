@@ -2,7 +2,7 @@ import { expect, test } from "bun:test";
 import { resolve } from "node:path";
 
 test.skipIf(!process.env.OUTBOUND_TEST_DATABASE_URL)(
-  "sequence refresh checkpoints providers and renews only unchanged automatic approvals",
+  "sequence refresh checkpoints providers and holds historical copy without changing sent receipts",
   async () => {
     const execution = Bun.spawn(
       [
