@@ -6,6 +6,34 @@ import {
   shoppingResearchSchema,
 } from "@/lib/outbound-shopping-research";
 
+/** Injected judge response for lifecycle tests; it makes no claim about real copy. */
+export const passingCopyJudge = async () => ({
+  openingFits: {
+    passed: true,
+    reason: "The synthetic opening fits its product.",
+  },
+  resultCheckable: {
+    passed: true,
+    reason: "The synthetic result matches its supplied ledger.",
+  },
+  reasonToCare: {
+    passed: true,
+    reason: "The approved relevance explains the finding.",
+  },
+  founderTransition: {
+    passed: true,
+    reason: "The configured founder sentence follows the finding.",
+  },
+  oneChatAsk: {
+    passed: true,
+    reason: "Each email has only its configured conversation ask.",
+  },
+  naturalVoice: {
+    passed: true,
+    reason: "The synthetic copy uses the configured sender voice.",
+  },
+});
+
 /** Synthetic copy-only facts; these are not evidence of any real search or merchant. */
 export const writerFixture = (ranked = false) => {
   const checkedAt = new Date().toISOString();

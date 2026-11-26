@@ -13,6 +13,7 @@ import {
   canonicalSequenceInput,
   writingSnapshotSchema,
 } from "@/lib/outbound-composition";
+import { hasCompleteCopyVerdict } from "@/lib/outbound-copy-quality";
 import { compositionReferenceSchema } from "@/lib/outbound-sequence-composition";
 import { shoppingResearchSchema } from "@/lib/outbound-shopping-research";
 import type { CompositionPeer } from "@/lib/outbound-writing";
@@ -98,6 +99,7 @@ export type CompletedComposition = Pick<
 export type CompositionDependencies = {
   compose?: typeof Draft.composeSequence;
   generate?: Draft.CompositionDependencies["generate"];
+  judge?: Draft.CompositionDependencies["judge"];
   now?: () => number;
   deadline?: number;
 };
@@ -162,9 +164,10 @@ const readCompleted = (job: Job): CompletedComposition => {
     Policy.writingPolicyHash(input.settings, {
       globalVoiceNotes: input.globalVoiceNotes,
     }) !== input.writingPolicyHash ||
-    Research.researchHash(input.prospect) !== input.prospectHash ||
+    Policy.compositionProspectHash(input.prospect) !== input.prospectHash ||
     canonical.status !== "ready" ||
     !writing ||
+    !hasCompleteCopyVerdict(writing.quality) ||
     writing.revision !== null ||
     writing.writingPolicyHash !== input.writingPolicyHash ||
     writing.receiptHash !== input.receiptHash ||
@@ -403,7 +406,7 @@ export const composeForProspect = async (
     const writingPolicyHash = Policy.writingPolicyHash(settings, {
       globalVoiceNotes,
     });
-    const prospectHash = Research.researchHash(details);
+    const prospectHash = Policy.compositionProspectHash(details);
     const key = compositionJobKey(prospect.id, receiptHash, writingPolicyHash);
     const prior = value(
       await Jobs.find(
@@ -446,7 +449,11 @@ export const composeForProspect = async (
               status: "uncertain",
               error:
                 "The writer lost its lease. Reconcile this attempt before another model request.",
-              output: { ...prior.output, lease: null },
+              output: {
+                ...prior.output,
+                lease: null,
+                ...(lease.success ? { expiredLease: lease.data } : {}),
+              },
               updatedAt: new Date(now()),
             },
             { tx: scope },
@@ -489,6 +496,13 @@ export const composeForProspect = async (
           "An earlier writing attempt for this prospect is running or uncertain. Resolve it before using changed copy settings.",
         ),
       };
+    if (
+      dependencies.deadline !== undefined &&
+      dependencies.deadline - now() < 35_000
+    )
+      throw new ConflictError(
+        "There is not enough time to write and review this sequence. No writing request was started.",
+      );
     const batchKey = await batchFor(scope, prospect);
     const peers = value(
       await recentCompositionPeers(prospect, batchKey, scope),
@@ -547,10 +561,73 @@ export const composeForProspect = async (
       claim.input.settings,
       {
         generate: dependencies.generate,
+        judge: dependencies.judge,
         now,
         deadline: dependencies.deadline,
         peers: claim.input.peers,
         globalVoiceNotes: claim.input.globalVoiceNotes,
+        onWritten: async (draft) => {
+          const mayJudge = value(
+            await transaction(async (scope) => {
+              const current = value(
+                await Jobs.get(Environment.SERVER, claim.job.id, { tx: scope }),
+              );
+              const saved = leaseSchema.safeParse(current?.output?.["lease"]);
+              const expired = leaseSchema.safeParse(
+                current?.output?.["expiredLease"],
+              );
+              const ownsStarting =
+                current?.status === "starting" &&
+                saved.success &&
+                saved.data.token === claim.lease.token;
+              const ownsExpired =
+                current?.status === "uncertain" &&
+                expired.success &&
+                expired.data.token === claim.lease.token;
+              if (!current || (!ownsStarting && !ownsExpired))
+                throw uncertain(
+                  claim.job.id,
+                  "The writing lease changed before copy review. The judge was not called.",
+                );
+              const active =
+                ownsStarting &&
+                saved.success &&
+                Date.parse(saved.data.expiresAt) > now();
+              value(
+                await Jobs.update(
+                  Environment.SERVER,
+                  current.id,
+                  {
+                    status: active ? "starting" : "uncertain",
+                    output: {
+                      ...current.output,
+                      draftBeforeJudge: draft,
+                      writerCompletedAt: new Date(now()).toISOString(),
+                      ...(!active
+                        ? {
+                            lease: null,
+                            expiredLease: saved.success
+                              ? saved.data
+                              : expired.success
+                                ? expired.data
+                                : null,
+                          }
+                        : {}),
+                    },
+                    updatedAt: new Date(now()),
+                  },
+                  { tx: scope },
+                ),
+              );
+              return active;
+            }),
+          );
+          if (!mayJudge)
+            throw uncertain(
+              claim.job.id,
+              "The writer response was retained after lease expiry. The judge was not called.",
+            );
+        },
       },
     ),
   );
@@ -563,6 +640,45 @@ export const composeForProspect = async (
     );
     const { lease: savedLease } = current?.output ?? {};
     const lease = leaseSchema.safeParse(savedLease);
+    const expiredLease = leaseSchema.safeParse(
+      current?.output?.["expiredLease"],
+    );
+    if (
+      current?.status === "uncertain" &&
+      expiredLease.success &&
+      expiredLease.data.token === claim.lease.token &&
+      current.output?.["receivedAt"] === undefined
+    ) {
+      value(
+        await Jobs.update(
+          Environment.SERVER,
+          current.id,
+          {
+            output: {
+              ...current.output,
+              receivedAt: new Date(now()).toISOString(),
+              ...(response.success
+                ? { unappliedResult: response.data }
+                : {
+                    failure: {
+                      name: response.error.name,
+                      message: response.error.message,
+                    },
+                  }),
+            },
+            updatedAt: new Date(now()),
+          },
+          { tx: scope },
+        ),
+      );
+      return {
+        success: false as const,
+        error: uncertain(
+          current.id,
+          "The late writing response was retained for reconciliation. It has not been applied.",
+        ),
+      };
+    }
     if (
       current?.status !== "starting" ||
       !lease.success ||
@@ -622,6 +738,7 @@ export const composeForProspect = async (
             status: known ? "failed" : "uncertain",
             error: message,
             output: {
+              ...current.output,
               lease: null,
               failure: { name: response.error.name, message },
               completedAt: new Date(now()).toISOString(),

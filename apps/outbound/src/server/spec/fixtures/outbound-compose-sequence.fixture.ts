@@ -5,7 +5,10 @@ import {
   canonicalSequenceInput,
   type WriterParts,
 } from "@/lib/outbound-composition";
-import { writerFixture } from "../helpers/outbound-writer-fixture";
+import {
+  passingCopyJudge,
+  writerFixture,
+} from "../helpers/outbound-writer-fixture";
 
 mock.module("server-only", () => ({}));
 const { composeSequence } = await import("@/server/utils/outbound/draft");
@@ -41,6 +44,7 @@ const valid = await composeSequence(
   fixture.receipt,
   fixture.policy,
   {
+    judge: passingCopyJudge,
     generate: async (request) => {
       requests.push(request);
       return fixture.parts;
@@ -52,7 +56,8 @@ assert.equal(valid.data.generation.attempts, 1);
 assert.equal(requests.length, 1);
 assert.deepEqual(valid.data.issues, []);
 assert.equal(valid.data.messages[0]?.writing?.narrative.relationship, "sister");
-assert.equal(valid.data.messages[0]?.writing?.quality, null);
+assert.equal(valid.data.messages[0]?.writing?.quality?.passed, true);
+assert.equal(valid.data.messages[0]?.writing?.quality?.criteria.length, 6);
 assert.equal(valid.data.messages[0]?.writing?.revision, null);
 const canonical = canonicalSequenceInput(valid.data.messages);
 assert.equal(canonical.status, "ready");
@@ -80,12 +85,61 @@ assert.equal(fixture.prospect.personalLine, "");
 assert.ok(fixture.receipt.claims?.every((claim) => claim.type === "observed"));
 assert.ok(!JSON.stringify(fixture.receipt).includes("sister"));
 
+const judgeFailures: string[] = [];
+const copyHeld = await composeSequence(
+  fixture.prospect,
+  fixture.receipt,
+  fixture.policy,
+  {
+    generate: async () => fixture.parts,
+    judge: async () => {
+      judgeFailures.push("judged");
+      return {
+        ...(await passingCopyJudge()),
+        naturalVoice: { passed: false, reason: "The transition sounds stiff." },
+      };
+    },
+  },
+);
+assert.ok(
+  copyHeld.success,
+  copyHeld.success ? undefined : copyHeld.error.message,
+);
+assert.equal(copyHeld.data.messages.length, 3);
+assert.equal(copyHeld.data.messages[0]?.writing?.quality?.passed, false);
+assert.match(copyHeld.data.issues[0]?.field ?? "", /^Copy:/);
+assert.match(copyHeld.data.issues[0]?.field ?? "", /stiff/);
+assert.equal(
+  judgeFailures.length,
+  1,
+  "A failed copy decision is retained, not retried into a pass.",
+);
+
+const interruptedJudgeCalls: number[] = [];
+const judgeInterrupted = await composeSequence(
+  fixture.prospect,
+  fixture.receipt,
+  fixture.policy,
+  {
+    generate: async () => fixture.parts,
+    judge: async () => {
+      interruptedJudgeCalls.push(1);
+      throw new Error("Synthetic judge interruption");
+    },
+  },
+);
+assert.equal(judgeInterrupted.success, false);
+assert.equal(interruptedJudgeCalls.length, 1);
+if (!judgeInterrupted.success)
+  assert.equal((judgeInterrupted.error as { code?: string }).code, "uncertain");
+
 const repairRequests: string[] = [];
 const repaired = await composeSequence(
   fixture.prospect,
   fixture.receipt,
   fixture.policy,
   {
+    judge: passingCopyJudge,
     generate: async ({ prompt }) => {
       repairRequests.push(prompt);
       return repairRequests.length === 1

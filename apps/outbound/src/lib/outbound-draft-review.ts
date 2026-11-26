@@ -11,6 +11,13 @@ export const draftReviewInputSchema = z.object({
   playbookRevision: z.number().int().nonnegative(),
   regenerate: z.boolean(),
   readinessKey: z.string().min(1),
+  copyReadinessHash: z
+    .string()
+    .regex(/^[a-f0-9]{64}$/)
+    .optional(),
+  copyContractVersion: z.string().min(1).max(100).optional(),
+  // Retry identity only: an older incomplete draft still needs to be claimable.
+  copySnapshot: z.array(z.record(z.string(), z.unknown())).optional(),
   resumeId: z.string(),
 });
 export const draftReviewOutputSchema = z.object({

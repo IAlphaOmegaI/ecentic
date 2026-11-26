@@ -1160,9 +1160,7 @@ export const execute = async (
           { deadline },
         ),
       );
-      return draft.issues.length
-        ? { stage: "draft", reason: "draft-held", output: { draft } }
-        : { stage: "applyDraft", output: { draft } };
+      return { stage: "applyDraft", output: { draft } };
     }
     case "applyDraft": {
       const row = await currentProspect(claimed);
@@ -1181,10 +1179,13 @@ export const execute = async (
         }),
       );
       return {
-        stage: "approve",
+        stage: saved.copyProblem ? "complete" : "approve",
+        ...(saved.copyProblem ? { reason: saved.copyProblem } : {}),
         output: {
           prospectId: saved.prospect,
           prospectRevision: saved.revision,
+          draftIssues: saved.issues,
+          ...(saved.copyProblem ? { heldReason: saved.copyProblem } : {}),
         },
       };
     }

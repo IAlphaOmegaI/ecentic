@@ -65,6 +65,10 @@ import {
   preflightWriterAssembly,
 } from "@/lib/outbound-composition";
 import {
+  copyVerdictProblem,
+  deterministicCopyIssues,
+} from "@/lib/outbound-copy-quality";
+import {
   canReviewDraftAutomatically,
   draftReviewInputSchema,
   draftReviewOutputSchema,
@@ -108,11 +112,15 @@ import {
   NotFoundError,
   ValidationError,
 } from "@/server/utils/error";
+import { draftCopyReadiness } from "@/server/utils/outbound/draft-copy-readiness";
 import {
   hasRecentLinkedInTouch,
   linkedinHistoryReady,
 } from "@/server/utils/outbound/linkedin-ledger";
-import { writingPolicyHash } from "@/server/utils/outbound/shopping-policy";
+import {
+  compositionProspectHash,
+  writingPolicyHash,
+} from "@/server/utils/outbound/shopping-policy";
 import {
   assertShoppingEvidence,
   researchHash,
@@ -575,6 +583,10 @@ export const applyAutomaticSequenceRefresh = (input: {
         "The receipt renewal lease is no longer current.",
       );
     const prospect = await findProspect(transaction, scope.prospectId);
+    const composition = await assertAppliedCompositionWithin(
+      transaction,
+      prospect,
+    );
     const current = await policy(transaction);
     const campaign = requireData(
       await Campaigns.get(Environment.SERVER, scope.campaignId, {
@@ -669,12 +681,30 @@ export const applyAutomaticSequenceRefresh = (input: {
         "The original approved sequence no longer matches.",
       );
     const revision = prospect.revision + 1;
+    if (
+      composition.context.prospectHash !==
+      compositionProspectHash(
+        prospectSchema.parse({
+          ...details,
+          id: prospect.id,
+          assignedSenderEmail: settingsForProspect(prospect, current.settings)
+            .fromEmail,
+        }),
+      )
+    )
+      throw new ConflictError(
+        "Copy: Receipt renewal changed the copy context and needs a new review.",
+      );
+    const messages = prospect.messages.map((message) => ({
+      ...message,
+      ...(message.writing ? { writing: { ...message.writing, revision } } : {}),
+    }));
     const manifest = approvalManifest(
       { ...prospect, details },
       current.settings,
       current.revision,
     );
-    const hash = contentHash(prospect.messages, manifest);
+    const hash = contentHash(messages, manifest);
     await revoke(
       transaction,
       prospect,
@@ -686,7 +716,7 @@ export const applyAutomaticSequenceRefresh = (input: {
         {
           prospectId: prospect.id,
           revision,
-          messages: prospect.messages,
+          messages,
           manifest,
           contentHash: hash,
           approvedBy: `automatic:${scope.actor}`,
@@ -701,10 +731,34 @@ export const applyAutomaticSequenceRefresh = (input: {
         prospect.id,
         {
           details,
+          messages,
           revision,
           approvalHash: hash,
           approvedBy: `automatic:${scope.actor}`,
           approvedAt: now,
+          updatedAt: now,
+        },
+        { tx: transaction },
+      ),
+    );
+    const writingJob = requireData(
+      await IntegrationJobs.get(
+        Environment.SERVER,
+        composition.composition.jobId,
+        { tx: transaction },
+      ),
+    );
+    if (!writingJob) throw new NotFoundError("Writing job not found.");
+    requireData(
+      await IntegrationJobs.update(
+        Environment.SERVER,
+        writingJob.id,
+        {
+          output: {
+            ...writingJob.output,
+            appliedProspectRevision: revision,
+            savedAt: now.toISOString(),
+          },
           updatedAt: now,
         },
         { tx: transaction },
@@ -2253,6 +2307,7 @@ const writeMessages = async (
   prospect: ProspectRow,
   sourceMessages: Message[],
   trustedComposition = false,
+  copyProblem: string | null = null,
 ) => {
   const messages = sourceMessages.map(({ writing, ...message }) => ({
     ...message,
@@ -2304,11 +2359,14 @@ const writeMessages = async (
         messages,
         revision,
         playbookRevision: current.revision,
-        status: prospect.status === "held" ? "held" : "draft",
+        status: copyProblem || prospect.status === "held" ? "held" : "draft",
         approvedAt: null,
         approvedBy: null,
         approvalHash: null,
-        holdReason: prospect.status === "held" ? prospect.holdReason : "",
+        holdReason:
+          prospect.status === "held" && prospect.holdReason
+            ? prospect.holdReason
+            : (copyProblem ?? ""),
         nextSendAt: null,
         updatedAt: new Date(),
       },
@@ -2325,7 +2383,9 @@ const writeMessages = async (
   return {
     prospect: prospect.id,
     revision,
+    copyProblem,
     issues: [
+      ...(copyProblem ? [{ code: "copyQuality", field: "body" }] : []),
       ...prospectIssues(prospect.details, current.settings),
       ...lintMessages(
         messages,
@@ -2386,7 +2446,7 @@ export const saveComposedDraftWithin = async (
     !writing ||
     canonical.status !== "ready" ||
     completed.composition.prospectId !== prospect.id ||
-    completed.context.prospectHash !== researchHash(details) ||
+    completed.context.prospectHash !== compositionProspectHash(details) ||
     completed.composition.receiptHash !== researchHash(receipt) ||
     completed.composition.writingPolicyHash !==
       writingPolicyHash(settings, {
@@ -2404,8 +2464,11 @@ export const saveComposedDraftWithin = async (
     }),
   );
   if (!job) throw new NotFoundError("Writing job not found.");
+  const verdictProblem = copyVerdictProblem(writing.quality);
+  const copyProblem = verdictProblem ? `Copy: ${verdictProblem}` : null;
   const appliedRevision = completed.appliedProspectRevision;
   if (
+    prospect.playbookRevision === current.revision &&
     typeof appliedRevision === "number" &&
     appliedRevision === prospect.revision &&
     isDeepStrictEqual(
@@ -2421,6 +2484,7 @@ export const saveComposedDraftWithin = async (
     return {
       prospect: prospect.id,
       revision: prospect.revision,
+      copyProblem,
       issues: completed.issues,
     };
   if (prospect.revision !== request.revision)
@@ -2467,6 +2531,7 @@ export const saveComposedDraftWithin = async (
     prospect,
     completed.messages,
     true,
+    copyProblem,
   );
   requireData(
     await IntegrationJobs.update(
@@ -2611,6 +2676,7 @@ const reviewProspectWithin = async (
     );
   const current = await policy(transaction);
   if (parsed.data.decision === "approve") {
+    await assertAppliedCompositionWithin(transaction, prospect);
     await assertCampaignActive(transaction, prospect);
     if (automatic) {
       const identifier = z
@@ -3337,6 +3403,7 @@ export const applyAutomaticDraftMx = (input: {
 const assertAppliedCompositionWithin = async (
   transaction: TransactionScope,
   prospect: ProspectRow,
+  requirePassing = true,
 ) => {
   const current = await policy(transaction);
   const settings = settingsForProspect(prospect, current.settings);
@@ -3364,7 +3431,7 @@ const assertAppliedCompositionWithin = async (
   if (
     !completed ||
     completed.appliedProspectRevision !== prospect.revision ||
-    completed.context.prospectHash !== researchHash(details) ||
+    completed.context.prospectHash !== compositionProspectHash(details) ||
     !isDeepStrictEqual(
       prospect.messages,
       completed.messages.map((message) => ({
@@ -3376,8 +3443,35 @@ const assertAppliedCompositionWithin = async (
     )
   )
     throw new ValidationError(
-      "This draft has no trusted writing result for its current text and revision.",
+      "Copy: This draft has no trusted writing result for its current text and revision.",
     );
+  const writing = prospect.messages[0]?.writing;
+  const problem = copyVerdictProblem(writing?.quality);
+  if (!writing)
+    throw new ValidationError("Copy: The writing snapshot is missing.");
+  const peers = requireData(
+    await Composition.recentCompositionPeers(
+      prospect,
+      completed.context.batchKey,
+      transaction,
+    ),
+  );
+  const issues = deterministicCopyIssues({
+    prospect: details,
+    receipt,
+    playbook: settings,
+    parts: writing.parts,
+    messages: prospect.messages,
+    peers,
+    globalVoiceNotes: current.settings.voiceNotes,
+  });
+  const copyProblem = problem
+    ? `Copy: ${problem}`
+    : issues.length
+      ? `Copy: ${issues.join(" ")}`
+      : null;
+  if (requirePassing && copyProblem) throw new ValidationError(copyProblem);
+  return { ...completed, copyProblem };
 };
 
 /** Apply a checkpointed automatic review and approval in one transaction. */
@@ -3411,6 +3505,8 @@ export const applyAutomaticDraftReview = (input: {
       current.revision !== scope.playbookRevision ||
       !canReviewDraftAutomatically(prospect) ||
       prospect.revision !== scope.prospectRevision ||
+      scope.copyReadinessHash !==
+        draftCopyReadiness(prospect.messages).readinessHash ||
       draftReviewReadinessKey(
         prospect.details,
         current.settings.senderConfirmed,
@@ -3460,16 +3556,60 @@ export const applyAutomaticDraftReview = (input: {
       throw new ValidationError(
         "The refreshed draft has no completed writing job.",
       );
-    if (!scope.regenerate) {
-      await assertAppliedCompositionWithin(transaction, prospect);
-    }
+    const reviewed = scope.regenerate
+      ? null
+      : await assertAppliedCompositionWithin(transaction, prospect, false);
     const saved = scope.regenerate
       ? await saveComposedDraftWithin(transaction, "outbound-draft-review", {
           prospect: prospect.id,
           revision: prospect.revision,
           compositionJobId: output.compositionJobId!,
         })
-      : { revision: prospect.revision };
+      : {
+          revision: prospect.revision,
+          copyProblem: reviewed?.copyProblem ?? null,
+        };
+    if (saved.copyProblem) {
+      if (!scope.regenerate)
+        requireData(
+          await Prospects.update(
+            Environment.SERVER,
+            prospect.id,
+            {
+              status: "held",
+              holdReason: saved.copyProblem,
+              approvedAt: null,
+              approvedBy: null,
+              approvalHash: null,
+              nextSendAt: null,
+              updatedAt: new Date(),
+            },
+            { tx: transaction },
+          ),
+        );
+      requireData(
+        await IntegrationJobs.update(
+          Environment.SERVER,
+          job.id,
+          {
+            status: "complete",
+            output: {
+              ...job.output,
+              appliedProspectRevision: saved.revision,
+              heldReason: saved.copyProblem,
+              completedAt: new Date().toISOString(),
+            },
+            updatedAt: new Date(),
+          },
+          { tx: transaction },
+        ),
+      );
+      return {
+        prospect: prospect.id,
+        revision: saved.revision,
+        status: "held" as const,
+      };
+    }
     requireData(
       await IntegrationJobs.update(
         Environment.SERVER,
@@ -3507,7 +3647,11 @@ export const applyAutomaticDraftReview = (input: {
         { tx: transaction },
       ),
     );
-    return { prospect: prospect.id, revision: saved.revision };
+    return {
+      prospect: prospect.id,
+      revision: saved.revision,
+      status: "approved" as const,
+    };
   });
 
 export const updateLinkedIn = (actor: string, input: unknown) =>

@@ -1,9 +1,33 @@
 import { createHash } from "node:crypto";
-import type { Playbook } from "@/lib/outbound";
+import type { Playbook, ProspectInput } from "@/lib/outbound";
 import { WRITING_CONTRACT_VERSION } from "@/lib/outbound-composition";
+import { COPY_QUALITY_VERSION } from "@/lib/outbound-copy-quality";
 import { FINDING_COPY_FIELDS } from "@/lib/outbound-finding-copy";
 
 export type WritingPolicyContext = { globalVoiceNotes?: string };
+
+/** Verification timestamps have their own approval checks and do not change written copy. */
+export const compositionProspectHash = (prospect: ProspectInput) =>
+  createHash("sha256")
+    .update(
+      JSON.stringify({
+        id: prospect.id,
+        email: prospect.email,
+        assignedSenderEmail: prospect.assignedSenderEmail,
+        company: prospect.company,
+        domain: prospect.domain,
+        name: prospect.name,
+        first: prospect.first,
+        title: prospect.title,
+        product: prospect.product,
+        productUrl: prospect.productUrl,
+        productCategory: prospect.productCategory,
+        personalLine: prospect.personalLine,
+        personalSource: prospect.personalSource,
+        personalPublishedAt: prospect.personalPublishedAt,
+      }),
+    )
+    .digest("hex");
 
 /** Wording and delivery settings do not change what was actually observed. */
 export const researchPolicyHash = (settings: Playbook) =>
@@ -25,6 +49,7 @@ export const writingPolicyHash = (
     .update(
       JSON.stringify({
         version: WRITING_CONTRACT_VERSION,
+        copyQualityVersion: COPY_QUALITY_VERSION,
         subjectTemplate: settings.subjectTemplate,
         bodyTemplate: settings.bodyTemplate,
         followupOneTemplate: settings.followupOneTemplate,

@@ -10,6 +10,10 @@ import {
 } from "@/lib/outbound";
 import { writingSnapshotSchema } from "@/lib/outbound-composition";
 import {
+  COPY_QUALITY_VERSION,
+  hasCompleteCopyVerdict,
+} from "@/lib/outbound-copy-quality";
+import {
   canReviewDraftAutomatically,
   draftReviewInputSchema,
   draftReviewOutputSchema,
@@ -18,6 +22,7 @@ import {
 import { db, schema, type TransactionScope } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
 import { ConflictError, ValidationError } from "@/server/utils/error";
+import { draftCopyReadiness } from "@/server/utils/outbound/draft-copy-readiness";
 import * as MX from "@/server/utils/outbound/mx";
 import { writingPolicyHash } from "@/server/utils/outbound/shopping-policy";
 import { repository } from "@/server/utils/repository";
@@ -224,7 +229,7 @@ const claim = () =>
             eq(schema.outboundProspect.sentStep, 0),
             sql`${schema.outboundProspect.holdReason} in ('', 'playbookChanged')`,
             sql`exists (select 1 from outbound_campaign campaign where campaign.id = ${schema.outboundProspect.campaignId} and campaign.status = 'active')`,
-            sql`not exists (select 1 from outbound_integration_job job where job.provider = 'automation' and job.input->>'operation' = 'draftReview' and job.prospect_id = ${schema.outboundProspect.id} and (job.status in ('starting', 'uncertain') or (job.input->>'prospectRevision' = ${schema.outboundProspect.revision}::text and job.input->>'playbookRevision' = ${String(policy.revision)} and (job.status <> 'failed' or (job.input->>'readinessKey' = ${readiness} and job.input->>'resumeId' = ${resumed})))))`,
+            sql`not exists (select 1 from outbound_integration_job job where job.provider = 'automation' and job.input->>'operation' = 'draftReview' and job.prospect_id = ${schema.outboundProspect.id} and (job.status in ('starting', 'uncertain') or (job.input->>'prospectRevision' = ${schema.outboundProspect.revision}::text and job.input->>'playbookRevision' = ${String(policy.revision)} and job.input->>'copyContractVersion' = ${COPY_QUALITY_VERSION} and job.input->'copySnapshot' = ${schema.outboundProspect.messages} and (job.status <> 'failed' or (job.input->>'readinessKey' = ${readiness} and job.input->>'resumeId' = ${resumed})))))`,
             sql`not exists (select 1 from outbound_integration_job job where job.provider = 'automation' and job.input->>'operation' = 'campaignAutomation' and job.prospect_id = ${schema.outboundProspect.id} and job.status in ('pending', 'starting', 'uncertain'))`,
           ),
           orderBy: [
@@ -264,11 +269,19 @@ const claim = () =>
       transaction,
       prospect.id,
     );
+    const copyReadiness = draftCopyReadiness(prospect.messages);
+    const writing = writingSnapshotSchema.safeParse(
+      prospect.messages[0]?.writing,
+    );
     const regenerate =
       prospect.playbookRevision !== policy.revision ||
       prospect.messages.length !== 3 ||
-      !writingSnapshotSchema.safeParse(prospect.messages[0]?.writing).success ||
-      prospect.messages[0]?.writing?.writingPolicyHash !==
+      !writing.success ||
+      writing.data.revision !== prospect.revision ||
+      copyReadiness.contentHash === null ||
+      writing.data.contentHash !== copyReadiness.contentHash ||
+      !hasCompleteCopyVerdict(writing.data.quality) ||
+      writing.data.writingPolicyHash !==
         writingPolicyHash(settingsForProspect(prospect, policy.settings), {
           globalVoiceNotes: policy.settings.voiceNotes,
         }) ||
@@ -283,7 +296,7 @@ const claim = () =>
         {
           provider: "automation",
           prospectId: prospect.id,
-          requestId: `draft-review:${prospect.id}:${prospect.revision}:${policy.revision}:${createHash("sha256").update(`${readinessKey}|${resumeId}`).digest("hex")}`,
+          requestId: `draft-review:${prospect.id}:${prospect.revision}:${policy.revision}:${createHash("sha256").update(`${COPY_QUALITY_VERSION}|${copyReadiness.readinessHash}|${readinessKey}|${resumeId}`).digest("hex")}`,
           status: checked.success ? "starting" : "failed",
           error: checked.success ? null : checked.error.message,
           input: draftReviewInputSchema.parse({
@@ -295,6 +308,9 @@ const claim = () =>
             playbookRevision: policy.revision,
             regenerate,
             readinessKey,
+            copyReadinessHash: copyReadiness.readinessHash,
+            copyContractVersion: COPY_QUALITY_VERSION,
+            copySnapshot: prospect.messages,
             resumeId,
           }),
           output: { stage: regenerate ? "draft" : "apply", lease: lease() },
@@ -409,6 +425,8 @@ export const run = (
           if (
             !row ||
             row.revision !== scope.prospectRevision ||
+            draftCopyReadiness(row.messages).readinessHash !==
+              scope.copyReadinessHash ||
             policy.revision !== scope.playbookRevision
           )
             throw new ConflictError(
@@ -425,10 +443,6 @@ export const run = (
               { deadline: input.deadline },
             ),
           );
-          if (draft.issues.length)
-            throw new ConflictError(
-              `The refreshed draft needs attention: ${draft.issues.map((issue) => issue.code).join(", ")}`,
-            );
           value(
             await checkpoint(
               job.id,
@@ -449,7 +463,7 @@ export const run = (
         value(await fail(job.id, output.lease.token, completed.error));
       results.push({
         prospect: scope.prospectId,
-        status: completed.success ? "approved" : "held",
+        status: completed.success ? completed.data.status : "held",
       });
     }
     return {

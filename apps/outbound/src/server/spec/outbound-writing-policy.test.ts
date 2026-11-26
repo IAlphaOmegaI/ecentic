@@ -1,11 +1,35 @@
 import { describe, expect, test } from "bun:test";
-import { defaultPlaybook, settingsForSender } from "@/lib/outbound";
 import {
+  defaultPlaybook,
+  prospectSchema,
+  settingsForSender,
+} from "@/lib/outbound";
+import {
+  compositionProspectHash,
   researchPolicyHash,
   writingPolicyHash,
 } from "@/server/utils/outbound/shopping-policy";
 
 describe("independent writing policy identity", () => {
+  test("fresh verification dates reuse copy while recipient identity edits do not", () => {
+    const prospect = prospectSchema.parse({
+      company: "Sample Goods",
+      domain: "samplegoods.test",
+      country: "US",
+      first: "Jamie",
+      name: "Jamie Smith",
+    });
+    expect(
+      compositionProspectHash({
+        ...prospect,
+        mxCheckedAt: new Date().toISOString(),
+        roleCheckedAt: new Date().toISOString(),
+      }),
+    ).toBe(compositionProspectHash(prospect));
+    expect(compositionProspectHash({ ...prospect, first: "Alex" })).not.toBe(
+      compositionProspectHash(prospect),
+    );
+  });
   test("copy edits invalidate writing without pretending a search was redone", () => {
     const original = {
       ...defaultPlaybook,

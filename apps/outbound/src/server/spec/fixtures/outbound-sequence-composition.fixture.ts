@@ -1,17 +1,34 @@
 import { mock, spyOn } from "bun:test";
 import assert from "node:assert/strict";
+import { randomUUID } from "node:crypto";
 import { eq, sql } from "drizzle-orm";
 import postgres from "postgres";
-import { prospectSchema, settingsForProspect } from "@/lib/outbound";
-import { canonicalSequenceInput } from "@/lib/outbound-composition";
+import {
+  type Message,
+  prospectSchema,
+  settingsForProspect,
+} from "@/lib/outbound";
+import { defaultCampaignCriteria } from "@/lib/outbound-campaigns";
+import {
+  assembleSequence,
+  canonicalSequenceInput,
+} from "@/lib/outbound-composition";
+import { draftReviewReadinessKey } from "@/lib/outbound-draft-review";
+import { shoppingFinding } from "@/lib/outbound-shopping-research";
 import type { CompletedComposition } from "@/server/app/outbound/sequence-composition";
 import { writingPolicyHash } from "@/server/utils/outbound/shopping-policy";
 import { requireTestDatabase } from "../helpers/database";
-import { writerFixture } from "../helpers/outbound-writer-fixture";
+import {
+  passingCopyJudge,
+  writerFixture,
+} from "../helpers/outbound-writer-fixture";
 
 const endpoint = requireTestDatabase(process.env.OUTBOUND_TEST_DATABASE_URL);
 Object.assign(process.env, { DATABASE_URL: endpoint });
 mock.module("server-only", () => ({}));
+const { draftCopyReadiness } = await import(
+  "@/server/utils/outbound/draft-copy-readiness"
+);
 const Research = await import("@/server/utils/outbound/shopping-research");
 const currentFixture = { value: writerFixture() };
 // This fixture isolates durable writing. Full raw capture validation has its own
@@ -46,11 +63,16 @@ const row = async (id: string) => {
   return rows[0];
 };
 const jobs = () => db.select().from(schema.outboundIntegrationJob);
-const seed = async (held = false) => {
+const seed = async (held = false, approvalReady = false) => {
   await db.execute(
     sql`truncate outbound_integration_job,outbound_campaign,outbound_company,outbound_person,outbound_prospect,outbound_event,outbound_revision,outbound_playbook,outbound_suppression,outbound_inbox cascade`,
   );
   currentFixture.value = writerFixture();
+  if (approvalReady)
+    currentFixture.value = {
+      ...currentFixture.value,
+      policy: { ...currentFixture.value.policy, senderConfirmed: true },
+    };
   const fixture = currentFixture.value;
   await db.insert(schema.outboundPlaybook).values({
     id: "default",
@@ -59,6 +81,31 @@ const seed = async (held = false) => {
     updatedBy: actor,
   });
   const created = value(await Store.saveProspect(actor, fixture.prospect));
+  if (approvalReady) {
+    const now = new Date().toISOString();
+    await db
+      .update(schema.outboundProspect)
+      .set({
+        details: prospectSchema.parse({
+          ...fixture.prospect,
+          id: created.prospect,
+          platform: "shopify",
+          emailStatus: "verified",
+          emailSource: "Synthetic offline verification",
+          emailVerifiedAt: now,
+          mxProvider: "google",
+          mxCheckedAt: now,
+          roleSource: "https://samplegoods.test/team",
+          roleCheckedAt: now,
+          legitEvidence: "Synthetic fixture business",
+          evidenceCheckedAt: now,
+          timezone: "America/New_York",
+          shoppingResearchId: randomUUID(),
+          shoppingFinding: shoppingFinding(fixture.receipt),
+        }),
+      })
+      .where(eq(schema.outboundProspect.id, created.prospect));
+  }
   if (held)
     await db
       .update(schema.outboundProspect)
@@ -91,6 +138,28 @@ const plain = (messages: Parameters<typeof canonicalSequenceInput>[0]) => {
   return canonical.status === "ready" ? canonical.canonicalText : "";
 };
 
+const assertPartial = (
+  job: Awaited<ReturnType<typeof jobs>>[number] | undefined,
+  fixture: Awaited<ReturnType<typeof seed>>,
+) => {
+  const partial = job?.output?.["draftBeforeJudge"] as
+    | { parts?: unknown; messages?: Message[] }
+    | undefined;
+  assert.ok(partial?.messages);
+  assert.deepEqual(partial.parts, fixture.parts);
+  assert.equal(partial.messages.length, 3);
+  const expected = assembleSequence(
+    fixture.prospect,
+    fixture.receipt,
+    fixture.policy,
+    fixture.parts,
+  );
+  assert.equal(expected.status, "ready");
+  if (expected.status === "ready")
+    assert.equal(plain(partial.messages), expected.canonicalText);
+  assert.equal(partial.messages[0]?.writing, undefined);
+};
+
 try {
   // One durable purchase feeds the shared service and manual Generate entry point.
   const held = await seed(true);
@@ -100,6 +169,7 @@ try {
       actor,
       { prospectId: held.id, expectedRevision: held.revision },
       {
+        judge: passingCopyJudge,
         generate: async () => {
           calls.count += 1;
           calls.unlocked = await independent.begin(async (connection) => {
@@ -119,11 +189,22 @@ try {
     "The writer must run outside the workspace database lock.",
   );
   assert.equal(calls.count, 1);
+  const beforeMxRefresh = await row(held.id);
+  await db
+    .update(schema.outboundProspect)
+    .set({
+      details: {
+        ...beforeMxRefresh.details,
+        mxCheckedAt: new Date(Date.now() + 1000).toISOString(),
+      },
+    })
+    .where(eq(schema.outboundProspect.id, held.id));
   const reused = value(
     await Composition.composeForProspect(
       "another-caller",
       { prospectId: held.id },
       {
+        judge: passingCopyJudge,
         generate: async () => {
           throw new Error("A completed job must not purchase copy twice.");
         },
@@ -140,7 +221,7 @@ try {
   );
   assert.equal(savedRow.revision, held.revision + 1);
   assert.equal(savedRow.messages[0]?.writing?.revision, saved.revision);
-  assert.equal(savedRow.messages[0]?.writing?.quality, null);
+  assert.equal(savedRow.messages[0]?.writing?.quality?.passed, true);
   assert.equal(plain(savedRow.messages), plain(composed.messages));
   const beforeRetry = await snapshot();
   assert.equal(value(await save(held, composed)).revision, saved.revision);
@@ -226,6 +307,7 @@ try {
     actor,
     { prospectId: active.id },
     {
+      judge: passingCopyJudge,
       generate: async () => {
         activeCalls.count += 1;
         entered.resolve();
@@ -240,6 +322,7 @@ try {
       actor,
       { prospectId: active.id },
       {
+        judge: passingCopyJudge,
         generate: async () => {
           activeCalls.count += 1;
           return active.parts;
@@ -255,13 +338,17 @@ try {
   console.log("PASS live lease prevents a concurrent model purchase");
 
   const lost = await seed();
-  const clock = { now: Date.now(), calls: 0 };
+  const clock = { now: Date.now(), calls: 0, judges: 0 };
   rejected(
     await Composition.composeForProspect(
       actor,
       { prospectId: lost.id },
       {
         now: () => clock.now,
+        judge: async () => {
+          clock.judges += 1;
+          return passingCopyJudge();
+        },
         generate: async () => {
           clock.calls += 1;
           clock.now += 180_001;
@@ -269,7 +356,7 @@ try {
         },
       },
     ),
-    /lease expired/,
+    /lease|uncertain|retained/,
   );
   assert.equal((await jobs())[0]?.status, "uncertain");
   rejected(
@@ -278,18 +365,21 @@ try {
       { prospectId: lost.id },
       {
         now: () => clock.now,
+        judge: passingCopyJudge,
         generate: async () => {
           clock.calls += 1;
           return lost.parts;
         },
       },
     ),
-    /lease expired/,
+    /lease|uncertain|retained/,
   );
   assert.equal(clock.calls, 1);
-  assert.ok(
-    (await jobs())[0]?.output?.["unappliedResult"],
-    "An expired response remains available for reconciliation.",
+  assertPartial((await jobs())[0], lost);
+  assert.equal(
+    clock.judges,
+    0,
+    "An already expired writer must not purchase a judge.",
   );
   await db
     .update(schema.outboundPlaybook)
@@ -307,6 +397,7 @@ try {
       { prospectId: lost.id },
       {
         now: () => clock.now,
+        judge: passingCopyJudge,
         generate: async () => {
           clock.calls += 1;
           return lost.parts;
@@ -357,6 +448,131 @@ try {
     "PASS malformed completion is preserved as uncertain without another purchase",
   );
 
+  const watched = await seed();
+  const watcherClock = { now: Date.now(), calls: 0, judges: 0 };
+  const writerEntered = Promise.withResolvers<void>();
+  const writerReleased = Promise.withResolvers<void>();
+  const lateFirst = Composition.composeForProspect(
+    actor,
+    { prospectId: watched.id },
+    {
+      now: () => watcherClock.now,
+      generate: async () => {
+        watcherClock.calls += 1;
+        writerEntered.resolve();
+        await writerReleased.promise;
+        return watched.parts;
+      },
+      judge: async () => {
+        watcherClock.judges += 1;
+        return passingCopyJudge();
+      },
+    },
+  );
+  await writerEntered.promise;
+  watcherClock.now += 180_001;
+  rejected(
+    await Composition.composeForProspect(
+      actor,
+      { prospectId: watched.id },
+      {
+        now: () => watcherClock.now,
+        generate: async () => {
+          watcherClock.calls += 1;
+          return watched.parts;
+        },
+        judge: passingCopyJudge,
+      },
+    ),
+    /lease|uncertain/,
+  );
+  assert.equal((await jobs())[0]?.status, "uncertain");
+  assert.ok((await jobs())[0]?.output?.["expiredLease"]);
+  writerReleased.resolve();
+  rejected(await lateFirst, /retained for reconciliation/);
+  const lateJob = (await jobs())[0];
+  assert.equal(lateJob?.status, "uncertain");
+  assertPartial(lateJob, watched);
+  assert.equal(watcherClock.calls, 1);
+  assert.equal(watcherClock.judges, 0);
+  assert.equal((await row(watched.id)).messages.length, 0);
+  rejected(
+    await Composition.composeForProspect(
+      actor,
+      { prospectId: watched.id },
+      {
+        now: () => watcherClock.now,
+        generate: async () => {
+          watcherClock.calls += 1;
+          return watched.parts;
+        },
+        judge: passingCopyJudge,
+      },
+    ),
+    /lease|uncertain/,
+  );
+  assert.equal(watcherClock.calls, 1);
+  console.log(
+    "PASS expiry observed by another caller retains the original late response without replay",
+  );
+
+  const interrupted = await seed();
+  const interruptedCalls = { writer: 0, judge: 0 };
+  rejected(
+    await Composition.composeForProspect(
+      actor,
+      { prospectId: interrupted.id },
+      {
+        generate: async () => {
+          interruptedCalls.writer += 1;
+          return interrupted.parts;
+        },
+        judge: async () => {
+          interruptedCalls.judge += 1;
+          assertPartial((await jobs())[0], interrupted);
+          const unlocked = await independent.begin(async (connection) => {
+            const result = await connection<
+              { unlocked: boolean }[]
+            >`select pg_try_advisory_xact_lock(hashtext('ecentic-outbound-workspace')) as unlocked`;
+            return result[0]?.unlocked === true;
+          });
+          assert.equal(
+            unlocked,
+            true,
+            "The quality judge must also run outside the database lock.",
+          );
+          throw new Error("Synthetic judge interruption.");
+        },
+      },
+    ),
+    /confirmed|Reconcile/,
+  );
+  assert.equal((await jobs())[0]?.status, "uncertain");
+  assertPartial((await jobs())[0], interrupted);
+  assert.deepEqual(interruptedCalls, { writer: 1, judge: 1 });
+  rejected(
+    await Composition.composeForProspect(
+      actor,
+      { prospectId: interrupted.id },
+      {
+        generate: async () => {
+          interruptedCalls.writer += 1;
+          return interrupted.parts;
+        },
+        judge: async () => {
+          interruptedCalls.judge += 1;
+          return passingCopyJudge();
+        },
+      },
+    ),
+    /confirmed|Reconcile/,
+  );
+  assert.deepEqual(interruptedCalls, { writer: 1, judge: 1 });
+  assert.equal((await row(interrupted.id)).messages.length, 0);
+  console.log(
+    "PASS exact writer text survives judge interruption without another writer or judge purchase",
+  );
+
   const changing = await seed();
   const changingCalls = { count: 0 };
   const original = value(
@@ -364,6 +580,7 @@ try {
       actor,
       { prospectId: changing.id },
       {
+        judge: passingCopyJudge,
         generate: async () => {
           changingCalls.count += 1;
           await db
@@ -402,6 +619,7 @@ try {
       actor,
       { prospectId: changing.id },
       {
+        judge: passingCopyJudge,
         generate: async () => {
           changingCalls.count += 1;
           return changing.parts;
@@ -434,7 +652,7 @@ try {
     await Composition.composeForProspect(
       actor,
       { prospectId: badCopy.id },
-      { generate: invalid },
+      { judge: passingCopyJudge, generate: invalid },
     ),
     /Copy:/,
   );
@@ -448,7 +666,7 @@ try {
     await Composition.composeForProspect(
       actor,
       { prospectId: badCopy.id },
-      { generate: invalid },
+      { judge: passingCopyJudge, generate: invalid },
     ),
     /Copy:/,
   );
@@ -464,6 +682,7 @@ try {
       actor,
       { prospectId: fresh.id, expectedRevision: fresh.revision },
       {
+        judge: passingCopyJudge,
         generate: async () => {
           freshCalls.count += 1;
           return fresh.parts;
@@ -495,6 +714,7 @@ try {
         expectedPlaybookRevision: 2,
       },
       {
+        judge: passingCopyJudge,
         generate: async () => {
           freshCalls.count += 1;
           return fresh.parts;
@@ -515,7 +735,7 @@ try {
     await Composition.composeForProspect(
       actor,
       { prospectId: bound.id },
-      { generate: async () => bound.parts },
+      { judge: passingCopyJudge, generate: async () => bound.parts },
     ),
   );
   const other = value(
@@ -585,6 +805,355 @@ try {
   assert.equal((await row(bound.id)).messages.length, 0);
   console.log(
     "PASS cross-prospect, changed details, changed receipt and tampered output are rejected",
+  );
+
+  const failedQuality = await seed();
+  const failJudge = async () => ({
+    ...(await passingCopyJudge()),
+    naturalVoice: { passed: false, reason: "This sentence sounds rehearsed." },
+  });
+  const failedOutput = value(
+    await Composition.composeForProspect(
+      actor,
+      { prospectId: failedQuality.id },
+      { generate: async () => failedQuality.parts, judge: failJudge },
+    ),
+  );
+  assert.equal(failedOutput.messages[0]?.writing?.quality?.passed, false);
+  const failureSaved = value(await save(failedQuality, failedOutput));
+  assert.match(failureSaved.copyProblem ?? "", /^Copy: naturalVoice:/);
+  assert.ok(failureSaved.issues.some((issue) => issue.code === "copyQuality"));
+  const failedRow = await row(failedQuality.id);
+  assert.equal(failedRow.status, "held");
+  assert.equal(failedRow.messages.length, 3);
+  assert.equal(failedRow.holdReason, failureSaved.copyProblem);
+  rejected(
+    await Store.reviewProspect(actor, {
+      prospect: failedQuality.id,
+      revision: failedRow.revision,
+      decision: "approve",
+      quality: { passed: true },
+    }),
+    /Copy: naturalVoice:/,
+  );
+  const heldQuality = await seed(true);
+  const heldOutput = value(
+    await Composition.composeForProspect(
+      actor,
+      { prospectId: heldQuality.id },
+      { generate: async () => heldQuality.parts, judge: failJudge },
+    ),
+  );
+  value(await save(heldQuality, heldOutput));
+  assert.equal(
+    (await row(heldQuality.id)).holdReason,
+    "Original 21: unbranded evidence review required.",
+  );
+  console.log(
+    "PASS failed judge verdict saves all copy, holds and preserves explicit hold text",
+  );
+
+  const approvedCopy = await seed(false, true);
+  const passingOutput = value(
+    await Composition.composeForProspect(
+      actor,
+      { prospectId: approvedCopy.id },
+      { generate: async () => approvedCopy.parts, judge: passingCopyJudge },
+    ),
+  );
+  const approvalSaved = value(await save(approvedCopy, passingOutput));
+  // Task 8 removes the old recipient-fragment equality rule centrally.
+  rejected(
+    await Store.reviewProspect(actor, {
+      prospect: approvedCopy.id,
+      revision: approvalSaved.revision,
+      decision: "approve",
+    }),
+    /findingCopyChanged/,
+  );
+  assert.equal((await row(approvedCopy.id)).status, "draft");
+  const initialApproval = await snapshot();
+  await db
+    .update(schema.outboundProspect)
+    .set({ sentStep: 1 })
+    .where(eq(schema.outboundProspect.id, approvedCopy.id));
+  rejected(
+    await Store.reviewProspect(actor, {
+      prospect: approvedCopy.id,
+      revision: approvalSaved.revision,
+      decision: "approve",
+    }),
+    /findingCopyChanged/,
+  );
+  assert.deepEqual((await snapshot()).revisions, initialApproval.revisions);
+  await db
+    .update(schema.outboundProspect)
+    .set({ sentStep: 0 })
+    .where(eq(schema.outboundProspect.id, approvedCopy.id));
+  const exactApproved = await row(approvedCopy.id);
+  const [approvedFirst, approvedFollowup, approvedLast] =
+    exactApproved.messages;
+  assert.ok(approvedFirst && approvedFollowup && approvedLast);
+  const manualSaved = value(
+    await Store.saveDraft(actor, {
+      prospect: approvedCopy.id,
+      revision: exactApproved.revision,
+      subject: approvedFirst.subject,
+      body: `${approvedFirst.body} Changed by the operator.`,
+      followupOne: approvedFollowup.body,
+      followupTwo: approvedLast.body,
+      writing: approvedFirst.writing,
+    }),
+  );
+  rejected(
+    await Store.reviewProspect(actor, {
+      prospect: approvedCopy.id,
+      revision: manualSaved.revision,
+      decision: "approve",
+      quality: { passed: true },
+    }),
+    /trusted writing result/,
+  );
+  console.log(
+    "PASS exact copy passes quality up to task 8 legacy lint; edited copy cannot reuse its verdict",
+  );
+
+  const variety = await seed(false, true);
+  const variedOutput = value(
+    await Composition.composeForProspect(
+      actor,
+      { prospectId: variety.id },
+      { generate: async () => variety.parts, judge: passingCopyJudge },
+    ),
+  );
+  const varietySaved = value(await save(variety, variedOutput));
+  const peer = value(
+    await Store.saveProspect(
+      actor,
+      prospectSchema.parse({
+        ...variety.prospect,
+        id: undefined,
+        company: "Peer Goods",
+        domain: "peergoods.test",
+        email: "peer@peergoods.test",
+      }),
+    ),
+  );
+  await db
+    .update(schema.outboundProspect)
+    .set({ status: "approved", messages: (await row(variety.id)).messages })
+    .where(eq(schema.outboundProspect.id, peer.prospect));
+  rejected(
+    await Store.reviewProspect(actor, {
+      prospect: variety.id,
+      revision: varietySaved.revision,
+      decision: "approve",
+    }),
+    /Copy:.*(?:relationship|opening)/,
+  );
+  assert.equal((await row(variety.id)).approvedAt, null);
+  console.log(
+    "PASS approval rechecks current peer variety under the write lock",
+  );
+
+  const policyOnly = await seed(false, true);
+  const policyOutput = value(
+    await Composition.composeForProspect(
+      actor,
+      { prospectId: policyOnly.id },
+      { generate: async () => policyOnly.parts, judge: passingCopyJudge },
+    ),
+  );
+  const policySaved = value(await save(policyOnly, policyOutput));
+  await db
+    .update(schema.outboundPlaybook)
+    .set({
+      revision: 2,
+      settings: {
+        ...policyOnly.policy,
+        senderConfirmed: true,
+        dailyCompanyTarget: policyOnly.policy.dailyCompanyTarget + 1,
+      },
+    })
+    .where(eq(schema.outboundPlaybook.id, "default"));
+  const refreshedPolicy = value(
+    await Store.generateDrafts(actor, {
+      prospect: policyOnly.id,
+      expectedRevision: policySaved.revision,
+    }),
+  );
+  assert.equal(refreshedPolicy.revision, policySaved.revision + 1);
+  assert.equal((await jobs()).length, 1);
+  assert.equal((await row(policyOnly.id)).playbookRevision, 2);
+  rejected(
+    await Store.reviewProspect(actor, {
+      prospect: policyOnly.id,
+      revision: refreshedPolicy.revision,
+      decision: "approve",
+    }),
+    /findingCopyChanged/,
+  );
+  console.log(
+    "PASS unrelated policy revision reuses copy in a current approval manifest",
+  );
+
+  const autoFailure = await seed();
+  const campaignId = randomUUID();
+  const automatedPolicy = { ...autoFailure.policy, automationEnabled: true };
+  await db
+    .update(schema.outboundPlaybook)
+    .set({ settings: automatedPolicy })
+    .where(eq(schema.outboundPlaybook.id, "default"));
+  await db.insert(schema.outboundCampaign).values({
+    id: campaignId,
+    name: "Synthetic lifecycle campaign",
+    status: "active",
+    criteria: defaultCampaignCriteria(automatedPolicy),
+    revision: 1,
+    createdBy: actor,
+    updatedBy: actor,
+  });
+  await db
+    .update(schema.outboundProspect)
+    .set({ campaignId, status: "draft" })
+    .where(eq(schema.outboundProspect.id, autoFailure.id));
+  const autoOutput = value(
+    await Composition.composeForProspect(
+      actor,
+      { prospectId: autoFailure.id },
+      { generate: async () => autoFailure.parts, judge: failJudge },
+    ),
+  );
+  const autoRow = await row(autoFailure.id);
+  const token = randomUUID();
+  const autoJob = (
+    await db
+      .insert(schema.outboundIntegrationJob)
+      .values({
+        provider: "automation",
+        prospectId: autoFailure.id,
+        status: "starting",
+        input: {
+          operation: "draftReview",
+          prospectId: autoFailure.id,
+          prospectRevision: autoRow.revision,
+          campaignId,
+          campaignRevision: 1,
+          playbookRevision: 1,
+          regenerate: true,
+          copyReadinessHash: draftCopyReadiness(autoRow.messages).readinessHash,
+          readinessKey: draftReviewReadinessKey(
+            autoRow.details,
+            automatedPolicy.senderConfirmed,
+            automatedPolicy.allowStaleEvidence,
+            automatedPolicy.trustSavedContactVerification,
+            automatedPolicy.allowProductObservations,
+            automatedPolicy.allowUsMarketWindow,
+            automatedPolicy.allowMicrosoftRecipients,
+          ),
+          resumeId: "",
+        },
+        output: {
+          stage: "apply",
+          lease: {
+            token,
+            expiresAt: new Date(Date.now() + 60_000).toISOString(),
+          },
+          compositionJobId: autoOutput.composition.jobId,
+          messages: autoOutput.messages,
+        },
+      })
+      .returning()
+  )[0];
+  assert.ok(autoJob);
+  await db
+    .update(schema.outboundIntegrationJob)
+    .set({ input: { ...autoJob.input, copyReadinessHash: "0".repeat(64) } })
+    .where(eq(schema.outboundIntegrationJob.id, autoJob.id));
+  const beforeStaleApply = await snapshot();
+  rejected(
+    await Store.applyAutomaticDraftReview({ job: autoJob.id, token }),
+    /changed during automatic review/,
+  );
+  assert.deepEqual(await snapshot(), beforeStaleApply);
+  await db
+    .update(schema.outboundIntegrationJob)
+    .set({ input: autoJob.input })
+    .where(eq(schema.outboundIntegrationJob.id, autoJob.id));
+  const appliedFailure = value(
+    await Store.applyAutomaticDraftReview({ job: autoJob.id, token }),
+  );
+  assert.equal(appliedFailure.status, "held");
+  assert.equal((await row(autoFailure.id)).messages.length, 3);
+  assert.equal(
+    (await row(autoFailure.id)).messages[0]?.writing?.quality?.passed,
+    false,
+  );
+  assert.equal(
+    (await jobs()).find((job) => job.id === autoJob.id)?.status,
+    "complete",
+  );
+  assert.equal((await row(autoFailure.id)).approvedAt, null);
+  console.log(
+    "PASS automatic failed review commits its failed copy revision instead of rolling back",
+  );
+
+  const reopenRevision = (await row(autoFailure.id)).revision;
+  value(
+    await Store.reviewProspect(actor, {
+      prospect: autoFailure.id,
+      revision: reopenRevision,
+      decision: "review",
+      reason: "",
+    }),
+  );
+  const reopened = await row(autoFailure.id);
+  const repeatToken = randomUUID();
+  const resumeId = await Store.latestDraftReviewRequest(undefined, reopened.id);
+  const repeatJob = (
+    await db
+      .insert(schema.outboundIntegrationJob)
+      .values({
+        provider: "automation",
+        prospectId: reopened.id,
+        status: "starting",
+        input: {
+          ...autoJob.input,
+          prospectRevision: reopened.revision,
+          regenerate: false,
+          copyReadinessHash: draftCopyReadiness(reopened.messages)
+            .readinessHash,
+          resumeId,
+        },
+        output: {
+          stage: "apply",
+          lease: {
+            token: repeatToken,
+            expiresAt: new Date(Date.now() + 60_000).toISOString(),
+          },
+        },
+      })
+      .returning()
+  )[0];
+  assert.ok(repeatJob);
+  const previousRevisionCount = (await snapshot()).revisions.length;
+  const repeatedFailure = value(
+    await Store.applyAutomaticDraftReview({
+      job: repeatJob.id,
+      token: repeatToken,
+    }),
+  );
+  assert.equal(repeatedFailure.status, "held");
+  assert.equal(repeatedFailure.revision, reopened.revision);
+  assert.equal((await snapshot()).revisions.length, previousRevisionCount);
+  assert.equal(
+    (await jobs()).filter(
+      (job) => job.input["operation"] === "sequenceComposition",
+    ).length,
+    1,
+  );
+  console.log(
+    "PASS stale review claim cannot apply; reopened known failed copy holds without regeneration",
   );
 
   console.log(

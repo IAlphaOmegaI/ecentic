@@ -11,6 +11,7 @@ import {
   writerPartsSchema,
   writingSnapshotSchema,
 } from "@/lib/outbound-composition";
+import { copyVerdictProblem } from "@/lib/outbound-copy-quality";
 import {
   type ShoppingResearch,
   shoppingResearchSchema,
@@ -25,6 +26,10 @@ import {
 } from "@/lib/outbound-writing";
 import * as AI from "@/server/utils/ai";
 import { ValidationError } from "@/server/utils/error";
+import {
+  type CopyQualityDependencies,
+  judgeSequenceCopy,
+} from "./copy-quality";
 import { IntegrationError } from "./http";
 import { writingPolicyHash } from "./shopping-policy";
 import { evidenceForDraft, researchHash } from "./shopping-research";
@@ -38,6 +43,12 @@ type GenerationRequest = {
 };
 export type CompositionDependencies = {
   generate?: (request: GenerationRequest) => Promise<WriterParts>;
+  judge?: CopyQualityDependencies["generate"];
+  onWritten?: (draft: {
+    parts: WriterParts;
+    messages: Message[];
+    attempts: number;
+  }) => Promise<void>;
   now?: () => number;
   deadline?: number;
   peers?: CompositionPeer[];
@@ -118,7 +129,10 @@ export const composeSequence = async (
     issues: string[];
   }): Promise<Result<ComposedSequence, Error>> => {
     const attempts = previous ? 2 : 1;
-    if (deadline - now() < 5000) return held("The writing time budget ended.");
+    if (deadline - now() < 35_000)
+      return held(
+        "The writing time budget ended before copy review could finish.",
+      );
     const prompt = compositionPrompt({
       prospect,
       receipt: research,
@@ -132,7 +146,7 @@ export const composeSequence = async (
       generate({
         output: writerPartsSchema,
         ...prompt,
-        deadline: Math.min(deadline, now() + 45_000),
+        deadline: Math.min(deadline - 30_000, now() + 30_000),
       }),
     );
     if (!generated.success) {
@@ -189,6 +203,31 @@ export const composeSequence = async (
         ? held(problems.join(" "))
         : attempt({ parts, issues: problems });
     if (assembled.status === "held") return held(assembled.reason);
+    const onWritten = dependencies.onWritten;
+    if (onWritten) {
+      const recorded = await resultify(() =>
+        onWritten({
+          parts,
+          messages: assembled.messages,
+          attempts,
+        }),
+      );
+      if (!recorded.success) return recorded;
+    }
+    const reviewed = await judgeSequenceCopy(
+      {
+        prospect,
+        receipt: research,
+        playbook: settings,
+        parts,
+        messages: assembled.messages,
+        peers: dependencies.peers,
+        globalVoiceNotes: hashContext.globalVoiceNotes,
+      },
+      { generate: dependencies.judge, now, deadline },
+    );
+    if (!reviewed.success) return reviewed;
+    const qualityProblem = copyVerdictProblem(reviewed.data);
     const narrative = deriveWriterNarrative(
       parts.opening,
       research.queries[research.selected.queryIndex]?.query ?? "",
@@ -208,7 +247,7 @@ export const composeSequence = async (
         relationship: narrative.relationship,
         occasion: narrative.occasion,
       },
-      quality: null,
+      quality: reviewed.data,
     });
     return {
       success: true,
@@ -216,7 +255,9 @@ export const composeSequence = async (
         messages: assembled.messages.map((message) =>
           message.step === 1 ? { ...message, writing } : message,
         ),
-        issues: [],
+        issues: qualityProblem
+          ? [{ code: "copyQuality", field: `Copy: ${qualityProblem}` }]
+          : [],
         generation: { attempts },
       },
     };

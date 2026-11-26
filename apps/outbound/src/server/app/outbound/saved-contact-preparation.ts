@@ -1760,18 +1760,10 @@ const execute = async (
           { deadline },
         ),
       );
-      return drafted.issues.length
-        ? checkpoint(
-            claim,
-            {
-              stage: "complete",
-              composition: drafted.composition,
-              draftIssues: drafted.issues,
-              heldReason: "Copy needs review before this lead can continue.",
-            },
-            "complete",
-          )
-        : next("applyDraft", { composition: drafted.composition });
+      return next("applyDraft", {
+        composition: drafted.composition,
+        draftIssues: drafted.issues,
+      });
     }
     case "applyDraft":
       return transaction(async (transaction) => {
@@ -1803,6 +1795,7 @@ const execute = async (
                 lease: null,
                 preparedAt: new Date().toISOString(),
                 draftIssues: saved.issues,
+                ...(saved.copyProblem ? { heldReason: saved.copyProblem } : {}),
               },
               updatedAt: new Date(),
             },
