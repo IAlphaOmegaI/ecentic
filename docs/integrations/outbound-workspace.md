@@ -36,9 +36,9 @@ sequence requires a stored approval hash. Seven-day sending metrics use provider
 acceptance times, not the last time a job's reply history was synchronized.
 
 Reply attention uses stored conversation state. Meetings count distinct prospects
-explicitly marked `meetingBooked` or `meetingHeld`, without double counting a
-person across email and LinkedIn. A booking URL or interested reply does not
-prove that a meeting was booked.
+explicitly marked `meetingHeld`, including recorded held-stage events after a
+conversation is archived or reopened. Duplicate records across email and
+LinkedIn count once. Bookings and booking URLs are not held meetings.
 
 The existing `/replies` URL is the [Conversations workspace](./outbound-conversations.md).
 Its selector offers All activity, Needs a reply, Sent and Scheduled. The first
@@ -92,3 +92,27 @@ The report reads only projected prospect identity/status/source and bounded
 attempt/event fields; evidence details are fetched only for held prospects
 without a saved reason. No draft bodies or raw provider receipts are sent to the
 chart.
+
+The measured funnel covers all saved contacts, including held and archived
+history, and excludes internal mailbox tests. Research outcomes use each
+contact's latest recorded decision. Research receipts, findings, no-gap results
+and blocked or incomplete checks remain distinct. Copy passes and approvals
+refer to the current exact saved revision and current Playbook; a copy pass
+also requires the completed writing job's identical saved messages and complete
+six-check verdict. These counts do not predict replies or imply conversion rates.
+
+Lifetime accepted-email counts use non-test cold-send acceptance receipts, not
+timeline copies or proof of delivery. Human replies exclude automated messages;
+explicit staff outcome records remain visible. Positive replies require a
+recorded positive outcome or an interested stage with a human reply. The
+seven-day report labels its older `meeting` outcomes as recorded bookings,
+separately from lifetime held meetings.
+
+Research cost is acknowledged search purchases divided by distinct contacts
+with a historical first-email approval. Provider search IDs are deduplicated
+across active jobs, archived searches and copied research proofs. Reserved or
+unknown submissions without an acknowledged search ID are shown separately.
+An approval remains in this historical denominator after a reply, completion
+or revocation; approvals after the first send do not create a first-email
+approval. A zero denominator displays no ratio. The funnel reads one aggregate
+row; raw research, draft bodies and provider responses stay in the database.

@@ -193,14 +193,7 @@ export const policy = async (transaction?: TransactionScope) => {
   const current = rows[0];
   return {
     settings: current
-      ? playbookSchema
-          .extend({
-            relevanceLines: z
-              .array(z.string().trim().min(1).max(1000))
-              .max(100)
-              .optional(),
-          })
-          .parse(current.settings)
+      ? playbookSchema.parse(current.settings)
       : defaultPlaybook,
     revision: current?.revision ?? 0,
   };
@@ -2429,10 +2422,29 @@ export const saveComposedDraftWithin = async (
     ),
   );
   const current = await policy(transaction);
-  const settings = settingsForProspect(prospect, current.settings);
+  const liveSettings = settingsForProspect(prospect, current.settings);
+  const liveWritingHash = writingPolicyHash(liveSettings, {
+    globalVoiceNotes: current.settings.voiceNotes,
+  });
+  const preview =
+    completed.preview &&
+    completed.composition.writingPolicyHash !== liveWritingHash;
+  if (
+    preview &&
+    (prospect.status !== "held" ||
+      !prospect.holdReason ||
+      completed.baseWritingPolicyHash !== liveWritingHash)
+  )
+    throw new ConflictError(
+      "The held preview's live settings changed. Preview the proposed formula again before applying it.",
+    );
+  const settings = preview ? completed.policySnapshot : liveSettings;
+  const globalVoiceNotes = preview
+    ? completed.globalVoiceNotes
+    : current.settings.voiceNotes;
   const receipt = await assertShoppingEvidence(transaction, prospect, {
     ...current,
-    settings,
+    settings: liveSettings,
   });
   const details = prospectSchema.parse({
     ...prospect.details,
@@ -2450,7 +2462,7 @@ export const saveComposedDraftWithin = async (
     completed.composition.receiptHash !== researchHash(receipt) ||
     completed.composition.writingPolicyHash !==
       writingPolicyHash(settings, {
-        globalVoiceNotes: current.settings.voiceNotes,
+        globalVoiceNotes,
       }) ||
     completed.composition.contentHash !==
       createHash("sha256").update(canonical.canonicalText).digest("hex")
@@ -3421,6 +3433,7 @@ export const assertAppliedCompositionWithin = async (
       writingPolicyHash: writingPolicyHash(settings, {
         globalVoiceNotes: current.settings.voiceNotes,
       }),
+      jobId: prospect.messages[0]?.writing?.compositionJobId,
     }),
   );
   const details = prospectSchema.parse({

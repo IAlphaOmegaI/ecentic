@@ -8,7 +8,7 @@ import {
   type ReviewSearchParams,
   reviewQueueHref,
 } from "@/lib/outbound-review";
-import * as Outbound from "@/server/app/outbound";
+import * as ReviewData from "@/server/app/outbound/review-context";
 import { Environment } from "@/server/utils/environment";
 import { Empty } from "../../_components/status";
 import { ReviewShell } from "../_components/shell";
@@ -33,8 +33,8 @@ export default function Page({ params, searchParams }: PageProps) {
 const ReviewDetailData = async ({ params, searchParams }: PageProps) => {
   const [path, search] = await Promise.all([params, searchParams]);
   const backHref = reviewQueueHref(parseReviewQuery(search));
-  const result = await Outbound.getReviewItem(Environment.SERVER, {
-    id: path.id,
+  const result = await ReviewData.readReviewContext(Environment.SERVER, {
+    prospectId: path.id,
   });
   const translate = await getTranslations("outbound.review.queue");
   if (!result.success)
@@ -43,7 +43,7 @@ const ReviewDetailData = async ({ params, searchParams }: PageProps) => {
         {translate("error")}
       </p>
     );
-  if (!result.data?.prospect.messages.length)
+  if (!result.data)
     return (
       <Empty
         title={translate("missingTitle")}
@@ -62,8 +62,7 @@ const ReviewDetailData = async ({ params, searchParams }: PageProps) => {
   return (
     <ReviewEditor
       key={`${result.data.prospect.id}-${result.data.prospect.revision}`}
-      prospect={result.data.prospect}
-      playbook={result.data.playbook}
+      context={result.data}
       backHref={backHref}
     />
   );

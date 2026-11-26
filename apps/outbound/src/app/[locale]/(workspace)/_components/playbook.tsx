@@ -9,22 +9,32 @@ import {
   LinkedinIcon,
   UserIcon,
 } from "@zenncore/icons";
+import { resultify } from "@zenncore/utils";
 import {
   Accordion,
   AccordionItem,
   AccordionPanel,
   AccordionTrigger,
 } from "@zenncore/web/components/accordion";
+import { Button } from "@zenncore/web/components/button";
 import {
+  field,
   InferredForm,
   InferredFormField,
 } from "@zenncore/web/components/inferred-form";
+import { Textarea, TextareaInput } from "@zenncore/web/components/textarea";
 import { useMessages, useTranslations } from "next-intl";
+import { useRef, useState } from "react";
+import { z } from "zod";
 import {
   type Playbook,
   playbookSchema,
   TEMPLATE_VARIABLES,
 } from "@/lib/outbound";
+import {
+  PROPOSED_REBUILD_PLAYBOOK,
+  rebuildWritingProposal,
+} from "@/lib/outbound-rebuild-policy";
 import type { LinkedInAccount } from "@/lib/outbound-unipile";
 import * as Outbound from "@/server/app/outbound";
 import { fields, Notice, Submit, useMutation } from "./common";
@@ -56,7 +66,6 @@ const groups = [
       "senderEmails",
       "inactiveSenderEmails",
       "signature",
-      "founderLine",
       "postalAddress",
       "optout",
       "senderConfirmed",
@@ -67,6 +76,9 @@ const groups = [
     icon: FileSearchIcon,
     keys: [
       "researchInstructions",
+      "queryStyle",
+      "searchesPerLead",
+      "discoveryFreshnessDays",
       "requireShoppingEvidence",
       "allowProductObservations",
     ],
@@ -77,9 +89,13 @@ const groups = [
     keys: [
       "subjectTemplate",
       "bodyTemplate",
-      "callToAction",
-      "voiceNotes",
+      "relevanceLines",
+      "founderLine",
       "productCheckIntro",
+      "callToAction",
+      "followupOneTemplate",
+      "followupTwoTemplate",
+      "voiceNotes",
       "sentEmailExamples",
       "maxBodyWords",
       "bannedPhrases",
@@ -127,13 +143,7 @@ const groups = [
   {
     title: "sequenceTitle",
     icon: BookIcon,
-    keys: [
-      "followupOneTemplate",
-      "followupTwoTemplate",
-      "linkedinTemplate",
-      "followupOneDays",
-      "followupTwoDays",
-    ],
+    keys: ["linkedinTemplate", "followupOneDays", "followupTwoDays"],
   },
   {
     title: "targetingTitle",
@@ -172,6 +182,72 @@ const groups = [
   },
 ] as const;
 
+/** The shared custom-field adapter accepts a scalar; the saved policy remains string[]. */
+const decodeRelevanceLines = (value: unknown): string[] | null => {
+  if (typeof value !== "string") return null;
+  const decoded = resultify((): unknown => JSON.parse(value));
+  const parsed = z
+    .array(z.string())
+    .safeParse(decoded.success ? decoded.data : null);
+  return parsed.success ? parsed.data : null;
+};
+
+const RelevanceLines = ({
+  value,
+  onValueChange,
+  onBlur,
+  disabled,
+}: {
+  value?: string | null;
+  onValueChange?: (value: string) => void;
+  onBlur?: () => void;
+  disabled?: boolean;
+}) => {
+  const t = useTranslations("outbound.playbook");
+  const lines = decodeRelevanceLines(value) ?? [];
+  const update = (next: string[]) => onValueChange?.(JSON.stringify(next));
+  return (
+    <div className="space-y-3">
+      {lines.map((line, index) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: controlled text rows must retain focus while their text changes.
+        <div key={index} className="flex items-start gap-2">
+          <Textarea
+            value={line}
+            disabled={disabled}
+            onBlur={onBlur}
+            onValueChange={(next) =>
+              update(lines.map((value, row) => (row === index ? next : value)))
+            }
+            className="min-w-0 flex-1"
+          >
+            <TextareaInput
+              rows={3}
+              aria-label={t("relevanceLine", { number: index + 1 })}
+            />
+          </Textarea>
+          <Button
+            type="button"
+            variant="ghost"
+            disabled={disabled}
+            onClick={() => update(lines.filter((_, row) => row !== index))}
+            aria-label={t("removeRelevanceLine", { number: index + 1 })}
+          >
+            {t("removeLine")}
+          </Button>
+        </div>
+      ))}
+      <Button
+        type="button"
+        variant="outline"
+        disabled={disabled || lines.length >= 30}
+        onClick={() => update([...lines, ""])}
+      >
+        {t("addRelevanceLine")}
+      </Button>
+    </div>
+  );
+};
+
 export const PlaybookEditor = ({
   value,
   revision,
@@ -185,7 +261,14 @@ export const PlaybookEditor = ({
   const messages = useMessages();
   const labels = messages.outbound.playbook.fields;
   const mutation = useMutation();
-  const config = fields(
+  const [proposal, setProposal] = useState<{
+    values: Playbook;
+    version: number;
+    revision: number;
+  } | null>(null);
+  const currentValues = useRef({ revision, values: value });
+  const activeProposal = proposal?.revision === revision ? proposal : null;
+  const baseConfig = fields(
     groups.flatMap((group) => [...group.keys]),
     labels,
     {
@@ -198,6 +281,8 @@ export const PlaybookEditor = ({
         "linkedinTemplate",
         "voiceNotes",
         "researchInstructions",
+        "queryStyle",
+        "founderLine",
         "productCheckIntro",
         "publishedProductObservation",
         "publishedProductConsequence",
@@ -228,6 +313,8 @@ export const PlaybookEditor = ({
         "followupOneDays",
         "followupTwoDays",
         "verificationDays",
+        "searchesPerLead",
+        "discoveryFreshnessDays",
         "emailVerificationDays",
         "weeklyTarget",
         "dailyCap",
@@ -246,6 +333,11 @@ export const PlaybookEditor = ({
         linkedinAutomationEnabled: t("playbook.linkedinAutomationHelp"),
         linkedinAccountId: t("playbook.linkedinAccountHelp"),
         productCheckIntro: t("playbook.productCheckIntroHelp"),
+        founderLine: t("playbook.founderLineHelp"),
+        queryStyle: t("playbook.queryStyleHelp"),
+        searchesPerLead: t("playbook.searchesPerLeadHelp"),
+        discoveryFreshnessDays: t("playbook.discoveryFreshnessDaysHelp"),
+        maxBodyWords: t("playbook.wordTargetHelp"),
         researchInstructions: t("playbook.researchInstructionsHelp"),
         requireShoppingEvidence: t("playbook.requireShoppingEvidenceHelp"),
         allowProductObservations: t("playbook.allowProductObservationsHelp"),
@@ -312,16 +404,57 @@ export const PlaybookEditor = ({
       },
     },
   );
+  const relevanceValidator: z.ZodString = z
+    .string()
+    .refine(
+      (value) =>
+        playbookSchema.shape.relevanceLines.safeParse(
+          decodeRelevanceLines(value),
+        ).success,
+      { message: t("common.invalidField") },
+    );
+  const config = {
+    ...baseConfig,
+    relevanceLines: field({
+      shape: "custom",
+      Component: RelevanceLines,
+      validator: relevanceValidator,
+      label: labels.relevanceLines,
+      description: t("playbook.relevanceLinesHelp"),
+      classList: { field: "sm:col-span-2" },
+    }),
+  };
   return (
     <InferredForm
-      key={revision}
+      key={`${revision}:${activeProposal?.version ?? 0}`}
       config={config}
-      defaultValues={value}
+      defaultValues={{
+        ...(activeProposal?.values ?? value),
+        relevanceLines: JSON.stringify(
+          (activeProposal?.values ?? value).relevanceLines,
+        ),
+      }}
       renderFields={false}
+      onChange={(values) => {
+        currentValues.current = {
+          revision,
+          values: {
+            ...value,
+            ...values,
+            relevanceLines:
+              decodeRelevanceLines(values.relevanceLines) ??
+              value.relevanceLines,
+          },
+        };
+      }}
       onSubmit={(values) =>
         mutation.run(() =>
           Outbound.savePlaybook({
-            settings: playbookSchema.parse(values),
+            settings: playbookSchema.parse({
+              ...value,
+              ...values,
+              relevanceLines: decodeRelevanceLines(values.relevanceLines),
+            }),
             expectedRevision: revision,
             expectedSenderPool: {
               senderEmails: value.senderEmails,
@@ -343,6 +476,67 @@ export const PlaybookEditor = ({
           )}
         </p>
       </div>
+      <section className="space-y-4 border-accent-foreground border-b px-4 py-5 sm:px-6">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="max-w-3xl space-y-1">
+            <h2 className="font-semibold text-foreground-rich text-sm">
+              {t("playbook.proposalTitle")}
+            </h2>
+            <p className="text-foreground-dimmed text-sm leading-relaxed">
+              {t("playbook.proposalHelp")}
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={mutation.pending}
+            onClick={() => {
+              const next = rebuildWritingProposal(
+                currentValues.current.revision === revision
+                  ? currentValues.current.values
+                  : value,
+              );
+              currentValues.current = { revision, values: next };
+              setProposal({
+                values: next,
+                version: (activeProposal?.version ?? 0) + 1,
+                revision,
+              });
+            }}
+          >
+            {t("playbook.loadProposal")}
+          </Button>
+        </div>
+        {activeProposal && (
+          <p role="status" className="text-primary-text text-sm">
+            {t("playbook.proposalLoaded")}
+          </p>
+        )}
+        <Accordion>
+          <AccordionItem value="iseld-reference" className="border-b-0">
+            <AccordionTrigger className="text-sm">
+              {t("playbook.iseldProposalTitle")}
+            </AccordionTrigger>
+            <AccordionPanel className="duration-200 motion-reduce:transition-none">
+              <div className="max-w-3xl space-y-3 pb-4 text-sm leading-relaxed">
+                <p className="text-foreground-dimmed">
+                  {t("playbook.iseldProposalHelp")}
+                </p>
+                <p>
+                  <span className="font-medium">{labels.founderLine}: </span>
+                  {PROPOSED_REBUILD_PLAYBOOK.founderLine}
+                </p>
+                <p>
+                  <span className="font-medium">
+                    {labels.productCheckIntro}:{" "}
+                  </span>
+                  {PROPOSED_REBUILD_PLAYBOOK.productCheckIntro}
+                </p>
+              </div>
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
+      </section>
       {groups
         .filter((group) => !("help" in group))
         .map((group) => {
@@ -369,9 +563,14 @@ export const PlaybookEditor = ({
                   {t(`playbook.${group.title}`)}
                 </h2>
                 {group.title === "writingTitle" && (
-                  <p className="mt-4 text-foreground-dimmed text-sm leading-relaxed">
-                    {t("playbook.writingHelp")}
-                  </p>
+                  <div className="mt-4 space-y-3 text-sm leading-relaxed">
+                    <p className="text-foreground-dimmed">
+                      {t("playbook.writingHelp")}
+                    </p>
+                    <p className="font-medium text-foreground-rich">
+                      {t("playbook.wordTargetHelp")}
+                    </p>
+                  </div>
                 )}
                 {group.title === "researchTitle" && (
                   <p className="mt-4 text-foreground-dimmed text-sm leading-relaxed">
@@ -393,7 +592,16 @@ export const PlaybookEditor = ({
                       {t("playbook.variablesTitle")}
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      {TEMPLATE_VARIABLES.map((variable) => (
+                      {TEMPLATE_VARIABLES.filter(
+                        (variable) =>
+                          ![
+                            "productFeature",
+                            "finding",
+                            "consequence",
+                            "askAbout",
+                            "personalLine",
+                          ].includes(variable),
+                      ).map((variable) => (
                         <code
                           key={variable}
                           className="rounded-sm border border-accent-foreground bg-background px-1.5 py-0.5 text-foreground text-xs"

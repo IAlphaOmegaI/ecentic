@@ -620,6 +620,7 @@ export const assembleResearch = (
   options: {
     allowStaleEvidence?: boolean;
     allowProductObservations?: boolean;
+    discoveryFreshnessDays?: number;
   } = {},
 ) =>
   resultify(() => {
@@ -663,6 +664,7 @@ export const validateAutomaticResearch = (
   options: {
     allowStaleEvidence?: boolean;
     allowProductObservations?: boolean;
+    discoveryFreshnessDays?: number;
   } = {},
 ) => {
   const problem = validateShoppingResearch(receipt, days, Date.now(), options);

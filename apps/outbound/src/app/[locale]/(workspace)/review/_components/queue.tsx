@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "@zenncore/web/components/select";
 import { useFormatter, useTranslations } from "next-intl";
-import { useCallback, useMemo, useTransition } from "react";
+import { useCallback, useMemo, useState, useTransition } from "react";
 import { z } from "zod";
 import { Link, useRouter } from "@/i18n/navigation";
 import {
@@ -38,6 +38,7 @@ import {
   reviewQueueHref,
 } from "@/lib/outbound-review";
 import { Empty, Status } from "../../_components/status";
+import { ReviewSheet } from "./review-sheet";
 
 type QueueRow = ReviewQueueRow & { _id: string };
 const columnHelper = createColumnHelper<QueueRow>();
@@ -53,6 +54,7 @@ export const ReviewQueueTable = ({
   const format = useFormatter();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const [selected, setSelected] = useState<string | null>(null);
   const currentQuery = { ...query, page: queue.page };
   const currentHref = reviewQueueHref(currentQuery);
   const activeFilter = Boolean(query.q) || query.status !== "all";
@@ -99,6 +101,17 @@ export const ReviewQueueTable = ({
           <Link
             href={detailHref(row.original.id)}
             prefetch={false}
+            onClick={(event) => {
+              if (
+                event.metaKey ||
+                event.ctrlKey ||
+                event.shiftKey ||
+                event.altKey
+              )
+                return;
+              event.preventDefault();
+              setSelected(row.original.id);
+            }}
             className="block min-w-0 rounded-sm focus-visible:outline-2 focus-visible:outline-primary"
           >
             <span
@@ -180,9 +193,7 @@ export const ReviewQueueTable = ({
           <Button
             variant="ghost"
             color="neutral"
-            render={
-              <Link href={detailHref(row.original.id)} prefetch={false} />
-            }
+            onClick={() => setSelected(row.original.id)}
             aria-label={`${t("review.queue.action.primary")}: ${row.original.company}`}
           >
             <span className="hidden xl:inline">
@@ -198,6 +209,13 @@ export const ReviewQueueTable = ({
 
   return (
     <div aria-busy={pending} className="min-w-0">
+      {selected && (
+        <ReviewSheet
+          key={selected}
+          prospectId={selected}
+          onClose={() => setSelected(null)}
+        />
+      )}
       <div className="flex flex-wrap items-start gap-4 border-accent-foreground border-b px-4 py-4 sm:px-6">
         <InferredForm
           key={query.q}

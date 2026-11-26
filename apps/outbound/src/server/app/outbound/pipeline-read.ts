@@ -7,6 +7,7 @@ import { db, schema } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
 import { repository, resultifyRead } from "@/server/utils/repository";
 import * as Conversations from "./conversations";
+import * as Funnel from "./pipeline-funnel";
 import * as Credentials from "./provider-credentials";
 import * as Store from "./store";
 
@@ -124,6 +125,7 @@ export const read = () =>
       unipile,
       accounts,
       conversations,
+      funnel,
     ] = await Promise.all([
       resultifyRead(() =>
         db.execute(sql`${scoped} select
@@ -167,14 +169,16 @@ export const read = () =>
           })
         : Promise.resolve({ success: true as const, data: [] }),
       Conversations.summary(),
+      Funnel.read(policy.revision),
     ]);
     const account = value(accounts)[0];
     return {
       totals: totalsSchema.parse({
         ...value(totals)[0],
         needsReply: value(conversations).needsReply,
-        meetings: value(conversations).meetingsRecorded,
+        meetings: value(funnel).meetingsHeld,
       }),
+      funnel: value(funnel),
       campaigns: z.array(campaignSchema).parse(value(campaigns)),
       work: z.array(workSchema).parse(value(work)),
       setup: {

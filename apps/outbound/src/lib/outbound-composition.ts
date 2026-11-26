@@ -56,6 +56,7 @@ export const writingSnapshotSchema = z
     writingPolicyHash: hash,
     receiptHash: hash,
     contentHash: hash,
+    compositionJobId: z.string().uuid().optional(),
     revision: z.number().int().nonnegative().nullable(),
     generatedAt: z.string().datetime(),
     parts: writerPartsSchema,

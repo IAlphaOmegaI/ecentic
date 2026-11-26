@@ -6,6 +6,7 @@ import { z } from "zod";
 import {
   companyExcluded,
   normalizeDomain,
+  type Playbook,
   prospectIssues,
   prospectSchema,
   recipientMailHostAllowed,
@@ -128,6 +129,7 @@ const discoveryQueryProblem = (
   state: PreparationState,
   details: typeof schema.outboundProspect.$inferSelect.details,
   company: ReturnType<typeof companyFor>,
+  settings: Playbook,
 ) => {
   if (!state.query || !state.query.intent?.startsWith("unbranded-"))
     return "A validated unbranded shopper question is required before research spending.";
@@ -135,7 +137,7 @@ const discoveryQueryProblem = (
     return "The shopper question needs a saved rendered product page.";
   if (state.query.intent === "unbranded-broad") {
     const previous = state.shoppingHistory?.[0];
-    const problem = broaderSearchProblem(previous);
+    const problem = broaderSearchProblem(previous, Date.now(), settings);
     if (problem) return problem;
     if (
       researchHash(state.query.product) !==
@@ -149,6 +151,7 @@ const discoveryQueryProblem = (
     category: details.productCategory,
     merchant: { name: company.name, domain: company.domain },
     browser: state.productCapture,
+    discoveryFreshnessDays: settings.discoveryFreshnessDays,
   });
 };
 
@@ -677,13 +680,18 @@ const claim = (deadline: number, batchId?: string) =>
           saved,
           ready.data.prospect.details,
           ready.data.company,
+          ready.data.policy.settings,
         );
         const count = saved.shoppingQueryCount ?? 0;
         const repeated =
           saved.query?.intent === "unbranded-specific"
             ? count !== 0
             : count !== 1;
-        if (problem || repeated || count >= 2) {
+        if (
+          problem ||
+          repeated ||
+          count >= ready.data.policy.settings.searchesPerLead
+        ) {
           value(
             await Jobs.update(
               Environment.SERVER,
@@ -1480,7 +1488,11 @@ const execute = async (
           "The question needs a saved rendered product page.",
         );
       if (state.shoppingQueryIntent === "unbranded-broad") {
-        const problem = broaderSearchProblem(state.shoppingHistory?.[0]);
+        const problem = broaderSearchProblem(
+          state.shoppingHistory?.[0],
+          Date.now(),
+          policy.settings,
+        );
         if (problem || state.shoppingQueryCount !== 1)
           return checkpoint(
             claim,
@@ -1506,6 +1518,8 @@ const execute = async (
           merchant: { name: company.name, domain: company.domain },
           browser: state.productCapture,
           intent: state.shoppingQueryIntent ?? "unbranded-specific",
+          queryStyle: policy.settings.queryStyle,
+          discoveryFreshnessDays: policy.settings.discoveryFreshnessDays,
           ...(state.shoppingHistory?.[0]
             ? { previousQuestion: state.shoppingHistory[0].query.prompt }
             : {}),
@@ -1537,7 +1551,12 @@ const execute = async (
         throw new ValidationError(
           "The query does not match its saved per-lead reservation.",
         );
-      const problem = discoveryQueryProblem(state, prospect.details, company);
+      const problem = discoveryQueryProblem(
+        state,
+        prospect.details,
+        company,
+        policy.settings,
+      );
       if (problem) throw new ValidationError(problem);
       const result = value(
         await (dependencies.start ?? Capture.startQuery)({
@@ -1654,6 +1673,7 @@ const execute = async (
       if (problem) throw new ValidationError(problem);
       if (receipt.selected.kind === "no-gap") {
         if (
+          policy.settings.searchesPerLead === 1 ||
           state.shoppingQueryCount !== 1 ||
           state.shoppingHistory?.length ||
           evidence.answer.job.query.intent !== "unbranded-specific"
@@ -1691,7 +1711,11 @@ const execute = async (
             failureCode: state["failureCode"],
           },
         });
-        const broaderProblem = broaderSearchProblem(previous);
+        const broaderProblem = broaderSearchProblem(
+          previous,
+          Date.now(),
+          policy.settings,
+        );
         if (broaderProblem)
           return checkpoint(
             claim,

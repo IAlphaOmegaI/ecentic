@@ -105,7 +105,7 @@ export const ReportPanel = ({ report }: ReportPanel.Props) => {
             ))}
           </dl>
           <p className="mt-4 text-foreground-dimmed text-xs leading-5">
-            {pipeline("meetingsHelp")}
+            {translate("bookingsHelp")}
           </p>
         </div>
       </div>

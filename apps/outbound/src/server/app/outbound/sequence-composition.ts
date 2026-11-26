@@ -11,9 +11,12 @@ import {
 } from "@/lib/outbound";
 import {
   canonicalSequenceInput,
+  type WriterParts,
+  writerPartsSchema,
   writingSnapshotSchema,
 } from "@/lib/outbound-composition";
 import { hasCompleteCopyVerdict } from "@/lib/outbound-copy-quality";
+import { rebuildWritingProposal } from "@/lib/outbound-rebuild-policy";
 import { compositionReferenceSchema } from "@/lib/outbound-sequence-composition";
 import { shoppingResearchSchema } from "@/lib/outbound-shopping-research";
 import type { CompositionPeer } from "@/lib/outbound-writing";
@@ -43,12 +46,7 @@ const peerSchema = z.object({
   relationship: z.string().nullable(),
   occasion: z.string().nullable(),
 });
-const policySchema = playbookSchema.extend({
-  relevanceLines: z
-    .array(z.string().trim().min(1).max(1000))
-    .max(100)
-    .optional(),
-});
+const policySchema = playbookSchema;
 const inputSchema = z.object({
   operation: z.literal("sequenceComposition"),
   step: z.literal(1),
@@ -66,6 +64,9 @@ const inputSchema = z.object({
   receipt: shoppingResearchSchema,
   settings: policySchema,
   globalVoiceNotes: z.string(),
+  preview: z.boolean().optional(),
+  baseWritingPolicyHash: digest.optional(),
+  suppliedParts: writerPartsSchema.optional(),
   peers: z.array(peerSchema).max(9),
   requestedAt: z.string().datetime(),
 });
@@ -95,7 +96,12 @@ export type CompletedComposition = Pick<
   z.infer<typeof outputSchema>,
   "messages" | "issues" | "generation" | "composition" | "context"
 > &
-  Pick<z.infer<typeof outputSchema>, "appliedProspectRevision" | "savedAt">;
+  Pick<z.infer<typeof outputSchema>, "appliedProspectRevision" | "savedAt"> & {
+    preview: boolean;
+    policySnapshot: z.infer<typeof policySchema>;
+    globalVoiceNotes: string;
+    baseWritingPolicyHash: string;
+  };
 export type CompositionDependencies = {
   compose?: typeof Draft.composeSequence;
   generate?: Draft.CompositionDependencies["generate"];
@@ -108,6 +114,8 @@ const requestSchema = z
     prospectId: z.string().uuid(),
     expectedRevision: z.number().int().nonnegative().optional(),
     expectedPlaybookRevision: z.number().int().nonnegative().optional(),
+    preview: z.boolean().optional(),
+    suppliedParts: writerPartsSchema.optional(),
   })
   .strict();
 const value = <Data>(response: Result<Data, Error>): Data => {
@@ -130,8 +138,11 @@ export const compositionJobKey = (
   prospectId: string,
   receiptHash: string,
   writingPolicyHash: string,
+  suppliedParts?: WriterParts,
 ) =>
-  `sequence-writing:${hash(JSON.stringify({ prospectId, receiptHash, writingPolicyHash, step: 1 }))}`;
+  suppliedParts
+    ? `sequence-review:${hash(JSON.stringify({ prospectId, receiptHash, writingPolicyHash, step: 1, parts: suppliedParts }))}`
+    : `sequence-writing:${hash(JSON.stringify({ prospectId, receiptHash, writingPolicyHash, step: 1 }))}`;
 
 const readCompleted = (job: Job): CompletedComposition => {
   const parsedInput = inputSchema.safeParse(job.input);
@@ -153,6 +164,7 @@ const readCompleted = (job: Job): CompletedComposition => {
     input.prospectId,
     input.receiptHash,
     input.writingPolicyHash,
+    input.suppliedParts,
   );
   if (
     job.prospectId !== input.prospectId ||
@@ -167,11 +179,15 @@ const readCompleted = (job: Job): CompletedComposition => {
     Policy.compositionProspectHash(input.prospect) !== input.prospectHash ||
     canonical.status !== "ready" ||
     !writing ||
+    (writing.compositionJobId !== undefined &&
+      writing.compositionJobId !== job.id) ||
     !hasCompleteCopyVerdict(writing.quality) ||
     writing.revision !== null ||
     writing.writingPolicyHash !== input.writingPolicyHash ||
     writing.receiptHash !== input.receiptHash ||
     writing.contentHash !== hash(canonical.canonicalText) ||
+    (input.suppliedParts !== undefined &&
+      JSON.stringify(input.suppliedParts) !== JSON.stringify(writing.parts)) ||
     output.messages.slice(1).some((message) => message.writing !== undefined) ||
     output.composition.jobId !== job.id ||
     output.composition.key !== key ||
@@ -193,6 +209,11 @@ const readCompleted = (job: Job): CompletedComposition => {
     generation: output.generation,
     composition: output.composition,
     context: output.context,
+    preview: input.preview ?? false,
+    policySnapshot: input.settings,
+    globalVoiceNotes: input.globalVoiceNotes,
+    baseWritingPolicyHash:
+      input.baseWritingPolicyHash ?? input.writingPolicyHash,
     ...(output.appliedProspectRevision === undefined
       ? {}
       : { appliedProspectRevision: output.appliedProspectRevision }),
@@ -202,7 +223,7 @@ const readCompleted = (job: Job): CompletedComposition => {
 
 /** Store uses the saved provider result, never message metadata supplied by a client. */
 export const loadCompletedComposition = (
-  scope: TransactionScope,
+  scope: TransactionScope | undefined,
   jobId: string,
 ): Promise<Result<CompletedComposition, Error>> =>
   resultify(async () => {
@@ -215,7 +236,12 @@ export const loadCompletedComposition = (
 
 export const findCompletedComposition = (
   scope: TransactionScope,
-  input: { prospectId: string; receiptHash: string; writingPolicyHash: string },
+  input: {
+    prospectId: string;
+    receiptHash: string;
+    writingPolicyHash: string;
+    jobId?: string;
+  },
 ): Promise<Result<CompletedComposition | null, Error>> =>
   resultify(async () => {
     const key = compositionJobKey(
@@ -227,13 +253,23 @@ export const findCompletedComposition = (
       await Jobs.find(
         Environment.SERVER,
         {
-          where: eq(schema.outboundIntegrationJob.requestId, key),
+          where: input.jobId
+            ? and(
+                eq(schema.outboundIntegrationJob.id, input.jobId),
+                eq(schema.outboundIntegrationJob.prospectId, input.prospectId),
+              )
+            : eq(schema.outboundIntegrationJob.requestId, key),
           limit: 1,
         },
         { tx: scope },
       ),
     )[0];
-    return job?.status === "complete" ? readCompleted(job) : null;
+    if (job?.status !== "complete") return null;
+    const completed = readCompleted(job);
+    return completed.composition.receiptHash === input.receiptHash &&
+      completed.composition.writingPolicyHash === input.writingPolicyHash
+      ? completed
+      : null;
   });
 
 /** Only writing metadata is selected; provider captures never enter the peer queue. */
@@ -387,7 +423,18 @@ export const composeForProspect = async (
       throw new ValidationError(
         "Only an unsent editable prospect can receive a new sequence.",
       );
-    const settings = settingsForProspect(prospect, policy.settings);
+    if (
+      parsed.data.preview &&
+      (prospect.status !== "held" || !prospect.holdReason)
+    )
+      throw new ValidationError(
+        "Preview the proposed formula only on a held unsent prospect.",
+      );
+    const liveSettings = settingsForProspect(prospect, policy.settings);
+    const selectedPolicy = parsed.data.preview
+      ? rebuildWritingProposal(policy.settings)
+      : policy.settings;
+    const settings = settingsForProspect(prospect, selectedPolicy);
     const details = prospectSchema.parse({
       ...prospect.details,
       id: prospect.id,
@@ -395,19 +442,27 @@ export const composeForProspect = async (
     });
     const receipt = await Research.assertShoppingEvidence(scope, prospect, {
       ...policy,
-      settings,
+      settings: liveSettings,
     });
     if (!receipt)
       throw new ValidationError(
         "Save a supported shopping receipt before writing.",
       );
     const receiptHash = Research.researchHash(receipt);
-    const globalVoiceNotes = policy.settings.voiceNotes;
+    const globalVoiceNotes = selectedPolicy.voiceNotes;
+    const baseWritingPolicyHash = Policy.writingPolicyHash(liveSettings, {
+      globalVoiceNotes: policy.settings.voiceNotes,
+    });
     const writingPolicyHash = Policy.writingPolicyHash(settings, {
       globalVoiceNotes,
     });
     const prospectHash = Policy.compositionProspectHash(details);
-    const key = compositionJobKey(prospect.id, receiptHash, writingPolicyHash);
+    const key = compositionJobKey(
+      prospect.id,
+      receiptHash,
+      writingPolicyHash,
+      parsed.data.suppliedParts,
+    );
     const prior = value(
       await Jobs.find(
         Environment.SERVER,
@@ -524,6 +579,11 @@ export const composeForProspect = async (
       receipt,
       settings,
       globalVoiceNotes,
+      preview: parsed.data.preview ?? false,
+      baseWritingPolicyHash,
+      ...(parsed.data.suppliedParts
+        ? { suppliedParts: parsed.data.suppliedParts }
+        : {}),
       peers,
       requestedAt: new Date(now()).toISOString(),
     });
@@ -562,6 +622,7 @@ export const composeForProspect = async (
       {
         generate: dependencies.generate,
         judge: dependencies.judge,
+        suppliedParts: claim.input.suppliedParts,
         now,
         deadline: dependencies.deadline,
         peers: claim.input.peers,
@@ -762,6 +823,12 @@ export const composeForProspect = async (
         );
       const output = outputSchema.parse({
         ...response.data,
+        messages: response.data.messages.map((message) => ({
+          ...message,
+          ...(message.writing
+            ? { writing: { ...message.writing, compositionJobId: current.id } }
+            : {}),
+        })),
         composition: {
           jobId: current.id,
           key: claim.input.key,

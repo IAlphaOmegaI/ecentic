@@ -27,6 +27,7 @@ import * as Automation from "@/server/app/outbound/automation-actions";
 import * as Pipeline from "@/server/app/outbound/pipeline-actions";
 import { Environment } from "@/server/utils/environment";
 import { AutomationPanel, AutomationSkeleton } from "./automation";
+import { FunnelPanel } from "./funnel";
 import { PipelineRefresh } from "./pipeline-refresh";
 import { ReportPanel } from "./report";
 import { Empty } from "./status";
@@ -175,6 +176,7 @@ export const PipelineOverview = async () => {
         </div>
         <PipelineRefresh />
       </div>
+      <FunnelPanel funnel={data.funnel} />
       <Suspense fallback={<ReportSkeleton />}>
         <WeeklyReport />
       </Suspense>

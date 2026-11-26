@@ -234,7 +234,7 @@ const broaderShoppingResearchSupported = (claimed: AutomationClaim) => {
       qualifiedProduct(claimed.state).product.url &&
     previous.query.product.name ===
       qualifiedProduct(claimed.state).product.name &&
-    !broaderSearchProblem(previous)
+    !broaderSearchProblem(previous, Date.now(), claimed.playbook)
   );
 };
 const requiredKey = async (provider: "scrapellm" | "firecrawl") => {
@@ -444,7 +444,7 @@ export const execute = async (
       if (!browser.success || browser.data.status !== "captured")
         return { stage: "browseProduct" };
       const count = state.shoppingQueryCount ?? 0;
-      if (count >= 2)
+      if (count >= playbook.searchesPerLead)
         return {
           stage: "researchQuery",
           reason: "shopping-query-limit",
@@ -474,6 +474,8 @@ export const execute = async (
           merchant: { name: company.name, domain: company.domain },
           browser: browser.data,
           intent,
+          queryStyle: playbook.queryStyle,
+          discoveryFreshnessDays: playbook.discoveryFreshnessDays,
           ...(intent === "unbranded-broad" && previous.success
             ? { previousQuestion: previous.data.prompt }
             : {}),
@@ -550,6 +552,7 @@ export const execute = async (
         ...qualifiedProduct(state),
         merchant: { name: company.name, domain: company.domain },
         browser,
+        discoveryFreshnessDays: playbook.discoveryFreshnessDays,
       });
       if (problem)
         return {
@@ -703,6 +706,7 @@ export const execute = async (
           state["shoppingHistory"] ?? [],
         );
         if (
+          playbook.searchesPerLead === 1 ||
           state.shoppingQueryCount !== 1 ||
           history.length ||
           evidence.answer.job.query.intent !== "unbranded-specific"
@@ -730,7 +734,7 @@ export const execute = async (
             providerRecovery: state["providerRecovery"],
           },
         });
-        const problem = broaderSearchProblem(previous);
+        const problem = broaderSearchProblem(previous, Date.now(), playbook);
         if (problem)
           return {
             stage: "assessShopping",

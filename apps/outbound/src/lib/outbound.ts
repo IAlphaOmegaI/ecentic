@@ -161,6 +161,10 @@ export const playbookSchema = z
     researchInstructions: text
       .max(10000)
       .default(DEFAULT_RESEARCH_INSTRUCTIONS),
+    queryStyle: text.max(3000).default(""),
+    searchesPerLead: z.union([z.literal(1), z.literal(2)]).default(2),
+    discoveryFreshnessDays: z.number().int().min(1).max(7).default(7),
+    relevanceLines: z.array(text.min(1).max(1000)).max(30).default([]),
     requireShoppingEvidence: z.boolean().default(false),
     founderLine: text.min(1).max(500),
     productCheckIntro: text
@@ -336,6 +340,10 @@ export const defaultPlaybook: Playbook = {
   humanizeDrafts: true,
   humanizerNotes: DEFAULT_HUMANIZER_NOTES,
   researchInstructions: DEFAULT_RESEARCH_INSTRUCTIONS,
+  queryStyle: "",
+  searchesPerLead: 2,
+  discoveryFreshnessDays: 7,
+  relevanceLines: [],
   requireShoppingEvidence: false,
   founderLine: "I'm Juri, founder of ecentic, and we help fix gaps like this.",
   productCheckIntro:

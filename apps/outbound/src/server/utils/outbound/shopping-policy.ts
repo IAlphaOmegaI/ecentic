@@ -36,6 +36,18 @@ export const researchPolicyHash = (settings: Playbook) =>
       JSON.stringify({
         instructions: settings.researchInstructions,
         required: settings.requireShoppingEvidence,
+        // Omit newly introduced defaults so historical policy hashes stay valid.
+        ...((settings.queryStyle ?? "") ||
+        (settings.searchesPerLead ?? 2) !== 2 ||
+        (settings.discoveryFreshnessDays ?? 7) !== 7
+          ? {
+              queryControls: {
+                style: settings.queryStyle ?? "",
+                searchesPerLead: settings.searchesPerLead ?? 2,
+                discoveryFreshnessDays: settings.discoveryFreshnessDays ?? 7,
+              },
+            }
+          : {}),
       }),
     )
     .digest("hex");

@@ -289,6 +289,10 @@ export const productCaptureUrlMatches = (
   );
 };
 
+/** Invalid limits fail closed; discovery never permits more than seven days. */
+export const discoveryFreshnessLimit = (days = 7) =>
+  Number.isFinite(days) ? Math.min(7, Math.max(1, Math.floor(days))) : 1;
+
 /** Discovery is time-sensitive even when older page evidence is allowed. */
 export const discoveryFreshnessProblem = (
   receipt: ShoppingResearch,
@@ -303,9 +307,10 @@ export const discoveryFreshnessProblem = (
     return null;
   const query = receipt.queries[receipt.selected.queryIndex];
   const observed = Date.parse(query?.executedAt ?? "");
-  const maximum = Math.min(7, Math.max(1, days)) * 86_400_000;
+  const limit = discoveryFreshnessLimit(days);
+  const maximum = limit * 86_400_000;
   if (!Number.isFinite(observed) || observed > now || now - observed > maximum)
-    return "Needs a fresh search (older than 7 days or future-dated).";
+    return `Needs a fresh search (older than ${limit} ${limit === 1 ? "day" : "days"} or future-dated).`;
   return null;
 };
 

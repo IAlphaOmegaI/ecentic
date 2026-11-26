@@ -14,6 +14,7 @@ import {
   canonicalSequenceInput,
 } from "@/lib/outbound-composition";
 import { draftReviewReadinessKey } from "@/lib/outbound-draft-review";
+import { rebuildWritingProposal } from "@/lib/outbound-rebuild-policy";
 import { shoppingFinding } from "@/lib/outbound-shopping-research";
 import type { CompletedComposition } from "@/server/app/outbound/sequence-composition";
 import { writingPolicyHash } from "@/server/utils/outbound/shopping-policy";
@@ -1331,6 +1332,147 @@ try {
   );
   console.log(
     "PASS stale review claim cannot apply; reopened known failed copy holds without regeneration",
+  );
+
+  const previewFixture = await seed(true, true);
+  const originalPolicy = await db.select().from(schema.outboundPlaybook);
+  const proposed = rebuildWritingProposal(previewFixture.policy);
+  const previewParts = {
+    ...previewFixture.parts,
+    relevance: "That's the kind of search a new customer starts with.",
+  };
+  const previewResult = value(
+    await Composition.composeForProspect(
+      actor,
+      {
+        prospectId: previewFixture.id,
+        expectedRevision: previewFixture.revision,
+        preview: true,
+      },
+      { generate: async () => previewParts, judge: passingCopyJudge },
+    ),
+  );
+  assert.equal(previewResult.preview, true);
+  assert.deepEqual(
+    previewResult.policySnapshot.senderProfiles,
+    previewFixture.policy.senderProfiles,
+  );
+  assert.equal(
+    previewResult.policySnapshot.founderLine,
+    previewFixture.policy.founderLine,
+  );
+  assert.equal(previewResult.policySnapshot.voiceNotes, proposed.voiceNotes);
+  const previewSaved = value(await save(previewFixture, previewResult));
+  const previewRow = await row(previewFixture.id);
+  assert.equal(previewRow.status, "held");
+  assert.equal(
+    previewRow.holdReason,
+    "Original 21: unbranded evidence review required.",
+  );
+  assert.equal(
+    previewRow.messages[0]?.writing?.compositionJobId,
+    previewResult.composition.jobId,
+  );
+  assert.equal(previewRow.messages[0]?.writing?.quality?.passed, true);
+  assert.deepEqual(
+    await db.select().from(schema.outboundPlaybook),
+    originalPolicy,
+  );
+  rejected(
+    await Store.reviewProspect(actor, {
+      prospect: previewFixture.id,
+      revision: previewSaved.revision,
+      decision: "approve",
+      reason: "",
+    }),
+    /trusted writing result/,
+  );
+
+  const manualParts = { ...previewParts, subject: "linen tote" };
+  const manualCalls = { writer: 0, judge: 0 };
+  const manualResult = value(
+    await Composition.composeForProspect(
+      actor,
+      {
+        prospectId: previewFixture.id,
+        expectedRevision: previewSaved.revision,
+        preview: true,
+        suppliedParts: manualParts,
+      },
+      {
+        generate: async () => {
+          manualCalls.writer += 1;
+          throw new Error("Human copy must not be rewritten.");
+        },
+        judge: async () => {
+          manualCalls.judge += 1;
+          return passingCopyJudge();
+        },
+      },
+    ),
+  );
+  assert.equal(
+    manualResult.composition.key.startsWith("sequence-review:"),
+    true,
+  );
+  assert.deepEqual(manualResult.messages[0]?.writing?.parts, manualParts);
+  assert.equal(manualCalls.writer, 0);
+  assert.equal(manualCalls.judge, 1);
+  const manuallySaved = value(
+    await save(previewFixture, manualResult, previewSaved.revision),
+  );
+  const manualAgain = value(
+    await Composition.composeForProspect(
+      actor,
+      {
+        prospectId: previewFixture.id,
+        expectedRevision: manuallySaved.revision,
+        preview: true,
+        suppliedParts: manualParts,
+      },
+      {
+        generate: async () => {
+          throw new Error("No repeated writer purchase.");
+        },
+        judge: async () => {
+          throw new Error("No repeated judge purchase.");
+        },
+      },
+    ),
+  );
+  assert.equal(manualAgain.composition.jobId, manualResult.composition.jobId);
+  assert.deepEqual(
+    await db.select().from(schema.outboundPlaybook),
+    originalPolicy,
+  );
+  const beforeManualRetry = await snapshot();
+  value(await save(previewFixture, manualAgain, manuallySaved.revision));
+  assert.deepEqual(await snapshot(), beforeManualRetry);
+
+  // Adopting exactly the proposed policy still preserves the deliberate hold.
+  await db
+    .update(schema.outboundPlaybook)
+    .set({ settings: proposed, revision: 2 })
+    .where(eq(schema.outboundPlaybook.id, "default"));
+  const adopted = value(
+    await save(previewFixture, manualAgain, manuallySaved.revision),
+  );
+  assert.equal((await row(previewFixture.id)).status, "held");
+  assert.equal(
+    (await row(previewFixture.id)).holdReason,
+    previewRow.holdReason,
+  );
+  value(
+    await Store.reviewProspect(actor, {
+      prospect: previewFixture.id,
+      revision: adopted.revision,
+      decision: "approve",
+      reason: "",
+    }),
+  );
+  assert.equal((await row(previewFixture.id)).status, "approved");
+  console.log(
+    "PASS held proposals never change live policy; human parts are judged without rewriting and reused exactly",
   );
 
   console.log(

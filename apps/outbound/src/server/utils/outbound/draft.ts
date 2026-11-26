@@ -44,6 +44,7 @@ type GenerationRequest = {
 export type CompositionDependencies = {
   generate?: (request: GenerationRequest) => Promise<WriterParts>;
   judge?: CopyQualityDependencies["generate"];
+  suppliedParts?: WriterParts;
   onWritten?: (draft: {
     parts: WriterParts;
     messages: Message[];
@@ -142,13 +143,15 @@ export const composeSequence = async (
       globalVoiceNotes: hashContext.globalVoiceNotes,
       ...(previous ? { previous } : {}),
     });
-    const generated = await resultify(() =>
-      generate({
-        output: writerPartsSchema,
-        ...prompt,
-        deadline: Math.min(deadline - 30_000, now() + 30_000),
-      }),
-    );
+    const generated = dependencies.suppliedParts
+      ? { success: true as const, data: dependencies.suppliedParts }
+      : await resultify(() =>
+          generate({
+            output: writerPartsSchema,
+            ...prompt,
+            deadline: Math.min(deadline - 30_000, now() + 30_000),
+          }),
+        );
     if (!generated.success) {
       if (generated.error.name === ValidationError.errorName)
         return { success: false, error: generated.error };
@@ -174,7 +177,7 @@ export const composeSequence = async (
       const issues = [
         "The writer must return exactly the five required parts.",
       ];
-      return previous
+      return previous || dependencies.suppliedParts
         ? held(issues[0] ?? "Invalid writer response.")
         : attempt({ parts: generated.data, issues });
     }
@@ -199,7 +202,7 @@ export const composeSequence = async (
         : []),
     ];
     if (problems.length)
-      return previous
+      return previous || dependencies.suppliedParts
         ? held(problems.join(" "))
         : attempt({ parts, issues: problems });
     if (assembled.status === "held") return held(assembled.reason);

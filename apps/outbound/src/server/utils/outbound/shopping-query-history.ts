@@ -2,7 +2,10 @@ import "server-only";
 
 import { isDeepStrictEqual } from "node:util";
 import { z } from "zod";
-import { shoppingResearchSchema } from "@/lib/outbound-shopping-research";
+import {
+  discoveryFreshnessLimit,
+  shoppingResearchSchema,
+} from "@/lib/outbound-shopping-research";
 import {
   aiCaptureSchema,
   aiJobSchema,
@@ -43,7 +46,11 @@ export type CompletedShoppingQuery = z.infer<
 export const broaderSearchProblem = (
   previous: CompletedShoppingQuery | undefined,
   now = Date.now(),
+  controls: { searchesPerLead?: 1 | 2; discoveryFreshnessDays?: number } = {},
 ): string | null => {
+  if (controls.searchesPerLead === 1)
+    return "The Playbook allows one search per lead. Keep this lead for another product or season.";
+  const days = discoveryFreshnessLimit(controls.discoveryFreshnessDays);
   const discovery = previous?.shoppingReceipt.discovery;
   const receiptQuery =
     previous?.shoppingReceipt.queries[
@@ -69,13 +76,16 @@ export const broaderSearchProblem = (
   if (
     [receiptQuery.executedAt, discovery.checkedAt].some((timestamp) => {
       const elapsed = now - Date.parse(timestamp);
-      return !Number.isFinite(elapsed) || elapsed < 0 || elapsed > 7 * 86400000;
+      return (
+        !Number.isFinite(elapsed) || elapsed < 0 || elapsed > days * 86400000
+      );
     })
   )
-    return "The first search needs to be no more than seven days old before a broader search.";
+    return `The first search needs to be no more than ${days} days old before a broader search.`;
   return Assessment.validateAutomaticResearch(
     { answer: previous.answer, browser: previous.browser },
     previous.shoppingReceipt,
     7,
+    { discoveryFreshnessDays: days },
   );
 };

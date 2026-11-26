@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 import { resolve } from "node:path";
 
-test("real review forms place hold, resume, approval and draft feedback beside their actions", async () => {
+test("review shows exact held copy, safe evidence, prior revision and checked five-part edits", async () => {
   const execution = Bun.spawn(
     [
       process.execPath,
