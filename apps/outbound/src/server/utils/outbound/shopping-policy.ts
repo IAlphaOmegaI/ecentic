@@ -1,6 +1,9 @@
 import { createHash } from "node:crypto";
 import type { Playbook } from "@/lib/outbound";
 import { WRITING_CONTRACT_VERSION } from "@/lib/outbound-composition";
+import { FINDING_COPY_FIELDS } from "@/lib/outbound-finding-copy";
+
+export type WritingPolicyContext = { globalVoiceNotes?: string };
 
 /** Wording and delivery settings do not change what was actually observed. */
 export const researchPolicyHash = (settings: Playbook) =>
@@ -16,6 +19,7 @@ export const researchPolicyHash = (settings: Playbook) =>
 /** Copy changes create new writing jobs without changing capture provenance. */
 export const writingPolicyHash = (
   settings: Playbook & { relevanceLines?: string[] },
+  context: WritingPolicyContext = {},
 ) =>
   createHash("sha256")
     .update(
@@ -35,6 +39,7 @@ export const writingPolicyHash = (
         fromEmail: settings.fromEmail,
         postalAddress: settings.postalAddress,
         voiceNotes: settings.voiceNotes,
+        globalVoiceNotes: context.globalVoiceNotes ?? settings.voiceNotes,
         humanizeDrafts: settings.humanizeDrafts,
         humanizerNotes: settings.humanizerNotes,
         relevanceLines: settings.relevanceLines ?? [],
@@ -45,6 +50,9 @@ export const writingPolicyHash = (
         followupOneDays: settings.followupOneDays,
         followupTwoDays: settings.followupTwoDays,
         partLimits: { opening: 22, result: 30, relevance: 28, sentence: 25 },
+        pageFindingCopy: Object.fromEntries(
+          FINDING_COPY_FIELDS.map((field) => [field, settings[field]]),
+        ),
       }),
     )
     .digest("hex");

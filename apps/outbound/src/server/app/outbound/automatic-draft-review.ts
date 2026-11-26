@@ -8,6 +8,7 @@ import {
   recipientMailHostAllowed,
   settingsForProspect,
 } from "@/lib/outbound";
+import { writingSnapshotSchema } from "@/lib/outbound-composition";
 import {
   canReviewDraftAutomatically,
   draftReviewInputSchema,
@@ -17,9 +18,10 @@ import {
 import { db, schema, type TransactionScope } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
 import { ConflictError, ValidationError } from "@/server/utils/error";
-import * as Draft from "@/server/utils/outbound/draft";
 import * as MX from "@/server/utils/outbound/mx";
+import { writingPolicyHash } from "@/server/utils/outbound/shopping-policy";
 import { repository } from "@/server/utils/repository";
+import * as Composition from "./sequence-composition";
 import * as Store from "./store";
 
 const Jobs = repository(schema.outboundIntegrationJob);
@@ -265,6 +267,11 @@ const claim = () =>
     const regenerate =
       prospect.playbookRevision !== policy.revision ||
       prospect.messages.length !== 3 ||
+      !writingSnapshotSchema.safeParse(prospect.messages[0]?.writing).success ||
+      prospect.messages[0]?.writing?.writingPolicyHash !==
+        writingPolicyHash(settingsForProspect(prospect, policy.settings), {
+          globalVoiceNotes: policy.settings.voiceNotes,
+        }) ||
       lintMessages(
         prospect.messages,
         settingsForProspect(prospect, policy.settings),
@@ -297,7 +304,12 @@ const claim = () =>
     );
   });
 
-const checkpoint = (identifier: string, token: string, messages: unknown) =>
+const checkpoint = (
+  identifier: string,
+  token: string,
+  messages: unknown,
+  compositionJobId: string,
+) =>
   transaction(async (transaction) => {
     const job = value(
       await Jobs.get(Environment.SERVER, identifier, { tx: transaction }),
@@ -313,6 +325,7 @@ const checkpoint = (identifier: string, token: string, messages: unknown) =>
       ...output,
       stage: "apply",
       messages,
+      compositionJobId,
     });
     value(
       await Jobs.update(
@@ -364,10 +377,10 @@ const fail = (identifier: string, token: string, error: Error) =>
     );
   });
 
-/** Automatically approve eligible unsent edits, regenerating only stale Playbook drafts. Never sends mail. */
+/** Eligible unsent drafts use the shared durable writer before automatic review. Never sends mail. */
 export const run = (
   options: { maxDrafts?: number; deadline?: number } = {},
-  generate: typeof Draft.generateDraft = Draft.generateDraft,
+  compose: typeof Composition.composeForProspect = Composition.composeForProspect,
   checkMx: typeof MX.check = MX.check,
 ) =>
   resultify(async () => {
@@ -402,16 +415,28 @@ export const run = (
               "The draft context changed before generation.",
             );
           const draft = value(
-            await generate(
-              row.details,
-              settingsForProspect(row, policy.settings),
+            await compose(
+              "outbound-draft-review",
+              {
+                prospectId: row.id,
+                expectedRevision: row.revision,
+                expectedPlaybookRevision: scope.playbookRevision,
+              },
+              { deadline: input.deadline },
             ),
           );
           if (draft.issues.length)
             throw new ConflictError(
               `The refreshed draft needs attention: ${draft.issues.map((issue) => issue.code).join(", ")}`,
             );
-          value(await checkpoint(job.id, output.lease.token, draft.messages));
+          value(
+            await checkpoint(
+              job.id,
+              output.lease.token,
+              draft.messages,
+              draft.composition.jobId,
+            ),
+          );
         }
         return value(
           await Store.applyAutomaticDraftReview({

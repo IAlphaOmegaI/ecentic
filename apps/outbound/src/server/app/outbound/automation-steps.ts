@@ -7,7 +7,6 @@ import {
   normalizeDomain,
   prospectSchema,
   recipientMailHostAllowed,
-  settingsForProspect,
   splitList,
 } from "@/lib/outbound";
 import {
@@ -16,6 +15,7 @@ import {
   type ContactAttempt,
   contactAttemptsSchema,
 } from "@/lib/outbound-automation";
+import { compositionReferenceSchema } from "@/lib/outbound-sequence-composition";
 import { shoppingResearchSchema } from "@/lib/outbound-shopping-research";
 import { ConflictError, ValidationError } from "@/server/utils/error";
 import * as Qualification from "@/server/utils/outbound/automation-qualification";
@@ -23,7 +23,6 @@ import {
   type CompanyCandidate,
   savedApolloCompany,
 } from "@/server/utils/outbound/company-discovery";
-import * as Draft from "@/server/utils/outbound/draft";
 import * as Capture from "@/server/utils/outbound/live-shopping";
 import * as MX from "@/server/utils/outbound/mx";
 import { productCategoryCorrection } from "@/server/utils/outbound/product-category";
@@ -40,6 +39,7 @@ import * as Campaigns from "./campaigns";
 import * as LeadResearch from "./lead-research";
 import * as Credentials from "./provider-credentials";
 import * as ResearchReadiness from "./research-readiness";
+import * as Composition from "./sequence-composition";
 import * as Store from "./store";
 
 export type Transition = {
@@ -1150,9 +1150,14 @@ export const execute = async (
       if (productCategoryCorrection(qualification))
         return { stage: "draft", normalizeProductCategory: true };
       const draft = value(
-        await Draft.generateDraft(
-          row.details,
-          settingsForProspect(row, playbook),
+        await Composition.composeForProspect(
+          actor,
+          {
+            prospectId: row.id,
+            expectedRevision: row.revision,
+            expectedPlaybookRevision: input.playbookRevision,
+          },
+          { deadline },
         ),
       );
       return draft.issues.length
@@ -1163,22 +1168,16 @@ export const execute = async (
       const row = await currentProspect(claimed);
       const draft = z
         .object({
-          messages: z
-            .array(z.object({ subject: z.string(), body: z.string() }))
-            .length(3),
+          composition: compositionReferenceSchema.optional(),
         })
         .parse(state["draft"]);
-      const [first, second, third] = draft.messages;
-      if (!first || !second || !third)
-        throw new ValidationError("Incomplete automatic draft.");
+      if (!draft.composition)
+        return { stage: "draft", output: { legacyDraft: state["draft"] } };
       const saved = value(
-        await Store.saveDraft(actor, {
+        await Store.saveComposedDraft(actor, {
           prospect: row.id,
           revision: row.revision,
-          subject: first.subject,
-          body: first.body,
-          followupOne: second.body,
-          followupTwo: third.body,
+          compositionJobId: draft.composition.jobId,
         }),
       );
       return {

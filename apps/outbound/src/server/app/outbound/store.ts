@@ -37,7 +37,6 @@ import {
   type Playbook,
   type Prospect,
   type ProspectInput,
-  personalSourceReadyForDraft,
   playbookSchema,
   prospectIssues,
   prospectSchema,
@@ -60,6 +59,11 @@ import {
   companyQualificationIssues,
 } from "@/lib/outbound-campaigns";
 import { sendingCapacity } from "@/lib/outbound-capacity";
+import {
+  assembleSequence,
+  canonicalSequenceInput,
+  preflightWriterAssembly,
+} from "@/lib/outbound-composition";
 import {
   canReviewDraftAutomatically,
   draftReviewInputSchema,
@@ -93,6 +97,10 @@ import {
   sequenceRefreshStateSchema,
   validateSequenceRefreshReceipts,
 } from "@/lib/outbound-sequence-refresh";
+import {
+  validateWriterParts,
+  validateWriterSubject,
+} from "@/lib/outbound-writing";
 import { db, schema, type TransactionScope } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
 import {
@@ -104,7 +112,11 @@ import {
   hasRecentLinkedInTouch,
   linkedinHistoryReady,
 } from "@/server/utils/outbound/linkedin-ledger";
-import { assertShoppingEvidence } from "@/server/utils/outbound/shopping-research";
+import { writingPolicyHash } from "@/server/utils/outbound/shopping-policy";
+import {
+  assertShoppingEvidence,
+  researchHash,
+} from "@/server/utils/outbound/shopping-research";
 import {
   type SmtpFailure,
   smtpFailureFrom,
@@ -173,7 +185,14 @@ export const policy = async (transaction?: TransactionScope) => {
   const current = rows[0];
   return {
     settings: current
-      ? playbookSchema.parse(current.settings)
+      ? playbookSchema
+          .extend({
+            relevanceLines: z
+              .array(z.string().trim().min(1).max(1000))
+              .max(100)
+              .optional(),
+          })
+          .parse(current.settings)
       : defaultPlaybook,
     revision: current?.revision ?? 0,
   };
@@ -2232,8 +2251,15 @@ const writeMessages = async (
   transaction: TransactionScope,
   actor: string,
   prospect: ProspectRow,
-  messages: Message[],
+  sourceMessages: Message[],
+  trustedComposition = false,
 ) => {
+  const messages = sourceMessages.map(({ writing, ...message }) => ({
+    ...message,
+    ...(trustedComposition && writing
+      ? { writing: { ...writing, revision: prospect.revision + 1 } }
+      : {}),
+  }));
   if (
     ["replied", "optedOut", "bounced", "finished", "skipped"].includes(
       prospect.status,
@@ -2310,43 +2336,210 @@ const writeMessages = async (
   };
 };
 
-export const generateDraftsWithin = async (
+const composedDraftInputSchema = z
+  .object({
+    prospect: z.string().uuid(),
+    revision: z.number().int().nonnegative(),
+    compositionJobId: z.string().uuid(),
+  })
+  .strict();
+
+/** Save only the immutable output of a completed server-owned writing job. */
+export const saveComposedDraftWithin = async (
   transaction: TransactionScope,
   actor: string,
-  input: { prospect: string; expectedRevision?: number },
+  input: z.infer<typeof composedDraftInputSchema>,
 ) => {
-  const prospect = await findProspect(transaction, input.prospect);
-  if (
-    input.expectedRevision !== undefined &&
-    (prospect.revision !== input.expectedRevision ||
-      !["candidate", "draft"].includes(prospect.status) ||
-      !["", "playbookChanged"].includes(prospect.holdReason))
-  )
-    throw new ConflictError(
-      "The prospect changed or was held before automatic drafting.",
+  const parsed = composedDraftInputSchema.safeParse(input);
+  if (!parsed.success)
+    throw new ValidationError(
+      "Choose the current prospect revision and a completed writing job.",
     );
+  const request = parsed.data;
+  const prospect = await findProspect(transaction, request.prospect);
   if (prospect.sentStep)
     throw new ConflictError(
       "A sent sequence's original draft cannot be regenerated.",
     );
+  const Composition = await import("./sequence-composition");
+  const completed = requireData(
+    await Composition.loadCompletedComposition(
+      transaction,
+      request.compositionJobId,
+    ),
+  );
   const current = await policy(transaction);
-  if (!personalSourceReadyForDraft(prospect.details, current.settings))
-    throw new ValidationError(
-      "Reopen and date the personal source before drafting, or remove the personal line.",
+  const settings = settingsForProspect(prospect, current.settings);
+  const receipt = await assertShoppingEvidence(transaction, prospect, {
+    ...current,
+    settings,
+  });
+  const details = prospectSchema.parse({
+    ...prospect.details,
+    id: prospect.id,
+    assignedSenderEmail: settings.fromEmail,
+  });
+  const canonical = canonicalSequenceInput(completed.messages);
+  const writing = completed.messages[0]?.writing;
+  if (
+    !receipt ||
+    !writing ||
+    canonical.status !== "ready" ||
+    completed.composition.prospectId !== prospect.id ||
+    completed.context.prospectHash !== researchHash(details) ||
+    completed.composition.receiptHash !== researchHash(receipt) ||
+    completed.composition.writingPolicyHash !==
+      writingPolicyHash(settings, {
+        globalVoiceNotes: current.settings.voiceNotes,
+      }) ||
+    completed.composition.contentHash !==
+      createHash("sha256").update(canonical.canonicalText).digest("hex")
+  )
+    throw new ConflictError(
+      "The prospect, research, sender or writing policy changed after this sequence was composed.",
     );
-  return writeMessages(
+  const job = requireData(
+    await IntegrationJobs.get(Environment.SERVER, request.compositionJobId, {
+      tx: transaction,
+    }),
+  );
+  if (!job) throw new NotFoundError("Writing job not found.");
+  const appliedRevision = completed.appliedProspectRevision;
+  if (
+    typeof appliedRevision === "number" &&
+    appliedRevision === prospect.revision &&
+    isDeepStrictEqual(
+      prospect.messages,
+      completed.messages.map((message) => ({
+        ...message,
+        ...(message.writing
+          ? { writing: { ...message.writing, revision: appliedRevision } }
+          : {}),
+      })),
+    )
+  )
+    return {
+      prospect: prospect.id,
+      revision: prospect.revision,
+      issues: completed.issues,
+    };
+  if (prospect.revision !== request.revision)
+    throw new ConflictError(
+      "This draft changed while the writer was running. Reload it before applying the saved result.",
+    );
+  const preflight = preflightWriterAssembly(details, receipt, settings);
+  if (preflight.status !== "ready")
+    throw new ValidationError(`Copy: ${preflight.reason}`);
+  const peers = requireData(
+    await Composition.recentCompositionPeers(
+      prospect,
+      completed.context.batchKey,
+      transaction,
+    ),
+  );
+  const issues = validateWriterParts({
+    prospect: details,
+    receipt,
+    playbook: settings,
+    parts: writing.parts,
+    budget: preflight.budget,
+    peers,
+  });
+  const assembled = assembleSequence(details, receipt, settings, writing.parts);
+  if (
+    assembled.status !== "ready" ||
+    assembled.canonicalText !== canonical.canonicalText
+  )
+    issues.push(
+      "The saved sequence no longer matches its parts and fixed writing policy.",
+    );
+  issues.push(
+    ...validateWriterSubject(
+      completed.messages[0]?.subject ?? "",
+      receipt,
+      details,
+    ),
+  );
+  if (issues.length) throw new ValidationError(`Copy: ${issues.join(" ")}`);
+  const saved = await writeMessages(
     transaction,
     actor,
     prospect,
-    renderMessages(
-      prospect.details,
-      settingsForProspect(prospect, current.settings),
+    completed.messages,
+    true,
+  );
+  requireData(
+    await IntegrationJobs.update(
+      Environment.SERVER,
+      job.id,
+      {
+        output: {
+          ...job.output,
+          appliedProspectRevision: saved.revision,
+          savedAt: new Date().toISOString(),
+        },
+        updatedAt: new Date(),
+      },
+      { tx: transaction },
     ),
   );
+  return saved;
 };
 
-export const generateDrafts = (actor: string, input: { prospect: string }) =>
-  transaction((transaction) => generateDraftsWithin(transaction, actor, input));
+export const saveComposedDraft = (
+  actor: string,
+  input: z.infer<typeof composedDraftInputSchema>,
+) => transaction((scope) => saveComposedDraftWithin(scope, actor, input));
+
+/** Compatibility entry point: generation may never occur inside a caller's transaction. */
+export const generateDraftsWithin = async (
+  transaction: TransactionScope,
+  actor: string,
+  input: {
+    prospect: string;
+    expectedRevision?: number;
+    compositionJobId?: string;
+  },
+) => {
+  if (!input.compositionJobId || input.expectedRevision === undefined)
+    throw new ValidationError(
+      "Compose the sequence outside the transaction before saving its completed writing job.",
+    );
+  return saveComposedDraftWithin(transaction, actor, {
+    prospect: input.prospect,
+    revision: input.expectedRevision,
+    compositionJobId: input.compositionJobId,
+  });
+};
+
+export const generateDrafts = async (
+  actor: string,
+  input: { prospect: string; expectedRevision?: number },
+) => {
+  const prepared = await transaction(async (scope) => {
+    const prospect = await findProspect(scope, input.prospect);
+    if (
+      input.expectedRevision !== undefined &&
+      prospect.revision !== input.expectedRevision
+    )
+      throw new ConflictError("This prospect changed before writing started.");
+    const current = await policy(scope);
+    return { revision: prospect.revision, playbookRevision: current.revision };
+  });
+  if (!prepared.success) return prepared;
+  const Composition = await import("./sequence-composition");
+  const composed = await Composition.composeForProspect(actor, {
+    prospectId: input.prospect,
+    expectedRevision: prepared.data.revision,
+    expectedPlaybookRevision: prepared.data.playbookRevision,
+  });
+  if (!composed.success) return composed;
+  return saveComposedDraft(actor, {
+    prospect: input.prospect,
+    revision: prepared.data.revision,
+    compositionJobId: composed.data.composition.jobId,
+  });
+};
 
 export const saveDraft = (actor: string, input: unknown) =>
   transaction(async (transaction) => {
@@ -3140,6 +3333,53 @@ export const applyAutomaticDraftMx = (input: {
     return { prospect: prospect.id, revision: prospect.revision };
   });
 
+/** A historical review cannot promote arbitrary client-shaped writing metadata. */
+const assertAppliedCompositionWithin = async (
+  transaction: TransactionScope,
+  prospect: ProspectRow,
+) => {
+  const current = await policy(transaction);
+  const settings = settingsForProspect(prospect, current.settings);
+  const receipt = await assertShoppingEvidence(transaction, prospect, {
+    ...current,
+    settings,
+  });
+  if (!receipt)
+    throw new ValidationError("Compose this draft before automatic review.");
+  const Composition = await import("./sequence-composition");
+  const completed = requireData(
+    await Composition.findCompletedComposition(transaction, {
+      prospectId: prospect.id,
+      receiptHash: researchHash(receipt),
+      writingPolicyHash: writingPolicyHash(settings, {
+        globalVoiceNotes: current.settings.voiceNotes,
+      }),
+    }),
+  );
+  const details = prospectSchema.parse({
+    ...prospect.details,
+    id: prospect.id,
+    assignedSenderEmail: settings.fromEmail,
+  });
+  if (
+    !completed ||
+    completed.appliedProspectRevision !== prospect.revision ||
+    completed.context.prospectHash !== researchHash(details) ||
+    !isDeepStrictEqual(
+      prospect.messages,
+      completed.messages.map((message) => ({
+        ...message,
+        ...(message.writing
+          ? { writing: { ...message.writing, revision: prospect.revision } }
+          : {}),
+      })),
+    )
+  )
+    throw new ValidationError(
+      "This draft has no trusted writing result for its current text and revision.",
+    );
+};
+
 /** Apply a checkpointed automatic review and approval in one transaction. */
 export const applyAutomaticDraftReview = (input: {
   job: string;
@@ -3216,15 +3456,19 @@ export const applyAutomaticDraftReview = (input: {
       throw new ConflictError(
         "An existing outreach attempt prevents automatic draft changes.",
       );
-    if (scope.regenerate && !output.messages)
-      throw new ValidationError("The refreshed draft is missing.");
+    if (scope.regenerate && !output.compositionJobId)
+      throw new ValidationError(
+        "The refreshed draft has no completed writing job.",
+      );
+    if (!scope.regenerate) {
+      await assertAppliedCompositionWithin(transaction, prospect);
+    }
     const saved = scope.regenerate
-      ? await writeMessages(
-          transaction,
-          "outbound-draft-review",
-          prospect,
-          output.messages!,
-        )
+      ? await saveComposedDraftWithin(transaction, "outbound-draft-review", {
+          prospect: prospect.id,
+          revision: prospect.revision,
+          compositionJobId: output.compositionJobId!,
+        })
       : { revision: prospect.revision };
     requireData(
       await IntegrationJobs.update(

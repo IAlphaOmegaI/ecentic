@@ -58,6 +58,7 @@ import { researchHash } from "@/server/utils/outbound/shopping-research";
 import { repository } from "@/server/utils/repository";
 import * as LeadResearch from "./lead-research";
 import * as Credentials from "./provider-credentials";
+import * as Composition from "./sequence-composition";
 import * as Store from "./store";
 
 const Jobs = repository(schema.outboundIntegrationJob);
@@ -207,6 +208,7 @@ const eligible = async (
       "assess",
       "applyResearch",
       "draft",
+      "applyDraft",
     ].includes(state.stage) &&
     !resolveSendingWindow(
       {
@@ -591,7 +593,7 @@ const claim = (deadline: number, batchId?: string) =>
       const savedAnswerMayContinue =
         budget.paused &&
         budget.failureProvider === "scrapellm" &&
-        ["browser", "assess"].includes(state.stage);
+        ["browser", "assess", "draft"].includes(state.stage);
       if (
         budget.paused &&
         paidPreparationStage(state.stage) &&
@@ -1073,7 +1075,13 @@ const fail = (claim: Claim, error: Error) =>
     }
     const uncertain =
       provider?.code === "uncertain" ||
-      (!provider && paidPreparationStage(state.stage));
+      (!provider &&
+        paidPreparationStage(state.stage) &&
+        !(
+          state.stage === "draft" &&
+          (error.name === ValidationError.errorName ||
+            error.name === ConflictError.errorName)
+        ));
     value(
       await Jobs.update(
         Environment.SERVER,
@@ -1153,6 +1161,7 @@ type Dependencies = {
   browse?: typeof Capture.inspectPages;
   assess?: typeof Assessment.assess;
   resolveKey?: typeof Credentials.resolveKey;
+  compose?: typeof Composition.composeForProspect;
 };
 
 const execute = async (
@@ -1184,7 +1193,7 @@ const execute = async (
       ...patch,
     });
   if (
-    ["applyResearch", "draft"].includes(state.stage) &&
+    ["applyResearch", "draft", "applyDraft"].includes(state.stage) &&
     state.shoppingReceipt &&
     ["product-observation", "no-gap"].includes(
       state.shoppingReceipt.selected.kind,
@@ -1739,14 +1748,47 @@ const execute = async (
         { jobId: claim.job.id, leaseToken: state.lease.token },
       );
     }
-    case "draft":
+    case "draft": {
+      const drafted = value(
+        await (dependencies.compose ?? Composition.composeForProspect)(
+          claim.input.requestedBy,
+          {
+            prospectId: prospect.id,
+            expectedRevision: state.prospectRevision,
+            expectedPlaybookRevision: claim.input.playbookRevision,
+          },
+          { deadline },
+        ),
+      );
+      return drafted.issues.length
+        ? checkpoint(
+            claim,
+            {
+              stage: "complete",
+              composition: drafted.composition,
+              draftIssues: drafted.issues,
+              heldReason: "Copy needs review before this lead can continue.",
+            },
+            "complete",
+          )
+        : next("applyDraft", { composition: drafted.composition });
+    }
+    case "applyDraft":
       return transaction(async (transaction) => {
         await owned(transaction, claim);
         await eligible(transaction, claim.input, state);
-        const saved = await Store.generateDraftsWithin(
+        if (!state.composition || state.composition.prospectId !== prospect.id)
+          throw new ConflictError(
+            "The saved composition belongs to another context.",
+          );
+        const saved = await Store.saveComposedDraftWithin(
           transaction,
           claim.input.requestedBy,
-          { prospect: prospect.id, expectedRevision: state.prospectRevision },
+          {
+            prospect: prospect.id,
+            revision: state.prospectRevision,
+            compositionJobId: state.composition.jobId,
+          },
         );
         value(
           await Jobs.update(

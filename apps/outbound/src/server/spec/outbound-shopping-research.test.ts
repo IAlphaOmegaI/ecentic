@@ -267,7 +267,28 @@ const runReview = (
     success: false,
     error: new Error("DNS disabled for this fixture"),
   }),
-) => active().review.run(options, generate, checkMx);
+) =>
+  active().review.run(
+    options,
+    async (actor, request, dependencies) => {
+      const Composition = await import(
+        "@/server/app/outbound/sequence-composition"
+      );
+      return Composition.composeForProspect(actor, request, {
+        ...dependencies,
+        compose: async (prospect, _receipt, playbook) => {
+          const draft = await generate(prospect, playbook);
+          return draft.success
+            ? {
+                success: true,
+                data: { ...draft.data, generation: { attempts: 1 } },
+              }
+            : draft;
+        },
+      });
+    },
+    checkMx,
+  );
 
 describe("source-bound shopping research validation", () => {
   test("default numeric variant URLs match only the exact originally unparameterized product", () => {

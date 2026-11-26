@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { ProspectInput } from "./outbound";
+import { writingSnapshotSchema } from "./outbound-composition";
 
 export const draftReviewInputSchema = z.object({
   operation: z.literal("draftReview"),
@@ -25,10 +26,12 @@ export const draftReviewOutputSchema = z.object({
         afterDays: z.number().int().nonnegative(),
         subject: z.string(),
         body: z.string(),
+        writing: writingSnapshotSchema.optional(),
       }),
     )
     .length(3)
     .optional(),
+  compositionJobId: z.string().uuid().optional(),
 });
 
 /** A deliberate hold and a sequence with any accepted step never enter routine review. */

@@ -41,6 +41,7 @@ export type CompositionDependencies = {
   now?: () => number;
   deadline?: number;
   peers?: CompositionPeer[];
+  globalVoiceNotes?: string;
 };
 export type ComposedSequence = {
   messages: Message[];
@@ -70,6 +71,9 @@ export const composeSequence = async (
       prospect.assignedSenderEmail ?? policy.fromEmail,
     ),
     ...(policy.relevanceLines ? { relevanceLines: policy.relevanceLines } : {}),
+  };
+  const hashContext = {
+    globalVoiceNotes: dependencies.globalVoiceNotes ?? policy.voiceNotes,
   };
   const parsedReceipt = shoppingResearchSchema.safeParse(receipt);
   if (!parsedReceipt.success)
@@ -121,6 +125,7 @@ export const composeSequence = async (
       playbook: settings,
       budget: preflight.budget,
       peers: dependencies.peers,
+      globalVoiceNotes: hashContext.globalVoiceNotes,
       ...(previous ? { previous } : {}),
     });
     const generated = await resultify(() =>
@@ -144,7 +149,7 @@ export const composeSequence = async (
           null,
           {
             attempts,
-            writingPolicyHash: writingPolicyHash(settings),
+            writingPolicyHash: writingPolicyHash(settings, hashContext),
             receiptHash: researchHash(research),
           },
         ),
@@ -190,7 +195,7 @@ export const composeSequence = async (
     );
     const writing = writingSnapshotSchema.parse({
       version: WRITING_CONTRACT_VERSION,
-      writingPolicyHash: writingPolicyHash(settings),
+      writingPolicyHash: writingPolicyHash(settings, hashContext),
       receiptHash: researchHash(research),
       contentHash: createHash("sha256")
         .update(assembled.canonicalText)

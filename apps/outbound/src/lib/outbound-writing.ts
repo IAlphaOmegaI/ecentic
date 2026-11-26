@@ -238,6 +238,7 @@ type CompositionContext = {
   playbook: CompositionPolicy;
   budget?: WriterBudget;
   peers?: CompositionPeer[];
+  globalVoiceNotes?: string;
 };
 const copyTokens = (text: string): string[] =>
   text
@@ -1207,6 +1208,7 @@ export const compositionPrompt = (
     "Subject: two to four lowercase words preferred, five maximum, on the researched topic. No brand, number, question, pitch or new claim. Every sentence in all parts is at most 25 words. Obey the shared remaining-word budget; target total first email 70–90 and never exceed 99 after assembly.",
     "No extra ask, links, markup, line breaks, bullets, emojis, exclamation marks, en/em dashes, percentages, statistics, customer proof, lost sales/revenue, invisible, can't see/read or competitor-took-a-sale wording. The fixed founder line is the only company description. No narrative outside opening.",
     "A repair fixes the named violations under exactly the same ledger and policy. Never weaken evidence, drop qualifiers, reorder results or replace missing evidence with a neutral product recap.",
+    "Shared voice notes guide style only. Never inherit another author's name, employment history or biography from those notes or examples. The supplied sender identity and its fixed introduction are the only author facts; do not add author biographies to the five written parts.",
   ].join("\n\n"),
   prompt: JSON.stringify({
     contactRole: context.prospect.title,
@@ -1220,6 +1222,11 @@ export const compositionPrompt = (
     budget: context.budget,
     recentOpenings: (context.peers ?? []).slice(0, 9),
     voiceNotes: context.playbook.voiceNotes,
+    sharedVoiceNotes: context.globalVoiceNotes ?? context.playbook.voiceNotes,
+    senderIdentity: {
+      fromName: context.playbook.fromName,
+      signature: context.playbook.signature,
+    },
     humanizerNotes: context.playbook.humanizeDrafts
       ? context.playbook.humanizerNotes
       : "",

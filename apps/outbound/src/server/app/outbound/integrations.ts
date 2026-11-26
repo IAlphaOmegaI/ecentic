@@ -8,7 +8,6 @@ import {
   prospectIssues,
   recipientMailHostAllowed,
   type SenderProfile,
-  settingsForProspect,
   splitList,
 } from "@/lib/outbound";
 import { evidenceDateUsable } from "@/lib/outbound-evidence";
@@ -19,7 +18,6 @@ import {
   NotFoundError,
   ValidationError,
 } from "@/server/utils/error";
-import * as Draft from "@/server/utils/outbound/draft";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import * as MX from "@/server/utils/outbound/mx";
 import * as Providers from "@/server/utils/outbound/providers";
@@ -30,6 +28,7 @@ import * as Jobs from "./jobs";
 import * as LinkedInAccounts from "./linkedin-accounts";
 import * as Preparation from "./preparation";
 import * as Credentials from "./provider-credentials";
+import * as Composition from "./sequence-composition";
 import * as Store from "./store";
 import * as Mailboxes from "./transport-store";
 import * as Worker from "./worker";
@@ -516,22 +515,16 @@ export const generateDraft = withAuthorization(
     resultify(async () => {
       const row = await prospect(input.prospectId);
       const generated = value(
-        await Draft.generateDraft(
-          row.details,
-          settingsForProspect(row, (await Store.policy()).settings),
-        ),
+        await Composition.composeForProspect(context.session.user.id, {
+          prospectId: row.id,
+          expectedRevision: row.revision,
+        }),
       );
-      const [first, second, third] = generated.messages;
-      if (!first || !second || !third)
-        throw new ValidationError("Generate all three messages before saving.");
       return value(
-        await Store.saveDraft(context.session.user.id, {
+        await Store.saveComposedDraft(context.session.user.id, {
           prospect: row.id,
           revision: row.revision,
-          subject: first.subject,
-          body: first.body,
-          followupOne: second.body,
-          followupTwo: third.body,
+          compositionJobId: generated.composition.jobId,
         }),
       );
     }),

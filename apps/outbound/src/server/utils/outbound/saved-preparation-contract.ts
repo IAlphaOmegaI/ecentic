@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { compositionReferenceSchema } from "@/lib/outbound-sequence-composition";
 import { shoppingResearchSchema } from "@/lib/outbound-shopping-research";
 import {
   companyEvidenceSchema,
@@ -46,6 +47,7 @@ export const preparationStateSchema = z
       "assess",
       "applyResearch",
       "draft",
+      "applyDraft",
       "complete",
     ]),
     prospectRevision: z.number().int().nonnegative(),
@@ -112,6 +114,7 @@ export const preparationStateSchema = z
     answer: aiCaptureSchema.optional(),
     browser: browserResearchSchema.optional(),
     shoppingReceipt: shoppingResearchSchema.optional(),
+    composition: compositionReferenceSchema.optional(),
   })
   .passthrough();
 export type PreparationInput = z.infer<typeof preparationInputSchema>;
@@ -125,6 +128,7 @@ export const paidPreparationStage = (stage: PreparationState["stage"]) =>
     "query",
     "browser",
     "assess",
+    "draft",
   ].includes(stage);
 
 export const preparationStageBudget = (stage: PreparationState["stage"]) => {
@@ -140,6 +144,8 @@ export const preparationStageBudget = (stage: PreparationState["stage"]) => {
     case "generateQuery":
     case "assess":
       return 50_000;
+    case "draft":
+      return 100_000;
     case "query":
       return 30_000;
     case "poll":
