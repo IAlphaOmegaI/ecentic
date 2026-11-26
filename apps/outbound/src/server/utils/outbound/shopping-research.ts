@@ -8,6 +8,7 @@ import {
   type Playbook,
   type ProspectInput,
   playbookSchema,
+  settingsForProspect,
 } from "@/lib/outbound";
 import {
   type ShoppingResearch,
@@ -250,7 +251,10 @@ export const evidenceForDraft = (details: ProspectInput, settings: Playbook) =>
       !row ||
       !saved ||
       !isDeepStrictEqual(row.details, details) ||
-      !isDeepStrictEqual(playbookSchema.parse(saved.settings), settings)
+      !isDeepStrictEqual(
+        settingsForProspect(row, playbookSchema.parse(saved.settings)),
+        settings,
+      )
     )
       throw new ValidationError(
         "The prospect or Playbook changed before drafting.",
