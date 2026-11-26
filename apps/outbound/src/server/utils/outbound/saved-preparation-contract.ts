@@ -19,6 +19,7 @@ import {
   shoppingRateLimitSchema,
   shoppingRetryLimit,
 } from "./scrapellm-cooldown";
+import { shoppingQueryHistorySchema } from "./shopping-query-history";
 
 export const preparationInputSchema = z.object({
   operation: z.literal("savedContactPreparation"),
@@ -106,19 +107,7 @@ export const preparationStateSchema = z
       .enum(["unbranded-specific", "unbranded-broad"])
       .optional(),
     shoppingQueryCount: z.number().int().min(0).max(2).optional(),
-    shoppingHistory: z
-      .array(
-        z.object({
-          query: preparedQuerySchema,
-          shoppingJob: aiJobSchema,
-          answer: aiCaptureSchema,
-          browser: browserResearchSchema,
-          shoppingReceipt: shoppingResearchSchema,
-          queryReservedAt: z.string().datetime(),
-        }),
-      )
-      .max(1)
-      .optional(),
+    shoppingHistory: shoppingQueryHistorySchema.optional(),
     shoppingJob: aiJobSchema.optional(),
     answer: aiCaptureSchema.optional(),
     browser: browserResearchSchema.optional(),

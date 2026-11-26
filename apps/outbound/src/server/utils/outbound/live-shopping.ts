@@ -1,7 +1,11 @@
 export {
+  computeDiscoveryBase,
+  deriveCaptureCompleteness,
   generateShopperQuery,
+  matchMerchantText,
   pollQuery,
   prepareQuery,
+  replayShoppingCapture,
   type ShopperQueryDependencies,
   type ShopperQueryInput,
   type ShopperQuerySelection,

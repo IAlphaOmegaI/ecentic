@@ -50,6 +50,10 @@ import {
   shoppingRetryLimit,
 } from "@/server/utils/outbound/scrapellm-cooldown";
 import * as Assessment from "@/server/utils/outbound/shopping-assessment";
+import {
+  broaderSearchProblem,
+  completedShoppingQuerySchema,
+} from "@/server/utils/outbound/shopping-query-history";
 import { researchHash } from "@/server/utils/outbound/shopping-research";
 import { repository } from "@/server/utils/repository";
 import * as LeadResearch from "./lead-research";
@@ -119,27 +123,6 @@ const companyFor = (prospect: typeof schema.outboundProspect.$inferSelect) => ({
   },
 });
 
-const broaderSearchProblem = (state: PreparationState) => {
-  const previous = state.shoppingHistory?.[0];
-  if (
-    !previous ||
-    previous.query.intent !== "unbranded-specific" ||
-    previous.shoppingReceipt.selected.kind !== "no-gap" ||
-    previous.shoppingReceipt.discovery?.merchantPresent !== true ||
-    previous.shoppingReceipt.discovery.merchantPosition !== 1 ||
-    previous.shoppingReceipt.discovery.completeness.status !== "complete" ||
-    previous.browser.status !== "captured" ||
-    researchHash(previous.query) !== researchHash(previous.shoppingJob.query) ||
-    researchHash(previous.shoppingJob) !== researchHash(previous.answer.job)
-  )
-    return "A broader search requires a complete first search with the store first and correct.";
-  return Assessment.validateAutomaticResearch(
-    { answer: previous.answer, browser: previous.browser },
-    previous.shoppingReceipt,
-    7,
-  );
-};
-
 const discoveryQueryProblem = (
   state: PreparationState,
   details: typeof schema.outboundProspect.$inferSelect.details,
@@ -150,8 +133,14 @@ const discoveryQueryProblem = (
   if (state.productCapture?.status !== "captured")
     return "The shopper question needs a saved rendered product page.";
   if (state.query.intent === "unbranded-broad") {
-    const problem = broaderSearchProblem(state);
+    const previous = state.shoppingHistory?.[0];
+    const problem = broaderSearchProblem(previous);
     if (problem) return problem;
+    if (
+      researchHash(state.query.product) !==
+      researchHash(previous?.query.product)
+    )
+      return "The broader search must use the product from the completed first search.";
   }
   return Capture.validateShopperQuery({
     query: state.query,
@@ -1194,6 +1183,24 @@ const execute = async (
       availableAt: new Date().toISOString(),
       ...patch,
     });
+  if (
+    ["applyResearch", "draft"].includes(state.stage) &&
+    state.shoppingReceipt &&
+    ["product-observation", "no-gap"].includes(
+      state.shoppingReceipt.selected.kind,
+    )
+  )
+    return checkpoint(
+      claim,
+      {
+        stage: "complete",
+        heldReason:
+          state.shoppingReceipt.selected.kind === "no-gap"
+            ? "No gap found. Keep this lead for another product or season."
+            : "needs-unbranded-search",
+      },
+      "complete",
+    );
   switch (state.stage) {
     case "preflight": {
       const mx = value(
@@ -1464,11 +1471,15 @@ const execute = async (
           "The question needs a saved rendered product page.",
         );
       if (state.shoppingQueryIntent === "unbranded-broad") {
-        const problem = broaderSearchProblem(state);
-        if (problem)
+        const problem = broaderSearchProblem(state.shoppingHistory?.[0]);
+        if (problem || state.shoppingQueryCount !== 1)
           return checkpoint(
             claim,
-            { stage: "complete", heldReason: problem },
+            {
+              stage: "complete",
+              heldReason:
+                problem ?? "A lead can reserve only one broader search.",
+            },
             "complete",
           );
       }
@@ -1508,10 +1519,17 @@ const execute = async (
           );
     }
     case "query": {
-      if (state.query?.intent?.startsWith("unbranded-")) {
-        const problem = discoveryQueryProblem(state, prospect.details, company);
-        if (problem) throw new ValidationError(problem);
-      }
+      if (!state.query?.intent?.startsWith("unbranded-"))
+        throw new ValidationError("needs-unbranded-search");
+      if (
+        state.shoppingQueryCount !==
+        (state.query.intent === "unbranded-broad" ? 2 : 1)
+      )
+        throw new ValidationError(
+          "The query does not match its saved per-lead reservation.",
+        );
+      const problem = discoveryQueryProblem(state, prospect.details, company);
+      if (problem) throw new ValidationError(problem);
       const result = value(
         await (dependencies.start ?? Capture.startQuery)({
           apiKey: await key(
@@ -1603,17 +1621,106 @@ const execute = async (
           },
           "complete",
         );
+      const receipt = assessed.receipt;
+      const observed = {
+        assessment: assessed,
+        shoppingReceipt: receipt,
+      };
+      if (receipt.selected.kind === "product-observation")
+        return checkpoint(
+          claim,
+          {
+            ...observed,
+            stage: "complete",
+            heldReason: "needs-unbranded-search",
+          },
+          "complete",
+        );
       const problem = Assessment.validateAutomaticResearch(
         evidence,
-        assessed.receipt,
+        receipt,
         policy.settings.verificationDays,
         policy.settings,
       );
       if (problem) throw new ValidationError(problem);
-      return next("applyResearch", {
-        assessment: assessed,
-        shoppingReceipt: assessed.receipt,
-      });
+      if (receipt.selected.kind === "no-gap") {
+        if (
+          state.shoppingQueryCount !== 1 ||
+          state.shoppingHistory?.length ||
+          evidence.answer.job.query.intent !== "unbranded-specific"
+        )
+          return checkpoint(
+            claim,
+            {
+              ...observed,
+              stage: "complete",
+              heldReason:
+                "No gap found. Keep this lead for another product or season.",
+            },
+            "complete",
+          );
+        const previous = completedShoppingQuerySchema.parse({
+          query: state.query,
+          shoppingJob: state.shoppingJob,
+          ...evidence,
+          shoppingReceipt: receipt,
+          queryReservedAt: state.queryReservedAt,
+          attemptMetadata: {
+            generation: state.queryGeneration,
+            assessment: assessed,
+            polls: state.polls,
+            queryRetries: state.queryRetries,
+            queryRetryPending: state.queryRetryPending,
+            queryRateLimits: state.queryRateLimits,
+            queryRateLimitRecovery: state["queryRateLimitRecovery"],
+            pollRateLimits: state.pollRateLimits,
+            browserRetries: state.browserRetries,
+            browserRateLimits: state.browserRateLimits,
+            browserRateLimitRecovery: state["browserRateLimitRecovery"],
+            failureReceipt: state["failureReceipt"],
+            failureProvider: state["failureProvider"],
+            failureCode: state["failureCode"],
+          },
+        });
+        const broaderProblem = broaderSearchProblem(previous);
+        if (broaderProblem)
+          return checkpoint(
+            claim,
+            {
+              ...observed,
+              stage: "complete",
+              heldReason: broaderProblem,
+            },
+            "complete",
+          );
+        // This checkpoint commits the first raw result and its reservation before
+        // generation and the independently locked second batch reservation.
+        return next("generateQuery", {
+          shoppingHistory: [previous],
+          shoppingQueryIntent: "unbranded-broad",
+          query: undefined,
+          shoppingJob: undefined,
+          answer: undefined,
+          browser: undefined,
+          shoppingReceipt: undefined,
+          assessment: undefined,
+          queryReservedAt: undefined,
+          queryGeneration: undefined,
+          polls: 0,
+          queryRetries: 0,
+          queryRetryPending: false,
+          queryRateLimits: [],
+          queryRateLimitRecovery: undefined,
+          pollRateLimits: [],
+          browserRetries: 0,
+          browserRateLimits: [],
+          browserRateLimitRecovery: undefined,
+          failureReceipt: undefined,
+          failureProvider: undefined,
+          failureCode: undefined,
+        });
+      }
+      return next("applyResearch", observed);
     }
     case "applyResearch": {
       if (!state.shoppingReceipt || !state.lease)

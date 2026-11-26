@@ -4,11 +4,13 @@ import { isDeepStrictEqual } from "node:util";
 import { type Result, resultify } from "@zenncore/utils";
 import { z } from "zod";
 import {
+  normalizeDomain,
   type Playbook,
   type ProspectInput,
   playbookSchema,
 } from "@/lib/outbound";
 import {
+  type ShoppingResearch,
   shoppingFinding,
   shoppingResearchSchema,
   validateShoppingResearch,
@@ -17,6 +19,12 @@ import { schema, type TransactionScope } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
 import { ValidationError } from "@/server/utils/error";
 import { repository } from "@/server/utils/repository";
+import {
+  type AiCapture,
+  aiCaptureSchema,
+  browserResearchSchema,
+} from "./live-shopping-contract";
+import * as Assessment from "./shopping-assessment";
 import { researchPolicyHash } from "./shopping-policy";
 
 export { researchPolicyHash } from "./shopping-policy";
@@ -31,6 +39,33 @@ const value = <Data>(result: Result<Data, Error>): Data => {
 };
 export const researchHash = (input: unknown) =>
   createHash("sha256").update(JSON.stringify(input)).digest("hex");
+
+/** A company-name correction must not reuse an absence check for the old identity. */
+export const captureMatchesMerchant = (
+  answer: AiCapture,
+  prospect: Pick<ProspectInput, "company" | "domain">,
+  receipt?: ShoppingResearch,
+) => {
+  const merchant = answer.job.query.merchant;
+  if (!merchant)
+    return Boolean(
+      receipt?.selected.kind === "product-data-gap" &&
+        receipt.discovery?.merchantPresent === null &&
+        receipt.claims?.length &&
+        !receipt.claims.some((claim) =>
+          ["merchant-presence", "position", "count"].includes(claim.kind),
+        ) &&
+        normalizeDomain(answer.job.query.product.url) ===
+          normalizeDomain(prospect.domain),
+    );
+  const canonicalName = (name: string) =>
+    name.normalize("NFKC").replace(/\s+/g, " ").trim().toLowerCase();
+  return Boolean(
+    merchant &&
+      canonicalName(merchant.name) === canonicalName(prospect.company) &&
+      normalizeDomain(merchant.domain) === normalizeDomain(prospect.domain),
+  );
+};
 export const researchJobInputSchema = z.object({
   operation: z.literal("leadResearch"),
   requestId: z.string().uuid(),
@@ -137,6 +172,41 @@ export const assertShoppingEvidence = async (
     policy.settings,
   );
   if (problem) throw new ValidationError(problem);
+  if (receipt.data.discovery || receipt.data.claims) {
+    const proof = z
+      .object({
+        captureJobId: z.string().uuid(),
+        answer: aiCaptureSchema,
+        browser: browserResearchSchema,
+      })
+      .strict()
+      .safeParse(job.output?.["captureProof"]);
+    if (!proof.success || proof.data.browser.status !== "captured")
+      throw new ValidationError(
+        "The discovery finding is missing its original provider captures.",
+      );
+    if (
+      !captureMatchesMerchant(proof.data.answer, prospect.details, receipt.data)
+    )
+      throw new ValidationError(
+        "The saved shopper query belongs to an earlier or different company identity.",
+      );
+    const replayProblem = Assessment.validateAutomaticResearch(
+      { answer: proof.data.answer, browser: proof.data.browser },
+      receipt.data,
+      policy.settings.verificationDays,
+      policy.settings,
+    );
+    if (replayProblem) throw new ValidationError(replayProblem);
+  }
+  if (receipt.data.selected.kind === "no-gap")
+    throw new ValidationError(
+      "No gap found. Try another product before drafting.",
+    );
+  if (receipt.data.selected.kind === "product-observation")
+    throw new ValidationError(
+      "This lead needs an unbranded search before drafting or approval.",
+    );
   if (input.data.campaignId) {
     const campaign = value(
       await Campaigns.get(Environment.SERVER, input.data.campaignId, {

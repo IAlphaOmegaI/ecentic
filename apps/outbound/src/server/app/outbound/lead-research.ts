@@ -26,6 +26,7 @@ import {
 } from "@/server/utils/outbound/saved-preparation-contract";
 import * as Assessment from "@/server/utils/outbound/shopping-assessment";
 import {
+  captureMatchesMerchant,
   researchHash,
   researchJobInputSchema,
   researchPolicyHash,
@@ -49,6 +50,7 @@ export const saveResearchSchema = z
     expectedRevision: z.number().int().nonnegative(),
     expectedPlaybookRevision: z.number().int().nonnegative(),
     receipt: shoppingResearchSchema,
+    captureJobId: z.string().uuid().optional(),
   })
   .strict();
 
@@ -97,6 +99,14 @@ const save = (
           repeated: true,
         };
       }
+      if (
+        !parsed.receipt.discovery ||
+        !parsed.receipt.claims?.length ||
+        !parsed.receipt.claimExcerpts?.length
+      )
+        throw new ValidationError(
+          "New research needs the fact ledger and original provider captures. Historical receipts remain unchanged.",
+        );
       const policy = await Store.policy(transaction);
       const prospect = value(
         await Prospects.get(Environment.SERVER, parsed.prospectId, {
@@ -256,6 +266,62 @@ const save = (
         throw new ValidationError(
           "The researched product must belong to this prospect's company.",
         );
+      const captureProof = await (async () => {
+        const captureJobId = automatic?.jobId ?? parsed.captureJobId;
+        if (!captureJobId)
+          throw new ValidationError(
+            "A new discovery finding needs its durably saved provider captures.",
+          );
+        const captureJob = value(
+          await Jobs.get(Environment.SERVER, captureJobId, { tx: transaction }),
+        );
+        const savedInput = preparationInputSchema.safeParse(captureJob?.input);
+        const automaticInput = automationInputSchema.safeParse(
+          captureJob?.input,
+        );
+        const validIdentity = savedInput.success
+          ? savedInput.data.prospectId === prospect.id &&
+            savedInput.data.campaignId === prospect.campaignId
+          : automaticInput.success &&
+            automaticInput.data.campaignId === prospect.campaignId;
+        if (
+          captureJob?.provider !== "automation" ||
+          captureJob.prospectId !== prospect.id ||
+          !validIdentity ||
+          (!automatic && captureJob.status !== "complete")
+        )
+          throw new ValidationError(
+            "The saved discovery capture belongs to another prospect or is unfinished.",
+          );
+        const captured = captureJob.output ?? {};
+        const answer = aiCaptureSchema.parse(
+          savedInput.success ? captured["answer"] : captured["shoppingAnswer"],
+        );
+        if (!captureMatchesMerchant(answer, prospect.details, parsed.receipt))
+          throw new ValidationError(
+            "The saved shopper query belongs to an earlier or different company identity.",
+          );
+        const browser = browserResearchSchema.parse(
+          savedInput.success
+            ? captured["browser"]
+            : captured["shoppingBrowser"],
+        );
+        if (
+          browser.status !== "captured" ||
+          researchHash(captured["shoppingReceipt"]) !== receiptHash
+        )
+          throw new ValidationError(
+            "The discovery receipt does not match its completed captures.",
+          );
+        const problem = Assessment.validateAutomaticResearch(
+          { answer, browser },
+          parsed.receipt,
+          policy.settings.verificationDays,
+          policy.settings,
+        );
+        if (problem) throw new ValidationError(problem);
+        return { captureJobId, answer, browser };
+      })();
       const problem = validateShoppingResearch(
         parsed.receipt,
         policy.settings.verificationDays,
@@ -340,6 +406,7 @@ const save = (
               capturedBy: actor,
               provenance: automatic ? "provider-observed" : "operator-observed",
               ...(automatic ? { automationJobId: automatic.jobId } : {}),
+              ...(captureProof ? { captureProof } : {}),
               appliedAt: new Date().toISOString(),
             },
           },

@@ -78,6 +78,317 @@ const capture = async (): Promise<AiCapture> => {
   return checked.capture;
 };
 
+describe("server presence from complete original captures", () => {
+  const merchant = {
+    name: "Café Merchant",
+    domain: "merchant.example",
+    aliases: ["The Merchant Store"],
+  };
+  const observed = async (
+    text: string,
+    fields: Record<string, unknown> = {},
+  ) => {
+    const result = value(
+      await Shopping.pollQuery(
+        { apiKey, job: job() },
+        {
+          now,
+          request: async () =>
+            provider({
+              ...completed(),
+              result: {
+                ...completed().result,
+                result_markdown: text,
+                citations: [],
+                ...fields,
+              },
+            }),
+        },
+      ),
+    );
+    if (result.status !== "captured")
+      throw new Error("Expected complete fixture");
+    return result.capture;
+  };
+  const presence = (answer: AiCapture) =>
+    Shopping.computeDiscoveryBase({ answer, merchant }, time);
+
+  test("checks beyond the assessor's 18000 characters without changing the answer", async () => {
+    const text = `${"Other choices. ".repeat(1500)}The Merchant Store has another option.`;
+    const answer = await observed(text);
+    expect(answer.source.content).not.toContain("The Merchant Store");
+    expect(answer.answer).toBe(text);
+    expect(answer.completeness).toEqual({ status: "complete", reason: null });
+    expect(presence(answer).merchantPresent).toBe(true);
+    expect(presence(answer).matchedAliases).toContain("The Merchant Store");
+    expect(Shopping.replayShoppingCapture(answer, time).answerText).toBe(text);
+  });
+
+  test("checks the 51st citation and full title/snippet, including duplicate URLs", async () => {
+    const citations = Array.from({ length: 50 }, (_, index) => ({
+      url: `https://other.example/item/${index}`,
+      title: "Another option",
+      snippet: "",
+    }));
+    const answer = await observed("Here are the available options.", {
+      citations: [
+        ...citations,
+        {
+          url: "https://retailer.example/product",
+          title: `${"Unrelated ".repeat(200)}Café Merchant`,
+          snippet: `${"Details ".repeat(700)}The Merchant Store`,
+        },
+      ],
+    });
+    expect(answer.links).toHaveLength(50);
+    const proof = presence(answer);
+    expect(proof.merchantPresent).toBe(true);
+    expect(proof.matchedAliases).toContain("Café Merchant");
+    expect(proof.matchedAliases).toContain("The Merchant Store");
+    const duplicate = await observed("Two cited options.", {
+      citations: [
+        { url: "https://other.example/same", title: "Café Merchant" },
+        { url: "https://other.example/same", title: "Another brand" },
+      ],
+    });
+    expect(duplicate.links[0]?.title).toBe("Another brand");
+    expect(presence(duplicate).merchantPresent).toBe(true);
+    expect(presence(duplicate).linksHash).not.toBe(proof.linksHash);
+  });
+
+  test("matches encoded domains, accents and explicit product aliases with boundaries", async () => {
+    const answer = await observed("Here is a cited retailer.", {
+      links: [
+        {
+          url: "https://redirect.example/link?url=https%3A%2F%2Fshop.merchant.example%2Fproduct",
+          title: "A product",
+        },
+      ],
+    });
+    expect(presence(answer).matchedAliases).toContain("merchant.example");
+    expect(
+      Shopping.matchMerchantText("CAFE MERCHANT", merchant, product),
+    ).toContain("Café Merchant");
+    expect(
+      Shopping.matchMerchantText("The carryall", merchant, {
+        ...product,
+        aliases: ["carryall"],
+      }),
+    ).toContain("carryall");
+    expect(
+      Shopping.matchMerchantText(
+        "notmerchant.example Cafe Merchantman",
+        merchant,
+        product,
+      ),
+    ).toEqual([]);
+    expect(
+      presence(await observed("A Trail Tote is also listed.")).merchantPresent,
+    ).toBe(true);
+  });
+
+  test("scans top-level cited links and compact whole-name spacing variants", async () => {
+    const result = value(
+      await Shopping.pollQuery(
+        { apiKey, job: job() },
+        {
+          now,
+          request: async () =>
+            provider({
+              ...completed(),
+              citations: [
+                {
+                  url: "https://retailer.example/item",
+                  title: "Café Merchant",
+                },
+              ],
+              result: {
+                ...completed().result,
+                result_markdown: "Only other products were named.",
+                citations: [],
+              },
+            }),
+        },
+      ),
+    );
+    if (result.status !== "captured")
+      throw new Error("Expected complete fixture");
+    expect(result.capture.links).toEqual([]);
+    expect(presence(result.capture).merchantPresent).toBe(true);
+    const identity = { ...merchant, name: "KenzKustomz" };
+    expect(
+      Shopping.matchMerchantText("Kenz Kustomz is listed.", identity, product),
+    ).toContain("KenzKustomz");
+    expect(
+      Shopping.matchMerchantText(
+        "kenzkustomz is listed.",
+        { ...identity, name: "Kenz Kustomz" },
+        product,
+      ),
+    ).toContain("Kenz Kustomz");
+    expect(
+      Shopping.matchMerchantText("notkenzkustomzpost", identity, product),
+    ).toEqual([]);
+    expect(
+      Shopping.computeDiscoveryBase(
+        {
+          answer: await observed("Kenz Kustomz is listed."),
+          merchant: identity,
+        },
+        time,
+      ).merchantPresent,
+    ).toBe(true);
+  });
+
+  test("ignores organic cards and query echoes, but scans the alternate raw answer representation", async () => {
+    const answer = await observed("Only other products were named.", {
+      search_results: [{ url: product.url, title: "Café Merchant" }],
+    });
+    expect(job().query.prompt).toContain("Trail Tote");
+    expect(presence(answer).merchantPresent).toBe(false);
+    const alternative = await observed("Only other products were named.", {
+      result: "The raw plain answer also names Café Merchant.",
+    });
+    expect(presence(alternative).merchantPresent).toBe(true);
+  });
+
+  test("preserves leading and trailing raw whitespace and supports verified hosted answers", async () => {
+    const text = "\n  Other products were listed.  \n";
+    const answer = await observed(text);
+    expect(answer.answer).toBe(text);
+    expect(presence(answer).answerHash).toBe(digest(text));
+    const result = value(
+      await Shopping.pollQuery(
+        { apiKey, job: job() },
+        {
+          now,
+          request: async () =>
+            provider({
+              ...completed(),
+              result: {
+                ...completed().result,
+                result_markdown: null,
+                markdown_url: "https://scrapellm.com/md/fixture.md",
+              },
+            }),
+          page: async (url) => ({
+            success: true,
+            data: { url, status: 200, body: text, headers: new Headers() },
+          }),
+        },
+      ),
+    );
+    if (result.status !== "captured") throw new Error("Expected hosted answer");
+    expect(presence(result.capture).completeness.status).toBe("complete");
+    expect(result.capture.answer).toBe(text);
+  });
+
+  test("historical missing proof and declared uncertainty never become absence", async () => {
+    const answer = await observed("Other products were named.");
+    const historical = structuredClone(answer);
+    delete historical.completeness;
+    const before = JSON.stringify(historical);
+    expect(presence(historical).merchantPresent).toBeNull();
+    expect(presence(historical).completeness.status).toBe("uncertain");
+    expect(JSON.stringify(historical)).toBe(before);
+    for (const status of [
+      "truncated",
+      "blocked",
+      "empty",
+      "uncertain",
+    ] as const) {
+      expect(
+        presence({
+          ...answer,
+          completeness: { status, reason: "Known incomplete answer." },
+        }).merchantPresent,
+      ).toBeNull();
+    }
+    expect(
+      Shopping.computeDiscoveryBase({ answer }, time).merchantPresent,
+    ).toBeNull();
+  });
+
+  test("independently rejects tampered body, query, dates, projections and merchant identity", async () => {
+    const answer = await observed("Other products were named.");
+    const mutations: ((value: AiCapture) => void)[] = [
+      (value) => {
+        value.answer += " edited";
+      },
+      (value) => {
+        value.job.query.prompt = "changed shopper prompt";
+      },
+      (value) => {
+        value.job.id = session;
+      },
+      (value) => {
+        value.executedAt = new Date(time + 1000).toISOString();
+      },
+      (value) => {
+        value.source.content = "edited projection";
+      },
+      (value) => {
+        if (value.raw[0]) value.raw[0].body += " ";
+      },
+      (value) => {
+        value.links.push({ url: product.url, title: "added", snippet: "" });
+      },
+    ];
+    for (const mutate of mutations) {
+      const changed = structuredClone(answer);
+      mutate(changed);
+      expect(presence(changed).merchantPresent).toBeNull();
+      expect(presence(changed).completeness.status).not.toBe("complete");
+    }
+    const bound = {
+      ...answer,
+      job: { ...answer.job, query: { ...answer.job.query, merchant } },
+    };
+    expect(
+      Shopping.computeDiscoveryBase(
+        { answer: bound, merchant: { ...merchant, name: "Changed identity" } },
+        time,
+      ).merchantPresent,
+    ).toBeNull();
+  });
+
+  test.each([
+    ["Other products were named.", { truncated: true }],
+    ["Other products were named.", { metadata: { finish_reason: "length" } }],
+    ["Other products were named.", { blocked: true }],
+    ["Other products were named...", {}],
+    [`${"Other choices. ".repeat(1500)}...`, {}],
+    ["Other products were named.", { metadata: { status: "partial" } }],
+    ["Access denied. Verify you are human.", {}],
+  ])(
+    "does not accept blocked or partial provider answers",
+    async (text, flags) => {
+      const result = await Shopping.pollQuery(
+        { apiKey, job: job() },
+        {
+          now,
+          request: async () =>
+            provider({
+              ...completed(),
+              result: {
+                ...completed().result,
+                result_markdown: text,
+                ...flags,
+              },
+            }),
+        },
+      );
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        const { capture: savedCapture } = result.error.receipt ?? {};
+        const recorded = savedCapture as AiCapture | undefined;
+        expect(recorded).toBeDefined();
+        if (recorded) expect(presence(recorded).merchantPresent).toBeNull();
+      }
+    },
+  );
+});
+
 describe("live shopper query adapters", () => {
   test("persists Retry-After with the exact rejected provider capture", async () => {
     const body = { error: "Rate limit exceeded: max 5 request(s) per minute" };
@@ -280,7 +591,9 @@ describe("live shopper query adapters", () => {
         },
       },
     );
-    expect(observed.success).toBe(true);
+    expect(observed.success).toBe(false);
+    if (!observed.success)
+      expect(observed.error.message).toContain("full hosted answer");
     expect(pages).toEqual([]);
   });
 

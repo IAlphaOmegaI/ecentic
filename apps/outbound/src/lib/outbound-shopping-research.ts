@@ -79,6 +79,17 @@ export const shoppingDiscoverySchema = z
     description: text(1500).nullable(),
     matchedAliases: z.array(text(300)).max(50),
     presenceMethod: z.literal("server-v1"),
+    correctness: z.enum(["correct", "discrepancy", "uncertain"]).optional(),
+    correctnessExcerptIds: z.array(text(80)).max(12).optional(),
+    correctnessProof: z
+      .object({
+        answerQuoteId: text(80),
+        productQuoteId: text(80),
+        answerText: text(1500),
+        pageText: text(1500),
+      })
+      .strict()
+      .optional(),
   })
   .strict();
 export type ShoppingDiscovery = z.infer<typeof shoppingDiscoverySchema>;
@@ -106,6 +117,20 @@ export const shoppingClaimSchema = z
   })
   .strict();
 export type ShoppingClaim = z.infer<typeof shoppingClaimSchema>;
+
+export const shoppingOfferProofSchema = z
+  .object({
+    quoteId: text(80),
+    offer: z.string().min(1).max(600),
+    variant: text(100),
+    price: text(40),
+    currency: z.enum(["USD", "CAD", "AUD", "NZD", "GBP", "EUR"]),
+    currencyAnchor: text(40),
+    condition: z.enum(["one-time", "subscription", "member"]),
+    conditionAnchor: text(80),
+    marketAnchor: text(80).nullable(),
+  })
+  .strict();
 
 export const shoppingFindingSchema = z.object({
   kind: z.enum([
@@ -173,6 +198,25 @@ export const shoppingResearchSchema = z
       .max(5),
     discovery: shoppingDiscoverySchema.optional(),
     claims: z.array(shoppingClaimSchema).max(100).optional(),
+    claimExcerpts: z
+      .array(
+        z
+          .object({
+            id: text(80),
+            sourceId: text(80),
+            quote: z.string().min(1).max(2000),
+          })
+          .strict(),
+      )
+      .max(100)
+      .optional(),
+    priceComparison: z
+      .object({
+        answer: shoppingOfferProofSchema,
+        page: shoppingOfferProofSchema,
+      })
+      .strict()
+      .optional(),
     ucp: z
       .object({
         url,
@@ -244,6 +288,268 @@ export const productCaptureUrlMatches = (
     /^\?variant=\d{1,25}$/.test(final.search)
   );
 };
+
+/** Discovery is time-sensitive even when older page evidence is allowed. */
+export const discoveryFreshnessProblem = (
+  receipt: ShoppingResearch,
+  now = Date.now(),
+  days = 7,
+): string | null => {
+  if (
+    !["discovery-absence", "discovery-outranked", "no-gap"].includes(
+      receipt.selected.kind,
+    )
+  )
+    return null;
+  const query = receipt.queries[receipt.selected.queryIndex];
+  const observed = Date.parse(query?.executedAt ?? "");
+  const maximum = Math.min(7, Math.max(1, days)) * 86_400_000;
+  if (!Number.isFinite(observed) || observed > now || now - observed > maximum)
+    return "Needs a fresh search (older than 7 days or future-dated).";
+  return null;
+};
+
+/** Structural ledger validation; automatic receipts additionally replay their raw proof. */
+const discoveryLedgerProblem = (receipt: ShoppingResearch): string | null => {
+  const discoveryKind = [
+    "discovery-absence",
+    "discovery-outranked",
+    "no-gap",
+  ].includes(receipt.selected.kind);
+  if (!receipt.discovery && !receipt.claims && !receipt.claimExcerpts)
+    return discoveryKind
+      ? "The finding needs a saved discovery result and claims ledger."
+      : null;
+  const claims = receipt.claims;
+  const excerpts = receipt.claimExcerpts;
+  if (!claims?.length || !excerpts?.length)
+    return "The finding needs its observed claims and exact supporting excerpts.";
+  if (
+    new Set(claims.map((claim) => claim.id)).size !== claims.length ||
+    new Set(excerpts.map((excerpt) => excerpt.id)).size !== excerpts.length
+  )
+    return "Claim and excerpt IDs must be unique.";
+  const sourceMap = new Map(
+    receipt.sources.map((source) => [source.id, source]),
+  );
+  const excerptMap = new Map(excerpts.map((excerpt) => [excerpt.id, excerpt]));
+  if (
+    excerpts.some(
+      (excerpt) =>
+        !sourceMap.has(excerpt.sourceId) ||
+        !normalizeResearchText(
+          sourceMap.get(excerpt.sourceId)?.content ?? "",
+        ).includes(normalizeResearchText(excerpt.quote)),
+    )
+  )
+    return "A claim excerpt does not match its saved source.";
+  if (
+    claims.some(
+      (claim) =>
+        claim.sourceIds.some((id) => !sourceMap.has(id)) ||
+        claim.excerptIds.some(
+          (id) =>
+            !excerptMap.has(id) ||
+            !claim.sourceIds.includes(excerptMap.get(id)?.sourceId ?? ""),
+        ) ||
+        claim.sourceIds.some(
+          (sourceId) =>
+            !claim.excerptIds.some(
+              (id) => excerptMap.get(id)?.sourceId === sourceId,
+            ),
+        ) ||
+        (claim.queryIndex !== null && !receipt.queries[claim.queryIndex]),
+    )
+  )
+    return "A claim references an unknown or unrelated source, excerpt or query.";
+  if (
+    claims.some((claim) => {
+      const evidence = claim.excerptIds
+        .map((id) => excerptMap.get(id)?.quote ?? "")
+        .join("\n");
+      const normalized = normalizeResearchText(evidence);
+      const literal = [
+        "name",
+        "price",
+        "description",
+        "product-attribute",
+      ].includes(claim.kind);
+      return (
+        (literal && !normalized.includes(normalizeResearchText(claim.value))) ||
+        claim.qualifiers.some(
+          (qualifier) => !normalized.includes(normalizeResearchText(qualifier)),
+        ) ||
+        (claim.kind === "query" &&
+          (claim.queryIndex === null ||
+            claim.value !== receipt.queries[claim.queryIndex]?.query))
+      );
+    })
+  )
+    return "An observed claim or qualifier is missing from its exact supporting evidence.";
+  const discovery = receipt.discovery;
+  if (!discovery)
+    return discoveryKind ? "The finding needs a saved discovery result." : null;
+  const query = receipt.queries[discovery.queryIndex];
+  const totalListed = discovery.totalListed;
+  const merchantPosition = discovery.merchantPosition;
+  if (
+    !query ||
+    discovery.queryIndex !== receipt.selected.queryIndex ||
+    !query.sourceIds.includes(discovery.sourceId) ||
+    sourceMap.get(discovery.sourceId)?.kind !== "search" ||
+    discovery.checkedAt !== query.executedAt
+  )
+    return "The discovery result does not match the selected saved query.";
+  if (
+    discoveryKind &&
+    (!query.intent?.startsWith("unbranded-") || !query.basis)
+  )
+    return "This finding needs a validated unbranded shopper search.";
+  if (discoveryKind && discovery.completeness.status !== "complete")
+    return "An incomplete or uncertain answer cannot establish absence, ranking or no gap.";
+  if (
+    discovery.merchantPresent === false &&
+    (discovery.completeness.status !== "complete" ||
+      discovery.matchedAliases.length ||
+      discovery.merchantPosition !== null)
+  )
+    return "Absence requires a complete answer with no merchant match anywhere.";
+  if (discovery.merchantPresent === true && !discovery.matchedAliases.length)
+    return "A present merchant needs its server-matched name, product or domain.";
+  if (discovery.merchantPresent !== true && discovery.merchantPosition !== null)
+    return "An unknown or absent merchant cannot have a listed position.";
+  if (
+    discovery.listed.some(
+      (entry, index) =>
+        (index > 0 &&
+          entry.position <= (discovery.listed[index - 1]?.position ?? 0)) ||
+        entry.excerptIds.some(
+          (id) =>
+            !excerptMap.has(id) ||
+            excerptMap.get(id)?.sourceId !== discovery.sourceId,
+        ) ||
+        !entry.excerptIds.some((id) =>
+          normalizeResearchText(excerptMap.get(id)?.quote ?? "").includes(
+            normalizeResearchText(entry.name),
+          ),
+        ) ||
+        (entry.price !== null &&
+          !entry.excerptIds.some((id) =>
+            normalizeResearchText(excerptMap.get(id)?.quote ?? "").includes(
+              normalizeResearchText(entry.price ?? ""),
+            ),
+          )),
+    )
+  )
+    return "The named results must retain their supported order, names, prices and answer excerpts.";
+  if (
+    totalListed !== null &&
+    (totalListed < discovery.listed.length ||
+      discovery.listed.some((entry) => entry.position > totalListed) ||
+      (merchantPosition !== null && merchantPosition > totalListed))
+  )
+    return "The saved result count does not match its listed positions.";
+  if (discovery.correctnessExcerptIds?.some((id) => !excerptMap.has(id)))
+    return "The correctness assessment references an unknown excerpt.";
+  if (discovery.correctnessProof) {
+    const proof = discovery.correctnessProof;
+    const answerExcerpt = excerptMap.get(proof.answerQuoteId);
+    const productExcerpt = excerptMap.get(proof.productQuoteId);
+    if (
+      answerExcerpt?.sourceId !== discovery.sourceId ||
+      sourceMap.get(productExcerpt?.sourceId ?? "")?.kind !== "product" ||
+      !discovery.correctnessExcerptIds?.includes(proof.answerQuoteId) ||
+      !discovery.correctnessExcerptIds?.includes(proof.productQuoteId) ||
+      !normalizeResearchText(answerExcerpt?.quote ?? "").includes(
+        normalizeResearchText(proof.answerText),
+      ) ||
+      !normalizeResearchText(productExcerpt?.quote ?? "").includes(
+        normalizeResearchText(proof.pageText),
+      )
+    )
+      return "The correctness proof no longer matches its answer and product excerpts.";
+  }
+  if (receipt.priceComparison) {
+    const comparison = receipt.priceComparison;
+    if (
+      [comparison.answer, comparison.page].some((offer) => {
+        const excerpt = excerptMap.get(offer.quoteId);
+        return (
+          !excerpt?.quote.includes(offer.offer) ||
+          [
+            offer.variant,
+            offer.price,
+            offer.currencyAnchor,
+            offer.conditionAnchor,
+            ...(offer.marketAnchor ? [offer.marketAnchor] : []),
+          ].some((anchor) => !offer.offer.includes(anchor))
+        );
+      }) ||
+      excerptMap.get(comparison.answer.quoteId)?.sourceId !==
+        discovery.sourceId ||
+      sourceMap.get(excerptMap.get(comparison.page.quoteId)?.sourceId ?? "")
+        ?.kind !== "product"
+    )
+      return "The comparable offers no longer match their exact local evidence.";
+  }
+  if (
+    receipt.selected.kind === "discovery-absence" &&
+    discovery.merchantPresent !== false
+  )
+    return "The merchant matched the answer or citations; absence is not supported.";
+  if (
+    receipt.selected.kind === "discovery-outranked" &&
+    (discovery.merchantPresent !== true ||
+      merchantPosition === null ||
+      merchantPosition < 3 ||
+      discovery.listed.filter((entry) => entry.position < merchantPosition)
+        .length < 2)
+  )
+    return "An outranking finding needs the merchant after at least two named results.";
+  if (
+    receipt.selected.kind === "no-gap" &&
+    (discovery.merchantPresent !== true ||
+      discovery.merchantPosition !== 1 ||
+      discovery.correctness !== "correct" ||
+      !discovery.correctnessExcerptIds?.length)
+  )
+    return "No gap requires a complete answer with the merchant first and verified correct.";
+  if (
+    claims.some((claim) => {
+      if (
+        ["merchant-presence", "position", "count"].includes(claim.kind) &&
+        claim.queryIndex !== discovery.queryIndex
+      )
+        return true;
+      if (claim.kind === "merchant-presence")
+        return (
+          claim.value !==
+          (discovery.merchantPresent === true
+            ? "present"
+            : discovery.merchantPresent === false
+              ? "absent"
+              : "unknown")
+        );
+      if (claim.kind === "position")
+        return (
+          !/^\d+$/.test(claim.value) ||
+          ![
+            discovery.merchantPosition,
+            ...discovery.listed.map((entry) => entry.position),
+          ].includes(Number(claim.value))
+        );
+      if (claim.kind === "count")
+        return (
+          discovery.totalListed === null ||
+          claim.value !== String(discovery.totalListed)
+        );
+      return false;
+    })
+  )
+    return "A derived presence, count or position claim differs from the saved discovery proof.";
+  return null;
+};
+
 export const validateShoppingResearch = (
   receipt: ShoppingResearch,
   days: number,
@@ -251,8 +557,13 @@ export const validateShoppingResearch = (
   options: {
     allowStaleEvidence?: boolean;
     allowProductObservations?: boolean;
+    discoveryFreshnessDays?: number;
   } = {},
 ): string | null => {
+  const discoveryProblem =
+    discoveryFreshnessProblem(receipt, now, options.discoveryFreshnessDays) ??
+    discoveryLedgerProblem(receipt);
+  if (discoveryProblem) return discoveryProblem;
   if (
     receipt.selected.kind === "product-observation" &&
     !options.allowProductObservations
@@ -300,7 +611,12 @@ export const validateShoppingResearch = (
   if (!product)
     return "Shopping research needs the named product's own source.";
   if (
-    receipt.selected.kind !== "product-observation" &&
+    ![
+      "product-observation",
+      "discovery-absence",
+      "discovery-outranked",
+      "no-gap",
+    ].includes(receipt.selected.kind) &&
     receipt.sources.some(
       (source) =>
         source.kind === "product" &&
@@ -312,8 +628,7 @@ export const validateShoppingResearch = (
     return "An automatically selected product variant supports only a neutral observation, not a price or product discrepancy.";
   const query = receipt.queries[receipt.selected.queryIndex];
   if (
-    !query ||
-    query.status !== "observed" ||
+    query?.status !== "observed" ||
     !query.sourceIds.some((id) => sources.get(id)?.kind === "search")
   )
     return "Shopping research needs an actually observed shopper query.";
@@ -353,7 +668,8 @@ export const validateShoppingResearch = (
     return "Observed checkout steps need an actual checkout capture.";
   if (
     receipt.selected.kind === "query-comparison" &&
-    !receipt.competitors.length
+    !receipt.competitors.length &&
+    !(receipt.priceComparison && receipt.discovery?.merchantPresent === true)
   )
     return "A comparison needs an identified competing product.";
   if (
@@ -462,10 +778,14 @@ export const validateShoppingResearch = (
 export const shoppingFinding = (receipt: ShoppingResearch): ShoppingFinding =>
   shoppingFindingSchema.parse({
     ...receipt.selected,
-    checkedAt: [
-      ...receipt.sources.map((source) => source.checkedAt),
-      ...receipt.queries.map((query) => query.executedAt),
-    ].sort()[0],
+    checkedAt: ["discovery-absence", "discovery-outranked", "no-gap"].includes(
+      receipt.selected.kind,
+    )
+      ? receipt.queries[receipt.selected.queryIndex]?.executedAt
+      : [
+          ...receipt.sources.map((source) => source.checkedAt),
+          ...receipt.queries.map((query) => query.executedAt),
+        ].sort()[0],
   });
 
 export const shoppingCopy = (prospect: {

@@ -22,6 +22,19 @@ import {
 } from "./live-shopping-http";
 import { shoppingPollUrl, shoppingQueryUrl } from "./scrapellm-cooldown";
 
+import {
+  deriveCaptureCompleteness,
+  projectAnswerLinks,
+  shoppingSourceText,
+} from "./shopping-presence";
+
+export {
+  computeDiscoveryBase,
+  deriveCaptureCompleteness,
+  matchMerchantText,
+  replayShoppingCapture,
+} from "./shopping-presence";
+
 type CaptureDependencies = Dependencies & { page?: typeof HTTP.page };
 const failure = (
   message: string,
@@ -168,53 +181,6 @@ const jobResponseSchema = z
   })
   .passthrough();
 
-const answerLinks = (
-  payload: z.infer<typeof payloadSchema>,
-  answer: string,
-): AiCapture["links"] => {
-  const entries = [...(payload.citations ?? []), ...(payload.links ?? [])];
-  const structured = entries.flatMap((entry) => {
-    const link = z
-      .object({
-        url: z.string(),
-        title: z.string().optional(),
-        text: z.string().optional(),
-        snippet: z.string().optional(),
-      })
-      .safeParse(entry);
-    if (!link.success || !publicUrlSchema.safeParse(link.data.url).success)
-      return [];
-    return [
-      {
-        url: link.data.url,
-        title: (link.data.title ?? link.data.text ?? "").slice(0, 1000),
-        snippet: (link.data.snippet ?? "").slice(0, 3000),
-      },
-    ];
-  });
-  const markdown = [
-    ...answer.matchAll(/\[([^\]\n]{0,1000})\]\((https:\/\/[^\s)]+)\)/g),
-  ].flatMap((match) =>
-    match[2] && publicUrlSchema.safeParse(match[2]).success
-      ? [{ url: match[2], title: match[1] ?? "", snippet: "" }]
-      : [],
-  );
-  return [
-    ...new Map(
-      [...structured, ...markdown].map((entry) => [entry.url, entry]),
-    ).values(),
-  ].slice(0, 50);
-};
-
-// AI Mode embeds product photos as base64 HTML inside its Markdown. Keep the
-// complete original in answer/raw, but do not let image bytes crowd exact text
-// quotes out of the bounded source excerpt sent to the assessment model.
-const sourceText = (answer: string) =>
-  answer
-    .replace(/<img\b[^>]*\bsrc=["']data:image\/[^"']+["'][^>]*>/gi, "")
-    .replace(/!\[[^\]]*\]\(data:image\/[^)]+\)/gi, "")
-    .slice(0, 18000);
-
 export const pollQuery = async (
   {
     apiKey,
@@ -307,7 +273,9 @@ export const pollQuery = async (
     );
 
   const hosted: RawCapture[] = [];
-  const inline = payload.data.result_markdown?.trim();
+  const inline = payload.data.result_markdown?.trim()
+    ? payload.data.result_markdown
+    : null;
   const markdown = await (async () => {
     if (inline) return inline;
     if (!payload.data.markdown_url) return null;
@@ -339,10 +307,10 @@ export const pollQuery = async (
       body: page.data.body,
       sha256: digest(page.data.body),
     });
-    return page.data.body.trim();
+    return page.data.body;
   })();
-  const answer = markdown || payload.data.result?.trim();
-  if (!answer || answer.length > 200_000)
+  const answer = markdown || payload.data.result;
+  if (!answer?.trim() || answer.length > 200_000)
     return failure("The provider returned no bounded, readable AI answer.", {
       response: response.data.raw,
     });
@@ -369,18 +337,25 @@ export const pollQuery = async (
       capture: "provider",
       url: observedUrl,
       checkedAt: new Date(executed).toISOString(),
-      content: sourceText(answer),
+      content: shoppingSourceText(answer),
       artifact: `sha256:${sourceRaw.sha256}`,
     },
-    links: answerLinks(payload.data, answer),
+    links: projectAnswerLinks(payload.data, answer),
     cached: false,
     raw: [response.data.raw, ...hosted],
   });
-  return captured.success
-    ? { success: true, data: { status: "captured", capture: captured.data } }
-    : failure("The AI capture did not pass the evidence contract.", {
-        response: response.data.raw,
-      });
+  if (!captured.success)
+    return failure("The AI capture did not pass the evidence contract.", {
+      response: response.data.raw,
+    });
+  const completeness = deriveCaptureCompleteness(captured.data, now());
+  const capture = { ...captured.data, completeness };
+  return completeness.status === "complete"
+    ? { success: true, data: { status: "captured", capture } }
+    : failure(
+        completeness.reason ?? "The answer was not captured completely.",
+        { response: response.data.raw, capture },
+      );
 };
 
 export const validateScrapellmCredentials = async ({
