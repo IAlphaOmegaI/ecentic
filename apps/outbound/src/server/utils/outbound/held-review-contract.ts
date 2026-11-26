@@ -94,6 +94,22 @@ export const heldQueryQualityHoldSchema = z
     heldAt: z.string().datetime(),
   })
   .strict();
+export const HELD_POLL_PARSE_ERRORS = [
+  "The original response does not match this uncached shopper query.",
+  "The provider returned no bounded, readable AI answer.",
+] as const;
+export const heldPollRecoverySchema = z
+  .object({
+    shoppingJobId: z.string().uuid(),
+    responseSha256: digest,
+    queryHash: digest,
+    originalError: z.enum(HELD_POLL_PARSE_ERRORS),
+    originalHeldReason: z.string().min(1),
+    originalFailureReceipt: z.record(z.string(), z.unknown()),
+    requestedBy: z.string().trim().min(1).max(200),
+    recoveredAt: z.string().datetime(),
+  })
+  .strict();
 const previewMessageSchema = z
   .object({
     step: z.union([z.literal(1), z.literal(2), z.literal(3)]),
@@ -180,6 +196,7 @@ export const heldReviewStateSchema = z
       .optional(),
     queryRepair: heldQueryRepairSchema.optional(),
     queryQualityHold: heldQueryQualityHoldSchema.optional(),
+    pollRecoveries: z.array(heldPollRecoverySchema).max(2).optional(),
     shoppingJob: aiJobSchema.optional(),
     answer: aiCaptureSchema.optional(),
     browser: browserResearchSchema.optional(),

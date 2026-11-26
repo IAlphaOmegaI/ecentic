@@ -1,6 +1,7 @@
 import "server-only";
 
 import { randomUUID } from "node:crypto";
+import { isDeepStrictEqual } from "node:util";
 import { type Result, resultify } from "@zenncore/utils";
 import {
   and,
@@ -37,6 +38,7 @@ import {
   type HeldReviewManifest,
   type HeldReviewState,
   heldManifestHash,
+  heldPollRecoverySchema,
   heldPreparedQueryHash,
   heldQueryQualityHoldSchema,
   heldQueryRepairSchema,
@@ -589,6 +591,135 @@ export const holdUnspentQuery = (
       held: input.execute === true,
       queryHash,
       reason: queryQualityHold.reason,
+    };
+  });
+
+/** Replays saved bytes only; cannot poll, submit, regenerate or reset a budget. */
+export const reconcileFailedPoll = (
+  actor: string,
+  input: {
+    manifest: HeldReviewManifest;
+    jobId: string;
+    expectedShoppingJobId: string;
+    expectedResponseSha256: string;
+    execute?: boolean;
+  },
+) =>
+  transaction(async (scope) => {
+    const manifest = validateManifest(input.manifest);
+    const job = await jobAt(scope, z.string().uuid().parse(input.jobId));
+    const details = heldReviewInputSchema.parse(job.input);
+    const state = heldReviewStateSchema.parse(job.output);
+    const shoppingJob = Capture.aiJobSchema.parse(state.shoppingJob);
+    const queryHash = heldPreparedQueryHash(state.query);
+    if (
+      job.provider !== "automation" ||
+      job.prospectId !== details.prospectId ||
+      !manifest.prospectIds.includes(details.prospectId) ||
+      job.status !== "failed" ||
+      state.stage !== "poll" ||
+      state.lease !== null ||
+      !state.queryReservedAt ||
+      state.shoppingQueryCount !==
+        (state.shoppingQueryIntent === "unbranded-broad" ? 2 : 1) ||
+      (state.shoppingHistory?.length ?? 0) !== state.shoppingQueryCount - 1 ||
+      queryHash !== heldPreparedQueryHash(shoppingJob.query) ||
+      shoppingJob.query.intent !== state.shoppingQueryIntent ||
+      shoppingJob.id !== z.string().uuid().parse(input.expectedShoppingJobId) ||
+      state.heldReason !== job.error ||
+      state.queryQualityHold ||
+      state.answer ||
+      state.browser ||
+      state.shoppingReceipt ||
+      state.composition ||
+      state.researchId ||
+      state.previewContext ||
+      state.draftBeforeJudge ||
+      state.preview ||
+      state.pollRecoveries?.some(
+        (recovery) => recovery.shoppingJobId === shoppingJob.id,
+      )
+    )
+      throw new ConflictError(
+        "Only a failed, unleased poll with its existing paid reservation can be reconciled once.",
+      );
+    const receipt = z
+      .object({
+        response: Capture.rawCaptureSchema,
+        capture: Capture.aiCaptureSchema.optional(),
+      })
+      .passthrough()
+      .parse(state.failureReceipt);
+    if (
+      receipt.response.sha256 !==
+        z
+          .string()
+          .regex(/^[a-f0-9]{64}$/)
+          .parse(input.expectedResponseSha256) ||
+      (receipt.capture &&
+        (!isDeepStrictEqual(receipt.capture.job, shoppingJob) ||
+          !receipt.capture.raw.some((raw) =>
+            isDeepStrictEqual(raw, receipt.response),
+          )))
+    )
+      throw new ConflictError(
+        "The saved provider response or paid query changed before reconciliation.",
+      );
+    const recovery = heldPollRecoverySchema.parse({
+      shoppingJobId: shoppingJob.id,
+      responseSha256: receipt.response.sha256,
+      queryHash,
+      originalError: job.error,
+      originalHeldReason: state.heldReason,
+      originalFailureReceipt: state.failureReceipt,
+      requestedBy: actor,
+      recoveredAt: new Date().toISOString(),
+    });
+    const ready = await eligible(scope, details, state);
+    if (ready.batch.budget.queriesReserved < state.shoppingQueryCount)
+      throw new ConflictError("The existing paid reservation is missing.");
+    const problem = queryProblem(details, state, ready.policy.settings);
+    if (problem) throw new ValidationError(problem);
+    const answer = value(
+      Capture.restoreCompletedQueryResponse(
+        shoppingJob,
+        receipt.response,
+        receipt.capture?.raw.find((raw) => raw.url !== receipt.response.url),
+        Date.now(),
+      ),
+    );
+    if (answer.completeness?.status !== "complete")
+      throw new ValidationError(
+        "The saved provider response still lacks complete capture proof.",
+      );
+    if (input.execute === true) {
+      const {
+        heldReason: _heldReason,
+        failureReceipt: _failureReceipt,
+        ...retained
+      } = state;
+      await scope
+        .update(schema.outboundIntegrationJob)
+        .set({
+          status: "pending",
+          error: null,
+          output: heldReviewStateSchema.parse({
+            ...retained,
+            stage: "browser",
+            answer,
+            pollRecoveries: [...(state.pollRecoveries ?? []), recovery],
+          }),
+          updatedAt: new Date(),
+        })
+        .where(eq(schema.outboundIntegrationJob.id, job.id));
+    }
+    return {
+      jobId: job.id,
+      batchId: details.batchId,
+      shoppingJobId: shoppingJob.id,
+      responseSha256: receipt.response.sha256,
+      reconciled: input.execute === true,
+      stage: input.execute === true ? ("browser" as const) : ("poll" as const),
     };
   });
 const checkpoint = (

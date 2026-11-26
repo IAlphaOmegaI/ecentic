@@ -19,13 +19,22 @@ const { values } = parseArgs({
     steps: { type: "string", default: "1" },
     "repair-unspent": { type: "string" },
     "hold-unspent": { type: "string" },
+    "reconcile-poll": { type: "string" },
     reason: { type: "string" },
     "expected-query-hash": { type: "string" },
+    "expected-shopping-job-id": { type: "string" },
+    "expected-response-sha256": { type: "string" },
   },
 });
 const steps = z.coerce.number().int().min(1).max(50).parse(values.steps);
-if (values["repair-unspent"] && values["hold-unspent"])
-  throw new Error("Choose either --repair-unspent or --hold-unspent.");
+if (
+  [
+    values["repair-unspent"],
+    values["hold-unspent"],
+    values["reconcile-poll"],
+  ].filter(Boolean).length > 1
+)
+  throw new Error("Choose only one explicit operator action.");
 if (
   Boolean(values["repair-unspent"] || values["hold-unspent"]) !==
   Boolean(values["expected-query-hash"])
@@ -33,6 +42,15 @@ if (
   throw new Error("An unspent-query action requires --expected-query-hash.");
 if (Boolean(values["hold-unspent"]) !== Boolean(values.reason))
   throw new Error("Use --hold-unspent and --reason together.");
+if (
+  Boolean(values["reconcile-poll"]) !==
+    Boolean(values["expected-shopping-job-id"]) ||
+  Boolean(values["reconcile-poll"]) !==
+    Boolean(values["expected-response-sha256"])
+)
+  throw new Error(
+    "Use --reconcile-poll with --expected-shopping-job-id and --expected-response-sha256.",
+  );
 const corpusPath =
   values.corpus ??
   resolve(
@@ -104,6 +122,32 @@ if (values["hold-unspent"]) {
     JSON.stringify({
       mode: values.execute ? "query-held" : "query-hold-dry-run",
       ...held.data,
+    }),
+  );
+  process.exit(0);
+}
+if (values["reconcile-poll"]) {
+  const restored = await Review.reconcileFailedPoll(values.actor, {
+    manifest,
+    jobId: z.string().uuid().parse(values["reconcile-poll"]),
+    expectedShoppingJobId: z
+      .string()
+      .uuid()
+      .parse(values["expected-shopping-job-id"]),
+    expectedResponseSha256: z
+      .string()
+      .regex(/^[a-f0-9]{64}$/)
+      .parse(values["expected-response-sha256"]),
+    execute: values.execute,
+  });
+  if (!restored.success)
+    throw new Error(
+      `Saved poll reconciliation failed: ${restored.error.message}`,
+    );
+  console.log(
+    JSON.stringify({
+      mode: values.execute ? "poll-reconciled" : "poll-reconciliation-dry-run",
+      ...restored.data,
     }),
   );
   process.exit(0);

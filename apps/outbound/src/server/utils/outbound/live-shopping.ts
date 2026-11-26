@@ -7,6 +7,7 @@ export {
   prepareQuery,
   repairShopperQuery,
   replayShoppingCapture,
+  restoreCompletedQueryResponse,
   type ShopperQueryDependencies,
   type ShopperQueryInput,
   type ShopperQuerySelection,

@@ -13,6 +13,8 @@ import {
   preparedQuerySchema,
   publicUrlSchema,
   type RawCapture,
+  rawCaptureSchema,
+  SHOPPING_CAPTURE_LIMIT,
 } from "./live-shopping-contract";
 import {
   type Dependencies,
@@ -181,6 +183,148 @@ const jobResponseSchema = z
   })
   .passthrough();
 
+/** Replays saved completed responses only; never polls, fetches hosted content or submits work. */
+export const restoreCompletedQueryResponse = (
+  input: AiJob,
+  savedRawResponse: RawCapture,
+  existingHostedRaw?: RawCapture,
+  now = Date.now(),
+): Result<AiCapture, IntegrationError> => {
+  const job = aiJobSchema.safeParse(input);
+  const raw = rawCaptureSchema.safeParse(savedRawResponse);
+  if (
+    !job.success ||
+    !raw.success ||
+    raw.data.status !== 200 ||
+    raw.data.url !== shoppingPollUrl(job.data) ||
+    Buffer.byteLength(raw.data.body, "utf8") > SHOPPING_CAPTURE_LIMIT ||
+    digest(raw.data.body) !== raw.data.sha256
+  )
+    return failure(
+      "The saved completed response does not match its original job, URL or hash.",
+    );
+  const decoded = resultify(() => JSON.parse(raw.data.body) as unknown);
+  const parsed = decoded.success
+    ? jobResponseSchema.safeParse(decoded.data)
+    : null;
+  if (
+    !parsed?.success ||
+    parsed.data.status !== "done" ||
+    parsed.data.job_id !== job.data.id ||
+    parsed.data.scraper !== job.data.query.surface ||
+    (parsed.data.prompt !== undefined &&
+      parsed.data.prompt !== job.data.query.prompt) ||
+    (parsed.data.country !== undefined &&
+      parsed.data.country !== job.data.query.country)
+  )
+    return failure(
+      "The saved response is not a completed result for this shopper query.",
+      { response: raw.data },
+    );
+  const payload = payloadSchema.safeParse(parsed.data.result);
+  if (
+    !payload.success ||
+    payload.data.scraper !== job.data.query.surface ||
+    (payload.data.prompt !== undefined &&
+      payload.data.prompt !== job.data.query.prompt) ||
+    (payload.data.country !== undefined &&
+      payload.data.country !== job.data.query.country)
+  )
+    return failure("The AI answer has an unexpected or mismatched format.", {
+      response: raw.data,
+    });
+  if (payload.data.cached)
+    return failure(
+      "The provider returned a cached answer. Fresh live research is required.",
+      { response: raw.data },
+    );
+  const executed = Date.parse(parsed.data.completed_at ?? "");
+  if (
+    !Number.isFinite(executed) ||
+    executed < Date.parse(job.data.submittedAt) - 60_000 ||
+    executed > now
+  )
+    return failure(
+      "The actual completion time of the AI capture is missing or inconsistent.",
+      { response: raw.data },
+    );
+  const inline = payload.data.result_markdown?.trim()
+    ? payload.data.result_markdown
+    : null;
+  const savedHosted =
+    existingHostedRaw === undefined
+      ? null
+      : rawCaptureSchema.safeParse(existingHostedRaw);
+  const hosted = savedHosted?.success ? savedHosted.data : undefined;
+  if (
+    existingHostedRaw &&
+    (inline ||
+      !hosted ||
+      !payload.data.markdown_url ||
+      hosted.url !== payload.data.markdown_url ||
+      hosted.status !== 200 ||
+      Buffer.byteLength(hosted.body, "utf8") > SHOPPING_CAPTURE_LIMIT ||
+      digest(hosted.body) !== hosted.sha256 ||
+      new URL(hosted.url).origin !== "https://scrapellm.com" ||
+      !/^\/md\/[a-zA-Z0-9_-]+\.md$/.test(new URL(hosted.url).pathname))
+  )
+    return failure(
+      "The saved hosted answer does not match its declared artifact and hash.",
+      { response: raw.data },
+    );
+  if (!inline && payload.data.markdown_url && !hosted)
+    return failure("The provider's full hosted answer was not captured.", {
+      response: raw.data,
+    });
+  const answer = inline ?? hosted?.body ?? payload.data.result;
+  if (!answer?.trim() || answer.length > SHOPPING_CAPTURE_LIMIT)
+    return failure("The provider returned no bounded, readable AI answer.", {
+      response: raw.data,
+    });
+  const sourceUrl = publicUrlSchema.safeParse(payload.data.raw_url);
+  const observedUrl =
+    sourceUrl.success &&
+    (() => {
+      const address = new URL(sourceUrl.data);
+      return job.data.query.surface === "google_ai_mode"
+        ? /^(?:www\.)?google\.[a-z.]+$/.test(address.hostname)
+        : ["chatgpt.com", "chat.openai.com"].includes(address.hostname);
+    })()
+      ? sourceUrl.data
+      : raw.data.url;
+  const sourceRaw = hosted ?? raw.data;
+  const captured = aiCaptureSchema.safeParse({
+    job: job.data,
+    executedAt: new Date(executed).toISOString(),
+    receivedAt: raw.data.receivedAt,
+    answer,
+    source: {
+      id: `search-${job.data.id}`,
+      kind: "search",
+      capture: "provider",
+      url: observedUrl,
+      checkedAt: new Date(executed).toISOString(),
+      content: shoppingSourceText(answer),
+      artifact: `sha256:${sourceRaw.sha256}`,
+    },
+    links: projectAnswerLinks(payload.data, answer),
+    cached: false,
+    raw: [raw.data, ...(hosted ? [hosted] : [])],
+  });
+  if (!captured.success)
+    return failure("The AI capture did not pass the evidence contract.", {
+      response: raw.data,
+    });
+  const completeness = deriveCaptureCompleteness(captured.data, now);
+  const capture = { ...captured.data, completeness };
+  return completeness.status === "complete"
+    ? { success: true, data: capture }
+    : failure(
+        completeness.reason ?? "The answer was not captured completely.",
+        { response: raw.data, capture },
+      );
+};
+
 export const pollQuery = async (
   {
     apiKey,
@@ -276,7 +420,7 @@ export const pollQuery = async (
   const inline = payload.data.result_markdown?.trim()
     ? payload.data.result_markdown
     : null;
-  const markdown = await (async () => {
+  await (async () => {
     if (inline) return inline;
     if (!payload.data.markdown_url) return null;
     const url = resultify(() => new URL(payload.data.markdown_url as string));
@@ -290,7 +434,7 @@ export const pollQuery = async (
     if (timeout <= 0) return null;
     const page = await (dependencies.page ?? HTTP.page)(url.data.href, {
       timeout,
-      limit: 200_000,
+      limit: SHOPPING_CAPTURE_LIMIT,
       strictGuard: true,
       accept: "text/markdown,text/plain",
     });
@@ -309,53 +453,15 @@ export const pollQuery = async (
     });
     return page.data.body;
   })();
-  const answer = markdown || payload.data.result;
-  if (!answer?.trim() || answer.length > 200_000)
-    return failure("The provider returned no bounded, readable AI answer.", {
-      response: response.data.raw,
-    });
-  const sourceUrl = publicUrlSchema.safeParse(payload.data.raw_url);
-  const observedUrl =
-    sourceUrl.success &&
-    (() => {
-      const address = new URL(sourceUrl.data);
-      return job.data.query.surface === "google_ai_mode"
-        ? /^(?:www\.)?google\.[a-z.]+$/.test(address.hostname)
-        : ["chatgpt.com", "chat.openai.com"].includes(address.hostname);
-    })()
-      ? sourceUrl.data
-      : response.data.raw.url;
-  const sourceRaw = hosted[0] ?? response.data.raw;
-  const captured = aiCaptureSchema.safeParse({
-    job: job.data,
-    executedAt: new Date(executed).toISOString(),
-    receivedAt: response.data.raw.receivedAt,
-    answer,
-    source: {
-      id: `search-${job.data.id}`,
-      kind: "search",
-      capture: "provider",
-      url: observedUrl,
-      checkedAt: new Date(executed).toISOString(),
-      content: shoppingSourceText(answer),
-      artifact: `sha256:${sourceRaw.sha256}`,
-    },
-    links: projectAnswerLinks(payload.data, answer),
-    cached: false,
-    raw: [response.data.raw, ...hosted],
-  });
-  if (!captured.success)
-    return failure("The AI capture did not pass the evidence contract.", {
-      response: response.data.raw,
-    });
-  const completeness = deriveCaptureCompleteness(captured.data, now());
-  const capture = { ...captured.data, completeness };
-  return completeness.status === "complete"
-    ? { success: true, data: { status: "captured", capture } }
-    : failure(
-        completeness.reason ?? "The answer was not captured completely.",
-        { response: response.data.raw, capture },
-      );
+  const restored = restoreCompletedQueryResponse(
+    job.data,
+    response.data.raw,
+    hosted[0],
+    now(),
+  );
+  return restored.success
+    ? { success: true, data: { status: "captured", capture: restored.data } }
+    : restored;
 };
 
 export const validateScrapellmCredentials = async ({

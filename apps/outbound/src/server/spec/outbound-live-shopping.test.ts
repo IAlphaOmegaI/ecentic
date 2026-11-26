@@ -2,7 +2,10 @@ import { describe, expect, mock, test } from "bun:test";
 import { createHash } from "node:crypto";
 import { z } from "zod";
 import type * as HTTP from "@/server/utils/http";
-import type { AiCapture } from "@/server/utils/outbound/live-shopping-contract";
+import type {
+  AiCapture,
+  RawCapture,
+} from "@/server/utils/outbound/live-shopping-contract";
 
 mock.module("server-only", () => ({}));
 const Shopping = await import("@/server/utils/outbound/live-shopping");
@@ -67,6 +70,16 @@ const completed = () => ({
     ],
   },
 });
+const savedResponse = (body: unknown = completed()): RawCapture => {
+  const text = JSON.stringify(body);
+  return {
+    url: `https://api.scrapellm.com/jobs/${identifier}`,
+    status: 200,
+    receivedAt: new Date(time).toISOString(),
+    body: text,
+    sha256: digest(text),
+  };
+};
 const capture = async (): Promise<AiCapture> => {
   const checked = value(
     await Shopping.pollQuery(
@@ -618,6 +631,213 @@ describe("live shopper query adapters", () => {
     expect(checked.capture.raw[0]?.body).toContain("data:image/png;base64");
     expect(checked.capture.source.content).toContain("Carry Tote $35.");
     expect(checked.capture.source.content).not.toContain("data:image");
+  });
+
+  test("restores a full image-heavy answer offline without replacing text, dates or raw evidence", () => {
+    // Synthetic image-heavy provider shape; no real response or image is embedded.
+    const markdown = `Other choices. <img src="data:image/png;base64,${"a".repeat(470_000)}" />\nLast recommendation with [saved link](https://tail.example/product).`;
+    const raw = savedResponse({
+      ...completed(),
+      result: {
+        ...completed().result,
+        result_markdown: markdown,
+        result: "A shorter alternative without its link.",
+      },
+    });
+    const restored = value(
+      Shopping.restoreCompletedQueryResponse(
+        job(),
+        raw,
+        undefined,
+        time + 86_400_000,
+      ),
+    );
+    expect(restored.answer).toBe(markdown);
+    expect(restored.raw).toEqual([raw]);
+    expect(restored.receivedAt).toBe(raw.receivedAt);
+    expect(restored.executedAt).toBe(new Date(time).toISOString());
+    expect(restored.source.checkedAt).toBe(restored.executedAt);
+    expect(restored.source.artifact).toBe(`sha256:${raw.sha256}`);
+    expect(restored.source.content).toContain("Last recommendation");
+    expect(restored.source.content).not.toContain("data:image");
+    expect(restored.completeness?.status).toBe("complete");
+    const replay = Shopping.replayShoppingCapture(restored, time + 86_400_000);
+    expect(replay.answerText).toBe(markdown);
+    expect(replay.citationText).toContain("https://tail.example/product");
+    expect(replay.answerVariants).toContain(
+      "A shorter alternative without its link.",
+    );
+  });
+
+  test("a restored answer scans merchant text beyond200k and citations beyond the display limit", () => {
+    const merchant = { name: "Merchant Goods", domain: "merchant.example" };
+    for (const viaCitation of [false, true]) {
+      const markdown = `${"Other choices. ".repeat(20_000)}${viaCitation ? "Final result." : "Merchant Goods was also listed."}`;
+      const citations = Array.from({ length: 61 }, (_, index) => ({
+        url: `https://source${index}.example/product`,
+        title: `Source ${index}`,
+      }));
+      if (viaCitation)
+        citations.push({
+          url: "https://merchant.example/product",
+          title: "Merchant Goods",
+        });
+      const raw = savedResponse({
+        ...completed(),
+        result: { ...completed().result, result_markdown: markdown, citations },
+      });
+      const restored = value(
+        Shopping.restoreCompletedQueryResponse(job(), raw, undefined, time),
+      );
+      expect(restored.answer.length).toBeGreaterThan(200_000);
+      expect(restored.source.content).not.toContain("Merchant Goods");
+      expect(restored.links).toHaveLength(50);
+      const presence = Shopping.computeDiscoveryBase(
+        { answer: restored, merchant },
+        time,
+      );
+      expect(presence.completeness.status).toBe("complete");
+      expect(presence.merchantPresent).toBe(true);
+      if (viaCitation)
+        expect(
+          Shopping.replayShoppingCapture(restored, time).citationText,
+        ).toContain("https://merchant.example/product");
+    }
+  });
+
+  test("polling and offline restore share the same bounded full-answer decoder", async () => {
+    const markdown = `Other choices. <img src="data:image/png;base64,${"b".repeat(310_000)}" /> Final result.`;
+    const body = {
+      ...completed(),
+      result: { ...completed().result, result_markdown: markdown },
+    };
+    const polled = value(
+      await Shopping.pollQuery(
+        { apiKey, job: job() },
+        { now, request: async () => provider(body) },
+      ),
+    );
+    if (polled.status !== "captured") throw new Error("Expected full capture");
+    const raw = polled.capture.raw[0];
+    if (!raw) throw new Error("Missing original response");
+    expect(
+      Shopping.restoreCompletedQueryResponse(job(), raw, undefined, time),
+    ).toEqual({ success: true, data: polled.capture });
+  });
+
+  test("offline restoration rejects tampered bindings, cache, dates, incomplete and oversized responses", () => {
+    const valid = savedResponse();
+    const variants = [
+      { ...valid, body: `${valid.body} ` },
+      { ...valid, url: `${valid.url}/different` },
+      { ...valid, status: 202 },
+      { ...valid, receivedAt: new Date(time + 1000).toISOString() },
+      savedResponse({ ...completed(), job_id: session }),
+      savedResponse({ ...completed(), prompt: "Different query" }),
+      savedResponse({ ...completed(), country: "GB" }),
+      savedResponse({ ...completed(), scraper: "chatgpt" }),
+      savedResponse({ ...completed(), status: "pending" }),
+      savedResponse({
+        ...completed(),
+        created_at: new Date(time - 120000).toISOString(),
+      }),
+      savedResponse({
+        ...completed(),
+        completed_at: new Date(time + 1000).toISOString(),
+      }),
+      savedResponse({
+        ...completed(),
+        result: { ...completed().result, cached: true },
+      }),
+      savedResponse({
+        ...completed(),
+        result: { ...completed().result, prompt: "Changed nested query" },
+      }),
+      savedResponse({
+        ...completed(),
+        result: { ...completed().result, country: "GB" },
+      }),
+      savedResponse({
+        ...completed(),
+        result: {
+          ...completed().result,
+          result_markdown: `${"Other choices. ".repeat(20_000)}[truncated]`,
+        },
+      }),
+      savedResponse({
+        ...completed(),
+        result: {
+          ...completed().result,
+          result_markdown: "a".repeat(2_000_001),
+        },
+      }),
+    ];
+    for (const raw of variants)
+      expect(
+        Shopping.restoreCompletedQueryResponse(job(), raw, undefined, time)
+          .success,
+      ).toBe(false);
+  });
+
+  test("hosted answers use the same2M ceiling and require an exact saved hosted response for offline restore", async () => {
+    const url = "https://scrapellm.com/md/synthetic-completed-result.md";
+    const text = `Other choices. <img src="data:image/png;base64,${"c".repeat(310_000)}" /> Final result.`;
+    const body = {
+      ...completed(),
+      result: {
+        ...completed().result,
+        result_markdown: null,
+        result: "A short alternative",
+        markdown_url: url,
+      },
+    };
+    const raw = savedResponse(body);
+    const hosted: RawCapture = {
+      url,
+      status: 200,
+      receivedAt: new Date(time).toISOString(),
+      body: text,
+      sha256: digest(text),
+    };
+    expect(
+      Shopping.restoreCompletedQueryResponse(job(), raw, undefined, time)
+        .success,
+    ).toBe(false);
+    const restored = value(
+      Shopping.restoreCompletedQueryResponse(job(), raw, hosted, time),
+    );
+    expect(restored.answer).toBe(text);
+    expect(restored.raw).toEqual([raw, hosted]);
+    expect(restored.source.artifact).toBe(`sha256:${hosted.sha256}`);
+    for (const changed of [
+      { ...hosted, body: `${text} ` },
+      { ...hosted, url: "https://scrapellm.com/md/other.md" },
+      { ...hosted, status: 404 },
+    ])
+      expect(
+        Shopping.restoreCompletedQueryResponse(job(), raw, changed, time)
+          .success,
+      ).toBe(false);
+    const polled = value(
+      await Shopping.pollQuery(
+        { apiKey, job: job() },
+        {
+          now,
+          request: async () => provider(body),
+          page: async (target, options) => {
+            expect(target).toBe(url);
+            expect(options?.limit).toBe(2_000_000);
+            return {
+              success: true,
+              data: { url, status: 200, body: text, headers: new Headers() },
+            };
+          },
+        },
+      ),
+    );
+    if (polled.status !== "captured")
+      throw new Error("Expected full hosted capture");
+    expect(polled.capture).toEqual(restored);
   });
 });
 

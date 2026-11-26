@@ -250,7 +250,6 @@ const replay = (
     job.job_id !== capture.job.id ||
     job.scraper !== capture.job.query.surface ||
     payload.scraper !== capture.job.query.surface ||
-    (payload.job_id !== undefined && payload.job_id !== capture.job.id) ||
     [job.prompt, payload.prompt].filter((value) => value !== undefined)
       .length === 0 ||
     [job.prompt, payload.prompt].some(
@@ -266,6 +265,8 @@ const replay = (
     return failed(
       "The original response does not match this uncached shopper query.",
     );
+  // The outer ID identifies the polled queue job. The nested ID identifies its
+  // scrape artifact (and hosted markdown), so those IDs need not be equal.
   const completedAt = Date.parse(job.completed_at);
   const submittedAt = Date.parse(capture.job.submittedAt);
   const receivedAt = Date.parse(provider.receivedAt);

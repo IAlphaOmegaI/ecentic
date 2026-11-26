@@ -51,12 +51,14 @@ export const aiJobSchema = z
   .strict();
 export type AiJob = z.infer<typeof aiJobSchema>;
 
+// Matches the existing provider-response read ceiling, including embedded images.
+export const SHOPPING_CAPTURE_LIMIT = 2_000_000;
 export const rawCaptureSchema = z
   .object({
     url: publicUrlSchema,
     status: z.number().int().min(100).max(599),
     receivedAt: z.string().datetime(),
-    body: z.string().max(2_000_000),
+    body: z.string().max(SHOPPING_CAPTURE_LIMIT),
     sha256: z.string().regex(/^[a-f0-9]{64}$/),
   })
   .strict();
@@ -70,7 +72,7 @@ export const aiCaptureSchema = z
     job: aiJobSchema,
     executedAt: z.string().datetime(),
     receivedAt: z.string().datetime(),
-    answer: z.string().min(1).max(200_000),
+    answer: z.string().min(1).max(SHOPPING_CAPTURE_LIMIT),
     // Historical captures without this proof remain unknown, not complete.
     completeness: shoppingCaptureCompletenessSchema.optional(),
     source: sourceSchema,

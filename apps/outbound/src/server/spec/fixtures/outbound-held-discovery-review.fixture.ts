@@ -1,6 +1,6 @@
 import { mock, setSystemTime, spyOn } from "bun:test";
 import assert from "node:assert/strict";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { and, eq, ne, sql } from "drizzle-orm";
 import { z } from "zod";
 import { prospectSchema } from "@/lib/outbound";
@@ -1288,6 +1288,281 @@ assert.deepEqual(
       .where(eq(schema.outboundIntegrationJob.id, batch.batchId))
   )[0],
   beforeQualityBudget,
+);
+
+// Existing paid poll bytes can be restored after a known adapter correction.
+// This explicit action cannot submit, poll, reopen unrelated failures or spend.
+const recoveryTarget = ids[17];
+assert.ok(recoveryTarget);
+await parkExcept(recoveryTarget);
+const recoveryCandidate = await seedUnspentCategoryCandidate(recoveryTarget);
+assert.ok(recoveryCandidate.query.basis);
+const recoveryQuery = Capture.preparedQuerySchema.parse({
+  ...recoveryCandidate.query,
+  prompt: "stretch mesh top",
+  basis: {
+    ...recoveryCandidate.query.basis,
+    category: "top",
+    attribute: "stretch mesh",
+  },
+});
+const recoveryShoppingJob = Capture.aiJobSchema.parse({
+  id: randomUUID(),
+  query: recoveryQuery,
+  submittedAt: new Date().toISOString(),
+});
+const artifactId = randomUUID();
+const recoveryBody = JSON.stringify({
+  job_id: recoveryShoppingJob.id,
+  status: "done",
+  scraper: recoveryQuery.surface,
+  prompt: recoveryQuery.prompt,
+  country: recoveryQuery.country,
+  created_at: recoveryShoppingJob.submittedAt,
+  completed_at: recoveryShoppingJob.submittedAt,
+  result: {
+    job_id: artifactId,
+    scraper: recoveryQuery.surface,
+    status: "done",
+    prompt: recoveryQuery.prompt,
+    country: recoveryQuery.country,
+    cached: false,
+    result_markdown: "1. Canvas Works — Synthetic stretch mesh top.",
+    markdown_url: `https://scrapellm.com/md/${artifactId}.md`,
+    citations: [],
+  },
+});
+const recoveryRaw = Capture.rawCaptureSchema.parse({
+  url: `https://api.scrapellm.com/jobs/${recoveryShoppingJob.id}`,
+  status: 200,
+  body: recoveryBody,
+  sha256: createHash("sha256").update(recoveryBody).digest("hex"),
+  receivedAt: new Date().toISOString(),
+});
+const recoveryAnswer = value(
+  Capture.restoreCompletedQueryResponse(
+    recoveryShoppingJob,
+    recoveryRaw,
+    undefined,
+    Date.now(),
+  ),
+);
+const knownPollError = Contract.HELD_POLL_PARSE_ERRORS[0];
+const failedPollState = Contract.heldReviewStateSchema.parse({
+  ...recoveryCandidate.state,
+  stage: "poll",
+  shoppingQueryCount: 1,
+  queryReservedAt: recoveryShoppingJob.submittedAt,
+  query: recoveryQuery,
+  shoppingJob: recoveryShoppingJob,
+  heldReason: knownPollError,
+  failureReceipt: {
+    response: recoveryRaw,
+    capture: {
+      ...recoveryAnswer,
+      completeness: { status: "uncertain", reason: knownPollError },
+    },
+  },
+});
+const saveFailedPoll = (
+  state = failedPollState,
+  error: string = knownPollError,
+) =>
+  db
+    .update(schema.outboundIntegrationJob)
+    .set({ status: "failed", error, output: state })
+    .where(eq(schema.outboundIntegrationJob.id, recoveryCandidate.job.id));
+await saveFailedPoll();
+const beforeRecoveryJob = await jobFor(recoveryTarget);
+const [beforeRecoveryBudget] = await db
+  .select()
+  .from(schema.outboundIntegrationJob)
+  .where(eq(schema.outboundIntegrationJob.id, batch.batchId));
+const beforeRecoveryCalls = { ...calls };
+const recoveryInput = {
+  manifest,
+  jobId: recoveryCandidate.job.id,
+  expectedShoppingJobId: recoveryShoppingJob.id,
+  expectedResponseSha256: recoveryRaw.sha256,
+};
+assert.equal(
+  value(await Review.reconcileFailedPoll(actor, recoveryInput)).reconciled,
+  false,
+);
+assert.deepEqual(await jobFor(recoveryTarget), beforeRecoveryJob);
+for (const change of [
+  { expectedShoppingJobId: randomUUID() },
+  { expectedResponseSha256: "0".repeat(64) },
+])
+  assert.equal(
+    (
+      await Review.reconcileFailedPoll(actor, {
+        ...recoveryInput,
+        ...change,
+        execute: true,
+      })
+    ).success,
+    false,
+  );
+for (const status of [
+  "pending",
+  "complete",
+  "uncertain",
+  "starting",
+] as const) {
+  await db
+    .update(schema.outboundIntegrationJob)
+    .set({ status })
+    .where(eq(schema.outboundIntegrationJob.id, recoveryCandidate.job.id));
+  assert.equal(
+    (
+      await Review.reconcileFailedPoll(actor, {
+        ...recoveryInput,
+        execute: true,
+      })
+    ).success,
+    false,
+  );
+}
+for (const state of [
+  { ...failedPollState, stage: "generateQuery" as const },
+  { ...failedPollState, shoppingQueryCount: 0 },
+  {
+    ...failedPollState,
+    lease: {
+      token: randomUUID(),
+      expiresAt: new Date(Date.now() + 60_000).toISOString(),
+    },
+  },
+  {
+    ...failedPollState,
+    failureReceipt: {
+      response: { ...recoveryRaw, body: `${recoveryRaw.body} ` },
+    },
+  },
+  {
+    ...failedPollState,
+    query: { ...recoveryQuery, prompt: "another shopper query" },
+  },
+]) {
+  await saveFailedPoll(Contract.heldReviewStateSchema.parse(state));
+  assert.equal(
+    (
+      await Review.reconcileFailedPoll(actor, {
+        ...recoveryInput,
+        execute: true,
+      })
+    ).success,
+    false,
+  );
+}
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({
+    status: "failed",
+    error: "Synthetic unrelated provider failure.",
+    output: {
+      ...failedPollState,
+      heldReason: "Synthetic unrelated provider failure.",
+    },
+  })
+  .where(eq(schema.outboundIntegrationJob.id, recoveryCandidate.job.id));
+assert.equal(
+  (await Review.reconcileFailedPoll(actor, { ...recoveryInput, execute: true }))
+    .success,
+  false,
+);
+// Oversized answers were rejected before a capture existed; their saved raw
+// response alone is sufficient only after the same complete proof succeeds.
+await saveFailedPoll(
+  Contract.heldReviewStateSchema.parse({
+    ...failedPollState,
+    heldReason: Contract.HELD_POLL_PARSE_ERRORS[1],
+    failureReceipt: { response: recoveryRaw },
+  }),
+  Contract.HELD_POLL_PARSE_ERRORS[1],
+);
+const rawOnlyFailedJob = await jobFor(recoveryTarget);
+assert.equal(
+  value(await Review.reconcileFailedPoll(actor, recoveryInput)).reconciled,
+  false,
+);
+assert.deepEqual(await jobFor(recoveryTarget), rawOnlyFailedJob);
+await saveFailedPoll();
+assert.equal(
+  value(
+    await Review.reconcileFailedPoll(actor, {
+      ...recoveryInput,
+      execute: true,
+    }),
+  ).reconciled,
+  true,
+);
+const recoveredJob = await jobFor(recoveryTarget);
+const recoveredState = Contract.heldReviewStateSchema.parse(
+  recoveredJob.output,
+);
+assert.equal(recoveredJob.status, "pending");
+assert.equal(recoveredJob.error, null);
+assert.equal(recoveredState.stage, "browser");
+assert.deepEqual(recoveredState.answer, recoveryAnswer);
+assert.equal(recoveredState.pollRecoveries?.length, 1);
+assert.deepEqual(recoveredState.pollRecoveries?.[0], {
+  shoppingJobId: recoveryShoppingJob.id,
+  responseSha256: recoveryRaw.sha256,
+  queryHash: Contract.heldPreparedQueryHash(recoveryQuery),
+  originalError: knownPollError,
+  originalHeldReason: knownPollError,
+  originalFailureReceipt: failedPollState.failureReceipt,
+  requestedBy: actor,
+  recoveredAt: new Date().toISOString(),
+});
+const {
+  stage: _recoveredStage,
+  answer: _recoveredAnswer,
+  pollRecoveries: _recoveryAudit,
+  ...retainedRecoveryState
+} = recoveredState;
+const {
+  stage: _failedPollStage,
+  heldReason: _failedPollReason,
+  failureReceipt: _failedPollReceipt,
+  ...originalRecoveryState
+} = failedPollState;
+assert.deepEqual(retainedRecoveryState, originalRecoveryState);
+assert.equal(
+  (await Review.reconcileFailedPoll(actor, { ...recoveryInput, execute: true }))
+    .success,
+  false,
+);
+await saveFailedPoll(
+  Contract.heldReviewStateSchema.parse({
+    ...failedPollState,
+    pollRecoveries: recoveredState.pollRecoveries,
+  }),
+);
+assert.equal(
+  (await Review.reconcileFailedPoll(actor, { ...recoveryInput, execute: true }))
+    .success,
+  false,
+);
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({
+    status: recoveredJob.status,
+    error: recoveredJob.error,
+    output: recoveredState,
+  })
+  .where(eq(schema.outboundIntegrationJob.id, recoveredJob.id));
+assert.deepEqual(calls, beforeRecoveryCalls);
+assert.deepEqual(
+  (
+    await db
+      .select()
+      .from(schema.outboundIntegrationJob)
+      .where(eq(schema.outboundIntegrationJob.id, batch.batchId))
+  )[0],
+  beforeRecoveryBudget,
 );
 
 // Independent operations share one durable slot, including concurrent claims.
