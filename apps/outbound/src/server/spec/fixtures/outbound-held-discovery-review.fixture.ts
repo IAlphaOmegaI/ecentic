@@ -33,6 +33,7 @@ await db.execute(
   sql`truncate outbound_integration_job, outbound_send_attempt, outbound_event, outbound_revision, outbound_prospect, outbound_person, outbound_company, outbound_suppression, outbound_inbox, outbound_playbook, outbound_campaign_company, outbound_campaign cascade`,
 );
 const Review = await import("@/server/app/outbound/held-discovery-review");
+const Store = await import("@/server/app/outbound/store");
 const { claimShoppingProviderSlot } = await import(
   "@/server/app/outbound/shopping-provider-pacing"
 );
@@ -340,6 +341,52 @@ const finish = async (prospectId: string, limit = 25) => {
   }
   throw new Error("Synthetic held review did not settle.");
 };
+// A ready continuation precedes an older unstarted browser job. A browser-only
+// cooldown check does not repeatedly load full prospect eligibility contexts.
+const initialRendered = await tick();
+assert.ok(initialRendered.advanced);
+assert.equal(initialRendered.stage, "renderedProduct");
+const browserWaitingTarget = ids[20];
+assert.ok(browserWaitingTarget);
+await parkExcept(browserWaitingTarget);
+const eligibilityReads = spyOn(Store, "getEnrichmentContext");
+try {
+  const blocked = value(
+    await Review.runNext({ batchId: batch.batchId }, dependencies),
+  );
+  assert.equal(blocked.advanced, false);
+  assert.equal(
+    eligibilityReads.mock.calls.length,
+    0,
+    "A browser job in cooldown must be skipped before full eligibility reads.",
+  );
+} finally {
+  eligibilityReads.mockRestore();
+}
+const browserDueAt = value(
+  await Review.status(batch.batchId),
+).browserAvailableAt;
+assert.ok(browserDueAt);
+setSystemTime(new Date(browserDueAt));
+await parkExcept(first);
+await db.execute(
+  sql`update outbound_integration_job set output=jsonb_set(output,'{availableAt}',to_jsonb(${new Date().toISOString()}::text)) where input->>'operation'='heldDiscoveryReview' and prospect_id=${browserWaitingTarget}`,
+);
+const beforeContinuation = { ...calls };
+const continuation = value(
+  await Review.runNext({ batchId: batch.batchId }, dependencies),
+);
+assert.ok(continuation.advanced);
+assert.equal(continuation.stage, "generateQuery");
+assert.equal(continuation.jobId, (await jobFor(first)).id);
+assert.equal(calls.product, beforeContinuation.product);
+assert.equal(
+  Contract.heldReviewStateSchema.parse(
+    (await jobFor(browserWaitingTarget)).output,
+  ).stage,
+  "renderedProduct",
+);
+await parkExcept(first);
 const complete = await finish(first);
 
 assert.equal(

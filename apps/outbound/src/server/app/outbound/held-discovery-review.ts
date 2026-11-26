@@ -456,6 +456,17 @@ const checkpoint = (
       })
       .where(eq(schema.outboundIntegrationJob.id, claim.job.id));
   });
+const browserAvailableAt = async (scope: TransactionScope) => {
+  const [cooldowns] = await scope
+    .select({
+      availableAt: sql<
+        string | null
+      >`max(${schema.outboundIntegrationJob.output}->>'browserAvailableAt')`,
+    })
+    .from(schema.outboundIntegrationJob)
+    .where(eq(schema.outboundIntegrationJob.provider, "automation"));
+  return cooldowns?.availableAt ? Date.parse(cooldowns.availableAt) : 0;
+};
 const claimNext = (batchId: string, deadline: number) =>
   transaction(async (scope): Promise<Claim | null> => {
     const batch = await batchAt(scope, batchId);
@@ -474,8 +485,12 @@ const claimNext = (batchId: string, deadline: number) =>
           ]),
         ),
       )
-      .orderBy(asc(schema.outboundIntegrationJob.updatedAt))
+      .orderBy(
+        sql`case when ${schema.outboundIntegrationJob.output}->>'stage' in ('renderedProduct', 'browser') then 1 else 0 end`,
+        asc(schema.outboundIntegrationJob.updatedAt),
+      )
       .limit(21);
+    let cachedBrowserAvailableAt: number | undefined;
     for (const { id } of jobs) {
       const job = await jobAt(scope, id);
       const input = heldReviewInputSchema.parse(job.input);
@@ -503,6 +518,14 @@ const claimNext = (batchId: string, deadline: number) =>
         Date.now() + heldReviewStageBudget(state.stage) > deadline
       )
         continue;
+      if (["renderedProduct", "browser"].includes(state.stage)) {
+        cachedBrowserAvailableAt ??= await browserAvailableAt(scope);
+        if (
+          !Number.isFinite(cachedBrowserAvailableAt) ||
+          cachedBrowserAvailableAt > Date.now()
+        )
+          continue;
+      }
       const ready = await resultify(() => eligible(scope, input, state));
       if (!ready.success) {
         await scope
@@ -598,17 +621,8 @@ const claimNext = (batchId: string, deadline: number) =>
       )
         continue;
       if (["renderedProduct", "browser"].includes(state.stage)) {
-        const [cooldowns] = await scope
-          .select({
-            availableAt: sql<
-              string | null
-            >`max(${schema.outboundIntegrationJob.output}->>'browserAvailableAt')`,
-          })
-          .from(schema.outboundIntegrationJob)
-          .where(eq(schema.outboundIntegrationJob.provider, "automation"));
-        const availableAt = cooldowns?.availableAt
-          ? Date.parse(cooldowns.availableAt)
-          : 0;
+        // The cached precheck only avoids work; reservation still uses a fresh read.
+        const availableAt = await browserAvailableAt(scope);
         if (!Number.isFinite(availableAt) || availableAt > Date.now()) continue;
         await scope
           .update(schema.outboundIntegrationJob)

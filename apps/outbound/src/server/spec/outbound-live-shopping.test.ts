@@ -1,5 +1,6 @@
 import { describe, expect, mock, test } from "bun:test";
 import { createHash } from "node:crypto";
+import { z } from "zod";
 import type * as HTTP from "@/server/utils/http";
 import type { AiCapture } from "@/server/utils/outbound/live-shopping-contract";
 
@@ -813,6 +814,119 @@ describe("unbranded questions before search spend", () => {
     expect(
       Shopping.validateShopperQuery({ ...input, query: altered }, time),
     ).toContain("changed");
+  });
+
+  test("explains bare phrase syntax in the schema and repairs a question mark once", async () => {
+    const prompts: string[] = [];
+    const result = value(
+      await Shopping.generateShopperQuery(await context(), {
+        now,
+        generate: async ({ prompt, instructions, output }) => {
+          prompts.push(prompt);
+          expect(instructions).toContain("bare shopper search phrase");
+          expect(instructions).toContain("Do not use question marks");
+          expect(instructions).toContain("plain ASCII hyphens");
+          expect(z.toJSONSchema(output)).toMatchObject({
+            properties: {
+              question: {
+                description: expect.stringContaining(
+                  "bare shopper search phrase",
+                ),
+              },
+            },
+          });
+          return {
+            ...selection(prompt),
+            question:
+              prompts.length === 1 ? "large linen tote?" : "large linen tote",
+          };
+        },
+      }),
+    );
+    expect(result.status).toBe("prepared");
+    expect(result.generation.attempts).toBe(2);
+    expect(prompts).toHaveLength(2);
+    expect(JSON.parse(prompts[1] ?? "{}").validationFailure).toContain(
+      'prohibited character "?"',
+    );
+    expect(
+      JSON.parse(prompts[1] ?? "{}").previousInvalidSelection.question,
+    ).toBe("large linen tote?");
+  });
+
+  test.each([
+    ["large linen tote?", "?"],
+    ['"large linen tote"', '"'],
+    ["large linen tote.", "."],
+    ["large linen/tote", "/"],
+    ["large linen\\tote", "\\"],
+    ["large\nlinen tote", "\n"],
+    ["large\rlinen tote", "\r"],
+    ["large—linen tote", "—"],
+    ["large linen tote https://example", ":"],
+  ])(
+    "reports the prohibited character in %s without loosening the repair",
+    async (question, character) => {
+      const prompts: string[] = [];
+      const result = value(
+        await Shopping.generateShopperQuery(await context(), {
+          now,
+          generate: async ({ prompt }) => {
+            prompts.push(prompt);
+            return { ...selection(prompt), question };
+          },
+        }),
+      );
+      expect(result.status).toBe("held");
+      if (result.status !== "held") throw new Error("Expected a format hold");
+      expect(result.reason).toContain(
+        `prohibited character ${JSON.stringify(character)}`,
+      );
+      expect(result.reason).not.toContain("received");
+      expect(JSON.parse(prompts[1] ?? "{}").validationFailure).toBe(
+        result.reason,
+      );
+      expect(result.generation.attempts).toBe(2);
+      expect(prompts).toHaveLength(2);
+    },
+  );
+
+  test.each([
+    ["large tote", 2],
+    ["large linen tote bag for everyday shopping errands", 8],
+    ["large-linen reusable-tote bags for everyday-errands", 8],
+  ])("reports the actual word count for %s", async (question, count) => {
+    const prompts: string[] = [];
+    const result = value(
+      await Shopping.generateShopperQuery(await context(), {
+        now,
+        generate: async ({ prompt }) => {
+          prompts.push(prompt);
+          return { ...selection(prompt), question };
+        },
+      }),
+    );
+    expect(result.status).toBe("held");
+    if (result.status !== "held") throw new Error("Expected a word-count hold");
+    expect(result.reason).toContain(`received ${count}`);
+    expect(result.reason).not.toContain("prohibited character");
+    expect(JSON.parse(prompts[1] ?? "{}").validationFailure).toBe(
+      result.reason,
+    );
+    expect(prompts).toHaveLength(2);
+  });
+
+  test("keeps supported plain-hyphen and ampersand phrases valid", async () => {
+    for (const question of ["large-linen tote", "large & linen tote"]) {
+      const result = value(
+        await Shopping.generateShopperQuery(await context(), {
+          now,
+          generate: async ({ prompt }) => ({ ...selection(prompt), question }),
+        }),
+      );
+      expect(result.status).toBe("prepared");
+      expect(result.generation.attempts).toBe(1);
+    }
   });
 
   test("holds stale or future rendered evidence before generation or purchase", async () => {
