@@ -3,7 +3,11 @@ import { createHash, randomUUID } from "node:crypto";
 import { type Result, resultify } from "@zenncore/utils";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
-import { lintMessages, recipientMailHostAllowed } from "@/lib/outbound";
+import {
+  lintMessages,
+  recipientMailHostAllowed,
+  settingsForProspect,
+} from "@/lib/outbound";
 import {
   canReviewDraftAutomatically,
   draftReviewInputSchema,
@@ -261,9 +265,11 @@ const claim = () =>
     const regenerate =
       prospect.playbookRevision !== policy.revision ||
       prospect.messages.length !== 3 ||
-      lintMessages(prospect.messages, policy.settings, prospect.details).some(
-        (issue) => issue.code === "subjectLength",
-      );
+      lintMessages(
+        prospect.messages,
+        settingsForProspect(prospect, policy.settings),
+        prospect.details,
+      ).some((issue) => issue.code === "subjectLength");
     return value(
       await Jobs.create(
         Environment.SERVER,
@@ -395,7 +401,12 @@ export const run = (
             throw new ConflictError(
               "The draft context changed before generation.",
             );
-          const draft = value(await generate(row.details, policy.settings));
+          const draft = value(
+            await generate(
+              row.details,
+              settingsForProspect(row, policy.settings),
+            ),
+          );
           if (draft.issues.length)
             throw new ConflictError(
               `The refreshed draft needs attention: ${draft.issues.map((issue) => issue.code).join(", ")}`,

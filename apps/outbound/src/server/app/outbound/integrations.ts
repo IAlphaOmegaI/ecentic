@@ -7,6 +7,8 @@ import {
   normalizeDomain,
   prospectIssues,
   recipientMailHostAllowed,
+  type SenderProfile,
+  settingsForProspect,
   splitList,
 } from "@/lib/outbound";
 import { evidenceDateUsable } from "@/lib/outbound-evidence";
@@ -514,7 +516,10 @@ export const generateDraft = withAuthorization(
     resultify(async () => {
       const row = await prospect(input.prospectId);
       const generated = value(
-        await Draft.generateDraft(row.details, (await Store.policy()).settings),
+        await Draft.generateDraft(
+          row.details,
+          settingsForProspect(row, (await Store.policy()).settings),
+        ),
       );
       const [first, second, third] = generated.messages;
       if (!first || !second || !third)
@@ -631,7 +636,12 @@ export const configureInbox = withAuthorization(
   [UserRole.STAFF],
   async (
     context,
-    input: { inboxId: string; enabled: boolean; dailyCap: number },
+    input: {
+      inboxId: string;
+      enabled: boolean;
+      dailyCap: number;
+      profile?: Omit<SenderProfile, "email">;
+    },
   ) => Mailboxes.configure(context.session.user.id, input),
   "OutboundIntegrations.configureInbox",
 );

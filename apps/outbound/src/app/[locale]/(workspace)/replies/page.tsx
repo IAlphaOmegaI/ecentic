@@ -83,7 +83,11 @@ const QueueData = async ({
   }
   return (
     <>
-      <ConversationViews view={query.needsReply ? "needsReply" : "all"} />
+      <ConversationViews
+        view={
+          query.archived ? "archived" : query.needsReply ? "needsReply" : "all"
+        }
+      />
       <ConversationQueue queue={result.data} query={query} />
     </>
   );

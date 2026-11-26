@@ -319,7 +319,16 @@ export const PlaybookEditor = ({
       defaultValues={value}
       renderFields={false}
       onSubmit={(values) =>
-        mutation.run(() => Outbound.savePlaybook(playbookSchema.parse(values)))
+        mutation.run(() =>
+          Outbound.savePlaybook({
+            settings: playbookSchema.parse(values),
+            expectedRevision: revision,
+            expectedSenderPool: {
+              senderEmails: value.senderEmails,
+              inactiveSenderEmails: value.inactiveSenderEmails,
+            },
+          }),
+        )
       }
     >
       <div className="flex flex-wrap items-center gap-3 border-accent-foreground border-b bg-background/60 px-4 py-3 sm:px-6">

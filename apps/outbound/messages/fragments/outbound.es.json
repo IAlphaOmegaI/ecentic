@@ -873,7 +873,19 @@
           "inactive": "Este buzón está inactivo en la guía. Puede sincronizar respuestas. Muévelo a Buzones de envío antes de activar el envío."
         },
         "maximumDailyCap": "Máximo objetivo por buzón al día",
-        "dailyCapHelp": "Hasta {maximum} correos iniciales y de seguimiento por buzón al día. El Playbook controla los aumentos graduales; los rebotes reducen la capacidad."
+        "dailyCapHelp": "Hasta {maximum} correos iniciales y de seguimiento por buzón al día. El Playbook controla los aumentos graduales; los rebotes reducen la capacidad.",
+        "profile": {
+          "fromName": "Nombre del remitente",
+          "signature": "Firma",
+          "founderLine": "Presentación general",
+          "productCheckIntro": "Presentación para investigación de productos",
+          "voiceNotes": "Notas de estilo",
+          "help": "Describe solo el cargo y la experiencia de esta persona. Este perfil sustituye la presentación y el estilo del remitente principal para este buzón.",
+          "pause": "Pausar buzón",
+          "title": "Perfil del remitente",
+          "activationPending": "Activación solicitada. Este buzón se iniciará automáticamente cuando su historial esté sincronizado y pase las comprobaciones.",
+          "cancelActivation": "Cancelar activación"
+        }
       },
       "liveResearch": {
         "title": "Investigación de compras en vivo",
@@ -962,7 +974,9 @@
       "platformHeld": "Selecciona Shopify o WooCommerce para esta campaña de prospección en frío.",
       "shoppingResearchRequired": "Registra un hallazgo sobre la experiencia de compra respaldado por pruebas antes de redactar o aprobar este mensaje.",
       "automaticReviewFailed": "Las comprobaciones automáticas no pudieron aprobar este borrador. Revisa las pruebas y el mensaje y guarda las correcciones.",
-      "automaticReviewUncertain": "Es necesario aclarar el resultado de una solicitud anterior de borrador antes de reanudar la revisión automática."
+      "automaticReviewUncertain": "Es necesario aclarar el resultado de una solicitud anterior de borrador antes de reanudar la revisión automática.",
+      "senderIdentityMissing": "Guarda el nombre, la firma y las presentaciones de este buzón antes de redactar.",
+      "senderProfileChanged": "El perfil del remitente ha cambiado. Revisa este borrador sin enviar antes de aprobarlo."
     },
     "preparation": {
       "action": {
@@ -1819,7 +1833,8 @@
         "connection": "La cuenta de envío no está disponible o necesita sincronizar las respuestas. Revisa Integraciones.",
         "controls": "La sugerencia no ha superado los controles de respuesta guardados. Redacta y revisa la respuesta manualmente.",
         "generic": "No hemos podido completar esta acción. Actualiza la conversación e inténtalo de nuevo.",
-        "authentication": "Tu sesión caducó. Inicia sesión en la nueva pestaña y vuelve a intentarlo aquí. Tus cambios se conservan."
+        "authentication": "Tu sesión caducó. Inicia sesión en la nueva pestaña y vuelve a intentarlo aquí. Tus cambios se conservan.",
+        "archived": "Restaura esta conversación antes de editar o enviar una respuesta."
       },
       "newestFirst": "Mensajes más recientes primero",
       "direction": {
@@ -1843,7 +1858,8 @@
         "all": "Toda la actividad",
         "needsReply": "Pendiente de respuesta",
         "sent": "Enviado",
-        "scheduled": "Programado"
+        "scheduled": "Programado",
+        "archived": "Archivadas"
       },
       "replyAccount": "Responder desde",
       "activity": {
@@ -1868,6 +1884,14 @@
         "sending": "Enviando…",
         "signIn": "Volver a iniciar sesión",
         "followUpsPaused": "Guardar esta etapa pausa los contactos automáticos por email y LinkedIn con esta persona. Reabrir la conversación no los reanuda."
+      },
+      "archive": {
+        "action": "Archivar conversación",
+        "restore": "Restaurar conversación",
+        "help": "Archivar conserva el historial y detiene el contacto automático con esta persona.",
+        "archivedHelp": "Las conversaciones archivadas conservan su historial. Al restaurarlas vuelven a mostrarse; el contacto automático sigue pausado.",
+        "saved": "Conversación archivada.",
+        "restored": "Conversación restaurada. El contacto automático sigue pausado."
       }
     }
   }

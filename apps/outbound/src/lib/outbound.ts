@@ -106,6 +106,19 @@ const findingText = text
     "Use only reviewCount, category or productFeature in finding wording.",
   );
 
+export const senderProfileSchema = z.object({
+  email: z
+    .email()
+    .max(254)
+    .transform((value) => value.toLowerCase()),
+  fromName: text.min(1).max(100),
+  signature: text.min(1).max(100),
+  founderLine: text.min(1).max(500),
+  productCheckIntro: text.min(1).max(500),
+  voiceNotes: text.max(6000).default(""),
+});
+export type SenderProfile = z.infer<typeof senderProfileSchema>;
+
 export const playbookSchema = z
   .object({
     name: text.min(1).max(100),
@@ -141,6 +154,7 @@ export const playbookSchema = z
     fromName: text.min(1).max(100),
     fromEmail: z.email().max(254),
     senderEmails: text.max(4000).default(""),
+    senderProfiles: z.array(senderProfileSchema).max(50).default([]),
     inactiveSenderEmails: text.max(4000).default(""),
     sentEmailExamples: text.max(12000).default(""),
     postalAddress: text.min(10).max(500),
@@ -262,6 +276,15 @@ export const playbookSchema = z
         "Saved inactive inboxes must be valid addresses outside the active sender pool.",
     },
   )
+  .refine(
+    (settings) =>
+      new Set(settings.senderProfiles.map((profile) => profile.email)).size ===
+      settings.senderProfiles.length,
+    {
+      path: ["senderProfiles"],
+      message: "Save only one profile per sender inbox.",
+    },
+  )
   .refine((settings) => settings.maxGapMinutes >= settings.minGapMinutes, {
     path: ["maxGapMinutes"],
     message: "Maximum gap must be at least the minimum gap.",
@@ -302,6 +325,7 @@ export const defaultPlaybook: Playbook = {
   fromName: "Juri ecentic",
   fromEmail: "xhuri@joinecentic.com",
   senderEmails: "",
+  senderProfiles: [],
   inactiveSenderEmails: "",
   sentEmailExamples: "",
   postalAddress: "ecentic, 440 N Wolfe Rd, Sunnyvale, CA 94085, USA",
@@ -354,6 +378,7 @@ export const defaultPlaybook: Playbook = {
 
 export const prospectSchema = z.object({
   id: z.string().min(1).optional(),
+  assignedSenderEmail: z.email().max(254).optional(),
   company: text.min(1).max(200),
   domain: text.min(3).max(253),
   website: optionalUrl,
@@ -480,6 +505,8 @@ export type Inbox = {
   email: string;
   fromName: string;
   signer: string;
+  profile?: SenderProfile | null;
+  activationRequestedAt?: string | null;
   enabled: boolean;
   connected: boolean;
   lastSyncedAt: string | null;
@@ -538,7 +565,11 @@ export const templateIssues = (value: string): Issue[] => {
   }));
 };
 
-const renderDraft = (prospect: ProspectInput, settings: Playbook) => {
+const renderDraft = (prospect: ProspectInput, policy: Playbook) => {
+  const settings = settingsForSender(
+    policy,
+    prospect.assignedSenderEmail ?? policy.fromEmail,
+  );
   const copy =
     prospect.gap === "shopping-research"
       ? shoppingCopy(prospect)
@@ -617,10 +648,14 @@ export const personalLineForDraft = (
 
 export const lintMessages = (
   messages: Message[],
-  settings: Playbook,
+  policy: Playbook,
   prospect?: ProspectInput,
-): Issue[] =>
-  messages.flatMap((message) => {
+): Issue[] => {
+  const settings = settingsForSender(
+    policy,
+    prospect?.assignedSenderEmail ?? policy.fromEmail,
+  );
+  return messages.flatMap((message) => {
     const field = `message${message.step}`;
     const content = `${message.subject}\n${message.body}`;
     const copy =
@@ -658,9 +693,9 @@ export const lintMessages = (
         ? [{ code: "findingCopyChanged", field }]
         : []),
       ...(message.step === 1 &&
-      usesFindingFormula(settings) &&
+      settings.bodyTemplate.includes("{founderLine}") &&
       prospect &&
-      !preservesControlledParagraphs(message.body, original, [
+      !preservesControlledParagraphs(message.body, rendered, [
         ["product-published-data", "shopping-research"].includes(prospect.gap)
           ? settings.productCheckIntro
           : settings.founderLine,
@@ -721,6 +756,7 @@ export const lintMessages = (
         : []),
     ];
   });
+};
 
 const fresh = (value: string, days: number, now: Date) => {
   const timestamp = Date.parse(value);
@@ -935,7 +971,54 @@ export const registeredSender = (email: string, settings: Playbook) => {
   );
 };
 
-/** Stable assignment is part of the approval; changing the configured pool revokes approval. */
+/** The primary inbox retains its original Playbook identity until explicitly profiled. */
+export const senderIdentity = (
+  email: string,
+  settings: Playbook,
+): SenderProfile | null =>
+  settings.senderProfiles.find(
+    (profile) => profile.email === email.toLowerCase(),
+  ) ??
+  (email.toLowerCase() === settings.fromEmail.toLowerCase()
+    ? {
+        email: settings.fromEmail.toLowerCase(),
+        fromName: settings.fromName,
+        signature: settings.signature,
+        founderLine: settings.founderLine,
+        productCheckIntro: settings.productCheckIntro,
+        voiceNotes: settings.voiceNotes,
+      }
+    : null);
+
+/** A secondary author never inherits the primary author's biography or voice instructions. */
+export const settingsForSender = (
+  settings: Playbook,
+  email: string,
+): Playbook => {
+  const profile = senderIdentity(email, settings);
+  if (
+    email.toLowerCase() === settings.fromEmail.toLowerCase() &&
+    !settings.senderProfiles.some(
+      (entry) => entry.email === email.toLowerCase(),
+    )
+  )
+    return settings;
+  return {
+    ...settings,
+    fromEmail: email.toLowerCase(),
+    fromName: profile?.fromName ?? "",
+    signature: profile?.signature ?? "",
+    founderLine: profile?.founderLine ?? "",
+    productCheckIntro: profile?.productCheckIntro ?? "",
+    voiceNotes: [
+      profile?.voiceNotes ||
+        "Write plainly and warmly, using the supplied facts.",
+      `The actual author is ${profile?.fromName ?? "unconfigured"}. Use only this sender's saved introductions for biographical claims. Other authors' names, experience and biographies in examples or correspondence are not this author's facts.`,
+    ].join("\n\n"),
+  };
+};
+
+/** New drafts choose a configured identity; saved assignments survive pool changes. */
 export const senderFor = (prospect: string, settings: Playbook) => {
   const pool = senderPool(settings);
   const hash = [...prospect].reduce(
@@ -945,6 +1028,16 @@ export const senderFor = (prospect: string, settings: Playbook) => {
   );
   return pool[hash % pool.length] ?? settings.fromEmail.toLowerCase();
 };
+
+export const senderForProspect = (
+  prospect: { id: string; details: Pick<ProspectInput, "assignedSenderEmail"> },
+  settings: Playbook,
+) => prospect.details.assignedSenderEmail ?? senderFor(prospect.id, settings);
+
+export const settingsForProspect = (
+  prospect: { id: string; details: Pick<ProspectInput, "assignedSenderEmail"> },
+  settings: Playbook,
+) => settingsForSender(settings, senderForProspect(prospect, settings));
 
 export const deliveredBody = (
   message: Message,

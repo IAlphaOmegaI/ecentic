@@ -36,15 +36,17 @@ import {
 export const ConversationStageBadge = ({
   stage,
   needsReply,
+  archivedAt,
 }: {
   stage: ConversationStage;
   needsReply: boolean;
+  archivedAt?: string | null;
 }) => {
   const t = useTranslations("outbound.conversations");
   return (
     <div className="space-y-1">
       <span className="inline-flex whitespace-nowrap rounded-sm bg-background px-2 py-1 text-foreground-dimmed text-xs">
-        {t(`stage.${stage}`)}
+        {archivedAt ? t("views.archived") : t(`stage.${stage}`)}
       </span>
       {needsReply && (
         <p className="text-primary-text text-xs">{t("needsReply")}</p>
@@ -81,7 +83,7 @@ export const ConversationQueue = ({
         meta: { className: "w-64" },
         cell: ({ row }) => (
           <Link
-            href={`/replies/${row.original.id}`}
+            href={`/replies/${row.original.id}?thread=${row.original.threadId}`}
             prefetch={false}
             className="block min-w-0 rounded-sm focus-visible:outline-2 focus-visible:outline-primary"
           >
@@ -126,6 +128,7 @@ export const ConversationQueue = ({
           <ConversationStageBadge
             stage={row.original.stage}
             needsReply={row.original.needsReply}
+            archivedAt={row.original.archivedAt}
           />
         ),
       }),
@@ -156,7 +159,10 @@ export const ConversationQueue = ({
             size="icon"
             aria-label={`${t("list.action.primary")}: ${row.original.person}`}
             render={
-              <Link href={`/replies/${row.original.id}`} prefetch={false} />
+              <Link
+                href={`/replies/${row.original.id}?thread=${row.original.threadId}`}
+                prefetch={false}
+              />
             }
           >
             <ArrowRightIcon aria-hidden className="size-4" />
@@ -270,7 +276,7 @@ export const ConversationQueue = ({
             variant="soft"
             color="neutral"
             disabled={pending}
-            onClick={() => navigate({})}
+            onClick={() => navigate({ archived: query.archived })}
           >
             {navigation("action.tertiary")}
           </Button>

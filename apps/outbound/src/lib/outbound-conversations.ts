@@ -17,6 +17,7 @@ export const conversationQuerySchema = z.object({
   q: z.string().trim().max(200).default(""),
   channel: z.enum(["all", "email", "linkedin"]).default("all"),
   stage: z.enum(["all", ...CONVERSATION_STAGES]).default("all"),
+  archived: z.boolean().default(false),
   needsReply: z
     .preprocess(
       (value) => value === true || value === "1" || value === "true",
@@ -36,6 +37,7 @@ export type ConversationSummary = {
   counterpart: string;
   stage: ConversationStage;
   needsReply: boolean;
+  archivedAt: string | null;
   lastInboundAt: string | null;
   lastOutboundAt: string | null;
   updatedAt: string;
@@ -59,6 +61,7 @@ export type ConversationList = {
   items: (ConversationSummary & {
     channels: ConversationChannel[];
     threadCount: number;
+    threadId: string;
   })[];
   total: number;
   page: number;
@@ -89,6 +92,11 @@ export type ConversationDetail = {
 export const conversationStageSchema = z.object({
   id: z.string().uuid(),
   stage: z.enum(CONVERSATION_STAGES),
+  expectedRevision: z.number().int().nonnegative(),
+});
+export const conversationArchiveSchema = z.object({
+  id: z.string().uuid(),
+  archived: z.boolean(),
   expectedRevision: z.number().int().nonnegative(),
 });
 export const conversationDraftSchema = z.object({

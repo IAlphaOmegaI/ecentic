@@ -74,6 +74,7 @@ const calls: {
     expectedRevision: number;
     stage?: ConversationStage;
     body?: string;
+    archived?: boolean;
   };
 }[] = [];
 const response = {
@@ -117,6 +118,7 @@ mock.module("@/i18n/navigation", () => ({
 }));
 mock.module("@/server/app/outbound/conversation-actions", () => ({
   updateConversationStage: action,
+  archiveConversation: action,
   saveConversationReply: action,
   generateConversationReply: async () => {
     throw new Error("Unexpected generation");
@@ -148,6 +150,7 @@ const thread: ConversationDetail["thread"] = {
   accountLabel: "sender@example.com",
   counterpart: "ada@example.com",
   needsReply: true,
+  archivedAt: null,
   lastInboundAt: "2026-11-19T12:00:00.000Z",
   lastOutboundAt: null,
   updatedAt: "2026-11-19T12:00:00.000Z",
@@ -454,6 +457,47 @@ assert(
   !host.textContent?.includes("outcome is unknown"),
   "Identity change resets pending and notice state",
 );
+const beforeArchiveCalls = calls.length;
+response.handler = async () => ({
+  success: true,
+  data: {
+    id: other.id,
+    revision: other.revision + 1,
+    archivedAt: "2026-11-26T14:30:00.000Z",
+  },
+});
+await click(button("Archive conversation"));
+assert.equal(calls.length, beforeArchiveCalls + 1);
+assert.deepEqual(calls.at(-1)?.input, {
+  id: other.id,
+  archived: true,
+  expectedRevision: other.revision,
+});
+const archivedDetail = {
+  ...detail,
+  thread: {
+    ...other,
+    revision: other.revision + 1,
+    archivedAt: "2026-11-26T14:30:00.000Z",
+  },
+  threads: [{ ...other, archivedAt: "2026-11-26T14:30:00.000Z" }],
+  draft: { ...detail.draft, body: "Other thread reply" },
+};
+await render(archivedDetail);
+assert(button("Send saved reply").disabled);
+assert(button("Save draft").disabled);
+assert.equal(button("Restore conversation").disabled, false);
+assert(host.textContent?.includes("automatic outreach stays paused"));
+response.handler = async () => ({
+  success: true,
+  data: { id: other.id, revision: other.revision + 2, archivedAt: null },
+});
+await click(button("Restore conversation"));
+assert.deepEqual(calls.at(-1)?.input, {
+  id: other.id,
+  archived: false,
+  expectedRevision: other.revision + 1,
+});
 await act(async () => root.unmount());
 window.close();
 console.log("Conversation editor DOM contracts passed");

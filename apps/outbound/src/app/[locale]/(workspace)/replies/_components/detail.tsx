@@ -42,6 +42,7 @@ export const ConversationDetailView = async ({
         <ConversationStageBadge
           stage={detail.thread.stage}
           needsReply={detail.thread.needsReply}
+          archivedAt={detail.thread.archivedAt}
         />
       </section>
       <div className="grid min-w-0 xl:grid-cols-[minmax(0,1fr)_24rem]">

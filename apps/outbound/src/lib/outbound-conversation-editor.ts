@@ -8,6 +8,7 @@ export const conversationEditorState = (detail: ConversationDetail) => ({
   revision: detail.thread.revision,
   stage: detail.thread.stage,
   savedStage: detail.thread.stage,
+  archivedAt: detail.thread.archivedAt,
   body: detail.draft.body,
   savedBody: detail.draft.body,
   stale: false,
@@ -97,7 +98,10 @@ export const conversationSaveReceipt = (
 export const applyConversationSave = (
   state: ConversationEditorState,
   receipt: { id: string; revision: number },
-  change: { stage: ConversationStage } | { body: string },
+  change:
+    | { stage: ConversationStage }
+    | { body: string }
+    | { archivedAt: string | null },
 ): ConversationEditorState => {
   if (!conversationSaveReceipt(state, receipt))
     return { ...state, stale: true };
@@ -107,7 +111,9 @@ export const applyConversationSave = (
     stale: false,
     ...("stage" in change
       ? { stage: change.stage, savedStage: change.stage }
-      : { body: change.body.trim(), savedBody: change.body.trim() }),
+      : "archivedAt" in change
+        ? { archivedAt: change.archivedAt }
+        : { body: change.body.trim(), savedBody: change.body.trim() }),
   };
 };
 
@@ -125,6 +131,8 @@ export const conversationErrorKey = (error: unknown) => {
     case "conversation-changed":
     case "conversation-request-mismatch":
       return "changed";
+    case "conversation-archived":
+      return "archived";
     case "conversation-closed":
     case "conversation-suppressed":
       return "closed";

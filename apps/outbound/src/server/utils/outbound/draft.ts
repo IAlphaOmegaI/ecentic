@@ -5,6 +5,7 @@ import {
   type ProspectInput,
   personalSourceReadyForDraft,
   renderMessages,
+  settingsForSender,
 } from "@/lib/outbound";
 import {
   applyDraftEdits,
@@ -19,8 +20,24 @@ import { evidenceForDraft } from "./shopping-research";
 /** Only polish approved factual inputs. Source text is data, never instructions. */
 export const generateDraft = async (
   prospect: ProspectInput,
-  settings: Playbook,
+  policy: Playbook,
 ) => {
+  const settings = settingsForSender(
+    policy,
+    prospect.assignedSenderEmail ?? policy.fromEmail,
+  );
+  if (
+    !settings.fromName ||
+    !settings.signature ||
+    !settings.founderLine ||
+    !settings.productCheckIntro
+  )
+    return {
+      success: false as const,
+      error: new ValidationError(
+        "Save this inbox's sender profile before drafting.",
+      ),
+    };
   const research = await evidenceForDraft(prospect, settings);
   if (!research.success) return research;
   if (!personalSourceReadyForDraft(prospect, settings))

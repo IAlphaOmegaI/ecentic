@@ -76,6 +76,14 @@ const settings = {
   senderTested: true,
   senderEmails:
     "juri1@joinecentic.com\njuri2@joinecentic.com\njuri3@joinecentic.com\njuri4@joinecentic.com",
+  senderProfiles: [1, 2, 3, 4].map((number) => ({
+    email: `juri${number}@joinecentic.com`,
+    fromName: defaultPlaybook.fromName,
+    signature: defaultPlaybook.signature,
+    founderLine: defaultPlaybook.founderLine,
+    productCheckIntro: defaultPlaybook.productCheckIntro,
+    voiceNotes: defaultPlaybook.voiceNotes,
+  })),
 };
 const fixture = { campaignId: "", companyId: "" };
 const create = async (domain = "samplegoods.com") => {

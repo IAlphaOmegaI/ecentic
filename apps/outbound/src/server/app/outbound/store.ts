@@ -46,7 +46,11 @@ import {
   reviewSchema,
   type Suppression,
   senderFor,
+  senderForProspect,
+  senderIdentity,
   senderPool,
+  settingsForProspect,
+  settingsForSender,
   splitList,
   templateIssues,
 } from "@/lib/outbound";
@@ -303,8 +307,10 @@ export const automationDeliveryStatus = () =>
         : []),
       ...(inboxes.some(
         (inbox) =>
-          inbox.fromName !== settings.fromName ||
-          inbox.signer !== settings.signature,
+          !senderIdentity(inbox.email, settings) ||
+          inbox.fromName !==
+            settingsForSender(settings, inbox.email).fromName ||
+          inbox.signer !== settingsForSender(settings, inbox.email).signature,
       )
         ? ["senderIdentityMismatch"]
         : []),
@@ -769,16 +775,40 @@ export const approvalManifest = (
   prospect: Pick<ProspectRow, "id" | "details">,
   settings: Playbook,
   revision: number,
-) => ({
-  recipient: prospect.details.email.toLowerCase(),
-  sender: senderFor(prospect.id, settings),
-  fromName: settings.fromName,
-  signature: settings.signature,
-  postalAddress: settings.postalAddress,
-  playbookRevision: revision,
-  evidence: prospect.details.evidence,
-  evidenceCheckedAt: prospect.details.evidenceCheckedAt,
-});
+) => {
+  const sender = senderForProspect(prospect, settings);
+  const identity = settingsForSender(settings, sender);
+  const configured = settings.senderProfiles.find(
+    (entry) => entry.email === sender,
+  );
+  const profile =
+    configured &&
+    (sender !== settings.fromEmail.toLowerCase() ||
+      configured.founderLine !== settings.founderLine ||
+      configured.productCheckIntro !== settings.productCheckIntro ||
+      configured.voiceNotes !== settings.voiceNotes)
+      ? configured
+      : null;
+  return {
+    recipient: prospect.details.email.toLowerCase(),
+    sender,
+    fromName: identity.fromName,
+    signature: identity.signature,
+    ...(profile
+      ? {
+          senderProfile: {
+            founderLine: profile.founderLine,
+            productCheckIntro: profile.productCheckIntro,
+            voiceNotes: profile.voiceNotes,
+          },
+        }
+      : {}),
+    postalAddress: settings.postalAddress,
+    playbookRevision: revision,
+    evidence: prospect.details.evidence,
+    evidenceCheckedAt: prospect.details.evidenceCheckedAt,
+  };
+};
 
 export const contentHash = (
   messages: Message[],
@@ -790,6 +820,15 @@ export const contentHash = (
     sender: manifest.sender,
     fromName: manifest.fromName,
     signature: manifest.signature,
+    ...(manifest.senderProfile
+      ? {
+          senderProfile: {
+            founderLine: manifest.senderProfile.founderLine,
+            productCheckIntro: manifest.senderProfile.productCheckIntro,
+            voiceNotes: manifest.senderProfile.voiceNotes,
+          },
+        }
+      : {}),
     postalAddress: manifest.postalAddress,
     playbookRevision: manifest.playbookRevision,
     evidence: manifest.evidence,
@@ -811,7 +850,14 @@ const issuesFor = (
   entries: SuppressionRow[],
 ): Issue[] => [
   ...prospectIssues(prospect.details, settings),
-  ...lintMessages(prospect.messages, settings, prospect.details),
+  ...lintMessages(
+    prospect.messages,
+    settingsForProspect(prospect, settings),
+    prospect.details,
+  ),
+  ...(!senderIdentity(senderForProspect(prospect, settings), settings)
+    ? [{ code: "senderIdentityMissing", field: "senderEmail" }]
+    : []),
   ...(prospect.messages.length !== 3
     ? [{ code: "draftMissing", field: "messages" }]
     : []),
@@ -829,7 +875,7 @@ const view = (
   ...row.details,
   id: row.id,
   campaignId: row.campaignId,
-  senderEmail: senderFor(row.id, settings),
+  senderEmail: senderForProspect(row, settings),
   sentStep: row.sentStep,
   sentFirstMessage:
     first?.messages.find((message) => message.step === 1) ?? null,
@@ -1116,6 +1162,7 @@ export const getLinkedInItem = (input: { id: string }) =>
 /** Public mailbox metadata only; never load or decrypt transport credentials for a page. */
 export const getInboxSummaries = () =>
   resultify(async (): Promise<Inbox[]> => {
+    const { settings } = await policy();
     const rows = requireData(
       await resultifyRead(() =>
         db
@@ -1125,6 +1172,7 @@ export const getInboxSummaries = () =>
             fromName: schema.outboundInbox.fromName,
             signer: schema.outboundInbox.signer,
             enabled: schema.outboundInbox.enabled,
+            activationRequestedAt: schema.outboundInbox.activationRequestedAt,
             transport: schema.outboundInbox.transport,
             connected: sql<boolean>`case when ${schema.outboundInbox.transport} = 'google-app-password'
           then coalesce(${schema.outboundInbox.appPassword} <> '', false)
@@ -1139,6 +1187,8 @@ export const getInboxSummaries = () =>
     );
     return rows.map((row) => ({
       ...row,
+      profile: senderIdentity(row.email, settings),
+      activationRequestedAt: row.activationRequestedAt?.toISOString() ?? null,
       lastSyncedAt: row.lastSyncedAt?.toISOString() ?? null,
       nextSendAt: row.nextSendAt?.toISOString() ?? null,
     }));
@@ -1251,6 +1301,8 @@ export const getWorkspace = () =>
         email: row["email"],
         fromName: row.fromName,
         signer: row.signer,
+        profile: senderIdentity(row.email, configuration.settings),
+        activationRequestedAt: row.activationRequestedAt?.toISOString() ?? null,
         enabled: row.enabled,
         connected: mailboxConnected(row),
         transport: row.transport,
@@ -1350,7 +1402,15 @@ export const savePlaybookWithin = async (
     throw new ValidationError(
       `Unknown template variable: ${templates[0]?.field}`,
     );
-  if (parsed.data.sendingEnabled) {
+  const current = await policy(transaction);
+  const poolChanged = !isDeepStrictEqual(
+    senderPool(current.settings),
+    senderPool(parsed.data),
+  );
+  if (
+    parsed.data.sendingEnabled &&
+    (!current.settings.sendingEnabled || poolChanged)
+  ) {
     const inboxes = requireData(
       await Inboxes.find(
         Environment.SERVER,
@@ -1366,6 +1426,7 @@ export const savePlaybookWithin = async (
       inboxes.some(
         (inbox) =>
           !inbox.enabled ||
+          !senderIdentity(inbox.email, parsed.data) ||
           !mailboxConnected(inbox) ||
           inbox.error ||
           !inbox.lastSyncedAt ||
@@ -1376,7 +1437,6 @@ export const savePlaybookWithin = async (
         "Connect and synchronize the sender inbox before enabling delivery.",
       );
   }
-  const current = await policy(transaction);
   if (expectedRevision !== undefined && current.revision !== expectedRevision)
     throw new ConflictError(
       "The Playbook changed. Review its current version before applying these settings.",
@@ -1404,6 +1464,9 @@ export const savePlaybookWithin = async (
       weeklyTarget,
       minGapMinutes,
       maxGapMinutes,
+      senderProfiles,
+      senderEmails,
+      inactiveSenderEmails,
       ...content
     } = settings;
     return content;
@@ -1411,6 +1474,120 @@ export const savePlaybookWithin = async (
   const changed =
     JSON.stringify(contentPolicy(current.settings)) !==
     JSON.stringify(contentPolicy(parsed.data));
+  const identities = [
+    ...new Set(
+      [...current.settings.senderProfiles, ...parsed.data.senderProfiles].map(
+        (profile) => profile.email,
+      ),
+    ),
+  ].filter(
+    (email) =>
+      !isDeepStrictEqual(
+        senderIdentity(email, current.settings),
+        senderIdentity(email, parsed.data),
+      ),
+  );
+  const assigned =
+    identities.length || poolChanged
+      ? requireData(
+          await Prospects.find(
+            Environment.SERVER,
+            {
+              where: and(
+                sql`(jsonb_array_length(${schema.outboundProspect.messages}) > 0 or ${schema.outboundProspect.sentStep} > 0)`,
+                or(
+                  sql`${schema.outboundProspect.details}->>'assignedSenderEmail' is null`,
+                  identities.length
+                    ? inArray(
+                        sql<string>`${schema.outboundProspect.details}->>'assignedSenderEmail'`,
+                        identities,
+                      )
+                    : undefined,
+                ),
+              ),
+            },
+            { tx: transaction },
+          ),
+        )
+      : [];
+  for (const prospect of assigned) {
+    if (!prospect.messages.length && !prospect.sentStep) continue;
+    const sender =
+      prospect.details.assignedSenderEmail ??
+      (await (async () => {
+        const inbox = prospect.inboxId
+          ? requireData(
+              await Inboxes.get(Environment.SERVER, prospect.inboxId, {
+                tx: transaction,
+              }),
+            )
+          : null;
+        if (inbox) return inbox.email;
+        const version = requireData(
+          await Revisions.find(
+            Environment.SERVER,
+            {
+              where: and(
+                eq(schema.outboundRevision.prospectId, prospect.id),
+                eq(schema.outboundRevision.revision, prospect.revision),
+              ),
+              limit: 1,
+            },
+            { tx: transaction },
+          ),
+        )[0];
+        return (
+          version?.manifest.sender ?? senderFor(prospect.id, current.settings)
+        );
+      })());
+    if (
+      prospect.sentStep &&
+      identities.includes(sender) &&
+      ["active", "approved"].includes(prospect.status)
+    )
+      throw new ConflictError(
+        "Finish or hold this sender's active sequences before changing their identity.",
+      );
+    if (!prospect.details.assignedSenderEmail)
+      requireData(
+        await Prospects.update(
+          Environment.SERVER,
+          prospect.id,
+          { details: { ...prospect.details, assignedSenderEmail: sender } },
+          { tx: transaction },
+        ),
+      );
+    if (
+      !prospect.sentStep &&
+      identities.includes(sender) &&
+      ["approved", "draft"].includes(prospect.status)
+    ) {
+      await revoke(transaction, prospect, "Sender profile changed");
+      requireData(
+        await Prospects.update(
+          Environment.SERVER,
+          prospect.id,
+          {
+            status: "held",
+            holdReason: "senderProfileChanged",
+            approvedAt: null,
+            approvedBy: null,
+            approvalHash: null,
+            nextSendAt: null,
+            updatedAt: new Date(),
+          },
+          { tx: transaction },
+        ),
+      );
+      await event(
+        transaction,
+        actor,
+        "senderProfileChanged",
+        "The assigned sender's identity changed; this unsent draft needs review.",
+        prospect.id,
+      );
+    }
+  }
   const revision = current.revision + (changed ? 1 : 0);
   requireData(
     await Playbooks.upsert(
@@ -1487,6 +1664,48 @@ export const savePlaybook = (
   transaction((transaction) =>
     savePlaybookWithin(transaction, actor, input, expectedRevision),
   );
+
+/** The general form does not own profiles edited in Integrations. */
+export const savePlaybookForm = (actor: string, input: unknown) =>
+  transaction(async (scope) => {
+    const parsed = z
+      .object({
+        settings: playbookSchema,
+        expectedRevision: z.number().int().positive(),
+        expectedSenderPool: z.object({
+          senderEmails: z.string().max(4000),
+          inactiveSenderEmails: z.string().max(4000),
+        }),
+      })
+      .parse(input);
+    const current = await policy(scope);
+    const addresses = (value: string) =>
+      splitList(value)
+        .map((email) => email.toLowerCase())
+        .sort();
+    if (
+      !isDeepStrictEqual(
+        addresses(current.settings.senderEmails),
+        addresses(parsed.expectedSenderPool.senderEmails),
+      ) ||
+      !isDeepStrictEqual(
+        addresses(current.settings.inactiveSenderEmails),
+        addresses(parsed.expectedSenderPool.inactiveSenderEmails),
+      )
+    )
+      throw new ConflictError(
+        "The sender pool changed. Refresh the Playbook before saving.",
+      );
+    return savePlaybookWithin(
+      scope,
+      actor,
+      {
+        ...parsed.settings,
+        senderProfiles: current.settings.senderProfiles,
+      },
+      parsed.expectedRevision,
+    );
+  });
 
 const findProspect = async (transaction: TransactionScope, id: string) => {
   const prospect = requireData(
@@ -1607,6 +1826,7 @@ const saveProspectWithin = async (
   );
   const details = {
     ...input,
+    assignedSenderEmail: previous?.details.assignedSenderEmail,
     domain,
     email: input.email.toLowerCase(),
     website: input.website || `https://${domain}`,
@@ -1885,6 +2105,17 @@ export const assertCampaignActive = async (
   transaction: TransactionScope,
   prospect: ProspectRow,
 ) => {
+  const archived = await transaction
+    .select({ id: schema.outboundConversation.id })
+    .from(schema.outboundConversation)
+    .where(
+      and(
+        eq(schema.outboundConversation.prospectId, prospect.id),
+        isNotNull(schema.outboundConversation.archivedAt),
+      ),
+    )
+    .limit(1);
+  if (archived.length) throw new ConflictError("conversation-archived");
   if (!prospect.campaignId) return;
   const campaign = requireData(
     await Campaigns.get(Environment.SERVER, prospect.campaignId, {
@@ -2012,6 +2243,11 @@ const writeMessages = async (
       "This sequence is closed. Draft editing cannot reactivate it.",
     );
   const current = await policy(transaction);
+  const sender = senderForProspect(prospect, current.settings);
+  if (!senderIdentity(sender, current.settings))
+    throw new ValidationError(
+      "Save this inbox's sender profile before drafting.",
+    );
   const revision = prospect.revision + 1;
   await assertShoppingEvidence(transaction, prospect, current);
   const manifest = approvalManifest(
@@ -2038,6 +2274,7 @@ const writeMessages = async (
       Environment.SERVER,
       prospect.id,
       {
+        details: { ...prospect.details, assignedSenderEmail: sender },
         messages,
         revision,
         playbookRevision: current.revision,
@@ -2064,7 +2301,11 @@ const writeMessages = async (
     revision,
     issues: [
       ...prospectIssues(prospect.details, current.settings),
-      ...lintMessages(messages, current.settings, prospect.details),
+      ...lintMessages(
+        messages,
+        settingsForProspect(prospect, current.settings),
+        prospect.details,
+      ),
     ],
   };
 };
@@ -2097,7 +2338,10 @@ export const generateDraftsWithin = async (
     transaction,
     actor,
     prospect,
-    renderMessages(prospect.details, current.settings),
+    renderMessages(
+      prospect.details,
+      settingsForProspect(prospect, current.settings),
+    ),
   );
 };
 
@@ -2279,7 +2523,7 @@ const reviewProspectWithin = async (
         peers
           .filter((peer) => peer.id !== prospect.id)
           .map((peer) => peer.messages),
-        current.settings,
+        settingsForProspect(prospect, current.settings),
       ),
     );
     if (issues.length)
@@ -2501,12 +2745,16 @@ export const restoreReceiptNormalizationApproval = (
       .select({
         inbound: schema.outboundConversation.lastInboundAt,
         stage: schema.outboundConversation.stage,
+        archivedAt: schema.outboundConversation.archivedAt,
       })
       .from(schema.outboundConversation)
       .where(eq(schema.outboundConversation.prospectId, prospect.id));
     if (
       conversations.some(
-        (conversation) => conversation.inbound || conversation.stage !== "open",
+        (conversation) =>
+          conversation.inbound ||
+          conversation.archivedAt ||
+          conversation.stage !== "open",
       )
     )
       throw new ConflictError(
@@ -3506,7 +3754,10 @@ export const importProspects = (
       ) {
         const prospect = await findProspect(transaction, imported.prospect);
         const current = await policy(transaction);
-        const messages = renderMessages(prospect.details, current.settings);
+        const messages = renderMessages(
+          prospect.details,
+          settingsForProspect(prospect, current.settings),
+        );
         const checked = draftSchema.safeParse({
           prospect: prospect.id,
           revision: prospect.revision,
@@ -3964,9 +4215,11 @@ const deliveryGates = async (
       "A healthy, fully synchronized sender inbox is required within the last ten minutes.",
     );
   if (
-    inbox.email.toLowerCase() !== senderFor(prospect.id, settings) ||
-    inbox.fromName !== settings.fromName ||
-    inbox.signer !== settings.signature ||
+    inbox.email.toLowerCase() !== senderForProspect(prospect, settings) ||
+    !senderPool(settings).includes(inbox.email.toLowerCase()) ||
+    !senderIdentity(inbox.email, settings) ||
+    inbox.fromName !== settingsForSender(settings, inbox.email).fromName ||
+    inbox.signer !== settingsForSender(settings, inbox.email).signature ||
     (prospect.inboxId && prospect.inboxId !== inbox.id)
   )
     throw new ConflictError(

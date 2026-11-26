@@ -166,11 +166,27 @@ Playbook fields. Percentages and configured names/phrases block first-email
 approval. The claim list is a deterministic check, not a general fact checker.
 Targeting notes guide human review; they do not create additional automatic rules.
 
-The sender pool contains authorized mailboxes using the same
-truthful display name and signature. The delivery path uses a connected,
-deterministically assigned member of that pool and applies limits to each inbox. The inbox selected
-for a started sequence remains its sender. Connecting an inbox leaves its
-delivery switch off.
+Each sender inbox has an explicit editable profile in Integrations: display name,
+signature, general introduction, product-research introduction and voice notes.
+Profiles are stored in `senderProfiles` in the Playbook JSON. The primary address
+retains the existing global identity until explicitly profiled; other addresses
+cannot inherit its biography. Connecting an inbox leaves delivery off. Requesting
+activation while history is incomplete saves a connection-version-bound intent,
+with delivery still off. The normal hosted sync worker consumes that intent only
+after a healthy completed synchronization, then adds the registered inbox to the
+pool without changing its saved daily cap or the global sending switch. The UI
+shows pending activation. Pausing/cancelling, disconnecting or reconnecting clears
+the intent; an old sync cannot activate a different connection. Apply the additive
+`20261126164000_outbound_inbox_activation` migration before deploying these fields.
+
+Draft creation pins `assignedSenderEmail` in the prospect details. Before a pool
+change, existing drafts and sent sequences are pinned to their historical revision
+or connected inbox. Pool/profile edits do not increment the global content revision.
+Only unsent drafts belonging to a changed profile are held for review; an active
+sent sequence prevents editing that sender's identity until held or finished.
+The selected profile is part of new exact approvals. Sent revisions, sender
+assignments and bodies are never rewritten. Reply prompts use the actual inbox's
+profile, independently of the primary author's voice notes.
 
 Inactive sender addresses remain saved separately and never enter rotation.
 Only the active sender pool is eligible for delivery. Exact company names and aliases

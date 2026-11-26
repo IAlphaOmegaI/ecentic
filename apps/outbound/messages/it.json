@@ -873,7 +873,19 @@
           "inactive": "Questa casella è inattiva nella guida. Può sincronizzare le risposte. Spostala in Caselle del mittente prima di attivare l’invio."
         },
         "maximumDailyCap": "Massimo obiettivo per casella al giorno",
-        "dailyCapHelp": "Fino a {maximum} prime email e follow-up per casella al giorno. Il Playbook controlla gli aumenti graduali; i mancati recapiti riducono la capacità."
+        "dailyCapHelp": "Fino a {maximum} prime email e follow-up per casella al giorno. Il Playbook controlla gli aumenti graduali; i mancati recapiti riducono la capacità.",
+        "profile": {
+          "fromName": "Nome del mittente",
+          "signature": "Firma",
+          "founderLine": "Presentazione generale",
+          "productCheckIntro": "Presentazione per la ricerca sui prodotti",
+          "voiceNotes": "Note sullo stile",
+          "help": "Indica solo il ruolo e l’esperienza di questa persona. Questo profilo sostituisce la presentazione e lo stile del mittente principale per questa casella.",
+          "pause": "Metti in pausa la casella",
+          "title": "Profilo del mittente",
+          "activationPending": "Attivazione richiesta. Questa casella si avvierà automaticamente dopo la sincronizzazione della cronologia e il superamento dei controlli.",
+          "cancelActivation": "Annulla attivazione"
+        }
       },
       "liveResearch": {
         "title": "Ricerca acquisti in tempo reale",
@@ -962,7 +974,9 @@
       "platformHeld": "Seleziona Shopify o WooCommerce per questa campagna di contatto a freddo.",
       "shoppingResearchRequired": "Registra un’osservazione sull’esperienza di acquisto supportata da prove prima di redigere o approvare questo messaggio.",
       "automaticReviewFailed": "I controlli automatici non hanno approvato questa bozza. Verifica le prove e il messaggio, poi salva le correzioni.",
-      "automaticReviewUncertain": "Occorre verificare l’esito di una precedente richiesta di bozza prima di riprendere la revisione automatica."
+      "automaticReviewUncertain": "Occorre verificare l’esito di una precedente richiesta di bozza prima di riprendere la revisione automatica.",
+      "senderIdentityMissing": "Salva nome, firma e presentazioni di questa casella prima di creare una bozza.",
+      "senderProfileChanged": "Il profilo del mittente è cambiato. Controlla questa bozza non inviata prima di approvarla."
     },
     "preparation": {
       "action": {
@@ -1819,7 +1833,8 @@
         "connection": "L’account di invio non è disponibile o richiede una nuova sincronizzazione delle risposte. Controlla Integrazioni.",
         "controls": "Il suggerimento non ha superato i controlli di risposta salvati. Scrivi e controlla la risposta manualmente.",
         "generic": "Non è stato possibile completare questa azione. Aggiorna la conversazione e riprova.",
-        "authentication": "La sessione è scaduta. Accedi nella nuova scheda, poi riprova qui. Le tue modifiche sono conservate."
+        "authentication": "La sessione è scaduta. Accedi nella nuova scheda, poi riprova qui. Le tue modifiche sono conservate.",
+        "archived": "Ripristina questa conversazione prima di modificare o inviare una risposta."
       },
       "newestFirst": "Prima i messaggi più recenti",
       "direction": {
@@ -1843,7 +1858,8 @@
         "all": "Tutte le attività",
         "needsReply": "In attesa di risposta",
         "sent": "Inviati",
-        "scheduled": "Programmati"
+        "scheduled": "Programmati",
+        "archived": "Archiviate"
       },
       "replyAccount": "Rispondi da",
       "activity": {
@@ -1868,6 +1884,14 @@
         "sending": "Invio in corso…",
         "signIn": "Accedi di nuovo",
         "followUpsPaused": "Salvando questa fase, i contatti automatici via email e LinkedIn con questa persona vengono sospesi. Riaprire la conversazione non li riavvia."
+      },
+      "archive": {
+        "action": "Archivia conversazione",
+        "restore": "Ripristina conversazione",
+        "help": "L’archiviazione conserva la cronologia e interrompe i messaggi automatici a questa persona.",
+        "archivedHelp": "Le conversazioni archiviate conservano la cronologia. Il ripristino le rende nuovamente visibili; i messaggi automatici restano in pausa.",
+        "saved": "Conversazione archiviata.",
+        "restored": "Conversazione ripristinata. I messaggi automatici restano in pausa."
       }
     }
   }
