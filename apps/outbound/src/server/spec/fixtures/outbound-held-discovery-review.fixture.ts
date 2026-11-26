@@ -122,7 +122,7 @@ for (const [index, id] of ids.entries()) {
       product: "Marlow Tote",
       productUrl: `https://${domain}/products/marlow`,
       productCategory: "linen bags",
-      ...(index >= 17 && index <= 19
+      ...(index >= 17
         ? {
             product: "V-Front Extended Sleeves Top - Limited Edition",
             productCategory: "top",
@@ -1138,6 +1138,156 @@ assert.equal(
     })
   ).success,
   false,
+);
+
+// A reviewer can terminally reject an unspent two-attempt query without buying
+// another model call, deleting either candidate, or changing the live prospect.
+const qualityHoldTarget = ids[20];
+assert.ok(qualityHoldTarget);
+await parkExcept(qualityHoldTarget);
+const qualityCandidate = await seedUnspentCategoryCandidate(qualityHoldTarget);
+assert.ok(qualityCandidate.query.basis);
+const qualityQuery = Capture.preparedQuerySchema.parse({
+  ...qualityCandidate.query,
+  prompt: "stretch mesh top",
+  basis: {
+    ...qualityCandidate.query.basis,
+    category: "top",
+    attribute: "stretch mesh",
+  },
+});
+const beforeQualityState = Contract.heldReviewStateSchema.parse({
+  ...qualityCandidate.state,
+  query: qualityQuery,
+  queryGeneration: { attempts: 2 },
+  queryRepair: {
+    originalQuery: qualityCandidate.query,
+    originalQueryHash: qualityCandidate.hash,
+    originalGeneration: { attempts: 1 },
+    validationFailure: "Synthetic known first category mismatch.",
+    requestedBy: actor,
+    requestedAt: new Date().toISOString(),
+    reservedAt: new Date().toISOString(),
+  },
+});
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({ output: beforeQualityState })
+  .where(eq(schema.outboundIntegrationJob.id, qualityCandidate.job.id));
+const beforeQualityJob = await jobFor(qualityHoldTarget);
+const [beforeQualityBudget] = await db
+  .select()
+  .from(schema.outboundIntegrationJob)
+  .where(eq(schema.outboundIntegrationJob.id, batch.batchId));
+const beforeQualityCalls = { ...calls };
+const holdInput = {
+  manifest,
+  jobId: qualityCandidate.job.id,
+  expectedQueryHash: Contract.heldPreparedQueryHash(qualityQuery),
+  reason: "Synthetic operator rejected this shopper phrasing.",
+};
+assert.equal(
+  value(await Review.holdUnspentQuery(actor, holdInput)).held,
+  false,
+);
+assert.deepEqual(await jobFor(qualityHoldTarget), beforeQualityJob);
+assert.equal(
+  (
+    await Review.holdUnspentQuery(actor, {
+      ...holdInput,
+      execute: true,
+      expectedQueryHash: "0".repeat(64),
+    })
+  ).success,
+  false,
+);
+for (const restriction of [
+  { status: "complete" as const, output: beforeQualityState },
+  { status: "uncertain" as const, output: beforeQualityState },
+  { status: "starting" as const, output: beforeQualityState },
+  {
+    status: "pending" as const,
+    output: {
+      ...beforeQualityState,
+      queryReservedAt: new Date().toISOString(),
+      shoppingQueryCount: 1,
+    },
+  },
+  {
+    status: "pending" as const,
+    output: {
+      ...beforeQualityState,
+      lease: {
+        token: randomUUID(),
+        expiresAt: new Date(Date.now() + 180_000).toISOString(),
+      },
+    },
+  },
+]) {
+  await db
+    .update(schema.outboundIntegrationJob)
+    .set(restriction)
+    .where(eq(schema.outboundIntegrationJob.id, qualityCandidate.job.id));
+  assert.equal(
+    (await Review.holdUnspentQuery(actor, { ...holdInput, execute: true }))
+      .success,
+    false,
+  );
+}
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({ status: "pending", output: beforeQualityState })
+  .where(eq(schema.outboundIntegrationJob.id, qualityCandidate.job.id));
+assert.equal(
+  value(await Review.holdUnspentQuery(actor, { ...holdInput, execute: true }))
+    .held,
+  true,
+);
+const qualityHeldJob = await jobFor(qualityHoldTarget);
+assert.equal(qualityHeldJob.status, "complete");
+const qualityHeldState = Contract.heldReviewStateSchema.parse(
+  qualityHeldJob.output,
+);
+assert.equal(qualityHeldState.stage, "complete");
+assert.equal(qualityHeldState.heldReason, holdInput.reason);
+assert.equal(
+  qualityHeldState.queryQualityHold?.queryHash,
+  holdInput.expectedQueryHash,
+);
+assert.equal(qualityHeldState.queryQualityHold?.reason, holdInput.reason);
+assert.equal(qualityHeldState.queryQualityHold?.requestedBy, actor);
+assert.equal(
+  qualityHeldState.queryQualityHold?.heldAt,
+  new Date().toISOString(),
+);
+const {
+  stage: _heldStage,
+  heldReason: _heldReason,
+  queryQualityHold: _qualityAudit,
+  ...retainedQualityState
+} = qualityHeldState;
+const { stage: _pendingStage, ...originalQualityState } = beforeQualityState;
+assert.deepEqual(retainedQualityState, originalQualityState);
+assert.equal(
+  (await Review.holdUnspentQuery(actor, { ...holdInput, execute: true }))
+    .success,
+  false,
+);
+assert.equal(
+  (await Review.repairUnspentQuery(actor, { ...holdInput, execute: true }))
+    .success,
+  false,
+);
+assert.equal((await tick()).advanced, false);
+assert.deepEqual(calls, beforeQualityCalls);
+assert.deepEqual(
+  (
+    await db
+      .select()
+      .from(schema.outboundIntegrationJob)
+      .where(eq(schema.outboundIntegrationJob.id, batch.batchId))
+  )[0],
+  beforeQualityBudget,
 );
 
 // Independent operations share one durable slot, including concurrent claims.

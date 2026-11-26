@@ -820,6 +820,181 @@ describe("unbranded questions before search spend", () => {
     },
   );
 
+  // Saved title/category shapes; the attribute sentences below are synthetic
+  // test evidence, never observations about these real products.
+  test.each([
+    [
+      "folding knife",
+      "Manix® 2 Lightweight",
+      "lightweight folding knife",
+      "lightweight",
+    ],
+    [
+      "nightstand",
+      "BROOKLYN NIGHTSTAND | Bleached Walnut",
+      "natural walnut nightstand",
+      "natural walnut",
+    ],
+    [
+      "sunglasses",
+      "Center Stage",
+      "polarized reading sunglasses",
+      "polarized reading",
+    ],
+    [
+      "leave-in conditioner",
+      "Palo Santo Leave-In Conditioner",
+      "moisturizing leave-in conditioner",
+      "moisturizing",
+    ],
+    [
+      "beef jerky",
+      "Tender Angus Reserve Beef Jerky | Original",
+      "smoked beef jerky",
+      "smoked",
+    ],
+    [
+      "diamond painting kit",
+      "A SpongeBob Sunday Afternoon",
+      "round diamond painting kit",
+      "round",
+    ],
+    ["custom putter", "MEZZ.2i CUSTOM PUTTER", "steel custom putter", "steel"],
+    ["bacon jam", "Hot Pepper Bacon Jam", "smoky bacon jam", "smoky"],
+    [
+      "home gym",
+      "Multifunctional Strength Training Home Gym",
+      "compact home gym",
+      "compact",
+    ],
+    [
+      "lip gloss",
+      "Glosswork 4D Ultra Shine Plumping Gloss",
+      "clear lip gloss",
+      "clear",
+    ],
+    [
+      "upper control arm kit",
+      "ICON 2005-2023 Toyota Tacoma, Tubular Front Upper Control Arm w/ Delta Joint Kit",
+      "tubular upper control arm kit",
+      "tubular",
+    ],
+    [
+      "bootcut jeans",
+      "ALWAYS FITS PATCH POCKET GOOD CLASSIC BOOTCUT JEANS | DENETHICBLUE04",
+      "stretch bootcut jeans",
+      "stretch",
+    ],
+    [
+      "sanding bands",
+      "120 Grit Sanding Bands (100pcs)",
+      "fine sanding bands",
+      "fine",
+    ],
+    [
+      "hair ties",
+      "Beary Christmas Mix Pack Hair Ties",
+      "soft hair ties",
+      "soft",
+    ],
+    ["ski", "Pisteworks 89", "lightweight alpine ski", "lightweight alpine"],
+    [
+      "dual-acid peel",
+      "BLUE RESURFACE® DUAL-ACID PEEL",
+      "gentle dual-acid peel",
+      "gentle",
+    ],
+    [
+      "concealer",
+      "PRO.conceal HD Corrector",
+      "liquid matte concealer",
+      "liquid matte",
+    ],
+  ])(
+    "allows generic cohort category %s without copying its distinctive name",
+    async (category, name, question, attribute) => {
+      const input = await categoryContext(
+        category,
+        name,
+        `The product is a ${question}.`,
+      );
+      const result = value(
+        await Shopping.generateShopperQuery(input, {
+          now,
+          generate: async ({ prompt }) => ({
+            ...selection(prompt),
+            question,
+            category,
+            attribute,
+          }),
+        }),
+      );
+      expect(result.status).toBe("prepared");
+      expect(result.generation.attempts).toBe(1);
+      if (result.status !== "prepared") throw new Error(result.reason);
+      expect(
+        Shopping.validateShopperQuery({ ...input, query: result.query }, time),
+      ).toBeNull();
+    },
+  );
+
+  test("generic diamond grounding cannot admit the merchant name or its distinctive fragment", async () => {
+    const input = {
+      ...(await categoryContext(
+        "diamond painting kit",
+        "A SpongeBob Sunday Afternoon",
+        "Diamond Dotz sells a round diamond painting kit.",
+      )),
+      merchant: { name: "Diamond Dotz", domain: "merchant.example" },
+    };
+    for (const question of [
+      "round diamond painting kit",
+      "diamond dotz painting kit",
+      "round dotz painting kit",
+    ]) {
+      const result = value(
+        await Shopping.generateShopperQuery(input, {
+          now,
+          generate: async ({ prompt }) => ({
+            ...selection(prompt),
+            question,
+            category: "diamond painting kit",
+            attribute: "round",
+          }),
+        }),
+      );
+      expect(result.status).toBe(
+        question === "round diamond painting kit" ? "prepared" : "held",
+      );
+      if (result.status === "held") expect(result.reason).toContain("brand");
+    }
+  });
+
+  test("new generic category words still need rendered support outside the merchant name", async () => {
+    const input = {
+      ...(await categoryContext(
+        "beef jerky",
+        "Original Reserve",
+        "Beef Jerky Works sells smoked snacks.",
+      )),
+      merchant: { name: "Beef Jerky Works", domain: "merchant.example" },
+    };
+    const result = value(
+      await Shopping.generateShopperQuery(input, {
+        now,
+        generate: async ({ prompt }) => ({
+          ...selection(prompt),
+          question: "smoked beef jerky",
+          category: "beef jerky",
+          attribute: "smoked",
+        }),
+      }),
+    );
+    expect(result.status).toBe("held");
+    if (result.status === "held")
+      expect(result.reason).toContain("exact support");
+  });
+
   test("retains a grounded four-word category and rejects a generic kit suffix", async () => {
     const input = await categoryContext(
       "upper control arm kit",

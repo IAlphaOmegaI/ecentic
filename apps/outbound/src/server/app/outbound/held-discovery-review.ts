@@ -38,6 +38,7 @@ import {
   type HeldReviewState,
   heldManifestHash,
   heldPreparedQueryHash,
+  heldQueryQualityHoldSchema,
   heldQueryRepairSchema,
   heldReviewBatchSchema,
   heldReviewBudgetSchema,
@@ -422,13 +423,17 @@ const owns = async (scope: TransactionScope, claim: Claim) => {
     throw new ConflictError("The held review stage lease expired or changed.");
   return state;
 };
-const unspentFirstQuery = (state: HeldReviewState) => {
+const unspentFirstQuery = (
+  state: HeldReviewState,
+  maximumAttempts: 1 | 2 = 1,
+) => {
   if (
     !state.query?.basis ||
     state.productCapture?.status !== "captured" ||
     state.shoppingQueryIntent !== "unbranded-specific" ||
     state.query.intent !== "unbranded-specific" ||
-    state.queryGeneration?.attempts !== 1 ||
+    !state.queryGeneration?.attempts ||
+    state.queryGeneration.attempts > maximumAttempts ||
     state.shoppingQueryCount !== 0 ||
     state.polls !== 0 ||
     state.queryReservedAt ||
@@ -446,53 +451,67 @@ const unspentFirstQuery = (state: HeldReviewState) => {
     state.heldReason
   )
     throw new ValidationError(
-      "Only an unspent first query with exactly one completed generation can use its remaining repair.",
+      `Only an unspent first query with one to ${maximumAttempts} completed generation attempts is eligible.`,
     );
   return state.query;
+};
+type UnspentQueryOperatorInput = {
+  manifest: HeldReviewManifest;
+  jobId: string;
+  expectedQueryHash: string;
+  execute?: boolean;
+};
+const pendingUnspentQuery = async (
+  scope: TransactionScope,
+  input: UnspentQueryOperatorInput,
+  maximumAttempts: 1 | 2,
+) => {
+  const manifest = validateManifest(input.manifest);
+  const job = await jobAt(scope, z.string().uuid().parse(input.jobId));
+  const details = heldReviewInputSchema.parse(job.input);
+  const state = heldReviewStateSchema.parse(job.output);
+  if (
+    job.provider !== "automation" ||
+    job.prospectId !== details.prospectId ||
+    !manifest.prospectIds.includes(details.prospectId) ||
+    job.status !== "pending" ||
+    job.error ||
+    state.stage !== "query" ||
+    state.lease !== null ||
+    state.queryQualityHold
+  )
+    throw new ConflictError(
+      "Only a pending, unleased query in this approved manifest is eligible; terminal or uncertain jobs cannot reopen.",
+    );
+  const query = unspentFirstQuery(state, maximumAttempts);
+  const queryHash = heldPreparedQueryHash(query);
+  if (
+    queryHash !==
+    z
+      .string()
+      .regex(/^[a-f0-9]{64}$/)
+      .parse(input.expectedQueryHash)
+  )
+    throw new ConflictError(
+      "The saved query changed. Inspect its current hash before an operator decision.",
+    );
+  const ready = await eligible(scope, details, state);
+  return { job, details, state, query, queryHash, ready };
 };
 
 /** Explicit operator reconciliation only; this function never calls a provider. */
 export const repairUnspentQuery = (
   actor: string,
-  input: {
-    manifest: HeldReviewManifest;
-    jobId: string;
-    expectedQueryHash: string;
-    execute?: boolean;
-  },
+  input: UnspentQueryOperatorInput,
 ) =>
   transaction(async (scope) => {
-    const manifest = validateManifest(input.manifest);
-    const job = await jobAt(scope, z.string().uuid().parse(input.jobId));
-    const details = heldReviewInputSchema.parse(job.input);
-    const state = heldReviewStateSchema.parse(job.output);
+    const { job, details, state, query, queryHash, ready } =
+      await pendingUnspentQuery(scope, input, 1);
     const requestedBy = z.string().trim().min(1).max(200).parse(actor);
-    if (
-      job.provider !== "automation" ||
-      job.prospectId !== details.prospectId ||
-      !manifest.prospectIds.includes(details.prospectId) ||
-      job.status !== "pending" ||
-      job.error ||
-      state.stage !== "query" ||
-      state.lease !== null ||
-      state.queryRepair
-    )
+    if (state.queryRepair)
       throw new ConflictError(
-        "Only a pending, unleased query in this approved manifest may be reconciled; terminal, uncertain or previously repaired jobs cannot reopen.",
+        "A previously repaired query cannot receive another generation.",
       );
-    const query = unspentFirstQuery(state);
-    const queryHash = heldPreparedQueryHash(query);
-    if (
-      queryHash !==
-      z
-        .string()
-        .regex(/^[a-f0-9]{64}$/)
-        .parse(input.expectedQueryHash)
-    )
-      throw new ConflictError(
-        "The saved query changed. Inspect its current hash before reconciliation.",
-      );
-    const ready = await eligible(scope, details, state);
     const validationFailure = queryProblem(
       details,
       state,
@@ -530,6 +549,46 @@ export const repairUnspentQuery = (
       originalQueryHash: queryHash,
       remainingModelAttempts: 1 as const,
       validationFailure,
+    };
+  });
+
+/** Terminal quality decision only; preserves every capture and buys no providers. */
+export const holdUnspentQuery = (
+  actor: string,
+  input: UnspentQueryOperatorInput & { reason: string },
+) =>
+  transaction(async (scope) => {
+    const { job, details, state, queryHash } = await pendingUnspentQuery(
+      scope,
+      input,
+      2,
+    );
+    const queryQualityHold = heldQueryQualityHoldSchema.parse({
+      queryHash,
+      reason: input.reason,
+      requestedBy: actor,
+      heldAt: new Date().toISOString(),
+    });
+    if (input.execute === true)
+      await scope
+        .update(schema.outboundIntegrationJob)
+        .set({
+          status: "complete",
+          output: heldReviewStateSchema.parse({
+            ...state,
+            stage: "complete",
+            heldReason: queryQualityHold.reason,
+            queryQualityHold,
+          }),
+          updatedAt: new Date(),
+        })
+        .where(eq(schema.outboundIntegrationJob.id, job.id));
+    return {
+      jobId: job.id,
+      batchId: details.batchId,
+      held: input.execute === true,
+      queryHash,
+      reason: queryQualityHold.reason,
     };
   });
 const checkpoint = (

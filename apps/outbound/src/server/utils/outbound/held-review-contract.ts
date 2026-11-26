@@ -86,6 +86,14 @@ export const heldQueryRepairSchema = z
       heldPreparedQueryHash(repair.originalQuery) === repair.originalQueryHash,
     "The original query hash must match its preserved candidate.",
   );
+export const heldQueryQualityHoldSchema = z
+  .object({
+    queryHash: digest,
+    reason: z.string().trim().min(1).max(2000),
+    requestedBy: z.string().trim().min(1).max(200),
+    heldAt: z.string().datetime(),
+  })
+  .strict();
 const previewMessageSchema = z
   .object({
     step: z.union([z.literal(1), z.literal(2), z.literal(3)]),
@@ -171,6 +179,7 @@ export const heldReviewStateSchema = z
       .object({ attempts: z.number().int().min(0).max(2) })
       .optional(),
     queryRepair: heldQueryRepairSchema.optional(),
+    queryQualityHold: heldQueryQualityHoldSchema.optional(),
     shoppingJob: aiJobSchema.optional(),
     answer: aiCaptureSchema.optional(),
     browser: browserResearchSchema.optional(),

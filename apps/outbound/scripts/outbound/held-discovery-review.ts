@@ -18,14 +18,21 @@ const { values } = parseArgs({
     actor: { type: "string", default: "held-review-operator" },
     steps: { type: "string", default: "1" },
     "repair-unspent": { type: "string" },
+    "hold-unspent": { type: "string" },
+    reason: { type: "string" },
     "expected-query-hash": { type: "string" },
   },
 });
 const steps = z.coerce.number().int().min(1).max(50).parse(values.steps);
+if (values["repair-unspent"] && values["hold-unspent"])
+  throw new Error("Choose either --repair-unspent or --hold-unspent.");
 if (
-  Boolean(values["repair-unspent"]) !== Boolean(values["expected-query-hash"])
+  Boolean(values["repair-unspent"] || values["hold-unspent"]) !==
+  Boolean(values["expected-query-hash"])
 )
-  throw new Error("Use --repair-unspent and --expected-query-hash together.");
+  throw new Error("An unspent-query action requires --expected-query-hash.");
+if (Boolean(values["hold-unspent"]) !== Boolean(values.reason))
+  throw new Error("Use --hold-unspent and --reason together.");
 const corpusPath =
   values.corpus ??
   resolve(
@@ -78,6 +85,27 @@ if (values["repair-unspent"]) {
     }),
   );
   // Arming the remaining repair is separate from running any provider stage.
+  process.exit(0);
+}
+if (values["hold-unspent"]) {
+  const held = await Review.holdUnspentQuery(values.actor, {
+    manifest,
+    jobId: z.string().uuid().parse(values["hold-unspent"]),
+    expectedQueryHash: z
+      .string()
+      .regex(/^[a-f0-9]{64}$/)
+      .parse(values["expected-query-hash"]),
+    reason: z.string().trim().min(1).max(2000).parse(values.reason),
+    execute: values.execute,
+  });
+  if (!held.success)
+    throw new Error(`Unspent query hold failed: ${held.error.message}`);
+  console.log(
+    JSON.stringify({
+      mode: values.execute ? "query-held" : "query-hold-dry-run",
+      ...held.data,
+    }),
+  );
   process.exit(0);
 }
 if (values.execute) {
