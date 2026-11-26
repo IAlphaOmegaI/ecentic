@@ -17,9 +17,15 @@ const { values } = parseArgs({
     corpus: { type: "string" },
     actor: { type: "string", default: "held-review-operator" },
     steps: { type: "string", default: "1" },
+    "repair-unspent": { type: "string" },
+    "expected-query-hash": { type: "string" },
   },
 });
 const steps = z.coerce.number().int().min(1).max(50).parse(values.steps);
+if (
+  Boolean(values["repair-unspent"]) !== Boolean(values["expected-query-hash"])
+)
+  throw new Error("Use --repair-unspent and --expected-query-hash together.");
 const corpusPath =
   values.corpus ??
   resolve(
@@ -51,6 +57,29 @@ console.log(
     ...checked.data,
   }),
 );
+if (values["repair-unspent"]) {
+  const reconciled = await Review.repairUnspentQuery(values.actor, {
+    manifest,
+    jobId: z.string().uuid().parse(values["repair-unspent"]),
+    expectedQueryHash: z
+      .string()
+      .regex(/^[a-f0-9]{64}$/)
+      .parse(values["expected-query-hash"]),
+    execute: values.execute,
+  });
+  if (!reconciled.success)
+    throw new Error(
+      `Unspent query reconciliation failed: ${reconciled.error.message}`,
+    );
+  console.log(
+    JSON.stringify({
+      mode: values.execute ? "repair-staged" : "repair-dry-run",
+      ...reconciled.data,
+    }),
+  );
+  // Arming the remaining repair is separate from running any provider stage.
+  process.exit(0);
+}
 if (values.execute) {
   if (
     checked.data.found !== 21 ||

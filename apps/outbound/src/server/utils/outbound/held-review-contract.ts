@@ -65,6 +65,27 @@ export const heldReviewInputSchema = z
   })
   .strict();
 const digest = z.string().regex(/^[a-f0-9]{64}$/);
+/** Schema order makes an operator's expected hash stable across JSONB storage. */
+export const heldPreparedQueryHash = (input: unknown) =>
+  createHash("sha256")
+    .update(JSON.stringify(preparedQuerySchema.parse(input)))
+    .digest("hex");
+export const heldQueryRepairSchema = z
+  .object({
+    originalQuery: preparedQuerySchema,
+    originalQueryHash: digest,
+    originalGeneration: z.object({ attempts: z.literal(1) }).strict(),
+    validationFailure: z.string().min(1).max(2000),
+    requestedBy: z.string().min(1).max(200),
+    requestedAt: z.string().datetime(),
+    reservedAt: z.string().datetime().optional(),
+  })
+  .strict()
+  .refine(
+    (repair) =>
+      heldPreparedQueryHash(repair.originalQuery) === repair.originalQueryHash,
+    "The original query hash must match its preserved candidate.",
+  );
 const previewMessageSchema = z
   .object({
     step: z.union([z.literal(1), z.literal(2), z.literal(3)]),
@@ -125,6 +146,7 @@ export const heldReviewStateSchema = z
     stage: z.enum([
       "renderedProduct",
       "generateQuery",
+      "repairQuery",
       "query",
       "poll",
       "browser",
@@ -148,6 +170,7 @@ export const heldReviewStateSchema = z
     queryGeneration: z
       .object({ attempts: z.number().int().min(0).max(2) })
       .optional(),
+    queryRepair: heldQueryRepairSchema.optional(),
     shoppingJob: aiJobSchema.optional(),
     answer: aiCaptureSchema.optional(),
     browser: browserResearchSchema.optional(),
@@ -168,7 +191,7 @@ export type HeldReviewManifest = z.infer<typeof heldReviewManifestSchema>;
 export const heldReviewStageBudget = (stage: HeldReviewState["stage"]) => {
   if (["renderedProduct", "browser"].includes(stage)) return 120_000;
   if (stage === "draft") return 100_000;
-  if (["generateQuery", "assess"].includes(stage)) return 50_000;
+  if (["generateQuery", "repairQuery", "assess"].includes(stage)) return 50_000;
   if (stage === "query") return 30_000;
   if (stage === "poll") return 20_000;
   return 10_000;

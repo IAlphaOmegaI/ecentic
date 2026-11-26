@@ -13,6 +13,10 @@ import { requireTestDatabase } from "../helpers/database";
 const endpoint = requireTestDatabase(process.env.OUTBOUND_TEST_DATABASE_URL);
 Object.assign(process.env, { DATABASE_URL: endpoint });
 mock.module("server-only", () => ({}));
+const Capture = await import("@/server/utils/outbound/live-shopping");
+const { shopperQueryExcerpts } = await import(
+  "@/server/utils/outbound/shopper-query"
+);
 const Contract = await import("@/server/utils/outbound/held-review-contract");
 const ids = Array.from({ length: 21 }, () => randomUUID());
 const manifest = Contract.heldReviewManifestSchema.parse({
@@ -118,6 +122,12 @@ for (const [index, id] of ids.entries()) {
       product: "Marlow Tote",
       productUrl: `https://${domain}/products/marlow`,
       productCategory: "linen bags",
+      ...(index >= 17 && index <= 19
+        ? {
+            product: "V-Front Extended Sleeves Top - Limited Edition",
+            productCategory: "top",
+          }
+        : {}),
       email: `jamie@${domain}`,
       emailStatus: "verified",
       assignedSenderEmail: settings.fromEmail,
@@ -203,6 +213,8 @@ const calls = {
   product: 0,
   writer: 0,
   judge: 0,
+  queryGenerations: 0,
+  queryRepairs: 0,
 };
 let firstNoGap = true;
 let secondNoGap = false;
@@ -213,6 +225,7 @@ let uncertainJudge = false;
 let failedJudge = false;
 let duplicateParts: WriterParts | undefined;
 let changeSenderDuringWriting = false;
+let repairOutcome: "valid" | "invalid" | "uncertain" = "valid";
 const network = spyOn(globalThis, "fetch").mockImplementation(
   Object.assign(
     async () => {
@@ -231,7 +244,36 @@ const dependencies: HeldReviewDependencies = {
     calls.product += 1;
     return { success: true, data: heldBrowser(product) };
   },
-  generateQuery: heldQueryGenerator,
+  generateQuery: (input) => {
+    calls.queryGenerations += 1;
+    return heldQueryGenerator(input);
+  },
+  repairQuery: (input) =>
+    Capture.repairShopperQuery(input, {
+      generate: async ({ prompt }) => {
+        calls.queryRepairs += 1;
+        if (repairOutcome === "uncertain")
+          throw new Error("Synthetic interrupted remaining query repair.");
+        const parsed = z
+          .object({ excerpts: z.array(z.object({ id: z.string() })).min(1) })
+          .parse(JSON.parse(prompt));
+        const excerpt = parsed.excerpts[0];
+        assert.ok(excerpt);
+        return repairOutcome === "invalid"
+          ? {
+              question: "sheer stretch mesh fabric",
+              category: "fabric",
+              attribute: "sheer stretch mesh",
+              excerptIds: [excerpt.id],
+            }
+          : {
+              question: "stretch mesh top",
+              category: "top",
+              attribute: "stretch mesh",
+              excerptIds: [excerpt.id],
+            };
+      },
+    }),
   start: async ({ query }) => {
     calls.starts += 1;
     if (uncertainStart)
@@ -817,6 +859,286 @@ await db
   .update(schema.outboundPlaybook)
   .set({ settings })
   .where(eq(schema.outboundPlaybook.id, "default"));
+
+// These three isolated jobs model a known first candidate accepted before the
+// category-identity guard existed. No fresh first candidate is generated here.
+const seedUnspentCategoryCandidate = async (prospectId: string) => {
+  const job = await jobFor(prospectId);
+  const input = Contract.heldReviewInputSchema.parse(job.input);
+  const productCapture = heldBrowser(
+    input.product,
+    `${input.product.name}. This top is made from sheer stretch mesh fabric.`,
+  );
+  const excerpts = shopperQueryExcerpts({
+    product: input.product,
+    category: input.category,
+    merchant: input.merchant,
+    browser: productCapture,
+  });
+  const excerpt = excerpts?.[0];
+  assert.ok(excerpt);
+  const query = Capture.preparedQuerySchema.parse({
+    product: input.product,
+    category: input.category,
+    country: input.country,
+    surface: "google_ai_mode",
+    intent: "unbranded-specific",
+    merchant: { ...input.merchant, aliases: [] },
+    prompt: "sheer stretch mesh fabric",
+    basis: {
+      category: "fabric",
+      attribute: "sheer stretch mesh",
+      excerpts: [excerpt],
+      promptHash: "a".repeat(64),
+    },
+  });
+  const state = Contract.heldReviewStateSchema.parse({
+    ...job.output,
+    stage: "query",
+    availableAt: new Date().toISOString(),
+    productCapture,
+    query,
+    queryGeneration: { attempts: 1 },
+  });
+  await db
+    .update(schema.outboundIntegrationJob)
+    .set({ output: state })
+    .where(eq(schema.outboundIntegrationJob.id, job.id));
+  return {
+    job: await jobFor(prospectId),
+    state,
+    query,
+    hash: Contract.heldPreparedQueryHash(query),
+  };
+};
+const repairedTarget = ids[17];
+assert.ok(repairedTarget);
+await parkExcept(repairedTarget);
+const candidate = await seedUnspentCategoryCandidate(repairedTarget);
+const repairInput = {
+  manifest,
+  jobId: candidate.job.id,
+  expectedQueryHash: candidate.hash,
+};
+const beforeRepairs = { ...calls };
+const reservedBeforeRepairs = value(
+  await Review.status(batch.batchId),
+).queriesReserved;
+const repairDryRun = value(await Review.repairUnspentQuery(actor, repairInput));
+assert.equal(repairDryRun.staged, false);
+assert.match(repairDryRun.validationFailure, /category/i);
+assert.deepEqual(await jobFor(repairedTarget), candidate.job);
+assert.equal(
+  (
+    await Review.repairUnspentQuery(actor, {
+      ...repairInput,
+      execute: true,
+      expectedQueryHash: "0".repeat(64),
+    })
+  ).success,
+  false,
+);
+for (const guard of [
+  { status: "uncertain" as const, output: candidate.state },
+  { status: "complete" as const, output: candidate.state },
+  {
+    status: "pending" as const,
+    output: { ...candidate.state, queryGeneration: { attempts: 2 } },
+  },
+  {
+    status: "pending" as const,
+    output: {
+      ...candidate.state,
+      queryReservedAt: new Date().toISOString(),
+      shoppingQueryCount: 1,
+    },
+  },
+  {
+    status: "pending" as const,
+    output: {
+      ...candidate.state,
+      lease: {
+        token: randomUUID(),
+        expiresAt: new Date(Date.now() + 180_000).toISOString(),
+      },
+    },
+  },
+]) {
+  await db
+    .update(schema.outboundIntegrationJob)
+    .set(guard)
+    .where(eq(schema.outboundIntegrationJob.id, candidate.job.id));
+  assert.equal(
+    (await Review.repairUnspentQuery(actor, { ...repairInput, execute: true }))
+      .success,
+    false,
+  );
+}
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({ status: "pending", output: candidate.state })
+  .where(eq(schema.outboundIntegrationJob.id, candidate.job.id));
+assert.deepEqual(calls, beforeRepairs);
+assert.equal(
+  value(
+    await Review.repairUnspentQuery(actor, { ...repairInput, execute: true }),
+  ).staged,
+  true,
+);
+const stagedRepair = Contract.heldReviewStateSchema.parse(
+  (await jobFor(repairedTarget)).output,
+);
+assert.equal(stagedRepair.stage, "repairQuery");
+assert.deepEqual(stagedRepair.query, candidate.query);
+assert.deepEqual(stagedRepair.queryRepair?.originalQuery, candidate.query);
+assert.equal(stagedRepair.queryRepair?.originalQueryHash, candidate.hash);
+assert.equal(stagedRepair.queryRepair?.requestedBy, actor);
+assert.equal(stagedRepair.queryRepair?.reservedAt, undefined);
+assert.equal(
+  (await Review.repairUnspentQuery(actor, { ...repairInput, execute: true }))
+    .success,
+  false,
+);
+const repairedStep = await tick();
+assert.ok(repairedStep.advanced);
+assert.equal(repairedStep.stage, "repairQuery");
+const repairedState = Contract.heldReviewStateSchema.parse(
+  (await jobFor(repairedTarget)).output,
+);
+assert.equal(repairedState.stage, "query");
+assert.equal(repairedState.query?.prompt, "stretch mesh top");
+assert.equal(repairedState.queryGeneration?.attempts, 2);
+assert.ok(repairedState.queryRepair?.reservedAt);
+assert.deepEqual(repairedState.queryRepair?.originalQuery, candidate.query);
+assert.equal(calls.queryRepairs, beforeRepairs.queryRepairs + 1);
+assert.equal(calls.queryGenerations, beforeRepairs.queryGenerations);
+assert.equal(calls.starts, beforeRepairs.starts);
+assert.equal(
+  value(await Review.status(batch.batchId)).queriesReserved,
+  reservedBeforeRepairs,
+);
+assert.equal(
+  (
+    await Review.repairUnspentQuery(actor, {
+      ...repairInput,
+      execute: true,
+      expectedQueryHash: Contract.heldPreparedQueryHash(repairedState.query),
+    })
+  ).success,
+  false,
+);
+
+// A saved repaired query is checked again before any search reservation.
+assert.ok(repairedState.query);
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({
+    output: {
+      ...repairedState,
+      query: { ...repairedState.query, prompt: candidate.query.prompt },
+    },
+  })
+  .where(eq(schema.outboundIntegrationJob.id, candidate.job.id));
+await tick();
+assert.equal((await jobFor(repairedTarget)).status, "failed");
+assert.equal(calls.starts, beforeRepairs.starts);
+assert.equal(
+  value(await Review.status(batch.batchId)).queriesReserved,
+  reservedBeforeRepairs,
+);
+
+const interruptedRepairTarget = ids[18];
+assert.ok(interruptedRepairTarget);
+await parkExcept(interruptedRepairTarget);
+const interruptedCandidate = await seedUnspentCategoryCandidate(
+  interruptedRepairTarget,
+);
+repairOutcome = "uncertain";
+value(
+  await Review.repairUnspentQuery(actor, {
+    manifest,
+    jobId: interruptedCandidate.job.id,
+    expectedQueryHash: interruptedCandidate.hash,
+    execute: true,
+  }),
+);
+const interruptedRepair = await finish(interruptedRepairTarget);
+assert.equal(interruptedRepair.status, "uncertain");
+const interruptedRepairState = Contract.heldReviewStateSchema.parse(
+  interruptedRepair.output,
+);
+assert.ok(interruptedRepairState.queryRepair?.reservedAt);
+assert.equal(
+  z
+    .object({ attempts: z.number() })
+    .parse(interruptedRepairState.failureReceipt).attempts,
+  2,
+);
+assert.deepEqual(
+  interruptedRepairState.queryRepair?.originalQuery,
+  interruptedCandidate.query,
+);
+const callsAfterInterruptedRepair = { ...calls };
+for (let retry = 0; retry < 3; retry += 1) await tick();
+assert.deepEqual(calls, callsAfterInterruptedRepair);
+assert.equal(
+  (
+    await Review.repairUnspentQuery(actor, {
+      manifest,
+      jobId: interruptedCandidate.job.id,
+      expectedQueryHash: interruptedCandidate.hash,
+      execute: true,
+    })
+  ).success,
+  false,
+);
+
+const invalidRepairTarget = ids[19];
+assert.ok(invalidRepairTarget);
+await parkExcept(invalidRepairTarget);
+const invalidCandidate =
+  await seedUnspentCategoryCandidate(invalidRepairTarget);
+repairOutcome = "invalid";
+value(
+  await Review.repairUnspentQuery(actor, {
+    manifest,
+    jobId: invalidCandidate.job.id,
+    expectedQueryHash: invalidCandidate.hash,
+    execute: true,
+  }),
+);
+const invalidRepair = await finish(invalidRepairTarget);
+assert.equal(invalidRepair.status, "complete");
+const invalidRepairState = Contract.heldReviewStateSchema.parse(
+  invalidRepair.output,
+);
+assert.equal(invalidRepairState.queryGeneration?.attempts, 2);
+assert.match(invalidRepairState.heldReason ?? "", /category/i);
+assert.deepEqual(
+  invalidRepairState.queryRepair?.originalQuery,
+  invalidCandidate.query,
+);
+assert.equal(calls.queryRepairs, beforeRepairs.queryRepairs + 3);
+assert.equal(calls.queryGenerations, beforeRepairs.queryGenerations);
+assert.equal(calls.starts, beforeRepairs.starts);
+assert.equal(
+  value(await Review.status(batch.batchId)).queriesReserved,
+  reservedBeforeRepairs,
+);
+const afterRemainingRepair = { ...calls };
+await tick();
+assert.deepEqual(calls, afterRemainingRepair);
+assert.equal(
+  (
+    await Review.repairUnspentQuery(actor, {
+      manifest,
+      jobId: invalidCandidate.job.id,
+      expectedQueryHash: invalidCandidate.hash,
+      execute: true,
+    })
+  ).success,
+  false,
+);
 
 // Independent operations share one durable slot, including concurrent claims.
 const pacing = () =>

@@ -7,6 +7,7 @@ import {
 } from "@/lib/outbound";
 import {
   PROPOSED_REBUILD_PLAYBOOK,
+  rebuildHeldReviewWritingProposal,
   rebuildWritingProposal,
 } from "@/lib/outbound-rebuild-policy";
 import {
@@ -18,6 +19,22 @@ import {
   writingPolicyHash,
 } from "@/server/utils/outbound/shopping-policy";
 import { writerFixture } from "./helpers/outbound-writer-fixture";
+
+const heldReviewIdentity = {
+  email: "iseld@joinecentic.com",
+  fromName: "Iseld ecentic",
+  signature: "Iseld",
+  founderLine:
+    "I'm Iseld. I left Shopify Plus to start ecentic, where we help stores get their product details through to AI shopping assistants.",
+  productCheckIntro:
+    "I'm Iseld. I left Shopify Plus to start ecentic, where we help stores get their product details through to AI shopping assistants.",
+  voiceNotes: "Use short sentences as Iseld.",
+};
+const heldReviewIntroductions = {
+  founderLine: PROPOSED_REBUILD_PLAYBOOK.founderLine,
+  productCheckIntro: PROPOSED_REBUILD_PLAYBOOK.productCheckIntro,
+};
+const { email: heldReviewEmail, ...heldReviewPrimary } = heldReviewIdentity;
 
 describe("explicit Playbook rebuild controls", () => {
   test("historical settings gain only empty lists and bounded research defaults", () => {
@@ -107,6 +124,135 @@ describe("explicit Playbook rebuild controls", () => {
       profile.founderLine,
     );
     expect(playbookSchema.safeParse(proposed).success).toBe(true);
+  });
+
+  test("held review proposes both Iseld introductions without changing other profiles or live input", () => {
+    const other = {
+      email: "mario@joinecentic.com",
+      fromName: "Mario ecentic",
+      signature: "Mario",
+      founderLine: "I'm Mario, a founder of ecentic.",
+      productCheckIntro: "I'm Mario. We help stores with AI shopping.",
+      voiceNotes: "Write plainly as Mario.",
+    };
+    const sameName = { ...heldReviewIdentity, email: "iseld@example.com" };
+    const settings = {
+      ...defaultPlaybook,
+      senderProfiles: [other, heldReviewIdentity, sameName],
+      sentEmailExamples: "An approved sequence.",
+    };
+    const snapshot = structuredClone(settings);
+    const generic = rebuildWritingProposal(settings);
+    const proposed = rebuildHeldReviewWritingProposal(settings);
+    expect(proposed).toEqual({
+      ...generic,
+      senderProfiles: [
+        other,
+        { ...heldReviewIdentity, ...heldReviewIntroductions },
+        sameName,
+      ],
+    });
+    expect(settings).toEqual(snapshot);
+    expect(generic.senderProfiles).toEqual(snapshot.senderProfiles);
+    expect(settingsForSender(proposed, heldReviewIdentity.email)).toMatchObject(
+      heldReviewIntroductions,
+    );
+    expect(writingPolicyHash(settingsForSender(proposed, other.email))).toBe(
+      writingPolicyHash(settingsForSender(generic, other.email)),
+    );
+    expect(researchPolicyHash(proposed)).toBe(researchPolicyHash(settings));
+    expect(
+      writingPolicyHash(settingsForSender(proposed, heldReviewIdentity.email)),
+    ).not.toBe(
+      writingPolicyHash(settingsForSender(generic, heldReviewIdentity.email)),
+    );
+    expect(playbookSchema.safeParse(proposed).success).toBe(true);
+    expect(rebuildHeldReviewWritingProposal(proposed)).toEqual(proposed);
+  });
+
+  test("held review supports the verified primary identity only when no explicit profile exists", () => {
+    const settings = {
+      ...defaultPlaybook,
+      ...heldReviewPrimary,
+      fromEmail: heldReviewEmail,
+      senderProfiles: [],
+    };
+    const snapshot = structuredClone(settings);
+    const proposed = rebuildHeldReviewWritingProposal(settings);
+    expect(proposed).toEqual({
+      ...rebuildWritingProposal(settings),
+      ...heldReviewIntroductions,
+    });
+    expect(settingsForSender(proposed, settings.fromEmail)).toMatchObject(
+      heldReviewIntroductions,
+    );
+    expect(settings).toEqual(snapshot);
+    expect(proposed.senderProfiles).toEqual([]);
+    expect(rebuildHeldReviewWritingProposal(proposed)).toEqual(proposed);
+  });
+
+  test("an explicit primary profile changes only its introductions, never the global fallback", () => {
+    const settings = {
+      ...defaultPlaybook,
+      ...heldReviewPrimary,
+      fromEmail: heldReviewEmail,
+      senderProfiles: [heldReviewIdentity],
+    };
+    const proposed = rebuildHeldReviewWritingProposal(settings);
+    expect(proposed).toEqual({
+      ...rebuildWritingProposal(settings),
+      senderProfiles: [{ ...heldReviewIdentity, ...heldReviewIntroductions }],
+    });
+    expect(proposed.founderLine).toBe(settings.founderLine);
+    expect(proposed.productCheckIntro).toBe(settings.productCheckIntro);
+  });
+
+  test("held review never infers a biography from a matching name or mailbox alone", () => {
+    for (const patch of [
+      { email: "iseld@example.com" },
+      { fromName: "Juri ecentic" },
+      { signature: "Juri" },
+      { founderLine: "I'm Iseld. I started ecentic." },
+      { productCheckIntro: "I'm Iseld. I worked with Shopify Plus stores." },
+      {
+        founderLine:
+          "I'm Mario. I left Shopify Plus to start ecentic, where we help stores with shopping.",
+      },
+    ]) {
+      const identity = { ...heldReviewIdentity, ...patch };
+      const { email, ...primary } = identity;
+      const explicit = {
+        ...defaultPlaybook,
+        senderProfiles: [identity],
+      };
+      const fallback = {
+        ...defaultPlaybook,
+        ...primary,
+        fromEmail: email,
+        senderProfiles: [],
+      };
+      for (const settings of [explicit, fallback])
+        expect(rebuildHeldReviewWritingProposal(settings)).toEqual(
+          rebuildWritingProposal(settings),
+        );
+    }
+  });
+
+  test("an uncorroborated explicit profile cannot inherit the primary biography", () => {
+    const settings = {
+      ...defaultPlaybook,
+      ...heldReviewPrimary,
+      fromEmail: heldReviewEmail,
+      senderProfiles: [
+        {
+          ...heldReviewIdentity,
+          productCheckIntro: "My newly configured introduction.",
+        },
+      ],
+    };
+    expect(rebuildHeldReviewWritingProposal(settings)).toEqual(
+      rebuildWritingProposal(settings),
+    );
   });
 
   test("new default controls preserve the historical research hash; copy never changes it", () => {

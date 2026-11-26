@@ -679,10 +679,14 @@ const browserRequest =
     );
   };
 
-const capturedProduct = async () => {
+const capturedProduct = async (options?: { name: string; text: string }) => {
   const captured = value(
     await Shopping.inspectProduct(
-      { apiKey, product, country: "US" },
+      {
+        apiKey,
+        product: options ? { ...product, name: options.name } : product,
+        country: "US",
+      },
       {
         now,
         safeUrl: async () => true,
@@ -691,7 +695,12 @@ const capturedProduct = async () => {
           success: true,
           stdout: JSON.stringify({
             ...body,
-            text: "Trail Tote is a large linen tote. Reusable shopping tote bags for everyday errands.",
+            ...(options
+              ? { title: options.name, headings: [options.name] }
+              : {}),
+            text:
+              options?.text ??
+              "Trail Tote is a large linen tote. Reusable shopping tote bags for everyday errands.",
           }),
         })),
       },
@@ -715,6 +724,331 @@ describe("unbranded questions before search spend", () => {
     category: "tote",
     attribute: "large",
     excerptIds: [JSON.parse(prompt).excerpts[0].id],
+  });
+  const categoryContext = async (
+    category: string,
+    name: string,
+    text: string,
+  ) => ({
+    ...(await context()),
+    category,
+    product: { ...product, name },
+    browser: await capturedProduct({ name, text }),
+  });
+  const driftedTop = async () => {
+    const input = await categoryContext(
+      "top",
+      "V-Front Extended Sleeves Top - Limited Edition",
+      "This top is made from sheer stretch mesh fabric.",
+    );
+    const excerpts = Shopping.shopperQueryExcerpts(input, time);
+    const excerpt = excerpts?.[0];
+    if (!excerpt) throw new Error("Missing rendered query basis");
+    const previousQuery = Shopping.preparedQuerySchema.parse({
+      product: input.product,
+      category: input.category,
+      country: "US",
+      surface: "google_ai_mode",
+      merchant: { ...input.merchant, aliases: [] },
+      intent: "unbranded-specific",
+      prompt: "sheer stretch mesh fabric",
+      basis: {
+        category: "fabric",
+        attribute: "sheer stretch mesh",
+        excerpts: [excerpt],
+        promptHash: "f".repeat(64),
+      },
+    });
+    return { ...input, previousQuery };
+  };
+
+  test("rejects a material query that drops the saved garment category", async () => {
+    const input = await driftedTop();
+    expect(
+      Shopping.validateShopperQuery(
+        { ...input, query: input.previousQuery },
+        time,
+      ),
+    ).toContain('saved product category "top"');
+    const calls: string[] = [];
+    const result = value(
+      await Shopping.generateShopperQuery(input, {
+        now,
+        generate: async ({ prompt }) => {
+          calls.push(prompt);
+          return {
+            ...selection(prompt),
+            question: "sheer stretch mesh fabric",
+            category: "fabric",
+            attribute: "sheer stretch mesh",
+          };
+        },
+      }),
+    );
+    expect(result.status).toBe("held");
+    if (result.status !== "held") throw new Error("Expected category hold");
+    expect(result.reason).toContain('selected category "fabric"');
+    expect(calls).toHaveLength(2);
+    expect(JSON.parse(calls[1] ?? "{}").validationFailure).toBe(result.reason);
+  });
+
+  test.each([
+    ["top", "Marlow Top", "stretch mesh top", "stretch mesh"],
+    ["jeans", "Marlow Jeans", "black denim jeans", "black denim"],
+    ["putter", "Marlow Putter", "steel golf putter", "steel golf"],
+  ])(
+    "keeps grounded generic category %s out of distinctive title words",
+    async (category, name, question, attribute) => {
+      const input = await categoryContext(
+        category,
+        name,
+        `The product is a ${question}.`,
+      );
+      const result = value(
+        await Shopping.generateShopperQuery(input, {
+          now,
+          generate: async ({ prompt }) => ({
+            ...selection(prompt),
+            question,
+            category,
+            attribute,
+          }),
+        }),
+      );
+      expect(result.status).toBe("prepared");
+      expect(result.generation.attempts).toBe(1);
+    },
+  );
+
+  test("retains a grounded four-word category and rejects a generic kit suffix", async () => {
+    const input = await categoryContext(
+      "upper control arm kit",
+      "Marlow Upper Control Arm Kit",
+      "This adjustable upper control arm kit fits the vehicle.",
+    );
+    for (const category of [
+      "kit",
+      "control arm kit",
+      "upper control arm kit",
+    ]) {
+      const result = value(
+        await Shopping.generateShopperQuery(input, {
+          now,
+          generate: async ({ prompt }) => ({
+            ...selection(prompt),
+            question: `adjustable ${category}`,
+            category,
+            attribute: "adjustable",
+          }),
+        }),
+      );
+      expect(result.status).toBe(
+        category === "upper control arm kit" ? "prepared" : "held",
+      );
+      if (category === "control arm kit" && result.status === "held")
+        expect(result.reason).toContain("full saved category");
+    }
+  });
+
+  test.each([
+    "kit",
+    "set",
+    "pack",
+    "box",
+    "boxes",
+    "bundle",
+    "mix",
+    "mixes",
+    "system",
+    "collection",
+    "assortment",
+  ])("does not collapse a saved category to generic %s", async (head) => {
+    const input = await categoryContext(
+      `linen ${head}`,
+      "Marlow Product",
+      `A large linen ${head}.`,
+    );
+    const result = value(
+      await Shopping.generateShopperQuery(input, {
+        now,
+        generate: async ({ prompt }) => ({
+          ...selection(prompt),
+          question: `large linen ${head}`,
+          category: head,
+          attribute: "large",
+        }),
+      }),
+    );
+    expect(result.status).toBe("held");
+    if (result.status === "held")
+      expect(result.reason).toContain("full saved category");
+  });
+
+  test("does not invent category aliases or allow category metadata to exempt a distinctive title", async () => {
+    for (const item of [
+      {
+        saved: "jeans",
+        name: "Marlow Jeans",
+        question: "black denim trousers",
+        category: "trouser",
+        attribute: "black denim",
+        reason: "saved product category",
+      },
+      {
+        saved: "marlow",
+        name: "Marlow Product",
+        question: "large linen marlow",
+        category: "marlow",
+        attribute: "large",
+        reason: "distinctive word",
+      },
+    ]) {
+      const input = await categoryContext(
+        item.saved,
+        item.name,
+        `The product is ${item.question}.`,
+      );
+      const result = value(
+        await Shopping.generateShopperQuery(input, {
+          now,
+          generate: async ({ prompt }) => ({
+            ...selection(prompt),
+            question: item.question,
+            category: item.category,
+            attribute: item.attribute,
+          }),
+        }),
+      );
+      expect(result.status).toBe("held");
+      if (result.status === "held")
+        expect(result.reason).toContain(item.reason);
+    }
+  });
+
+  test("a category found only inside the merchant identity is still ungrounded", async () => {
+    const input = {
+      ...(await categoryContext(
+        "top",
+        "Marlow Product",
+        "Top Studio makes stretch mesh garments.",
+      )),
+      merchant: { name: "Top Studio", domain: "merchant.example" },
+    };
+    const result = value(
+      await Shopping.generateShopperQuery(input, {
+        now,
+        generate: async ({ prompt }) => ({
+          ...selection(prompt),
+          question: "stretch mesh top",
+          category: "top",
+          attribute: "stretch mesh",
+        }),
+      }),
+    );
+    expect(result.status).toBe("held");
+    if (result.status === "held")
+      expect(result.reason).toContain("exact support");
+  });
+
+  test("repairs an intact completed first category selection with exactly one model call", async () => {
+    const input = await driftedTop();
+    const original = structuredClone(input.previousQuery);
+    const calls: string[] = [];
+    const result = value(
+      await Shopping.repairShopperQuery(input, {
+        now,
+        generate: async ({ prompt }) => {
+          calls.push(prompt);
+          expect(JSON.parse(prompt).previousInvalidSelection).toMatchObject({
+            question: "sheer stretch mesh fabric",
+            category: "fabric",
+          });
+          return {
+            ...selection(prompt),
+            question: "stretch mesh top",
+            category: "top",
+            attribute: "stretch mesh",
+          };
+        },
+      }),
+    );
+    expect(result.status).toBe("prepared");
+    expect(result.generation.attempts).toBe(2);
+    expect(calls).toHaveLength(1);
+    expect(input.previousQuery).toEqual(original);
+  });
+
+  test("a failed or interrupted remaining repair never gets another model attempt", async () => {
+    const input = await driftedTop();
+    const rejectedCalls: number[] = [];
+    const rejected = value(
+      await Shopping.repairShopperQuery(input, {
+        now,
+        generate: async ({ prompt }) => {
+          rejectedCalls.push(1);
+          return {
+            ...selection(prompt),
+            question: "sheer stretch mesh fabric",
+            category: "fabric",
+            attribute: "sheer stretch mesh",
+          };
+        },
+      }),
+    );
+    expect(rejected.status).toBe("held");
+    expect(rejected.generation.attempts).toBe(2);
+    expect(rejectedCalls).toHaveLength(1);
+    const interruptedCalls: number[] = [];
+    const interrupted = await Shopping.repairShopperQuery(input, {
+      now,
+      generate: async () => {
+        interruptedCalls.push(1);
+        throw new Error("fixture disconnected");
+      },
+    });
+    expect(interrupted.success).toBe(false);
+    if (!interrupted.success) {
+      expect(interrupted.error.code).toBe("uncertain");
+      expect(interrupted.error.receipt).toMatchObject({ attempts: 2 });
+    }
+    expect(interruptedCalls).toHaveLength(1);
+  });
+
+  test("changed original bindings and expired evidence reject repair before generation", async () => {
+    const input = await driftedTop();
+    const changed = structuredClone(input.previousQuery);
+    const excerpt = changed.basis?.excerpts[0];
+    if (!excerpt) throw new Error("Missing fixture excerpt");
+    excerpt.quote += " Invented proof.";
+    for (const item of [
+      { ...input, previousQuery: changed },
+      { ...input, country: "GB" },
+      { ...input, product: { ...input.product, name: "Different product" } },
+      { ...input, deadline: time + 4000 },
+    ]) {
+      const generate = mock(async () => {
+        throw new Error("No model call after changed context");
+      });
+      const result = value(
+        await Shopping.repairShopperQuery(item, { now, generate }),
+      );
+      expect(result.status).toBe("held");
+      expect(result.generation.attempts).toBe(1);
+      expect(generate).not.toHaveBeenCalled();
+    }
+    const result = value(
+      await Shopping.repairShopperQuery(
+        { ...input, deadline: time + 8 * 86_400_000 },
+        {
+          now: () => time + 8 * 86_400_000,
+          generate: async () => {
+            throw new Error("No model after stale capture");
+          },
+        },
+      ),
+    );
+    expect(result.status).toBe("held");
+    expect(result.generation.attempts).toBe(1);
   });
 
   test("captures the merchant before an answer exists and reuses it without a second browser session", async () => {

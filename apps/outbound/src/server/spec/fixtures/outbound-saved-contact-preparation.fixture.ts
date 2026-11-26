@@ -225,7 +225,7 @@ const dependencies: Parameters<typeof Preparation.run>[1] = {
       assessment: {
         decision: "qualified",
         reason: "The source supports an established physical product brand.",
-        productCategory: "home goods",
+        productCategory: "linen bags",
         ownBrandEvidence: null,
         physicalProductEvidence: null,
         establishedEvidence: null,
@@ -236,7 +236,7 @@ const dependencies: Parameters<typeof Preparation.run>[1] = {
       usage: { inputTokens: 20, outputTokens: 20 },
       providerRequestId: "fixture",
       details: {
-        productCategory: "home goods",
+        productCategory: "linen bags",
         legitEvidence: "Own physical product brand with retail distribution.",
         productInsight: null,
       },
@@ -409,6 +409,8 @@ const pendingQuery = Capture.preparedQuerySchema.parse(
   pending.output?.["query"],
 );
 assert.equal(pendingQuery.prompt, "large linen bags");
+assert.equal(pendingQuery.category, "linen bags");
+assert.equal(pendingQuery.basis?.category, "bag");
 assert.ok(pending.output?.["productCapture"]);
 assert.ok(pendingQuery.basis?.promptHash);
 await release();

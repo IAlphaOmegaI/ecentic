@@ -227,7 +227,7 @@ const configure = () => {
     originalGenerate(input, {
       generate: async ({ prompt }) => ({
         question: "large linen tote bags",
-        category: "tote",
+        category: "bag",
         attribute: "large",
         excerptIds: [JSON.parse(prompt).excerpts[0].id],
       }),
@@ -520,6 +520,8 @@ describe.skipIf(!endpoint)(
       const submitted = await currentJob();
       expect(submitted.output?.["shoppingQuery"]).toMatchObject({
         product,
+        category: "linen tote bags",
+        basis: { category: "bag" },
         surface: "google_ai_mode",
       });
       expect(submitted.output?.["shoppingRequestId"]).toEqual(

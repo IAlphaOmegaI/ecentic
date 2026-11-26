@@ -25,7 +25,7 @@ import {
   copyVerdictProblem,
   hasCompleteCopyVerdict,
 } from "@/lib/outbound-copy-quality";
-import { rebuildWritingProposal } from "@/lib/outbound-rebuild-policy";
+import { rebuildHeldReviewWritingProposal } from "@/lib/outbound-rebuild-policy";
 import { db, schema, type TransactionScope } from "@/server/database";
 import { ConflictError, ValidationError } from "@/server/utils/error";
 import * as Draft from "@/server/utils/outbound/draft";
@@ -37,6 +37,8 @@ import {
   type HeldReviewManifest,
   type HeldReviewState,
   heldManifestHash,
+  heldPreparedQueryHash,
+  heldQueryRepairSchema,
   heldReviewBatchSchema,
   heldReviewBudgetSchema,
   heldReviewInputSchema,
@@ -73,6 +75,7 @@ type Claim = { job: Job; input: HeldReviewInput; state: HeldReviewState };
 export type HeldReviewDependencies = {
   inspectProduct?: typeof Capture.inspectProduct;
   generateQuery?: typeof Capture.generateShopperQuery;
+  repairQuery?: typeof Capture.repairShopperQuery;
   start?: typeof Capture.startQuery;
   poll?: typeof Capture.pollQuery;
   browse?: typeof Capture.inspectPages;
@@ -238,7 +241,7 @@ const eligible = async (
     );
   const preview = state.previewContext;
   if (preview) {
-    const proposed = rebuildWritingProposal(policy.settings);
+    const proposed = rebuildHeldReviewWritingProposal(policy.settings);
     const settings = settingsForProspect(prospect, proposed);
     const details = prospectSchema.parse({
       ...prospect.details,
@@ -419,6 +422,116 @@ const owns = async (scope: TransactionScope, claim: Claim) => {
     throw new ConflictError("The held review stage lease expired or changed.");
   return state;
 };
+const unspentFirstQuery = (state: HeldReviewState) => {
+  if (
+    !state.query?.basis ||
+    state.productCapture?.status !== "captured" ||
+    state.shoppingQueryIntent !== "unbranded-specific" ||
+    state.query.intent !== "unbranded-specific" ||
+    state.queryGeneration?.attempts !== 1 ||
+    state.shoppingQueryCount !== 0 ||
+    state.polls !== 0 ||
+    state.queryReservedAt ||
+    state.shoppingJob ||
+    state.answer ||
+    state.browser ||
+    state.shoppingReceipt ||
+    state.shoppingHistory?.length ||
+    state.composition ||
+    state.researchId ||
+    state.previewContext ||
+    state.draftBeforeJudge ||
+    state.preview ||
+    state.failureReceipt ||
+    state.heldReason
+  )
+    throw new ValidationError(
+      "Only an unspent first query with exactly one completed generation can use its remaining repair.",
+    );
+  return state.query;
+};
+
+/** Explicit operator reconciliation only; this function never calls a provider. */
+export const repairUnspentQuery = (
+  actor: string,
+  input: {
+    manifest: HeldReviewManifest;
+    jobId: string;
+    expectedQueryHash: string;
+    execute?: boolean;
+  },
+) =>
+  transaction(async (scope) => {
+    const manifest = validateManifest(input.manifest);
+    const job = await jobAt(scope, z.string().uuid().parse(input.jobId));
+    const details = heldReviewInputSchema.parse(job.input);
+    const state = heldReviewStateSchema.parse(job.output);
+    const requestedBy = z.string().trim().min(1).max(200).parse(actor);
+    if (
+      job.provider !== "automation" ||
+      job.prospectId !== details.prospectId ||
+      !manifest.prospectIds.includes(details.prospectId) ||
+      job.status !== "pending" ||
+      job.error ||
+      state.stage !== "query" ||
+      state.lease !== null ||
+      state.queryRepair
+    )
+      throw new ConflictError(
+        "Only a pending, unleased query in this approved manifest may be reconciled; terminal, uncertain or previously repaired jobs cannot reopen.",
+      );
+    const query = unspentFirstQuery(state);
+    const queryHash = heldPreparedQueryHash(query);
+    if (
+      queryHash !==
+      z
+        .string()
+        .regex(/^[a-f0-9]{64}$/)
+        .parse(input.expectedQueryHash)
+    )
+      throw new ConflictError(
+        "The saved query changed. Inspect its current hash before reconciliation.",
+      );
+    const ready = await eligible(scope, details, state);
+    const validationFailure = queryProblem(
+      details,
+      state,
+      ready.policy.settings,
+    );
+    if (!validationFailure)
+      throw new ValidationError(
+        "This query still passes deterministic validation and does not qualify for another generation.",
+      );
+    const queryRepair = heldQueryRepairSchema.parse({
+      originalQuery: query,
+      originalQueryHash: queryHash,
+      originalGeneration: state.queryGeneration,
+      validationFailure,
+      requestedBy,
+      requestedAt: new Date().toISOString(),
+    });
+    if (input.execute === true)
+      await scope
+        .update(schema.outboundIntegrationJob)
+        .set({
+          output: heldReviewStateSchema.parse({
+            ...state,
+            stage: "repairQuery",
+            queryRepair,
+            availableAt: new Date().toISOString(),
+          }),
+          updatedAt: new Date(),
+        })
+        .where(eq(schema.outboundIntegrationJob.id, job.id));
+    return {
+      jobId: job.id,
+      batchId: details.batchId,
+      staged: input.execute === true,
+      originalQueryHash: queryHash,
+      remainingModelAttempts: 1 as const,
+      validationFailure,
+    };
+  });
 const checkpoint = (
   claim: Claim,
   patch: Partial<HeldReviewState>,
@@ -538,6 +651,43 @@ const claimNext = (batchId: string, deadline: number) =>
           .where(eq(schema.outboundIntegrationJob.id, id));
         continue;
       }
+      if (state.stage === "repairQuery") {
+        if (state.queryRepair?.reservedAt) {
+          await scope
+            .update(schema.outboundIntegrationJob)
+            .set({
+              status: "uncertain",
+              error:
+                "The remaining query repair was already reserved. Reconcile its outcome without another generation.",
+              updatedAt: new Date(),
+            })
+            .where(eq(schema.outboundIntegrationJob.id, id));
+          continue;
+        }
+        const repairable = await resultify(() => {
+          const query = unspentFirstQuery(state);
+          if (
+            !state.queryRepair ||
+            heldPreparedQueryHash(query) !==
+              state.queryRepair.originalQueryHash ||
+            !queryProblem(input, state, ready.data.policy.settings)
+          )
+            throw new ValidationError(
+              "The preserved invalid query no longer qualifies for its reserved one-shot repair.",
+            );
+        });
+        if (!repairable.success) {
+          await scope
+            .update(schema.outboundIntegrationJob)
+            .set({
+              status: "failed",
+              error: repairable.error.message,
+              updatedAt: new Date(),
+            })
+            .where(eq(schema.outboundIntegrationJob.id, id));
+          continue;
+        }
+      }
       if (state.stage === "draft") {
         const [writing] = await scope
           .select({ id: schema.outboundIntegrationJob.id })
@@ -647,6 +797,14 @@ const claimNext = (batchId: string, deadline: number) =>
           ? {
               queryReservedAt: new Date().toISOString(),
               shoppingQueryCount: state.shoppingQueryCount + 1,
+            }
+          : {}),
+        ...(state.stage === "repairQuery" && state.queryRepair
+          ? {
+              queryRepair: {
+                ...state.queryRepair,
+                reservedAt: new Date().toISOString(),
+              },
             }
           : {}),
       });
@@ -794,6 +952,42 @@ const execute = async (
             queryGeneration: generated.generation,
           })
         : held(generated.reason, { queryGeneration: generated.generation });
+    }
+    case "repairQuery": {
+      const query = unspentFirstQuery(state);
+      const repair = state.queryRepair;
+      if (
+        !repair?.reservedAt ||
+        heldPreparedQueryHash(query) !== repair.originalQueryHash ||
+        state.productCapture?.status !== "captured"
+      )
+        throw new ValidationError(
+          "The original query and reserved remaining repair are missing or changed.",
+        );
+      const repaired = value(
+        await (dependencies.repairQuery ?? Capture.repairShopperQuery)({
+          product: input.product,
+          category: input.category,
+          country: input.country,
+          merchant: input.merchant,
+          browser: state.productCapture,
+          intent: "unbranded-specific",
+          queryStyle: policy.settings.queryStyle,
+          discoveryFreshnessDays: policy.settings.discoveryFreshnessDays,
+          previousQuery: repair.originalQuery,
+          deadline,
+        }),
+      );
+      if (repaired.status === "prepared" && repaired.generation.attempts !== 2)
+        throw new ValidationError(
+          "The repaired query must account for the original candidate and exactly one remaining attempt.",
+        );
+      return repaired.status === "prepared"
+        ? next("query", {
+            query: repaired.query,
+            queryGeneration: repaired.generation,
+          })
+        : held(repaired.reason, { queryGeneration: repaired.generation });
     }
     case "query": {
       const problem = queryProblem(input, state, policy.settings);
@@ -975,7 +1169,7 @@ const execute = async (
           );
           if (problem) throw new ValidationError(problem);
           const proposedPolicy = playbookSchema.parse(
-            rebuildWritingProposal(ready.policy.settings),
+            rebuildHeldReviewWritingProposal(ready.policy.settings),
           );
           const settings = settingsForProspect(ready.prospect, proposedPolicy);
           const prospect = prospectSchema.parse({

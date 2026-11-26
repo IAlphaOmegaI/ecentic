@@ -436,6 +436,7 @@ export const validateFirecrawlCredentials = async (
 
 export {
   generateShopperQuery,
+  repairShopperQuery,
   type ShopperQueryDependencies,
   type ShopperQueryInput,
   type ShopperQuerySelection,

@@ -1,4 +1,4 @@
-import type { Playbook } from "./outbound";
+import type { Playbook, SenderProfile } from "./outbound";
 
 /** Exact section 7 proposals. These are never live defaults or approved examples. */
 export const PROPOSED_REBUILD_PLAYBOOK = {
@@ -67,3 +67,51 @@ export const rebuildWritingProposal = (settings: Playbook): Playbook => ({
     ]),
   ].join("\n"),
 });
+
+const heldReviewSenderEmail = "iseld@joinecentic.com";
+const iseldBiography =
+  "I'm Iseld. I left Shopify Plus to start ecentic, where we help stores ";
+const hasHeldReviewIdentity = (
+  identity: Pick<
+    SenderProfile,
+    "fromName" | "signature" | "founderLine" | "productCheckIntro"
+  >,
+) =>
+  identity.fromName.trim() === "Iseld ecentic" &&
+  identity.signature.trim() === "Iseld" &&
+  [identity.founderLine, identity.productCheckIntro].every((line) =>
+    line
+      .trim()
+      .replaceAll("’", "'")
+      .replace(/\s+/g, " ")
+      .startsWith(iseldBiography),
+  );
+
+/** Unapplied held-review copy only; the verified sender keeps the saved identity. */
+export const rebuildHeldReviewWritingProposal = (
+  settings: Playbook,
+): Playbook => {
+  const proposed = rebuildWritingProposal(settings);
+  const profile = settings.senderProfiles.find(
+    (candidate) => candidate.email.toLowerCase() === heldReviewSenderEmail,
+  );
+  const introductions = {
+    founderLine: PROPOSED_REBUILD_PLAYBOOK.founderLine,
+    productCheckIntro: PROPOSED_REBUILD_PLAYBOOK.productCheckIntro,
+  };
+  if (profile)
+    return hasHeldReviewIdentity(profile)
+      ? {
+          ...proposed,
+          senderProfiles: proposed.senderProfiles.map((candidate) =>
+            candidate === profile
+              ? { ...candidate, ...introductions }
+              : candidate,
+          ),
+        }
+      : proposed;
+  return settings.fromEmail.toLowerCase() === heldReviewSenderEmail &&
+    hasHeldReviewIdentity(settings)
+    ? { ...proposed, ...introductions }
+    : proposed;
+};

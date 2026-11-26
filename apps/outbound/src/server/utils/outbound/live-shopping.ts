@@ -5,6 +5,7 @@ export {
   matchMerchantText,
   pollQuery,
   prepareQuery,
+  repairShopperQuery,
   replayShoppingCapture,
   type ShopperQueryDependencies,
   type ShopperQueryInput,

@@ -12,7 +12,10 @@ import { createAssessmentCatalog } from "@/server/utils/outbound/shopping-assess
 import { projectFactAssessment } from "@/server/utils/outbound/shopping-fact-assessment";
 
 /** Synthetic provider wire captures for isolated lifecycle tests. Never real research. */
-export const heldBrowser = (product: { name: string; url: string }) => {
+export const heldBrowser = (
+  product: { name: string; url: string },
+  text?: string,
+) => {
   const now = Date.now();
   const timestamp = new Date(now).toISOString();
   const digest = (body: string) =>
@@ -25,7 +28,7 @@ export const heldBrowser = (product: { name: string; url: string }) => {
       checkedAt: timestamp,
       title: product.name,
       headings: [product.name],
-      text: `${product.name} large linen carry bag.`,
+      text: text ?? `${product.name} large linen carry bag.`,
       structured: [],
       selected: [],
       locale: "en-US",
