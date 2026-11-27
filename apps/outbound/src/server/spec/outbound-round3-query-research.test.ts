@@ -34,6 +34,144 @@ const context = (category: string, name: string, text: string) => {
     deadline: Date.now() + 90000,
   };
 };
+const correctingSelection = (prompt: string) => ({
+  ...decision(prompt),
+  category: "concealer",
+  attribute: "color correcting",
+});
+
+test("v3 grounds the exact correcting query in saved product-body corrects without rewriting evidence", async () => {
+  const input = {
+    ...context(
+      "concealer",
+      "Synthetic HD Corrector",
+      [
+        "Synthetic HD Corrector",
+        "A lightweight, creamy formula that color corrects, conceals, contours, and highlights.",
+        "These concealers provide buildable coverage.",
+        "Details",
+        "Twelve targeted correcting shades and a built-in brush applicator.",
+      ].join("\n"),
+    ),
+    question: "color correcting concealer",
+  };
+  const before = JSON.stringify(input);
+  const excerpts = Capture.shopperQueryExcerpts(input);
+  if (!excerpts)
+    throw new Error("The synthetic rendered product must have excerpts.");
+  const review = mock(async ({ prompt }: { prompt: string }) =>
+    correctingSelection(prompt),
+  );
+  const result = await Capture.prepareShopperQuery(input, { review });
+  if (!result.success || result.data.status !== "prepared")
+    throw new Error(JSON.stringify(result));
+  expect(result.data.query.prompt).toBe(input.question);
+  expect(result.data.query.basis?.excerpts).toEqual(excerpts);
+  expect(result.data.generation.attempts).toBe(0);
+  expect(
+    Capture.validateShopperQuery({ ...input, query: result.data.query }),
+  ).toBeNull();
+  expect(review).toHaveBeenCalledTimes(1);
+  expect(JSON.stringify(input)).toBe(before);
+
+  // A legacy caller cannot acquire the new grammatical equivalence through an injected review.
+  const legacyContext = { ...input, contractVersion: undefined };
+  const generate = mock(async ({ prompt }: { prompt: string }) => ({
+    question: input.question,
+    category: "concealer",
+    attribute: "color correcting",
+    excerptIds: decision(prompt).excerptIds,
+  }));
+  const legacyReview = mock(async ({ prompt }: { prompt: string }) =>
+    decision(prompt),
+  );
+  for (const prepare of [
+    Capture.generateLegacyShopperQuery,
+    Capture.generateShopperQuery,
+  ]) {
+    const legacy = await prepare(legacyContext, {
+      generate,
+      review: legacyReview,
+    });
+    expect(legacy.success && legacy.data.status).toBe("held");
+  }
+  expect(legacyReview).toHaveBeenCalledTimes(0);
+  expect(JSON.stringify(input)).toBe(before);
+});
+
+for (const sample of [
+  {
+    label: "navigation beside a campaign",
+    text: "Color corrects\nBLACK FRIDAY\nShop sale\nSynthetic HD Corrector\nA creamy concealer blends smoothly.",
+  },
+  {
+    label: "unsupported correcting attribute",
+    text: "This creamy concealer has color options and blends smoothly.",
+  },
+  {
+    label: "a reversed phrase",
+    text: "This concealer corrects color before makeup.",
+  },
+  {
+    label: "a different category",
+    text: "This serum color corrects and blends smoothly.",
+  },
+  {
+    label: "a noun outside the two verb forms",
+    text: "This concealer offers color correction.",
+  },
+])
+  test(`v3 inflection does not admit ${sample.label}`, async () => {
+    const input = {
+      ...context("concealer", "Synthetic HD Corrector", sample.text),
+      question: "color correcting concealer",
+    };
+    const review = mock(async ({ prompt }: { prompt: string }) =>
+      correctingSelection(prompt),
+    );
+    const result = await Capture.prepareShopperQuery(input, { review });
+    expect(result.success && result.data.status).toBe("held");
+    expect(review).toHaveBeenCalledTimes(1);
+  });
+
+test("v3 inflection preserves semantic rejection of an unrelated product and merchant-name exclusions", async () => {
+  const input = {
+    ...context(
+      "concealer",
+      "Synthetic HD Corrector",
+      "This concealer blends smoothly. A related serum color corrects.",
+    ),
+    question: "color correcting concealer",
+  };
+  const result = await Capture.prepareShopperQuery(input, {
+    review: async ({ prompt }) => ({
+      ...correctingSelection(prompt),
+      status: "invalid",
+      reason: "Only the related serum has the correcting property.",
+      checks: { ...decision(prompt).checks, productGrounding: false },
+    }),
+  });
+  expect(result.success && result.data.status).toBe("held");
+  expect(
+    result.success && result.data.status === "held" && result.data.reason,
+  ).toContain("related serum");
+  const branded = {
+    ...context(
+      "concealer",
+      "Synthetic HD Corrector",
+      "This concealer color corrects.",
+    ),
+    question: input.question,
+    merchant: { ...input.merchant, name: "Correcting Co" },
+  };
+  const rejected = await Capture.prepareShopperQuery(branded, {
+    review: async ({ prompt }) => correctingSelection(prompt),
+  });
+  expect(
+    rejected.success && rejected.data.status === "held" && rejected.data.reason,
+  ).toContain("brand");
+});
+
 for (const selected of [
   {
     question: "color correcting concealer",

@@ -100,6 +100,14 @@ still use 2–8 words and a category plus one supported attribute or use. Every 
 question retains the natural-language, obvious-product-fit, unbranded and rendered
 product-grounding checks.
 
+For v3 product grounding only, the grammatical verb forms `corrects` and
+`correcting` share a comparison token. Thus an exact `color correcting concealer`
+query can use product-body evidence that says it `color corrects`; word order,
+semantic product fit, navigation exclusions and exact excerpt provenance still
+apply. This does not equate `corrector` with `concealer`, add general synonyms or
+change merchant matching. V1/v2 normalization, saved questions, captures and
+review hashes remain unchanged.
+
 `prepareShopperQuery` accepts an operator-supplied exact phrase and makes one
 semantic review that identifies its category, attribute and exact supporting
 excerpts. Its output cannot contain a replacement question. A successful result

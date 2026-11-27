@@ -21,6 +21,9 @@ import {
   shopperQueryReviewSchema,
 } from "./live-shopping-contract";
 
+export const SHOPPER_QUERY_ROUND3_GRAMMAR_VERSION =
+  "shopper-query-v3-corrects-correcting-v1";
+
 type CapturedBrowser = Extract<BrowserResearch, { status: "captured" }>;
 type Merchant = { name: string; domain: string; aliases?: string[] };
 type QueryContext = {
@@ -347,6 +350,15 @@ const validateQueryGrounding = (
   const round3 =
     (input.contractVersion ?? query.contractVersion) ===
     SHOPPER_QUERY_ROUND3_VERSION;
+  // Only this explicit v3 verb inflection is equivalent for product grounding.
+  // Identity checks, category nouns, saved text and legacy normalization stay intact.
+  const groundingStem = round3
+    ? (word: string) => stem(word === "correcting" ? "corrects" : word)
+    : stem;
+  const supportedPhrase = (text: string, phrase: string) =>
+    ` ${words(text).map(groundingStem).join(" ")} `.includes(
+      ` ${words(phrase).map(groundingStem).join(" ")} `,
+    );
   const categoryOnly =
     round3 && query.intent === "unbranded-broad" && !basis.attribute;
   const count = revised ? countWords(query.prompt) : words(query.prompt).length;
@@ -422,17 +434,20 @@ const validateQueryGrounding = (
   );
   if (
     !supported.some((text) =>
-      phrasePresent(withoutMerchantIdentity(text, merchant), basis.category),
+      supportedPhrase(withoutMerchantIdentity(text, merchant), basis.category),
     ) ||
     (!categoryOnly &&
       !supported.some((text) =>
-        phrasePresent(withoutMerchantIdentity(text, merchant), basis.attribute),
+        supportedPhrase(
+          withoutMerchantIdentity(text, merchant),
+          basis.attribute,
+        ),
       ))
   )
     return "The category and use or occasion need exact support in the rendered product excerpts outside navigation, cart controls and promotional banners.";
   const selectedWords = new Set(
     supported.flatMap((text) =>
-      words(withoutMerchantIdentity(text, merchant)).map(stem),
+      words(withoutMerchantIdentity(text, merchant)).map(groundingStem),
     ),
   );
   const functionWords = new Set([
@@ -449,7 +464,7 @@ const validateQueryGrounding = (
     "by",
     "from",
   ]);
-  const questionWords = words(query.prompt).map(stem);
+  const questionWords = words(query.prompt).map(groundingStem);
   if (
     questionWords.some(
       (word) => !functionWords.has(word) && !selectedWords.has(word),
@@ -457,7 +472,7 @@ const validateQueryGrounding = (
   )
     return "Every meaningful word in the question must be supported by its selected product excerpts.";
   const anchorWords = new Set(
-    [...words(basis.category), ...words(basis.attribute)].map(stem),
+    [...words(basis.category), ...words(basis.attribute)].map(groundingStem),
   );
   if (
     revised &&
