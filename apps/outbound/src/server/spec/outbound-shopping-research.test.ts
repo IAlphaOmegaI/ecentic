@@ -8,7 +8,7 @@ import {
   setSystemTime,
   test,
 } from "bun:test";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { eq, sql } from "drizzle-orm";
 import { defaultPlaybook, lintMessages, prospectSchema } from "@/lib/outbound";
 import { defaultCampaignCriteria } from "@/lib/outbound-campaigns";
@@ -1557,8 +1557,15 @@ describe.skipIf(!endpoint)(
           .success,
       ).toBe(false);
     });
-    test.each(["send", "revoke", "reply", "optout"] as const)(
-      "an older shopping finding can continue its approved thread while %s checks remain authoritative",
+    test.each([
+      "send",
+      "revoke",
+      "pause",
+      "reply",
+      "optout",
+      "receiptChanged",
+    ] as const)(
+      "a fixed bump replays original approved evidence while %s checks remain authoritative",
       async (action) => {
         const { store, research, db, schema } = active();
         const policy = { ...settings, verificationDays: 1 };
@@ -1621,26 +1628,11 @@ describe.skipIf(!endpoint)(
             approved.revision,
           ),
         );
-        expect(
-          (
-            await store.claimDelivery("operator", {
-              prospect: approved.id,
-              inbox: fixture.inboxId,
-            })
-          ).success,
-        ).toBe(false);
-        const before = await store.policy();
-        const permitted = value(
-          await store.savePlaybook(
-            "owner",
-            {
-              ...before.settings,
-              allowStaleEvidence: true,
-            },
-            before.revision,
-          ),
-        );
-        expect(permitted.revision).toBe(before.revision);
+        const beforePolicy = await store.policy();
+        expect(beforePolicy.settings.allowStaleEvidence).toBe(false);
+        const jobsBefore = await db
+          .select()
+          .from(schema.outboundIntegrationJob);
         const claim = value(
           await store.claimDelivery("operator", {
             prospect: approved.id,
@@ -1649,13 +1641,45 @@ describe.skipIf(!endpoint)(
         );
         expect(claim.step).toBe(2);
         expect(claim.threadId).toBe("original-thread");
+        expect(claim.message.body.split("\n")[0]).toBe("Bumping this!");
+        expect(await store.policy()).toEqual(beforePolicy);
         if (action === "revoke")
+          value(
+            await store.reviewProspect("owner", {
+              prospect: approved.id,
+              revision: approved.revision,
+              decision: "hold",
+              reason: "Explicitly revoke this sequence after claim.",
+            }),
+          );
+        if (action === "pause")
           value(
             await store.savePlaybook("owner", {
               ...(await store.policy()).settings,
-              allowStaleEvidence: false,
+              sendingEnabled: false,
             }),
           );
+        let expectedReceipt = original;
+        if (action === "receiptChanged") {
+          if (!original?.output) throw new Error("Missing original receipt.");
+          const changed = shoppingResearchSchema.parse(
+            original.output["receipt"],
+          );
+          changed.selected.scope = "A different synthetic factual scope.";
+          const receiptHash = createHash("sha256")
+            .update(JSON.stringify(changed))
+            .digest("hex");
+          expectedReceipt = (
+            await db
+              .update(schema.outboundIntegrationJob)
+              .set({
+                input: { ...original.input, receiptHash },
+                output: { ...original.output, receipt: changed },
+              })
+              .where(eq(schema.outboundIntegrationJob.id, original.id))
+              .returning()
+          )[0];
+        }
         if (action === "reply" || action === "optout")
           value(
             await store.recordOutcome("operator", {
@@ -1683,7 +1707,10 @@ describe.skipIf(!endpoint)(
           .select()
           .from(schema.outboundIntegrationJob)
           .where(eq(schema.outboundIntegrationJob.id, saved.researchId));
-        expect(receipt).toEqual(original);
+        expect(receipt).toEqual(expectedReceipt);
+        expect(
+          await db.select().from(schema.outboundIntegrationJob),
+        ).toHaveLength(jobsBefore.length);
       },
     );
     test("stale Playbook and tampered source receipts cannot be approved", async () => {

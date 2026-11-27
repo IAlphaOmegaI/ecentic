@@ -534,6 +534,18 @@ export const execute = async (
           stage: "browseProduct",
           output: { legacyShoppingQuery: query },
         };
+      if (
+        query.contractVersion !== Capture.SHOPPER_QUERY_VERSION ||
+        !query.review
+      )
+        return {
+          stage: "startShoppingQuery",
+          reason: "shopping-query-held",
+          output: {
+            shoppingQueryValidation:
+              "A new search requires the current semantic product-fit query review.",
+          },
+        };
       const browser = Capture.browserResearchSchema.parse(
         state["shoppingProductBrowser"],
       );

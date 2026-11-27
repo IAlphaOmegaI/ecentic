@@ -992,7 +992,7 @@ describe("unbranded questions before search spend", () => {
     ).toContain('saved product category "top"');
     const calls: string[] = [];
     const result = value(
-      await Shopping.generateShopperQuery(input, {
+      await Shopping.generateLegacyShopperQuery(input, {
         now,
         generate: async ({ prompt }) => {
           calls.push(prompt);
@@ -1025,7 +1025,7 @@ describe("unbranded questions before search spend", () => {
         `The product is a ${question}.`,
       );
       const result = value(
-        await Shopping.generateShopperQuery(input, {
+        await Shopping.generateLegacyShopperQuery(input, {
           now,
           generate: async ({ prompt }) => ({
             ...selection(prompt),
@@ -1139,7 +1139,7 @@ describe("unbranded questions before search spend", () => {
         `The product is a ${question}.`,
       );
       const result = value(
-        await Shopping.generateShopperQuery(input, {
+        await Shopping.generateLegacyShopperQuery(input, {
           now,
           generate: async ({ prompt }) => ({
             ...selection(prompt),
@@ -1173,7 +1173,7 @@ describe("unbranded questions before search spend", () => {
       "round dotz painting kit",
     ]) {
       const result = value(
-        await Shopping.generateShopperQuery(input, {
+        await Shopping.generateLegacyShopperQuery(input, {
           now,
           generate: async ({ prompt }) => ({
             ...selection(prompt),
@@ -1200,7 +1200,7 @@ describe("unbranded questions before search spend", () => {
       merchant: { name: "Beef Jerky Works", domain: "merchant.example" },
     };
     const result = value(
-      await Shopping.generateShopperQuery(input, {
+      await Shopping.generateLegacyShopperQuery(input, {
         now,
         generate: async ({ prompt }) => ({
           ...selection(prompt),
@@ -1227,7 +1227,7 @@ describe("unbranded questions before search spend", () => {
       "upper control arm kit",
     ]) {
       const result = value(
-        await Shopping.generateShopperQuery(input, {
+        await Shopping.generateLegacyShopperQuery(input, {
           now,
           generate: async ({ prompt }) => ({
             ...selection(prompt),
@@ -1264,7 +1264,7 @@ describe("unbranded questions before search spend", () => {
       `A large linen ${head}.`,
     );
     const result = value(
-      await Shopping.generateShopperQuery(input, {
+      await Shopping.generateLegacyShopperQuery(input, {
         now,
         generate: async ({ prompt }) => ({
           ...selection(prompt),
@@ -1304,7 +1304,7 @@ describe("unbranded questions before search spend", () => {
         `The product is ${item.question}.`,
       );
       const result = value(
-        await Shopping.generateShopperQuery(input, {
+        await Shopping.generateLegacyShopperQuery(input, {
           now,
           generate: async ({ prompt }) => ({
             ...selection(prompt),
@@ -1330,7 +1330,7 @@ describe("unbranded questions before search spend", () => {
       merchant: { name: "Top Studio", domain: "merchant.example" },
     };
     const result = value(
-      await Shopping.generateShopperQuery(input, {
+      await Shopping.generateLegacyShopperQuery(input, {
         now,
         generate: async ({ prompt }) => ({
           ...selection(prompt),
@@ -1519,7 +1519,7 @@ describe("unbranded questions before search spend", () => {
   test("saves the exact rendered basis, prompt hash and authoritative identity", async () => {
     const input = await context();
     const result = value(
-      await Shopping.generateShopperQuery(input, {
+      await Shopping.generateLegacyShopperQuery(input, {
         now,
         generate: async ({ prompt }) => selection(prompt),
       }),
@@ -1548,7 +1548,7 @@ describe("unbranded questions before search spend", () => {
   test("explains bare phrase syntax in the schema and repairs a question mark once", async () => {
     const prompts: string[] = [];
     const result = value(
-      await Shopping.generateShopperQuery(await context(), {
+      await Shopping.generateLegacyShopperQuery(await context(), {
         now,
         generate: async ({ prompt, instructions, output }) => {
           prompts.push(prompt);
@@ -1598,7 +1598,7 @@ describe("unbranded questions before search spend", () => {
     async (question, character) => {
       const prompts: string[] = [];
       const result = value(
-        await Shopping.generateShopperQuery(await context(), {
+        await Shopping.generateLegacyShopperQuery(await context(), {
           now,
           generate: async ({ prompt }) => {
             prompts.push(prompt);
@@ -1627,7 +1627,7 @@ describe("unbranded questions before search spend", () => {
   ])("reports the actual word count for %s", async (question, count) => {
     const prompts: string[] = [];
     const result = value(
-      await Shopping.generateShopperQuery(await context(), {
+      await Shopping.generateLegacyShopperQuery(await context(), {
         now,
         generate: async ({ prompt }) => {
           prompts.push(prompt);
@@ -1648,7 +1648,7 @@ describe("unbranded questions before search spend", () => {
   test("keeps supported plain-hyphen and ampersand phrases valid", async () => {
     for (const question of ["large-linen tote", "large & linen tote"]) {
       const result = value(
-        await Shopping.generateShopperQuery(await context(), {
+        await Shopping.generateLegacyShopperQuery(await context(), {
           now,
           generate: async ({ prompt }) => ({ ...selection(prompt), question }),
         }),
@@ -1661,7 +1661,7 @@ describe("unbranded questions before search spend", () => {
   test("holds stale or future rendered evidence before generation or purchase", async () => {
     const input = await context();
     const original = value(
-      await Shopping.generateShopperQuery(input, {
+      await Shopping.generateLegacyShopperQuery(input, {
         now,
         generate: async ({ prompt }) => selection(prompt),
       }),
@@ -1676,7 +1676,7 @@ describe("unbranded questions before search spend", () => {
       ).toContain("7 days");
       const calls: number[] = [];
       const generated = value(
-        await Shopping.generateShopperQuery(
+        await Shopping.generateLegacyShopperQuery(
           { ...input, deadline: checkedNow + 45_000 },
           {
             now: () => checkedNow,
@@ -1707,7 +1707,7 @@ describe("unbranded questions before search spend", () => {
     };
     const prompts: string[] = [];
     const result = value(
-      await Shopping.generateShopperQuery(input, {
+      await Shopping.generateLegacyShopperQuery(input, {
         now,
         generate: async ({ prompt, instructions }) => {
           prompts.push(prompt);
@@ -1726,7 +1726,7 @@ describe("unbranded questions before search spend", () => {
       ),
     ).toContain("1 day");
     const held = value(
-      await Shopping.generateShopperQuery(
+      await Shopping.generateLegacyShopperQuery(
         { ...input, discoveryFreshnessDays: 1, deadline: later + 45_000 },
         {
           now: () => later,
@@ -1762,7 +1762,7 @@ describe("unbranded questions before search spend", () => {
     async (question, category, attribute) => {
       const calls: string[] = [];
       const result = value(
-        await Shopping.generateShopperQuery(await context(), {
+        await Shopping.generateLegacyShopperQuery(await context(), {
           now,
           generate: async ({ prompt, instructions }) => {
             calls.push(instructions);
@@ -1780,7 +1780,7 @@ describe("unbranded questions before search spend", () => {
   test("repairs one completed invalid question and never retries an interrupted generation", async () => {
     const calls: string[] = [];
     const repaired = value(
-      await Shopping.generateShopperQuery(await context(), {
+      await Shopping.generateLegacyShopperQuery(await context(), {
         now,
         generate: async ({ prompt }) => {
           calls.push(prompt);
@@ -1800,7 +1800,7 @@ describe("unbranded questions before search spend", () => {
       "distinctive",
     );
     const interrupted: number[] = [];
-    const failed = await Shopping.generateShopperQuery(await context(), {
+    const failed = await Shopping.generateLegacyShopperQuery(await context(), {
       now,
       generate: async () => {
         interrupted.push(1);
@@ -1814,7 +1814,7 @@ describe("unbranded questions before search spend", () => {
 
   test("will not repeat an already bought question for broad research", async () => {
     const result = value(
-      await Shopping.generateShopperQuery(
+      await Shopping.generateLegacyShopperQuery(
         {
           ...(await context()),
           intent: "unbranded-broad",

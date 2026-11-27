@@ -17,6 +17,35 @@ export const publicUrlSchema = z
     );
   }, "Use a public HTTPS URL without credentials or a custom port.");
 
+export const SHOPPER_QUERY_VERSION = "shopper-query-v2";
+export const shopperQueryReviewChecksSchema = z
+  .object({
+    naturalWordOrder: z.boolean(),
+    obviousProductCandidate: z.boolean(),
+    unbranded: z.boolean(),
+    productGrounding: z.boolean(),
+  })
+  .strict();
+export const shopperQueryReviewSchema = z
+  .object({
+    version: z.literal(SHOPPER_QUERY_VERSION),
+    status: z.enum(["valid", "invalid", "uncertain"]),
+    method: z.enum(["deterministic", "semantic"]),
+    reason: z.string().trim().min(1).max(1500),
+    checks: shopperQueryReviewChecksSchema.nullable(),
+    excerptIds: z.array(z.string().min(1).max(80)).max(12),
+    queryHash: z.string().regex(/^[a-f0-9]{64}$/),
+    captureHash: z.string().regex(/^[a-f0-9]{64}$/),
+    contextHash: z.string().regex(/^[a-f0-9]{64}$/),
+    promptHash: z
+      .string()
+      .regex(/^[a-f0-9]{64}$/)
+      .nullable(),
+    reviewedAt: z.string().datetime(),
+  })
+  .strict();
+export type ShopperQueryReview = z.infer<typeof shopperQueryReviewSchema>;
+
 export const preparedQuerySchema = z
   .object({
     product: z.object({
@@ -29,6 +58,8 @@ export const preparedQuerySchema = z
     prompt: z.string().trim().min(1).max(4000),
     intent: shoppingQueryIntentSchema.optional(),
     basis: shoppingQueryBasisSchema.optional(),
+    contractVersion: z.literal(SHOPPER_QUERY_VERSION).optional(),
+    review: shopperQueryReviewSchema.optional(),
     // Saved company identity, never a name inferred by the query model.
     merchant: z
       .object({

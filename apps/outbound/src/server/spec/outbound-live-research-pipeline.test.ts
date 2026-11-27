@@ -58,6 +58,32 @@ const value = <Data>(
   if (!result.success) throw result.error;
   return result.data;
 };
+const syntheticQueryReview = async ({ prompt }: { prompt: string }) => ({
+  status: "valid" as const,
+  reason: "Synthetic category and one attribute identify this exact product.",
+  checks: {
+    naturalWordOrder: true,
+    obviousProductCandidate: true,
+    unbranded: true,
+    productGrounding: true,
+  },
+  excerptIds: [JSON.parse(prompt).excerpts[0].id],
+});
+const syntheticBrands = async ({ prompt }: { prompt: string }) => {
+  const evidence = JSON.parse(prompt).evidence as {
+    id: string;
+    quote: string;
+  }[];
+  return {
+    decision: "supported" as const,
+    reason: "Exact synthetic answer brands.",
+    brands: ["Canvas Works", "Harbor Label"].map((name) => {
+      const quote = evidence.find((item) => item.quote.includes(name));
+      if (!quote) throw new Error("Missing exact synthetic brand evidence.");
+      return { name, quoteId: quote.id };
+    }),
+  };
+};
 const settings = syntheticWritingPolicy({
   ...defaultPlaybook,
   automationEnabled: true,
@@ -225,9 +251,10 @@ const configure = () => {
   }));
   spyOn(capture, "generateShopperQuery").mockImplementation(async (input) =>
     originalGenerate(input, {
+      review: syntheticQueryReview,
       generate: async ({ prompt }) => ({
         question: "large linen tote bags",
-        category: "bag",
+        category: "linen tote bag",
         attribute: "large",
         excerptIds: [JSON.parse(prompt).excerpts[0].id],
       }),
@@ -260,8 +287,9 @@ const configure = () => {
                   scraper: job.query.surface,
                   status: "done",
                   cached: false,
-                  result_markdown:
-                    "1. Canvas Works — Large carry bag.\n2. Harbor Label — Cotton shopper.",
+                  result_markdown: state.noAngle
+                    ? "Sample Goods linen tote is included. Other options are Canvas Works and Harbor Label."
+                    : "1. Canvas Works — Large carry bag.\n2. Harbor Label — Cotton shopper.",
                   citations: [],
                 },
               }),
@@ -275,6 +303,7 @@ const configure = () => {
   }));
   spyOn(assessment, "assess").mockImplementation(async (input) =>
     originalAssess(input, {
+      brands: { generate: syntheticBrands },
       generate: async () => {
         const catalog = assessment.createAssessmentCatalog(input);
         const answerQuote = catalog.quotes.find(
@@ -434,7 +463,7 @@ describe.skipIf(!endpoint)(
           productUrl: product.url,
         },
         now: now.getTime(),
-        pageText: "Linen tote is a large linen bag.",
+        pageText: "Linen tote is a large linen tote bag.",
       });
       configure();
     });
@@ -521,7 +550,9 @@ describe.skipIf(!endpoint)(
       expect(submitted.output?.["shoppingQuery"]).toMatchObject({
         product,
         category: "linen tote bags",
-        basis: { category: "bag" },
+        basis: { category: "linen tote bag" },
+        contractVersion: "shopper-query-v2",
+        review: { status: "valid" },
         surface: "google_ai_mode",
       });
       expect(submitted.output?.["shoppingRequestId"]).toEqual(
@@ -547,6 +578,62 @@ describe.skipIf(!endpoint)(
       expect(providers.verifyApolloEmails).toHaveBeenCalledTimes(1);
       expect(draft.composeSequence).toHaveBeenCalledTimes(1);
       expect((await advance()).processed).toBe(0);
+    });
+    test("an unsubmitted legacy query cannot spend without a current semantic review", async () => {
+      const { capture, db, schema } = active();
+      expect((await advance(4)).results.at(-1)?.stage).toBe(
+        "startShoppingQuery",
+      );
+      const queued = await currentJob();
+      const {
+        contractVersion: _version,
+        review: _review,
+        ...legacy
+      } = capture.preparedQuerySchema.parse(queued.output?.["shoppingQuery"]);
+      await db
+        .update(schema.outboundIntegrationJob)
+        .set({ output: { ...queued.output, shoppingQuery: legacy } })
+        .where(eq(schema.outboundIntegrationJob.id, queued.id));
+      const result = await advance(1);
+      expect(result.results.at(-1)?.reason).toBe("shopping-query-held");
+      expect(capture.startQuery).not.toHaveBeenCalled();
+      expect((await currentJob()).output?.["shoppingQuery"]).toEqual(legacy);
+      expect(
+        (await currentJob()).output?.["shoppingQueryValidation"],
+      ).toContain("semantic product-fit");
+    });
+    test("an acknowledged legacy job resumes polling without another submission", async () => {
+      const { capture, db, schema } = active();
+      await advance();
+      const submitted = await currentJob();
+      const paid = capture.aiJobSchema.parse(submitted.output?.["shoppingJob"]);
+      const {
+        contractVersion: _version,
+        review: _review,
+        ...legacy
+      } = paid.query;
+      const legacyJob = { ...paid, query: legacy };
+      await db
+        .update(schema.outboundIntegrationJob)
+        .set({
+          status: "pending",
+          output: {
+            ...submitted.output,
+            stage: "startShoppingQuery",
+            shoppingQuery: legacy,
+            shoppingJob: legacyJob,
+          },
+        })
+        .where(eq(schema.outboundIntegrationJob.id, submitted.id));
+      expect((await advance(1)).results.at(-1)?.stage).toBe(
+        "pollShoppingQuery",
+      );
+      expect(capture.startQuery).toHaveBeenCalledTimes(1);
+      expect((await currentJob()).output?.["shoppingJob"]).toEqual(legacyJob);
+      expect((await advance(1)).results.at(-1)?.stage).toBe("browseShopping");
+      expect(capture.startQuery).toHaveBeenCalledTimes(1);
+      expect(capture.pollQuery).toHaveBeenCalledTimes(1);
+      expect((await currentJob()).output?.["shoppingJob"]).toEqual(legacyJob);
     });
     test("no supported shopping angle holds before buying contacts or creating a prospect", async () => {
       state.noAngle = true;

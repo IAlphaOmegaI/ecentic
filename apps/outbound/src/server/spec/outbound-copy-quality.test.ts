@@ -52,34 +52,25 @@ describe("deterministic copy quality", () => {
     expect(deterministicCopyIssues(changedOrder).length).toBeGreaterThan(0);
   });
 
-  test("checks links, dashes, percentages and forbidden claims in configured follow-ups", () => {
-    for (const [line, expected] of [
-      ["Visit https://samplegoods.test.", "link"],
-      ["Visit samplegoods.test/help.", "link"],
-      ["Your data matters — today.", "dash"],
-      ["That costs 10 percent of your sales.", "unmeasured outcome"],
-      ["AI can't read your store.", "unmeasured outcome"],
-      ["Alder took the sale.", "unmeasured outcome"],
-      ["This can increase your revenue.", "unmeasured outcome"],
+  test("configured and rendered follow-ups must remain the exact bumps", () => {
+    for (const body of [
+      "Visit https://samplegoods.test.",
+      "Your tote is large and washable.",
+      "Bumping this! Worth a quick chat?",
+      "Alder took the sale.",
     ]) {
       const input = context();
-      input.playbook.followupTwoTemplate =
-        input.playbook.followupTwoTemplate.replace(
-          "Last note from me.",
-          line ?? "",
-        );
-      const assembled = assembleSequence(
-        input.prospect,
-        input.receipt,
-        input.playbook,
-        input.parts,
-      );
-      if (assembled.status !== "ready") throw new Error(assembled.reason);
-      input.messages = assembled.messages;
       expect(
-        deterministicCopyIssues(input).some((issue) =>
-          issue.includes(expected ?? "missing"),
-        ),
+        assembleSequence(
+          input.prospect,
+          input.receipt,
+          { ...input.playbook, followupTwoTemplate: body },
+          input.parts,
+        ).status,
+      ).toBe("held");
+      input.messages[2]!.body = body;
+      expect(
+        deterministicCopyIssues(input).some((issue) => issue.includes("exact")),
       ).toBe(true);
     }
   });
@@ -95,26 +86,6 @@ describe("deterministic copy quality", () => {
     expect(
       copyPhrasePresent("We’re just checking in.", "just checking in"),
     ).toBe(true);
-  });
-
-  test("the whole email and follow-ups cannot turn two sourced attributes into a recap", () => {
-    const input = context();
-    input.playbook.followupTwoTemplate =
-      input.playbook.followupTwoTemplate.replace(
-        "Last note from me.",
-        "Your tote is large and washable.",
-      );
-    const assembled = assembleSequence(
-      input.prospect,
-      input.receipt,
-      input.playbook,
-      input.parts,
-    );
-    if (assembled.status !== "ready") throw new Error(assembled.reason);
-    input.messages = assembled.messages;
-    expect(deterministicCopyIssues(input)).toContain(
-      "Message 3 recaps more than one product attribute.",
-    );
   });
 });
 

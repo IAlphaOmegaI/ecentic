@@ -70,6 +70,78 @@ export const shoppingCardQuote = (
   card: Pick<ShoppingCardProof, "title" | "seller">,
 ) => `Product: ${card.title}\nSeller: ${card.seller}`;
 
+export const shoppingBrandProofSchema = z
+  .object({
+    version: z.literal("answer-brands-v1"),
+    answerHash: digest,
+    context: z.enum(["card-title", "answer-text"]),
+    start: z.number().int().min(0),
+    end: z.number().int().min(1),
+    rawHash: digest,
+    cardId: text(80).optional(),
+    title: text(2000),
+  })
+  .strict();
+export type ShoppingBrandProof = z.infer<typeof shoppingBrandProofSchema>;
+export const shoppingBrandProjectionSchema = z
+  .object({
+    version: z.literal("answer-brands-v1"),
+    brands: z
+      .array(
+        z
+          .object({
+            name: text(100),
+            excerptIds: identifiers,
+            position: z.number().int().min(1).nullable(),
+          })
+          .strict(),
+      )
+      .min(2)
+      .max(3),
+  })
+  .strict();
+
+const researchSourceSchema = z
+  .object({
+    id: text(80),
+    kind: z.enum(["product", "ucp", "competitor", "checkout", "search"]),
+    url,
+    checkedAt: z.string().datetime(),
+    capture: z.enum(["http", "browser", "provider"]),
+    content: text(18000),
+    artifact: text(2000),
+  })
+  .strict();
+
+export const shoppingCaptureHistorySchema = z
+  .object({
+    version: z.literal("capture-history-v1"),
+    auditOnly: z.literal(true),
+    query: text(1000),
+    queryHash: digest,
+    intent: shoppingQueryIntentSchema.optional(),
+    basis: shoppingQueryBasisSchema.optional(),
+    sourceId: text(80),
+    answerHash: digest,
+    linksHash: digest,
+    executedAt: z.string().datetime(),
+    sources: z.array(researchSourceSchema).min(2).max(12),
+    raw: z
+      .array(
+        z
+          .object({
+            url: text(2000),
+            status: z.number().int(),
+            sha256: digest,
+            receivedAt: z.string().datetime(),
+          })
+          .strict(),
+      )
+      .min(1)
+      .max(20),
+  })
+  .strict();
+
 /** Presence is a server result over the full answer and cited links, never model output. */
 export const shoppingDiscoverySchema = z
   .object({
@@ -83,6 +155,17 @@ export const shoppingDiscoverySchema = z
     merchantPosition: z.number().int().min(1).max(1000).nullable(),
     totalListed: z.number().int().min(0).max(1000).nullable(),
     order: z.enum(["ranked", "unranked"]).optional(),
+    assessmentVersion: z.literal("discovery-v2").optional(),
+    brandProjection: shoppingBrandProjectionSchema.optional(),
+    noGapProof: z
+      .object({
+        version: z.literal("repeated-presence-v1"),
+        previousAnswerHash: digest,
+        previousLinksHash: digest,
+        previousQueryHash: digest,
+      })
+      .strict()
+      .optional(),
     listed: z
       .array(
         z
@@ -100,7 +183,7 @@ export const shoppingDiscoverySchema = z
       .max(50),
     description: text(1500).nullable(),
     matchedAliases: z.array(text(300)).max(50),
-    presenceMethod: z.literal("server-v1"),
+    presenceMethod: z.enum(["server-v1", "server-v2"]),
     correctness: z.enum(["correct", "discrepancy", "uncertain"]).optional(),
     correctnessExcerptIds: z.array(text(80)).max(12).optional(),
     correctnessProof: z
@@ -124,6 +207,7 @@ export const shoppingClaimSchema = z
     kind: z.enum([
       "query",
       "name",
+      "brand",
       "price",
       "position",
       "count",
@@ -175,28 +259,8 @@ export type ShoppingFinding = z.infer<typeof shoppingFindingSchema>;
 export const shoppingResearchSchema = z
   .object({
     product: z.object({ name: text(300), url }),
-    sources: z
-      .array(
-        z
-          .object({
-            id: text(80),
-            kind: z.enum([
-              "product",
-              "ucp",
-              "competitor",
-              "checkout",
-              "search",
-            ]),
-            url,
-            checkedAt: z.string().datetime(),
-            capture: z.enum(["http", "browser", "provider"]),
-            content: text(18000),
-            artifact: text(2000),
-          })
-          .strict(),
-      )
-      .min(2)
-      .max(12),
+    sources: z.array(researchSourceSchema).min(2).max(12),
+    captureHistory: z.array(shoppingCaptureHistorySchema).max(4).optional(),
     queries: z
       .array(
         z
@@ -228,6 +292,7 @@ export const shoppingResearchSchema = z
             sourceId: text(80),
             quote: z.string().min(1).max(2000),
             card: shoppingCardProofSchema.optional(),
+            brand: shoppingBrandProofSchema.optional(),
           })
           .strict(),
       )
@@ -283,6 +348,86 @@ export const shoppingResearchSchema = z
   })
   .strict();
 export type ShoppingResearch = z.infer<typeof shoppingResearchSchema>;
+
+export const cleanResultBrand = (value: string) =>
+  value.replace(/\s*&\s*more\s*$/i, "").trim();
+
+/** Copy may use only the dedicated brand projection, never historical product/seller names. */
+export const resultBrandNames = (receipt: ShoppingResearch): string[] =>
+  receipt.discovery?.brandProjection?.brands.map((brand) => brand.name) ?? [];
+
+export const resultBrandsProblem = (
+  receipt: ShoppingResearch,
+): string | null => {
+  if (
+    !["discovery-absence", "discovery-outranked"].includes(
+      receipt.selected.kind,
+    )
+  )
+    return null;
+  const projection = receipt.discovery?.brandProjection;
+  if (
+    !projection ||
+    !shoppingBrandProjectionSchema.safeParse(projection).success
+  )
+    return "The result needs two or three source-bound brand names from the saved answer.";
+  const names = projection.brands.map((entry) => entry.name);
+  if (
+    new Set(names.map((name) => name.toLocaleLowerCase())).size !== names.length
+  )
+    return "The result must name two or three distinct brands.";
+  for (const entry of projection.brands) {
+    const excerpt = receipt.claimExcerpts?.find(
+      (item) => item.id === entry.excerptIds[0],
+    );
+    const proof = excerpt?.brand;
+    const boundary = proof?.title.slice(
+      entry.name.length,
+      entry.name.length + 1,
+    );
+    if (
+      entry.name !== cleanResultBrand(entry.name) ||
+      /(?:https?:|www\.|[\r\n]|[<>])/.test(entry.name) ||
+      entry.excerptIds.length !== 1 ||
+      !excerpt ||
+      !proof ||
+      excerpt.sourceId !== receipt.discovery?.sourceId ||
+      proof.answerHash !== receipt.discovery.answerHash ||
+      proof.end <= proof.start ||
+      excerpt.quote !== proof.title ||
+      !proof.title.includes(entry.name) ||
+      (proof.context === "card-title" &&
+        (!proof.cardId ||
+          !proof.title.startsWith(entry.name) ||
+          !boundary ||
+          !/[\s:®™-]/.test(boundary))) ||
+      (entry.position !== null &&
+        (receipt.discovery.order === "unranked" ||
+          !receipt.discovery.listed.some(
+            (item) =>
+              item.position === entry.position && item.name === entry.name,
+          ))) ||
+      !receipt.claims?.some(
+        (claim) =>
+          claim.kind === "brand" &&
+          claim.value === entry.name &&
+          claim.queryIndex === receipt.discovery?.queryIndex &&
+          claim.excerptIds.length === 1 &&
+          claim.excerptIds[0] === excerpt.id &&
+          claim.sourceIds.length === 1 &&
+          claim.sourceIds[0] === excerpt.sourceId &&
+          !claim.qualifiers.length,
+      )
+    )
+      return "A result brand is not an exact brand string in its bound answer evidence.";
+  }
+  if (
+    receipt.claims?.filter((claim) => claim.kind === "brand").length !==
+    names.length
+  )
+    return "The observed brand claims differ from the projected result brands.";
+  return null;
+};
 export const normalizeResearchText = (value: string) =>
   value.replace(/\s+/g, " ").trim();
 
@@ -366,16 +511,22 @@ const discoveryLedgerProblem = (receipt: ShoppingResearch): string | null => {
     excerpts.some(
       (excerpt) =>
         !sourceMap.has(excerpt.sourceId) ||
-        (excerpt.card
-          ? discovery?.order !== "unranked" ||
-            receipt.selected.kind !== "discovery-absence" ||
-            excerpt.sourceId !== discovery.sourceId ||
-            excerpt.card.answerHash !== discovery.answerHash ||
-            excerpt.card.end <= excerpt.card.start ||
-            excerpt.quote !== shoppingCardQuote(excerpt.card)
-          : !normalizeResearchText(
-              sourceMap.get(excerpt.sourceId)?.content ?? "",
-            ).includes(normalizeResearchText(excerpt.quote))),
+        (excerpt.brand
+          ? excerpt.card !== undefined ||
+            excerpt.sourceId !== discovery?.sourceId ||
+            excerpt.brand.answerHash !== discovery?.answerHash ||
+            excerpt.brand.end <= excerpt.brand.start ||
+            excerpt.quote !== excerpt.brand.title
+          : excerpt.card
+            ? discovery?.order !== "unranked" ||
+              receipt.selected.kind !== "discovery-absence" ||
+              excerpt.sourceId !== discovery.sourceId ||
+              excerpt.card.answerHash !== discovery.answerHash ||
+              excerpt.card.end <= excerpt.card.start ||
+              excerpt.quote !== shoppingCardQuote(excerpt.card)
+            : !normalizeResearchText(
+                sourceMap.get(excerpt.sourceId)?.content ?? "",
+              ).includes(normalizeResearchText(excerpt.quote))),
     )
   )
     return "A claim excerpt does not match its saved source.";
@@ -400,6 +551,17 @@ const discoveryLedgerProblem = (receipt: ShoppingResearch): string | null => {
     return "A claim references an unknown or unrelated source, excerpt or query.";
   if (
     claims.some((claim) => {
+      const brandExcerpts = claim.excerptIds
+        .map((id) => excerptMap.get(id))
+        .filter((entry) => entry?.brand);
+      if (brandExcerpts.length)
+        return (
+          claim.kind !== "brand" ||
+          brandExcerpts.length !== 1 ||
+          claim.excerptIds.length !== 1 ||
+          !brandExcerpts[0]?.quote.includes(claim.value) ||
+          Boolean(claim.qualifiers.length)
+        );
       const cardExcerpts = claim.excerptIds
         .map((id) => excerptMap.get(id))
         .filter((excerpt) => excerpt?.card);
@@ -449,8 +611,9 @@ const discoveryLedgerProblem = (receipt: ShoppingResearch): string | null => {
   const unranked = discovery.order === "unranked";
   if (
     unranked &&
-    (receipt.selected.kind !== "discovery-absence" ||
-      discovery.merchantPresent !== false ||
+    ((!discovery.noGapProof &&
+      (receipt.selected.kind !== "discovery-absence" ||
+        discovery.merchantPresent !== false)) ||
       merchantPosition !== null ||
       totalListed !== null ||
       discovery.description !== null ||
@@ -618,12 +781,32 @@ const discoveryLedgerProblem = (receipt: ShoppingResearch): string | null => {
     return "An outranking finding needs the merchant after at least two named results.";
   if (
     receipt.selected.kind === "no-gap" &&
+    !discovery.noGapProof &&
     (discovery.merchantPresent !== true ||
       discovery.merchantPosition !== 1 ||
       discovery.correctness !== "correct" ||
       !discovery.correctnessExcerptIds?.length)
   )
     return "No gap requires a complete answer with the merchant first and verified correct.";
+  if (
+    discovery.noGapProof &&
+    (receipt.selected.kind !== "no-gap" ||
+      discovery.assessmentVersion !== "discovery-v2" ||
+      discovery.merchantPresent !== true ||
+      discovery.merchantPosition !== null ||
+      discovery.totalListed !== null ||
+      discovery.order !== "unranked" ||
+      discovery.correctness !== "uncertain" ||
+      discovery.listed.length ||
+      query.intent !== "unbranded-broad" ||
+      !receipt.captureHistory?.some(
+        (capture) =>
+          capture.answerHash === discovery.noGapProof?.previousAnswerHash &&
+          capture.linksHash === discovery.noGapProof.previousLinksHash &&
+          capture.queryHash === discovery.noGapProof.previousQueryHash,
+      ))
+  )
+    return "Repeated presence needs two bound valid searches without invented rank or correctness.";
   if (
     claims.some((claim) => {
       if (
@@ -657,7 +840,7 @@ const discoveryLedgerProblem = (receipt: ShoppingResearch): string | null => {
     })
   )
     return "A derived presence, count or position claim differs from the saved discovery proof.";
-  return null;
+  return discovery.brandProjection ? resultBrandsProblem(receipt) : null;
 };
 
 export const validateShoppingResearch = (

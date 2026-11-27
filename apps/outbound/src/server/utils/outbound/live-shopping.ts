@@ -1,6 +1,8 @@
 export {
   computeDiscoveryBase,
   deriveCaptureCompleteness,
+  generateLegacyShopperQuery,
+  generateReviewedShopperQuery,
   generateShopperQuery,
   matchMerchantText,
   pollQuery,
@@ -8,14 +10,20 @@ export {
   repairShopperQuery,
   replayShoppingCapture,
   restoreCompletedQueryResponse,
+  reviewShopperQuery,
   type ShopperQueryDependencies,
   type ShopperQueryInput,
+  type ShopperQueryReviewDependencies,
+  type ShopperQueryReviewInput,
   type ShopperQuerySelection,
   shopperQueryExcerpts,
+  shopperQueryReviewBinding,
   startQuery,
   validateFirecrawlCredentials,
   validateScrapellmCredentials,
   validateShopperQuery,
+  validateShopperQueryReview,
+  validateShopperQueryReviewBinding,
 } from "./live-shopping-ai";
 export {
   inspectPages,
@@ -34,4 +42,7 @@ export {
   preparedQuerySchema,
   type RawCapture,
   rawCaptureSchema,
+  SHOPPER_QUERY_VERSION,
+  type ShopperQueryReview,
+  shopperQueryReviewSchema,
 } from "./live-shopping-contract";

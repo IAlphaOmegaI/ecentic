@@ -62,7 +62,11 @@ import { sendingCapacity } from "@/lib/outbound-capacity";
 import {
   assembleSequence,
   canonicalSequenceInput,
+  FOLLOWUP_BUMP,
+  finalFollowup,
+  isCurrentWritingSnapshot,
   preflightWriterAssembly,
+  writingSnapshotSchema,
 } from "@/lib/outbound-composition";
 import {
   copyVerdictProblem,
@@ -122,6 +126,7 @@ import {
   writingPolicyHash,
 } from "@/server/utils/outbound/shopping-policy";
 import {
+  type ApprovedShoppingReplay,
   assertShoppingEvidence,
   researchHash,
 } from "@/server/utils/outbound/shopping-research";
@@ -467,11 +472,13 @@ export const assertAutomaticContactEvidence = async (
 export const assertAutomaticEvidence = async (
   transaction: TransactionScope,
   prospect: ProspectRow,
+  approvedReplay?: ApprovedShoppingReplay,
 ) => {
   await assertShoppingEvidence(
     transaction,
     prospect,
     await policy(transaction),
+    approvedReplay,
   );
   const job = await assertAutomaticContactEvidence(transaction, prospect);
   if (
@@ -4522,6 +4529,104 @@ const deliveryClaim = async (
   };
 };
 
+/** Fixed bumps add no new observation. Replay the exact originally approved
+ * receipt at approval time only after verifying the accepted first revision. */
+const fixedBumpResearchReplay = async (
+  transaction: TransactionScope,
+  prospect: ProspectRow,
+  settings: Playbook,
+): Promise<ApprovedShoppingReplay | undefined> => {
+  const writing = writingSnapshotSchema.safeParse(
+    prospect.messages[0]?.writing,
+  );
+  if (
+    !prospect.sentStep ||
+    prospect.sentStep > 2 ||
+    !writing.success ||
+    !isCurrentWritingSnapshot(writing.data) ||
+    prospect.messages[1]?.body !== FOLLOWUP_BUMP ||
+    prospect.messages[1]?.afterDays !== 3 ||
+    prospect.messages[2]?.body !== finalFollowup(prospect.details.first) ||
+    prospect.messages[2]?.afterDays !== 7
+  )
+    return undefined;
+  const first = requireData(
+    await Attempts.find(
+      Environment.SERVER,
+      {
+        where: and(
+          eq(schema.outboundSendAttempt.prospectId, prospect.id),
+          eq(schema.outboundSendAttempt.step, 1),
+          eq(schema.outboundSendAttempt.status, "accepted"),
+        ),
+        limit: 1,
+      },
+      { tx: transaction },
+    ),
+  )[0];
+  if (
+    !first ||
+    first.revision !== prospect.revision ||
+    first.inboxId !== prospect.inboxId ||
+    !prospect.threadId ||
+    !prospect.firstSentAt
+  )
+    throw new ConflictError(
+      "The fixed bump needs its accepted original first-email revision and thread.",
+    );
+  const original = (await immutableDelivery(transaction, first)).version;
+  if (
+    !original.approvedAt ||
+    original.revokedAt ||
+    !original.approvedBy ||
+    original.approvedAt.getTime() > prospect.firstSentAt.getTime() ||
+    original.approvedAt.getTime() !== prospect.approvedAt?.getTime() ||
+    !isDeepStrictEqual(original.messages, prospect.messages) ||
+    copyVerdictProblem(writing.data.quality) ||
+    !writing.data.compositionJobId
+  )
+    throw new ConflictError(
+      "The fixed bump's immutable approved copy no longer matches.",
+    );
+  const Composition = await import("./sequence-composition");
+  const completed = requireData(
+    await Composition.loadCompletedComposition(
+      transaction,
+      writing.data.compositionJobId,
+    ),
+  );
+  const effective = settingsForProspect(prospect, settings);
+  const details = prospectSchema.parse({
+    ...prospect.details,
+    id: prospect.id,
+    assignedSenderEmail: effective.fromEmail,
+  });
+  if (
+    completed.composition.prospectId !== prospect.id ||
+    completed.appliedProspectRevision !== original.revision ||
+    completed.composition.receiptHash !== writing.data.receiptHash ||
+    completed.composition.writingPolicyHash !==
+      writingPolicyHash(effective, { globalVoiceNotes: settings.voiceNotes }) ||
+    completed.context.prospectHash !== compositionProspectHash(details) ||
+    !isDeepStrictEqual(
+      original.messages,
+      completed.messages.map((message) => ({
+        ...message,
+        ...(message.writing
+          ? { writing: { ...message.writing, revision: original.revision } }
+          : {}),
+      })),
+    )
+  )
+    throw new ConflictError(
+      "The fixed bump no longer matches its trusted original writing and receipt.",
+    );
+  return {
+    receiptHash: completed.composition.receiptHash,
+    approvedAt: original.approvedAt,
+  };
+};
+
 const deliveryGates = async (
   transaction: TransactionScope,
   prospect: ProspectRow,
@@ -4533,7 +4638,12 @@ const deliveryGates = async (
 ) => {
   const now = new Date();
   await assertCampaignActive(transaction, prospect);
-  await assertAutomaticEvidence(transaction, prospect);
+  const approvedReplay = await fixedBumpResearchReplay(
+    transaction,
+    prospect,
+    settings,
+  );
+  await assertAutomaticEvidence(transaction, prospect, approvedReplay);
   const channelScope = {
     prospectId: prospect.id,
     companyId: prospect.companyId,
@@ -4651,7 +4761,11 @@ const deliveryGates = async (
   const entries = requireData(
     await Suppressions.find(Environment.SERVER, {}, { tx: transaction }),
   );
-  const issues = issuesFor(prospect, settings, entries);
+  const issues = issuesFor(
+    prospect,
+    approvedReplay ? { ...settings, allowStaleEvidence: true } : settings,
+    entries,
+  );
   if (issues.length)
     throw new ValidationError(
       `Delivery checks failed: ${issues.map((issue) => issue.code).join(", ")}`,

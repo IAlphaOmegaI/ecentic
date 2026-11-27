@@ -51,16 +51,16 @@ const response = await Quality.judgeSequenceCopy(context, {
       },
       {
         step: 2,
-        bodyWords: 22,
+        bodyWords: 2,
         bodyWordLimit: null,
-        longestSentenceWords: 8,
+        longestSentenceWords: 2,
         sentenceWordLimit: 25,
       },
       {
         step: 3,
-        bodyWords: 34,
+        bodyWords: 1,
         bodyWordLimit: null,
-        longestSentenceWords: 12,
+        longestSentenceWords: 1,
         sentenceWordLimit: 25,
       },
     ]);

@@ -108,6 +108,8 @@ const boundFields = [
   "personalCheckedAt",
   "automationEvidenceId",
 ] as const;
+/** Store may replay only a receipt bound to an accepted, immutable fixed-bump sequence. */
+export type ApprovedShoppingReplay = { receiptHash: string; approvedAt: Date };
 export const assertShoppingEvidence = async (
   transaction: TransactionScope | undefined,
   prospect: Pick<
@@ -115,6 +117,7 @@ export const assertShoppingEvidence = async (
     "id" | "revision" | "campaignId" | "details"
   >,
   policy: { revision: number; settings: Playbook },
+  approvedReplay?: ApprovedShoppingReplay,
 ) => {
   if (
     !policy.settings.requireShoppingEvidence &&
@@ -166,10 +169,20 @@ export const assertShoppingEvidence = async (
     throw new ValidationError(
       "Shopping research no longer matches this prospect or Playbook.",
     );
+  const validationTime = approvedReplay?.approvedAt.getTime() ?? Date.now();
+  if (
+    approvedReplay &&
+    (!Number.isFinite(validationTime) ||
+      validationTime > Date.now() ||
+      approvedReplay.receiptHash !== input.data.receiptHash)
+  )
+    throw new ValidationError(
+      "The fixed bump no longer matches its originally approved research receipt.",
+    );
   const problem = validateShoppingResearch(
     receipt.data,
     policy.settings.verificationDays,
-    Date.now(),
+    validationTime,
     policy.settings,
   );
   if (problem) throw new ValidationError(problem);
@@ -197,6 +210,7 @@ export const assertShoppingEvidence = async (
       receipt.data,
       policy.settings.verificationDays,
       policy.settings,
+      validationTime,
     );
     if (replayProblem) throw new ValidationError(replayProblem);
   }

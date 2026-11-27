@@ -6,6 +6,7 @@ import {
 } from "@/lib/outbound";
 import {
   compositionProspectHash,
+  legacyWritingPolicyHash,
   researchPolicyHash,
   writingPolicyHash,
 } from "@/server/utils/outbound/shopping-policy";
@@ -56,6 +57,14 @@ describe("independent writing policy identity", () => {
         sendingEnabled: !original.sendingEnabled,
       }),
     ).toBe(writingPolicyHash(original));
+  });
+
+  test("historical policy verification is explicit and cannot reuse a v1 key for new copy", () => {
+    const original = structuredClone(defaultPlaybook);
+    const legacy = legacyWritingPolicyHash(original);
+    expect(legacy).not.toBe(writingPolicyHash(original));
+    expect(legacyWritingPolicyHash(original)).toBe(legacy);
+    expect(original).toEqual(defaultPlaybook);
   });
 
   test("shared style edits change a secondary author's key without changing that author's biography", () => {

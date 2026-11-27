@@ -35,6 +35,7 @@ import { useState, useTransition } from "react";
 import { z } from "zod";
 import { Link, useRouter } from "@/i18n/navigation";
 import { countWords, deliveredBody, type Message } from "@/lib/outbound";
+import { isCurrentWritingSnapshot } from "@/lib/outbound-composition";
 import { copyVerdictProblem } from "@/lib/outbound-copy-quality";
 import {
   type ReviewContext,
@@ -139,6 +140,8 @@ export const ReviewEditor = ({
   const checks = reviewChecks(context);
   const next = reviewNextAction(context);
   const writing = prospect.messages[0]?.writing;
+  const currentWriting =
+    writing && isCurrentWritingSnapshot(writing) ? writing : null;
   const copyProblem = copyVerdictProblem(writing?.quality);
   const labelForIssue = (code: string) =>
     Object.entries(messages.outbound.issues).find(
@@ -214,12 +217,6 @@ export const ReviewEditor = ({
       Component: Multiline,
       validator: z.string().trim().min(1).max(1400),
       label: t("review.composition.relevance"),
-    }),
-    followupFact: field({
-      shape: "custom",
-      Component: Multiline,
-      validator: z.string().trim().max(1200),
-      label: t("review.composition.followupFact"),
     }),
   };
   return (
@@ -380,7 +377,7 @@ export const ReviewEditor = ({
         )}
         <div className="flex flex-wrap gap-2">
           {next === "regenerate" ? (
-            writing && context.copyEditable ? (
+            currentWriting && context.copyEditable ? (
               <Button
                 variant="soft"
                 disabled={mutation.pending}
@@ -471,7 +468,7 @@ export const ReviewEditor = ({
           </AccordionItem>
         </Accordion>
       )}
-      {editing && writing && context.copyEditable && (
+      {editing && currentWriting && context.copyEditable && (
         <section className="space-y-4 border-accent-foreground border-b px-4 py-6 sm:px-6">
           <h2 className="font-semibold">{t("review.composition.edit")}</h2>
           <p className="text-foreground-dimmed text-sm">
@@ -479,12 +476,12 @@ export const ReviewEditor = ({
           </p>
           <InferredForm
             config={formConfig}
-            defaultValues={writing.parts}
+            defaultValues={currentWriting.parts}
             onChange={(values) =>
               updateDirty(
-                Object.entries(writing.parts).some(
+                Object.entries(currentWriting.parts).some(
                   ([key, value]) =>
-                    values[key as keyof typeof writing.parts] !== value,
+                    values[key as keyof typeof currentWriting.parts] !== value,
                 ),
               )
             }

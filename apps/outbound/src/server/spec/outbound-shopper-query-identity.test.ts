@@ -37,7 +37,7 @@ const generated = async (
     attribute,
     excerptIds: [JSON.parse(prompt).excerpts[0].id],
   }));
-  const result = await Shopping.generateShopperQuery(input, { generate });
+  const result = await Shopping.generateLegacyShopperQuery(input, { generate });
   if (!result.success) throw result.error;
   return { result: result.data, generate };
 };

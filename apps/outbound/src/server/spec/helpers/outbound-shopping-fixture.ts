@@ -3,7 +3,10 @@ import { createHash, randomUUID } from "node:crypto";
 import type { Playbook, ProspectInput } from "@/lib/outbound";
 import type { WriterParts } from "@/lib/outbound-composition";
 import { rebuildWritingProposal } from "@/lib/outbound-rebuild-policy";
-import type { ShoppingResearch } from "@/lib/outbound-shopping-research";
+import {
+  resultBrandNames,
+  type ShoppingResearch,
+} from "@/lib/outbound-shopping-research";
 import type {
   BrowserResearch,
   RawCapture,
@@ -142,7 +145,7 @@ export const buildSyntheticShoppingCapture = async (
     limitations: [],
   };
   const generated = value(
-    await Capture.generateShopperQuery(
+    await Capture.generateLegacyShopperQuery(
       {
         product,
         merchant,
@@ -265,13 +268,41 @@ export const buildSyntheticShoppingEvidence = async (
     capture.now,
   );
   if (result.status !== "researched") throw new Error(result.reason);
+  const brandCatalog = Assessment.resultBrandCatalog(
+    capture.evidence,
+    capture.now,
+  );
+  const brandNames = selection.listed
+    .filter((item) => item.kind === "brand")
+    .map((item) => item.name)
+    .slice(0, 3);
+  const projected =
+    ["discovery-absence", "discovery-outranked"].includes(
+      result.receipt.selected.kind,
+    ) && brandNames.length >= 2
+      ? Assessment.projectResultBrands(
+          capture.evidence,
+          result.receipt,
+          {
+            decision: "supported",
+            reason: "Synthetic brand strings only.",
+            brands: brandNames.map((name) => ({
+              name,
+              quoteId: brandCatalog.find((quote) => quote.quote.includes(name))
+                ?.id,
+            })),
+          },
+          capture.now,
+        )
+      : result;
+  if (projected.status !== "researched") throw new Error(projected.reason);
   const problem = Assessment.validateFactResearch(
     capture.evidence,
-    result.receipt,
+    projected.receipt,
     capture.now,
   );
   if (problem) throw new Error(problem);
-  return { ...capture, selection, receipt: result.receipt };
+  return { ...capture, selection, receipt: projected.receipt };
 };
 
 /** Valid new formula for fixtures, retaining every configured sender profile and identity. */
@@ -298,7 +329,7 @@ export const syntheticWriterParts = (
     `I wanted help choosing large bags and searched for "${query}".`,
     `Shopping for large bags, I asked for "${query}".`,
   ];
-  const names = receipt.discovery?.listed.map((entry) => entry.name) ?? [];
+  const names = resultBrandNames(receipt);
   const named =
     names.length > 1
       ? `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`
@@ -309,6 +340,5 @@ export const syntheticWriterParts = (
     opening: openings[Math.abs(variant) % openings.length] ?? openings[0] ?? "",
     result: `It named ${named}. ${prospect.company} didn't come up.`,
     relevance: "That's the kind of search a new customer starts with.",
-    followupFact: "",
   };
 };

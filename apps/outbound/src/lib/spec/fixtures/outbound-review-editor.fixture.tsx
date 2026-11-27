@@ -107,9 +107,8 @@ mock.module("@/server/app/outbound/review-context", () => ({
     };
   },
 }));
-const { COPY_CRITERIA, writingSnapshotSchema } = await import(
-  "@/lib/outbound-composition"
-);
+const { COPY_CRITERIA, writingSnapshotSchema, legacyWritingSnapshotSchema } =
+  await import("@/lib/outbound-composition");
 const { reviewChecks, reviewNextAction } = await import(
   "@/lib/outbound-review-context"
 );
@@ -184,10 +183,9 @@ const parts = {
   opening: "My sister needed a large tote.",
   result: "Example Goods did not appear in the answer.",
   relevance: "That leaves the shop out of the first shortlist.",
-  followupFact: "",
 };
 const writing = writingSnapshotSchema.parse({
-  version: "discovery-email-v1",
+  version: "discovery-email-v2",
   writingPolicyHash: "a".repeat(64),
   receiptHash: "b".repeat(64),
   contentHash: "c".repeat(64),
@@ -349,8 +347,8 @@ const draft = host.querySelector("form");
 assert(draft);
 assert.equal(
   draft.querySelectorAll("textarea").length,
-  4,
-  "Only four text parts and a subject are editable",
+  3,
+  "Only opening, result, relevance and a subject are editable",
 );
 await click(button(labels.composition.saveCheck));
 assert.deepEqual(calls.at(-1), {
@@ -382,6 +380,31 @@ assert.equal(
   document.querySelector("script"),
   null,
   "Saved HTML is displayed as text",
+);
+const historicalWriting = legacyWritingSnapshotSchema.parse({
+  ...writing,
+  version: "discovery-email-v1",
+  parts: { ...parts, followupFact: "An original historical follow-up fact." },
+});
+const historicalMessages = prospect.messages.map((message) =>
+  message.step === 1 ? { ...message, writing: historicalWriting } : message,
+);
+await render({
+  ...context,
+  proposal: false,
+  prospect: { ...prospect, messages: historicalMessages },
+});
+for (const message of historicalMessages)
+  assert(host.textContent?.includes(message.body));
+assert(
+  !Array.from(host.querySelectorAll("button")).some(
+    (element) => element.textContent?.trim() === labels.composition.edit,
+  ),
+  "Historical five-part copy remains readable without entering the v2 editor",
+);
+assert.equal(
+  historicalWriting.parts.followupFact,
+  "An original historical follow-up fact.",
 );
 await act(async () => root.unmount());
 window.close();

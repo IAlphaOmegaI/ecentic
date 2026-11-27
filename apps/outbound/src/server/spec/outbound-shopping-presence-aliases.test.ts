@@ -59,7 +59,7 @@ const fixture = async (
   );
   const merchant = answer.job.query.merchant;
   if (!merchant) throw new Error("Missing synthetic merchant identity.");
-  const query = await Capture.generateShopperQuery(
+  const query = await Capture.generateLegacyShopperQuery(
     {
       product: answer.job.query.product,
       merchant,

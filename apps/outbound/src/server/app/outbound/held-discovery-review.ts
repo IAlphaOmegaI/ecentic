@@ -40,6 +40,7 @@ import {
   HELD_CARD_ASSESSMENT_ERRORS,
   HELD_REVIEW_MANIFEST_HASH,
   HELD_REVIEW_REASON,
+  HELD_REVIEW_ROUND2_INSTRUCTION_HASH,
   type HeldReviewInput,
   type HeldReviewManifest,
   type HeldReviewState,
@@ -67,7 +68,13 @@ import {
   shoppingPollUrl,
 } from "@/server/utils/outbound/scrapellm-cooldown";
 import * as Assessment from "@/server/utils/outbound/shopping-assessment";
-import { assessUnrankedCardAbsence } from "@/server/utils/outbound/shopping-fact-assessment";
+import {
+  appendCaptureHistory,
+  assessResultBrands,
+  assessUnrankedCardAbsence,
+  inspectDiscoveryPresence,
+  projectRepeatedPresence,
+} from "@/server/utils/outbound/shopping-fact-assessment";
 import {
   compositionProspectHash,
   writingPolicyHash,
@@ -94,11 +101,13 @@ type Claim = { job: Job; input: HeldReviewInput; state: HeldReviewState };
 export type HeldReviewDependencies = {
   inspectProduct?: typeof Capture.inspectProduct;
   generateQuery?: typeof Capture.generateShopperQuery;
+  reviewQuery?: typeof Capture.reviewShopperQuery;
   repairQuery?: typeof Capture.repairShopperQuery;
   start?: typeof Capture.startQuery;
   poll?: typeof Capture.pollQuery;
   browse?: typeof Capture.inspectPages;
   assess?: typeof Assessment.assess;
+  assessBrands?: typeof assessResultBrands;
   resolveKey?: typeof Credentials.resolveKey;
   generate?: Draft.CompositionDependencies["generate"];
   judge?: Draft.CompositionDependencies["judge"];
@@ -156,6 +165,59 @@ const eligible = async (
   state: HeldReviewState,
 ) => {
   const batch = await batchAt(scope, input.batchId);
+  if (input.reviewRound === 2) {
+    if (
+      !input.previousJobId ||
+      !input.previousOutputHash ||
+      input.instructionHash !== HELD_REVIEW_ROUND2_INSTRUCTION_HASH
+    )
+      throw new ConflictError(
+        "The reviewed instruction or original job binding is missing.",
+      );
+    const previous = await jobAt(scope, input.previousJobId);
+    const previousInput = heldReviewInputSchema.parse(previous.input);
+    if (
+      previousInput.reviewRound ||
+      previousInput.batchId !== input.batchId ||
+      previousInput.prospectId !== input.prospectId ||
+      writerDiagnosticHash(JSON.stringify(previous.output)) !==
+        input.previousOutputHash
+    )
+      throw new ConflictError("The preserved first-review record changed.");
+    const original = heldReviewStateSchema.parse(previous.output);
+    const previousPurchase =
+      original.shoppingJob && original.query && original.queryReservedAt
+        ? {
+            query: original.query,
+            shoppingJob: original.shoppingJob,
+            answer: original.answer,
+            browser: original.browser,
+            shoppingReceipt: original.shoppingReceipt,
+            queryReservedAt: original.queryReservedAt,
+            failureReason: previous.error ?? original.heldReason ?? null,
+          }
+        : undefined;
+    const normalizedPurchase = previousPurchase
+      ? heldReviewStateSchema.shape.priorPurchase.parse(previousPurchase)
+      : undefined;
+    if (
+      JSON.stringify(state.priorPurchase) !==
+        JSON.stringify(normalizedPurchase) ||
+      state.shoppingQueryCount < original.shoppingQueryCount ||
+      state.shoppingQueryCount > original.shoppingQueryCount + 1 ||
+      state.shoppingQueryCount > 2
+    )
+      throw new ConflictError(
+        "The original purchase or lifetime search count changed.",
+      );
+  } else if (
+    input.previousJobId ||
+    input.previousOutputHash ||
+    input.instructionHash
+  )
+    throw new ValidationError(
+      "A prior-review binding requires the explicit second review.",
+    );
   if (batch.budget.paused)
     throw new ConflictError("The explicit held review batch is paused.");
   if (
@@ -309,6 +371,7 @@ const previewPeers = async (
         ne(schema.outboundIntegrationJob.id, jobId),
         sql`${schema.outboundIntegrationJob.input}->>'operation' = 'heldDiscoveryReview'`,
         sql`${schema.outboundIntegrationJob.input}->>'batchId' = ${input.batchId}`,
+        sql`coalesce((${schema.outboundIntegrationJob.input}->>'reviewRound')::int, 1) = ${input.reviewRound ?? 1}`,
         sql`${schema.outboundIntegrationJob.output}->'preview' is not null`,
       ),
     )
@@ -589,6 +652,210 @@ export const start = (actor: string, manifest: HeldReviewManifest) =>
       });
     }
     return { batchId, repeated: false };
+  });
+
+/** The owner's second review creates new records and keeps the original budget. */
+export const startSecondReview = (
+  actor: string,
+  manifest: HeldReviewManifest,
+  instructionHash: string,
+) =>
+  transaction(async (scope) => {
+    const approved = validateManifest(manifest);
+    if (instructionHash !== HELD_REVIEW_ROUND2_INSTRUCTION_HASH)
+      throw new ValidationError(
+        "Use the exact reviewed section 7 and section 16 instructions.",
+      );
+    const [batchJob] = await scope
+      .select()
+      .from(schema.outboundIntegrationJob)
+      .where(
+        eq(
+          schema.outboundIntegrationJob.requestId,
+          `held-discovery-review:${HELD_REVIEW_MANIFEST_HASH}`,
+        ),
+      )
+      .limit(1);
+    if (!batchJob)
+      throw new ConflictError(
+        "The original approved review budget is missing.",
+      );
+    const batch = await batchAt(scope, batchJob.id);
+    if (batch.input.requestedBy !== actor || batch.budget.paused)
+      throw new ConflictError(
+        "The original operator or active shared budget does not match.",
+      );
+    // A repeated invocation only needs the manifest metadata, not every raw capture.
+    const existing = await scope
+      .select({
+        input: schema.outboundIntegrationJob.input,
+        prospectId: schema.outboundIntegrationJob.prospectId,
+      })
+      .from(schema.outboundIntegrationJob)
+      .where(
+        and(
+          eq(schema.outboundIntegrationJob.provider, "automation"),
+          sql`${schema.outboundIntegrationJob.input}->>'operation' = 'heldDiscoveryReview'`,
+          sql`${schema.outboundIntegrationJob.input}->>'batchId' = ${batchJob.id}`,
+          sql`${schema.outboundIntegrationJob.input}->>'reviewRound' = '2'`,
+        ),
+      );
+    if (existing.length) {
+      if (
+        existing.length !== 21 ||
+        new Set(existing.map((job) => job.prospectId)).size !== 21 ||
+        existing.some(
+          (job) =>
+            job.input["instructionHash"] !== instructionHash ||
+            !approved.prospectIds.includes(job.prospectId ?? ""),
+        )
+      )
+        throw new ConflictError(
+          "The existing second-review manifest is incomplete or changed.",
+        );
+      return {
+        batchId: batchJob.id,
+        reviewRound: 2 as const,
+        repeated: true,
+        queriesReserved: batch.budget.queriesReserved,
+      };
+    }
+    const originals = await scope
+      .select()
+      .from(schema.outboundIntegrationJob)
+      .where(
+        and(
+          eq(schema.outboundIntegrationJob.provider, "automation"),
+          sql`${schema.outboundIntegrationJob.input}->>'operation' = 'heldDiscoveryReview'`,
+          sql`${schema.outboundIntegrationJob.input}->>'batchId' = ${batchJob.id}`,
+          sql`not (${schema.outboundIntegrationJob.input} ? 'reviewRound')`,
+        ),
+      );
+    if (
+      originals.length !== 21 ||
+      originals.some(
+        (job) => !["complete", "failed", "uncertain"].includes(job.status),
+      )
+    )
+      throw new ConflictError(
+        "Every first-review job must be retained and settled before another review.",
+      );
+    const sources = originals.map((job) => ({
+      job,
+      input: heldReviewInputSchema.parse(job.input),
+      state: heldReviewStateSchema.parse(job.output),
+    }));
+    if (
+      sources.reduce(
+        (sum, source) => sum + source.state.shoppingQueryCount,
+        0,
+      ) !== batch.budget.queriesReserved
+    )
+      throw new ConflictError(
+        "Original per-contact reservations do not match the shared budget.",
+      );
+    const policy = await Store.policy(scope);
+    for (const prospectId of approved.prospectIds) {
+      const source = sources.find(
+        (item) => item.input.prospectId === prospectId,
+      );
+      if (!source || source.state.shoppingQueryCount > 1)
+        throw new ConflictError(
+          "The original contact has no remaining authorized review search.",
+        );
+      const [prospect] = await scope
+        .select()
+        .from(schema.outboundProspect)
+        .where(eq(schema.outboundProspect.id, prospectId))
+        .limit(1);
+      if (!prospect) throw new ConflictError("A reviewed prospect is missing.");
+      const campaign = prospect.campaignId
+        ? (
+            await scope
+              .select({ revision: schema.outboundCampaign.revision })
+              .from(schema.outboundCampaign)
+              .where(eq(schema.outboundCampaign.id, prospect.campaignId))
+              .limit(1)
+          )[0]
+        : null;
+      const input = heldReviewInputSchema.parse({
+        ...source.input,
+        requestedBy: actor,
+        reviewRound: 2,
+        previousJobId: source.job.id,
+        previousOutputHash: writerDiagnosticHash(
+          JSON.stringify(source.job.output),
+        ),
+        instructionHash,
+        playbookRevision: policy.revision,
+        researchPolicyHash: researchPolicyHash(policy.settings),
+        campaignId: prospect.campaignId,
+        campaignRevision: campaign?.revision ?? null,
+      });
+      const priorPurchase =
+        source.state.shoppingJob &&
+        source.state.query &&
+        source.state.queryReservedAt
+          ? {
+              query: source.state.query,
+              shoppingJob: source.state.shoppingJob,
+              answer: source.state.answer,
+              browser: source.state.browser,
+              shoppingReceipt: source.state.shoppingReceipt,
+              queryReservedAt: source.state.queryReservedAt,
+              failureReason:
+                source.job.error ?? source.state.heldReason ?? null,
+            }
+          : undefined;
+      if (source.state.shoppingQueryCount && !priorPurchase)
+        throw new ConflictError(
+          "An uncertain original submission must be reconciled before another search.",
+        );
+      const productCapture =
+        source.state.productCapture?.status === "captured"
+          ? source.state.productCapture
+          : undefined;
+      const state = heldReviewStateSchema.parse({
+        stage: productCapture
+          ? priorPurchase
+            ? "reviewQuery"
+            : "generateQuery"
+          : "renderedProduct",
+        prospectRevision: prospect.revision,
+        availableAt: new Date().toISOString(),
+        lease: null,
+        shoppingQueryIntent: "unbranded-specific",
+        shoppingQueryCount: source.state.shoppingQueryCount,
+        polls: 0,
+        productCapture,
+        queryPurpose: priorPurchase ? "reuse" : "initial",
+        priorPurchase,
+        ...(priorPurchase
+          ? {
+              query: priorPurchase.query,
+              shoppingJob: priorPurchase.shoppingJob,
+              answer: priorPurchase.answer,
+              browser: priorPurchase.browser,
+              queryReservedAt: priorPurchase.queryReservedAt,
+            }
+          : {}),
+      });
+      await eligible(scope, input, state);
+      await scope.insert(schema.outboundIntegrationJob).values({
+        provider: "automation",
+        prospectId,
+        status: "pending",
+        requestId: `held-discovery-review:${HELD_REVIEW_MANIFEST_HASH}:review-2:${prospectId}`,
+        input,
+        output: state,
+      });
+    }
+    return {
+      batchId: batchJob.id,
+      reviewRound: 2 as const,
+      repeated: false,
+      queriesReserved: batch.budget.queriesReserved,
+    };
   });
 
 const owns = async (scope: TransactionScope, claim: Claim) => {
@@ -1181,7 +1448,7 @@ const browserAvailableAt = async (scope: TransactionScope) => {
     .where(eq(schema.outboundIntegrationJob.provider, "automation"));
   return cooldowns?.availableAt ? Date.parse(cooldowns.availableAt) : 0;
 };
-const claimNext = (batchId: string, deadline: number) =>
+const claimNext = (batchId: string, deadline: number, reviewRound: 1 | 2 = 1) =>
   transaction(async (scope): Promise<Claim | null> => {
     const batch = await batchAt(scope, batchId);
     if (batch.budget.paused) return null;
@@ -1193,6 +1460,7 @@ const claimNext = (batchId: string, deadline: number) =>
           eq(schema.outboundIntegrationJob.provider, "automation"),
           sql`${schema.outboundIntegrationJob.input}->>'operation' = 'heldDiscoveryReview'`,
           sql`${schema.outboundIntegrationJob.input}->>'batchId' = ${batchId}`,
+          sql`coalesce((${schema.outboundIntegrationJob.input}->>'reviewRound')::int, 1) = ${reviewRound}`,
           inArray(schema.outboundIntegrationJob.status, [
             "pending",
             "starting",
@@ -1229,7 +1497,8 @@ const claimNext = (batchId: string, deadline: number) =>
       }
       if (
         Date.parse(state.availableAt) > Date.now() ||
-        Date.now() + heldReviewStageBudget(state.stage) > deadline
+        Date.now() + heldReviewStageBudget(state.stage, input.reviewRound) >
+          deadline
       )
         continue;
       if (["renderedProduct", "browser"].includes(state.stage)) {
@@ -1300,6 +1569,7 @@ const claimNext = (batchId: string, deadline: number) =>
               eq(schema.outboundIntegrationJob.status, "starting"),
               sql`${schema.outboundIntegrationJob.input}->>'operation' = 'heldDiscoveryReview'`,
               sql`${schema.outboundIntegrationJob.input}->>'batchId' = ${batchId}`,
+              sql`coalesce((${schema.outboundIntegrationJob.input}->>'reviewRound')::int, 1) = ${reviewRound}`,
               sql`${schema.outboundIntegrationJob.output}->>'stage' = 'draft'`,
               sql`${schema.outboundIntegrationJob.output}->'lease'->>'expiresAt' > ${new Date().toISOString()}`,
             ),
@@ -1344,7 +1614,13 @@ const claimNext = (batchId: string, deadline: number) =>
         }
         if (
           state.shoppingQueryCount !==
-          (state.shoppingQueryIntent === "unbranded-broad" ? 1 : 0)
+          (input.reviewRound === 2
+            ? state.priorPurchase
+              ? 1
+              : 0
+            : state.shoppingQueryIntent === "unbranded-broad"
+              ? 1
+              : 0)
         ) {
           await scope
             .update(schema.outboundIntegrationJob)
@@ -1433,6 +1709,52 @@ const claimNext = (batchId: string, deadline: number) =>
     }
     return null;
   });
+const evidenceForState = (state: HeldReviewState): Assessment.Evidence => {
+  const answer = Capture.aiCaptureSchema.parse(state.answer);
+  const browser = Capture.browserResearchSchema.parse(state.browser);
+  if (browser.status !== "captured")
+    throw new ValidationError("The browser evidence is incomplete.");
+  const previous = state.priorPurchase;
+  return {
+    answer,
+    browser,
+    ...(state.queryReview ? { queryReview: state.queryReview } : {}),
+    ...(state.queryPurpose !== "reuse" &&
+    previous?.answer &&
+    previous.browser?.status === "captured"
+      ? {
+          previous: [
+            {
+              answer: previous.answer,
+              browser: previous.browser,
+              ...(state.previousQueryReview
+                ? { queryReview: state.previousQueryReview }
+                : {}),
+            },
+          ],
+        }
+      : {}),
+  };
+};
+const previousQueryProblem = (
+  input: HeldReviewInput,
+  state: HeldReviewState,
+) => {
+  if (
+    !state.priorPurchase ||
+    !state.previousQueryReview ||
+    state.productCapture?.status !== "captured"
+  )
+    return "The original paid query and its revised review are missing.";
+  return Capture.validateShopperQueryReviewBinding({
+    query: state.priorPurchase.query,
+    review: state.previousQueryReview,
+    product: input.product,
+    category: input.category,
+    merchant: input.merchant,
+    browser: state.productCapture,
+  });
+};
 const queryProblem = (
   input: HeldReviewInput,
   state: HeldReviewState,
@@ -1444,6 +1766,56 @@ const queryProblem = (
     state.query.intent !== state.shoppingQueryIntent
   )
     return "The validated unbranded query and product capture are missing.";
+  if (input.reviewRound === 2) {
+    if (!state.queryReview)
+      return "The revised query has no intact semantic review.";
+    const reviewed = Capture.validateShopperQueryReview({
+      query: state.query,
+      review: state.queryReview,
+      product: input.product,
+      category: input.category,
+      merchant: input.merchant,
+      browser: state.productCapture,
+      discoveryFreshnessDays: policy.discoveryFreshnessDays,
+    });
+    if (reviewed) return reviewed;
+    if (state.queryPurpose === "reuse")
+      return "A saved valid query is reused without a new shopping purchase.";
+    if (state.priorPurchase) {
+      const priorProblem = previousQueryProblem(input, state);
+      if (priorProblem) return priorProblem;
+      if (state.query.prompt === state.priorPurchase.query.prompt)
+        return "The authorized replacement must differ from the original query.";
+      if (state.queryPurpose === "correction") {
+        if (
+          state.priorPurchase.answer &&
+          state.priorPurchase.browser?.status !== "captured"
+        )
+          return "The original answer needs its browser evidence reconciled before a corrected purchase.";
+        if (state.previousQueryReview?.status !== "invalid")
+          return "A corrected search requires an invalid original query.";
+      } else if (state.queryPurpose === "broader") {
+        if (
+          state.previousQueryReview?.status !== "valid" ||
+          state.shoppingQueryIntent !== "unbranded-broad"
+        )
+          return "A broader search requires a valid original query.";
+        const prior = state.priorPurchase;
+        if (!prior.answer || prior.browser?.status !== "captured")
+          return "The original merchant-presence evidence is missing.";
+        const presence = inspectDiscoveryPresence({
+          answer: prior.answer,
+          browser: prior.browser,
+          queryReview: state.previousQueryReview,
+        });
+        if (presence.status !== "verified" || !presence.canBroaden)
+          return "A broader search requires verified merchant presence in the original answer.";
+      } else
+        return "This prior purchase has no authorized correction or broader-search purpose.";
+    } else if (state.queryPurpose !== "initial")
+      return "A first search requires an initial-query purpose.";
+    return null;
+  }
   if (state.shoppingQueryIntent === "unbranded-broad") {
     const problem = broaderSearchProblem(
       state.shoppingHistory?.[0],
@@ -1518,13 +1890,81 @@ const execute = async (
         }),
       );
       return capture.status === "captured"
-        ? next("generateQuery", { productCapture: capture })
+        ? next(
+            input.reviewRound === 2 && state.priorPurchase
+              ? "reviewQuery"
+              : "generateQuery",
+            { productCapture: capture },
+          )
         : held(capture.reason, { productCapture: capture });
+    }
+    case "reviewQuery": {
+      const prior = state.priorPurchase;
+      if (!prior || state.productCapture?.status !== "captured")
+        throw new ValidationError(
+          "The original query and rendered product are missing.",
+        );
+      const review = value(
+        await (dependencies.reviewQuery ?? Capture.reviewShopperQuery)({
+          product: input.product,
+          category: input.category,
+          merchant: input.merchant,
+          browser: state.productCapture,
+          query: prior.query,
+          discoveryFreshnessDays: policy.settings.discoveryFreshnessDays,
+          deadline,
+        }),
+      );
+      const replaceQuery = (purpose: "correction" | "broader") =>
+        next("generateQuery", {
+          queryPurpose: purpose,
+          previousQueryReview: review,
+          shoppingQueryIntent:
+            purpose === "broader" ? "unbranded-broad" : "unbranded-specific",
+          query: undefined,
+          queryReview: undefined,
+          queryGeneration: undefined,
+          shoppingJob: undefined,
+          answer: undefined,
+          browser: undefined,
+          shoppingReceipt: undefined,
+          queryReservedAt: undefined,
+          polls: 0,
+        });
+      if (review.status === "uncertain")
+        return held(review.reason, { queryReview: review });
+      if (review.status === "invalid") {
+        if (prior.answer && prior.browser?.status !== "captured")
+          return held(
+            "The original answer needs its browser evidence reconciled before a corrected purchase.",
+            { queryReview: review },
+          );
+        return replaceQuery("correction");
+      }
+      if (!prior.answer)
+        return held(
+          "The original valid query has no completed provider answer. No replacement was purchased.",
+          { queryReview: review },
+        );
+      if (prior.browser?.status !== "captured")
+        return next("browser", { queryReview: review, queryPurpose: "reuse" });
+      const presence = inspectDiscoveryPresence({
+        answer: prior.answer,
+        browser: prior.browser,
+        queryReview: review,
+      });
+      if (presence.status !== "verified")
+        return held(presence.reason, { queryReview: review });
+      if (presence.canBroaden) return replaceQuery("broader");
+      return next("assess", { queryReview: review, queryPurpose: "reuse" });
     }
     case "generateQuery": {
       if (state.productCapture?.status !== "captured")
         throw new ValidationError("The rendered product capture is missing.");
-      if (state.shoppingQueryIntent === "unbranded-broad") {
+      if (
+        input.reviewRound !== 2 &&
+        state.shoppingQueryIntent === "unbranded-broad"
+      ) {
         const problem = broaderSearchProblem(
           state.shoppingHistory?.[0],
           Date.now(),
@@ -1543,7 +1983,9 @@ const execute = async (
           intent: state.shoppingQueryIntent,
           queryStyle: policy.settings.queryStyle,
           discoveryFreshnessDays: policy.settings.discoveryFreshnessDays,
-          previousQuestion: state.shoppingHistory?.[0]?.query.prompt,
+          previousQuestion:
+            state.priorPurchase?.query.prompt ??
+            state.shoppingHistory?.[0]?.query.prompt,
           deadline,
         }),
       );
@@ -1551,6 +1993,9 @@ const execute = async (
         ? next("query", {
             query: generated.query,
             queryGeneration: generated.generation,
+            ...(input.reviewRound === 2
+              ? { queryReview: generated.query.review }
+              : {}),
           })
         : held(generated.reason, { queryGeneration: generated.generation });
     }
@@ -1595,7 +2040,13 @@ const execute = async (
       if (
         problem ||
         state.shoppingQueryCount !==
-          (state.shoppingQueryIntent === "unbranded-broad" ? 2 : 1)
+          (input.reviewRound === 2
+            ? state.priorPurchase
+              ? 2
+              : 1
+            : state.shoppingQueryIntent === "unbranded-broad"
+              ? 2
+              : 1)
       )
         throw new ValidationError(
           problem ?? "The saved reservation does not match this query.",
@@ -1658,18 +2109,29 @@ const execute = async (
       const browser = Capture.browserResearchSchema.parse(state.browser);
       if (browser.status !== "captured")
         throw new ValidationError("The browser evidence is incomplete.");
-      const assessed = value(
-        await (dependencies.assess ?? Assessment.assess)({
-          answer,
-          browser,
-          playbook: policy.settings,
-          deadline,
-        }),
-      );
+      const evidence = evidenceForState(state);
+      const presence =
+        input.reviewRound === 2 && state.queryPurpose === "broader"
+          ? inspectDiscoveryPresence(evidence)
+          : null;
+      const assessed =
+        presence?.status === "verified" && presence.discovery.merchantPresent
+          ? projectRepeatedPresence(evidence)
+          : value(
+              await (dependencies.assess ?? Assessment.assess)({
+                ...evidence,
+                playbook: policy.settings,
+                deadline,
+                ...(input.reviewRound === 2 ? { deferBrands: true } : {}),
+              }),
+            );
       if (assessed.status !== "researched") return held(assessed.reason);
-      const receipt = assessed.receipt;
+      const receipt =
+        input.reviewRound === 2
+          ? appendCaptureHistory(assessed.receipt, evidence.previous)
+          : assessed.receipt;
       const problem = Assessment.validateAutomaticResearch(
-        { answer, browser },
+        evidence,
         receipt,
         policy.settings.verificationDays,
         policy.settings,
@@ -1678,6 +2140,7 @@ const execute = async (
       if (receipt.selected.kind === "product-observation")
         return held("needs-unbranded-search", { shoppingReceipt: receipt });
       if (
+        input.reviewRound !== 2 &&
         receipt.selected.kind === "no-gap" &&
         state.shoppingQueryCount === 1 &&
         !state.shoppingHistory?.length &&
@@ -1733,7 +2196,29 @@ const execute = async (
         ? held("No gap found. Try another product.", {
             shoppingReceipt: receipt,
           })
-        : next("draft", { shoppingReceipt: receipt });
+        : next(input.reviewRound === 2 ? "brands" : "draft", {
+            shoppingReceipt: receipt,
+          });
+    }
+    case "brands": {
+      const evidence = evidenceForState(state);
+      const assessed = value(
+        await (dependencies.assessBrands ?? assessResultBrands)({
+          ...evidence,
+          receipt: captureReceipt(state),
+          deadline,
+        }),
+      );
+      if (assessed.status !== "researched") return held(assessed.reason);
+      const problem = Assessment.validateAutomaticResearch(
+        evidence,
+        assessed.receipt,
+        policy.settings.verificationDays,
+        policy.settings,
+      );
+      return problem
+        ? held(problem, { shoppingReceipt: assessed.receipt })
+        : next("draft", { shoppingReceipt: assessed.receipt });
     }
     case "applyResearch":
     case "applyDraft":
@@ -1816,7 +2301,7 @@ const execute = async (
               "The preview browser evidence is incomplete.",
             );
           const problem = Assessment.validateAutomaticResearch(
-            { answer, browser },
+            evidenceForState(current),
             receipt,
             ready.policy.settings.verificationDays,
             ready.policy.settings,
@@ -2121,13 +2606,13 @@ const fail = (claim: Claim, error: Error) =>
 
 /** Execute at most one stage. No loop can replay a submission or acquire another budget. */
 export const runNext = (
-  input: { batchId: string; deadline?: number },
+  input: { batchId: string; deadline?: number; reviewRound?: 1 | 2 },
   dependencies: HeldReviewDependencies = {},
 ) =>
   resultify(async () => {
     const batchId = z.string().uuid().parse(input.batchId);
     const deadline = input.deadline ?? Date.now() + 150_000;
-    const claim = value(await claimNext(batchId, deadline));
+    const claim = value(await claimNext(batchId, deadline, input.reviewRound));
     if (!claim) return { advanced: false as const };
     const result = await resultify(async () => {
       const executed = await execute(claim, deadline, dependencies);
@@ -2142,7 +2627,7 @@ export const runNext = (
     };
   });
 
-export const status = (batchId: string) =>
+export const status = (batchId: string, reviewRound: 1 | 2 = 1) =>
   transaction(async (scope) => {
     const batch = await batchAt(scope, z.string().uuid().parse(batchId));
     const jobs = await scope
@@ -2165,10 +2650,12 @@ export const status = (batchId: string) =>
           eq(schema.outboundIntegrationJob.provider, "automation"),
           sql`${schema.outboundIntegrationJob.input}->>'operation' = 'heldDiscoveryReview'`,
           sql`${schema.outboundIntegrationJob.input}->>'batchId' = ${batchId}`,
+          sql`coalesce((${schema.outboundIntegrationJob.input}->>'reviewRound')::int, 1) = ${reviewRound}`,
         ),
       );
     return {
       batchId,
+      reviewRound,
       executionMode: "unapplied" as const,
       ...batch.budget,
       maximumSubmissions: batch.input.maxQueries,

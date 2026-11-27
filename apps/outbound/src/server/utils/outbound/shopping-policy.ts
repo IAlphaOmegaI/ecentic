@@ -1,6 +1,9 @@
 import { createHash } from "node:crypto";
 import type { Playbook, ProspectInput } from "@/lib/outbound";
-import { WRITING_CONTRACT_VERSION } from "@/lib/outbound-composition";
+import {
+  LEGACY_WRITING_CONTRACT_VERSION,
+  WRITING_CONTRACT_VERSION,
+} from "@/lib/outbound-composition";
 import { COPY_QUALITY_VERSION } from "@/lib/outbound-copy-quality";
 import { FINDING_COPY_FIELDS } from "@/lib/outbound-finding-copy";
 
@@ -53,15 +56,18 @@ export const researchPolicyHash = (settings: Playbook) =>
     .digest("hex");
 
 /** Copy changes create new writing jobs without changing capture provenance. */
-export const writingPolicyHash = (
+const boundWritingPolicyHash = (
   settings: Playbook & { relevanceLines?: string[] },
-  context: WritingPolicyContext = {},
+  context: WritingPolicyContext,
+  legacy: boolean,
 ) =>
   createHash("sha256")
     .update(
       JSON.stringify({
-        version: WRITING_CONTRACT_VERSION,
-        copyQualityVersion: COPY_QUALITY_VERSION,
+        version: legacy
+          ? LEGACY_WRITING_CONTRACT_VERSION
+          : WRITING_CONTRACT_VERSION,
+        copyQualityVersion: legacy ? "copy-checks-v1" : COPY_QUALITY_VERSION,
         subjectTemplate: settings.subjectTemplate,
         bodyTemplate: settings.bodyTemplate,
         followupOneTemplate: settings.followupOneTemplate,
@@ -93,3 +99,14 @@ export const writingPolicyHash = (
       }),
     )
     .digest("hex");
+
+/** New writes always use the current contract. */
+export const writingPolicyHash = (
+  settings: Playbook,
+  context: WritingPolicyContext = {},
+) => boundWritingPolicyHash(settings, context, false);
+/** Explicit historical read support; never used to authorize a new write. */
+export const legacyWritingPolicyHash = (
+  settings: Playbook,
+  context: WritingPolicyContext = {},
+) => boundWritingPolicyHash(settings, context, true);

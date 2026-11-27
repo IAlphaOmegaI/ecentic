@@ -184,7 +184,7 @@ export const composeSequence = async (
     const parsed = writerPartsSchema.safeParse(generated.data);
     if (!parsed.success) {
       const issues = [
-        "The writer must return exactly the five required parts.",
+        "The writer must return exactly the four required parts.",
       ];
       return previous || dependencies.suppliedParts
         ? held(issues[0] ?? "Invalid writer response.")

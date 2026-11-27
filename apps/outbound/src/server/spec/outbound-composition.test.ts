@@ -1,15 +1,23 @@
 import { describe, expect, test } from "bun:test";
-import { countWords } from "@/lib/outbound";
+import { countWords, deliveredBody } from "@/lib/outbound";
 import {
   assembleSequence,
   canonicalSequenceInput,
   FOLLOWUP_BUMP,
+  isCurrentWritingSnapshot,
+  LEGACY_WRITING_CONTRACT_VERSION,
   preflightWriterAssembly,
   renderLinkedInResult,
+  storedWriterPartsSchema,
+  WRITING_CONTRACT_VERSION,
+  writerPartsSchema,
+  writingSnapshotSchema,
 } from "@/lib/outbound-composition";
 import { deterministicCopyIssues } from "@/lib/outbound-copy-quality";
+import { PROPOSED_REBUILD_PLAYBOOK } from "@/lib/outbound-rebuild-policy";
 import { validateShoppingResearch } from "@/lib/outbound-shopping-research";
 import {
+  approvedRelevanceVariants,
   compositionPrompt,
   deriveWriterNarrative,
   validateWriterParts,
@@ -38,130 +46,75 @@ describe("observed facts and writer-owned narrative", () => {
     expect(prompt.prompt).toContain(fixture.policy.humanizerNotes);
   });
 
-  test("ordinary shopping narrative permits pair, putting and ideas without allowing new facts", () => {
-    for (const [product, question, subject, opening] of [
-      [
-        "Sunglasses",
-        "sunglasses polarized lenses",
-        "polarized sunglasses",
-        'My sister needed a pair of sunglasses, so I asked for "sunglasses polarized lenses".',
-      ],
-      [
-        "Linen tote",
-        "linen tote gift bag",
-        "linen tote gifts",
-        'I was putting a gift together, so I asked for "linen tote gift bag".',
-      ],
-      [
-        "Linen tote",
-        "linen tote gift bag",
-        "linen tote gifts",
-        'I wanted gift ideas, so I asked for "linen tote gift bag".',
-      ],
-    ] as const) {
-      const fixture = writerFixture();
-      const query = fixture.receipt.queries[0];
-      const queryClaim = fixture.receipt.claims?.find(
-        (claim) => claim.kind === "query",
-      );
-      if (!query || !queryClaim) throw new Error("Missing synthetic query.");
-      query.query = queryClaim.value = question;
-      fixture.prospect.product = fixture.receipt.product.name = product;
-      const parts = { ...fixture.parts, subject, opening };
-      expect(issuesFor(fixture, parts)).toEqual([]);
-      expect(
-        issuesFor(fixture, {
-          ...parts,
-          opening: opening.replace("I asked", "Ava asked"),
-        }).some((issue) => /unsupported named person/.test(issue)),
-      ).toBe(true);
-      expect(
-        issuesFor(fixture, {
-          ...parts,
-          followupFact: "The pair has UV400 protection at $120.",
-        }).some((issue) => /price|number|observed ledger/.test(issue)),
-      ).toBe(true);
-    }
-  });
-
-  test("opening verb inflections keep the same narrative, fact and word boundaries", () => {
+  test("ordinary sender-side narration is not an observed-fact vocabulary", () => {
     const fixture = writerFixture();
-    const query = fixture.receipt.queries[0]?.query;
-    if (!query) throw new Error("Missing synthetic query.");
-    for (const narrative of [
-      "My sister picks a tote",
-      "My sister picked a tote",
-      "My sister was picking a tote",
-      "My sister picks out a tote",
-      "My sister picked out a tote",
-      "My sister was picking out a tote",
-      "I was choosing a gift",
-      "I considered a gift",
-      "I planned a gift",
+    const query = fixture.receipt.queries[0]!.query;
+    for (const setup of [
+      "My sister needed a pair of bags",
+      "I was putting a gift together",
+      "I wanted gift ideas",
+      "My friend Ava was planning a picnic",
+      "I was looking for a present in Milan",
+      "I was embroidering and thinking about bags",
+      "I was picking out a dance competition gift",
+      "I wanted a recital gift",
+      "I was out looking for a tote",
     ])
       expect(
         issuesFor(fixture, {
           ...fixture.parts,
-          opening: `${narrative}, so I asked for "${query}".`,
+          opening: `${setup}, so I asked for "${query}".`,
         }),
       ).toEqual([]);
-    for (const [narrative, reason] of [
-      ["My sister was picking a tote for Ava", /unsupported named person/],
-      ["I was picking a tote in Milan", /unsupported named person/],
-      ["I was embroidering a tote", /“embroidering”/],
-      ["I was out looking for a tote", /“out”/],
-      ["I was picking out a tote out", /“out”/],
-      ["I was picking a tote with UV400", /number|“uv400”/],
-      ["I was picking a tote at $120", /price|number/],
-      ["I bought a tote", /invents a purchase/],
-      ["I tried a tote", /invents a purchase/],
-    ] as const)
+  });
+
+  test("opening permits narrative but holds factual assertions, price, use, test and recipient claims", () => {
+    const fixture = writerFixture();
+    const query = fixture.receipt.queries[0]!.query;
+    for (const setup of [
+      "The tote is waterproof",
+      "It contains linen",
+      "The tote costs $36",
+      "I bought a tote",
+      "I used this tote",
+      "I tested a tote",
+      "I tried this tote",
+      "Your sister wanted a tote",
+      "You needed a gift",
+      "The tote has UV400 protection",
+    ])
       expect(
         issuesFor(fixture, {
           ...fixture.parts,
-          opening: `${narrative}, so I asked for "${query}".`,
-        }).some((issue) => reason.test(issue)),
-      ).toBe(true);
+          opening: `${setup}, so I asked for "${query}".`,
+        }).length,
+      ).toBeGreaterThan(0);
     expect(
       issuesFor(fixture, {
         ...fixture.parts,
         opening: `${"I was picking a tote and ".repeat(4)}asked for "${query}".`,
-      }).some((issue) => /exceeds 22 words/.test(issue)),
-    ).toBe(true);
+      }),
+    ).toContain("opening: exceeds 22 words.");
+    for (const opening of [
+      'I asked for "another query".',
+      `I asked for ${query}.`,
+      `I asked for "${query}" and "${query}".`,
+    ])
+      expect(issuesFor(fixture, { ...fixture.parts, opening })).toContain(
+        "opening: quote the exact query once.",
+      );
+    fixture.receipt.queries[0]!.surface = "Google Search";
     expect(
       issuesFor(fixture, {
         ...fixture.parts,
-        followupFact: "Alder needs a gift.",
-      }).some((issue) => /followupFact: “needs”/.test(issue)),
-    ).toBe(true);
+        opening: `I asked Google AI Mode for "${query}".`,
+      }),
+    ).toContain("The copy names a search surface that was not used.");
   });
 
-  test("a retained opening's pick-out grammar and exact captured surface stay valid", () => {
+  test("ordinary relationships and occasions retain ten-email variety checks", () => {
     const fixture = writerFixture();
-    const query = fixture.receipt.queries[0];
-    if (!query) throw new Error("Missing synthetic query.");
-    // Retained candidate sentence structure, with this synthetic fixture's query.
-    const opening = `While picking out a birthday gift, I asked Google AI Mode for "${query.query}".`;
-    expect(issuesFor(fixture, { ...fixture.parts, opening })).toEqual([]);
-    for (const name of ["Ava", "Milan", "Bing AI Mode", "Google AI Mode Ava"])
-      expect(
-        issuesFor(fixture, {
-          ...fixture.parts,
-          opening: opening.replace("Google AI Mode", name),
-        }).some((issue) => /unsupported named person/.test(issue)),
-      ).toBe(true);
-    query.surface = "Google Search";
-    expect(
-      issuesFor(fixture, { ...fixture.parts, opening }).some((issue) =>
-        /unsupported named person/.test(issue),
-      ),
-    ).toBe(true);
-  });
-
-  test("dance occasions stay in the opening and participate in repetition checks", () => {
-    const fixture = writerFixture();
-    const query = fixture.receipt.queries[0]?.query;
-    if (!query) throw new Error("Missing synthetic query.");
+    const query = fixture.receipt.queries[0]!.query;
     for (const occasion of ["dance competition", "recital"]) {
       const opening = `Picking out a ${occasion} gift, I asked Google AI Mode for "${query}".`;
       const parts = { ...fixture.parts, opening };
@@ -174,45 +127,20 @@ describe("observed facts and writer-owned narrative", () => {
           parts,
           peers: [
             {
-              opening: `I wanted a ${occasion} gift, so I asked for "another query".`,
+              opening: `I wanted a ${occasion} gift, so I asked for "other query".`,
               relationship: null,
               occasion,
             },
           ],
         }),
       ).toContain("opening: this occasion was already used within ten emails.");
-      for (const field of ["result", "followupFact"] as const)
-        expect(
-          issuesFor(fixture, {
-            ...parts,
-            [field]: `Alder was listed for the ${occasion}.`,
-          }).some((issue) => issue.startsWith(`${field}:`)),
-        ).toBe(true);
       expect(
         issuesFor(fixture, {
           ...parts,
-          opening: opening.replace("gift,", "gift for Ava,"),
-        }).some((issue) => /unsupported named person/.test(issue)),
-      ).toBe(true);
-      expect(
-        issuesFor(fixture, {
-          ...parts,
-          opening: opening.replace("gift,", "gift at $120,"),
-        }).some((issue) => /price|number/.test(issue)),
-      ).toBe(true);
+          result: `Alder and Birch were listed for the ${occasion}. Sample Goods didn't come up.`,
+        }).length,
+      ).toBeGreaterThan(0);
     }
-    expect(
-      issuesFor(fixture, {
-        ...fixture.parts,
-        opening: `Picking out a competition gift, I asked Google AI Mode for "${query}".`,
-      }).some((issue) => /“competition”/.test(issue)),
-    ).toBe(true);
-    expect(
-      issuesFor(fixture, {
-        ...fixture.parts,
-        opening: `Picking out a dance competition and recital gift, I asked for "${query}".`,
-      }).some((issue) => /one relationship and one occasion/.test(issue)),
-    ).toBe(true);
     expect(
       deriveWriterNarrative('I asked for "dance competition gift".').occasion,
     ).toBeNull();
@@ -262,10 +190,12 @@ describe("observed facts and writer-owned narrative", () => {
         attribute: query.basis.attribute,
       },
     });
-    expect(input.ledger).toEqual(fixture.receipt.claims);
+    expect(input.ledger).toEqual(
+      fixture.receipt.claims?.filter((claim) => claim.kind !== "name"),
+    );
     expect(input.discovery.listed).toEqual([
-      { name: "Alder", kind: "retailer", position: 1, price: null },
-      { name: "Birch", kind: "retailer", position: 2, price: null },
+      { name: "Alder", kind: "brand", position: 1, price: null },
+      { name: "Birch", kind: "brand", position: 2, price: null },
     ]);
     expect(input.discovery).not.toHaveProperty("description");
     expect(input.discovery).not.toHaveProperty("correctnessProof");
@@ -294,12 +224,8 @@ describe("observed facts and writer-owned narrative", () => {
       merchantPosition: 5,
       totalListed: 6,
       listed: [
-        { name: "Alder", position: 1, price: "around $36" },
+        { name: "Alder", position: 1, price: null },
         { name: "Birch", position: 2, price: null },
-        { name: "Cedar", position: 3, price: null },
-        { name: "Maple", position: 4, price: null },
-        { name: "Sample Goods", position: 5, price: null },
-        { name: "Oak", position: 6, price: null },
       ],
     });
     expect(input.previous).toEqual(previous);
@@ -367,7 +293,7 @@ describe("observed facts and writer-owned narrative", () => {
     }
   });
 
-  test("an added brand or changed quote is rejected in either first result or follow-up", () => {
+  test("invented brands and obsolete writer follow-up fields are rejected", () => {
     const fixture = writerFixture();
     expect(
       issuesFor(fixture, {
@@ -376,53 +302,27 @@ describe("observed facts and writer-owned narrative", () => {
       }).length,
     ).toBeGreaterThan(0);
     expect(
-      issuesFor(fixture, {
-        ...fixture.parts,
-        followupFact: "Cedar was around $36.",
-      }).length,
-    ).toBeGreaterThan(0);
-    expect(
-      issuesFor(fixture, {
-        ...fixture.parts,
-        opening:
-          'My sister needed a bag, so I asked for "cheap tote gift ideas".',
-      }).length,
-    ).toBeGreaterThan(0);
+      validateWriterParts({
+        ...fixture,
+        playbook: fixture.policy,
+        parts: {
+          ...fixture.parts,
+          ...{ followupFact: "Alder was around $36." },
+        },
+      }),
+    ).toEqual(["The writer output does not match the four-part contract."]);
   });
 
-  test("the observed price retains its amount and approximation", () => {
+  test("brand-only absence does not borrow price or product details from the raw list", () => {
     const fixture = writerFixture();
-    const result =
-      "It picked Alder at around $36. Sample Goods didn't come up.";
-    expect(issuesFor(fixture, { ...fixture.parts, result })).toEqual([]);
-    expect(
-      issuesFor(fixture, {
-        ...fixture.parts,
-        result: result.replace("$36", "$30"),
-      }).length,
-    ).toBeGreaterThan(0);
-    expect(
-      issuesFor(fixture, {
-        ...fixture.parts,
-        result: result.replace("around ", ""),
-      }).length,
-    ).toBeGreaterThan(0);
-    expect(
-      issuesFor(fixture, {
-        ...fixture.parts,
-        result: result.replace("Alder", "Birch"),
-      }).length,
-    ).toBeGreaterThan(0);
-    expect(
-      issuesFor(fixture, {
-        ...fixture.parts,
-        followupFact: "Alder was around $36.",
-      }),
-    ).toEqual([]);
-    expect(
-      issuesFor(fixture, { ...fixture.parts, followupFact: "Alder was $36." })
-        .length,
-    ).toBeGreaterThan(0);
+    for (const result of [
+      "It picked Alder at around $36 and Birch. Sample Goods didn't come up.",
+      "It picked Alder at $30 and Birch. Sample Goods didn't come up.",
+      "It picked Alder and Birch with UV400 protection. Sample Goods didn't come up.",
+    ])
+      expect(
+        issuesFor(fixture, { ...fixture.parts, result }).length,
+      ).toBeGreaterThan(0);
   });
 
   test("numeric ordinals and listed order remain bound to the merchant", () => {
@@ -462,79 +362,36 @@ describe("observed facts and writer-owned narrative", () => {
     ).toBeGreaterThan(0);
   });
 
-  test("quoted names and prices retain their observed order and owner", () => {
+  test("quoted brands retain their observed order", () => {
     const fixture = writerFixture();
-    for (const [result, expected] of [
-      [
-        'It picked "Birch" and "Alder". Sample Goods didn\'t come up.',
-        /reordered/,
-      ],
-      [
-        'It picked Birch at "around $36". Sample Goods didn\'t come up.',
-        /price belongs/,
-      ],
-    ] as const) {
-      const parts = { ...fixture.parts, result };
-      expect(
-        issuesFor(fixture, parts).some((issue) => expected.test(issue)),
-      ).toBe(true);
-      const assembled = assembleSequence(
-        fixture.prospect,
-        fixture.receipt,
-        fixture.policy,
+    expect(
+      issuesFor(fixture, {
+        ...fixture.parts,
+        result: 'It picked "Alder" and "Birch". Sample Goods didn\'t come up.',
+      }),
+    ).toEqual([]);
+    const parts = {
+      ...fixture.parts,
+      result: 'It picked "Birch" and "Alder". Sample Goods didn\'t come up.',
+    };
+    expect(issuesFor(fixture, parts)).toContain(
+      "result: named results were reordered.",
+    );
+    const assembled = assembleSequence(
+      fixture.prospect,
+      fixture.receipt,
+      fixture.policy,
+      parts,
+    );
+    if (assembled.status !== "ready") throw new Error(assembled.reason);
+    expect(
+      deterministicCopyIssues({
+        ...fixture,
+        playbook: fixture.policy,
         parts,
-      );
-      expect(assembled.status).toBe("ready");
-      if (assembled.status !== "ready") continue;
-      expect(
-        deterministicCopyIssues({
-          ...fixture,
-          playbook: fixture.policy,
-          parts,
-          messages: assembled.messages,
-        }).some((issue) => expected.test(issue)),
-      ).toBe(true);
-    }
-    for (const result of [
-      'It picked "Alder" and "Birch". Sample Goods didn\'t come up.',
-      'It picked Alder at "around $36". Sample Goods didn\'t come up.',
-    ])
-      expect(issuesFor(fixture, { ...fixture.parts, result })).toEqual([]);
-  });
-
-  test("an identical amount on another result cannot remove a captured qualifier", () => {
-    const fixture = writerFixture();
-    const claims = fixture.receipt.claims;
-    const birch = fixture.receipt.discovery?.listed[1];
-    const price = claims?.find((claim) => claim.kind === "price");
-    if (!claims || !birch || !price)
-      throw new Error("Missing synthetic prices.");
-    birch.price = "$36";
-    claims.push({ ...price, id: "birch-price", value: "$36", qualifiers: [] });
-    expect(
-      issuesFor(fixture, {
-        ...fixture.parts,
-        result: "It picked Alder at $36. Sample Goods didn't come up.",
-      }).some((issue) => /qualifier/.test(issue)),
-    ).toBe(true);
-    for (const result of [
-      "It picked Alder at around $36. Sample Goods didn't come up.",
-      "It picked Birch at $36. Sample Goods didn't come up.",
-    ])
-      expect(issuesFor(fixture, { ...fixture.parts, result })).toEqual([]);
-
-    birch.price = "around $42";
-    const birchPrice = claims.find((claim) => claim.id === "birch-price");
-    if (!birchPrice) throw new Error("Missing synthetic second price.");
-    birchPrice.value = "around $42";
-    birchPrice.qualifiers = ["around"];
-    expect(
-      issuesFor(fixture, {
-        ...fixture.parts,
-        result:
-          "It picked Alder at around $36 and Birch at $42. Sample Goods didn't come up.",
-      }).some((issue) => /qualifier/.test(issue)),
-    ).toBe(true);
+        messages: assembled.messages,
+      }),
+    ).toContain("result: named results were reordered.");
   });
 
   test("comparison qualifiers stay bound to their answer or page source", () => {
@@ -598,6 +455,43 @@ describe("observed facts and writer-owned narrative", () => {
     ).toBe(true);
   });
 
+  test("relevance defaults to new customers and gift variants require an actual gift product", () => {
+    const fixture = writerFixture();
+    fixture.policy.relevanceLines = [
+      ...PROPOSED_REBUILD_PLAYBOOK.relevanceLines,
+    ];
+    const normal = "That's the kind of search a new customer starts with.";
+    expect(
+      approvedRelevanceVariants({ ...fixture, playbook: fixture.policy }),
+    ).toEqual([normal]);
+    expect(issuesFor(fixture, { ...fixture.parts, relevance: normal })).toEqual(
+      [],
+    );
+    const query = fixture.receipt.queries[0]!;
+    const pasted = `They just ask for ${query.query}.`;
+    fixture.policy.relevanceLines.push(pasted);
+    expect(
+      issuesFor(fixture, { ...fixture.parts, relevance: pasted }),
+    ).toContain(
+      "relevance: never paste the search query into the reason to care.",
+    );
+    query.basis!.category = "snack gift box";
+    fixture.receipt.product.name = fixture.prospect.product =
+      "Festive Snack Gift Box";
+    const gift =
+      "Gift shoppers usually don't know your name yet. They just ask for a snack gift box.";
+    expect(
+      approvedRelevanceVariants({ ...fixture, playbook: fixture.policy }),
+    ).toContain(gift);
+    expect(issuesFor(fixture, { ...fixture.parts, relevance: gift })).toEqual(
+      [],
+    );
+    query.basis!.category = query.query;
+    expect(
+      approvedRelevanceVariants({ ...fixture, playbook: fixture.policy }),
+    ).not.toContain(gift);
+  });
+
   test("narrative stays in the opening and repeated relationships are held", () => {
     const fixture = writerFixture();
     const before = JSON.stringify({
@@ -656,7 +550,7 @@ describe("sequence assembly and real word budgets", () => {
       ).toBe("held");
     }
   });
-  test("fixed sender paragraphs and empty-fact bump are exact", () => {
+  test("fixed sender paragraphs and day 3/7 thread bumps are exact", () => {
     const fixture = writerFixture();
     const result = assembleSequence(
       fixture.prospect,
@@ -670,18 +564,108 @@ describe("sequence assembly and real word budgets", () => {
     expect(result.messages[0]!.body).toContain(
       `${fixture.policy.productCheckIntro} ${fixture.policy.callToAction}`,
     );
-    expect(result.messages[1]!.body).toBe(
-      `Hey Jamie,\n\n${FOLLOWUP_BUMP} Worth a quick chat?\n\n${fixture.policy.optout}\n\nJuri`,
-    );
+    expect(result.messages[1]!.body).toBe(FOLLOWUP_BUMP);
     expect(result.messages[2]!.body).toBe(
       fixture.policy.followupTwoTemplate
         .replace("{first}", "Jamie")
         .replace("{optout}", fixture.policy.optout)
         .replace("{signature}", "Juri"),
     );
+    expect(result.messages.map(({ afterDays }) => afterDays)).toEqual([
+      0, 3, 7,
+    ]);
     expect(result.linkedin).toBe(
       `Hi Jamie, ${fixture.parts.result} Would be good to connect.`,
     );
+  });
+
+  test("bumps quote the immutable original email and missing first name uses the fixed fallback", () => {
+    const fixture = writerFixture();
+    const assembled = assembleSequence(
+      fixture.prospect,
+      fixture.receipt,
+      fixture.policy,
+      fixture.parts,
+    );
+    if (assembled.status !== "ready") throw new Error(assembled.reason);
+    const original = {
+      ...assembled.messages[0]!,
+      body: `${assembled.messages[0]!.body}\n\nOriginal saved detail.`,
+    };
+    for (const bump of assembled.messages.slice(1)) {
+      const delivered = deliveredBody(bump, original, "12 Example Lane");
+      expect(delivered).toBe(
+        `${bump.body}\n\n${`${original.body}\n\n12 Example Lane`
+          .split("\n")
+          .map((line) => `> ${line}`)
+          .join("\n")}`,
+      );
+      expect(delivered).toContain(`> ${fixture.policy.optout}`);
+      expect(delivered).toContain("> 12 Example Lane");
+    }
+    const fallback = assembleSequence(
+      { ...fixture.prospect, first: "" },
+      fixture.receipt,
+      {
+        ...fixture.policy,
+        bodyTemplate: fixture.policy.bodyTemplate.replace(
+          "Hey {first}!",
+          "Hello!",
+        ),
+        linkedinTemplate: "{result}",
+      },
+      fixture.parts,
+    );
+    if (fallback.status !== "ready") throw new Error(fallback.reason);
+    expect(fallback.messages[2]!.body).toBe("Worth a chat?");
+  });
+
+  test("historical five-part snapshots retain their data and canonical version but are never new writer output", () => {
+    const fixture = writerFixture();
+    const parts = {
+      ...fixture.parts,
+      followupFact: "A historical unused fact.",
+    };
+    expect(writerPartsSchema.safeParse(parts).success).toBe(false);
+    expect(storedWriterPartsSchema.parse(parts)).toEqual(parts);
+    const historical = writingSnapshotSchema.parse({
+      version: LEGACY_WRITING_CONTRACT_VERSION,
+      writingPolicyHash: "a".repeat(64),
+      receiptHash: "b".repeat(64),
+      contentHash: "c".repeat(64),
+      revision: 2,
+      generatedAt: new Date().toISOString(),
+      parts,
+      queryTopic: parts.subject,
+      narrative: { relationship: "sister", occasion: null },
+      quality: null,
+    });
+    expect(isCurrentWritingSnapshot(historical)).toBe(false);
+    const assembled = assembleSequence(
+      fixture.prospect,
+      fixture.receipt,
+      fixture.policy,
+      fixture.parts,
+    );
+    if (assembled.status !== "ready") throw new Error(assembled.reason);
+    const messages = assembled.messages.map((message) =>
+      message.step === 1 ? { ...message, writing: historical } : message,
+    );
+    const canonical = canonicalSequenceInput(messages);
+    if (canonical.status !== "ready") throw new Error(canonical.reason);
+    expect(JSON.parse(canonical.canonicalText).version).toBe(
+      LEGACY_WRITING_CONTRACT_VERSION,
+    );
+    expect(JSON.parse(assembled.canonicalText).version).toBe(
+      WRITING_CONTRACT_VERSION,
+    );
+    expect(historical.parts).toEqual(parts);
+    expect(
+      writingSnapshotSchema.safeParse({
+        ...historical,
+        version: WRITING_CONTRACT_VERSION,
+      }).success,
+    ).toBe(false);
   });
 
   test("actual fixed text leaves at least forty words even with long names and products", () => {

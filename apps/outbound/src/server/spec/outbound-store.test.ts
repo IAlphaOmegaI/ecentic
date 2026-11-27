@@ -8,9 +8,11 @@ import {
   setSystemTime,
   test,
 } from "bun:test";
+import { createHash } from "node:crypto";
 import { and, eq, sql } from "drizzle-orm";
 import { defaultPlaybook, prospectSchema, senderFor } from "@/lib/outbound";
 import { LEGACY_CONTACT_IMPORT_ACTOR } from "@/lib/outbound-saved-contact";
+import { shoppingResearchSchema } from "@/lib/outbound-shopping-research";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import { requireTestDatabase } from "./helpers/database";
 import { draftSyntheticProspect } from "./helpers/outbound-shopping-db-fixture";
@@ -1645,11 +1647,7 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
   });
   test("all three steps keep the original sender, thread, footer and first-send schedule", async () => {
     const { store, db, schema } = active();
-    const fixture = await approved({
-      ...settings,
-      followupOneDays: 2,
-      followupTwoDays: 3,
-    });
+    const fixture = await approved();
     const first = required(await store.claimDelivery(actor, fixture));
     required(
       await store.dispatchDelivery(actor, first, async () => ({
@@ -1661,8 +1659,8 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
       })),
     );
     for (const [step, date] of [
-      [2, "2026-11-11T17:00:00Z"],
-      [3, "2026-11-12T17:00:00Z"],
+      [2, "2026-11-12T17:00:00Z"],
+      [3, "2026-11-16T17:00:00Z"],
     ] as const) {
       setSystemTime(new Date(date));
       required(
@@ -1679,6 +1677,10 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
         .where(eq(schema.outboundInbox.id, fixture.inbox));
       const followup = required(await store.claimDelivery(actor, fixture));
       expect(followup.step).toBe(step);
+      expect(followup.message.body.split("\n")[0]).toBe(
+        step === 2 ? "Bumping this!" : "Jane?",
+      );
+      expect(followup.message.afterDays).toBe(step === 2 ? 3 : 7);
       expect(followup.threadId).toBe("thread-stable");
       expect(followup.manifest.sender).toBe(first.manifest.sender);
       expect(followup.message.body).toContain(`> ${settings.postalAddress}`);
@@ -1698,6 +1700,204 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
     expect(row?.status).toBe("finished");
     expect(row?.nextSendAt).toBeNull();
   });
+  test("late fixed bumps replay only original approved evidence and buy no fresh research or copy", async () => {
+    const { store, db, schema } = active();
+    const fixture = await approved();
+    const first = required(await store.claimDelivery(actor, fixture));
+    required(
+      await store.dispatchDelivery(actor, first, async () => ({
+        success: true,
+        data: { providerMessageId: "late-first", threadId: "late-thread" },
+      })),
+    );
+    const savedJobs = await db.select().from(schema.outboundIntegrationJob);
+    const original = (
+      await db
+        .select()
+        .from(schema.outboundRevision)
+        .where(
+          and(
+            eq(schema.outboundRevision.prospectId, fixture.prospect),
+            eq(schema.outboundRevision.revision, fixture.revision),
+          ),
+        )
+    )[0];
+    expect(original).toBeDefined();
+    for (const [step, date] of [
+      [2, "2026-11-19T17:00:00Z"],
+      [3, "2026-11-23T17:00:00Z"],
+    ] as const) {
+      setSystemTime(new Date(date));
+      required(
+        await store.patchProspect(
+          actor,
+          fixture.prospect,
+          { mxCheckedAt: date, emailVerifiedAt: date },
+          fixture.revision,
+        ),
+      );
+      await db
+        .update(schema.outboundInbox)
+        .set({ lastSyncedAt: new Date(date) })
+        .where(eq(schema.outboundInbox.id, fixture.inbox));
+      const bump = required(await store.claimDelivery(actor, fixture));
+      expect(bump.step).toBe(step);
+      expect(bump.message.body.split("\n")[0]).toBe(
+        step === 2 ? "Bumping this!" : "Jane?",
+      );
+      expect(bump.message.body).toContain(
+        `> ${original?.messages[0]?.body.split("\n")[0]}`,
+      );
+      expect(bump.message.body).toContain(`> ${settings.optout}`);
+      expect(bump.threadId).toBe("late-thread");
+      required(
+        await store.dispatchDelivery(actor, bump, async () => ({
+          success: true,
+          data: { providerMessageId: `late-${step}`, threadId: "late-thread" },
+        })),
+      );
+    }
+    expect(await db.select().from(schema.outboundIntegrationJob)).toEqual(
+      savedJobs,
+    );
+    expect(
+      (
+        await db
+          .select()
+          .from(schema.outboundRevision)
+          .where(eq(schema.outboundRevision.id, original!.id))
+      )[0],
+    ).toEqual(original);
+    expect(required(await store.readProspect(fixture.prospect))?.status).toBe(
+      "finished",
+    );
+  });
+
+  test("late fixed bumps reject changed research even when its replacement hash is internally consistent", async () => {
+    const { store, db, schema } = active();
+    const fixture = await approved();
+    const first = required(await store.claimDelivery(actor, fixture));
+    required(
+      await store.dispatchDelivery(actor, first, async () => ({
+        success: true,
+        data: { providerMessageId: "bound-first", threadId: "bound-thread" },
+      })),
+    );
+    const date = "2026-11-19T17:00:00Z";
+    setSystemTime(new Date(date));
+    required(
+      await store.patchProspect(
+        actor,
+        fixture.prospect,
+        { mxCheckedAt: date, emailVerifiedAt: date },
+        fixture.revision,
+      ),
+    );
+    await db
+      .update(schema.outboundInbox)
+      .set({ lastSyncedAt: new Date(date) })
+      .where(eq(schema.outboundInbox.id, fixture.inbox));
+    const row = (
+      await db
+        .select()
+        .from(schema.outboundProspect)
+        .where(eq(schema.outboundProspect.id, fixture.prospect))
+    )[0];
+    if (!row?.details.shoppingResearchId)
+      throw new Error("Missing bound receipt.");
+    const job = (
+      await db
+        .select()
+        .from(schema.outboundIntegrationJob)
+        .where(
+          eq(schema.outboundIntegrationJob.id, row.details.shoppingResearchId),
+        )
+    )[0];
+    if (!job?.output) throw new Error("Missing original research job.");
+    const receipt = shoppingResearchSchema.parse(job.output["receipt"]);
+    receipt.sources[0]!.content += "\nA changed synthetic source.";
+    const receiptHash = createHash("sha256")
+      .update(JSON.stringify(receipt))
+      .digest("hex");
+    await db
+      .update(schema.outboundIntegrationJob)
+      .set({
+        input: { ...job.input, receiptHash },
+        output: { ...job.output, receipt },
+      })
+      .where(eq(schema.outboundIntegrationJob.id, job.id));
+    const rejected = await store.claimDelivery(actor, fixture);
+    expect(rejected.success).toBe(false);
+    if (!rejected.success)
+      expect(rejected.error.message).toContain(
+        "originally approved research receipt",
+      );
+    expect(await db.select().from(schema.outboundSendAttempt)).toHaveLength(1);
+    expect(
+      (
+        await db
+          .select()
+          .from(schema.outboundProspect)
+          .where(eq(schema.outboundProspect.id, row.id))
+      )[0],
+    ).toEqual(row);
+  });
+
+  test("historical custom factual follow-ups still require fresh research", async () => {
+    const { store, db, schema } = active();
+    const fixture = await approved();
+    const first = required(await store.claimDelivery(actor, fixture));
+    required(
+      await store.dispatchDelivery(actor, first, async () => ({
+        success: true,
+        data: {
+          providerMessageId: "historical-first",
+          threadId: "historical-thread",
+        },
+      })),
+    );
+    const row = (
+      await db
+        .select()
+        .from(schema.outboundProspect)
+        .where(eq(schema.outboundProspect.id, fixture.prospect))
+    )[0];
+    if (!row) throw new Error("Missing historical fixture prospect.");
+    // Explicit synthetic historical read: never produced by the current writer.
+    const messages = row.messages.map((message) =>
+      message.writing
+        ? {
+            ...message,
+            writing: {
+              ...message.writing,
+              version: "discovery-email-v1" as const,
+              parts: {
+                ...message.writing.parts,
+                followupFact: "An original product detail.",
+              },
+            },
+          }
+        : message.step === 2
+          ? { ...message, body: "An original product detail." }
+          : message,
+    );
+    await db
+      .update(schema.outboundProspect)
+      .set({ messages })
+      .where(eq(schema.outboundProspect.id, row.id));
+    const date = "2026-11-19T17:00:00Z";
+    setSystemTime(new Date(date));
+    await db
+      .update(schema.outboundInbox)
+      .set({ lastSyncedAt: new Date(date) })
+      .where(eq(schema.outboundInbox.id, fixture.inbox));
+    const rejected = await store.claimDelivery(actor, fixture);
+    expect(rejected.success).toBe(false);
+    if (!rejected.success)
+      expect(rejected.error.message).toMatch(/fresh search|expired/);
+    expect(await db.select().from(schema.outboundSendAttempt)).toHaveLength(1);
+  });
+
   test("OAuth follow-ups cannot submit an SMTP conversation key as a Gmail thread", async () => {
     const { store, db, schema } = active();
     const fixture = await approved();

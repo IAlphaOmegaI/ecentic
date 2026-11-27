@@ -7,6 +7,71 @@ An ingredient detail or a proposed check alone cannot satisfy that requirement.
 Automatic company qualification can still establish business fit, but holds the
 lead before contact enrichment until actual shopping research is recorded.
 
+## Held discovery review, 27 November revision
+
+The owner’s revised review is staged in a separate set of 21 integration jobs.
+It preserves the original jobs, prospect rows, revoked revisions, sender assignments,
+policy and holds. No draft, approval, send or release is applied. Both reviews share
+the original 42-search batch, with at most two purchases per contact. Fourteen
+purchases already belong to the first review. Repeated operator invocations cannot
+create a new budget or repeat a reserved purchase.
+
+New shopper queries use `shopper-query-v2`: 2–8 words in natural order, a category
+plus one attribute or use, with ordinary product-title words allowed. Brand, model
+and product-line names remain excluded. A source-bound semantic review must confirm
+that the exact product is an obvious candidate before shopping is purchased. Each
+old paid query receives the same review without changing its original bytes. An
+invalid old query can receive one corrected purchase, even if its old answer was
+favourable. A valid saved answer is reused. Uncertain submissions or a valid query
+with a failed provider answer do not authorize a replacement.
+
+Grouped cards do not establish rank. Only an explicitly numbered or ranked answer
+supports a position claim. A valid initial query showing the merchant in unranked
+cards can receive one broader query. Two verified presences produce `no-gap`; the
+original and broader captures remain in the audit. An invalid original query remains
+audit-only and cannot support a factual claim in its corrected receipt.
+
+Current copy uses `discovery-email-v2` with four writer fields: subject, opening,
+result and relevance. The opening permits the owner-approved invented shopping
+reason, but contains the exact query, at most 22 words and no asserted purchase,
+use, test, product fact, price or recipient fact. The result names two or three
+brands through an exact answer-bound brand projection; sellers, full listing titles
+and interface suffixes are excluded. Relevance never repeats the query. The gift
+line is reserved for actual gift products; other absence findings default to
+“That’s the kind of search a new customer starts with.”
+
+Day 3 is exactly `Bumping this!`; day 7 is `{first}?`, or `Worth a chat?` without a
+first name. Transport keeps both in the first email’s thread and quotes its body,
+including the opt-out and postal address. New writer schemas and checks have no
+`followupFact`. Historical v1 snapshots remain readable with their original
+canonical hashes, but cannot be promoted into a current approval.
+
+An unchanged v2 bump can be delivered after the original evidence ages past seven
+days. The delivery gate first binds it to the accepted first attempt, unrevoked
+original approval, immutable three-message revision and trusted completed writing
+job. It then replays that exact receipt and raw proof at the original approval
+time; it never buys new research or copy for a bump. Changed receipt hashes, text,
+sender policy or prospect identity fail. Current contact checks, suppression,
+cancellation, thread and delivery controls still apply. First emails, new approvals
+and historical factual follow-ups retain current-time freshness checks.
+
+The second review pack includes every passing sequence, all held reasons, both
+captures where another search was authorized, and the shared purchase count. Run
+`held-discovery-review.ts --review-round 2 --instructions <reviewed-prompt>` for a
+read-only preflight; adding `--execute` stages and advances only these unpublished
+review jobs. The reviewed sections 7 and 16 are bound by a canonical SHA-256 hash.
+The older protected-fragment workflow described below remains historical context.
+
+Future application of a reviewed round-two receipt needs an explicit, separately
+authorized adoption change. The existing `LeadResearch` capture-proof snapshot
+stores only the current `answer` and `browser`. A receipt with a separate
+`queryReview` or `captureHistory` also needs its bound current query review and
+immutable `previous` evidence persisted and replayed at save, approval and delivery.
+Until that additive snapshot path is implemented and verified, such review receipts
+remain unapplied; dropping the previous proof or copying a passed review flag is
+not a compatible adoption path. Newly generated ordinary v2 queries already carry
+their semantic review inside the immutable prepared query.
+
 ## Automatic live captures
 
 The Integrations page has a **Live shopping research** section for encrypted

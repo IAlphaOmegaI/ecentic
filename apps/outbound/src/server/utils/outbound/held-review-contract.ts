@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { z } from "zod";
 import { playbookSchema, prospectSchema } from "@/lib/outbound";
 import {
-  writerPartsSchema,
+  storedWriterPartsSchema,
   writingSnapshotSchema,
 } from "@/lib/outbound-composition";
 import {
@@ -15,10 +15,13 @@ import {
   aiJobSchema,
   browserResearchSchema,
   preparedQuerySchema,
+  shopperQueryReviewSchema,
 } from "./live-shopping-contract";
 import { shoppingQueryHistorySchema } from "./shopping-query-history";
 
 export const HELD_REVIEW_REASON = "Copy review requested before first email";
+export const HELD_REVIEW_ROUND2_INSTRUCTION_HASH =
+  "8aa5d1263411b9547060bde51ae1d01e57569e9d05227bfd4e99a116104d5112";
 // Hash of the sorted, newline-separated 21 IDs in the private frozen corpus.
 export const HELD_REVIEW_MANIFEST_HASH =
   "c6cebe96d475b39f93aedd9474dc74978f91e42abfe7ad35237090701ff3e79c";
@@ -61,6 +64,16 @@ export const heldReviewInputSchema = z
     researchPolicyHash: z.string().regex(/^[a-f0-9]{64}$/),
     manifestHash: z.string().regex(/^[a-f0-9]{64}$/),
     requestedBy: z.string().min(1),
+    reviewRound: z.literal(2).optional(),
+    previousJobId: z.string().uuid().optional(),
+    previousOutputHash: z
+      .string()
+      .regex(/^[a-f0-9]{64}$/)
+      .optional(),
+    instructionHash: z
+      .string()
+      .regex(/^[a-f0-9]{64}$/)
+      .optional(),
     product: z.object({ name: z.string().min(1), url: z.string().url() }),
     category: z.string().min(1),
     country: z.string().min(1),
@@ -195,7 +208,7 @@ export const heldReviewPreviewContextSchema = z
   .strict();
 export const heldReviewWrittenSchema = z
   .object({
-    parts: writerPartsSchema,
+    parts: storedWriterPartsSchema,
     messages: z.array(previewMessageSchema).length(3),
     generation: previewGenerationSchema,
     writerCompletedAt: z.string().datetime(),
@@ -203,7 +216,7 @@ export const heldReviewWrittenSchema = z
   .strict();
 export const heldReviewPreviewSchema = heldReviewPreviewContextSchema
   .extend({
-    parts: writerPartsSchema,
+    parts: storedWriterPartsSchema,
     messages: z.array(previewMessageSchema).length(3),
     generation: previewGenerationSchema,
     issues: z
@@ -216,11 +229,13 @@ export const heldReviewStateSchema = z
     stage: z.enum([
       "renderedProduct",
       "generateQuery",
+      "reviewQuery",
       "repairQuery",
       "query",
       "poll",
       "browser",
       "assess",
+      "brands",
       "applyResearch",
       "draft",
       "applyDraft",
@@ -249,6 +264,23 @@ export const heldReviewStateSchema = z
     browser: browserResearchSchema.optional(),
     shoppingReceipt: shoppingResearchSchema.optional(),
     shoppingHistory: shoppingQueryHistorySchema.optional(),
+    priorPurchase: z
+      .object({
+        query: preparedQuerySchema,
+        shoppingJob: aiJobSchema,
+        answer: aiCaptureSchema.optional(),
+        browser: browserResearchSchema.optional(),
+        shoppingReceipt: shoppingResearchSchema.optional(),
+        queryReservedAt: z.string().datetime(),
+        failureReason: z.string().nullable(),
+      })
+      .strict()
+      .optional(),
+    queryReview: shopperQueryReviewSchema.optional(),
+    previousQueryReview: shopperQueryReviewSchema.optional(),
+    queryPurpose: z
+      .enum(["initial", "reuse", "correction", "broader"])
+      .optional(),
     composition: compositionReferenceSchema.optional(),
     researchId: z.string().uuid().optional(),
     previewContext: heldReviewPreviewContextSchema.optional(),
@@ -263,10 +295,23 @@ export const heldReviewStateSchema = z
 export type HeldReviewInput = z.infer<typeof heldReviewInputSchema>;
 export type HeldReviewState = z.infer<typeof heldReviewStateSchema>;
 export type HeldReviewManifest = z.infer<typeof heldReviewManifestSchema>;
-export const heldReviewStageBudget = (stage: HeldReviewState["stage"]) => {
+export const heldReviewStageBudget = (
+  stage: HeldReviewState["stage"],
+  reviewRound?: 2,
+) => {
+  if (stage === "generateQuery" && reviewRound === 2) return 110_000;
   if (["renderedProduct", "browser"].includes(stage)) return 120_000;
   if (stage === "draft") return 100_000;
-  if (["generateQuery", "repairQuery", "assess"].includes(stage)) return 50_000;
+  if (
+    [
+      "generateQuery",
+      "reviewQuery",
+      "repairQuery",
+      "assess",
+      "brands",
+    ].includes(stage)
+  )
+    return 50_000;
   if (stage === "query") return 30_000;
   if (stage === "poll") return 20_000;
   return 10_000;

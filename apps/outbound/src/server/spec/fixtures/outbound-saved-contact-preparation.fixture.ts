@@ -49,6 +49,32 @@ const value = <Data>(
   if (!result.success) throw result.error;
   return result.data;
 };
+const syntheticQueryReview = async ({ prompt }: { prompt: string }) => ({
+  status: "valid" as const,
+  reason: "Synthetic category and one attribute identify this exact product.",
+  checks: {
+    naturalWordOrder: true,
+    obviousProductCandidate: true,
+    unbranded: true,
+    productGrounding: true,
+  },
+  excerptIds: [JSON.parse(prompt).excerpts[0].id],
+});
+const syntheticBrands = async ({ prompt }: { prompt: string }) => {
+  const evidence = JSON.parse(prompt).evidence as {
+    id: string;
+    quote: string;
+  }[];
+  return {
+    decision: "supported" as const,
+    reason: "Exact synthetic answer brands.",
+    brands: ["Canvas Works", "Harbor Label"].map((name) => {
+      const quote = evidence.find((item) => item.quote.includes(name));
+      if (!quote) throw new Error("Missing exact synthetic brand evidence.");
+      return { name, quoteId: quote.id };
+    }),
+  };
+};
 const settings = {
   ...syntheticWritingPolicy(defaultPlaybook),
   automationEnabled: true,
@@ -250,9 +276,10 @@ const dependencies: Parameters<typeof Preparation.run>[1] = {
   generateQuery: async (input) => {
     calls.generateQuery += 1;
     return Capture.generateShopperQuery(input, {
+      review: syntheticQueryReview,
       generate: async ({ prompt }) => ({
         question: "large linen bags",
-        category: "bag",
+        category: "linen bag",
         attribute: "large",
         excerptIds: [JSON.parse(prompt).excerpts[0].id],
       }),
@@ -300,6 +327,7 @@ const dependencies: Parameters<typeof Preparation.run>[1] = {
     )?.id;
     assert.ok(answerQuoteId && productQuoteId);
     return Assessment.assess(input, {
+      brands: { generate: syntheticBrands },
       generate: async () => ({
         decision: "supported",
         reason: "Source-bound synthetic absence.",
@@ -410,7 +438,9 @@ const pendingQuery = Capture.preparedQuerySchema.parse(
 );
 assert.equal(pendingQuery.prompt, "large linen bags");
 assert.equal(pendingQuery.category, "linen bags");
-assert.equal(pendingQuery.basis?.category, "bag");
+assert.equal(pendingQuery.basis?.category, "linen bag");
+assert.equal(pendingQuery.contractVersion, "shopper-query-v2");
+assert.equal(pendingQuery.review?.status, "valid");
 assert.ok(pending.output?.["productCapture"]);
 assert.ok(pendingQuery.basis?.promptHash);
 await release();
@@ -2441,5 +2471,68 @@ assert.equal((await jobFor(dueProspect)).output?.["stage"], "collect");
 assert.equal(
   (await jobFor(firstProspect(scheduleQueue))).output?.["stage"],
   "preflight",
+);
+// New reservations require v2, while acknowledged historical queries keep their exact job.
+const unpaidLegacy = await seed();
+value(await Preparation.enqueue("fixture-operator", unpaidLegacy));
+const legacyStarts = calls.start;
+value(
+  await run(unpaidLegacy.batchId, {
+    generateQuery: (input) =>
+      Capture.generateLegacyShopperQuery(input, {
+        generate: async ({ prompt }) => ({
+          question: "large linen bags",
+          category: "linen bag",
+          attribute: "large",
+          excerptIds: [JSON.parse(prompt).excerpts[0].id],
+        }),
+      }),
+  }),
+);
+const unpaidLegacyHeld = await jobFor(firstProspect(unpaidLegacy));
+assert.equal(unpaidLegacyHeld.status, "complete");
+assert.match(
+  String(unpaidLegacyHeld.output?.["heldReason"]),
+  /current semantic product-fit/,
+);
+assert.equal(unpaidLegacyHeld.output?.["queryReservedAt"], undefined);
+assert.equal(unpaidLegacyHeld.output?.["shoppingQueryCount"], 0);
+assert.equal(calls.start, legacyStarts);
+assert.equal(
+  (await firecrawlBatch(unpaidLegacy.batchId)).output?.["queriesReserved"],
+  0,
+);
+const legacyPaid = await seed();
+value(await Preparation.enqueue("fixture-operator", legacyPaid));
+value(await run(legacyPaid.batchId));
+const paidLegacyRow = await jobFor(firstProspect(legacyPaid));
+assert.equal(paidLegacyRow.output?.["stage"], "poll");
+const acknowledged = Capture.aiJobSchema.parse(
+  paidLegacyRow.output?.["shoppingJob"],
+);
+const {
+  contractVersion: _legacyVersion,
+  review: _legacyReview,
+  ...oldQuery
+} = acknowledged.query;
+const oldJob = { ...acknowledged, query: oldQuery };
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({
+    output: { ...paidLegacyRow.output, query: oldQuery, shoppingJob: oldJob },
+  })
+  .where(eq(schema.outboundIntegrationJob.id, paidLegacyRow.id));
+const beforeLegacyPoll = { start: calls.start, poll: calls.poll };
+await release();
+value(await run(legacyPaid.batchId, {}, 1));
+const polledLegacy = await jobFor(firstProspect(legacyPaid));
+assert.equal(polledLegacy.output?.["stage"], "browser");
+assert.deepEqual(polledLegacy.output?.["shoppingJob"], oldJob);
+assert.deepEqual(polledLegacy.output?.["query"], oldQuery);
+assert.equal(calls.start, beforeLegacyPoll.start);
+assert.equal(calls.poll, beforeLegacyPoll.poll + 1);
+assert.equal(
+  (await firecrawlBatch(legacyPaid.batchId)).output?.["queriesReserved"],
+  1,
 );
 console.log("Saved contact preparation contracts passed");

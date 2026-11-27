@@ -134,6 +134,11 @@ const discoveryQueryProblem = (
 ) => {
   if (!state.query || !state.query.intent?.startsWith("unbranded-"))
     return "A validated unbranded shopper question is required before research spending.";
+  if (
+    state.query.contractVersion !== Capture.SHOPPER_QUERY_VERSION ||
+    !state.query.review
+  )
+    return "A new search requires the current semantic product-fit query review.";
   if (state.productCapture?.status !== "captured")
     return "The shopper question needs a saved rendered product page.";
   if (state.query.intent === "unbranded-broad") {

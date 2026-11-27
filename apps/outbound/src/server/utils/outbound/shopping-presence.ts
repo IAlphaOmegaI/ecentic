@@ -18,6 +18,7 @@ import {
   publicUrlSchema,
 } from "./live-shopping-contract";
 import { shoppingPollUrl } from "./scrapellm-cooldown";
+import { parseShoppingAnswerCards } from "./shopping-answer-cards";
 
 type Merchant = { name: string; domain: string; aliases?: string[] };
 type Product = { name: string; url: string; aliases?: string[] };
@@ -562,6 +563,7 @@ export const computeDiscoveryBase = (
     merchant?: Merchant;
     queryIndex?: number;
     browser?: BrowserResearch;
+    allowBoundCardAliases?: boolean;
   },
   now = Date.now(),
 ): DiscoveryBase => {
@@ -620,12 +622,37 @@ export const computeDiscoveryBase = (
               .length > 0,
         ),
       )
-    )
-      completeness = {
-        status: "uncertain",
-        reason:
-          "The answer names a possible shortened merchant identity from the captured product page; absence is not established.",
-      };
+    ) {
+      const cards = input.allowBoundCardAliases
+        ? parseShoppingAnswerCards(proof.answerText)
+        : null;
+      const category = normalized(input.answer.job.query.basis?.category ?? "");
+      const corroborated =
+        cards?.status === "parsed" && category
+          ? shortened.filter((name) => {
+              const alias = normalized(name);
+              return (
+                alias !== category &&
+                cards.sections.some((section) =>
+                  section.cards.some((card) => {
+                    const title = normalized(card.title);
+                    return (
+                      title.startsWith(`${alias} `) &&
+                      ` ${title.slice(alias.length)} `.includes(` ${category} `)
+                    );
+                  }),
+                )
+              );
+            })
+          : [];
+      if (corroborated.length) matchedAliases.push(...corroborated);
+      else
+        completeness = {
+          status: "uncertain",
+          reason:
+            "The answer names a possible shortened merchant identity from the captured product page; absence is not established.",
+        };
+    }
   }
   return {
     queryIndex: z
@@ -642,6 +669,6 @@ export const computeDiscoveryBase = (
     merchantPresent:
       completeness.status === "complete" ? matchedAliases.length > 0 : null,
     matchedAliases,
-    presenceMethod: "server-v1",
+    presenceMethod: input.allowBoundCardAliases ? "server-v2" : "server-v1",
   };
 };

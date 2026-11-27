@@ -10,7 +10,11 @@ import {
   shoppingResearchSchema,
   validateShoppingResearch,
 } from "@/lib/outbound-shopping-research";
-import type { AiCapture, BrowserResearch } from "./live-shopping-contract";
+import type {
+  AiCapture,
+  BrowserResearch,
+  ShopperQueryReview,
+} from "./live-shopping-contract";
 import { validateFactResearch } from "./shopping-fact-assessment";
 
 const selectionOutputSchema = z.object({
@@ -29,7 +33,14 @@ export const assessmentOutputSchema = z.object({
   competitors: z.array(z.object({ url: z.string(), comparison: z.string() })),
 });
 type CapturedBrowser = Extract<BrowserResearch, { status: "captured" }>;
-export type Evidence = { answer: AiCapture; browser: CapturedBrowser };
+export type SavedResearchEvidence = {
+  answer: AiCapture;
+  browser: CapturedBrowser;
+  queryReview?: ShopperQueryReview;
+};
+export type Evidence = SavedResearchEvidence & {
+  previous?: SavedResearchEvidence[];
+};
 export const catalogId = (kind: "quote" | "candidate", value: unknown) =>
   `${kind === "quote" ? "q" : "c"}_${createHash("sha256")
     .update(JSON.stringify([`${kind}-v1`, value]))
@@ -658,7 +669,7 @@ export const assembleResearch = (
   });
 
 export const validateAutomaticResearch = (
-  { answer, browser }: Evidence,
+  evidence: Evidence,
   receipt: ShoppingResearch,
   days: number,
   options: {
@@ -666,8 +677,10 @@ export const validateAutomaticResearch = (
     allowProductObservations?: boolean;
     discoveryFreshnessDays?: number;
   } = {},
+  now = Date.now(),
 ) => {
-  const problem = validateShoppingResearch(receipt, days, Date.now(), options);
+  const { answer, browser } = evidence;
+  const problem = validateShoppingResearch(receipt, days, now, options);
   if (problem) return problem;
   const sources = [answer.source, ...browser.sources];
   if (
@@ -750,9 +763,7 @@ export const validateAutomaticResearch = (
     )
   )
     return "A compared product needs its rendered page and an exact selected quote.";
-  return receipt.claims
-    ? validateFactResearch({ answer, browser }, receipt)
-    : null;
+  return receipt.claims ? validateFactResearch(evidence, receipt, now) : null;
 };
 
 export type AssessmentResult = (
@@ -774,9 +785,46 @@ export type AssessmentResult = (
 
 /** New runtime assessment records facts. Legacy projector functions remain for old receipts. */
 export const assess = async (
-  input: Evidence & { playbook: Playbook; deadline: number },
-  dependencies: import("./shopping-fact-assessment").FactAssessmentDependencies = {},
+  input: Evidence & {
+    playbook: Playbook;
+    deadline: number;
+    deferBrands?: boolean;
+  },
+  dependencies: import("./shopping-fact-assessment").FactAssessmentDependencies & {
+    brands?: import("./shopping-discovery-review").ResultBrandDependencies;
+  } = {},
 ): Promise<Result<AssessmentResult, Error>> => {
-  const { assessFacts } = await import("./shopping-fact-assessment");
-  return assessFacts(input, dependencies);
+  const { assessFacts, assessResultBrands, appendCaptureHistory } =
+    await import("./shopping-fact-assessment");
+  const now = dependencies.now ?? Date.now;
+  const deadline = Math.min(input.deadline, now() + 45000);
+  const assessed = await assessFacts({ ...input, deadline }, dependencies);
+  if (!assessed.success || assessed.data.status !== "researched")
+    return assessed;
+  const assessedReceipt = assessed.data.receipt;
+  const decorated = resultify(() =>
+    appendCaptureHistory(assessedReceipt, input.previous, now()),
+  );
+  if (!decorated.success)
+    return {
+      success: true,
+      data: {
+        status: "held",
+        reason: "A prior audit capture is missing or changed.",
+        attempts: assessed.data.attempts,
+      },
+    };
+  const receipt = decorated.data;
+  if (
+    input.deferBrands ||
+    !(input.queryReview ?? input.answer.job.query.review) ||
+    !["discovery-absence", "discovery-outranked"].includes(
+      receipt.selected.kind,
+    )
+  )
+    return { success: true, data: { ...assessed.data, receipt } };
+  return assessResultBrands(
+    { ...input, receipt, deadline },
+    { now, ...dependencies.brands },
+  );
 };

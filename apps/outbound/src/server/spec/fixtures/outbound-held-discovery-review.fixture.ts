@@ -402,7 +402,6 @@ const dependencies: HeldReviewDependencies = {
       result:
         "It picked Canvas Works and Harbor Label. Sample Goods didn't come up.",
       relevance: "That's the kind of search a new customer starts with.",
-      followupFact: "",
     };
   },
   judge: async () => {
@@ -2017,7 +2016,7 @@ identityBrowser.sources = identityBrowser.sources.map((source) =>
   source.id === identityProduct.source.id ? identityProduct.source : source,
 );
 const identityQuery = value(
-  await Capture.generateShopperQuery(
+  await Capture.generateLegacyShopperQuery(
     {
       product: staleIdentityInput.product,
       category: staleIdentityInput.category,

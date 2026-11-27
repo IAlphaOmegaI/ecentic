@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { writerPartsSchema } from "./outbound-composition";
+import { storedWriterPartsSchema } from "./outbound-composition";
 
 const hash = z.string().regex(/^[a-f0-9]{64}$/);
 
@@ -23,7 +23,7 @@ export const writerCandidateSchema = z
   .object({
     status: z.literal("unapproved"),
     attempt: z.union([z.literal(1), z.literal(2)]),
-    parts: writerPartsSchema,
+    parts: storedWriterPartsSchema,
     issues: z.array(z.string().min(1).max(2000)).max(100),
     completedAt: z.string().datetime(),
     partsHash: hash,

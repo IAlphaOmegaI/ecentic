@@ -9,7 +9,11 @@ import type {
   RawCapture,
 } from "@/server/utils/outbound/live-shopping-contract";
 import { createAssessmentCatalog } from "@/server/utils/outbound/shopping-assessment";
-import { projectFactAssessment } from "@/server/utils/outbound/shopping-fact-assessment";
+import {
+  projectFactAssessment,
+  projectResultBrands,
+  resultBrandCatalog,
+} from "@/server/utils/outbound/shopping-fact-assessment";
 
 /** Synthetic provider wire captures for isolated lifecycle tests. Never real research. */
 export const heldBrowser = (
@@ -94,7 +98,7 @@ export const heldBrowser = (
 export const heldQueryGenerator: NonNullable<
   HeldReviewDependencies["generateQuery"]
 > = (input) =>
-  Capture.generateShopperQuery(input, {
+  Capture.generateLegacyShopperQuery(input, {
     generate: async ({ prompt }) => ({
       question:
         input.intent === "unbranded-broad"
@@ -146,31 +150,47 @@ export const heldAssessment: NonNullable<
   assert.ok(merchant);
   const noGap = input.answer.answer.includes(merchant.name);
   const text = `${input.answer.job.query.product.name} large linen carry bag.`;
-  return {
-    success: true,
-    data: projectFactAssessment(
-      input,
-      {
-        decision: "supported",
-        reason: "Synthetic fixture facts only.",
-        listed: (noGap
-          ? [merchant.name]
-          : ["Canvas Works", "Harbor Label"]
-        ).map((name) => ({
+  const result = projectFactAssessment(
+    input,
+    {
+      decision: "supported",
+      reason: "Synthetic fixture facts only.",
+      listed: (noGap ? [merchant.name] : ["Canvas Works", "Harbor Label"]).map(
+        (name) => ({
           name,
           kind: "brand",
           quoteId: answerQuoteId,
           price: null,
-        })),
-        description: null,
-        productAttributes: [],
-        priceComparison: null,
-        correctness: noGap
-          ? { answerQuoteId, productQuoteId, answerText: text, pageText: text }
-          : null,
-        pageDataIssue: null,
-      },
-      Date.now(),
-    ),
+        }),
+      ),
+      description: null,
+      productAttributes: [],
+      priceComparison: null,
+      correctness: noGap
+        ? { answerQuoteId, productQuoteId, answerText: text, pageText: text }
+        : null,
+      pageDataIssue: null,
+    },
+    Date.now(),
+  );
+  if (
+    result.status !== "researched" ||
+    !["discovery-absence", "discovery-outranked"].includes(
+      result.receipt.selected.kind,
+    )
+  )
+    return { success: true, data: result };
+  const brands = ["Canvas Works", "Harbor Label"];
+  const quotes = resultBrandCatalog(input);
+  return {
+    success: true,
+    data: projectResultBrands(input, result.receipt, {
+      decision: "supported",
+      reason: "Synthetic fixture brands from exact answer text.",
+      brands: brands.map((name) => ({
+        name,
+        quoteId: quotes.find((quote) => quote.quote.includes(name))?.id,
+      })),
+    }),
   };
 };

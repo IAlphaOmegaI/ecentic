@@ -1,10 +1,11 @@
 import { mock, spyOn } from "bun:test";
 import assert from "node:assert/strict";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { eq, sql } from "drizzle-orm";
 import postgres from "postgres";
 import {
   type Message,
+  playbookSchema,
   prospectSchema,
   settingsForProspect,
 } from "@/lib/outbound";
@@ -12,13 +13,17 @@ import { defaultCampaignCriteria } from "@/lib/outbound-campaigns";
 import {
   assembleSequence,
   canonicalSequenceInput,
+  legacyWritingSnapshotSchema,
 } from "@/lib/outbound-composition";
 import { draftReviewReadinessKey } from "@/lib/outbound-draft-review";
 import { rebuildWritingProposal } from "@/lib/outbound-rebuild-policy";
 import { writerCandidatesSchema } from "@/lib/outbound-sequence-composition";
 import { shoppingFinding } from "@/lib/outbound-shopping-research";
 import type { CompletedComposition } from "@/server/app/outbound/sequence-composition";
-import { writingPolicyHash } from "@/server/utils/outbound/shopping-policy";
+import {
+  legacyWritingPolicyHash,
+  writingPolicyHash,
+} from "@/server/utils/outbound/shopping-policy";
 import { requireTestDatabase } from "../helpers/database";
 import {
   passingCopyJudge,
@@ -28,6 +33,9 @@ import {
 const endpoint = requireTestDatabase(process.env.OUTBOUND_TEST_DATABASE_URL);
 Object.assign(process.env, { DATABASE_URL: endpoint });
 mock.module("server-only", () => ({}));
+const { writerCandidateContextHash } = await import(
+  "@/server/utils/outbound/writing-candidates"
+);
 const { draftCopyReadiness } = await import(
   "@/server/utils/outbound/draft-copy-readiness"
 );
@@ -1574,6 +1582,104 @@ try {
   assert.equal((await row(previewFixture.id)).status, "approved");
   console.log(
     "PASS held proposals never change live policy; human parts are judged without rewriting and reused exactly",
+  );
+
+  // A historical v1 durable result is readable byte-for-byte, but its old
+  // writer/quality identity cannot authorize a current draft save.
+  const legacyFixture = await seed(true);
+  const legacyBase = value(
+    await Composition.composeForProspect(
+      actor,
+      { prospectId: legacyFixture.id },
+      {
+        generate: async () => legacyFixture.parts,
+        judge: passingCopyJudge,
+      },
+    ),
+  );
+  const legacyJob = (await jobs()).find(
+    (job) => job.id === legacyBase.composition.jobId,
+  );
+  assert.ok(legacyJob);
+  const legacyInput = structuredClone(legacyJob.input);
+  const legacyOutput = structuredClone(legacyJob.output);
+  assert.ok(legacyOutput);
+  const oldPolicy = playbookSchema.parse(legacyInput["settings"]);
+  oldPolicy.followupOneTemplate =
+    "Hey {first},\n\n{followupFact} {callToAction}\n\n{optout}\n\n{signature}";
+  oldPolicy.followupTwoTemplate =
+    "Hey {first},\n\nLast note from me.\n\n{optout}\n\n{signature}";
+  const globalVoice = legacyInput["globalVoiceNotes"];
+  assert.equal(typeof globalVoice, "string");
+  const oldHash = legacyWritingPolicyHash(oldPolicy, {
+    globalVoiceNotes: String(globalVoice),
+  });
+  const oldKey = Composition.compositionJobKey(
+    legacyFixture.id,
+    legacyBase.composition.receiptHash,
+    oldHash,
+  );
+  const oldParts = { ...legacyFixture.parts, followupFact: "" };
+  const legacyFirst = legacyBase.messages[0];
+  assert.ok(legacyFirst?.writing);
+  const oldWriting = legacyWritingSnapshotSchema.parse({
+    ...legacyFirst.writing,
+    version: "discovery-email-v1",
+    writingPolicyHash: oldHash,
+    parts: oldParts,
+  });
+  const oldMessages: Message[] = legacyBase.messages.map((message) =>
+    message.step === 1 ? { ...message, writing: oldWriting } : message,
+  );
+  const oldCanonical = canonicalSequenceInput(oldMessages);
+  assert.equal(oldCanonical.status, "ready");
+  if (oldCanonical.status !== "ready")
+    throw new Error("Historical canonical text missing.");
+  const oldContentHash = createHash("sha256")
+    .update(oldCanonical.canonicalText)
+    .digest("hex");
+  oldWriting.contentHash = oldContentHash;
+  legacyInput["settings"] = oldPolicy;
+  legacyInput["writingPolicyHash"] = oldHash;
+  legacyInput["key"] = oldKey;
+  legacyOutput["messages"] = oldMessages;
+  legacyOutput["composition"] = {
+    ...legacyBase.composition,
+    key: oldKey,
+    writingPolicyHash: oldHash,
+    contentHash: oldContentHash,
+  };
+  assert.deepEqual(legacyInput["peers"], []);
+  legacyOutput["writerCandidates"] = writerCandidatesSchema
+    .parse(legacyOutput["writerCandidates"])
+    .map((candidate) => ({
+      ...candidate,
+      parts: oldParts,
+      partsHash: createHash("sha256")
+        .update(JSON.stringify(oldParts))
+        .digest("hex"),
+      writingPolicyHash: oldHash,
+      contextHash: writerCandidateContextHash({
+        ...candidate,
+        writingPolicyHash: oldHash,
+        peers: [],
+      }),
+    }));
+  await db
+    .update(schema.outboundIntegrationJob)
+    .set({ input: legacyInput, output: legacyOutput, requestId: oldKey })
+    .where(eq(schema.outboundIntegrationJob.id, legacyJob.id));
+  const beforeLegacyRead = await snapshot();
+  const legacyRead = value(
+    await Composition.loadCompletedComposition(undefined, legacyJob.id),
+  );
+  assert.deepEqual(legacyRead.messages, oldMessages);
+  assert.deepEqual(legacyRead.messages[0]?.writing?.parts, oldParts);
+  assert.deepEqual(await snapshot(), beforeLegacyRead);
+  assert.equal((await save(legacyFixture, legacyRead)).success, false);
+  assert.deepEqual(await snapshot(), beforeLegacyRead);
+  console.log(
+    "PASS historical five-part jobs read without hash loss and cannot authorize current saves",
   );
 
   console.log(

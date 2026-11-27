@@ -3,9 +3,12 @@ import { z } from "zod";
 import { MAX_DAILY_EMAILS } from "./outbound-capacity";
 import {
   assembleSequence,
+  type CurrentWritingSnapshot,
   canonicalSequenceInput,
   compositionSentences,
   FOLLOWUP_BUMP,
+  finalFollowup,
+  isCurrentWritingSnapshot,
   type WriterParts,
   type WritingSnapshot,
   writingSnapshotSchema,
@@ -717,10 +720,20 @@ const usesWriterFormula = (messages: Message[], settings: Playbook) =>
 const writtenTemplateMessages = (
   prospect: ProspectInput,
   settings: Playbook,
-  writing: WritingSnapshot,
+  writing: CurrentWritingSnapshot,
   kind: ShoppingResearch["selected"]["kind"] | undefined,
 ) => {
   const issues: Issue[] = [];
+  if (
+    settings.followupOneTemplate !== FOLLOWUP_BUMP ||
+    settings.followupTwoTemplate !== "{first}?" ||
+    settings.followupOneDays !== 3 ||
+    settings.followupTwoDays !== 7
+  )
+    issues.push({
+      code: "templateControlsChanged",
+      field: "followupOneTemplate",
+    });
   const founderLine =
     kind === "product-data-gap"
       ? settings.founderLine
@@ -740,7 +753,6 @@ const writtenTemplateMessages = (
     opening: writing.parts.opening,
     result: writing.parts.result,
     relevance: writing.parts.relevance,
-    followupFact: writing.parts.followupFact || FOLLOWUP_BUMP,
     founderLine,
     callToAction: settings.callToAction,
     optout: settings.optout,
@@ -761,24 +773,6 @@ const writtenTemplateMessages = (
       text: settings.bodyTemplate,
       required: [...parts, ...fixed],
       allowed: [...identity, ...parts, ...fixed],
-    },
-    {
-      field: "followupOneTemplate",
-      text: settings.followupOneTemplate,
-      required: ["followupFact", "callToAction", "optout", "signature"],
-      allowed: [
-        ...identity,
-        "followupFact",
-        "callToAction",
-        "optout",
-        "signature",
-      ],
-    },
-    {
-      field: "followupTwoTemplate",
-      text: settings.followupTwoTemplate,
-      required: ["optout", "signature"],
-      allowed: [...identity, "callToAction", "optout", "signature"],
     },
   ];
   for (const template of templates) {
@@ -842,15 +836,15 @@ const writtenTemplateMessages = (
     { step: 1, afterDays: 0, subject, body: render(settings.bodyTemplate) },
     {
       step: 2,
-      afterDays: settings.followupOneDays,
+      afterDays: 3,
       subject: `Re: ${subject}`,
-      body: render(settings.followupOneTemplate),
+      body: FOLLOWUP_BUMP,
     },
     {
       step: 3,
-      afterDays: settings.followupTwoDays,
+      afterDays: 7,
       subject: `Re: ${subject}`,
-      body: render(settings.followupTwoTemplate),
+      body: finalFollowup(prospect.first),
     },
   ];
   return { messages, issues };
@@ -864,7 +858,7 @@ const lintWrittenSequence = (
 ): Issue[] => {
   const issues: Issue[] = [];
   const writing = writingSnapshotSchema.safeParse(messages[0]?.writing);
-  if (!writing.success)
+  if (!writing.success || !isCurrentWritingSnapshot(writing.data))
     issues.push({ code: "writingRequired", field: "message1" });
   else {
     if (
@@ -878,7 +872,6 @@ const lintWrittenSequence = (
       ["opening", 22, 1],
       ["result", 30, 2],
       ["relevance", 28, 3],
-      ["followupFact", 25, 1],
     ] as const) {
       if (countWords(writing.data.parts[part]) > words)
         issues.push({ code: "wordLimit", field: part });
@@ -985,15 +978,16 @@ const lintWrittenSequence = (
       .replace(/\r\n?/g, "\n")
       .split(/\n[ \t]*\n/)
       .map((paragraph) => paragraph.trim());
-    if (!paragraphs.includes(settings.optout))
+    if (message.step === 1 && !paragraphs.includes(settings.optout))
       issues.push({ code: "optoutMissing", field });
-    if (paragraphs.at(-1) !== settings.signature)
+    if (message.step === 1 && paragraphs.at(-1) !== settings.signature)
       issues.push({ code: "signatureMissing", field });
     if (
       /!/.test(message.subject) ||
-      /!/.test(
-        message.body.replace(/^(?:Hey|Hi|Hello|Dear) [^!\r\n]+!\r?\n/u, ""),
-      )
+      (message.body !== FOLLOWUP_BUMP &&
+        /!/.test(
+          message.body.replace(/^(?:Hey|Hi|Hello|Dear) [^!\r\n]+!\r?\n/u, ""),
+        ))
     )
       issues.push({ code: "exclamation", field });
   }

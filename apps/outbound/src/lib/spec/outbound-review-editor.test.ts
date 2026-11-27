@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 import { resolve } from "node:path";
 
-test("review shows exact held copy, safe evidence, prior revision and checked five-part edits", async () => {
+test("review shows exact held copy, safe evidence, prior revision and checked four-part edits", async () => {
   const execution = Bun.spawn(
     [
       process.execPath,

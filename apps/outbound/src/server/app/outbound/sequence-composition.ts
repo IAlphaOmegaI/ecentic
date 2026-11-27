@@ -11,6 +11,8 @@ import {
 } from "@/lib/outbound";
 import {
   canonicalSequenceInput,
+  isCurrentWritingSnapshot,
+  storedWriterPartsSchema,
   type WriterParts,
   writerPartsSchema,
   writingSnapshotSchema,
@@ -70,7 +72,7 @@ const inputSchema = z.object({
   globalVoiceNotes: z.string(),
   preview: z.boolean().optional(),
   baseWritingPolicyHash: digest.optional(),
-  suppliedParts: writerPartsSchema.optional(),
+  suppliedParts: storedWriterPartsSchema.optional(),
   peers: z.array(peerSchema).max(9),
   requestedAt: z.string().datetime(),
 });
@@ -180,7 +182,9 @@ const readCompleted = (job: Job): CompletedComposition => {
     input.prospect.id !== input.prospectId ||
     input.prospect.assignedSenderEmail !== input.settings.fromEmail ||
     Research.researchHash(input.receipt) !== input.receiptHash ||
-    Policy.writingPolicyHash(input.settings, {
+    (writing && !isCurrentWritingSnapshot(writing)
+      ? Policy.legacyWritingPolicyHash
+      : Policy.writingPolicyHash)(input.settings, {
       globalVoiceNotes: input.globalVoiceNotes,
     }) !== input.writingPolicyHash ||
     Policy.compositionProspectHash(input.prospect) !== input.prospectHash ||

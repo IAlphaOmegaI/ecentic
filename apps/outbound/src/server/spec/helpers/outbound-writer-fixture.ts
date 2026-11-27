@@ -128,7 +128,7 @@ export const writerFixture = (ranked = false) => {
       totalListed: names.length,
       listed: names.map((name, index) => ({
         name,
-        kind: "retailer",
+        kind: "brand",
         position: index + 1,
         price: index === 0 ? "around $36" : null,
         excerptIds: ["answer-excerpt"],
@@ -136,8 +136,20 @@ export const writerFixture = (ranked = false) => {
       description: null,
       matchedAliases: ranked ? ["Sample Goods"] : [],
       presenceMethod: "server-v1",
+      brandProjection: {
+        version: "answer-brands-v1",
+        brands: ["Alder", "Birch"].map((name, index) => ({
+          name,
+          excerptIds: ["brands-excerpt"],
+          position: index + 1,
+        })),
+      },
     },
     claims: [
+      ...["Alder", "Birch"].map((name) => ({
+        ...claim(`brand-${name}`, "brand", name),
+        excerptIds: ["brands-excerpt"],
+      })),
       claim("query", "query", query),
       claim("presence", "merchant-presence", ranked ? "present" : "absent"),
       ...names.flatMap((name, index) => [
@@ -151,6 +163,20 @@ export const writerFixture = (ranked = false) => {
     ],
     claimExcerpts: [
       { id: "answer-excerpt", sourceId: "answer", quote: answer },
+      {
+        id: "brands-excerpt",
+        sourceId: "answer",
+        quote: answer,
+        brand: {
+          version: "answer-brands-v1",
+          answerHash: digest(answer),
+          context: "answer-text",
+          start: 0,
+          end: answer.length,
+          rawHash: digest(answer),
+          title: answer,
+        },
+      },
       { id: "page-excerpt", sourceId: "product", quote: productText },
     ],
     ucp: {
@@ -202,10 +228,10 @@ export const writerFixture = (ranked = false) => {
     subjectTemplate: "{queryTopic}",
     bodyTemplate:
       "Hey {first}!\n\n{opening}\n\n{result} {relevance}\n\n{founderLine} {callToAction}\n\n{optout}\n\n{signature}",
-    followupOneTemplate:
-      "Hey {first},\n\n{followupFact} {callToAction}\n\n{optout}\n\n{signature}",
-    followupTwoTemplate:
-      "Hey {first},\n\nLast note from me. If it's useful, I can run that same search with you live. Takes about ten minutes. If not, no worries.\n\n{optout}\n\n{signature}",
+    followupOneTemplate: "Bumping this!",
+    followupTwoTemplate: "{first}?",
+    followupOneDays: 3,
+    followupTwoDays: 7,
     linkedinTemplate: "Hi {first}, {result} Would be good to connect.",
     founderLine:
       "I'm Juri. I started ecentic to help stores get picked when AI does the shopping.",
@@ -223,10 +249,9 @@ export const writerFixture = (ranked = false) => {
     subject: "linen tote gifts",
     opening: `My sister needed a tote, so I asked for "${query}".`,
     result: ranked
-      ? "Sample Goods came up 5th of 6, after Alder, Birch, Cedar and Maple."
+      ? "Sample Goods came up 5th of 6, after Alder and Birch."
       : "It picked Alder and Birch. Sample Goods didn't come up.",
     relevance,
-    followupFact: "",
   };
   return { prospect, receipt, policy, parts };
 };

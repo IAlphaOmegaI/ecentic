@@ -23,7 +23,7 @@ const fixture = () => {
     parts: saved.parts,
   });
   const writing: WritingSnapshot = {
-    version: "discovery-email-v1",
+    version: "discovery-email-v2",
     writingPolicyHash: "a".repeat(64),
     receiptHash: "b".repeat(64),
     contentHash: "c".repeat(64),
@@ -176,20 +176,17 @@ describe("new written sequence lint", () => {
     }
   });
 
-  test("requires exact follow-up opt-outs and signatures without mutating text", () => {
+  test("follow-up edits fail without modifying the exact bumps", () => {
     const input = fixture();
     const changed = input.messages.map((message) =>
       message.step === 2
-        ? {
-            ...message,
-            body: message.body.replace(input.policy.optout, "Reply to stop."),
-          }
+        ? { ...message, body: `${message.body} Worth a quick chat?` }
         : message,
     );
     const before = JSON.stringify(changed);
     expect(lintMessages(changed, input.policy, input.prospect)).toContainEqual({
-      code: "optoutMissing",
-      field: "message2",
+      code: "writingChanged",
+      field: "message1",
     });
     expect(JSON.stringify(changed)).toBe(before);
     const altered = input.messages.map((message) =>
@@ -198,8 +195,8 @@ describe("new written sequence lint", () => {
         : message,
     );
     expect(lintMessages(altered, input.policy, input.prospect)).toContainEqual({
-      code: "signatureMissing",
-      field: "message3",
+      code: "writingChanged",
+      field: "message1",
     });
   });
 
@@ -217,7 +214,7 @@ describe("new written sequence lint", () => {
     expect(lintMessages(messages, policy, prospect)).toEqual([]);
     const blocked = messages.map((message) =>
       message.step === 3
-        ? { ...message, body: message.body.replace("Last note", "GEO note") }
+        ? { ...message, body: `${message.body} GEO note` }
         : message,
     );
     expect(lintMessages(blocked, policy, prospect)).toContainEqual({

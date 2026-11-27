@@ -7,7 +7,8 @@ import {
 } from "./outbound";
 import type { ShoppingResearch } from "./outbound-shopping-research";
 
-export const WRITING_CONTRACT_VERSION = "discovery-email-v1";
+export const LEGACY_WRITING_CONTRACT_VERSION = "discovery-email-v1";
+export const WRITING_CONTRACT_VERSION = "discovery-email-v2";
 export const COPY_CRITERIA = [
   "openingFits",
   "resultCheckable",
@@ -24,10 +25,20 @@ export const writerPartsSchema = z
     opening: z.string().trim().min(1).max(1200),
     result: z.string().trim().min(1).max(1600),
     relevance: z.string().trim().min(1).max(1400),
-    followupFact: z.string().trim().max(1200),
   })
   .strict();
 export type WriterParts = z.infer<typeof writerPartsSchema>;
+/** Historical reads preserve the original five fields and their hashes. */
+export const legacyWriterPartsSchema = writerPartsSchema
+  .extend({
+    followupFact: z.string().trim().max(1200),
+  })
+  .strict();
+export const storedWriterPartsSchema = z.union([
+  legacyWriterPartsSchema,
+  writerPartsSchema,
+]);
+export type StoredWriterParts = z.infer<typeof storedWriterPartsSchema>;
 
 export const copyCriterionSchema = z
   .object({
@@ -50,7 +61,7 @@ export type CopyVerdict = z.infer<typeof copyVerdictSchema>;
 const hash = z.string().regex(/^[a-f0-9]{64}$/);
 
 /** Optional on historical messages; populated only on a newly written revision. */
-export const writingSnapshotSchema = z
+export const currentWritingSnapshotSchema = z
   .object({
     version: z.literal(WRITING_CONTRACT_VERSION),
     writingPolicyHash: hash,
@@ -70,7 +81,24 @@ export const writingSnapshotSchema = z
     quality: copyVerdictSchema.nullable(),
   })
   .strict();
+export const legacyWritingSnapshotSchema = currentWritingSnapshotSchema
+  .extend({
+    version: z.literal(LEGACY_WRITING_CONTRACT_VERSION),
+    parts: legacyWriterPartsSchema,
+  })
+  .strict();
+export const writingSnapshotSchema = z.discriminatedUnion("version", [
+  currentWritingSnapshotSchema,
+  legacyWritingSnapshotSchema,
+]);
 export type WritingSnapshot = z.infer<typeof writingSnapshotSchema>;
+export type CurrentWritingSnapshot = z.infer<
+  typeof currentWritingSnapshotSchema
+>;
+export const isCurrentWritingSnapshot = (
+  writing: WritingSnapshot,
+): writing is z.infer<typeof currentWritingSnapshotSchema> =>
+  writing.version === WRITING_CONTRACT_VERSION;
 
 /** Inferences are selected from approved policy; they are never stored as observations. */
 export type RelevanceClaim = {
@@ -79,7 +107,10 @@ export type RelevanceClaim = {
   value: string;
 };
 
-export const FOLLOWUP_BUMP = "Bumping this up in case it got buried.";
+export const LEGACY_FOLLOWUP_BUMP = "Bumping this up in case it got buried.";
+export const FOLLOWUP_BUMP = "Bumping this!";
+export const finalFollowup = (first: string) =>
+  first.trim() ? `${first.trim()}?` : "Worth a chat?";
 const WRITER_LIMITS = { opening: 22, result: 30, relevance: 28 } as const;
 const PART_VARIABLES = ["opening", "result", "relevance"] as const;
 const FIXED_VARIABLES = [
@@ -95,7 +126,6 @@ const COMPOSITION_VARIABLES = [
   "product",
   "queryTopic",
   ...PART_VARIABLES,
-  "followupFact",
   ...FIXED_VARIABLES,
 ] as const;
 type CompositionVariable = (typeof COMPOSITION_VARIABLES)[number];
@@ -197,7 +227,6 @@ const variablesFor = (
   opening: parts?.opening ?? "",
   result: parts?.result ?? "",
   relevance: parts?.relevance ?? "",
-  followupFact: parts?.followupFact || FOLLOWUP_BUMP,
   founderLine: compositionFounderLine(receipt, settings) ?? "",
   callToAction: settings.callToAction,
   optout: settings.optout,
@@ -299,20 +328,12 @@ const templatesProblem = (settings: Playbook, variables: Variables) => {
       [...PART_VARIABLES, ...FIXED_VARIABLES],
       [...identity, ...PART_VARIABLES, ...FIXED_VARIABLES],
     ),
-    templateProblem(
-      "first follow-up",
-      settings.followupOneTemplate,
-      variables,
-      ["followupFact", "callToAction", "optout", "signature"],
-      [...identity, "followupFact", "callToAction", "optout", "signature"],
-    ),
-    templateProblem(
-      "second follow-up",
-      settings.followupTwoTemplate,
-      variables,
-      ["optout", "signature"],
-      [...identity, "callToAction", "optout", "signature"],
-    ),
+    settings.followupOneTemplate !== FOLLOWUP_BUMP ||
+    settings.followupTwoTemplate !== "{first}?" ||
+    settings.followupOneDays !== 3 ||
+    settings.followupTwoDays !== 7
+      ? "New sequences require the fixed day-three and day-seven bumps."
+      : null,
     templateProblem(
       "LinkedIn",
       settings.linkedinTemplate,
@@ -320,11 +341,7 @@ const templatesProblem = (settings: Playbook, variables: Variables) => {
       ["result"],
       [...identity, "result"],
     ),
-    ...[
-      ["first email", settings.bodyTemplate],
-      ["first follow-up", settings.followupOneTemplate],
-      ["second follow-up", settings.followupTwoTemplate],
-    ].map(([name, template]) =>
+    ...[["first email", settings.bodyTemplate]].map(([name, template]) =>
       fixedParagraphProblem(template ?? "", name ?? "email"),
     ),
   ];
@@ -416,7 +433,7 @@ export const canonicalSequenceInput = (
   return {
     status: "ready",
     canonicalText: JSON.stringify({
-      version: WRITING_CONTRACT_VERSION,
+      version: messages[0]?.writing?.version ?? WRITING_CONTRACT_VERSION,
       messages: messages.map(({ step, afterDays, subject, body }) => ({
         step,
         afterDays,
@@ -445,7 +462,6 @@ export const renderLinkedInResult = (
     opening: "",
     result: parsed.data.result,
     relevance: "",
-    followupFact: "",
     founderLine: "",
     callToAction: "",
     optout: "",
@@ -483,7 +499,7 @@ export const assembleSequence = (
   const parsed = writerPartsSchema.safeParse(suppliedParts);
   if (!parsed.success)
     return hold(
-      "The writer must provide exactly the five required text fields.",
+      "The writer must provide exactly the four required text fields.",
     );
   const parts = parsed.data;
   if (
@@ -521,15 +537,15 @@ export const assembleSequence = (
     },
     {
       step: 2,
-      afterDays: settings.followupOneDays,
+      afterDays: 3,
       subject: `Re: ${subject}`,
-      body: render(settings.followupOneTemplate, variables),
+      body: FOLLOWUP_BUMP,
     },
     {
       step: 3,
-      afterDays: settings.followupTwoDays,
+      afterDays: 7,
       subject: `Re: ${subject}`,
-      body: render(settings.followupTwoTemplate, variables),
+      body: finalFollowup(prospect.first),
     },
   ];
   const first = messages[0];

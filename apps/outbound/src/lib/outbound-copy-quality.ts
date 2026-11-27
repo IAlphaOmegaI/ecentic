@@ -10,6 +10,8 @@ import {
   canonicalSequenceInput,
   compositionSentences,
   copyVerdictSchema,
+  FOLLOWUP_BUMP,
+  finalFollowup,
   preflightWriterAssembly,
   type WriterParts,
 } from "./outbound-composition";
@@ -20,7 +22,7 @@ import {
   validateWriterSubject,
 } from "./outbound-writing";
 
-export const COPY_QUALITY_VERSION = "copy-checks-v1";
+export const COPY_QUALITY_VERSION = "copy-checks-v2";
 export type CopyQualityContext = {
   prospect: ProspectInput;
   receipt: ShoppingResearch;
@@ -55,7 +57,7 @@ const readable = (value: string) =>
     .replace(/\s+/g, " ")
     .trim();
 
-/** Checks actual delivered message text as well as the five writer-owned fields. */
+/** Checks actual delivered message text as well as the four writer-owned fields. */
 export const deterministicCopyIssues = (
   context: CopyQualityContext,
 ): string[] => {
@@ -90,6 +92,20 @@ export const deterministicCopyIssues = (
     ),
   ];
   for (const message of messages) {
+    if (message.step > 1) {
+      if (
+        message.body !==
+          (message.step === 2
+            ? FOLLOWUP_BUMP
+            : finalFollowup(prospect.first)) ||
+        message.afterDays !== (message.step === 2 ? 3 : 7) ||
+        message.subject !== `Re: ${messages[0]?.subject ?? ""}`
+      )
+        issues.push(
+          `Message ${message.step} must be the exact fixed threaded bump.`,
+        );
+      continue;
+    }
     const content = `${message.subject}\n${message.body}`;
     const text = normalize(content);
     const label = `Message ${message.step}`;

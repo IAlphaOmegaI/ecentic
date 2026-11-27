@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { parseArgs } from "node:util";
@@ -17,6 +18,8 @@ const { values } = parseArgs({
     corpus: { type: "string" },
     actor: { type: "string", default: "held-review-operator" },
     steps: { type: "string", default: "1" },
+    "review-round": { type: "string", default: "1" },
+    instructions: { type: "string" },
     "repair-unspent": { type: "string" },
     "hold-unspent": { type: "string" },
     "reconcile-poll": { type: "string" },
@@ -29,6 +32,39 @@ const { values } = parseArgs({
     "expected-candidate-parts-hash": { type: "string" },
   },
 });
+const reviewRound = z.coerce
+  .number()
+  .pipe(z.union([z.literal(1), z.literal(2)]))
+  .parse(values["review-round"]);
+const instructionHash =
+  reviewRound === 2
+    ? await (async () => {
+        if (!values.instructions)
+          throw new Error(
+            "Second review requires the reviewed instruction file.",
+          );
+        const prompt = await readFile(values.instructions, "utf8");
+        const section = (number: number) => {
+          const lines = prompt.split("\n");
+          const start = lines.findIndex((line) =>
+            line.startsWith(`## ${number}. `),
+          );
+          if (start < 0)
+            throw new Error(`Instruction section ${number} is missing.`);
+          const remaining = lines.slice(start + 1);
+          const next = remaining.findIndex((line) => line.startsWith("## "));
+          return [
+            lines[start],
+            ...remaining.slice(0, next < 0 ? undefined : next),
+          ]
+            .join("\n")
+            .trim();
+        };
+        return createHash("sha256")
+          .update(`${section(7)}\n\n${section(16)}`)
+          .digest("hex");
+      })()
+    : null;
 const steps = z.coerce.number().int().min(1).max(50).parse(values.steps);
 if (
   [
@@ -78,6 +114,26 @@ const Contract = await import(
 const Review = await import(
   "../../src/server/app/outbound/held-discovery-review"
 );
+if (
+  reviewRound === 2 &&
+  instructionHash !== Contract.HELD_REVIEW_ROUND2_INSTRUCTION_HASH
+)
+  throw new Error(
+    "Sections 7 and 16 changed; reread and bind the new instructions before execution.",
+  );
+if (
+  reviewRound === 2 &&
+  [
+    values["repair-unspent"],
+    values["hold-unspent"],
+    values["reconcile-poll"],
+    values["reconcile-card-assessment"],
+    values["reconcile-writer-candidate"],
+  ].some(Boolean)
+)
+  throw new Error(
+    "Historical recovery operators cannot mutate the preserved first review during round two.",
+  );
 const manifest = Contract.heldReviewManifestSchema.parse({
   version: 1,
   prospectIds: corpus.heldProspects,
@@ -224,11 +280,17 @@ if (values.execute) {
     throw new Error(
       "The 21 approved contacts need their exact unsent holds and named products before execution.",
     );
-  const started = await Review.start(values.actor, manifest);
+  const started =
+    reviewRound === 2
+      ? await Review.startSecondReview(values.actor, manifest, instructionHash!)
+      : await Review.start(values.actor, manifest);
   if (!started.success)
     throw new Error(`Held review start failed (${started.error.name}).`);
   for (let step = 0; step < steps; step += 1) {
-    const advanced = await Review.runNext({ batchId: started.data.batchId });
+    const advanced = await Review.runNext({
+      batchId: started.data.batchId,
+      reviewRound,
+    });
     if (!advanced.success)
       throw new Error(
         `Held review checkpoint failed (${advanced.error.name}).`,
@@ -241,12 +303,13 @@ if (values.execute) {
       }),
     );
   }
-  const current = await Review.status(started.data.batchId);
+  const current = await Review.status(started.data.batchId, reviewRound);
   if (!current.success)
     throw new Error(`Held review status failed (${current.error.name}).`);
   console.log(
     JSON.stringify({
       batchId: current.data.batchId,
+      reviewRound,
       queriesReserved: current.data.queriesReserved,
       maximumSubmissions: current.data.maximumSubmissions,
       paused: current.data.paused,

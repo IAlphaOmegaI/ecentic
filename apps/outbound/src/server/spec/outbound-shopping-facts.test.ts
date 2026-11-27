@@ -128,7 +128,7 @@ const fixture = async (
     limitations: [],
   };
   const generated = value(
-    await Capture.generateShopperQuery(
+    await Capture.generateLegacyShopperQuery(
       {
         product,
         merchant,
@@ -940,7 +940,7 @@ describe("fact-only shopping assessment", () => {
     expect(orderedAnswerEntries(answer)).toEqual([]);
     expect(
       orderedAnswerEntries(`### Featured Options\n${offers}`),
-    ).toHaveLength(5);
+    ).toHaveLength(0);
     for (const divider of [
       "## Other Choices",
       "Other Choices\n------------",
@@ -971,10 +971,10 @@ describe("fact-only shopping assessment", () => {
       expect(result.reason).toContain("explicit unique ordered answer entry");
   });
 
-  test("flat markdown recommendations keep order without ranking nested feature bullets", async () => {
+  test("flat unnumbered markdown holds while explicitly numbered headings preserve order", async () => {
     const bullets =
       "- **Canvas Works** — Large carry bag.\n  - sturdy handles\n- **Harbor Label** — Cotton shopper.\n- **Aster Goods** — Marlow Tote.";
-    expect(orderedAnswerEntries(bullets)).toHaveLength(3);
+    expect(orderedAnswerEntries(bullets)).toHaveLength(0);
     const input = await fixture(bullets);
     input.selection.listed = [
       "Canvas Works",
@@ -991,13 +991,7 @@ describe("fact-only shopping assessment", () => {
       input.selection,
       input.now,
     );
-    expect(result.status === "researched" && result.receipt.selected.kind).toBe(
-      "discovery-outranked",
-    );
-    if (result.status === "researched")
-      expect(
-        validateAutomaticResearch(input.evidence, result.receipt, 14),
-      ).toBeNull();
+    expect(result.status).toBe("held");
     expect(
       orderedAnswerEntries(
         "### 1. **Canvas Works**\nBag.\n### 2. **Harbor Label**\nShopper.",

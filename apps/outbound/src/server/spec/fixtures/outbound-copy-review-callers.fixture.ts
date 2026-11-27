@@ -215,7 +215,7 @@ try {
   const newReview = legacyReviews.find((job) => job.id !== oldFailure.id);
   assert.equal(newReview?.status, "complete");
   assert.equal(newReview?.input["regenerate"], true);
-  assert.equal(newReview?.input["copyContractVersion"], "copy-checks-v1");
+  assert.equal(newReview?.input["copyContractVersion"], "copy-checks-v2");
   assert.deepEqual(newReview?.input["copySnapshot"], legacyRow.messages);
   console.log(
     "PASS an unchanged legacy failed review is reclaimed by the new copy gate without manual resume.",
