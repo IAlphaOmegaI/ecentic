@@ -859,7 +859,7 @@
           "google": "Create a Google OAuth web application, add the redirect URI below, and save its client ID and client secret. Then connect each Gmail inbox.",
           "scrapellm": "Use ScrapeLLM to capture actual shopper queries and the answers shown.",
           "firecrawl": "Use Firecrawl to inspect rendered product pages and record supporting evidence.",
-          "hubspot": "Use a private-app access token with exactly these two read scopes: crm.objects.contacts.read and crm.objects.companies.read. Validation only reads contacts and companies."
+          "hubspot": "Use a HubSpot service key or an existing private-app access token with exactly these two read scopes: crm.objects.contacts.read and crm.objects.companies.read. Validation only reads contacts and companies."
         },
         "secret": {
           "apollo": "Apollo API key",
@@ -975,7 +975,7 @@
       },
       "hubspot": {
         "title": "HubSpot",
-        "description": "Store a HubSpot private-app access token for CRM synchronization. Saving a token does not start a sync.",
+        "description": "Store a HubSpot service key or access token for CRM synchronization. Saving it does not start a sync.",
         "keySaved": "Token saved"
       }
     },

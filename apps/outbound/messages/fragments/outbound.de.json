@@ -859,7 +859,7 @@
           "google": "Erstellen Sie eine Google-OAuth-Webanwendung, tragen Sie die unten angegebene Weiterleitungs-URI ein und speichern Sie die Client-ID und das Client-Secret. Verbinden Sie anschließend jedes Gmail-Postfach.",
           "scrapellm": "Mit ScrapeLLM erfassen Sie tatsächliche Suchanfragen von Käufern und die angezeigten Antworten.",
           "firecrawl": "Mit Firecrawl prüfen Sie gerenderte Produktseiten und speichern unterstützende Belege.",
-          "hubspot": "Verwenden Sie ein Zugriffstoken einer privaten App mit genau diesen beiden Leseberechtigungen: crm.objects.contacts.read und crm.objects.companies.read. Bei der Validierung werden nur Kontakte und Unternehmen gelesen."
+          "hubspot": "Verwenden Sie einen HubSpot-Dienstschlüssel oder ein Zugriffstoken einer bestehenden privaten App mit genau diesen beiden Leseberechtigungen: crm.objects.contacts.read und crm.objects.companies.read. Bei der Validierung werden nur Kontakte und Unternehmen gelesen."
         },
         "secret": {
           "apollo": "Apollo-API-Schlüssel",
@@ -975,7 +975,7 @@
       },
       "hubspot": {
         "title": "HubSpot",
-        "description": "Speichern Sie ein Zugriffstoken einer privaten HubSpot-App für die CRM-Synchronisierung. Das Speichern des Tokens startet keine Synchronisierung.",
+        "description": "Speichern Sie einen HubSpot-Dienstschlüssel oder ein Zugriffstoken für die CRM-Synchronisierung. Das Speichern startet keine Synchronisierung.",
         "keySaved": "Token gespeichert"
       }
     },
