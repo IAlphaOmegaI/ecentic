@@ -1635,7 +1635,14 @@ export const runNext = (
     );
     if (!claim) return { advanced: false as const };
     const executed = await resultify(async () => {
-      const result = await execute(claim, deadline, dependencies);
+      const leaseExpiresAt = claim.state.lease?.expiresAt;
+      if (!leaseExpiresAt)
+        throw new ConflictError("The claimed review stage has no active lease.");
+      const executionDeadline = Math.min(
+        deadline,
+        Date.parse(leaseExpiresAt) - 30_000,
+      );
+      const result = await execute(claim, executionDeadline, dependencies);
       const reason = value(result);
       if (reason) throw new ConflictError(reason);
     });
@@ -1694,3 +1701,9 @@ export const status = (controlId: string) =>
       jobs,
     };
   });
+
+/** Supplemental review reuses the same current hold, policy and evidence gates. */
+export const assertHeldThirdReviewEligibility = ready;
+export const checkedThirdReviewCopyContext = copyContext;
+export const recentHeldThirdReviewPeers = previewPeers;
+export const savedThirdReviewParentCopy = savedCopy;

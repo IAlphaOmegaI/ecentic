@@ -26,6 +26,8 @@ import * as AI from "@/server/utils/ai";
 import { IntegrationError } from "./http";
 
 export const COPY_JUDGE_INPUT_VERSION = "brand-proof-judge-v3";
+export const COPY_JUDGE_BRAND_SUBSET_POLICY_VERSION =
+  "supported-brand-subset-v1";
 
 const criterionSchema = z
   .object({
@@ -112,6 +114,7 @@ export const judgeSequenceCopy = async (
         "Evaluate the exact three supplied messages. The first email needs a fitting human shopping opening; a specific result about this store that its recipient can check in a minute; a reason to care that is not another product detail; a natural transition into the actual sender's fixed founder line; exactly one conversation ask; and a voice the actual sender could say aloud.",
         "Criteria: openingFits checks product fit and a believable short narrative without invented purchase/use; resultCheckable checks all names, numbers, query, ordering and qualifiers against the observed ledger; reasonToCare checks relevance rather than another feature recap; founderTransition checks the connection into the saved introduction; oneChatAsk requires the configured chat CTA in the first email; follow-ups are the exact short fixed bumps and need no added CTA, greeting, signature or opt-out; reject extra asks or offers to send reports/information; naturalVoice checks all three messages against the actual sender and plain spoken style.",
         "For result brand names, check projectedBrandEvidence: each name is mapped to its exact saved answer prose or product-card title. These are parts of the same captured answer. A leading or other non-exhaustive answer excerpt may name different alternatives; absence from that excerpt does not contradict a brand's mapped proof. Product cards establish inclusion, not rank or preference. A real contradiction anywhere in the supplied evidence, including a merchant name in the answer, must still fail resultCheckable.",
+        'A brand result may name two or three supported brands as a non-exhaustive subset of the captured answer. Omission of another brand is not a failure. "It picked A and B" states inclusion; it does not claim that A and B were the only picks or that the answer contained exactly two brands. Check every named brand against its mapped proof. Still reject unsupported names, unsupported exclusive claims such as "only", false total counts, invented ranks, or any real contradiction. The reviewed no-product-brand exception remains separately proof-gated.',
         "The serverWordCounts are authoritative counts for each exact message body, including its greeting, fixed text, opt-out and signature. Subject lines, delivery footer, quoted thread history and duplicated parts are not part of that body count. All applicable length limits already passed deterministic validation. Do not estimate or recount words, add counts across messages, or fail naturalVoice on length. Judge naturalVoice on plain spoken quality, rhythm and the actual sender's voice.",
         "The permitted sender shopping reason is narrative only and may appear only in opening. Every other observed fact must match the ledger. Follow-up one is exactly Bumping this!; follow-up two is exactly the supplied first-name question or Worth a chat? when there is no first name. Their quoted first email carries the opt-out and postal footer at delivery; do not require those controls in the bump itself. An opt-out instruction is not an additional sales ask.",
         "The supplied sender identity and fixed introduction are the only author facts. Shared voice notes and examples supply style only; never require another person's name, biography or employment history. Do not treat the primary Playbook author's biography as this sender's biography.",
@@ -125,6 +128,13 @@ export const judgeSequenceCopy = async (
       prompt: JSON.stringify({
         version: COPY_QUALITY_VERSION,
         inputVersion: COPY_JUDGE_INPUT_VERSION,
+        brandSelectionPolicy: {
+          version: COPY_JUDGE_BRAND_SUBSET_POLICY_VERSION,
+          resultMayNameNonExhaustiveSubset: true,
+          permittedBrandCounts: [2, 3],
+          omissionAloneIsFailure: false,
+          rejectUnsupportedExclusiveOrFalseCountClaims: true,
+        },
         ...(context.copyRulesVersion
           ? {
               copyRulesVersion: context.copyRulesVersion,

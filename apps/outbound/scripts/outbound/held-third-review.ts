@@ -118,7 +118,9 @@ for (const _step of Array.from({ length: steps })) {
   if (stopRequested) break;
   const progressed = await Review.runNext({
     controlId: started.data.controlId,
-    deadline: Date.now() + 150_000,
+    // Loading the frozen history belongs to the local operator budget, not to
+    // the provider's lease. runNext bounds execution to the acquired lease.
+    deadline: Date.now() + 300_000,
   });
   if (!progressed.success)
     throw new Error(`Round 3 stage failed: ${progressed.error.message}`);

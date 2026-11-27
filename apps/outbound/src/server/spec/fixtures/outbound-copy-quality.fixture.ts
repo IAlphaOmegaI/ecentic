@@ -87,6 +87,40 @@ const leading = separateEvidence.receipt.claimExcerpts?.find(
 );
 if (!leading) throw new Error("Missing synthetic leading excerpt.");
 leading.quote = "The opening paragraph names Alder and Cedar.";
+const permittedSubset = await Quality.judgeSequenceCopy(separateEvidence, {
+  generate: async (request) => {
+    const prompt = JSON.parse(request.prompt);
+    expect(prompt.inputVersion).toBe("brand-proof-judge-v3");
+    expect(prompt.brandSelectionPolicy).toEqual({
+      version: Quality.COPY_JUDGE_BRAND_SUBSET_POLICY_VERSION,
+      resultMayNameNonExhaustiveSubset: true,
+      permittedBrandCounts: [2, 3],
+      omissionAloneIsFailure: false,
+      rejectUnsupportedExclusiveOrFalseCountClaims: true,
+    });
+    expect(prompt.parts.result).toBe(
+      "It picked Alder and Birch. Sample Goods didn't come up.",
+    );
+    expect(
+      prompt.projectedBrandEvidence.map(
+        (brand: { name: string }) => brand.name,
+      ),
+    ).toEqual(["Alder", "Birch"]);
+    expect(request.instructions).toContain(
+      "Omission of another brand is not a failure.",
+    );
+    expect(request.instructions).toContain(
+      '"It picked A and B" states inclusion',
+    );
+    expect(request.instructions).toContain(
+      "Still reject unsupported names, unsupported exclusive claims",
+    );
+    return pass();
+  },
+});
+expect(permittedSubset.success).toBe(true);
+if (!permittedSubset.success) throw permittedSubset.error;
+expect(permittedSubset.data.passed).toBe(true);
 let evidenceJudgeCalls = 0;
 const evidenceFailure = await Quality.judgeSequenceCopy(separateEvidence, {
   generate: async (request) => {
@@ -137,6 +171,72 @@ expect(evidenceFailure.success).toBe(true);
 if (!evidenceFailure.success) throw evidenceFailure.error;
 expect(evidenceFailure.data.passed).toBe(false);
 expect(evidenceJudgeCalls).toBe(1);
+// This input policy never turns a saved model failure into a pass or retries it.
+expect(copyVerdictProblem(evidenceFailure.data)).toBe(
+  "resultCheckable: The judge still rejected the supplied result.",
+);
+
+// Naming fewer alternatives is permitted; inventing a name or total is not.
+for (const result of [
+  "It picked Alder, Birch and Unobserved Brand. Sample Goods didn't come up.",
+  "It picked nine brands, Alder and Birch. Sample Goods didn't come up.",
+]) {
+  const invalid = structuredClone(separateEvidence);
+  invalid.parts.result = result;
+  const sequence = assembleSequence(
+    invalid.prospect,
+    invalid.receipt,
+    invalid.playbook,
+    invalid.parts,
+  );
+  if (sequence.status !== "ready") throw new Error(sequence.reason);
+  invalid.messages = sequence.messages;
+  const rejected = await Quality.judgeSequenceCopy(invalid, {
+    generate: async () => {
+      throw new Error("An unsupported brand or total must not reach judge.");
+    },
+  });
+  expect(rejected.success).toBe(true);
+  if (!rejected.success) throw rejected.error;
+  expect(rejected.data.passed).toBe(false);
+  expect(rejected.data.deterministicIssues.length).toBeGreaterThan(0);
+}
+const exclusive = structuredClone(separateEvidence);
+exclusive.parts.result =
+  "It picked only Alder and Birch. Sample Goods didn't come up.";
+const exclusiveSequence = assembleSequence(
+  exclusive.prospect,
+  exclusive.receipt,
+  exclusive.playbook,
+  exclusive.parts,
+);
+if (exclusiveSequence.status !== "ready")
+  throw new Error(exclusiveSequence.reason);
+exclusive.messages = exclusiveSequence.messages;
+const exclusiveCalls: number[] = [];
+const exclusiveFailure = await Quality.judgeSequenceCopy(exclusive, {
+  generate: async (request) => {
+    exclusiveCalls.push(1);
+    expect(request.instructions).toContain(
+      'unsupported exclusive claims such as "only"',
+    );
+    expect(JSON.parse(request.prompt).parts.result).toContain("only");
+    return {
+      ...pass(),
+      resultCheckable: {
+        passed: false,
+        reason: "The exclusive claim contradicts the additional named brand.",
+      },
+    };
+  },
+});
+expect(exclusiveFailure.success).toBe(true);
+if (!exclusiveFailure.success) throw exclusiveFailure.error;
+expect(exclusiveFailure.data.passed).toBe(false);
+expect(exclusiveCalls).toHaveLength(1);
+expect(copyVerdictProblem(exclusiveFailure.data)).toBe(
+  "resultCheckable: The exclusive claim contradicts the additional named brand.",
+);
 const missingBrandProof = structuredClone(separateEvidence);
 missingBrandProof.receipt.claimExcerpts =
   missingBrandProof.receipt.claimExcerpts?.filter((excerpt) => !excerpt.brand);

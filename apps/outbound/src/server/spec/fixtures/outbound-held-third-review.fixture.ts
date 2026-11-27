@@ -194,18 +194,54 @@ const makeCapture = async (
       },
     ),
   );
-  const polled = value(await heldPoll(shoppingJob, false));
+  const noBrands = ["Diamond Dotz", "Terrapin Ridge Farms"].includes(
+    input.merchant.name,
+  );
+  const polled = value(
+    noBrands
+      ? await Capture.pollQuery(
+          { apiKey: "synthetic", job: shoppingJob },
+          {
+            request: async () => ({
+              success: true,
+              data: Response.json({
+                job_id: shoppingJob.id,
+                status: "done",
+                scraper: query.surface,
+                prompt: query.prompt,
+                country: query.country,
+                completed_at: new Date().toISOString(),
+                result: {
+                  scraper: query.surface,
+                  status: "done",
+                  cached: false,
+                  result_markdown:
+                    "For this query, compare bag dimensions and materials. This informational answer does not name products or brands.",
+                  citations: [],
+                },
+              }),
+            }),
+          },
+        )
+      : await heldPoll(shoppingJob, false),
+  );
   assert.equal(polled.status, "captured");
   const answer = polled.capture;
-  const assessed = value(
-    await heldAssessment({
-      answer,
-      browser,
-      queryReview: query.review,
-      playbook: settings,
-      deadline: Date.now() + 10000,
-    }),
-  );
+  const assessed = noBrands
+    ? Assessment.projectUnrankedDiscoveryAbsence({
+        answer,
+        browser,
+        queryReview: query.review,
+      })
+    : value(
+        await heldAssessment({
+          answer,
+          browser,
+          queryReview: query.review,
+          playbook: settings,
+          deadline: Date.now() + 10000,
+        }),
+      );
   assert.equal(assessed.status, "researched");
   return {
     query,
@@ -487,7 +523,12 @@ const advance = async (
   custom: HeldThirdReviewDependencies = deps,
 ) => {
   await focus(company);
-  return value(await Third.runNext({ controlId: started.controlId }, custom));
+  return value(
+    await Third.runNext(
+      { controlId: started.controlId, deadline: Date.now() + 300000 },
+      custom,
+    ),
+  );
 };
 // Cached loading preserves the same field order and Date representation used by
 // already-created child parent hashes; it does not require rewriting old input.
@@ -620,13 +661,21 @@ assert.equal(teletiesBefore.priorPurchases[0]?.raw.length, 1);
 // Query source is synthetic and explicitly supports the three exact words.
 const exactDeps: HeldThirdReviewDependencies = {
   ...deps,
-  inspectProduct: async (input) => ({
-    success: true,
-    data: heldBrowser(
-      input.product,
-      `${input.product.name}. Small hair ties. Soft spiral hair ties for an easy hold.`,
-    ),
-  }),
+  inspectProduct: async (input) => {
+    const state = ThirdContract.heldThirdReviewStateSchema.parse(
+      (await child("Teleties")).output,
+    );
+    assert.ok(state.lease);
+    assert.ok(input.deadline);
+    assert.ok(input.deadline <= Date.parse(state.lease.expiresAt) - 30000);
+    return {
+      success: true,
+      data: heldBrowser(
+        input.product,
+        `${input.product.name}. Small hair ties. Soft spiral hair ties for an easy hold.`,
+      ),
+    };
+  },
   prepareQuery: (input) =>
     Capture.prepareShopperQuery(input, {
       review: async ({ prompt }) => ({
