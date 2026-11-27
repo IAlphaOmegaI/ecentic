@@ -79,6 +79,77 @@ expect(hasCompleteCopyVerdict(response.data)).toBe(true);
 expect(copyVerdictProblem(response.data)).toBeNull();
 expect(calls).toHaveLength(1);
 
+// Synthetic leading prose is not an exhaustive list of the answer's alternatives.
+// The exact brand evidence must remain explicit even when another excerpt differs.
+const separateEvidence = structuredClone(context);
+const leading = separateEvidence.receipt.claimExcerpts?.find(
+  (excerpt) => excerpt.id === "answer-excerpt",
+);
+if (!leading) throw new Error("Missing synthetic leading excerpt.");
+leading.quote = "The opening paragraph names Alder and Cedar.";
+let evidenceJudgeCalls = 0;
+const evidenceFailure = await Quality.judgeSequenceCopy(separateEvidence, {
+  generate: async (request) => {
+    evidenceJudgeCalls++;
+    const prompt = JSON.parse(request.prompt);
+    expect(prompt.projectedBrandEvidence).toEqual(
+      ["Alder", "Birch"].map((name, index) => ({
+        name,
+        position: index + 1,
+        proof: [
+          {
+            id: "brands-excerpt",
+            sourceId: "answer",
+            quote: "1. Alder at around $36\n2. Birch",
+            context: "answer-text",
+          },
+        ],
+      })),
+    );
+    expect(
+      prompt.excerpts.find(
+        (excerpt: { id: string }) => excerpt.id === "answer-excerpt",
+      ),
+    ).toMatchObject({
+      quote: leading.quote,
+      scope: expect.stringContaining("Non-exhaustive answer excerpt"),
+    });
+    expect(request.instructions).toContain(
+      "absence from that excerpt does not contradict",
+    );
+    expect(request.instructions).toContain("A real contradiction anywhere");
+    expect(prompt.query.evidenceScope).toContain(
+      "basis excerpts are not the shopping answer",
+    );
+    expect(prompt.query.basis.excerpts).toEqual(
+      separateEvidence.receipt.queries[0]?.basis?.excerpts,
+    );
+    return {
+      ...pass(),
+      resultCheckable: {
+        passed: false,
+        reason: "The judge still rejected the supplied result.",
+      },
+    };
+  },
+});
+expect(evidenceFailure.success).toBe(true);
+if (!evidenceFailure.success) throw evidenceFailure.error;
+expect(evidenceFailure.data.passed).toBe(false);
+expect(evidenceJudgeCalls).toBe(1);
+const missingBrandProof = structuredClone(separateEvidence);
+missingBrandProof.receipt.claimExcerpts =
+  missingBrandProof.receipt.claimExcerpts?.filter((excerpt) => !excerpt.brand);
+const unbound = await Quality.judgeSequenceCopy(missingBrandProof, {
+  generate: async () => {
+    throw new Error("Unbound brand must not reach judge.");
+  },
+});
+expect(unbound.success).toBe(true);
+if (!unbound.success) throw unbound.error;
+expect(unbound.data.passed).toBe(false);
+expect(unbound.data.deterministicIssues.length).toBeGreaterThan(0);
+
 const failed = await Quality.judgeSequenceCopy(context, {
   generate: async () => ({
     ...pass(),

@@ -23,17 +23,17 @@ const fixture = async (
   title = "Marlow Tote | PATTERN – Pattern Beauty",
   structured: string[] = [],
   answerText = "1. Pattern Linen Bag — Large carry bag.\n2. Harbor Canvas Bag — Cotton shopper.",
+  identity = { company: "Pattern Beauty", product: "Marlow Tote" },
 ) => {
   const input = await buildSyntheticShoppingCapture({
     prospect: {
-      company: "Pattern Beauty",
+      company: identity.company,
       domain: "pattern.example",
-      product: "Marlow Tote",
+      product: identity.product,
       productUrl: "https://pattern.example/products/marlow",
     },
     answerText,
-    pageText:
-      "Marlow Tote is a large linen bag. Its fabric has a patterned weave.",
+    pageText: `${identity.product} is a large linen bag. Its fabric has a patterned weave.`,
   });
   const { browser, answer } = input.evidence;
   const execution = browser.raw.find((raw) => raw.url.endsWith("/execute"));
@@ -186,6 +186,155 @@ describe("captured shortened merchant identity", () => {
       const base = Presence.computeDiscoveryBase(input.evidence, input.now);
       expect(base.merchantPresent).toBe(name === "Marlow Tote" ? null : false);
     }
+  });
+
+  test("an uppercase brand abbreviation needs the same own Product brand, name and rendered title", async () => {
+    const identity = { company: "ACME Goods", product: "ACME Utility Bag" };
+    const answer =
+      "1. Pattern Linen Bag — Large carry bag.\n2. Harbor Canvas Bag — Cotton shopper.\nACME also supplies linen bags.";
+    for (const variant of [
+      {
+        title: "ACME Utility Bag",
+        name: identity.product,
+        brand: identity.company,
+        blocked: true,
+      },
+      {
+        title: "Utility Bag",
+        name: identity.product,
+        brand: identity.company,
+        blocked: false,
+      },
+      {
+        title: "ACME Utility Bag",
+        name: "ACME Different Bag",
+        brand: identity.company,
+        blocked: false,
+      },
+      {
+        title: "ACME Utility Bag",
+        name: identity.product,
+        brand: "Another Supplier",
+        blocked: false,
+      },
+      {
+        title: "ACME Utility Bag",
+        name: identity.product,
+        brand: undefined,
+        blocked: false,
+      },
+      {
+        title: "Acme Utility Bag",
+        name: identity.product,
+        brand: identity.company,
+        blocked: false,
+      },
+    ]) {
+      const input = await fixture(
+        variant.title,
+        [
+          JSON.stringify({
+            "@type": "Product",
+            name: variant.name,
+            brand: variant.brand,
+          }),
+        ],
+        answer,
+        identity,
+      );
+      const before = JSON.stringify(input.evidence);
+      for (const allowBoundCardAliases of [false, true]) {
+        const base = Presence.computeDiscoveryBase(
+          { ...input.evidence, allowBoundCardAliases },
+          input.now,
+        );
+        expect(base.merchantPresent).toBe(variant.blocked ? null : false);
+        expect(base.completeness.status).toBe(
+          variant.blocked ? "uncertain" : "complete",
+        );
+      }
+      expect(JSON.stringify(input.evidence)).toBe(before);
+    }
+  });
+
+  test("the corroborated Product prefix fails old absence replay before any assessment call", async () => {
+    const identity = { company: "ACME Goods", product: "ACME Utility Bag" };
+    const input = await fixture(
+      identity.product,
+      [
+        JSON.stringify({
+          "@type": "Product",
+          name: identity.product,
+          brand: { name: identity.company },
+        }),
+      ],
+      "1. Pattern Linen Bag — Large carry bag.\n2. Harbor Canvas Bag — Cotton shopper.\nACME also supplies linen bags.",
+      identity,
+    );
+    const original = Presence.computeDiscoveryBase;
+    const legacy = spyOn(Presence, "computeDiscoveryBase").mockImplementation(
+      (value, now) => original({ ...value, browser: undefined }, now),
+    );
+    let staged: ReturnType<typeof projectFactAssessment>;
+    try {
+      staged = projectFactAssessment(
+        input.evidence,
+        input.selection,
+        input.now,
+      );
+    } finally {
+      legacy.mockRestore();
+    }
+    if (staged.status !== "researched") throw new Error(staged.reason);
+    const originalReceipt = JSON.stringify(staged.receipt);
+    expect(
+      validateAutomaticResearch(input.evidence, staged.receipt, 7),
+    ).toContain("shortened merchant identity");
+    let calls = 0;
+    const assessed = await assess(
+      {
+        ...input.evidence,
+        playbook: defaultPlaybook,
+        deadline: input.now + 40000,
+      },
+      {
+        now: () => input.now,
+        generate: async () => {
+          calls++;
+          return input.selection;
+        },
+      },
+    );
+    expect(assessed.success && assessed.data.status).toBe("held");
+    expect(calls).toBe(0);
+    expect(JSON.stringify(staged.receipt)).toBe(originalReceipt);
+  });
+
+  test("a corroborated abbreviation remains uncertain even in a matching product card", async () => {
+    const identity = { company: "ACME Goods", product: "ACME Utility Bag" };
+    const card =
+      '<div html-index="1" style="display:flex;align-items:center;gap:12px;padding:10px"><img src="data:image/jpeg;base64,AA==" alt="ACME Linen Bag" width="120" height="auto" style="object-fit:cover; border-radius: 0.5rem;" /><div style="flex:1"><div style="font-weight:bold"><a href="https://retailer.example/bag">ACME Linen Bag</a></div><div style="margin-top:4px;font-size:18px">$30<span style="text-decoration: line-through;">$40</span></div><div>Synthetic Retailer</div><div> </div></div><div style="display: none">00000000000000000000000000000001</div></div>';
+    const input = await fixture(
+      identity.product,
+      [
+        JSON.stringify({
+          "@type": "Product",
+          name: identity.product,
+          brand: identity.company,
+        }),
+      ],
+      card,
+      identity,
+    );
+    const cards = createFactAssessmentCatalog(input.evidence, input.now).cards;
+    if (cards.status !== "parsed") throw new Error(JSON.stringify(cards));
+    const base = Presence.computeDiscoveryBase(
+      { ...input.evidence, allowBoundCardAliases: true },
+      input.now,
+    );
+    expect(base.merchantPresent).toBeNull();
+    expect(base.matchedAliases).toEqual([]);
+    expect(base.completeness.status).toBe("uncertain");
   });
 
   test("a staged absence from the old matcher fails fresh raw replay before assessment spend", async () => {

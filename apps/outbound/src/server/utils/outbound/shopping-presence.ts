@@ -493,7 +493,7 @@ const shortenedMerchantNames = (
   merchant: Merchant,
   product: Product,
   now: number,
-): string[] | null => {
+): { names: string[]; possibleOnly: string[] } | null => {
   const verified = reusableProductCapture({ browser, product, now });
   if (!verified) return null;
   const execution = verified.raw.find((raw) => raw.url.endsWith("/execute"));
@@ -514,6 +514,7 @@ const shortenedMerchantNames = (
     ? title.split(/\s*[|–—]\s*|\s+-\s+/)
     : [];
   const productName = normalized(product.name);
+  const productPrefixes: string[] = [];
   const brandNames = (input: unknown, depth = 0): string[] => {
     if (depth > 12 || !input || typeof input !== "object") return [];
     if (Array.isArray(input))
@@ -534,6 +535,25 @@ const shortenedMerchantNames = (
           return typeof candidate === "string" ? [candidate] : [];
         })
       : [];
+    // An uppercase abbreviation is only a possible identity when the same
+    // own-product record binds the full merchant brand and its product name,
+    // and the independently rendered page title repeats that exact prefix.
+    // Never derive an alias from the merchant's first word alone.
+    const prefix =
+      typeof name === "string"
+        ? /^([A-Z][A-Z0-9]{1,11})(?=\s)/.exec(name)?.[1]
+        : undefined;
+    if (
+      ownProduct &&
+      prefix &&
+      title.startsWith(`${prefix} `) &&
+      names.some(
+        (brand) =>
+          fullNames.includes(normalized(brand)) &&
+          normalized(brand).startsWith(`${normalized(prefix)} `),
+      )
+    )
+      productPrefixes.push(prefix);
     return [
       ...names,
       ...Object.values(record).flatMap((value) => brandNames(value, depth + 1)),
@@ -543,9 +563,7 @@ const shortenedMerchantNames = (
     const parsed = resultify(() => JSON.parse(block) as unknown);
     return parsed.success ? brandNames(parsed.data) : [];
   });
-  return [
-    ...new Set([...titleNames, ...structuredNames].map((name) => name.trim())),
-  ].filter((name) => {
+  const usable = (name: string) => {
     const candidate = normalized(name);
     return (
       candidate.length > 0 &&
@@ -553,7 +571,16 @@ const shortenedMerchantNames = (
       !fullNames.includes(candidate) &&
       fullNames.some((full) => ` ${full} `.includes(` ${candidate} `))
     );
-  });
+  };
+  const names = [
+    ...new Set([...titleNames, ...structuredNames].map((name) => name.trim())),
+  ].filter(usable);
+  const possibleOnly = [...new Set(productPrefixes)].filter(
+    (name) =>
+      usable(name) &&
+      !names.some((explicit) => normalized(explicit) === normalized(name)),
+  );
+  return { names: [...names, ...possibleOnly], possibleOnly };
 };
 
 /** An assessor can append ordering facts, but cannot decide merchant presence. */
@@ -615,7 +642,7 @@ export const computeDiscoveryBase = (
           "The captured product page cannot verify possible merchant aliases.",
       };
     else if (
-      shortened.some((name) =>
+      shortened.names.some((name) =>
         [...proof.answerVariants, ...proof.citationText].some(
           (text) =>
             matchMerchantText(text, { name, domain: "" }, { name: "", url: "" })
@@ -629,9 +656,10 @@ export const computeDiscoveryBase = (
       const category = normalized(input.answer.job.query.basis?.category ?? "");
       const corroborated =
         cards?.status === "parsed" && category
-          ? shortened.filter((name) => {
+          ? shortened.names.filter((name) => {
               const alias = normalized(name);
               return (
+                !shortened.possibleOnly.includes(name) &&
                 alias !== category &&
                 cards.sections.some((section) =>
                   section.cards.some((card) => {
