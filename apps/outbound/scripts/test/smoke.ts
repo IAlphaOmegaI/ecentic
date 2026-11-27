@@ -50,6 +50,7 @@ export const smokeSuites = [
   "src/server/spec/outbound-firecrawl-cooldown.test.ts",
   "src/server/spec/outbound-scrapellm-cooldown.test.ts",
   "src/server/spec/outbound-live-shopping.test.ts",
+  "src/server/spec/outbound-browser-product-identity.test.ts",
   "src/server/spec/outbound-shopping-response-identity.test.ts",
   "src/server/spec/outbound-qualification-catalog.test.ts",
   "src/server/spec/outbound-shopping-assessment.test.ts",

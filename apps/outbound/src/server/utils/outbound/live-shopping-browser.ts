@@ -96,6 +96,69 @@ console.log(JSON.stringify({ ...observed, url: page.url(), status: response?.sta
 
 const normalize = (value: string) =>
   value.replace(/\s+/g, " ").trim().toLowerCase();
+export const PRODUCT_GROUP_COLOR_IDENTITY_VERSION = "product-group-color-v1";
+
+// Some product groups show their color separately from the product heading.
+// Only the exact same-page group and its leading visible product block can
+// corroborate this split identity; unrelated recommendation markup cannot.
+const productGroupColorIdentity = (
+  rendered: z.infer<typeof renderedSchema>,
+  product: { name: string; url: string },
+) => {
+  const parts = product.name.split("|").map((part) => part.trim());
+  const [heading, color] = parts;
+  if (
+    parts.length !== 2 ||
+    !heading ||
+    !color ||
+    heading.split(/\s+/).length < 2 ||
+    rendered.url !== product.url ||
+    rendered.headings.length !== 1 ||
+    normalize(rendered.headings[0] ?? "") !== normalize(heading)
+  )
+    return false;
+  const lines = rendered.text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (normalize(lines[0] ?? "") !== normalize(heading)) return false;
+  const nextSection = lines.findIndex(
+    (line, index) =>
+      index > 0 &&
+      /^(?:navigation|menu|related products|recommended products|you (?:may|might) also like|style with|recently viewed)$/i.test(
+        line,
+      ),
+  );
+  const leading = lines.slice(
+    1,
+    Math.min(20, nextSection < 0 ? lines.length : nextSection),
+  );
+  const colors = leading.flatMap((line) => {
+    const match = /^Color:\s*(.+)$/i.exec(line);
+    return match?.[1] ? [normalize(match[1])] : [];
+  });
+  if (colors.length !== 1 || colors[0] !== normalize(color)) return false;
+  const groups = rendered.structured.flatMap((raw) => {
+    const decoded = resultify(() => JSON.parse(raw) as unknown);
+    if (!decoded.success) return [];
+    const parsed = z
+      .object({
+        "@type": z.literal("ProductGroup"),
+        "@id": z.string(),
+        name: z.string(),
+        url: z.string(),
+      })
+      .safeParse(decoded.data);
+    return parsed.success && parsed.data.url === product.url
+      ? [parsed.data]
+      : [];
+  });
+  const group = groups[0];
+  if (groups.length !== 1 || !group || group.name !== product.name)
+    return false;
+  const identity = resultify(() => new URL(group["@id"], rendered.url));
+  return identity.success && identity.data.href === `${product.url}#product`;
+};
 /** Project one intact fixed-program execution; also used when reviewing an already paid capture. */
 export const projectBrowserExecution = ({
   capture,
@@ -174,7 +237,8 @@ export const projectBrowserExecution = ({
   ].join("\n");
   if (
     id === "product-browser" &&
-    !normalize(visible).includes(normalize(productName))
+    !normalize(visible).includes(normalize(productName)) &&
+    !productGroupColorIdentity(rendered.data, { name: productName, url })
   )
     return null;
   const source = sourceSchema.parse({
@@ -271,6 +335,116 @@ export const reusableProductCapture = ({
     raw: [profileRaw, execution],
     candidates: [],
   };
+};
+
+/** Reconstruct only the saved split-name product hold; retain all original proof bytes and dates. */
+export const replayHeldProductCapture = ({
+  browser,
+  product,
+  now = Date.now(),
+}: {
+  browser: BrowserResearch;
+  product: { name: string; url: string };
+  now?: number;
+}): CapturedBrowser | null => {
+  const parsed = browserResearchSchema.safeParse(browser);
+  if (
+    !parsed.success ||
+    parsed.data.status !== "held" ||
+    parsed.data.reason !==
+      "The merchant product could not be verified in the rendered browser capture." ||
+    !publicUrlSchema.safeParse(product.url).success ||
+    parsed.data.sources.length !== 1 ||
+    parsed.data.raw.length !== 3 ||
+    parsed.data.raw.some((raw) => digest(raw.body) !== raw.sha256)
+  )
+    return null;
+  const saved = parsed.data;
+  const origin = new URL(product.url).origin;
+  const robots = saved.raw.find((raw) => raw.url === `${origin}/robots.txt`);
+  const profile = saved.raw.find(
+    (raw) => raw.url === `${origin}/.well-known/ucp`,
+  );
+  const executions = saved.raw.filter((raw) => raw.url.endsWith("/execute"));
+  const execution = executions[0];
+  const profileSource = saved.sources[0];
+  if (
+    !robots ||
+    ![200, 404].includes(robots.status) ||
+    !profile ||
+    profile.status !== 200 ||
+    executions.length !== 1 ||
+    !execution ||
+    !profileSource ||
+    profileSource.id !== "ucp" ||
+    profileSource.kind !== "ucp" ||
+    profileSource.capture !== "http" ||
+    profileSource.url !== profile.url ||
+    profileSource.checkedAt !== profile.receivedAt ||
+    profileSource.artifact !== `sha256:${profile.sha256}` ||
+    profileSource.content !==
+      `HTTP ${profile.status}\n${profile.body}`.slice(0, 18000).trim() ||
+    saved.raw.some((raw) => Date.parse(raw.receivedAt) > now) ||
+    (robots.status === 200 &&
+      (blockedByRobots(
+        robots.body,
+        new URL(product.url).pathname + new URL(product.url).search,
+      ) ||
+        blockedByRobots(robots.body, "/.well-known/ucp")))
+  )
+    return null;
+  const projection = projectBrowserExecution({
+    capture: execution,
+    url: product.url,
+    id: "product-browser",
+    productName: product.name,
+    startedAt: execution.receivedAt,
+    now,
+  });
+  if (!projection || !productGroupColorIdentity(projection.rendered, product))
+    return null;
+  const profileBody = resultify(() => JSON.parse(profile.body) as unknown);
+  const ucp = profileBody.success
+    ? z
+        .object({
+          ucp: z.object({ capabilities: z.record(z.string(), z.unknown()) }),
+        })
+        .safeParse(profileBody.data)
+    : null;
+  const capabilities = ucp?.success
+    ? Object.keys(ucp.data.ucp.capabilities).slice(0, 50)
+    : [];
+  if (!capabilities.length) return null;
+  const rebuilt = browserResearchSchema.safeParse({
+    status: "captured",
+    sources: [profileSource, projection.source],
+    raw: saved.raw,
+    ucp: {
+      url: profile.url,
+      status: "present",
+      httpStatus: profile.status,
+      capabilities,
+      sourceIds: [profileSource.id],
+    },
+    checkout: {
+      status: "notTested",
+      sourceIds: [],
+      notes:
+        "Read-only product inspection. No cart or checkout transition was attempted.",
+    },
+    candidates: [],
+    limitations: [
+      "Reconstructed from the original saved read-only provider execution; no new browser or network request was made.",
+      "The saved browser allowed only GET and HEAD requests and blocked cross-origin navigation. Cart, checkout and form submissions were not exercised.",
+    ],
+  });
+  if (
+    !rebuilt.success ||
+    rebuilt.data.status !== "captured" ||
+    !reusableProductCapture({ browser: rebuilt.data, product, now })
+  )
+    return null;
+  return rebuilt.data;
 };
 
 const inspectResearch = async (

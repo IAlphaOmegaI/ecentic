@@ -155,6 +155,18 @@ with public-address checks and no cross-origin navigation. It does not add items
 to a cart, buy anything or bypass access restrictions. Missing content under
 these limits is not a merchant defect. Checkout remains `notTested`.
 
+A saved product name written as `name | color` can also be verified when the
+rendered page splits those values: one matching product heading, the same first
+visible line, and one matching `Color:` line in its leading product block must
+agree with a top-level `ProductGroup` whose name, URL and `#product` identity
+exactly match the selected product. Navigation, recommendations, other colors,
+other product URLs and ambiguous groups do not qualify. The pure
+`replayHeldProductCapture` helper can reconstruct only the specific saved
+identity-verification hold from intact robots, UCP and browser-execution records.
+It preserves the original selected name, raw bodies, hashes and capture dates;
+it performs no browser or network request. A reconstructed view still needs
+normal query grounding, semantic review and freshness checks before purchase.
+
 Only direct answer citations can supply competitor URLs. The automatic assessor
 must quote both the actual answer and rendered merchant page, plus a rendered
 competitor source for any comparison. It can select a specific price, variant,
