@@ -1,13 +1,14 @@
 # ecentic current role and team check
 
-Reusable **draft configuration**, version 1. Configure its criteria with the
+Reusable **draft configuration**, output contract version 1, with the
+27 November 2026 single-visit research prompt. Configure its criteria with the
 [setup questionnaire](../../../../docs/integrations/outbound-claude-questions.md)
 and [launch configuration](../../../../docs/integrations/outbound-launch-decisions.md).
 No workflow ID, account connection, live result or verification receipt is bundled.
 This directory has no credentials and its renderer never calls Clay.
 
 The graph is a manual trigger, one regular Claygent with public web research, and
-one Python code node. The Claygent opens and reopens sources for the current
+one Python code node. The Claygent opens sources during the current run for the
 person/company and an explicit team count. The code validates the returned shape,
 source identity, source URL, role category, quoted count and conflicting evidence.
 It returns a role/team recommendation for Outbound's human review queue.
@@ -40,7 +41,10 @@ to send. `requires_human_review` is always true.
 
 The provider label is `Clay web research`. `person.observed_at` and the headcount
 observation date are the UTC date of this workflow's research cycle, set by the
-code-node clock after the Claygent reports reopening the source. They are **not**
+code-node clock after the Claygent reports opening the source during that run.
+One successful live visit is sufficient; Clay's web tool can prohibit a second
+visit. A prior run's result, search snippet or inaccessible page is insufficient.
+These dates are **not**
 the source publication date, provider profile freshness or email verification.
 Publication dates, when present, remain separate in `evidence`.
 

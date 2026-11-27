@@ -11,6 +11,10 @@ import {
   settingsForProspect,
 } from "@/lib/outbound";
 import {
+  type CopyRulesContext,
+  REVIEWED_COPY_RULES_VERSION,
+} from "@/lib/outbound-round3-copy";
+import {
   type ShoppingResearch,
   shoppingFinding,
   shoppingResearchSchema,
@@ -20,13 +24,12 @@ import { schema, type TransactionScope } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
 import { ValidationError } from "@/server/utils/error";
 import { repository } from "@/server/utils/repository";
-import {
-  type AiCapture,
-  aiCaptureSchema,
-  browserResearchSchema,
-} from "./live-shopping-contract";
+import type { AiCapture } from "./live-shopping-contract";
+import { projectRound3CopyProof } from "./round3-copy-evidence";
 import * as Assessment from "./shopping-assessment";
+import { researchCaptureProofSchema } from "./shopping-capture-proof";
 import { researchPolicyHash } from "./shopping-policy";
+import { projectProductListingProof } from "./shopping-product-listings";
 
 export { researchPolicyHash } from "./shopping-policy";
 
@@ -187,14 +190,9 @@ export const assertShoppingEvidence = async (
   );
   if (problem) throw new ValidationError(problem);
   if (receipt.data.discovery || receipt.data.claims) {
-    const proof = z
-      .object({
-        captureJobId: z.string().uuid(),
-        answer: aiCaptureSchema,
-        browser: browserResearchSchema,
-      })
-      .strict()
-      .safeParse(job.output?.["captureProof"]);
+    const proof = researchCaptureProofSchema.safeParse(
+      job.output?.["captureProof"],
+    );
     if (!proof.success || proof.data.browser.status !== "captured")
       throw new ValidationError(
         "The discovery finding is missing its original provider captures.",
@@ -206,7 +204,7 @@ export const assertShoppingEvidence = async (
         "The saved shopper query belongs to an earlier or different company identity.",
       );
     const replayProblem = Assessment.validateAutomaticResearch(
-      { answer: proof.data.answer, browser: proof.data.browser },
+      proof.data,
       receipt.data,
       policy.settings.verificationDays,
       policy.settings,
@@ -238,6 +236,58 @@ export const assertShoppingEvidence = async (
       );
   }
   return receipt.data;
+};
+
+/** A new writing snapshot may add current proof, but never changes the saved research. */
+export const assertCompositionEvidence = async (
+  transaction: TransactionScope | undefined,
+  prospect: Parameters<typeof assertShoppingEvidence>[1],
+  policy: Parameters<typeof assertShoppingEvidence>[2],
+  context: CopyRulesContext = {},
+) => {
+  const original = await assertShoppingEvidence(transaction, prospect, policy);
+  if (!original) return null;
+  const baseReceiptHash = researchHash(original);
+  if (
+    context.copyRulesVersion !== REVIEWED_COPY_RULES_VERSION ||
+    original.selected.kind !== "discovery-absence"
+  )
+    return { receipt: original, baseReceiptHash };
+  const job = value(
+    await Jobs.get(Environment.SERVER, prospect.details.shoppingResearchId, {
+      tx: transaction,
+    }),
+  );
+  const proof = researchCaptureProofSchema.safeParse(
+    job?.output?.["captureProof"],
+  );
+  if (
+    !proof.success ||
+    proof.data.browser.status !== "captured" ||
+    researchHash(shoppingResearchSchema.parse(job?.output?.["receipt"])) !==
+      baseReceiptHash
+  )
+    throw new ValidationError(
+      "The writing proof needs its unchanged saved provider captures.",
+    );
+  const evidence = proof.data;
+  const listing = projectProductListingProof(evidence, original);
+  if (listing.status !== "eligible")
+    throw new ValidationError(
+      listing.status === "not-applicable"
+        ? "The absence finding has no product-listing proof."
+        : listing.reason,
+    );
+  const receipt = value(
+    projectRound3CopyProof(evidence, listing.receipt, {
+      ...(original.discovery?.round3CopyProof?.noProductBrands
+        ? {
+            noProductBrands: original.discovery.round3CopyProof.noProductBrands,
+          }
+        : {}),
+    }),
+  );
+  return { receipt, baseReceiptHash };
 };
 
 /** A direct draft call gets the same durable evidence gate as approval. */

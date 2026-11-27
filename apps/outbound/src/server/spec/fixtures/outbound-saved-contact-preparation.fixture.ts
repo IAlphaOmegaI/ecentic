@@ -78,6 +78,8 @@ const syntheticBrands = async ({ prompt }: { prompt: string }) => {
 const settings = {
   ...syntheticWritingPolicy(defaultPlaybook),
   automationEnabled: true,
+  // Research and enrichment must continue while both outbound rails wait.
+  outreachNotBefore: "2026-12-02T00:00:00.000Z",
   trustSavedContactVerification: true,
   requireShoppingEvidence: true,
   allowStaleEvidence: true,
@@ -203,7 +205,7 @@ const captured = async (job: AiJob) => {
               status: "done",
               cached: false,
               result_markdown:
-                "1. Canvas Works — Large carry bag.\n2. Harbor Label — Cotton shopper.",
+                "1. [Canvas Works Large carry bag](https://canvasworks.example/products/large-carry-bag).\n2. [Harbor Label Cotton shopper](https://harborlabel.example/products/cotton-shopper).",
               citations: [],
             },
           }),
@@ -464,7 +466,14 @@ assert.equal(calls.browse, 1);
 const prospect = value(await Store.readProspect(firstProspect(first)));
 assert.ok(prospect);
 assert.equal(prospect.campaignId, first.campaignId);
-assert.equal(prospect.status, "draft");
+assert.equal(
+  prospect.status,
+  "draft",
+  JSON.stringify({
+    error: finished.error,
+    heldReason: finished.output?.["heldReason"],
+  }),
+);
 assert.equal(prospect.details.emailVerifiedAt, "");
 assert.equal(prospect.details.roleCheckedAt, "");
 assert.equal(prospect.details.timezone, "America/New_York");

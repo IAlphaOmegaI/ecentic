@@ -785,6 +785,7 @@ export const validateDiscoveryDecorations = (
   const {
     brandProjection: _brands,
     round3CopyProof: _copyProof,
+    productListings: _productListings,
     ...baseDiscovery
   } = receipt.discovery ?? {};
   const base = {
@@ -825,8 +826,11 @@ export const validateDiscoveryDecorations = (
     now,
     evidence.priorPurchases,
   );
-  const { round3CopyProof: _proof, ...expectedDiscovery } =
-    receipt.discovery ?? {};
+  const {
+    round3CopyProof: _proof,
+    productListings: _listings,
+    ...expectedDiscovery
+  } = receipt.discovery ?? {};
   const expected = {
     ...receipt,
     ...(receipt.discovery ? { discovery: expectedDiscovery } : {}),

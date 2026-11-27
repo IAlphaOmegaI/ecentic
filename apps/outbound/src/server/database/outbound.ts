@@ -40,6 +40,7 @@ export const outboundProviderCredential = pgTable(
         | "claude"
         | "scrapellm"
         | "firecrawl"
+        | "hubspot"
       >()
       .primaryKey(),
     apiKey: encryptedText(

@@ -9,6 +9,7 @@ import {
   senderForProspect,
 } from "@/lib/outbound";
 import { usesFindingFormula } from "@/lib/outbound-finding-copy";
+import { outreachMayStart } from "@/lib/outbound-scheduling";
 import { ConflictError } from "@/server/utils/error";
 import * as Direct from "@/server/utils/outbound/direct-mailbox";
 import * as Google from "@/server/utils/outbound/google";
@@ -283,6 +284,7 @@ export const run = ({ dryRun = true }: { dryRun?: boolean } = {}) =>
       // The transaction repeats them immediately before reserving and sending.
       const now = new Date();
       if (
+        !outreachMayStart(settings, now) ||
         !inSendWindow(prospect.details, now, settings) ||
         (prospect.nextSendAt && prospect.nextSendAt > now) ||
         (inbox?.nextSendAt && inbox.nextSendAt > now)

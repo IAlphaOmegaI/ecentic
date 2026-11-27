@@ -24,7 +24,8 @@ export type Provider =
   | "warmbly"
   | "claude"
   | "scrapellm"
-  | "firecrawl";
+  | "firecrawl"
+  | "hubspot";
 export type Configuration = {
   routineId?: string;
   clientId?: string;
@@ -64,6 +65,7 @@ const providerSchema = z.enum([
   "claude",
   "scrapellm",
   "firecrawl",
+  "hubspot",
 ]);
 const keySchema = z
   .object({
@@ -129,6 +131,11 @@ const projectConfiguration = (
 };
 const environment = (provider: Provider): Credential => {
   switch (provider) {
+    case "hubspot":
+      return {
+        apiKey: process.env["OUTBOUND_HUBSPOT_API_KEY"]?.trim() ?? null,
+        configuration: {},
+      };
     case "scrapellm":
       return {
         apiKey: process.env["OUTBOUND_SCRAPELLM_API_KEY"]?.trim() ?? null,
@@ -371,6 +378,10 @@ const persistence: Persistence = {
 const store = createCredentialStore(
   persistence,
   async (provider, apiKey, configuration) => {
+    if (provider === "hubspot") {
+      const HubSpot = await import("@/server/utils/outbound/hubspot");
+      return HubSpot.validateKey(apiKey);
+    }
     if (provider === "scrapellm" || provider === "firecrawl") {
       const Research = await import("@/server/utils/outbound/live-shopping");
       const checked = await (provider === "scrapellm"

@@ -15,7 +15,10 @@ import {
   preflightWriterAssembly,
   type WriterParts,
 } from "./outbound-composition";
-import type { CopyRulesContext } from "./outbound-round3-copy";
+import {
+  type CopyRulesContext,
+  REVIEWED_COPY_RULES_VERSION,
+} from "./outbound-round3-copy";
 import type { ShoppingResearch } from "./outbound-shopping-research";
 import {
   type CompositionPeer,
@@ -119,8 +122,13 @@ export const deterministicCopyIssues = (
       continue;
     }
     const content = `${message.subject}\n${message.body}`;
-    const text = normalize(content);
     const label = `Message ${message.step}`;
+    if (
+      context.copyRulesVersion === REVIEWED_COPY_RULES_VERSION &&
+      /\bcaptured\s+answer\b/iu.test(content)
+    )
+      issues.push(`${label} must not say "captured answer".`);
+    const text = normalize(content);
     if (
       /https?:|www\.|mailto:|(?:^|[\s<(])(?:[\p{L}\p{N}][\p{L}\p{N}-]*\.)+[\p{L}]{2,63}(?:[/?#][^\s]*)?/imu.test(
         text,

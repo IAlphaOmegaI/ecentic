@@ -220,6 +220,7 @@ of a definitively rejected provider request retains its saved checkpoint and aud
 
 | Setting | Default | Effect |
 | --- | --- | --- |
+| `outreachNotBefore` | `null` | Defers cold email and LinkedIn outreach until the saved UTC timestamp, without changing either channel's enablement flag. Recipient windows, approval and all other eligibility checks still apply at and after that boundary. Research, enrichment, inbox sync and reply reconciliation continue. The operator owns this date; an older general Playbook form cannot clear it. |
 | `automaticApolloEnabled` | `true` | Enables new automatic company searches, organization/contact enrichment and email verification. When off, stages needing new paid Apollo requests remain pending; saved facts, free identity search and polling an already accepted request can continue. Manual provider actions remain explicit. |
 | `sendingRampEnabled` | `true` | Uses the observed-volume ramp described above. When off, the lower of the workspace and inbox caps applies directly, up to 100; bounce protection remains active. |
 | `allowStaleEvidence` | `false` | Allows genuine saved product and shopping observations beyond the configured age limit. Missing, future-dated or changed receipts still fail. |
@@ -271,8 +272,25 @@ relationships, prior contact, suppression and reviewed finding evidence before
 reserving a provider job. Clay role/team inputs include title and company and
 also require a usable email receipt and a current mail-host check allowed by
 the Playbook recipient policy. Clay
-remains optional; these checks do not create a callable routine or enable result
-application. See the [launch decisions](outbound-launch-decisions.md) for current
+remains optional. The operational `automaticClayEnabled` flag defaults off and
+is preserved by older Playbook forms without invalidating approved copy. When
+explicitly enabled, new-company automation checks Clay after a raw-backed shopping
+finding, Apollo email verification and MX, before drafting. Sending can remain off.
+The campaign job durably reserves one contact, routine/configuration version and
+exact input hash before its POST; an unknown response or expired lease is never
+resubmitted. Acknowledged runs poll at least 30 seconds apart, at most 20 times
+within one day. Manual and automatic starts share provider serialization.
+Automatic reservations (including uncertain ones) obey `dailyCompanyTarget` per
+UTC day and `weeklyTarget` over seven days; a prospect gets at most one automatic
+reservation. Changing its routine or contact stops continuation.
+
+The versioned role/team routine still returns `requires_human_review: true`.
+A deterministic check can corroborate the already sourced current title/company
+and an exact, quoted team count from a source opened during that run. Ranges,
+missing facts, source/identity conflicts and held/excluded recommendations stop
+before drafting. Clay never patches contact facts, email verification, approval
+or sending. This flag does not create or schedule a routine. See the
+[launch decisions](outbound-launch-decisions.md) for current
 account, history and implementation boundaries.
 
 ## Existing research and history
@@ -402,6 +420,7 @@ API-plan entitlement or remaining credits.
 | Provider | Required settings | Behavior |
 | --- | --- | --- |
 | Apollo | API key saved in Integrations, or `OUTBOUND_APOLLO_API_KEY` fallback | Checks authentication with `GET /api/v1/auth/health` before saving. Exact-company person search, work-email enrichment and asynchronous email verification. No phone or personal-email reveal is requested. |
+| HubSpot | Service key saved in Integrations; optional `OUTBOUND_HUBSPOT_API_KEY` fallback | Encrypted with the shared credential store. Saving checks read access to contacts and companies with one read-only request each; metadata never returns the key. This connection setting does not enable CRM sync or import records. |
 | Clay | API key saved in Integrations; optional routine ID for enrichment, or `OUTBOUND_CLAY_API_KEY` / `OUTBOUND_CLAY_ROUTINE_ID` fallback | Checks authentication with `GET /public/v0/me` without running a billable routine. A key can be saved before routine setup. Enrichment stays unavailable until a routine is configured; the routine's output is retained for review and does not confer verification or approval. |
 | Azure | Existing `AZURE_RESOURCE_NAME`, `AZURE_API_KEY` and `AZURE_DEPLOYMENT_GPT` (or legacy `AZURE_DEPLOYMENT_GPT4O`) | Uses the application's GPT model rail to prepare drafts from saved evidence and the playbook. Model output still needs human approval. |
 | Claude | Console API key saved in Integrations; optional workspace ID, or `OUTBOUND_CLAUDE_API_KEY` / `OUTBOUND_CLAUDE_WORKSPACE_ID` fallback | Direct structured campaign-criteria previews using selected Playbook context and staff notes. Key validation lists available models; it does not prove available credit. Previews retain source revisions and require explicit review/save. See [Claude setup and credits](./outbound-claude-api.md). |

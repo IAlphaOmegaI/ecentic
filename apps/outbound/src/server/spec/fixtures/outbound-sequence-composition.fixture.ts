@@ -13,12 +13,17 @@ import { defaultCampaignCriteria } from "@/lib/outbound-campaigns";
 import {
   assembleSequence,
   canonicalSequenceInput,
+  isCurrentWritingSnapshot,
   legacyWritingSnapshotSchema,
 } from "@/lib/outbound-composition";
 import { draftReviewReadinessKey } from "@/lib/outbound-draft-review";
 import { rebuildWritingProposal } from "@/lib/outbound-rebuild-policy";
+import { REVIEWED_COPY_RULES_VERSION } from "@/lib/outbound-round3-copy";
 import { writerCandidatesSchema } from "@/lib/outbound-sequence-composition";
-import { shoppingFinding } from "@/lib/outbound-shopping-research";
+import {
+  shoppingFinding,
+  shoppingResearchSchema,
+} from "@/lib/outbound-shopping-research";
 import type { CompletedComposition } from "@/server/app/outbound/sequence-composition";
 import {
   legacyWritingPolicyHash,
@@ -27,6 +32,7 @@ import {
 import { requireTestDatabase } from "../helpers/database";
 import {
   passingCopyJudge,
+  reviewedWriterFixture,
   writerFixture,
 } from "../helpers/outbound-writer-fixture";
 
@@ -40,12 +46,20 @@ const { draftCopyReadiness } = await import(
   "@/server/utils/outbound/draft-copy-readiness"
 );
 const Research = await import("@/server/utils/outbound/shopping-research");
-const currentFixture = { value: writerFixture() };
+const copyRulesVersion = REVIEWED_COPY_RULES_VERSION;
+const currentFixture = { value: reviewedWriterFixture() };
 // This fixture isolates durable writing. Full raw capture validation has its own
 // tests; the synthetic copy fixture is never represented as real search evidence.
 const evidence = spyOn(Research, "assertShoppingEvidence").mockImplementation(
   async () => currentFixture.value.receipt,
 );
+const compositionEvidence = spyOn(
+  Research,
+  "assertCompositionEvidence",
+).mockImplementation(async () => ({
+  receipt: currentFixture.value.receipt,
+  baseReceiptHash: Research.researchHash(currentFixture.value.receipt),
+}));
 const { db, schema } = await import("@/server/database");
 const Store = await import("@/server/app/outbound/store");
 const Composition = await import("@/server/app/outbound/sequence-composition");
@@ -77,7 +91,7 @@ const seed = async (held = false, approvalReady = false) => {
   await db.execute(
     sql`truncate outbound_integration_job,outbound_campaign,outbound_company,outbound_person,outbound_prospect,outbound_event,outbound_revision,outbound_playbook,outbound_suppression,outbound_inbox cascade`,
   );
-  currentFixture.value = writerFixture();
+  currentFixture.value = reviewedWriterFixture();
   if (approvalReady)
     currentFixture.value = {
       ...currentFixture.value,
@@ -143,7 +157,7 @@ const snapshot = async () => ({
   events: await db.select().from(schema.outboundEvent),
 });
 const plain = (messages: Parameters<typeof canonicalSequenceInput>[0]) => {
-  const canonical = canonicalSequenceInput(messages);
+  const canonical = canonicalSequenceInput(messages, { copyRulesVersion });
   assert.equal(canonical.status, "ready");
   return canonical.status === "ready" ? canonical.canonicalText : "";
 };
@@ -163,6 +177,7 @@ const assertPartial = (
     fixture.receipt,
     fixture.policy,
     fixture.parts,
+    { copyRulesVersion },
   );
   assert.equal(expected.status, "ready");
   if (expected.status === "ready")
@@ -212,6 +227,18 @@ try {
     "The writer must run outside the workspace database lock.",
   );
   assert.equal(calls.count, 1);
+  assert.equal(composed.copyRulesVersion, REVIEWED_COPY_RULES_VERSION);
+  assert.equal(
+    composed.messages[0]?.writing &&
+      "copyRulesVersion" in composed.messages[0].writing
+      ? composed.messages[0].writing.copyRulesVersion
+      : null,
+    REVIEWED_COPY_RULES_VERSION,
+  );
+  assert.equal(
+    draftCopyReadiness(composed.messages).contentHash,
+    composed.composition.contentHash,
+  );
   const beforeMxRefresh = await row(held.id);
   await db
     .update(schema.outboundProspect)
@@ -632,7 +659,7 @@ try {
     original.composition.writingPolicyHash,
     writingPolicyHash(
       settingsForProspect(await row(changing.id), changing.policy),
-      { globalVoiceNotes: changing.policy.voiceNotes },
+      { globalVoiceNotes: changing.policy.voiceNotes, copyRulesVersion },
     ),
   );
   rejected(await save(changing, original), /policy changed/);
@@ -1601,6 +1628,81 @@ try {
     (job) => job.id === legacyBase.composition.jobId,
   );
   assert.ok(legacyJob);
+  // Historical v2 (absent field) and explicit v3 jobs retain their exact saved
+  // policy/content hashes. Loading them neither normalizes to v4 nor writes.
+  for (const historicalVersion of [undefined, "spoken-copy-v3"] as const) {
+    const historicalInput = structuredClone(legacyJob.input);
+    const historicalOutput = structuredClone(legacyJob.output);
+    assert.ok(historicalOutput);
+    delete historicalInput["copyRulesVersion"];
+    delete historicalInput["baseReceiptHash"];
+    if (historicalVersion)
+      historicalInput["copyRulesVersion"] = historicalVersion;
+    const rules = historicalVersion
+      ? { copyRulesVersion: historicalVersion }
+      : {};
+    const historicalHash = writingPolicyHash(
+      playbookSchema.parse(historicalInput["settings"]),
+      {
+        globalVoiceNotes: String(historicalInput["globalVoiceNotes"]),
+        ...rules,
+      },
+    );
+    const historicalKey = Composition.compositionJobKey(
+      legacyFixture.id,
+      legacyBase.composition.receiptHash,
+      historicalHash,
+    );
+    const historicalMessages = legacyBase.messages.map((message) => {
+      if (!message.writing || !isCurrentWritingSnapshot(message.writing))
+        return message;
+      const { copyRulesVersion: _currentVersion, ...writing } = message.writing;
+      return {
+        ...message,
+        writing: { ...writing, ...rules, writingPolicyHash: historicalHash },
+      };
+    });
+    const canonical = canonicalSequenceInput(historicalMessages, rules);
+    assert.equal(canonical.status, "ready");
+    if (canonical.status !== "ready")
+      throw new Error("Historical canonical text missing.");
+    const contentHash = createHash("sha256")
+      .update(canonical.canonicalText)
+      .digest("hex");
+    const first = historicalMessages[0];
+    assert.ok(first?.writing);
+    first.writing.contentHash = contentHash;
+    historicalInput["key"] = historicalKey;
+    historicalInput["writingPolicyHash"] = historicalHash;
+    delete historicalOutput["writerCandidates"];
+    historicalOutput["messages"] = historicalMessages;
+    historicalOutput["composition"] = {
+      ...legacyBase.composition,
+      key: historicalKey,
+      writingPolicyHash: historicalHash,
+      contentHash,
+    };
+    await db
+      .update(schema.outboundIntegrationJob)
+      .set({
+        input: historicalInput,
+        output: historicalOutput,
+        requestId: historicalKey,
+      })
+      .where(eq(schema.outboundIntegrationJob.id, legacyJob.id));
+    const before = await snapshot();
+    const loaded: CompletedComposition = value(
+      await Composition.loadCompletedComposition(undefined, legacyJob.id),
+    );
+    assert.equal(loaded.copyRulesVersion, historicalVersion);
+    assert.deepEqual(loaded.messages, historicalMessages);
+    assert.equal(loaded.composition.writingPolicyHash, historicalHash);
+    assert.equal(loaded.composition.contentHash, contentHash);
+    assert.deepEqual(await snapshot(), before);
+  }
+  console.log(
+    "PASS v2 and v3 completed jobs retain their saved hashes without writes",
+  );
   const legacyInput = structuredClone(legacyJob.input);
   const legacyOutput = structuredClone(legacyJob.output);
   assert.ok(legacyOutput);
@@ -1622,8 +1724,10 @@ try {
   const oldParts = { ...legacyFixture.parts, followupFact: "" };
   const legacyFirst = legacyBase.messages[0];
   assert.ok(legacyFirst?.writing);
+  assert.ok(isCurrentWritingSnapshot(legacyFirst.writing));
+  const { copyRulesVersion: _version, ...legacyWriting } = legacyFirst.writing;
   const oldWriting = legacyWritingSnapshotSchema.parse({
-    ...legacyFirst.writing,
+    ...legacyWriting,
     version: "discovery-email-v1",
     writingPolicyHash: oldHash,
     parts: oldParts,
@@ -1639,6 +1743,8 @@ try {
     .update(oldCanonical.canonicalText)
     .digest("hex");
   oldWriting.contentHash = oldContentHash;
+  delete legacyInput["copyRulesVersion"];
+  delete legacyInput["baseReceiptHash"];
   legacyInput["settings"] = oldPolicy;
   legacyInput["writingPolicyHash"] = oldHash;
   legacyInput["key"] = oldKey;
@@ -1682,11 +1788,102 @@ try {
     "PASS historical five-part jobs read without hash loss and cannot authorize current saves",
   );
 
+  // Restore the real research gate for an end-to-end raw-bound v4 round trip.
+  evidence.mockRestore();
+  compositionEvidence.mockRestore();
+  const rawFixture = await seed(true);
+  const { saveSyntheticShoppingEvidence } = await import(
+    "../helpers/outbound-shopping-db-fixture"
+  );
+  const { syntheticWriterParts } = await import(
+    "../helpers/outbound-shopping-fixture"
+  );
+  const appliedResearch = value(
+    await saveSyntheticShoppingEvidence(actor, { prospect: rawFixture.id }),
+  );
+  const originalResearchRow = (await jobs()).find(
+    (job) => job.input["operation"] === "leadResearch",
+  );
+  assert.ok(originalResearchRow);
+  const originalCaptureRow = (await jobs()).find(
+    (job) => job.input["operation"] === "savedContactPreparation",
+  );
+  assert.ok(originalCaptureRow);
+  assert.equal(appliedResearch.receipt.discovery?.productListings, undefined);
+  assert.equal(appliedResearch.receipt.discovery?.round3CopyProof, undefined);
+  const currentRaw = await row(rawFixture.id);
+  const exactParts = syntheticWriterParts(
+    currentRaw.details,
+    appliedResearch.receipt,
+  );
+  const rawCalls = { writer: 0, judge: 0 };
+  const rawComposed = value(
+    await Composition.composeForProspect(
+      actor,
+      {
+        prospectId: rawFixture.id,
+        expectedRevision: currentRaw.revision,
+        suppliedParts: exactParts,
+      },
+      {
+        generate: async () => {
+          rawCalls.writer += 1;
+          throw new Error("Supplied parts cannot buy a writer");
+        },
+        judge: async () => {
+          rawCalls.judge += 1;
+          return passingCopyJudge();
+        },
+      },
+    ),
+  );
+  assert.equal(rawComposed.copyRulesVersion, REVIEWED_COPY_RULES_VERSION);
+  assert.equal(
+    rawComposed.baseReceiptHash,
+    Research.researchHash(appliedResearch.receipt),
+  );
+  assert.notEqual(
+    rawComposed.composition.receiptHash,
+    rawComposed.baseReceiptHash,
+  );
+  assert.ok(
+    rawComposed.receiptSnapshot.discovery?.productListings?.entries.length,
+  );
+  assert.ok(
+    rawComposed.receiptSnapshot.discovery?.round3CopyProof?.namesAbsent,
+  );
+  const rawSaved = value(
+    await Store.saveComposedDraft(actor, {
+      prospect: rawFixture.id,
+      revision: currentRaw.revision,
+      compositionJobId: rawComposed.composition.jobId,
+    }),
+  );
+  const rawApplied = await row(rawFixture.id);
+  const trusted = await db.transaction((scope) =>
+    Store.assertAppliedCompositionWithin(scope, rawApplied),
+  );
+  assert.equal(trusted.composition.jobId, rawComposed.composition.jobId);
+  assert.equal(rawSaved.revision, currentRaw.revision + 1);
+  assert.deepEqual(rawCalls, { writer: 0, judge: 1 });
+  assert.deepEqual(
+    (await jobs()).find((job) => job.id === originalResearchRow.id),
+    originalResearchRow,
+  );
+  assert.deepEqual(
+    (await jobs()).find((job) => job.id === originalCaptureRow.id),
+    originalCaptureRow,
+  );
+  console.log(
+    "PASS v4 derives proof without rewriting research; exact parts use zero writer and one judge",
+  );
+
   console.log(
     "Durable sequence composition and trusted Store contracts passed.",
   );
 } finally {
   evidence.mockRestore();
+  compositionEvidence.mockRestore();
   await independent.end();
   await db.$client.end();
 }

@@ -33,6 +33,7 @@ export type SyntheticShoppingOptions = {
   answerText?: string;
   pageText?: string;
   structured?: string[];
+  intent?: "unbranded-specific" | "unbranded-broad";
 };
 
 /** Synthetic provider-shaped data only. No source here describes a real merchant or search. */
@@ -58,9 +59,12 @@ export const buildSyntheticShoppingCapture = async (
   };
   const answerText =
     input.answerText ??
-    "1. Canvas Works — Large carry bag.\n2. Harbor Label — Cotton shopper.";
+    "1. [Canvas Works — Large carry bag](https://canvas.example/products/carry-bag).\n2. [Harbor Label — Cotton shopper](https://harbor.example/products/shopper).";
   const pageText = input.pageText ?? `${product.name} is a large linen bag.`;
   const structured = input.structured ?? [];
+  const intent = input.intent ?? "unbranded-specific";
+  const question =
+    intent === "unbranded-broad" ? "linen carry bags" : "large linen bags";
   const timestamp = new Date(now).toISOString();
   const job = {
     id: randomUUID(),
@@ -71,8 +75,8 @@ export const buildSyntheticShoppingCapture = async (
       category: "linen bags",
       country: "US",
       surface: "google_ai_mode" as const,
-      prompt: "large linen bags",
-      intent: "unbranded-specific" as const,
+      prompt: question,
+      intent,
     },
   };
   const body = JSON.stringify({
@@ -152,14 +156,15 @@ export const buildSyntheticShoppingCapture = async (
         category: "linen bags",
         country: "US",
         browser,
+        intent,
         deadline: now + 40000,
       },
       {
         now: () => now,
         generate: async ({ prompt }) => ({
-          question: "large linen bags",
+          question,
           category: "bag",
-          attribute: "large",
+          attribute: intent === "unbranded-broad" ? "linen" : "large",
           excerptIds: [JSON.parse(prompt).excerpts[0].id],
         }),
       },
@@ -319,14 +324,14 @@ export const syntheticWriterParts = (
   if (!query) throw new Error("Synthetic copy requires an observed query.");
   const openings = [
     `I needed large bags, so I asked for "${query}".`,
-    `While shopping for large bags, I searched for "${query}".`,
-    `I wanted large bags and asked for "${query}".`,
+    `While shopping for large bags, I asked for "${query}".`,
+    `I wanted large bags, so I asked for "${query}".`,
     `Looking for large bags, I asked for "${query}".`,
-    `For large bags, my search was "${query}".`,
+    `For large bags, I asked for "${query}".`,
     `I was choosing large bags when I asked for "${query}".`,
-    `My search for large bags was "${query}".`,
+    `To compare large bags, I asked for "${query}".`,
     `To find large bags, I asked for "${query}".`,
-    `I wanted help choosing large bags and searched for "${query}".`,
+    `I wanted help choosing large bags, so I asked for "${query}".`,
     `Shopping for large bags, I asked for "${query}".`,
   ];
   const names = resultBrandNames(receipt);
@@ -338,7 +343,7 @@ export const syntheticWriterParts = (
   return {
     subject: "linen bags",
     opening: openings[Math.abs(variant) % openings.length] ?? openings[0] ?? "",
-    result: `It named ${named}. ${prospect.company} didn't come up.`,
+    result: `It picked ${named}. ${prospect.company} didn't come up.`,
     relevance: "That's the kind of search a new customer starts with.",
   };
 };

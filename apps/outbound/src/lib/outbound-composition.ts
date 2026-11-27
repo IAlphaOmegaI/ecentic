@@ -7,6 +7,8 @@ import {
 } from "./outbound";
 import {
   type CopyRulesContext,
+  openingRuleExceptionSchema,
+  REVIEWED_COPY_RULES_VERSION,
   ROUND3_COPY_RULES_VERSION,
 } from "./outbound-round3-copy";
 import type { ShoppingResearch } from "./outbound-shopping-research";
@@ -68,7 +70,10 @@ const hash = z.string().regex(/^[a-f0-9]{64}$/);
 export const currentWritingSnapshotSchema = z
   .object({
     version: z.literal(WRITING_CONTRACT_VERSION),
-    copyRulesVersion: z.literal(ROUND3_COPY_RULES_VERSION).optional(),
+    copyRulesVersion: z
+      .enum([ROUND3_COPY_RULES_VERSION, REVIEWED_COPY_RULES_VERSION])
+      .optional(),
+    openingRuleException: openingRuleExceptionSchema.optional(),
     writingPolicyHash: hash,
     receiptHash: hash,
     contentHash: hash,
@@ -87,7 +92,7 @@ export const currentWritingSnapshotSchema = z
   })
   .strict();
 export const legacyWritingSnapshotSchema = currentWritingSnapshotSchema
-  .omit({ copyRulesVersion: true })
+  .omit({ copyRulesVersion: true, openingRuleException: true })
   .extend({
     version: z.literal(LEGACY_WRITING_CONTRACT_VERSION),
     parts: legacyWriterPartsSchema,
@@ -450,11 +455,35 @@ export const canonicalSequenceInput = (
   )
     return hold("The saved sequence and requested copy rules do not match.");
   const copyRulesVersion = savedRules ?? rules.copyRulesVersion;
+  const savedException =
+    writing && "openingRuleException" in writing
+      ? writing.openingRuleException
+      : undefined;
+  if (
+    writing &&
+    rules.openingRuleException &&
+    JSON.stringify(savedException) !==
+      JSON.stringify(rules.openingRuleException)
+  )
+    return hold(
+      "The saved opening exception differs from the requested human decision.",
+    );
+  const openingRuleException = savedException ?? rules.openingRuleException;
+  if (
+    openingRuleException &&
+    (copyRulesVersion !== REVIEWED_COPY_RULES_VERSION ||
+      !openingRuleExceptionSchema.safeParse(openingRuleException).success ||
+      messages[0]?.body !== openingRuleException.approvedBody)
+  )
+    return hold(
+      "The opening exception applies only to the exact owner-approved body.",
+    );
   return {
     status: "ready",
     canonicalText: JSON.stringify({
       version: messages[0]?.writing?.version ?? WRITING_CONTRACT_VERSION,
       ...(copyRulesVersion ? { copyRulesVersion } : {}),
+      ...(openingRuleException ? { openingRuleException } : {}),
       messages: messages.map(({ step, afterDays, subject, body }) => ({
         step,
         afterDays,

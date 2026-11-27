@@ -5,6 +5,7 @@ import {
   storedWriterPartsSchema,
   writingSnapshotSchema,
 } from "@/lib/outbound-composition";
+import { openingRuleExceptionSchema } from "@/lib/outbound-round3-copy";
 import {
   compositionReferenceSchema,
   writerCandidatesSchema,
@@ -239,6 +240,7 @@ export const heldReviewPreviewContextSchema = z
     playbookRevision: z.number().int().nonnegative(),
     proposedPolicy: playbookSchema,
     globalVoiceNotes: z.string(),
+    openingRuleException: openingRuleExceptionSchema.optional(),
     receiptHash: digest,
     writingPolicyHash: digest,
     baseWritingPolicyHash: digest,

@@ -14,6 +14,9 @@ const { projectBrowserExecution } = await import(
 );
 const { createAssessmentCatalog, assess, validateAutomaticResearch } =
   await import("@/server/utils/outbound/shopping-assessment");
+const { projectProductListingProof } = await import(
+  "@/server/utils/outbound/shopping-product-listings"
+);
 const {
   projectFactAssessment,
   validateFactResearch,
@@ -317,7 +320,14 @@ describe("fact-only shopping assessment", () => {
     expect(assessed.attempts).toBe(0);
     expect(generate).not.toHaveBeenCalled();
     if (assessed.status !== "researched") throw new Error(assessed.reason);
-    expect(assessed.receipt).toEqual(result.receipt);
+    const linked = projectProductListingProof(
+      input.evidence,
+      result.receipt,
+      input.now,
+    );
+    if (linked.status !== "eligible")
+      throw new Error("Expected linked-product proof");
+    expect(assessed.receipt).toEqual(linked.receipt);
   });
 
   test("selects three distinct alternatives from thirty cards without model calls or losing full raw proof", async () => {
@@ -420,9 +430,16 @@ describe("fact-only shopping assessment", () => {
     expect(
       validateAutomaticResearch(input.evidence, result.receipt, 7),
     ).toBeNull();
-    expect(assessUnrankedCardAbsence(input.evidence, input.now)).toEqual(
-      result,
+    const historical = assessUnrankedCardAbsence(input.evidence, input.now);
+    if (historical.status !== "researched") throw new Error(historical.reason);
+    const linked = projectProductListingProof(
+      input.evidence,
+      historical.receipt,
+      input.now,
     );
+    if (linked.status !== "eligible")
+      throw new Error("Expected linked-product proof");
+    expect(linked.receipt).toEqual(result.receipt);
     expect(
       Capture.replayShoppingCapture(input.evidence.answer, input.now)
         .answerText,
@@ -888,7 +905,9 @@ describe("fact-only shopping assessment", () => {
   });
 
   test("permits one completed fact repair and never falls back to neutral prose", async () => {
-    const input = await fixture(alternate);
+    const input = await fixture(
+      `${alternate}\n3. [Synthetic bag](https://example.test/products/bag)`,
+    );
     const attempts: string[] = [];
     const result = value(
       await assess(

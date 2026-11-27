@@ -1,11 +1,31 @@
+import { z } from "zod";
 import type { ProspectInput } from "./outbound";
 import type { WriterParts } from "./outbound-composition";
 import type { ShoppingResearch } from "./outbound-shopping-research";
 
 /** Explicit opt-in: historical writing and verdicts keep their original rules. */
 export const ROUND3_COPY_RULES_VERSION = "spoken-copy-v3";
-export type CopyRulesVersion = typeof ROUND3_COPY_RULES_VERSION;
-export type CopyRulesContext = { copyRulesVersion?: CopyRulesVersion };
+export const REVIEWED_COPY_RULES_VERSION = "spoken-copy-v4";
+export type CopyRulesVersion =
+  | typeof ROUND3_COPY_RULES_VERSION
+  | typeof REVIEWED_COPY_RULES_VERSION;
+/** An operator-recorded human decision, never a field returned by the writer. */
+export const openingRuleExceptionSchema = z
+  .object({
+    kind: z.literal("owner-approved-existing-body"),
+    opening: z.string().min(1).max(1200),
+    approvedBody: z.string().min(1).max(8000),
+    approvalReference: z.string().regex(/^[a-f0-9]{64}$/),
+  })
+  .strict();
+export type OpeningRuleException = z.infer<typeof openingRuleExceptionSchema>;
+export type CopyRulesContext = {
+  copyRulesVersion?: CopyRulesVersion;
+  openingRuleException?: OpeningRuleException;
+};
+export const usesSpokenCopyRules = (context: CopyRulesContext) =>
+  context.copyRulesVersion === ROUND3_COPY_RULES_VERSION ||
+  context.copyRulesVersion === REVIEWED_COPY_RULES_VERSION;
 
 const spokenNames: Record<string, string> = {
   "Alice Lane Home Collection": "Alice Lane",
@@ -58,6 +78,20 @@ export const hasRound3NoProductBrands = (
 ) =>
   Boolean(receipt.discovery?.round3CopyProof?.noProductBrands) &&
   round3CopyProofProblem(receipt, prospect) === null;
+
+export const reviewedCopyProofProblem = (
+  receipt: ShoppingResearch,
+): string | null => {
+  if (receipt.selected.kind !== "discovery-absence") return null;
+  const discovery = receipt.discovery;
+  const proof = discovery?.productListings;
+  return !proof?.entries.length ||
+    proof.sourceId !== discovery?.sourceId ||
+    proof.answerHash !== discovery?.answerHash ||
+    proof.linksHash !== discovery?.linksHash
+    ? "An absence claim needs bound product listings with product links from this answer."
+    : null;
+};
 
 export type Round3CopyEdit = {
   field: keyof WriterParts;

@@ -284,6 +284,10 @@ const claim = () =>
       writing.data.writingPolicyHash !==
         writingPolicyHash(settingsForProspect(prospect, policy.settings), {
           globalVoiceNotes: policy.settings.voiceNotes,
+          ...("copyRulesVersion" in writing.data &&
+          writing.data.copyRulesVersion
+            ? { copyRulesVersion: writing.data.copyRulesVersion }
+            : {}),
         }) ||
       lintMessages(
         prospect.messages,

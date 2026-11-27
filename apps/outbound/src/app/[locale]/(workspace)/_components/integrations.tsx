@@ -65,7 +65,8 @@ type CredentialProvider =
   | "clay"
   | "google"
   | "scrapellm"
-  | "firecrawl";
+  | "firecrawl"
+  | "hubspot";
 
 export const Integrations = ({
   status,
@@ -156,6 +157,33 @@ export const Integrations = ({
           />
           <PeopleSearch configured={status?.apollo.configured ?? false} />
         </div>
+      </section>
+      <section
+        id="hubspot"
+        className="grid gap-6 border-accent-foreground border-b px-4 py-6 sm:px-6 lg:grid-cols-[16rem_minmax(0,1fr)]"
+      >
+        <div>
+          <h2 className="font-semibold text-foreground-rich text-lg">
+            {t("integrations.hubspot.title")}
+          </h2>
+          <p className="mt-3 text-foreground-dimmed text-sm leading-6">
+            {t("integrations.hubspot.description")}
+          </p>
+          <div className="mt-4">
+            <ConnectionBadge
+              configured={status?.hubspot.configured ?? false}
+              label={
+                status?.hubspot.configured
+                  ? t("integrations.hubspot.keySaved")
+                  : undefined
+              }
+            />
+          </div>
+        </div>
+        <ProviderCredentialsForm
+          provider="hubspot"
+          configured={status?.hubspot.configured ?? false}
+        />
       </section>
       {(["clay", "azure"] as const).map((provider) => (
         <section
@@ -908,6 +936,10 @@ const ProviderLinks = ({
   const t = useTranslations("outbound.integrations.credentials.links");
   const links = (() => {
     switch (provider) {
+      case "hubspot":
+        return [
+          { label: t("hubspotAccount"), href: "https://app.hubspot.com/" },
+        ];
       case "scrapellm":
         return [
           {

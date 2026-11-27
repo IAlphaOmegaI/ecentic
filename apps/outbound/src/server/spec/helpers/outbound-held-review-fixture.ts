@@ -128,7 +128,7 @@ export const heldPoll = async (job: AiCapture["job"], noGap: boolean) =>
             cached: false,
             result_markdown: noGap
               ? `1. ${job.query.merchant?.name} — ${job.query.product.name} large linen carry bag.`
-              : "1. Canvas Works — Large carry bag.\n2. Harbor Label — Cotton shopper.",
+              : "1. [Canvas Works — Large carry bag](https://canvas.example/products/carry-bag).\n2. [Harbor Label — Cotton shopper](https://harbor.example/products/shopper).",
             citations: [],
           },
         }),

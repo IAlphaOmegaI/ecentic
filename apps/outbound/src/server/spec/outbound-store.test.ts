@@ -1524,6 +1524,103 @@ describe.skipIf(!enabled)("outbound isolated Postgres service", () => {
     expect((await store.claimDelivery(actor, fixture)).success).toBe(false);
     expect(await db.select().from(schema.outboundSendAttempt)).toHaveLength(0);
   });
+  test("the outreach date preserves approval and blocks a first email until its exact boundary", async () => {
+    const { store, db, schema } = active();
+    const fixture = await approved();
+    const before = required(await store.readProspect(fixture.prospect));
+    const policy = await store.policy();
+    const boundary = new Date(now.getTime() + 60_000);
+    const updated = required(
+      await store.savePlaybook(
+        actor,
+        {
+          ...policy.settings,
+          outreachNotBefore: boundary.toISOString(),
+        },
+        policy.revision,
+      ),
+    );
+    expect(updated.revision).toBe(policy.revision);
+    expect(required(await store.readProspect(fixture.prospect))).toEqual(
+      before,
+    );
+    expect((await store.claimDelivery(actor, fixture)).success).toBe(false);
+    expect(await db.select().from(schema.outboundSendAttempt)).toHaveLength(0);
+    setSystemTime(boundary);
+    expect((await store.claimDelivery(actor, fixture)).success).toBe(true);
+  });
+  test("first approval persists its future release date without moving approval time or sending", async () => {
+    const { store, db, schema } = active();
+    const boundary = new Date(now.getTime() + 60_000);
+    const fixture = await approved({
+      ...settings,
+      outreachNotBefore: boundary.toISOString(),
+    });
+    const row = required(await store.readProspect(fixture.prospect));
+    expect(row?.nextSendAt?.toISOString()).toBe(boundary.toISOString());
+    expect(row?.approvedAt?.toISOString()).toBe(now.toISOString());
+    expect(row?.status).toBe("approved");
+    expect(row?.sentStep).toBe(0);
+    expect(row?.messages).toHaveLength(3);
+    expect((await store.claimDelivery(actor, fixture)).success).toBe(false);
+    expect(await db.select().from(schema.outboundSendAttempt)).toHaveLength(0);
+    setSystemTime(boundary);
+    expect((await store.claimDelivery(actor, fixture)).success).toBe(true);
+  });
+  test("an outreach date saved after claim stops SMTP without changing approved content", async () => {
+    const { store } = active();
+    const fixture = await approved();
+    const claim = required(await store.claimDelivery(actor, fixture));
+    const before = required(await store.readProspect(fixture.prospect));
+    const policy = await store.policy();
+    required(
+      await store.savePlaybook(
+        actor,
+        {
+          ...policy.settings,
+          outreachNotBefore: new Date(now.getTime() + 60_000).toISOString(),
+        },
+        policy.revision,
+      ),
+    );
+    const send = mock(async () => ({
+      success: true as const,
+      data: { providerMessageId: "never-sent", threadId: "never-started" },
+    }));
+    expect((await store.dispatchDelivery(actor, claim, send)).success).toBe(
+      false,
+    );
+    expect(send).not.toHaveBeenCalled();
+    expect(
+      required(await store.readProspect(fixture.prospect))?.messages,
+    ).toEqual(before?.messages);
+    expect((await store.policy()).settings.sendingEnabled).toBe(true);
+  });
+  test("an older general Playbook form cannot clear the operator's outreach date", async () => {
+    const { store } = active();
+    const before = await store.policy();
+    const outreachNotBefore = "2026-12-02T00:00:00.000Z";
+    required(
+      await store.savePlaybook(
+        actor,
+        { ...before.settings, outreachNotBefore },
+        before.revision,
+      ),
+    );
+    required(
+      await store.savePlaybookForm(actor, {
+        settings: before.settings,
+        expectedRevision: before.revision,
+        expectedSenderPool: {
+          senderEmails: before.settings.senderEmails,
+          inactiveSenderEmails: before.settings.inactiveSenderEmails,
+        },
+      }),
+    );
+    expect((await store.policy()).settings.outreachNotBefore).toBe(
+      outreachNotBefore,
+    );
+  });
   test("opt-out committed after reservation stops dispatch across channels", async () => {
     const { store, db, schema } = active();
     const fixture = await approved();

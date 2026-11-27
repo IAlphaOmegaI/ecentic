@@ -242,6 +242,7 @@ for (const operation of [prospect, preparation, mailbox, campaign])
 const Providers = await import("@/server/utils/outbound/providers");
 const Unipile = await import("@/server/utils/outbound/unipile");
 spyOn(Providers, "getIntegrationStatus").mockResolvedValue({
+  hubspot: { configured: false, credentialStatus: "missing" },
   research: {
     configured: false,
     scrapellm: { configured: false, credentialStatus: "missing" },

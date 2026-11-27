@@ -16,13 +16,20 @@ import {
   settingsForSender,
   templateIssues,
 } from "@/lib/outbound";
-import { sendWindowClosesAt } from "@/lib/outbound-scheduling";
+import {
+  outreachMayStart,
+  sendWindowClosesAt,
+} from "@/lib/outbound-scheduling";
 import { buildDraftPrompt } from "@/lib/outbound-writing";
 import {
   legacyHistory,
   mapLegacyProspect,
   parseImport,
 } from "@/server/app/outbound/import";
+import {
+  researchPolicyHash,
+  writingPolicyHash,
+} from "@/server/utils/outbound/shopping-policy";
 
 const now = new Date("2026-11-09T17:00:00Z");
 const settings = { ...defaultPlaybook, senderConfirmed: true };
@@ -52,6 +59,41 @@ const prospect = prospectSchema.parse({
 });
 
 describe("outbound eligibility", () => {
+  test("the optional outreach date blocks both rails without changing research or copy", () => {
+    const { outreachNotBefore: _date, ...legacy } = defaultPlaybook;
+    expect(playbookSchema.parse(legacy).outreachNotBefore).toBeNull();
+    expect(outreachMayStart({}, now)).toBe(true);
+    const deferred = {
+      ...settings,
+      automationEnabled: true,
+      linkedinAutomationEnabled: true,
+      outreachNotBefore: "2026-12-02T00:00:00.000Z",
+    };
+    expect(
+      outreachMayStart(deferred, new Date("2026-12-01T23:59:59.999Z")),
+    ).toBe(false);
+    expect(
+      outreachMayStart(deferred, new Date(deferred.outreachNotBefore)),
+    ).toBe(true);
+    expect(
+      outreachMayStart(deferred, new Date("2026-12-02T00:00:00.001Z")),
+    ).toBe(true);
+    expect(outreachMayStart({ outreachNotBefore: "invalid" }, now)).toBe(false);
+    expect(
+      playbookSchema.safeParse({ ...settings, outreachNotBefore: "invalid" })
+        .success,
+    ).toBe(false);
+    expect(
+      inSendWindow(prospect, new Date(deferred.outreachNotBefore), deferred),
+    ).toBe(false);
+    expect(prospectIssues(prospect, deferred, now)).toEqual(
+      prospectIssues(prospect, settings, now),
+    );
+    expect(writingPolicyHash(deferred)).toBe(writingPolicyHash(settings));
+    expect(researchPolicyHash(deferred)).toBe(researchPolicyHash(settings));
+    expect(deferred.automationEnabled).toBe(true);
+    expect(deferred.linkedinAutomationEnabled).toBe(true);
+  });
   test("Microsoft recipients require an explicit opt-in and verified email evidence", () => {
     const microsoft = { ...prospect, mxProvider: "microsoft" as const };
     const optedIn = { ...settings, allowMicrosoftRecipients: true };

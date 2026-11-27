@@ -28,12 +28,19 @@ import {
 import {
   aiCaptureSchema,
   browserResearchSchema,
+  shopperQueryReviewSchema,
 } from "@/server/utils/outbound/live-shopping";
+import {
+  assertReviewedCopySourcesWithin,
+  loadReviewedCopyPreviewWithin,
+  type ReviewedCopyBinding,
+} from "@/server/utils/outbound/reviewed-copy-preview";
 import {
   preparationInputSchema,
   preparationStateSchema,
 } from "@/server/utils/outbound/saved-preparation-contract";
 import * as Assessment from "@/server/utils/outbound/shopping-assessment";
+import { researchCaptureProof } from "@/server/utils/outbound/shopping-capture-proof";
 import {
   captureMatchesMerchant,
   researchHash,
@@ -68,6 +75,7 @@ const save = (
   actor: string,
   input: z.infer<typeof saveResearchSchema>,
   automatic?: { jobId: string; leaseToken: string; kind?: "saved" | "held" },
+  reviewedBinding?: ReviewedCopyBinding,
 ) =>
   resultify(async () => {
     const parsed = saveResearchSchema.parse(input);
@@ -90,6 +98,24 @@ const save = (
         ),
       )[0];
       if (prior) {
+        if (reviewedBinding) {
+          const provenance = prior.output?.["reviewedPreview"];
+          if (
+            !provenance ||
+            typeof provenance !== "object" ||
+            !("previewJobId" in provenance) ||
+            provenance.previewJobId !== reviewedBinding.previewJobId ||
+            !("previewJobHash" in provenance) ||
+            provenance.previewJobHash !== reviewedBinding.previewJobHash ||
+            !("authorizationReference" in provenance) ||
+            provenance.authorizationReference !==
+              reviewedBinding.authorizationReference
+          )
+            throw new ConflictError(
+              "The saved research belongs to another reviewed preview.",
+            );
+          await assertReviewedCopySourcesWithin(transaction, reviewedBinding);
+        }
         const original = researchJobInputSchema.parse(prior.input);
         if (
           prior.status !== "complete" ||
@@ -129,6 +155,23 @@ const save = (
       )
         throw new ConflictError(
           "The prospect or Playbook changed before the research was saved.",
+        );
+      const reviewed = reviewedBinding
+        ? await loadReviewedCopyPreviewWithin(
+            transaction,
+            reviewedBinding,
+            prospect,
+            policy,
+          )
+        : null;
+      if (
+        reviewed &&
+        (parsed.requestId !== reviewedBinding?.previewJobId ||
+          parsed.captureJobId !== reviewedBinding?.previewJobId ||
+          researchHash(reviewed.receipt) !== receiptHash)
+      )
+        throw new ValidationError(
+          "The requested research differs from the unchanged reviewed preview.",
         );
       if (
         prospect.sentStep ||
@@ -294,10 +337,12 @@ const save = (
         const browser = browserResearchSchema.parse(state.data.browser);
         if (browser.status !== "captured")
           throw new ValidationError("The browser capture is incomplete.");
-        const evidence = {
-          answer: aiCaptureSchema.parse(state.data.answer),
-          browser,
-        };
+        const evidence = researchCaptureProof(
+          automatic.jobId,
+          { answer: aiCaptureSchema.parse(state.data.answer), browser },
+          parsed.receipt,
+          state.data,
+        );
         const problem = Assessment.validateAutomaticResearch(
           evidence,
           parsed.receipt,
@@ -355,6 +400,7 @@ const save = (
           "The researched product must belong to this prospect's company.",
         );
       const captureProof = await (async () => {
+        if (reviewed) return reviewed.proof;
         const captureJobId = automatic?.jobId ?? parsed.captureJobId;
         if (!captureJobId)
           throw new ValidationError(
@@ -410,14 +456,30 @@ const save = (
           throw new ValidationError(
             "The discovery receipt does not match its completed captures.",
           );
+        const proof = researchCaptureProof(
+          captureJobId,
+          {
+            answer,
+            browser,
+            ...(captured["queryReview"]
+              ? {
+                  queryReview: shopperQueryReviewSchema.parse(
+                    captured["queryReview"],
+                  ),
+                }
+              : {}),
+          },
+          parsed.receipt,
+          captured,
+        );
         const problem = Assessment.validateAutomaticResearch(
-          { answer, browser },
+          proof,
           parsed.receipt,
           policy.settings.verificationDays,
           policy.settings,
         );
         if (problem) throw new ValidationError(problem);
-        return { captureJobId, answer, browser };
+        return proof;
       })();
       const problem = validateShoppingResearch(
         parsed.receipt,
@@ -434,6 +496,9 @@ const save = (
         id: prospect.id,
         product: parsed.receipt.product.name,
         productUrl: parsed.receipt.product.url,
+        ...(reviewed
+          ? { productCategory: reviewed.projectedProspect.productCategory }
+          : {}),
         gap: "shopping-research",
         finding: finding.observation,
         shoppingFinding: finding,
@@ -530,7 +595,12 @@ const save = (
                 ]),
               ),
               capturedBy: actor,
-              provenance: automatic ? "provider-observed" : "operator-observed",
+              provenance: reviewed
+                ? "reviewed-preview"
+                : automatic
+                  ? "provider-observed"
+                  : "operator-observed",
+              ...(reviewed ? { reviewedPreview: reviewed.provenance } : {}),
               ...(automatic ? { automationJobId: automatic.jobId } : {}),
               ...(captureProof ? { captureProof } : {}),
               appliedAt: new Date().toISOString(),
@@ -566,6 +636,12 @@ export const saveAndApply = (
   actor: string,
   input: z.infer<typeof saveResearchSchema>,
 ) => save(actor, input);
+/** Server-only operator adoption; full preview/source/policy/authorization proof is rechecked in the save transaction. */
+export const saveReviewedPreviewAndApply = (
+  actor: string,
+  input: z.infer<typeof saveResearchSchema>,
+  binding: ReviewedCopyBinding,
+) => save(actor, input, undefined, binding);
 export const saveAutomaticAndApply = (
   actor: string,
   input: z.infer<typeof saveResearchSchema>,

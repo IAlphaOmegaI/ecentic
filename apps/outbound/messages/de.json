@@ -858,14 +858,16 @@
           "clay": "Speichern Sie Ihren Clay-API-Schlüssel, um den Arbeitsbereich zu verbinden. Die Datenanreicherung können Sie später einrichten.",
           "google": "Erstellen Sie eine Google-OAuth-Webanwendung, tragen Sie die unten angegebene Weiterleitungs-URI ein und speichern Sie die Client-ID und das Client-Secret. Verbinden Sie anschließend jedes Gmail-Postfach.",
           "scrapellm": "Mit ScrapeLLM erfassen Sie tatsächliche Suchanfragen von Käufern und die angezeigten Antworten.",
-          "firecrawl": "Mit Firecrawl prüfen Sie gerenderte Produktseiten und speichern unterstützende Belege."
+          "firecrawl": "Mit Firecrawl prüfen Sie gerenderte Produktseiten und speichern unterstützende Belege.",
+          "hubspot": "Verwenden Sie einen Dienstschlüssel mit Lesezugriff auf Kontakte und Unternehmen. Die Verbindungsprüfung ändert keine CRM-Datensätze."
         },
         "secret": {
           "apollo": "Apollo-API-Schlüssel",
           "clay": "Clay-API-Schlüssel",
           "google": "Google-OAuth-Client-Secret",
           "scrapellm": "ScrapeLLM-API-Schlüssel",
-          "firecrawl": "Firecrawl-API-Schlüssel"
+          "firecrawl": "Firecrawl-API-Schlüssel",
+          "hubspot": "HubSpot-Dienstschlüssel"
         },
         "fields": {
           "clientId": "Google-OAuth-Client-ID",
@@ -903,7 +905,8 @@
           "clayWorkspace": "Clay öffnen",
           "clayApiDocs": "Clay-API-Dokumentation",
           "scrapellmAccount": "ScrapeLLM öffnen",
-          "firecrawlAccount": "Firecrawl öffnen"
+          "firecrawlAccount": "Firecrawl öffnen",
+          "hubspotAccount": "HubSpot öffnen"
         },
         "routineHelp": "Für die Verbindung optional. Richten Sie eine Routine zur Datenanreicherung in Ihrem Clay-Arbeitsbereich ein und fügen Sie ihre ID hier ein.",
         "routine": {
@@ -969,6 +972,11 @@
         "verified": "API-Schlüssel überprüft",
         "environment": "Serverschlüssel konfiguriert",
         "savedHelp": "Der Zugriff auf ScrapeLLM wird beim Start der Recherche geprüft. Das Speichern des Schlüssels startet keine kostenpflichtige Suche."
+      },
+      "hubspot": {
+        "title": "HubSpot",
+        "description": "Speichern Sie einen HubSpot-Dienstschlüssel für die CRM-Synchronisierung. Das Speichern des Schlüssels startet keine Synchronisierung.",
+        "keySaved": "Schlüssel gespeichert"
       }
     },
     "relationships": {

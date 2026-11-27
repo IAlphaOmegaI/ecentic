@@ -85,6 +85,20 @@ export const reserve = (
       await transaction.execute(
         sql`select pg_advisory_xact_lock(hashtext('ecentic-outbound-providers'))`,
       );
+      if (provider === "clay") {
+        const [automatic] = await transaction
+          .select({ id: schema.outboundIntegrationJob.id })
+          .from(schema.outboundIntegrationJob)
+          .where(sql`${schema.outboundIntegrationJob.input}->>'operation' = 'campaignAutomation'
+            and ${schema.outboundIntegrationJob.output}->'clayRole' is not null
+            and ${schema.outboundIntegrationJob.output}->'clayRole'->'reviewed' is null
+            and ${schema.outboundIntegrationJob.status} in ('starting','pending','uncertain')`)
+          .limit(1);
+        if (automatic)
+          throw new ConflictError(
+            "An automatic Clay run is pending or needs reconciliation.",
+          );
+      }
       const pending = value(
         await Jobs.find(
           Environment.SERVER,

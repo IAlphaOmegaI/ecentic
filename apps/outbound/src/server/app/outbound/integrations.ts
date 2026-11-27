@@ -3,14 +3,10 @@
 import { resultify } from "@zenncore/utils";
 import { z } from "zod";
 import {
-  companyExcluded,
   normalizeDomain,
-  prospectIssues,
-  recipientMailHostAllowed,
   type SenderProfile,
   splitList,
 } from "@/lib/outbound";
-import { evidenceDateUsable } from "@/lib/outbound-evidence";
 import { UserRole } from "@/server/database/validators";
 import { withAuthorization } from "@/server/utils/authorization";
 import {
@@ -23,7 +19,7 @@ import * as MX from "@/server/utils/outbound/mx";
 import * as Providers from "@/server/utils/outbound/providers";
 import * as Research from "@/server/utils/outbound/research";
 import * as Unipile from "@/server/utils/outbound/unipile";
-
+import { eligibleForEnrichment } from "./enrichment-eligibility";
 import * as Jobs from "./jobs";
 import * as LinkedInAccounts from "./linkedin-accounts";
 import * as Preparation from "./preparation";
@@ -47,81 +43,6 @@ const prospect = async (id: string) => {
   return row;
 };
 
-const eligibleForEnrichment = async (id: string, roleCheck = false) => {
-  if (!z.string().uuid().safeParse(id).success)
-    throw new ValidationError("Choose a prospect.");
-  const context = value(await Store.getEnrichmentContext(id));
-  const { prospect: row, settings } = context;
-  const details = row.details;
-  const domain = normalizeDomain(details.domain);
-  const countries = (value: string) =>
-    splitList(value).map((country) => country.toUpperCase());
-  const now = Date.now();
-  const fresh = (timestamp: string, days: number) => {
-    const checkedAt = Date.parse(timestamp);
-    return (
-      Number.isFinite(checkedAt) &&
-      checkedAt <= now &&
-      now - checkedAt < days * 86400_000
-    );
-  };
-  if (
-    row.sentStep ||
-    !["candidate", "draft", "held", "approved"].includes(row.status) ||
-    context.suppressed ||
-    context.lastContactedAt ||
-    details.relationship !== "cold" ||
-    !domain ||
-    companyExcluded(settings, details.company) ||
-    splitList(settings.excludedDomains).map(normalizeDomain).includes(domain) ||
-    !countries(settings.allowedCountries).includes(details.country) ||
-    countries(settings.heldCountries).includes(details.country) ||
-    !["shopify", "woocommerce"].includes(details.platform)
-  )
-    throw new ValidationError(
-      "This company is outside the cold-outreach policy or already has contact history. No paid lookup was started.",
-    );
-  if (
-    !details.product ||
-    !details.productUrl ||
-    !details.gap ||
-    !details.finding ||
-    !details.evidence ||
-    !details.findingReviewed ||
-    prospectIssues(details, settings).some(
-      (issue) => issue.code === "findingReviewRequired",
-    ) ||
-    normalizeDomain(details.productUrl) !== domain ||
-    !evidenceDateUsable(details.evidenceCheckedAt, settings, now)
-  )
-    throw new ValidationError(
-      "Review a current product finding on this company's domain before spending on contact lookup or enrichment.",
-    );
-  // Initial Apollo lookup can precede having an email address to check MX for.
-  if (
-    details.mxProvider === "microsoft" &&
-    !recipientMailHostAllowed(details.mxProvider, settings)
-  )
-    throw new ValidationError(
-      "Check an enabled recipient mail host before enrichment. No paid lookup was started.",
-    );
-  if (
-    roleCheck &&
-    (!details.title.trim() ||
-      (!details.linkedinUrl.trim() && !details.name.trim()) ||
-      !details.email ||
-      details.emailStatus !== "verified" ||
-      !details.emailSource ||
-      normalizeDomain(details.email.split("@")[1] ?? "") !== domain ||
-      !fresh(details.emailVerifiedAt, settings.emailVerificationDays) ||
-      details.mxProvider === "unknown" ||
-      !fresh(details.mxCheckedAt, 1))
-  )
-    throw new ValidationError(
-      "Clay's role check needs a sourced contact and title, a current verified work-email receipt, and a checked enabled mail host. No routine was started.",
-    );
-  return row;
-};
 const failJob = async (job: Jobs.Job, error: Error) => {
   value(
     await Jobs.update(job.id, {
@@ -158,14 +79,20 @@ export const saveProviderCredentials = withAuthorization(
   async (
     context,
     input: {
-      provider: "apollo" | "clay" | "google" | "scrapellm" | "firecrawl";
+      provider:
+        | "apollo"
+        | "clay"
+        | "google"
+        | "scrapellm"
+        | "firecrawl"
+        | "hubspot";
       apiKey: string;
       configuration?: { routineId?: string; clientId?: string };
     },
   ) => {
     if (
       !z
-        .enum(["apollo", "clay", "google", "scrapellm", "firecrawl"])
+        .enum(["apollo", "clay", "google", "scrapellm", "firecrawl", "hubspot"])
         .safeParse(input?.provider).success
     )
       return {

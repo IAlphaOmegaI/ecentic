@@ -15,10 +15,12 @@ import {
   type ContactAttempt,
   contactAttemptsSchema,
 } from "@/lib/outbound-automation";
+import { clayRoleResultSchema } from "@/lib/outbound-clay";
 import { compositionReferenceSchema } from "@/lib/outbound-sequence-composition";
 import { shoppingResearchSchema } from "@/lib/outbound-shopping-research";
 import { ConflictError, ValidationError } from "@/server/utils/error";
 import * as Qualification from "@/server/utils/outbound/automation-qualification";
+import { reviewClayRole } from "@/server/utils/outbound/clay-role";
 import {
   type CompanyCandidate,
   savedApolloCompany,
@@ -34,6 +36,7 @@ import {
   shoppingQueryHistorySchema,
 } from "@/server/utils/outbound/shopping-query-history";
 import { researchPolicyHash } from "@/server/utils/outbound/shopping-research";
+import * as AutomaticClay from "./automatic-clay";
 import type { AutomationClaim } from "./automation";
 import * as Campaigns from "./campaigns";
 import * as LeadResearch from "./lead-research";
@@ -259,6 +262,9 @@ export const execute = async (
       "enrich",
       "promote",
       "applyShopping",
+      "startClayRole",
+      "pollClayRole",
+      "reviewClayRole",
       "draft",
       "applyDraft",
       "approve",
@@ -1129,7 +1135,11 @@ export const execute = async (
         ),
       );
       return {
-        stage: playbook.requireShoppingEvidence ? "applyShopping" : "draft",
+        stage: playbook.requireShoppingEvidence
+          ? "applyShopping"
+          : playbook.automaticClayEnabled
+            ? "startClayRole"
+            : "draft",
         output: {
           prospectId: saved.prospect,
           prospectRevision: saved.revision,
@@ -1153,15 +1163,98 @@ export const execute = async (
         ),
       );
       return {
-        stage: "draft",
+        stage: playbook.automaticClayEnabled ? "startClayRole" : "draft",
         output: {
           prospectRevision: saved.revision,
           shoppingResearchId: saved.researchId,
         },
       };
     }
+    case "startClayRole": {
+      shoppingReceipt(claimed);
+      await currentProspect(claimed);
+      const role = await AutomaticClay.assertCurrent(claimed);
+      if (role.runId || role.polls || role.requestedAt || role.result)
+        throw new ConflictError("Clay was already started for this contact.");
+      const started = value(
+        await Providers.startClayEnrichment({
+          items: [role.request.item],
+          binding: {
+            routineId: role.request.routineId,
+            credentialVersion: role.request.credentialVersion,
+          },
+        }),
+      );
+      return {
+        stage: "pollClayRole",
+        delayMs: 30000,
+        output: {
+          clayRole: {
+            ...role,
+            runId: started.runId,
+            requestedAt: started.requestedAt,
+          },
+        },
+      };
+    }
+    case "pollClayRole": {
+      shoppingReceipt(claimed);
+      await currentProspect(claimed);
+      const role = await AutomaticClay.assertCurrent(claimed);
+      if (
+        !role.runId ||
+        !role.requestedAt ||
+        role.polls >= 20 ||
+        !fresh(role.request.reservedAt, 1)
+      )
+        return { stage: "pollClayRole", reason: "clay-poll-held" };
+      const raw = value(
+        await Providers.pollClayEnrichment({ runId: role.runId }),
+      );
+      const parsed = clayRoleResultSchema.safeParse(raw);
+      if (!parsed.success || parsed.data.runId !== role.runId)
+        return {
+          stage: "complete",
+          reason:
+            "Clay: The result does not match the reserved one-contact run.",
+          output: {
+            clayRole: { ...role, polls: role.polls + 1, rejectedResult: raw },
+          },
+        };
+      const result = parsed.data;
+      return {
+        stage: result.status === "pending" ? "pollClayRole" : "reviewClayRole",
+        delayMs:
+          result.status === "pending"
+            ? Math.min(300000, Math.max(30000, result.retryAfterSeconds * 1000))
+            : 0,
+        output: { clayRole: { ...role, result, polls: role.polls + 1 } },
+      };
+    }
+    case "reviewClayRole": {
+      shoppingReceipt(claimed);
+      await currentProspect(claimed);
+      const role = await AutomaticClay.assertCurrent(claimed);
+      const reviewed = reviewClayRole(role.request, role.result);
+      return {
+        stage: reviewed.status === "corroborated" ? "draft" : "complete",
+        ...(reviewed.status === "corroborated"
+          ? {}
+          : { reason: `Clay: ${reviewed.reason}` }),
+        output: { clayRole: { ...role, reviewed } },
+      };
+    }
     case "draft": {
       const row = await currentProspect(claimed);
+      if (playbook.automaticClayEnabled && !state.clayRole)
+        return { stage: "startClayRole" };
+      const clayProblem = AutomaticClay.continuationProblem(
+        state,
+        playbook,
+        row,
+      );
+      if (clayProblem)
+        return { stage: "draft", reason: `Clay: ${clayProblem}` };
       const qualification = qualificationSchema.parse(state["qualification"]);
       if (productCategoryCorrection(qualification))
         return { stage: "draft", normalizeProductCategory: true };
@@ -1180,6 +1273,13 @@ export const execute = async (
     }
     case "applyDraft": {
       const row = await currentProspect(claimed);
+      const clayProblem = AutomaticClay.continuationProblem(
+        state,
+        playbook,
+        row,
+      );
+      if (clayProblem)
+        return { stage: "applyDraft", reason: `Clay: ${clayProblem}` };
       const draft = z
         .object({
           composition: compositionReferenceSchema.optional(),
@@ -1207,6 +1307,13 @@ export const execute = async (
     }
     case "approve": {
       const row = await currentProspect(claimed);
+      const clayProblem = AutomaticClay.continuationProblem(
+        state,
+        playbook,
+        row,
+      );
+      if (clayProblem)
+        return { stage: "approve", reason: `Clay: ${clayProblem}` };
       const approval = value(
         await Store.approveAutomatically(actor, {
           prospect: row.id,

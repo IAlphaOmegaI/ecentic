@@ -3,6 +3,14 @@ import { resultify } from "@zenncore/utils";
 type ContactLocation = { timezone: string; country: string };
 type SchedulingPolicy = { allowUsMarketWindow?: boolean };
 
+/** An operational stop for cold outreach only; research and inbound sync stay independent. */
+export const outreachMayStart = (
+  policy: { outreachNotBefore?: string | null },
+  now = new Date(),
+) =>
+  policy.outreachNotBefore == null ||
+  Date.parse(policy.outreachNotBefore) <= now.getTime();
+
 export const isTimezone = (timezone: string) =>
   Boolean(timezone) &&
   resultify(() =>

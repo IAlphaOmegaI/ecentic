@@ -858,14 +858,16 @@
           "clay": "Save your Clay API key to connect the workspace. You can set up enrichment later.",
           "google": "Create a Google OAuth web application, add the redirect URI below, and save its client ID and client secret. Then connect each Gmail inbox.",
           "scrapellm": "Use ScrapeLLM to capture actual shopper queries and the answers shown.",
-          "firecrawl": "Use Firecrawl to inspect rendered product pages and record supporting evidence."
+          "firecrawl": "Use Firecrawl to inspect rendered product pages and record supporting evidence.",
+          "hubspot": "Use a service key with read access to contacts and companies. The connection check does not change CRM records."
         },
         "secret": {
           "apollo": "Apollo API key",
           "clay": "Clay API key",
           "google": "Google OAuth client secret",
           "scrapellm": "ScrapeLLM API key",
-          "firecrawl": "Firecrawl API key"
+          "firecrawl": "Firecrawl API key",
+          "hubspot": "HubSpot service key"
         },
         "fields": {
           "clientId": "Google OAuth client ID",
@@ -903,7 +905,8 @@
           "clayWorkspace": "Open Clay",
           "clayApiDocs": "Clay API docs",
           "scrapellmAccount": "Open ScrapeLLM",
-          "firecrawlAccount": "Open Firecrawl"
+          "firecrawlAccount": "Open Firecrawl",
+          "hubspotAccount": "Open HubSpot"
         },
         "routineHelp": "Optional for connecting. Configure an enrichment routine in your Clay workspace, then paste its routine ID here.",
         "routine": {
@@ -969,6 +972,11 @@
         "verified": "API key verified",
         "environment": "Server key configured",
         "savedHelp": "ScrapeLLM access is checked when research runs. Saving its key does not run a paid search."
+      },
+      "hubspot": {
+        "title": "HubSpot",
+        "description": "Store a HubSpot service key for CRM synchronization. Saving a key does not start a sync.",
+        "keySaved": "Key saved"
       }
     },
     "relationships": {

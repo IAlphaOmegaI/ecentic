@@ -7,7 +7,7 @@ import { draftReviewReadinessKey } from "@/lib/outbound-draft-review";
 import { requireTestDatabase } from "../helpers/database";
 import {
   passingCopyJudge,
-  writerFixture,
+  reviewedWriterFixture,
 } from "../helpers/outbound-writer-fixture";
 
 const endpoint = requireTestDatabase(process.env.OUTBOUND_TEST_DATABASE_URL);
@@ -17,12 +17,19 @@ const { draftCopyReadiness } = await import(
   "@/server/utils/outbound/draft-copy-readiness"
 );
 const Research = await import("@/server/utils/outbound/shopping-research");
-const currentFixture = { value: writerFixture() };
+const currentFixture = { value: reviewedWriterFixture() };
 // This fixture isolates durable writing. Full raw capture validation has its own
 // tests; the synthetic copy fixture is never represented as real search evidence.
 const evidence = spyOn(Research, "assertShoppingEvidence").mockImplementation(
   async () => currentFixture.value.receipt,
 );
+const compositionEvidence = spyOn(
+  Research,
+  "assertCompositionEvidence",
+).mockImplementation(async () => ({
+  receipt: currentFixture.value.receipt,
+  baseReceiptHash: Research.researchHash(currentFixture.value.receipt),
+}));
 const { db, schema } = await import("@/server/database");
 const Store = await import("@/server/app/outbound/store");
 const Composition = await import("@/server/app/outbound/sequence-composition");
@@ -46,7 +53,7 @@ const seed = async () => {
   await db.execute(
     sql`truncate outbound_integration_job,outbound_campaign,outbound_company,outbound_person,outbound_prospect,outbound_event,outbound_revision,outbound_playbook,outbound_suppression,outbound_inbox cascade`,
   );
-  currentFixture.value = writerFixture();
+  currentFixture.value = reviewedWriterFixture();
   const fixture = currentFixture.value;
   await db.insert(schema.outboundPlaybook).values({
     id: "default",
@@ -329,5 +336,6 @@ try {
 } finally {
   readiness.mockRestore();
   evidence.mockRestore();
+  compositionEvidence.mockRestore();
   await db.$client.end();
 }

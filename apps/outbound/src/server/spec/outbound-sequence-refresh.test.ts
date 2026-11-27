@@ -1,6 +1,30 @@
 import { expect, test } from "bun:test";
 import { resolve } from "node:path";
 
+test("sequence failures retain definitive and uncertain dispositions", async () => {
+  const execution = Bun.spawn(
+    [
+      process.execPath,
+      "--no-env-file",
+      "test",
+      resolve(
+        import.meta.dir,
+        "fixtures/outbound-sequence-failures.fixture.ts",
+      ),
+    ],
+    { stdout: "pipe", stderr: "pipe" },
+  );
+  const [status, output, error] = await Promise.all([
+    execution.exited,
+    new Response(execution.stdout).text(),
+    new Response(execution.stderr).text(),
+  ]);
+  expect({ status, output: status === 0 ? "passed" : output + error }).toEqual({
+    status: 0,
+    output: "passed",
+  });
+});
+
 test.skipIf(!process.env.OUTBOUND_TEST_DATABASE_URL)(
   "sequence refresh checkpoints providers and holds historical copy without changing sent receipts",
   async () => {

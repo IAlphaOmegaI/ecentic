@@ -39,6 +39,7 @@ const keyNames = {
   google: "OUTBOUND_GOOGLE_CLIENT_SECRET",
   scrapellm: "OUTBOUND_SCRAPELLM_API_KEY",
   firecrawl: "OUTBOUND_FIRECRAWL_API_KEY",
+  hubspot: "OUTBOUND_HUBSPOT_API_KEY",
 } as const;
 beforeEach(() => {
   resolveKey.mockImplementation(async (provider = "unipile") => ({
@@ -648,6 +649,13 @@ describe("Apollo and Clay contracts", () => {
         cursor: "next",
         results: [{ id: "person-1", status: "failed" }],
       },
+    });
+  });
+  test("Clay polling rejects a provider response for a different acknowledged run", async () => {
+    Object.assign(process.env, { OUTBOUND_CLAY_API_KEY: "test-key" });
+    fetched(async () => json({ routine_run_id: "other-run", status: "complete", total: 1, finished: 1, data: [] }));
+    expect(await Providers.pollClayEnrichment({ runId: "run-1" })).toMatchObject({
+      success: false, error: { provider: "clay", code: "contract" },
     });
   });
 });

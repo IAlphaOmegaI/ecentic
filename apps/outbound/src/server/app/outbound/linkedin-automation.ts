@@ -14,6 +14,7 @@ import {
 } from "@/lib/outbound";
 import { renderLinkedInResult } from "@/lib/outbound-composition";
 import { copyPhrasePresent } from "@/lib/outbound-copy-quality";
+import { outreachMayStart } from "@/lib/outbound-scheduling";
 import { db, schema, type TransactionScope } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
 import { ConflictError } from "@/server/utils/error";
@@ -330,6 +331,8 @@ const eligible = async (
     !policy.settings.linkedinAutomationEnabled
   )
     return hold("linkedin-paused");
+  if (!outreachMayStart(policy.settings, now))
+    return hold("linkedin-not-before");
   if (!policy.settings.linkedinAccountId)
     return hold("linkedin-account-missing");
   if (
@@ -950,6 +953,7 @@ export const run = async (
           );
       }),
     );
+    if (!outreachMayStart(policy.settings)) return outcome;
     const prospects = value(
       await Prospects.find(Environment.SERVER, {
         where: and(

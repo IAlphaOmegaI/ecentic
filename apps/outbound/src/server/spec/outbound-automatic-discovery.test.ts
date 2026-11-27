@@ -6,6 +6,7 @@ import {
   expect,
   mock,
   setSystemTime,
+  spyOn,
   test,
 } from "bun:test";
 import { randomUUID } from "node:crypto";
@@ -281,6 +282,58 @@ describe("automatic company acquisition and replenishment", () => {
         campaigns: 1,
       }),
     ).toEqual({ target: 100, lowWater: 50 });
+  });
+  test("the actual preparation cron gives discovery time beyond its provider reservation guard", async () => {
+    const { discovery, db, schema } = active();
+    await create("Cron entry audience");
+    const source = fixture();
+    const original = discovery.run;
+    const called = spyOn(discovery, "run").mockImplementation((input) =>
+      original(input, source.providers),
+    );
+    // Isolate unrelated rails; the route and discovery lifecycle are real.
+    const idle = async () => ({
+      success: true as const,
+      data: { processed: 0 },
+    });
+    mock.module("@/server/app/outbound/automatic-sequence-refresh", () => ({
+      run: idle,
+    }));
+    mock.module("@/server/app/outbound/saved-contact-preparation", () => ({
+      run: idle,
+    }));
+    mock.module("@/server/app/outbound/automatic-draft-review", () => ({
+      run: idle,
+    }));
+    mock.module("@/server/app/outbound/automation", () => ({ run: idle }));
+    const beforeSecret = process.env.CRON_SECRET;
+    Object.assign(process.env, { CRON_SECRET: "offline-cron-fixture" });
+    try {
+      const Route = await import(
+        "@/app/(provider)/api/cron/outbound-prepare/route"
+      );
+      const response = await Route.GET(
+        new Request("http://localhost/api/cron/outbound-prepare", {
+          headers: { authorization: "Bearer offline-cron-fixture" },
+        }),
+      );
+      expect(response.status).toBe(200);
+      expect(await response.json()).toMatchObject({
+        discovery: { processed: 1, added: 1 },
+      });
+      expect(source.providers.searchApolloCompanies).toHaveBeenCalledTimes(1);
+      expect(await db.select().from(schema.outboundCampaignRun)).toHaveLength(
+        1,
+      );
+      expect(await db.select().from(schema.outboundSendAttempt)).toHaveLength(
+        0,
+      );
+    } finally {
+      called.mockRestore();
+      if (beforeSecret === undefined)
+        Reflect.deleteProperty(process.env, "CRON_SECRET");
+      else Object.assign(process.env, { CRON_SECRET: beforeSecret });
+    }
   });
   test("preparation pause and inactive campaigns never request a provider", async () => {
     const { store, discovery, campaigns } = active();

@@ -1,3 +1,4 @@
+import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { defaultPlaybook, prospectSchema } from "@/lib/outbound";
 import type { WriterParts } from "@/lib/outbound-composition";
@@ -254,4 +255,42 @@ export const writerFixture = (ranked = false) => {
     relevance,
   };
   return { prospect, receipt, policy, parts };
+};
+
+/** Copy-only v4 lifecycle fixture; raw evidence validation is tested separately. */
+export const reviewedWriterFixture = () => {
+  const fixture = writerFixture();
+  const discovery = fixture.receipt.discovery;
+  assert.ok(discovery);
+  discovery.round3CopyProof = {
+    version: "round3-copy-proof-v1",
+    sourceId: discovery.sourceId,
+    answerHash: discovery.answerHash,
+    linksHash: discovery.linksHash,
+    fullName: fixture.prospect.company,
+    spokenName: fixture.prospect.company,
+    domain: fixture.prospect.domain,
+    namesAbsent: true,
+    citedSources: [],
+  };
+  discovery.productListings = {
+    version: "product-listing-absence-v1",
+    sourceId: discovery.sourceId,
+    answerHash: discovery.answerHash,
+    linksHash: discovery.linksHash,
+    entries: [
+      {
+        format: "markdown-product-link",
+        title: "Synthetic bag",
+        url: "https://synthetic.example/products/bag",
+        start: 0,
+        end: 1,
+        rawHash: "1".repeat(64),
+      },
+    ],
+  };
+  fixture.parts.relevance =
+    "That's the kind of search a new customer starts with.";
+  fixture.policy.relevanceLines = [fixture.parts.relevance];
+  return { ...fixture, receipt: shoppingResearchSchema.parse(fixture.receipt) };
 };

@@ -176,6 +176,34 @@ export const round3CopyProofSchema = z.object({
   }).strict().optional(),
 }).strict();
 export type Round3CopyProof = z.infer<typeof round3CopyProofSchema>;
+export const PRODUCT_LISTING_ABSENCE_VERSION = "product-listing-absence-v1";
+/** Inclusion proof only: these linked products establish no rank, total or brand. */
+export const shoppingProductListingsSchema = z
+  .object({
+    version: z.literal(PRODUCT_LISTING_ABSENCE_VERSION),
+    sourceId: text(80),
+    answerHash: digest,
+    linksHash: digest,
+    entries: z
+      .array(
+        z
+          .object({
+            format: z.enum(["product-card", "markdown-product-link"]),
+            title: text(600),
+            url: z.string().url().max(6000),
+            start: z.number().int().nonnegative(),
+            end: z.number().int().positive(),
+            rawHash: digest,
+          })
+          .strict(),
+      )
+      .min(1)
+      .max(20),
+  })
+  .strict();
+export type ShoppingProductListings = z.infer<
+  typeof shoppingProductListingsSchema
+>;
 export const shoppingDiscoverySchema = z
   .object({
     queryIndex: z.number().int().min(0).max(4),
@@ -191,6 +219,7 @@ export const shoppingDiscoverySchema = z
     assessmentVersion: z.literal("discovery-v2").optional(),
     brandProjection: shoppingBrandProjectionSchema.optional(),
     round3CopyProof: round3CopyProofSchema.optional(),
+    productListings: shoppingProductListingsSchema.optional(),
     noGapProof: z
       .object({
         version: z.enum(["repeated-presence-v1", "repeated-presence-v2"]),

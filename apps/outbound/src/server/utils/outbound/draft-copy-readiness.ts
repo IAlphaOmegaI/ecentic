@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import type { Message } from "@/lib/outbound";
 import {
   canonicalSequenceInput,
+  isCurrentWritingSnapshot,
   writingSnapshotSchema,
 } from "@/lib/outbound-composition";
 
@@ -12,7 +13,13 @@ const hash = (value: string) =>
 
 /** Bind a review claim to its text and verdict, including drafts that need repair. */
 export const draftCopyReadiness = (messages: readonly Message[]) => {
-  const canonical = canonicalSequenceInput(messages);
+  const writing = writingSnapshotSchema.safeParse(messages[0]?.writing);
+  const canonical = canonicalSequenceInput(
+    messages,
+    writing.success && isCurrentWritingSnapshot(writing.data)
+      ? writing.data
+      : {},
+  );
   const contentHash =
     canonical.status === "ready" ? hash(canonical.canonicalText) : null;
   const readinessHash = hash(

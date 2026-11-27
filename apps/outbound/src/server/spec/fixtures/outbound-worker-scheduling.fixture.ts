@@ -71,6 +71,7 @@ const prospects = [
 ];
 const checked: string[] = [];
 const claimed: string[] = [];
+const synchronized: string[] = [];
 const mailHost = { provider: "google" as ProspectInput["mxProvider"] };
 let researches = 0;
 mock.module("@/server/app/outbound/transport-store", () => ({
@@ -88,10 +89,13 @@ mock.module("@/server/app/outbound/transport-store", () => ({
   }),
 }));
 mock.module("@/server/utils/outbound/direct-mailbox", () => ({
-  syncPage: async () => ({
-    success: true,
-    data: { complete: true, messages: [], checkpoint: {} },
-  }),
+  syncPage: async () => {
+    synchronized.push(inbox.id);
+    return {
+      success: true,
+      data: { complete: true, messages: [], checkpoint: {} },
+    };
+  },
 }));
 mock.module("@/server/utils/outbound/research", () => ({
   checkProduct: async () => {
@@ -174,5 +178,17 @@ expect(await Worker.run({ dryRun: false })).toMatchObject({
   data: { sent: 0 },
 });
 expect(claimed).toEqual([]);
+checked.length = 0;
+researches = 0;
+synchronized.length = 0;
+settings.outreachNotBefore = "2026-12-02T00:00:00.000Z";
+expect(await Worker.run({ dryRun: false })).toMatchObject({
+  success: true,
+  data: { sent: 0 },
+});
+expect(synchronized).toEqual([inbox.id]);
+expect(checked).toEqual([]);
+expect(claimed).toEqual([]);
+expect(researches).toBe(0);
 setSystemTime();
 console.log("Worker scheduling prefilters passed");

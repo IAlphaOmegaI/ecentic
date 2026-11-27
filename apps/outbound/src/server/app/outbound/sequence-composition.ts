@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createHash, randomUUID } from "node:crypto";
+import { isDeepStrictEqual } from "node:util";
 import { type Result, resultify } from "@zenncore/utils";
 import { and, desc, eq, inArray, ne, or, sql } from "drizzle-orm";
 import { z } from "zod";
@@ -17,8 +18,18 @@ import {
   writerPartsSchema,
   writingSnapshotSchema,
 } from "@/lib/outbound-composition";
-import { hasCompleteCopyVerdict } from "@/lib/outbound-copy-quality";
+import {
+  deterministicCopyIssues,
+  hasCompleteCopyVerdict,
+} from "@/lib/outbound-copy-quality";
 import { rebuildWritingProposal } from "@/lib/outbound-rebuild-policy";
+import {
+  type CopyRulesVersion,
+  type OpeningRuleException,
+  openingRuleExceptionSchema,
+  REVIEWED_COPY_RULES_VERSION,
+  ROUND3_COPY_RULES_VERSION,
+} from "@/lib/outbound-round3-copy";
 import {
   compositionReferenceSchema,
   writerCandidatesSchema,
@@ -34,6 +45,12 @@ import {
 } from "@/server/utils/error";
 import * as Draft from "@/server/utils/outbound/draft";
 import { IntegrationError } from "@/server/utils/outbound/http";
+import {
+  assertReviewedCopySourcesWithin,
+  loadReviewedCopyPreviewWithin,
+  type ReviewedCopyBinding,
+  reviewedCopyBindingSchema,
+} from "@/server/utils/outbound/reviewed-copy-preview";
 import * as Policy from "@/server/utils/outbound/shopping-policy";
 import * as Research from "@/server/utils/outbound/shopping-research";
 import { appendWriterCandidate } from "@/server/utils/outbound/writing-candidates";
@@ -55,6 +72,7 @@ const peerSchema = z.object({
 const policySchema = playbookSchema;
 const inputSchema = z.object({
   operation: z.literal("sequenceComposition"),
+  reviewedPreview: reviewedCopyBindingSchema.optional(),
   step: z.literal(1),
   key: z.string(),
   prospectId: z.string().uuid(),
@@ -63,6 +81,11 @@ const inputSchema = z.object({
   campaignId: z.string().uuid().nullable(),
   batchKey: z.string().nullable(),
   receiptHash: digest,
+  baseReceiptHash: digest.optional(),
+  copyRulesVersion: z
+    .enum([ROUND3_COPY_RULES_VERSION, REVIEWED_COPY_RULES_VERSION])
+    .optional(),
+  openingRuleException: openingRuleExceptionSchema.optional(),
   writingPolicyHash: digest,
   prospectHash: digest,
   actor: z.string().min(1),
@@ -105,11 +128,19 @@ export type CompletedComposition = Pick<
 > &
   Pick<z.infer<typeof outputSchema>, "appliedProspectRevision" | "savedAt"> & {
     preview: boolean;
+    copyRulesVersion?: CopyRulesVersion;
+    openingRuleException?: OpeningRuleException;
+    receiptSnapshot: z.infer<typeof shoppingResearchSchema>;
+    baseReceiptHash: string;
     policySnapshot: z.infer<typeof policySchema>;
     globalVoiceNotes: string;
     baseWritingPolicyHash: string;
   };
 export type CompositionDependencies = {
+  /** Exact completed review adoption, never a new writer or judge request. */
+  reviewedPreview?: ReviewedCopyBinding;
+  /** Supplied only by a reviewed operator; ordinary UI and automatic writers omit it. */
+  openingRuleException?: OpeningRuleException;
   compose?: typeof Draft.composeSequence;
   generate?: Draft.CompositionDependencies["generate"];
   judge?: Draft.CompositionDependencies["judge"];
@@ -146,9 +177,10 @@ export const compositionJobKey = (
   receiptHash: string,
   writingPolicyHash: string,
   suppliedParts?: WriterParts,
+  openingRuleException?: OpeningRuleException,
 ) =>
   suppliedParts
-    ? `sequence-review:${hash(JSON.stringify({ prospectId, receiptHash, writingPolicyHash, step: 1, parts: suppliedParts }))}`
+    ? `sequence-review:${hash(JSON.stringify({ prospectId, receiptHash, writingPolicyHash, step: 1, parts: suppliedParts, ...(openingRuleException ? { openingRuleException } : {}) }))}`
     : `sequence-writing:${hash(JSON.stringify({ prospectId, receiptHash, writingPolicyHash, step: 1 }))}`;
 
 const readCompleted = (job: Job): CompletedComposition => {
@@ -167,13 +199,14 @@ const readCompleted = (job: Job): CompletedComposition => {
   const output = parsedOutput.data;
   for (const candidate of output.writerCandidates ?? [])
     appendWriterCandidate([], candidate, input);
-  const canonical = canonicalSequenceInput(output.messages);
+  const canonical = canonicalSequenceInput(output.messages, input);
   const writing = output.messages[0]?.writing;
   const key = compositionJobKey(
     input.prospectId,
     input.receiptHash,
     input.writingPolicyHash,
     input.suppliedParts,
+    input.openingRuleException,
   );
   if (
     job.prospectId !== input.prospectId ||
@@ -186,10 +219,25 @@ const readCompleted = (job: Job): CompletedComposition => {
       ? Policy.legacyWritingPolicyHash
       : Policy.writingPolicyHash)(input.settings, {
       globalVoiceNotes: input.globalVoiceNotes,
+      ...(input.copyRulesVersion
+        ? { copyRulesVersion: input.copyRulesVersion }
+        : {}),
     }) !== input.writingPolicyHash ||
     Policy.compositionProspectHash(input.prospect) !== input.prospectHash ||
     canonical.status !== "ready" ||
     !writing ||
+    (isCurrentWritingSnapshot(writing)
+      ? writing.copyRulesVersion
+      : undefined) !== input.copyRulesVersion ||
+    JSON.stringify(
+      isCurrentWritingSnapshot(writing)
+        ? writing.openingRuleException
+        : undefined,
+    ) !== JSON.stringify(input.openingRuleException) ||
+    (input.openingRuleException !== undefined &&
+      input.suppliedParts === undefined) ||
+    (input.copyRulesVersion === REVIEWED_COPY_RULES_VERSION &&
+      !input.baseReceiptHash) ||
     (writing.compositionJobId !== undefined &&
       writing.compositionJobId !== job.id) ||
     !hasCompleteCopyVerdict(writing.quality) ||
@@ -221,6 +269,14 @@ const readCompleted = (job: Job): CompletedComposition => {
     composition: output.composition,
     context: output.context,
     preview: input.preview ?? false,
+    ...(input.copyRulesVersion
+      ? { copyRulesVersion: input.copyRulesVersion }
+      : {}),
+    ...(input.openingRuleException
+      ? { openingRuleException: input.openingRuleException }
+      : {}),
+    receiptSnapshot: input.receipt,
+    baseReceiptHash: input.baseReceiptHash ?? input.receiptHash,
     policySnapshot: input.settings,
     globalVoiceNotes: input.globalVoiceNotes,
     baseWritingPolicyHash:
@@ -242,6 +298,8 @@ export const loadCompletedComposition = (
       throw new ValidationError("Choose a completed writing job.");
     const job = value(await Jobs.get(Environment.SERVER, jobId, { tx: scope }));
     if (!job) throw new NotFoundError("Writing job not found.");
+    const binding = inputSchema.parse(job.input).reviewedPreview;
+    if (binding) await assertReviewedCopySourcesWithin(scope, binding);
     return readCompleted(job);
   });
 
@@ -276,8 +334,10 @@ export const findCompletedComposition = (
       ),
     )[0];
     if (job?.status !== "complete") return null;
+    const binding = inputSchema.parse(job.input).reviewedPreview;
+    if (binding) await assertReviewedCopySourcesWithin(scope, binding);
     const completed = readCompleted(job);
-    return completed.composition.receiptHash === input.receiptHash &&
+    return completed.baseReceiptHash === input.receiptHash &&
       completed.composition.writingPolicyHash === input.writingPolicyHash
       ? completed
       : null;
@@ -402,7 +462,14 @@ export const composeForProspect = async (
   dependencies: CompositionDependencies = {},
 ): Promise<Result<CompletedComposition, Error>> => {
   const parsed = requestSchema.safeParse(request);
-  if (!parsed.success || !actor.trim())
+  if (
+    !parsed.success ||
+    !actor.trim() ||
+    (dependencies.openingRuleException !== undefined &&
+      (!parsed.data.suppliedParts ||
+        !openingRuleExceptionSchema.safeParse(dependencies.openingRuleException)
+          .success))
+  )
     return {
       success: false,
       error: new ValidationError(
@@ -441,6 +508,27 @@ export const composeForProspect = async (
       throw new ValidationError(
         "Preview the proposed formula only on a held unsent prospect.",
       );
+    const reviewed = dependencies.reviewedPreview
+      ? await loadReviewedCopyPreviewWithin(
+          scope,
+          dependencies.reviewedPreview,
+          prospect,
+          policy,
+          "after-research",
+        )
+      : null;
+    if (
+      reviewed &&
+      (parsed.data.preview ||
+        !isDeepStrictEqual(parsed.data.suppliedParts, reviewed.preview.parts) ||
+        !isDeepStrictEqual(
+          dependencies.openingRuleException,
+          reviewed.preview.openingRuleException,
+        ))
+    )
+      throw new ValidationError(
+        "Adoption must use the exact reviewed parts and opening authorization.",
+      );
     const liveSettings = settingsForProspect(prospect, policy.settings);
     const selectedPolicy = parsed.data.preview
       ? rebuildWritingProposal(policy.settings)
@@ -451,21 +539,30 @@ export const composeForProspect = async (
       id: prospect.id,
       assignedSenderEmail: settings.fromEmail,
     });
-    const receipt = await Research.assertShoppingEvidence(scope, prospect, {
-      ...policy,
-      settings: liveSettings,
-    });
-    if (!receipt)
+    const copyRulesVersion = REVIEWED_COPY_RULES_VERSION;
+    const research = await Research.assertCompositionEvidence(
+      scope,
+      prospect,
+      {
+        ...policy,
+        settings: liveSettings,
+      },
+      { copyRulesVersion },
+    );
+    if (!research)
       throw new ValidationError(
         "Save a supported shopping receipt before writing.",
       );
+    const { receipt, baseReceiptHash } = research;
     const receiptHash = Research.researchHash(receipt);
     const globalVoiceNotes = selectedPolicy.voiceNotes;
     const baseWritingPolicyHash = Policy.writingPolicyHash(liveSettings, {
       globalVoiceNotes: policy.settings.voiceNotes,
+      copyRulesVersion,
     });
     const writingPolicyHash = Policy.writingPolicyHash(settings, {
       globalVoiceNotes,
+      copyRulesVersion,
     });
     const prospectHash = Policy.compositionProspectHash(details);
     const key = compositionJobKey(
@@ -473,6 +570,7 @@ export const composeForProspect = async (
       receiptHash,
       writingPolicyHash,
       parsed.data.suppliedParts,
+      dependencies.openingRuleException,
     );
     const prior = value(
       await Jobs.find(
@@ -487,8 +585,24 @@ export const composeForProspect = async (
         throw new ConflictError(
           "The existing writing job used different prospect details. Review that result before requesting new copy.",
         );
-      if (prior.status === "complete")
+      if (prior.status === "complete") {
+        if (priorInput.data.reviewedPreview)
+          await assertReviewedCopySourcesWithin(
+            scope,
+            priorInput.data.reviewedPreview,
+          );
+        if (
+          dependencies.reviewedPreview &&
+          !isDeepStrictEqual(
+            priorInput.data.reviewedPreview,
+            dependencies.reviewedPreview,
+          )
+        )
+          throw new ConflictError(
+            "The saved composition belongs to a different review.",
+          );
         return { status: "reused" as const, result: readCompleted(prior) };
+      }
       if (prior.status === "failed")
         return {
           status: "blocked" as const,
@@ -573,8 +687,33 @@ export const composeForProspect = async (
     const peers = value(
       await recentCompositionPeers(prospect, batchKey, scope),
     );
+    if (reviewed) {
+      const issues = deterministicCopyIssues({
+        prospect: details,
+        receipt,
+        playbook: settings,
+        parts: reviewed.preview.parts,
+        messages: reviewed.preview.messages,
+        peers,
+        copyRulesVersion,
+        openingRuleException: dependencies.openingRuleException,
+      });
+      if (
+        issues.length ||
+        Policy.compositionProspectHash(details) !==
+          reviewed.preview.prospectHash ||
+        receiptHash !== reviewed.preview.receiptHash ||
+        writingPolicyHash !== reviewed.preview.writingPolicyHash
+      )
+        throw new ValidationError(
+          `The reviewed copy no longer matches the current composition context: ${issues.join("; ")}`,
+        );
+    }
     const input = inputSchema.parse({
       operation: "sequenceComposition",
+      ...(dependencies.reviewedPreview
+        ? { reviewedPreview: dependencies.reviewedPreview }
+        : {}),
       step: 1,
       key,
       prospectId: prospect.id,
@@ -583,6 +722,11 @@ export const composeForProspect = async (
       campaignId: prospect.campaignId,
       batchKey,
       receiptHash,
+      baseReceiptHash,
+      copyRulesVersion,
+      ...(dependencies.openingRuleException
+        ? { openingRuleException: dependencies.openingRuleException }
+        : {}),
       writingPolicyHash,
       prospectHash,
       actor,
@@ -616,7 +760,7 @@ export const composeForProspect = async (
         { tx: scope },
       ),
     );
-    return { status: "claimed" as const, job, input, lease };
+    return { status: "claimed" as const, job, input, lease, reviewed };
   });
   if (!claimed.success) return claimed;
   if (claimed.data.status === "blocked")
@@ -626,164 +770,183 @@ export const composeForProspect = async (
   const claim = claimed.data;
   // This is the only provider boundary, deliberately outside the database transaction.
   const composed = await resultify(() =>
-    (dependencies.compose ?? Draft.composeSequence)(
-      claim.input.prospect,
-      claim.input.receipt,
-      claim.input.settings,
-      {
-        generate: dependencies.generate,
-        judge: dependencies.judge,
-        suppliedParts: claim.input.suppliedParts,
-        now,
-        deadline: dependencies.deadline,
-        peers: claim.input.peers,
-        globalVoiceNotes: claim.input.globalVoiceNotes,
-        onCandidate: async (candidate) => {
-          const active = value(
-            await transaction(async (scope) => {
-              const current = value(
-                await Jobs.get(Environment.SERVER, claim.job.id, { tx: scope }),
+    claim.reviewed
+      ? Promise.resolve({
+          success: true as const,
+          data: {
+            messages: claim.reviewed.preview.messages,
+            issues: claim.reviewed.preview.issues,
+            generation: claim.reviewed.preview.generation,
+          },
+        })
+      : (dependencies.compose ?? Draft.composeSequence)(
+          claim.input.prospect,
+          claim.input.receipt,
+          claim.input.settings,
+          {
+            generate: dependencies.generate,
+            judge: dependencies.judge,
+            suppliedParts: claim.input.suppliedParts,
+            now,
+            deadline: dependencies.deadline,
+            peers: claim.input.peers,
+            globalVoiceNotes: claim.input.globalVoiceNotes,
+            copyRulesVersion: claim.input.copyRulesVersion,
+            openingRuleException: claim.input.openingRuleException,
+            onCandidate: async (candidate) => {
+              const active = value(
+                await transaction(async (scope) => {
+                  const current = value(
+                    await Jobs.get(Environment.SERVER, claim.job.id, {
+                      tx: scope,
+                    }),
+                  );
+                  const saved = leaseSchema.safeParse(
+                    current?.output?.["lease"],
+                  );
+                  const expired = leaseSchema.safeParse(
+                    current?.output?.["expiredLease"],
+                  );
+                  const ownsStarting =
+                    current?.status === "starting" &&
+                    saved.success &&
+                    saved.data.token === claim.lease.token;
+                  const ownsExpired =
+                    current?.status === "uncertain" &&
+                    expired.success &&
+                    expired.data.token === claim.lease.token;
+                  if (!current || (!ownsStarting && !ownsExpired))
+                    throw uncertain(
+                      claim.job.id,
+                      "The completed candidate belongs to a superseded writing lease. No repair or judge was called.",
+                    );
+                  if (
+                    JSON.stringify(inputSchema.parse(current.input)) !==
+                    JSON.stringify(claim.input)
+                  )
+                    throw uncertain(
+                      claim.job.id,
+                      "The original writing context changed. No repair or judge was called.",
+                    );
+                  const active =
+                    ownsStarting &&
+                    saved.success &&
+                    Date.parse(saved.data.expiresAt) > now();
+                  const writerCandidates = appendWriterCandidate(
+                    current.output?.["writerCandidates"],
+                    candidate,
+                    claim.input,
+                  );
+                  value(
+                    await Jobs.update(
+                      Environment.SERVER,
+                      current.id,
+                      {
+                        status: active ? "starting" : "uncertain",
+                        output: {
+                          ...current.output,
+                          writerCandidates,
+                          ...(!active
+                            ? {
+                                lease: null,
+                                expiredLease: saved.success
+                                  ? saved.data
+                                  : expired.success
+                                    ? expired.data
+                                    : null,
+                              }
+                            : {}),
+                        },
+                        updatedAt: new Date(now()),
+                      },
+                      { tx: scope },
+                    ),
+                  );
+                  return active;
+                }),
               );
-              const saved = leaseSchema.safeParse(current?.output?.["lease"]);
-              const expired = leaseSchema.safeParse(
-                current?.output?.["expiredLease"],
-              );
-              const ownsStarting =
-                current?.status === "starting" &&
-                saved.success &&
-                saved.data.token === claim.lease.token;
-              const ownsExpired =
-                current?.status === "uncertain" &&
-                expired.success &&
-                expired.data.token === claim.lease.token;
-              if (!current || (!ownsStarting && !ownsExpired))
+              if (!active)
                 throw uncertain(
                   claim.job.id,
-                  "The completed candidate belongs to a superseded writing lease. No repair or judge was called.",
+                  "The completed candidate was retained after lease expiry. No repair or judge was called.",
                 );
-              if (
-                JSON.stringify(inputSchema.parse(current.input)) !==
-                JSON.stringify(claim.input)
-              )
+            },
+            onWritten: async (draft) => {
+              const mayJudge = value(
+                await transaction(async (scope) => {
+                  const current = value(
+                    await Jobs.get(Environment.SERVER, claim.job.id, {
+                      tx: scope,
+                    }),
+                  );
+                  const saved = leaseSchema.safeParse(
+                    current?.output?.["lease"],
+                  );
+                  const expired = leaseSchema.safeParse(
+                    current?.output?.["expiredLease"],
+                  );
+                  const ownsStarting =
+                    current?.status === "starting" &&
+                    saved.success &&
+                    saved.data.token === claim.lease.token;
+                  const ownsExpired =
+                    current?.status === "uncertain" &&
+                    expired.success &&
+                    expired.data.token === claim.lease.token;
+                  if (!current || (!ownsStarting && !ownsExpired))
+                    throw uncertain(
+                      claim.job.id,
+                      "The writing lease changed before copy review. The judge was not called.",
+                    );
+                  if (
+                    JSON.stringify(inputSchema.parse(current.input)) !==
+                    JSON.stringify(claim.input)
+                  )
+                    throw uncertain(
+                      claim.job.id,
+                      "The original writing context changed before copy review. The judge was not called.",
+                    );
+                  const active =
+                    ownsStarting &&
+                    saved.success &&
+                    Date.parse(saved.data.expiresAt) > now();
+                  value(
+                    await Jobs.update(
+                      Environment.SERVER,
+                      current.id,
+                      {
+                        status: active ? "starting" : "uncertain",
+                        output: {
+                          ...current.output,
+                          draftBeforeJudge: draft,
+                          writerCompletedAt: new Date(now()).toISOString(),
+                          ...(!active
+                            ? {
+                                lease: null,
+                                expiredLease: saved.success
+                                  ? saved.data
+                                  : expired.success
+                                    ? expired.data
+                                    : null,
+                              }
+                            : {}),
+                        },
+                        updatedAt: new Date(now()),
+                      },
+                      { tx: scope },
+                    ),
+                  );
+                  return active;
+                }),
+              );
+              if (!mayJudge)
                 throw uncertain(
                   claim.job.id,
-                  "The original writing context changed. No repair or judge was called.",
+                  "The writer response was retained after lease expiry. The judge was not called.",
                 );
-              const active =
-                ownsStarting &&
-                saved.success &&
-                Date.parse(saved.data.expiresAt) > now();
-              const writerCandidates = appendWriterCandidate(
-                current.output?.["writerCandidates"],
-                candidate,
-                claim.input,
-              );
-              value(
-                await Jobs.update(
-                  Environment.SERVER,
-                  current.id,
-                  {
-                    status: active ? "starting" : "uncertain",
-                    output: {
-                      ...current.output,
-                      writerCandidates,
-                      ...(!active
-                        ? {
-                            lease: null,
-                            expiredLease: saved.success
-                              ? saved.data
-                              : expired.success
-                                ? expired.data
-                                : null,
-                          }
-                        : {}),
-                    },
-                    updatedAt: new Date(now()),
-                  },
-                  { tx: scope },
-                ),
-              );
-              return active;
-            }),
-          );
-          if (!active)
-            throw uncertain(
-              claim.job.id,
-              "The completed candidate was retained after lease expiry. No repair or judge was called.",
-            );
-        },
-        onWritten: async (draft) => {
-          const mayJudge = value(
-            await transaction(async (scope) => {
-              const current = value(
-                await Jobs.get(Environment.SERVER, claim.job.id, { tx: scope }),
-              );
-              const saved = leaseSchema.safeParse(current?.output?.["lease"]);
-              const expired = leaseSchema.safeParse(
-                current?.output?.["expiredLease"],
-              );
-              const ownsStarting =
-                current?.status === "starting" &&
-                saved.success &&
-                saved.data.token === claim.lease.token;
-              const ownsExpired =
-                current?.status === "uncertain" &&
-                expired.success &&
-                expired.data.token === claim.lease.token;
-              if (!current || (!ownsStarting && !ownsExpired))
-                throw uncertain(
-                  claim.job.id,
-                  "The writing lease changed before copy review. The judge was not called.",
-                );
-              if (
-                JSON.stringify(inputSchema.parse(current.input)) !==
-                JSON.stringify(claim.input)
-              )
-                throw uncertain(
-                  claim.job.id,
-                  "The original writing context changed before copy review. The judge was not called.",
-                );
-              const active =
-                ownsStarting &&
-                saved.success &&
-                Date.parse(saved.data.expiresAt) > now();
-              value(
-                await Jobs.update(
-                  Environment.SERVER,
-                  current.id,
-                  {
-                    status: active ? "starting" : "uncertain",
-                    output: {
-                      ...current.output,
-                      draftBeforeJudge: draft,
-                      writerCompletedAt: new Date(now()).toISOString(),
-                      ...(!active
-                        ? {
-                            lease: null,
-                            expiredLease: saved.success
-                              ? saved.data
-                              : expired.success
-                                ? expired.data
-                                : null,
-                          }
-                        : {}),
-                    },
-                    updatedAt: new Date(now()),
-                  },
-                  { tx: scope },
-                ),
-              );
-              return active;
-            }),
-          );
-          if (!mayJudge)
-            throw uncertain(
-              claim.job.id,
-              "The writer response was retained after lease expiry. The judge was not called.",
-            );
-        },
-      },
-    ),
+            },
+          },
+        ),
   );
   const response = composed.success
     ? composed.data
@@ -792,6 +955,28 @@ export const composeForProspect = async (
     const current = value(
       await Jobs.get(Environment.SERVER, claim.job.id, { tx: scope }),
     );
+    if (claim.input.reviewedPreview) {
+      const prospect = value(
+        await Prospects.get(Environment.SERVER, claim.input.prospectId, {
+          tx: scope,
+        }),
+      );
+      if (!prospect) throw new NotFoundError("Prospect not found.");
+      const reviewed = await loadReviewedCopyPreviewWithin(
+        scope,
+        claim.input.reviewedPreview,
+        prospect,
+        await Store.policy(scope),
+        "after-research",
+      );
+      if (
+        !response.success ||
+        !isDeepStrictEqual(response.data.messages, reviewed.preview.messages)
+      )
+        throw new ConflictError(
+          "The reviewed composition changed during adoption.",
+        );
+    }
     const { lease: savedLease } = current?.output ?? {};
     const lease = leaseSchema.safeParse(savedLease);
     const expiredLease = leaseSchema.safeParse(
@@ -908,7 +1093,10 @@ export const composeForProspect = async (
       };
     }
     const prepared = resultify(() => {
-      const canonical = canonicalSequenceInput(response.data.messages);
+      const canonical = canonicalSequenceInput(
+        response.data.messages,
+        claim.input,
+      );
       const writing = response.data.messages[0]?.writing;
       if (canonical.status !== "ready" || !writing)
         throw new ValidationError(

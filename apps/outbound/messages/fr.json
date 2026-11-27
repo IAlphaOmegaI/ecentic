@@ -858,14 +858,16 @@
           "clay": "Enregistrez votre clé API Clay pour connecter l’espace de travail. Vous pourrez configurer l’enrichissement plus tard.",
           "google": "Créez une application Web OAuth Google, ajoutez l’URI de redirection ci-dessous, puis enregistrez son identifiant et son secret client. Connectez ensuite chaque boîte Gmail.",
           "scrapellm": "Utilisez ScrapeLLM pour capturer les requêtes réelles des acheteurs et les réponses affichées.",
-          "firecrawl": "Utilisez Firecrawl pour inspecter les pages produit rendues et enregistrer les éléments de preuve."
+          "firecrawl": "Utilisez Firecrawl pour inspecter les pages produit rendues et enregistrer les éléments de preuve.",
+          "hubspot": "Utilisez une clé de service avec un accès en lecture aux contacts et aux entreprises. La vérification de la connexion ne modifie pas les fiches du CRM."
         },
         "secret": {
           "apollo": "Clé API Apollo",
           "clay": "Clé API Clay",
           "google": "Secret client OAuth Google",
           "scrapellm": "Clé API ScrapeLLM",
-          "firecrawl": "Clé API Firecrawl"
+          "firecrawl": "Clé API Firecrawl",
+          "hubspot": "Clé de service HubSpot"
         },
         "fields": {
           "clientId": "Identifiant client OAuth Google",
@@ -903,7 +905,8 @@
           "clayWorkspace": "Ouvrir Clay",
           "clayApiDocs": "Documentation de l’API Clay",
           "scrapellmAccount": "Ouvrir ScrapeLLM",
-          "firecrawlAccount": "Ouvrir Firecrawl"
+          "firecrawlAccount": "Ouvrir Firecrawl",
+          "hubspotAccount": "Ouvrir HubSpot"
         },
         "routineHelp": "Facultatif pour la connexion. Configurez une routine d’enrichissement dans votre espace de travail Clay, puis collez son ID ici.",
         "routine": {
@@ -969,6 +972,11 @@
         "verified": "Clé API vérifiée",
         "environment": "Clé du serveur configurée",
         "savedHelp": "L’accès à ScrapeLLM est vérifié lors de la recherche. Enregistrer sa clé ne lance pas de recherche payante."
+      },
+      "hubspot": {
+        "title": "HubSpot",
+        "description": "Enregistrez une clé de service HubSpot pour la synchronisation du CRM. Enregistrer la clé ne lance pas de synchronisation.",
+        "keySaved": "Clé enregistrée"
       }
     },
     "relationships": {

@@ -528,8 +528,8 @@ const fail = (
       return;
     }
     const definitive =
-      error instanceof ConflictError ||
-      error instanceof ValidationError ||
+      error.name === ConflictError.errorName ||
+      error.name === ValidationError.errorName ||
       (error instanceof IntegrationError &&
         ["configuration", "input", "access", "quota", "rate-limit"].includes(
           error.code,

@@ -10,7 +10,13 @@ import {
 } from "bun:test";
 import { createHash, randomUUID } from "node:crypto";
 import { eq, sql } from "drizzle-orm";
-import { defaultPlaybook, lintMessages, prospectSchema } from "@/lib/outbound";
+import {
+  defaultPlaybook,
+  lintMessages,
+  type Playbook,
+  type ProspectInput,
+  prospectSchema,
+} from "@/lib/outbound";
 import { defaultCampaignCriteria } from "@/lib/outbound-campaigns";
 import { draftReviewReadinessKey } from "@/lib/outbound-draft-review";
 import {
@@ -19,12 +25,14 @@ import {
   shoppingResearchSchema,
   validateShoppingResearch,
 } from "@/lib/outbound-shopping-research";
+import type { CompositionDependencies } from "@/server/utils/outbound/draft";
 import { requireTestDatabase } from "./helpers/database";
 import {
   draftSyntheticProspect,
   prepareSyntheticShoppingEvidence,
 } from "./helpers/outbound-shopping-db-fixture";
 import {
+  buildSyntheticShoppingEvidence,
   syntheticWriterParts,
   syntheticWritingPolicy,
 } from "./helpers/outbound-shopping-fixture";
@@ -258,12 +266,20 @@ const automaticFixture = async () => {
   );
   return { campaign, research: saved.researchId };
 };
-const generated: typeof import("@/server/utils/outbound/draft").generateDraft =
-  async (prospect, playbook) =>
-    active().draft.composeSequence(prospect, fixture.receipt, playbook, {
-      generate: async () => syntheticWriterParts(prospect, fixture.receipt!),
-      judge: passingCopyJudge,
-    });
+const generated = async (
+  prospect: ProspectInput,
+  playbook: Playbook,
+  receipt: ShoppingResearch | null = fixture.receipt!,
+  dependencies: CompositionDependencies = {},
+) => {
+  if (!receipt)
+    throw new Error("The synthetic review fixture requires its saved receipt.");
+  return active().draft.composeSequence(prospect, receipt, playbook, {
+    ...dependencies,
+    generate: async () => syntheticWriterParts(prospect, receipt),
+    judge: passingCopyJudge,
+  });
+};
 
 const runReview = (
   options: Parameters<
@@ -283,8 +299,13 @@ const runReview = (
       );
       return Composition.composeForProspect(actor, request, {
         ...dependencies,
-        compose: async (prospect, _receipt, playbook) => {
-          const draft = await generate(prospect, playbook);
+        compose: async (prospect, receipt, playbook, composeDependencies) => {
+          const draft = await generate(
+            prospect,
+            playbook,
+            receipt,
+            composeDependencies,
+          );
           return draft.success
             ? {
                 success: true,
@@ -1485,6 +1506,346 @@ describe.skipIf(!endpoint)(
         ).success,
       ).toBe(false);
     });
+    test("a reviewed broader preview adopts its exact verdict and opening exception through normal approval", async () => {
+      const { seedReviewedPreview } = await import(
+        "./helpers/outbound-reviewed-preview-fixture"
+      );
+      const { db, schema, research, store } = active();
+      const Composition = await import(
+        "@/server/app/outbound/sequence-composition"
+      );
+      const seeded = await seedReviewedPreview(fixture.prospectId);
+      const protectedRows = JSON.stringify({
+        source: seeded.source,
+        review: seeded.review,
+      });
+      // Authorized research switches do not alter copy; all content and sender fields remain bound.
+      await db
+        .update(schema.outboundPlaybook)
+        .set({
+          settings: {
+            ...seeded.policy.settings,
+            automaticApolloEnabled: true,
+            automaticClayEnabled: true,
+          },
+        })
+        .where(eq(schema.outboundPlaybook.id, "default"));
+      expect(
+        (
+          await research.saveReviewedPreviewAndApply(
+            seeded.actor,
+            seeded.request,
+            { ...seeded.binding, authorizationReference: "0".repeat(64) },
+          )
+        ).success,
+      ).toBe(false);
+      const applied = value(
+        await research.saveReviewedPreviewAndApply(
+          seeded.actor,
+          seeded.request,
+          seeded.binding,
+        ),
+      );
+      expect(
+        value(
+          await research.saveReviewedPreviewAndApply(
+            seeded.actor,
+            seeded.request,
+            seeded.binding,
+          ),
+        ).repeated,
+      ).toBe(true);
+      expect(
+        (
+          await research.saveReviewedPreviewAndApply(
+            seeded.actor,
+            seeded.request,
+            { ...seeded.binding, previewJobHash: "0".repeat(64) },
+          )
+        ).success,
+      ).toBe(false);
+      const [appliedJob] = await db
+        .select()
+        .from(schema.outboundIntegrationJob)
+        .where(eq(schema.outboundIntegrationJob.id, applied.researchId));
+      expect(appliedJob?.output?.["captureProof"]).toMatchObject({
+        previous: [seeded.earlier.evidence],
+      });
+      const calls = { writer: 0, judge: 0 };
+      const compose = () =>
+        Composition.composeForProspect(
+          seeded.actor,
+          {
+            prospectId: fixture.prospectId,
+            expectedRevision: applied.revision,
+            expectedPlaybookRevision: seeded.policy.revision,
+            suppliedParts: seeded.preview.parts,
+          },
+          {
+            reviewedPreview: seeded.binding,
+            openingRuleException: seeded.preview.openingRuleException,
+            generate: async () => {
+              calls.writer++;
+              throw new Error("No writer permitted");
+            },
+            judge: async () => {
+              calls.judge++;
+              throw new Error("No judge permitted");
+            },
+          },
+        );
+      const composition = value(await compose());
+      expect(value(await compose()).composition.jobId).toBe(
+        composition.composition.jobId,
+      );
+      expect(calls).toEqual({ writer: 0, judge: 0 });
+      expect(composition.messages[0]?.writing?.quality).toEqual(
+        seeded.preview.messages[0]?.writing?.quality,
+      );
+      const saved = value(
+        await store.saveComposedDraft(seeded.actor, {
+          prospect: fixture.prospectId,
+          revision: applied.revision,
+          compositionJobId: composition.composition.jobId,
+        }),
+      );
+      expect(saved.copyProblem).toBeNull();
+      // A changed source cannot be approved even when the adopted messages and own stored proof are intact.
+      await db
+        .update(schema.outboundIntegrationJob)
+        .set({ error: "Synthetic source tamper" })
+        .where(eq(schema.outboundIntegrationJob.id, seeded.source.id));
+      expect(
+        (
+          await store.reviewProspect(seeded.actor, {
+            prospect: fixture.prospectId,
+            revision: saved.revision,
+            decision: "approve",
+          })
+        ).success,
+      ).toBe(false);
+      await db
+        .update(schema.outboundIntegrationJob)
+        .set(seeded.source)
+        .where(eq(schema.outboundIntegrationJob.id, seeded.source.id));
+      value(
+        await store.reviewProspect(seeded.actor, {
+          prospect: fixture.prospectId,
+          revision: saved.revision,
+          decision: "approve",
+        }),
+      );
+      const final = value(await store.readProspect(fixture.prospectId));
+      expect(final?.status).toBe("approved");
+      expect(final?.nextSendAt?.toISOString()).toBe("2026-12-02T00:00:00.000Z");
+      expect(
+        final?.messages.map(({ subject, body }) => ({ subject, body })),
+      ).toEqual(
+        seeded.preview.messages.map(({ subject, body }) => ({ subject, body })),
+      );
+      expect(final?.messages[0]?.writing?.version).toBe("discovery-email-v2");
+      const source = (
+        await db
+          .select()
+          .from(schema.outboundIntegrationJob)
+          .where(eq(schema.outboundIntegrationJob.id, seeded.source.id))
+      )[0];
+      const review = (
+        await db
+          .select()
+          .from(schema.outboundIntegrationJob)
+          .where(eq(schema.outboundIntegrationJob.id, seeded.review.id))
+      )[0];
+      expect(JSON.stringify({ source, review })).toBe(protectedRows);
+      expect(await db.select().from(schema.outboundSendAttempt)).toHaveLength(
+        0,
+      );
+    });
+
+    test.each(["operator", "saved"] as const)(
+      "a broader absence retains its earlier capture through %s application, v4 composition and approval",
+      async (mode) => {
+        const { store, research, db, schema } = active();
+        if (mode === "saved")
+          value(
+            await store.savePlaybook("operator", {
+              ...settings,
+              automationEnabled: true,
+              trustSavedContactVerification: true,
+            }),
+          );
+        const prospect = value(await store.readProspect(fixture.prospectId));
+        if (!prospect) throw new Error("Missing synthetic prospect");
+        const pageText = `${prospect.details.product} is a large linen carry bag.`;
+        const earlier = await buildSyntheticShoppingEvidence({
+          prospect: prospect.details,
+          now: now.getTime(),
+          pageText,
+          answerText: `1. ${prospect.details.company} — ${pageText}`,
+          listed: [prospect.details.company],
+          select: (base, capture) => ({
+            ...base,
+            correctness: {
+              answerQuoteId: capture.answerQuoteId,
+              productQuoteId: capture.productQuoteId,
+              answerText: pageText,
+              pageText,
+            },
+          }),
+        });
+        expect(earlier.receipt.selected.kind).toBe("no-gap");
+        const prepared = value(
+          await prepareSyntheticShoppingEvidence(
+            "operator",
+            { prospect: fixture.prospectId },
+            { now: now.getTime(), pageText, intent: "unbranded-broad" },
+          ),
+        );
+        const { appendCaptureHistory } = await import(
+          "@/server/utils/outbound/shopping-discovery-review"
+        );
+        const selected = appendCaptureHistory(
+          prepared.request.receipt,
+          [earlier.evidence],
+          now.getTime(),
+        );
+        expect(selected.captureHistory).toHaveLength(1);
+        expect(selected.queries[0]?.intent).toBe("unbranded-broad");
+        const captureId = prepared.request.captureJobId;
+        const [captureJob] = await db
+          .select()
+          .from(schema.outboundIntegrationJob)
+          .where(eq(schema.outboundIntegrationJob.id, captureId));
+        if (!captureJob) throw new Error("Missing synthetic capture job");
+        const output = {
+          ...captureJob.output,
+          shoppingReceipt: selected,
+          shoppingHistory: [
+            {
+              query: earlier.evidence.answer.job.query,
+              shoppingJob: earlier.evidence.answer.job,
+              answer: earlier.evidence.answer,
+              browser: earlier.evidence.browser,
+              shoppingReceipt: earlier.receipt,
+              queryReservedAt: earlier.evidence.answer.job.submittedAt,
+            },
+          ],
+        };
+        await db
+          .update(schema.outboundIntegrationJob)
+          .set({ output })
+          .where(eq(schema.outboundIntegrationJob.id, captureId));
+        const request = { ...prepared.request, receipt: selected };
+        // A history label cannot substitute for the original complete provider captures.
+        await db
+          .update(schema.outboundIntegrationJob)
+          .set({ output: { ...output, shoppingHistory: [] } })
+          .where(eq(schema.outboundIntegrationJob.id, captureId));
+        expect((await research.saveAndApply("operator", request)).success).toBe(
+          false,
+        );
+        await db
+          .update(schema.outboundIntegrationJob)
+          .set({ output })
+          .where(eq(schema.outboundIntegrationJob.id, captureId));
+        const saved = value(
+          await (async () => {
+            if (mode === "operator")
+              return research.saveAndApply("operator", request);
+            const leaseToken = randomUUID();
+            await db
+              .update(schema.outboundIntegrationJob)
+              .set({
+                status: "starting",
+                output: {
+                  ...output,
+                  stage: "applyResearch",
+                  prospectRevision: request.expectedRevision,
+                  availableAt: now.toISOString(),
+                  lease: {
+                    token: leaseToken,
+                    expiresAt: new Date(now.getTime() + 60_000).toISOString(),
+                  },
+                },
+              })
+              .where(eq(schema.outboundIntegrationJob.id, captureId));
+            return research.savePreparedAndApply(
+              "operator",
+              { ...request, requestId: captureId },
+              { jobId: captureId, leaseToken },
+            );
+          })(),
+        );
+        const [researchJob] = await db
+          .select()
+          .from(schema.outboundIntegrationJob)
+          .where(eq(schema.outboundIntegrationJob.id, saved.researchId));
+        const { researchCaptureProofSchema } = await import(
+          "@/server/utils/outbound/shopping-capture-proof"
+        );
+        const proof = researchCaptureProofSchema.parse(
+          researchJob?.output?.["captureProof"],
+        );
+        expect(proof.previous).toEqual([earlier.evidence]);
+        expect(proof.answer.job.id).not.toBe(
+          proof.previous?.[0]?.answer.job.id,
+        );
+        expect(proof.previous?.[0]?.answer.raw).toEqual(
+          earlier.evidence.answer.raw,
+        );
+        const drafted = value(
+          await draftSyntheticProspect("operator", {
+            prospect: fixture.prospectId,
+          }),
+        );
+        const row = value(await store.readProspect(fixture.prospectId));
+        if (!row) throw new Error("Missing composed prospect");
+        expect(row.messages[0]?.writing?.quality?.passed).toBe(true);
+        value(
+          await store.reviewProspect("operator", {
+            prospect: fixture.prospectId,
+            revision: drafted.revision,
+            decision: "approve",
+          }),
+        );
+        const originalProof = researchJob?.output?.["captureProof"];
+        if (!researchJob || !proof.previous?.[0])
+          throw new Error("Missing preserved history");
+        const changed = structuredClone(proof);
+        const prior = changed.previous?.[0];
+        const priorRaw = prior?.answer.raw[0];
+        if (!priorRaw) throw new Error("Missing earlier answer");
+        priorRaw.body += "tampered";
+        await db
+          .update(schema.outboundIntegrationJob)
+          .set({ output: { ...researchJob.output, captureProof: changed } })
+          .where(eq(schema.outboundIntegrationJob.id, researchJob.id));
+        const Research = await import(
+          "@/server/utils/outbound/shopping-research"
+        );
+        await expect(
+          Research.assertShoppingEvidence(undefined, row, await store.policy()),
+        ).rejects.toThrow();
+        await db
+          .update(schema.outboundIntegrationJob)
+          .set({
+            output: { ...researchJob.output, captureProof: originalProof },
+          })
+          .where(eq(schema.outboundIntegrationJob.id, researchJob.id));
+        expect(
+          (
+            await Research.assertShoppingEvidence(
+              undefined,
+              row,
+              await store.policy(),
+            )
+          )?.captureHistory,
+        ).toEqual(selected.captureHistory);
+        expect(await db.select().from(schema.outboundSendAttempt)).toHaveLength(
+          0,
+        );
+      },
+    );
     test("observed fact ledger supports writer copy and manual approval", async () => {
       const { store, research } = active();
       value(await research.saveAndApply("operator", await input()));

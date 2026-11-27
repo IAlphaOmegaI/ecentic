@@ -133,18 +133,25 @@ export const getIntegrationStatus = async () => {
   const Credentials = await import(
     "@/server/app/outbound/provider-credentials"
   );
-  const [apollo, clay, google, scrapellm, firecrawl] = await Promise.all([
-    Credentials.metadata("apollo"),
-    Credentials.metadata("clay"),
-    Google.getConfigurationStatus(),
-    Credentials.metadata("scrapellm"),
-    Credentials.metadata("firecrawl"),
-  ]);
+  const [apollo, clay, google, scrapellm, firecrawl, hubspot] =
+    await Promise.all([
+      Credentials.metadata("apollo"),
+      Credentials.metadata("clay"),
+      Google.getConfigurationStatus(),
+      Credentials.metadata("scrapellm"),
+      Credentials.metadata("firecrawl"),
+      Credentials.metadata("hubspot"),
+    ]);
   if (!apollo.success) throw apollo.error;
   if (!clay.success) throw clay.error;
   if (!scrapellm.success) throw scrapellm.error;
   if (!firecrawl.success) throw firecrawl.error;
+  if (!hubspot.success) throw hubspot.error;
   return {
+    hubspot: {
+      configured: hubspot.data.configured,
+      credentialStatus: hubspot.data.credentialStatus,
+    },
     research: {
       configured: scrapellm.data.configured && firecrawl.data.configured,
       scrapellm: {
@@ -483,17 +490,26 @@ const clay = async <Schema extends z.ZodType>(
 
 export const startClayEnrichment = async ({
   items,
+  binding,
 }: {
   items: { id: string; inputs: Record<string, string> }[];
+  binding?: { routineId: string; credentialVersion: string };
 }) => {
   const Credentials = await import(
     "@/server/app/outbound/provider-credentials"
   );
+  const before = binding ? await Credentials.metadata("clay", undefined, true) : null;
   const resolved = await Credentials.resolve("clay");
   if (!resolved.success || !resolved.data.apiKey)
     return configurationError("clay");
   const routine = resolved.data.configuration.routineId;
   if (!routine) return configurationError("clay");
+  if (binding) {
+    const after = await Credentials.metadata("clay", undefined, true);
+    if (!before?.success || !after.success || before.data.version !== binding.credentialVersion ||
+      after.data.version !== binding.credentialVersion || routine !== binding.routineId)
+      return inputError("clay", "The reserved Clay routine or credentials changed.");
+  }
   const parsed = z
     .array(
       z.object({
@@ -557,6 +573,8 @@ export const pollClayEnrichment = async ({
     }),
   );
   if (!response.success) return response;
+  if (response.data.value.routine_run_id !== runId)
+    return { success: false as const, error: new IntegrationError("clay", "contract", "Clay returned another run's results.") };
   // Function outputs are workspace-defined. The action layer records this job
   // result for review; it cannot mark a person verified from arbitrary columns.
   return {

@@ -103,7 +103,7 @@ export const readReviewContext = withAuthorization(
         savedComposition.composition.prospectId === prospect.id &&
         savedComposition.appliedProspectRevision === prospect.revision &&
         research?.receipt &&
-        savedComposition.composition.receiptHash ===
+        savedComposition.baseReceiptHash ===
           Research.researchHash(research.receipt) &&
         savedComposition.context.prospectHash ===
           Policy.compositionProspectHash({
@@ -119,7 +119,7 @@ export const readReviewContext = withAuthorization(
         isDeepStrictEqual(current.data, saved.data)
           ? savedComposition
           : null;
-      const receipt = research?.receipt;
+      const receipt = composition?.receiptSnapshot ?? research?.receipt;
       const query = receipt?.queries[receipt.selected.queryIndex ?? 0];
       const capturedAnswer = research?.answer;
       const replay = capturedAnswer
@@ -132,6 +132,8 @@ export const readReviewContext = withAuthorization(
       const displayPolicy = composition?.policySnapshot ?? currentPolicy;
       const currentHash = Policy.writingPolicyHash(currentPolicy, {
         globalVoiceNotes: item.playbook.voiceNotes,
+        copyRulesVersion: composition?.copyRulesVersion,
+        openingRuleException: composition?.openingRuleException,
       });
       const proposal =
         composition?.preview === true &&

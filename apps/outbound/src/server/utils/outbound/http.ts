@@ -11,7 +11,8 @@ export type Provider =
   | "warmbly"
   | "claude"
   | "scrapellm"
-  | "firecrawl";
+  | "firecrawl"
+  | "hubspot";
 
 export class IntegrationError extends Error {
   override name = "outbound-integration-error";

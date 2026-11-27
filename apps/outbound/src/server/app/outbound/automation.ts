@@ -27,6 +27,7 @@ import { savedApolloCompany } from "@/server/utils/outbound/company-discovery";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import { productCategoryCorrection } from "@/server/utils/outbound/product-category";
 import { repository, resultifyRead } from "@/server/utils/repository";
+import * as AutomaticClay from "./automatic-clay";
 import * as Steps from "./automation-steps";
 import * as ResearchReadiness from "./research-readiness";
 import { claimShoppingProviderSlot } from "./shopping-provider-pacing";
@@ -322,10 +323,68 @@ const claim = (campaignId?: string, jobId?: string, researchReady = true) =>
         !(await claimShoppingProviderSlot(transaction))
       )
         continue;
+      const clayPreparation =
+        state.stage === "startClayRole"
+          ? await resultify(() =>
+              AutomaticClay.reserveWithin(
+                transaction,
+                job,
+                state,
+                context.policy.settings,
+              ),
+            )
+          : null;
+      if (clayPreparation && !clayPreparation.success) {
+        if (
+          !["conflict-error", "validation-error"].includes(
+            clayPreparation.error.name,
+          )
+        )
+          throw clayPreparation.error;
+        value(
+          await Jobs.update(
+            Environment.SERVER,
+            job.id,
+            {
+              status: "failed",
+              error: `Clay: ${clayPreparation.error.message}`,
+              updatedAt: new Date(),
+            },
+            { tx: transaction },
+          ),
+        );
+        continue;
+      }
+      const clayReservation = clayPreparation?.success
+        ? clayPreparation.data
+        : null;
+      if (clayReservation?.reason) {
+        value(
+          await Jobs.update(
+            Environment.SERVER,
+            job.id,
+            {
+              error: clayReservation.reason,
+              ...([
+                "clay-already-reserved",
+                "clay-contact-already-reserved",
+              ].includes(clayReservation.reason)
+                ? { status: "failed" as const }
+                : {}),
+              updatedAt: new Date(),
+            },
+            { tx: transaction },
+          ),
+        );
+        continue;
+      }
       const output: AutomationState & {
         lease: { token: string; expiresAt: string };
       } = {
         ...state,
+        ...(clayReservation?.clayRole
+          ? { clayRole: clayReservation.clayRole }
+          : {}),
         lease: {
           token: randomUUID(),
           expiresAt: new Date(Date.now() + 180000).toISOString(),
@@ -499,6 +558,30 @@ const finish = (claimed: AutomationClaim, transition: Steps.Transition) =>
     );
     if (!job) throw new ConflictError("automation-job-missing");
     const state = automationStateSchema.parse(job.output);
+    if (
+      ["startClayRole", "pollClayRole", "reviewClayRole"].includes(
+        claimed.state.stage,
+      ) &&
+      state.lease?.token === claimed.state.lease.token &&
+      Date.parse(state.lease.expiresAt) <= Date.now() &&
+      ["starting", "uncertain"].includes(job.status)
+    ) {
+      const retained = value(
+        await Jobs.update(
+          Environment.SERVER,
+          job.id,
+          {
+            status: "uncertain",
+            error: "clay-lease-expired",
+            output: { ...state, ...transition.output, lease: null },
+            updatedAt: new Date(),
+          },
+          { tx: transaction },
+        ),
+      );
+      if (!retained) throw new ConflictError("automation-job-missing");
+      return retained;
+    }
     if (
       job.status !== "starting" ||
       state.lease?.token !== claimed.state.lease.token

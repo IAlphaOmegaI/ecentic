@@ -1,4 +1,5 @@
 import "server-only";
+import { clayContinuationProblem } from "@/server/utils/outbound/clay-role";
 
 import { createHash, randomInt, randomUUID } from "node:crypto";
 import { isDeepStrictEqual } from "node:util";
@@ -100,6 +101,7 @@ import {
   savedContactReceiptSchema,
   savedContactSourceVerified,
 } from "@/lib/outbound-saved-contact";
+import { outreachMayStart } from "@/lib/outbound-scheduling";
 import {
   sequenceRefreshInputSchema,
   sequenceRefreshStateSchema,
@@ -127,6 +129,7 @@ import {
 } from "@/server/utils/outbound/shopping-policy";
 import {
   type ApprovedShoppingReplay,
+  assertCompositionEvidence,
   assertShoppingEvidence,
   researchHash,
 } from "@/server/utils/outbound/shopping-research";
@@ -481,6 +484,10 @@ export const assertAutomaticEvidence = async (
     approvedReplay,
   );
   const job = await assertAutomaticContactEvidence(transaction, prospect);
+  if (!prospect.sentStep && job?.output?.["clayRole"]) {
+    const problem = clayContinuationProblem(job.output["clayRole"], prospect);
+    if (problem) throw new ValidationError(`Clay: ${problem}`);
+  }
   if (
     !["product-published-data", "shopping-research"].includes(
       prospect.details.gap,
@@ -1519,6 +1526,7 @@ export const savePlaybookWithin = async (
   const contentPolicy = (settings: Playbook) => {
     const {
       sendingEnabled,
+      outreachNotBefore,
       automationEnabled,
       linkedinAutomationEnabled,
       senderConfirmed,
@@ -1532,6 +1540,7 @@ export const savePlaybookWithin = async (
       allowUsMarketWindow,
       allowMicrosoftRecipients,
       automaticApolloEnabled,
+      automaticClayEnabled,
       trustSavedContactVerification,
       allowProductObservations,
       dailyCompanyTarget,
@@ -1739,7 +1748,7 @@ export const savePlaybook = (
     savePlaybookWithin(transaction, actor, input, expectedRevision),
   );
 
-/** The general form does not own profiles edited in Integrations. */
+/** The general form does not own sender profiles or the operator's outreach release date. */
 export const savePlaybookForm = (actor: string, input: unknown) =>
   transaction(async (scope) => {
     const parsed = z
@@ -1776,6 +1785,8 @@ export const savePlaybookForm = (actor: string, input: unknown) =>
       {
         ...parsed.settings,
         senderProfiles: current.settings.senderProfiles,
+        outreachNotBefore: current.settings.outreachNotBefore,
+        automaticClayEnabled: current.settings.automaticClayEnabled,
       },
       parsed.expectedRevision,
     );
@@ -2433,6 +2444,8 @@ export const saveComposedDraftWithin = async (
   const liveSettings = settingsForProspect(prospect, current.settings);
   const liveWritingHash = writingPolicyHash(liveSettings, {
     globalVoiceNotes: current.settings.voiceNotes,
+    copyRulesVersion: completed.copyRulesVersion,
+    openingRuleException: completed.openingRuleException,
   });
   const preview =
     completed.preview &&
@@ -2450,16 +2463,22 @@ export const saveComposedDraftWithin = async (
   const globalVoiceNotes = preview
     ? completed.globalVoiceNotes
     : current.settings.voiceNotes;
-  const receipt = await assertShoppingEvidence(transaction, prospect, {
-    ...current,
-    settings: liveSettings,
-  });
+  const research = await assertCompositionEvidence(
+    transaction,
+    prospect,
+    {
+      ...current,
+      settings: liveSettings,
+    },
+    completed,
+  );
+  const receipt = research?.receipt;
   const details = prospectSchema.parse({
     ...prospect.details,
     id: prospect.id,
     assignedSenderEmail: settings.fromEmail,
   });
-  const canonical = canonicalSequenceInput(completed.messages);
+  const canonical = canonicalSequenceInput(completed.messages, completed);
   const writing = completed.messages[0]?.writing;
   if (
     !receipt ||
@@ -2467,10 +2486,13 @@ export const saveComposedDraftWithin = async (
     canonical.status !== "ready" ||
     completed.composition.prospectId !== prospect.id ||
     completed.context.prospectHash !== compositionProspectHash(details) ||
+    completed.baseReceiptHash !== research?.baseReceiptHash ||
     completed.composition.receiptHash !== researchHash(receipt) ||
     completed.composition.writingPolicyHash !==
       writingPolicyHash(settings, {
         globalVoiceNotes,
+        copyRulesVersion: completed.copyRulesVersion,
+    openingRuleException: completed.openingRuleException,
       }) ||
     completed.composition.contentHash !==
       createHash("sha256").update(canonical.canonicalText).digest("hex")
@@ -2528,8 +2550,16 @@ export const saveComposedDraftWithin = async (
     parts: writing.parts,
     budget: preflight.budget,
     peers,
+    copyRulesVersion: completed.copyRulesVersion,
+    openingRuleException: completed.openingRuleException,
   });
-  const assembled = assembleSequence(details, receipt, settings, writing.parts);
+  const assembled = assembleSequence(
+    details,
+    receipt,
+    settings,
+    writing.parts,
+    completed,
+  );
   if (
     assembled.status !== "ready" ||
     assembled.canonicalText !== canonical.canonicalText
@@ -2542,6 +2572,7 @@ export const saveComposedDraftWithin = async (
       completed.messages[0]?.subject ?? "",
       receipt,
       details,
+      completed,
     ),
   );
   if (issues.length) throw new ValidationError(`Copy: ${issues.join(" ")}`);
@@ -2852,7 +2883,14 @@ const reviewProspectWithin = async (
                   (prospect.lastSentAt?.getTime() ?? 0) + 86_400_000,
                 ),
               )
-            : now,
+            : new Date(
+                Math.max(
+                  now.getTime(),
+                  current.settings.outreachNotBefore
+                    ? Date.parse(current.settings.outreachNotBefore)
+                    : now.getTime(),
+                ),
+              ),
           updatedAt: now,
         },
         { tx: transaction },
@@ -3408,19 +3446,37 @@ export const assertAppliedCompositionWithin = async (
 ) => {
   const current = await policy(transaction);
   const settings = settingsForProspect(prospect, current.settings);
-  const receipt = await assertShoppingEvidence(transaction, prospect, {
-    ...current,
-    settings,
-  });
-  if (!receipt)
+  const writing = writingSnapshotSchema.safeParse(
+    prospect.messages[0]?.writing,
+  );
+  const rules = {
+    openingRuleException: writing.success && isCurrentWritingSnapshot(writing.data)
+      ? writing.data.openingRuleException : undefined,
+    copyRulesVersion:
+      writing.success && isCurrentWritingSnapshot(writing.data)
+        ? writing.data.copyRulesVersion
+        : undefined,
+  };
+  const research = await assertCompositionEvidence(
+    transaction,
+    prospect,
+    {
+      ...current,
+      settings,
+    },
+    rules,
+  );
+  if (!research)
     throw new ValidationError("Compose this draft before automatic review.");
+  const { receipt, baseReceiptHash } = research;
   const Composition = await import("./sequence-composition");
   const completed = requireData(
     await Composition.findCompletedComposition(transaction, {
       prospectId: prospect.id,
-      receiptHash: researchHash(receipt),
+      receiptHash: baseReceiptHash,
       writingPolicyHash: writingPolicyHash(settings, {
         globalVoiceNotes: current.settings.voiceNotes,
+        ...rules,
       }),
       jobId: prospect.messages[0]?.writing?.compositionJobId,
     }),
@@ -3432,6 +3488,7 @@ export const assertAppliedCompositionWithin = async (
   });
   if (
     !completed ||
+    completed.composition.receiptHash !== researchHash(receipt) ||
     completed.appliedProspectRevision !== prospect.revision ||
     completed.context.prospectHash !== compositionProspectHash(details) ||
     !isDeepStrictEqual(
@@ -3447,9 +3504,10 @@ export const assertAppliedCompositionWithin = async (
     throw new ValidationError(
       "Copy: This draft has no trusted writing result for its current text and revision.",
     );
-  const writing = prospect.messages[0]?.writing;
-  const problem = copyVerdictProblem(writing?.quality);
-  if (!writing)
+  const problem = copyVerdictProblem(
+    writing.success ? writing.data.quality : null,
+  );
+  if (!writing.success)
     throw new ValidationError("Copy: The writing snapshot is missing.");
   const peers = requireData(
     await Composition.recentCompositionPeers(
@@ -3462,10 +3520,12 @@ export const assertAppliedCompositionWithin = async (
     prospect: details,
     receipt,
     playbook: settings,
-    parts: writing.parts,
+    parts: writing.data.parts,
     messages: prospect.messages,
     peers,
     globalVoiceNotes: current.settings.voiceNotes,
+    copyRulesVersion: completed.copyRulesVersion,
+    openingRuleException: completed.openingRuleException,
   });
   const copyProblem = problem
     ? `Copy: ${problem}`
@@ -4606,7 +4666,11 @@ const fixedBumpResearchReplay = async (
     completed.appliedProspectRevision !== original.revision ||
     completed.composition.receiptHash !== writing.data.receiptHash ||
     completed.composition.writingPolicyHash !==
-      writingPolicyHash(effective, { globalVoiceNotes: settings.voiceNotes }) ||
+      writingPolicyHash(effective, {
+        globalVoiceNotes: settings.voiceNotes,
+        copyRulesVersion: completed.copyRulesVersion,
+    openingRuleException: completed.openingRuleException,
+      }) ||
     completed.context.prospectHash !== compositionProspectHash(details) ||
     !isDeepStrictEqual(
       original.messages,
@@ -4622,7 +4686,7 @@ const fixedBumpResearchReplay = async (
       "The fixed bump no longer matches its trusted original writing and receipt.",
     );
   return {
-    receiptHash: completed.composition.receiptHash,
+    receiptHash: completed.baseReceiptHash,
     approvedAt: original.approvedAt,
   };
 };
@@ -4637,6 +4701,10 @@ const deliveryGates = async (
   currentAttempt?: AttemptRow,
 ) => {
   const now = new Date();
+  if (!outreachMayStart(settings, now))
+    throw new ConflictError(
+      "Cold outreach cannot start before the saved release date.",
+    );
   await assertCampaignActive(transaction, prospect);
   const approvedReplay = await fixedBumpResearchReplay(
     transaction,

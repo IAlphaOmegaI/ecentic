@@ -858,14 +858,16 @@
           "clay": "Salva la chiave API di Clay per collegare lo spazio di lavoro. Puoi configurare l’arricchimento in un secondo momento.",
           "google": "Crea un’applicazione web OAuth di Google, aggiungi l’URI di reindirizzamento qui sotto e salva il suo ID client e client secret. Poi collega ogni casella Gmail.",
           "scrapellm": "Usa ScrapeLLM per acquisire le ricerche reali degli acquirenti e le risposte mostrate.",
-          "firecrawl": "Usa Firecrawl per analizzare le pagine prodotto renderizzate e registrare le prove a supporto."
+          "firecrawl": "Usa Firecrawl per analizzare le pagine prodotto renderizzate e registrare le prove a supporto.",
+          "hubspot": "Usa una chiave di servizio con accesso in lettura a contatti e aziende. La verifica della connessione non modifica i record del CRM."
         },
         "secret": {
           "apollo": "Chiave API di Apollo",
           "clay": "Chiave API di Clay",
           "google": "Client secret OAuth di Google",
           "scrapellm": "Chiave API ScrapeLLM",
-          "firecrawl": "Chiave API Firecrawl"
+          "firecrawl": "Chiave API Firecrawl",
+          "hubspot": "Chiave di servizio HubSpot"
         },
         "fields": {
           "clientId": "ID client OAuth di Google",
@@ -903,7 +905,8 @@
           "clayWorkspace": "Apri Clay",
           "clayApiDocs": "Documentazione API di Clay",
           "scrapellmAccount": "Apri ScrapeLLM",
-          "firecrawlAccount": "Apri Firecrawl"
+          "firecrawlAccount": "Apri Firecrawl",
+          "hubspotAccount": "Apri HubSpot"
         },
         "routineHelp": "Facoltativo per il collegamento. Configura una routine di arricchimento nel tuo spazio di lavoro Clay, poi incolla qui il suo ID.",
         "routine": {
@@ -969,6 +972,11 @@
         "verified": "Chiave API verificata",
         "environment": "Chiave del server configurata",
         "savedHelp": "L’accesso a ScrapeLLM viene verificato quando si esegue la ricerca. Salvare la chiave non avvia una ricerca a pagamento."
+      },
+      "hubspot": {
+        "title": "HubSpot",
+        "description": "Salva una chiave di servizio HubSpot per la sincronizzazione del CRM. Il salvataggio della chiave non avvia una sincronizzazione.",
+        "keySaved": "Chiave salvata"
       }
     },
     "relationships": {

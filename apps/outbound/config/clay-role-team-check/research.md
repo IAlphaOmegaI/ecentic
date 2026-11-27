@@ -14,9 +14,11 @@ snippets, inaccessible LinkedIn previews, Apollo's supplied title and your model
 knowledge alone are not evidence. Prefer the person's current public professional
 profile or an official current company team page. Resolve the person AND company;
 a matching name alone is insufficient. Do not bypass access blocks. An unavailable
-page yields an unclear result. Reopen each selected source before finalizing and
-make sure the source actually supports the exact claim and belongs to this person
-or company. A historical announcement is not evidence of a current role today.
+page yields an unclear result. Each selected source must be successfully opened
+by the live web tool during THIS run and support the exact claim for this person
+or company. One successful visit is sufficient; do not revisit or refresh a URL
+when the tool prohibits it. A historical announcement is not evidence of a
+current role today.
 
 For a person still employed at the store, report the title and employer domain
 as supported on the opened source. "no" needs explicit evidence of departure or
@@ -72,6 +74,8 @@ the runtime will attach its own observation time with the correct meaning.
 }
 
 Allowed is_current: yes, no, unclear. Allowed headcount_type: exact, range,
-partial_roster, unknown. source_opened means you successfully opened/reopened
-that exact URL during this run; false when you only saw a snippet or a block.
+partial_roster, unknown. source_opened means the live web tool successfully
+opened that exact URL at least once during THIS run; false when you only saw a
+snippet, a block or a previous run's result. Report uncertainty about the evidence
+itself, not merely the absence of a second visit.
 The example values above are an empty shape, not observations to reuse.

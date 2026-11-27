@@ -858,14 +858,16 @@
           "clay": "Guarda tu clave API de Clay para conectar el espacio de trabajo. Puedes configurar el enriquecimiento más adelante.",
           "google": "Crea una aplicación web OAuth de Google, añade el URI de redirección de abajo y guarda su ID y secreto de cliente. Después, conecta cada buzón de Gmail.",
           "scrapellm": "Usa ScrapeLLM para capturar consultas reales de compradores y las respuestas que se muestran.",
-          "firecrawl": "Usa Firecrawl para inspeccionar páginas de productos renderizadas y registrar pruebas de respaldo."
+          "firecrawl": "Usa Firecrawl para inspeccionar páginas de productos renderizadas y registrar pruebas de respaldo.",
+          "hubspot": "Utiliza una clave de servicio con acceso de lectura a contactos y empresas. La comprobación de conexión no modifica los registros del CRM."
         },
         "secret": {
           "apollo": "Clave de API de Apollo",
           "clay": "Clave de API de Clay",
           "google": "Secreto de cliente OAuth de Google",
           "scrapellm": "Clave API de ScrapeLLM",
-          "firecrawl": "Clave API de Firecrawl"
+          "firecrawl": "Clave API de Firecrawl",
+          "hubspot": "Clave de servicio de HubSpot"
         },
         "fields": {
           "clientId": "ID de cliente OAuth de Google",
@@ -903,7 +905,8 @@
           "clayWorkspace": "Abrir Clay",
           "clayApiDocs": "Documentación de la API de Clay",
           "scrapellmAccount": "Abrir ScrapeLLM",
-          "firecrawlAccount": "Abrir Firecrawl"
+          "firecrawlAccount": "Abrir Firecrawl",
+          "hubspotAccount": "Abrir HubSpot"
         },
         "routineHelp": "Opcional para conectar. Configura una rutina de enriquecimiento en tu espacio de trabajo de Clay y pega aquí su ID.",
         "routine": {
@@ -969,6 +972,11 @@
         "verified": "Clave API verificada",
         "environment": "Clave del servidor configurada",
         "savedHelp": "El acceso a ScrapeLLM se comprueba al ejecutar la investigación. Guardar la clave no inicia una búsqueda de pago."
+      },
+      "hubspot": {
+        "title": "HubSpot",
+        "description": "Guarda una clave de servicio de HubSpot para sincronizar el CRM. Guardar la clave no inicia una sincronización.",
+        "keySaved": "Clave guardada"
       }
     },
     "relationships": {

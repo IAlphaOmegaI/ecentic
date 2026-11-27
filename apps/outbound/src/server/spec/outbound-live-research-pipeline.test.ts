@@ -289,7 +289,7 @@ const configure = () => {
                   cached: false,
                   result_markdown: state.noAngle
                     ? "Sample Goods linen tote is included. Other options are Canvas Works and Harbor Label."
-                    : "1. Canvas Works — Large carry bag.\n2. Harbor Label — Cotton shopper.",
+                    : "1. [Canvas Works — Large carry bag](https://canvas.example/products/carry-bag).\n2. [Harbor Label — Cotton shopper](https://harbor.example/products/shopper).",
                   citations: [],
                 },
               }),

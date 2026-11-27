@@ -19,6 +19,10 @@ import type {
 } from "./live-shopping-contract";
 import { validateRound3CopyProof } from "./round3-copy-evidence";
 import { validateFactResearch } from "./shopping-fact-assessment";
+import {
+  projectProductListingProof,
+  validateProductListingProof,
+} from "./shopping-product-listings";
 
 const selectionOutputSchema = z.object({
   kind: z.enum(["query-comparison", "product-data-gap", "product-observation"]),
@@ -775,7 +779,11 @@ export const validateAutomaticResearch = (
   const facts = receipt.claims
     ? validateFactResearch(evidence, receipt, now)
     : null;
-  return facts ?? validateRound3CopyProof(evidence, receipt, now);
+  return (
+    facts ??
+    validateRound3CopyProof(evidence, receipt, now) ??
+    validateProductListingProof(evidence, receipt, now)
+  );
 };
 
 export type AssessmentResult = (
@@ -831,7 +839,24 @@ export const assess = async (
         attempts: assessed.data.attempts,
       },
     };
-  const receipt = decorated.data;
+  const listings =
+    decorated.data.selected.kind === "discovery-absence"
+      ? projectProductListingProof(input, decorated.data, now())
+      : null;
+  if (listings && listings.status !== "eligible")
+    return {
+      success: true,
+      data: {
+        status: "held",
+        reason:
+          "reason" in listings
+            ? listings.reason
+            : "The answer needs linked-product evidence.",
+        attempts: assessed.data.attempts,
+      },
+    };
+  const receipt =
+    listings?.status === "eligible" ? listings.receipt : decorated.data;
   if (
     input.deferBrands ||
     !(input.queryReview ?? input.answer.job.query.review) ||

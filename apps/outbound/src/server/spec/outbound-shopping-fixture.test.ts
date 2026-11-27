@@ -1,4 +1,5 @@
 import { describe, expect, mock, test } from "bun:test";
+import { createHash, randomUUID } from "node:crypto";
 import { defaultPlaybook, prospectSchema } from "@/lib/outbound";
 import {
   assembleSequence,
@@ -70,6 +71,99 @@ describe("full synthetic shopping fixture", () => {
     expect(policy.fromName).toBe(settings.fromName);
     expect(policy.founderLine).toBe(settings.founderLine);
     expect(policy.senderProfiles).toEqual(settings.senderProfiles);
+  });
+  test("prior capture and unsuccessful-purchase proofs stay audit-only and must match the saved receipt", async () => {
+    const prospect = {
+      company: "Sample Goods",
+      domain: "samplegoods.com",
+      product: "Linen tote",
+      productUrl: "https://samplegoods.com/products/tote",
+    };
+    const previous = await buildSyntheticShoppingEvidence({ prospect });
+    const current = await buildSyntheticShoppingEvidence({ prospect });
+    const { appendCaptureHistory } = await import(
+      "@/server/utils/outbound/shopping-discovery-review"
+    );
+    const { researchCaptureProof } = await import(
+      "@/server/utils/outbound/shopping-capture-proof"
+    );
+    const Assessment = await import(
+      "@/server/utils/outbound/shopping-assessment"
+    );
+    const failedJob = { ...previous.evidence.answer.job, id: randomUUID() };
+    const body = JSON.stringify({
+      job_id: failedJob.id,
+      status: "failed",
+      error: "Synthetic provider could not answer.",
+    });
+    const failed = {
+      job: failedJob,
+      status: "failed" as const,
+      reason: "Synthetic provider could not answer.",
+      raw: [
+        {
+          url: `https://api.scrapellm.com/api/v1/jobs/${failedJob.id}`,
+          status: 200,
+          body,
+          sha256: createHash("sha256").update(body).digest("hex"),
+          receivedAt: failedJob.submittedAt,
+        },
+      ],
+    };
+    const receipt = appendCaptureHistory(
+      current.receipt,
+      [previous.evidence],
+      Date.now(),
+      [failed],
+    );
+    const source = {
+      shoppingHistory: [previous.evidence],
+      priorPurchases: [
+        {
+          shoppingJob: failed.job,
+          status: failed.status,
+          reason: failed.reason,
+          raw: failed.raw,
+        },
+      ],
+    };
+    const proof = researchCaptureProof(
+      randomUUID(),
+      current.evidence,
+      receipt,
+      source,
+    );
+    expect(Assessment.validateAutomaticResearch(proof, receipt, 7)).toBeNull();
+    expect(proof.priorPurchases).toEqual([failed]);
+    expect(proof.previous).toEqual([previous.evidence]);
+    expect(receipt.claims).toEqual(current.receipt.claims);
+    expect(() =>
+      researchCaptureProof(randomUUID(), current.evidence, receipt, {
+        ...source,
+        priorPurchases: [],
+      }),
+    ).toThrow("prior purchase");
+    expect(() =>
+      researchCaptureProof(randomUUID(), current.evidence, receipt, {
+        ...source,
+        shoppingHistory: [previous.evidence, previous.evidence],
+      }),
+    ).toThrow("ambiguous");
+    const changed = structuredClone(proof);
+    const raw = changed.priorPurchases?.[0]?.raw[0];
+    if (!raw) throw new Error("Missing synthetic failed-response proof");
+    raw.body += "tampered";
+    expect(
+      Assessment.validateAutomaticResearch(changed, receipt, 7),
+    ).not.toBeNull();
+    const historical = researchCaptureProof(
+      randomUUID(),
+      current.evidence,
+      current.receipt,
+      source,
+    );
+    expect("previous" in historical).toBe(false);
+    expect("priorPurchases" in historical).toBe(false);
   });
   test("injected copy variants meet the actual deterministic writer and variety gates", async () => {
     const prospect = prospectSchema.parse({

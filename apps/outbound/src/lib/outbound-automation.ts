@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { clayRoleStateSchema } from "./outbound-clay";
 
 export const automationStageSchema = z.enum([
   "companyFacts",
@@ -20,6 +21,9 @@ export const automationStageSchema = z.enum([
   "applyVerification",
   "mx",
   "applyMx",
+  "startClayRole",
+  "pollClayRole",
+  "reviewClayRole",
   "draft",
   "applyDraft",
   "approve",
@@ -50,6 +54,7 @@ export const automationStateSchema = z
     stage: automationStageSchema,
     availableAt: z.string().datetime(),
     contactAttempts: contactAttemptsSchema.optional(),
+    clayRole: clayRoleStateSchema.optional(),
     shoppingQueryCount: z.number().int().min(0).max(2).optional(),
     shoppingQueryIntent: z
       .enum(["unbranded-specific", "unbranded-broad"])

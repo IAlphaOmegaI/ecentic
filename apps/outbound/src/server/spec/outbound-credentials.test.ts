@@ -116,6 +116,21 @@ afterEach(() => {
 });
 
 describe("encrypted Unipile key settings", () => {
+  test("HubSpot service keys use encrypted storage and secret-free metadata", async () => {
+    const result = await credentials.save("staff", {
+      provider: "hubspot",
+      apiKey: "hubspot-test-secret",
+    });
+    expect(result.success).toBe(true);
+    expect(state.probes).toBe(1);
+    expect(state.writes).toBe(1);
+    expect(state.ciphertext).not.toContain("hubspot-test-secret");
+    expect(isEncryptedCredential(state.ciphertext)).toBe(true);
+    const metadata = await credentials.metadata("hubspot");
+    expect(metadata.success).toBe(true);
+    expect(JSON.stringify(metadata)).not.toContain("hubspot-test-secret");
+    expect(state.reads).toBe(0);
+  });
   test("validated keys encrypt at the actual column boundary and take precedence over env", async () => {
     expect(
       await credentials.save("staff-fixture", { apiKey: "  saved-test-key  " }),

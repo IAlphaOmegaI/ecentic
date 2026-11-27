@@ -87,6 +87,10 @@ export const composeSequence = async (
     success: false,
     error: new ValidationError(`Copy: ${reason}`),
   });
+  if (dependencies.openingRuleException && !dependencies.suppliedParts)
+    return held(
+      "An opening exception is valid only for supplied owner-approved copy.",
+    );
   const settings: CompositionPolicy = {
     ...settingsForSender(
       policy,
@@ -155,6 +159,7 @@ export const composeSequence = async (
       peers: dependencies.peers,
       globalVoiceNotes: hashContext.globalVoiceNotes,
       copyRulesVersion: dependencies.copyRulesVersion,
+      openingRuleException: dependencies.openingRuleException,
       ...(previous ? { previous } : {}),
     });
     const generated = dependencies.suppliedParts
@@ -203,6 +208,7 @@ export const composeSequence = async (
       parts,
       peers: dependencies.peers,
       copyRulesVersion: dependencies.copyRulesVersion,
+      openingRuleException: dependencies.openingRuleException,
     });
     const assembled = assembleSequence(
       prospect,
@@ -277,6 +283,7 @@ export const composeSequence = async (
         peers: dependencies.peers,
         globalVoiceNotes: hashContext.globalVoiceNotes,
         copyRulesVersion: dependencies.copyRulesVersion,
+        openingRuleException: dependencies.openingRuleException,
       },
       { generate: dependencies.judge, now, deadline },
     );
@@ -288,6 +295,9 @@ export const composeSequence = async (
     );
     const writing = writingSnapshotSchema.parse({
       version: WRITING_CONTRACT_VERSION,
+      ...(dependencies.openingRuleException
+        ? { openingRuleException: dependencies.openingRuleException }
+        : {}),
       ...(dependencies.copyRulesVersion
         ? { copyRulesVersion: dependencies.copyRulesVersion }
         : {}),

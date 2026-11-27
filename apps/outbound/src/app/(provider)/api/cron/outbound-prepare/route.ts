@@ -25,7 +25,9 @@ export const GET = async (request: Request) => {
   });
   const discovery = await Discovery.run({
     maxCampaigns: 2,
-    deadline: Math.min(deadline - 10_000, Date.now() + 30_000),
+    // Discovery reserves thirty seconds before starting a provider operation.
+    // An exactly thirty-second allocation is already exhausted at its guard.
+    deadline: Math.min(deadline - 10_000, Date.now() + 60_000),
   });
   const preparation = await Automation.run({ maxSteps: 20, deadline });
   return NextResponse.json(

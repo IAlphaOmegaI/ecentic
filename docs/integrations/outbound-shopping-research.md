@@ -404,6 +404,37 @@ replays these bindings and presents the supplemental outcome beside its source
 failure. `outbound-held-third-fixed-result.test.ts` covers all five modes, source
 and hold changes, expired and superseded leases, and interrupted judgments.
 
+New absence assessments require `product-listing-absence-v1` evidence. The pure
+`currentAbsenceEligibility` gate replays the complete saved capture and receipt,
+then recognizes strict provider product cards or named product links in a
+Markdown list. Recipe prose, unlinked names, citation links and seller redirects
+do not establish a linked product listing. An answer without such listings is
+held as **No gap found**, not described as merchant absence. The stored proof is
+an inclusion check only: it adds no rank, total, brand or performance claim.
+Historical receipts and their judgments remain unchanged; their explicit current
+release gate runs separately, while newly saved proofs must replay exactly.
+
+`spoken-copy-v4` is the explicit new copy contract: the opening says the literal
+words “I asked” in active voice, and recipient copy never says “captured answer”.
+An explicit owner decision may preserve an existing active-voice opening through
+`openingRuleException`. This operator-only metadata records the exact opening,
+the entire approved first-email body and the authorization receipt hash. It is
+part of the immutable content hash and the supplied-copy job identity. Changing
+the body invalidates it; passive voice and every other evidence/copy rule still
+apply. A normal writer cannot generate with this exception or return one in its
+four-part output.
+It also requires the linked-product proof for an absence claim. Existing
+`spoken-copy-v3` approved text keeps its original hashes and validation rules.
+Future subjects keep the two-to-five-word lowercase limit and existing grounded
+topic forms. V4 also accepts a grounded topic followed by “shortlist”, an exact
+projected answer brand followed by “came up”, “got the mention”, or “made the
+shortlist”, and the literal “this answer missed you” only for complete, proven
+merchant absence with linked products. Sellers, unknown brands, ranks, questions,
+numbers, invented lost sales and performance claims remain disallowed. These
+forms do not authorize changes to an approved subject. Callers must pass
+the new copy version through composition and its policy hash together rather
+than silently reinterpret a historical durable job.
+
 The one-time `heldDiscoveryRound3QueryPreparationRepair` audit is limited to the
 four exact unspent LA Girl, Spyderco, Só Dança and Good American children. The
 operator supplies all four original SQL row/output hashes together after the
@@ -428,3 +459,28 @@ exporter replay the archive, reference, exact product capture and original histo
 through later query and polling stages. `outbound-held-third-query-repair.test.ts`
 covers four-row rollback, idempotence, tamper rejection, the normal preparation
 path with a test model, one purchase per child and zero purchases after failed reviews.
+
+Future generic sequence-composition jobs now explicitly save `spoken-copy-v4`.
+An absent version continues to mean the historical contract; loading completed
+v1/v2/v3 jobs never supplies a new default or changes their policy/content hashes.
+A v4 job keeps the original applied research hash as `baseReceiptHash`, while its
+writing snapshot binds the derived receipt containing raw-replayed product-listing
+and full/spoken-name absence proof. Original research/capture rows are not changed.
+Store saves and approvals replay this derivation and the saved version; fixed day-3
+and day-7 replies remain bound to the original approved research hash.
+
+`composeForProspect` already accepts exact `suppliedParts` with `preview: true`;
+this skips writer generation and uses the normal one-use quality judgment. It
+still requires the prospect's currently applied research. Unapplied round-three
+report receipts cannot be substituted through this API; their separately scoped
+preview operator must bind the source job and preserve the original receipt.
+
+When applying a receipt that already carries prior-query history, the saved
+`leadResearch.captureProof` includes the exact corresponding completed captures
+(and any recorded unsuccessful purchases) from its durable source job. Replay,
+composition and approval reconstruct that same history without turning it into
+current-answer claims. Missing, duplicate or changed prior proof holds the
+receipt. Existing proofs without history keep their original shape; the app does
+not synthesize prior captures or backfill historical rows.
+
+Reviewed release previews can be adopted through the server-only reviewed-preview binding. The adapter verifies the immutable review, original preview and capture rows, human authorization reference, exact proposed content policy and assigned sender, full current/prior raw evidence, unchanged parts and complete passing verdict. Only the independently enabled Apollo and Clay operational flags may differ from the proposed policy. Normal research persistence, durable composition, trusted draft save and approval still enforce current contact, suppression, campaign, evidence and peer checks. Adoption makes no writer, judge, search or send call; the normal composition stores the source binding and rechecks its immutable row hashes when loaded for approval. Opening exceptions remain bound to the exact approved body and authorization.

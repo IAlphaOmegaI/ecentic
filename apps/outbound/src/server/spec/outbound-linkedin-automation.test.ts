@@ -401,7 +401,7 @@ describe.skipIf(!endpoint)(
         prospectRevision: refreshed.revision,
         campaignRevision: 2,
         playbookRevision: (await store.policy()).revision,
-        text: "Hi Jane. It named Canvas Works and Harbor Label. Sample Goods didn't come up.",
+        text: "Hi Jane. It picked Canvas Works and Harbor Label. Sample Goods didn't come up.",
       });
       const [source] = await db
         .select()
@@ -583,6 +583,70 @@ describe.skipIf(!endpoint)(
       expect(value(await linkedin.run({}, transport)).accepted).toBe(1);
       expect(transport.sendInvitation).toHaveBeenCalledTimes(1);
     });
+    test("the outreach date stops queue provider work without changing LinkedIn or research flags", async () => {
+      const { store, linkedin } = active();
+      const transport = provider();
+      const policy = await store.policy();
+      const outreachNotBefore = new Date(now.getTime() + 60_000).toISOString();
+      value(
+        await store.savePlaybook(
+          "fixture",
+          { ...policy.settings, outreachNotBefore },
+          policy.revision,
+        ),
+      );
+      expect(value(await linkedin.run({}, transport))).toMatchObject({
+        enabled: true,
+        attempted: 0,
+        accepted: 0,
+      });
+      expect(transport.getAccount).not.toHaveBeenCalled();
+      expect(transport.sendInvitation).not.toHaveBeenCalled();
+      expect(await rows()).toHaveLength(0);
+      const deferred = await store.policy();
+      expect(deferred.revision).toBe(policy.revision);
+      expect(deferred.settings.automationEnabled).toBe(true);
+      expect(deferred.settings.linkedinAutomationEnabled).toBe(true);
+      setSystemTime(new Date(outreachNotBefore));
+      expect(value(await linkedin.run({}, transport)).accepted).toBe(1);
+      expect(transport.sendInvitation).toHaveBeenCalledTimes(1);
+    });
+    test("an outreach date set after the LinkedIn reservation stops the final POST", async () => {
+      const { db, linkedin, store } = active();
+      const transport = provider();
+      // A fixture-only trigger models an operational change at the exact
+      // committed reservation boundary, before the real dispatch transaction.
+      await db.execute(sql`create function outbound_test_defer_linkedin() returns trigger language plpgsql as $$
+        begin
+          update outbound_playbook set settings=jsonb_set(settings,'{outreachNotBefore}','"2026-12-02T00:00:00.000Z"'::jsonb) where id='default';
+          return new;
+        end;
+      $$`);
+      await db.execute(
+        sql`create trigger outbound_test_defer_linkedin after insert on outbound_integration_job for each row when (new.provider='linkedin') execute function outbound_test_defer_linkedin()`,
+      );
+      try {
+        expect(value(await linkedin.run({}, transport))).toMatchObject({
+          attempted: 1,
+          accepted: 0,
+          uncertain: 0,
+        });
+        expect(transport.sendInvitation).not.toHaveBeenCalled();
+        expect(transport.startChat).not.toHaveBeenCalled();
+        expect(transport.sendMessage).not.toHaveBeenCalled();
+        expect(await rows()).toMatchObject([
+          { status: "failed", error: "linkedin-not-before" },
+        ]);
+        expect((await store.policy()).settings.linkedinAutomationEnabled).toBe(
+          true,
+        );
+      } finally {
+        await db.execute(
+          sql`drop trigger outbound_test_defer_linkedin on outbound_integration_job`,
+        );
+        await db.execute(sql`drop function outbound_test_defer_linkedin()`);
+      }
+    });
     test("paused mode and forged qualification cannot reach Unipile", async () => {
       const transport = provider();
       const { store, linkedin, db, schema } = active();
@@ -643,10 +707,21 @@ describe.skipIf(!endpoint)(
       await linkedin.run({}, transport);
       expect(transport.startChat).toHaveBeenCalledTimes(1);
     });
-    test("incoming reply and opt-out stop both channels and create shared suppression", async () => {
+    test("incoming reply and opt-out still reconcile while the outreach date blocks new touches", async () => {
       const transport = provider();
-      const { linkedin, db, schema } = active();
+      const { linkedin, db, schema, store } = active();
       value(await linkedin.run({}, transport));
+      const policy = await store.policy();
+      value(
+        await store.savePlaybook(
+          "fixture",
+          {
+            ...policy.settings,
+            outreachNotBefore: "2026-12-02T00:00:00.000Z",
+          },
+          policy.revision,
+        ),
+      );
       transport.getUserChats.mockResolvedValue({
         success: true,
         data: { object: "ChatLookup", data: [{ chat_id: "chat_fixture" }] },
@@ -868,7 +943,7 @@ describe.skipIf(!endpoint)(
       expect(sent?.input["accountId"]).toBe("acc_fixture");
       expect(sent?.input["accountUserId"]).toBe("account_user");
       expect(sent?.input["text"]).toBe(
-        "Hi Jane. It named Canvas Works and Harbor Label. Sample Goods didn't come up.",
+        "Hi Jane. It picked Canvas Works and Harbor Label. Sample Goods didn't come up.",
       );
       expect(sent?.input["text"]).not.toContain("Shopify Plus");
     });

@@ -192,6 +192,7 @@ export const playbookSchema = z
     allowUsMarketWindow: z.boolean().default(false),
     allowMicrosoftRecipients: z.boolean().default(false),
     automaticApolloEnabled: z.boolean().default(true),
+    automaticClayEnabled: z.boolean().default(false),
     minGapMinutes: z.number().int().min(1).max(60),
     maxGapMinutes: z.number().int().min(1).max(120),
     followupOneDays: z.number().int().min(1).max(14),
@@ -272,6 +273,7 @@ export const playbookSchema = z
     competingSendersPaused: z.boolean().default(false),
     senderTested: z.boolean().default(false),
     sendingEnabled: z.boolean(),
+    outreachNotBefore: z.string().datetime().nullable().default(null),
   })
   .refine(
     (settings) =>
@@ -367,6 +369,7 @@ export const defaultPlaybook: Playbook = {
   allowUsMarketWindow: false,
   allowMicrosoftRecipients: false,
   automaticApolloEnabled: true,
+  automaticClayEnabled: false,
   minGapMinutes: 12,
   maxGapMinutes: 28,
   followupOneDays: 3,
@@ -405,6 +408,7 @@ export const defaultPlaybook: Playbook = {
   competingSendersPaused: false,
   senderTested: false,
   sendingEnabled: false,
+  outreachNotBefore: null,
 };
 
 export const prospectSchema = z.object({
@@ -889,8 +893,8 @@ const lintWrittenSequence = (
         receipt?.selected.kind ?? prospect.shoppingFinding?.kind,
       );
       issues.push(...expected.issues);
-      const actual = canonicalSequenceInput(messages);
-      const original = canonicalSequenceInput(expected.messages);
+      const actual = canonicalSequenceInput(messages, writing.data);
+      const original = canonicalSequenceInput(expected.messages, writing.data);
       if (
         actual.status !== "ready" ||
         original.status !== "ready" ||
@@ -904,6 +908,8 @@ const lintWrittenSequence = (
           receipt,
           playbook: settings,
           parts: writing.data.parts,
+          copyRulesVersion: writing.data.copyRulesVersion,
+          openingRuleException: writing.data.openingRuleException,
           messages,
         }).length
       )
