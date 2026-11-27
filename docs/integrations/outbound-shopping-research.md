@@ -340,3 +340,26 @@ not a model-usage counter. The operator's optional
 `--drain --steps 400` mode is a finite foreground run; it stops between stages
 when the private `round3-stop-between-runs` file exists. It does not schedule an
 automation or retry an uncertain provider call.
+
+The supplemental `heldDiscoveryRound3FixedResult` operation is restricted to five
+saved copy failures under that same instruction digest. Diamond Dotz and Terrapin
+Ridge Farms may replace only the final second candidate's result with the user's
+literal no-brand sentence. Peepers may keep all three messages unchanged and
+receive one judgment under the explicit non-exhaustive two-or-three-brand rule.
+D'IYANU may receive its first judgment of the already-saved prefix edit after the
+exact pre-compose timeout. Danessa may only reuse its original passing recheck
+locally after the exact pre-generation timeout, with identical original text,
+sender, receipt and context. No other uncertain job qualifies. These paths never
+call a writer or shopping provider and never repeat an original copy recheck.
+
+`scripts/outbound/held-third-fixed-result.ts` requires `TZ=UTC` and defaults to
+read-only inspection. Explicit execution binds the original row's SQL SHA-256,
+output, context, receipt and selected parts before creating a separate job. The
+main cohort must be terminal. Current held status, policy, raw evidence and
+duplicate-story checks replay before reservation and after judgment. Each new
+judgment has one durable reservation; a late or unbound response is retained as
+unapplied, and an interrupted reservation cannot be retried. The original failed
+rows, candidates, verdicts and budget remain unchanged. The exporter independently
+replays these bindings and presents the supplemental outcome beside its source
+failure. `outbound-held-third-fixed-result.test.ts` covers all five modes, source
+and hold changes, expired and superseded leases, and interrupted judgments.
