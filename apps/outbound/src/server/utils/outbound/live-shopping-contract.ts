@@ -18,6 +18,7 @@ export const publicUrlSchema = z
   }, "Use a public HTTPS URL without credentials or a custom port.");
 
 export const SHOPPER_QUERY_VERSION = "shopper-query-v2";
+export const SHOPPER_QUERY_ROUND3_VERSION = "shopper-query-v3";
 export const shopperQueryReviewChecksSchema = z
   .object({
     naturalWordOrder: z.boolean(),
@@ -28,7 +29,7 @@ export const shopperQueryReviewChecksSchema = z
   .strict();
 export const shopperQueryReviewSchema = z
   .object({
-    version: z.literal(SHOPPER_QUERY_VERSION),
+    version: z.enum([SHOPPER_QUERY_VERSION, SHOPPER_QUERY_ROUND3_VERSION]),
     status: z.enum(["valid", "invalid", "uncertain"]),
     method: z.enum(["deterministic", "semantic"]),
     reason: z.string().trim().min(1).max(1500),
@@ -58,7 +59,9 @@ export const preparedQuerySchema = z
     prompt: z.string().trim().min(1).max(4000),
     intent: shoppingQueryIntentSchema.optional(),
     basis: shoppingQueryBasisSchema.optional(),
-    contractVersion: z.literal(SHOPPER_QUERY_VERSION).optional(),
+    contractVersion: z
+      .enum([SHOPPER_QUERY_VERSION, SHOPPER_QUERY_ROUND3_VERSION])
+      .optional(),
     review: shopperQueryReviewSchema.optional(),
     // Saved company identity, never a name inferred by the query model.
     merchant: z

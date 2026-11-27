@@ -15,6 +15,11 @@ import {
 import * as AI from "@/server/utils/ai";
 import { IntegrationError } from "./http";
 import { reusableProductCapture } from "./live-shopping-browser";
+import {
+  aiJobSchema,
+  rawCaptureSchema,
+  SHOPPER_QUERY_ROUND3_VERSION,
+} from "./live-shopping-contract";
 import { validateShopperQueryReview } from "./shopper-query";
 import { parseShoppingAnswerCards } from "./shopping-answer-cards";
 import {
@@ -151,11 +156,12 @@ export const appendCaptureHistory = (
   receipt: ShoppingResearch,
   previous: Evidence["previous"],
   now = Date.now(),
+  purchases?: Evidence["priorPurchases"],
 ): ShoppingResearch => {
-  if (!previous?.length) return receipt;
-  if (previous.length > 4)
+  if (!previous?.length && !purchases?.length) return receipt;
+  if ((previous?.length ?? 0) > 4 || (purchases?.length ?? 0) > 4)
     throw new Error("Too many prior captures for this receipt.");
-  const history = previous.map((evidence) => {
+  const history = (previous ?? []).map((evidence) => {
     const { answer, browser } = evidence;
     const full = replayShoppingCapture(answer, now);
     if (
@@ -192,6 +198,50 @@ export const appendCaptureHistory = (
       })),
     };
   });
+  const purchaseHistory = (purchases ?? []).map((purchase) => {
+    const job = aiJobSchema.parse(purchase.job);
+    const raw = purchase.raw.map((capture) => rawCaptureSchema.parse(capture));
+    if (
+      raw.some((capture) => digest(capture.body) !== capture.sha256) ||
+      !Number.isFinite(Date.parse(job.submittedAt)) ||
+      Date.parse(job.submittedAt) > now
+    )
+      throw new Error(
+        "A prior unsuccessful purchase or its saved response changed.",
+      );
+    const { review: _review, ...query } = job.query;
+    return {
+      version: "purchase-history-v1" as const,
+      auditOnly: true as const,
+      jobId: job.id,
+      query: query.prompt,
+      queryHash: hash(query),
+      product: query.product,
+      submittedAt: job.submittedAt,
+      status: purchase.status,
+      reason: purchase.reason,
+      raw: raw.map(({ url, status, sha256, receivedAt }) => ({
+        url,
+        status,
+        sha256,
+        receivedAt,
+      })),
+    };
+  });
+  if (
+    new Set(purchaseHistory.map((purchase) => purchase.jobId)).size !==
+      purchaseHistory.length ||
+    purchaseHistory.some(
+      (purchase) =>
+        receipt.sources.some(
+          (source) => source.id === `search-${purchase.jobId}`,
+        ) ||
+        previous?.some((capture) => capture.answer.job.id === purchase.jobId),
+    )
+  )
+    throw new Error(
+      "Prior purchases must be distinct from completed captures.",
+    );
   if (
     new Set(history.map((item) => item.sourceId)).size !== history.length ||
     history.some((item) => item.sourceId === receipt.discovery?.sourceId)
@@ -199,7 +249,11 @@ export const appendCaptureHistory = (
     throw new Error(
       "Prior captures must be distinct from each other and the selected answer.",
     );
-  return shoppingResearchSchema.parse({ ...receipt, captureHistory: history });
+  return shoppingResearchSchema.parse({
+    ...receipt,
+    ...(history.length ? { captureHistory: history } : {}),
+    ...(purchaseHistory.length ? { purchaseHistory } : {}),
+  });
 };
 
 const observedClaim = (
@@ -235,12 +289,38 @@ const projectDiscoveryReceipt = (
         ? "No gap needs a merchant match in both saved answers."
         : "The merchant appears in the complete saved answer.",
     );
-  const prior = evidence.previous?.[0];
+  const round3 =
+    answer.job.query.contractVersion === SHOPPER_QUERY_ROUND3_VERSION &&
+    (evidence.queryReview ?? answer.job.query.review)?.version ===
+      SHOPPER_QUERY_ROUND3_VERSION;
+  const prior =
+    round3 && repeat
+      ? [...(evidence.previous ?? [])].reverse().find((candidate) => {
+          if (
+            !isDeepStrictEqual(
+              candidate.answer.job.query.product,
+              answer.job.query.product,
+            ) ||
+            !isDeepStrictEqual(
+              candidate.answer.job.query.merchant,
+              answer.job.query.merchant,
+            ) ||
+            candidate.answer.job.id === answer.job.id ||
+            candidate.answer.job.query.prompt === answer.job.query.prompt
+          )
+            return false;
+          const checked = inspectDiscoveryPresence(candidate, now);
+          return (
+            checked.status === "verified" &&
+            checked.discovery.merchantPresent === true
+          );
+        })
+      : evidence.previous?.[0];
   if (repeat) {
     if (
-      evidence.previous?.length !== 1 ||
+      (!round3 && evidence.previous?.length !== 1) ||
       !prior ||
-      prior.answer.job.query.intent !== "unbranded-specific" ||
+      (!round3 && prior.answer.job.query.intent !== "unbranded-specific") ||
       answer.job.query.intent !== "unbranded-broad" ||
       prior.answer.job.id === answer.job.id ||
       prior.answer.job.query.prompt === answer.job.query.prompt ||
@@ -258,7 +338,10 @@ const projectDiscoveryReceipt = (
       );
     const first = inspectDiscoveryPresence(prior, now);
     if (first.status === "held") return held(first.reason);
-    if (!first.discovery.merchantPresent || !first.merchantCardPresent)
+    if (
+      !first.discovery.merchantPresent ||
+      (!round3 && !first.merchantCardPresent)
+    )
       return held(
         "The first valid search did not show the merchant in verified grouped product cards.",
       );
@@ -297,7 +380,7 @@ const projectDiscoveryReceipt = (
       ...(repeat && previousFull && prior
         ? {
             noGapProof: {
-              version: "repeated-presence-v1",
+              version: round3 ? "repeated-presence-v2" : "repeated-presence-v1",
               previousAnswerHash: previousFull.answerHash,
               previousLinksHash: previousFull.linksHash,
               previousQueryHash: captureQueryHash(prior),
@@ -338,7 +421,12 @@ const projectDiscoveryReceipt = (
   });
   return {
     status: "researched",
-    receipt: appendCaptureHistory(receipt, evidence.previous, now),
+    receipt: appendCaptureHistory(
+      receipt,
+      evidence.previous,
+      now,
+      evidence.priorPurchases,
+    ),
     attempts: 0,
   };
 };
@@ -689,9 +777,16 @@ export const validateDiscoveryDecorations = (
   receipt: ShoppingResearch,
   now = Date.now(),
 ) => {
-  const { captureHistory: _history, ...withoutHistory } = receipt;
-  const { brandProjection: _brands, ...baseDiscovery } =
-    receipt.discovery ?? {};
+  const {
+    captureHistory: _history,
+    purchaseHistory: _purchases,
+    ...withoutHistory
+  } = receipt;
+  const {
+    brandProjection: _brands,
+    round3CopyProof: _copyProof,
+    ...baseDiscovery
+  } = receipt.discovery ?? {};
   const base = {
     ...withoutHistory,
     ...(receipt.discovery ? { discovery: baseDiscovery } : {}),
@@ -728,9 +823,16 @@ export const validateDiscoveryDecorations = (
     reconstructed.receipt,
     evidence.previous,
     now,
+    evidence.priorPurchases,
   );
+  const { round3CopyProof: _proof, ...expectedDiscovery } =
+    receipt.discovery ?? {};
+  const expected = {
+    ...receipt,
+    ...(receipt.discovery ? { discovery: expectedDiscovery } : {}),
+  };
   return {
-    problem: isDeepStrictEqual(replayed, receipt)
+    problem: isDeepStrictEqual(replayed, expected)
       ? null
       : "The brand, prior-capture or repeated-presence proof changed after assessment.",
     base,

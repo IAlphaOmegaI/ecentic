@@ -169,6 +169,10 @@ const eligible = async (
   state: HeldReviewState,
 ) => {
   const batch = await batchAt(scope, input.batchId);
+  const firstReview =
+    input.reviewRound === 2 && input.previousJobId
+      ? await jobAt(scope, input.previousJobId)
+      : null;
   if (input.reviewRound === 2) {
     if (
       !input.previousJobId ||
@@ -178,7 +182,9 @@ const eligible = async (
       throw new ConflictError(
         "The reviewed instruction or original job binding is missing.",
       );
-    const previous = await jobAt(scope, input.previousJobId);
+    const previous = firstReview;
+    if (!previous)
+      throw new ConflictError("The preserved first-review record is missing.");
     const previousInput = heldReviewInputSchema.parse(previous.input);
     if (
       previousInput.reviewRound ||
@@ -358,8 +364,11 @@ const eligible = async (
   const context = value(await Store.getEnrichmentContext(prospect.id, scope));
   if (context.suppressed)
     throw new ConflictError("This contact or company is suppressed.");
-  return { prospect, policy, batch };
+  return { prospect, policy, batch, firstReview };
 };
+
+/** Shared held-row guard; new review rounds pass the immutable prior input and state. */
+export const assertHeldReviewEligibility = eligible;
 
 const previewPeers = async (
   scope: TransactionScope,

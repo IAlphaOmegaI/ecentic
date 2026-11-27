@@ -15,6 +15,7 @@ import {
   preflightWriterAssembly,
   type WriterParts,
 } from "./outbound-composition";
+import type { CopyRulesContext } from "./outbound-round3-copy";
 import type { ShoppingResearch } from "./outbound-shopping-research";
 import {
   type CompositionPeer,
@@ -23,7 +24,7 @@ import {
 } from "./outbound-writing";
 
 export const COPY_QUALITY_VERSION = "copy-checks-v2";
-export type CopyQualityContext = {
+export type CopyQualityContext = CopyRulesContext & {
   prospect: ProspectInput;
   receipt: ShoppingResearch;
   playbook: Playbook & { relevanceLines?: string[] };
@@ -63,14 +64,25 @@ export const deterministicCopyIssues = (
 ): string[] => {
   const { prospect, receipt, playbook, parts, messages } = context;
   const preflight = preflightWriterAssembly(prospect, receipt, playbook);
-  const assembled = assembleSequence(prospect, receipt, playbook, parts);
-  const canonical = canonicalSequenceInput(messages);
+  const assembled = assembleSequence(
+    prospect,
+    receipt,
+    playbook,
+    parts,
+    context,
+  );
+  const canonical = canonicalSequenceInput(messages, context);
   const issues = [
     ...validateWriterParts({
       ...context,
       ...(preflight.status === "ready" ? { budget: preflight.budget } : {}),
     }),
-    ...validateWriterSubject(messages[0]?.subject ?? "", receipt, prospect),
+    ...validateWriterSubject(
+      messages[0]?.subject ?? "",
+      receipt,
+      prospect,
+      context,
+    ),
     ...(preflight.status === "held" ? [preflight.reason] : []),
     ...(assembled.status === "held" ? [assembled.reason] : []),
   ];

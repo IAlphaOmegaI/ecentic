@@ -886,6 +886,7 @@ export const validateFactResearch = (
 ) => {
   const decorated =
     originalReceipt.captureHistory ||
+    originalReceipt.purchaseHistory ||
     originalReceipt.discovery?.brandProjection ||
     originalReceipt.discovery?.assessmentVersion === "discovery-v2";
   const checked = decorated

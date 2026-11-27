@@ -541,9 +541,11 @@ export const validateFirecrawlCredentials = async (
 };
 
 export {
+  type ExactShopperQueryDependencies,
   generateLegacyShopperQuery,
   generateReviewedShopperQuery,
   generateShopperQuery,
+  prepareShopperQuery,
   repairShopperQuery,
   reviewShopperQuery,
   type ShopperQueryDependencies,

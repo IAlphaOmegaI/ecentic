@@ -90,6 +90,39 @@ remain unapplied; dropping the previous proof or copying a passed review flag is
 not a compatible adoption path. Newly generated ordinary v2 queries already carry
 their semantic review inside the immutable prepared query.
 
+## Explicit third-review query and evidence contract
+
+The third review uses an explicit `shopper-query-v3` mode; ordinary new-query
+callers still default to v2. Existing queries, their raw responses and their review
+hashes are unchanged. A v3 broad search may use the grounded category alone,
+including a one-word category, with no invented use or occasion. Specific queries
+still use 2–8 words and a category plus one supported attribute or use. Every new
+question retains the natural-language, obvious-product-fit, unbranded and rendered
+product-grounding checks.
+
+`prepareShopperQuery` accepts an operator-supplied exact phrase and makes one
+semantic review that identifies its category, attribute and exact supporting
+excerpts. Its output cannot contain a replacement question. A successful result
+records zero generation attempts, a v3 review and the unchanged supplied phrase;
+an invalid or interrupted review does not regenerate or repair it. The durable
+third-review operator must bind and authorize that phrase before using this API.
+
+For an explicitly authorized v3 broad search, complete full-answer merchant
+presence in both the current and a valid same-product previous search establishes
+`no-gap` with `repeated-presence-v2` proof. An informational previous mention can
+satisfy presence; it establishes neither rank nor recommendation preference.
+Unknown or incomplete presence, invalid previous queries and other-product
+captures cannot support this conclusion. The prior v2 grouped-card rule remains
+unchanged.
+
+Complete prior product captures stay in `captureHistory`, marked `auditOnly` and
+replayed against their own original product. Failed or uncertain acknowledged
+purchases without completed answers use separate `purchaseHistory` metadata:
+original job, query hash, product, submission time, failure reason and raw-response
+hashes. It never fabricates an answer. Both history types are replayed during
+validation and never supply facts to the current answer's claims ledger. Research
+and copy previews remain subject to their existing holds and adoption gate.
+
 ## Automatic live captures
 
 The Integrations page has a **Live shopping research** section for encrypted
@@ -289,3 +322,21 @@ exact quotes, observed locale/market scope, idempotent application, stale
 policy/receipt rejection, source-bound drafting, approval/delivery freshness,
 and contact-selection preservation. Persistence fixtures run only against a
 local database named `outbound_test`.
+
+The held third-review operator is an isolated `heldDiscoveryRound3` workflow.
+It binds the exact authorized instruction digest and four selected replacement
+products to immutable second-review parents. Its separate control record permits
+only eleven additional one-time reservations against the existing budget,
+starting at 27 and stopping at 38 of 42. It has no approval, application or send
+stage. The prospect rows, sender assignments and both earlier review rounds stay
+unchanged. Failed and interrupted purchases remain in the audit history.
+
+The three authorized copy rechecks judge the original saved text first. A failed
+recheck stops. An unchanged passing message may reuse that fresh verdict only
+with matching text, identity, receipt and context; mechanical wording changes
+require a verdict for the changed text. The final preview records whether a
+judgment was reused or a new final quality evaluation was requested; this is
+not a model-usage counter. The operator's optional
+`--drain --steps 400` mode is a finite foreground run; it stops between stages
+when the private `round3-stop-between-runs` file exists. It does not schedule an
+automation or retry an uncertain provider call.

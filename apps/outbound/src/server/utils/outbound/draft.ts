@@ -12,6 +12,7 @@ import {
   writingSnapshotSchema,
 } from "@/lib/outbound-composition";
 import { copyVerdictProblem } from "@/lib/outbound-copy-quality";
+import type { CopyRulesContext } from "@/lib/outbound-round3-copy";
 import {
   type WriterCandidate,
   writerCandidateSchema,
@@ -49,7 +50,7 @@ type GenerationRequest = {
   prompt: string;
   deadline: number;
 };
-export type CompositionDependencies = {
+export type CompositionDependencies = CopyRulesContext & {
   generate?: (request: GenerationRequest) => Promise<WriterParts>;
   judge?: CopyQualityDependencies["generate"];
   suppliedParts?: WriterParts;
@@ -95,6 +96,9 @@ export const composeSequence = async (
   };
   const hashContext = {
     globalVoiceNotes: dependencies.globalVoiceNotes ?? policy.voiceNotes,
+    ...(dependencies.copyRulesVersion
+      ? { copyRulesVersion: dependencies.copyRulesVersion }
+      : {}),
   };
   const parsedReceipt = shoppingResearchSchema.safeParse(receipt);
   if (!parsedReceipt.success)
@@ -150,6 +154,7 @@ export const composeSequence = async (
       budget: preflight.budget,
       peers: dependencies.peers,
       globalVoiceNotes: hashContext.globalVoiceNotes,
+      copyRulesVersion: dependencies.copyRulesVersion,
       ...(previous ? { previous } : {}),
     });
     const generated = dependencies.suppliedParts
@@ -197,8 +202,15 @@ export const composeSequence = async (
       playbook: settings,
       parts,
       peers: dependencies.peers,
+      copyRulesVersion: dependencies.copyRulesVersion,
     });
-    const assembled = assembleSequence(prospect, research, settings, parts);
+    const assembled = assembleSequence(
+      prospect,
+      research,
+      settings,
+      parts,
+      dependencies,
+    );
     const problems = [
       ...issues,
       ...(assembled.status === "held" ? [assembled.reason] : []),
@@ -207,6 +219,7 @@ export const composeSequence = async (
             assembled.messages[0]?.subject ?? "",
             research,
             prospect,
+            dependencies,
           )
         : []),
     ];
@@ -263,6 +276,7 @@ export const composeSequence = async (
         messages: assembled.messages,
         peers: dependencies.peers,
         globalVoiceNotes: hashContext.globalVoiceNotes,
+        copyRulesVersion: dependencies.copyRulesVersion,
       },
       { generate: dependencies.judge, now, deadline },
     );
@@ -274,6 +288,9 @@ export const composeSequence = async (
     );
     const writing = writingSnapshotSchema.parse({
       version: WRITING_CONTRACT_VERSION,
+      ...(dependencies.copyRulesVersion
+        ? { copyRulesVersion: dependencies.copyRulesVersion }
+        : {}),
       writingPolicyHash: writingPolicyHash(settings, hashContext),
       receiptHash: researchHash(research),
       contentHash: createHash("sha256")

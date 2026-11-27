@@ -12,9 +12,12 @@ import {
 } from "@/lib/outbound-shopping-research";
 import type {
   AiCapture,
+  AiJob,
   BrowserResearch,
+  RawCapture,
   ShopperQueryReview,
 } from "./live-shopping-contract";
+import { validateRound3CopyProof } from "./round3-copy-evidence";
 import { validateFactResearch } from "./shopping-fact-assessment";
 
 const selectionOutputSchema = z.object({
@@ -40,6 +43,12 @@ export type SavedResearchEvidence = {
 };
 export type Evidence = SavedResearchEvidence & {
   previous?: SavedResearchEvidence[];
+  priorPurchases?: {
+    job: AiJob;
+    status: "failed" | "uncertain";
+    reason: string;
+    raw: RawCapture[];
+  }[];
 };
 export const catalogId = (kind: "quote" | "candidate", value: unknown) =>
   `${kind === "quote" ? "q" : "c"}_${createHash("sha256")
@@ -763,7 +772,10 @@ export const validateAutomaticResearch = (
     )
   )
     return "A compared product needs its rendered page and an exact selected quote.";
-  return receipt.claims ? validateFactResearch(evidence, receipt, now) : null;
+  const facts = receipt.claims
+    ? validateFactResearch(evidence, receipt, now)
+    : null;
+  return facts ?? validateRound3CopyProof(evidence, receipt, now);
 };
 
 export type AssessmentResult = (
@@ -803,7 +815,12 @@ export const assess = async (
     return assessed;
   const assessedReceipt = assessed.data.receipt;
   const decorated = resultify(() =>
-    appendCaptureHistory(assessedReceipt, input.previous, now()),
+    appendCaptureHistory(
+      assessedReceipt,
+      input.previous,
+      now(),
+      input.priorPurchases,
+    ),
   );
   if (!decorated.success)
     return {

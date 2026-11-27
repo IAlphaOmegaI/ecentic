@@ -22,7 +22,8 @@ export type ShoppingQueryIntent = z.infer<typeof shoppingQueryIntentSchema>;
 export const shoppingQueryBasisSchema = z
   .object({
     category: text(150),
-    attribute: text(300),
+    // Only the explicit v3 broad-query validator permits category alone.
+    attribute: z.string().trim().max(300),
     excerpts: z
       .array(
         z
@@ -142,7 +143,39 @@ export const shoppingCaptureHistorySchema = z
   })
   .strict();
 
+export const shoppingPurchaseHistorySchema = z.object({
+  version: z.literal("purchase-history-v1"),
+  auditOnly: z.literal(true),
+  jobId: z.string().uuid(),
+  query: text(4000),
+  queryHash: digest,
+  product: z.object({name: text(300), url: text(2000)}).strict(),
+  submittedAt: z.string().datetime(),
+  status: z.enum(["failed", "uncertain"]),
+  reason: text(2000),
+  raw: z.array(z.object({url: text(2000), status: z.number().int(), sha256: digest, receivedAt: z.string().datetime()}).strict()).max(20),
+}).strict();
+
 /** Presence is a server result over the full answer and cited links, never model output. */
+export const round3CopyProofSchema = z.object({
+  version: z.literal("round3-copy-proof-v1"),
+  sourceId: text(80),
+  answerHash: digest,
+  linksHash: digest,
+  fullName: text(300),
+  spokenName: text(300),
+  domain: text(300),
+  namesAbsent: z.literal(true),
+  citedSources: z.array(z.object({ id: text(80), url, sha256: digest }).strict()).max(8),
+  noProductBrands: z.object({
+    reviewedBy: text(300),
+    reviewedAt: z.string().datetime(),
+    reason: text(1500),
+    expectedAnswerHash: digest,
+    expectedLinksHash: digest,
+  }).strict().optional(),
+}).strict();
+export type Round3CopyProof = z.infer<typeof round3CopyProofSchema>;
 export const shoppingDiscoverySchema = z
   .object({
     queryIndex: z.number().int().min(0).max(4),
@@ -157,9 +190,10 @@ export const shoppingDiscoverySchema = z
     order: z.enum(["ranked", "unranked"]).optional(),
     assessmentVersion: z.literal("discovery-v2").optional(),
     brandProjection: shoppingBrandProjectionSchema.optional(),
+    round3CopyProof: round3CopyProofSchema.optional(),
     noGapProof: z
       .object({
-        version: z.literal("repeated-presence-v1"),
+        version: z.enum(["repeated-presence-v1", "repeated-presence-v2"]),
         previousAnswerHash: digest,
         previousLinksHash: digest,
         previousQueryHash: digest,
@@ -261,6 +295,7 @@ export const shoppingResearchSchema = z
     product: z.object({ name: text(300), url }),
     sources: z.array(researchSourceSchema).min(2).max(12),
     captureHistory: z.array(shoppingCaptureHistorySchema).max(4).optional(),
+    purchaseHistory: z.array(shoppingPurchaseHistorySchema).max(4).optional(),
     queries: z
       .array(
         z

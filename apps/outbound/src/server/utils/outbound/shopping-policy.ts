@@ -6,8 +6,11 @@ import {
 } from "@/lib/outbound-composition";
 import { COPY_QUALITY_VERSION } from "@/lib/outbound-copy-quality";
 import { FINDING_COPY_FIELDS } from "@/lib/outbound-finding-copy";
+import type { CopyRulesContext } from "@/lib/outbound-round3-copy";
 
-export type WritingPolicyContext = { globalVoiceNotes?: string };
+export type WritingPolicyContext = CopyRulesContext & {
+  globalVoiceNotes?: string;
+};
 
 /** Verification timestamps have their own approval checks and do not change written copy. */
 export const compositionProspectHash = (prospect: ProspectInput) =>
@@ -68,6 +71,9 @@ const boundWritingPolicyHash = (
           ? LEGACY_WRITING_CONTRACT_VERSION
           : WRITING_CONTRACT_VERSION,
         copyQualityVersion: legacy ? "copy-checks-v1" : COPY_QUALITY_VERSION,
+        ...(!legacy && context.copyRulesVersion
+          ? { copyRulesVersion: context.copyRulesVersion }
+          : {}),
         subjectTemplate: settings.subjectTemplate,
         bodyTemplate: settings.bodyTemplate,
         followupOneTemplate: settings.followupOneTemplate,

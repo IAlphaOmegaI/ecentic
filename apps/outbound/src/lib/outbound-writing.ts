@@ -19,6 +19,13 @@ import {
   usesFindingFormula,
 } from "./outbound-finding-copy";
 import {
+  type CopyRulesContext,
+  hasRound3NoProductBrands,
+  ROUND3_COPY_RULES_VERSION,
+  round3CopyProofProblem,
+  spokenMerchantName,
+} from "./outbound-round3-copy";
+import {
   resultBrandNames,
   resultBrandsProblem,
   type ShoppingResearch,
@@ -234,7 +241,7 @@ export type CompositionPeer = {
   occasion: string | null;
 };
 export type CompositionPolicy = Playbook & { relevanceLines?: string[] };
-type CompositionContext = {
+type CompositionContext = CopyRulesContext & {
   prospect: ProspectInput;
   receipt: ShoppingResearch;
   playbook: CompositionPolicy;
@@ -527,6 +534,10 @@ const ledgerIssues = (
   context: CompositionContext,
 ) => {
   const { receipt, prospect } = context;
+  const merchantName =
+    context.copyRulesVersion === ROUND3_COPY_RULES_VERSION
+      ? spokenMerchantName(prospect)
+      : prospect.company;
   const issues: string[] = [];
   const query = receipt.queries[receipt.selected.queryIndex]?.query ?? "";
   const claims = writerClaims(receipt);
@@ -641,7 +652,7 @@ const ledgerIssues = (
       position: entry.position,
     })),
     {
-      name: prospect.company,
+      name: merchantName,
       position: receipt.discovery?.merchantPosition ?? null,
     },
     {
@@ -738,6 +749,7 @@ const ledgerIssues = (
   const literalValues = [
     query,
     prospect.company,
+    merchantName,
     receipt.product.name,
     ...claims
       .filter(
@@ -825,8 +837,14 @@ export const validateWriterSubject = (
   subject: string,
   receipt: ShoppingResearch,
   prospect: ProspectInput,
+  rules: CopyRulesContext = {},
 ): string[] => {
   const issues: string[] = [];
+  if (
+    rules.copyRulesVersion === ROUND3_COPY_RULES_VERSION &&
+    /(?<![\p{L}\p{N}])search(?![\p{L}\p{N}])/iu.test(subject)
+  )
+    issues.push("subject: the word search is not allowed.");
   const query = receipt.queries[receipt.selected.queryIndex];
   if (!query) return ["The selected observed query is missing."];
   const subjectCount = countWords(subject);
@@ -881,6 +899,8 @@ export const validateWriterParts = (
   context: CompositionContext & { parts: WriterParts },
 ): string[] => {
   const { prospect, receipt, playbook, parts } = context;
+  const round3 = context.copyRulesVersion === ROUND3_COPY_RULES_VERSION;
+  const noProductBrands = round3 && hasRound3NoProductBrands(receipt, prospect);
   const parsed = writerPartsSchema.safeParse(parts);
   if (!parsed.success)
     return ["The writer output does not match the four-part contract."];
@@ -900,12 +920,16 @@ export const validateWriterParts = (
     )
   )
     return ["Product-card alternatives require explicit unknown ordering."];
-  const brandProblem = resultBrandsProblem(receipt);
+  const proofProblem = round3
+    ? round3CopyProofProblem(receipt, prospect)
+    : null;
+  if (proofProblem) return [proofProblem];
+  const brandProblem = noProductBrands ? null : resultBrandsProblem(receipt);
   if (brandProblem) return [brandProblem];
   const brands = resultBrandNames(receipt);
   if (usesBrandResult(receipt)) {
     const named = brands.filter((name) => hasPhrase(parts.result, name));
-    if (named.length < 2 || named.length > 3)
+    if (!noProductBrands && (named.length < 2 || named.length > 3))
       issues.push("result: name two or three exact brands from this answer.");
     const nonBrandNames = receipt.discovery.listed
       .flatMap((entry) => [entry.name, entry.seller ?? ""])
@@ -923,6 +947,21 @@ export const validateWriterParts = (
         "result: use brand names only, without sellers or interface text.",
       );
   }
+  if (round3) {
+    const spoken = spokenMerchantName(prospect);
+    if (
+      spoken !== prospect.company &&
+      Object.values(parts).some((text) => hasPhrase(text, prospect.company))
+    )
+      issues.push("Use the configured spoken merchant name in the email text.");
+    if (noProductBrands) {
+      if (parts.result !== `${spoken} didn't come up in that answer.`)
+        issues.push(
+          "result: this reviewed answer names no product brands; use only the exact merchant-absence sentence.",
+        );
+    } else if (!parts.result.startsWith("It picked "))
+      issues.push('result: start exactly with "It picked ".');
+  }
   const query = receipt.queries[receipt.selected.queryIndex];
   if (!query) return ["The selected observed query is missing."];
   const variants = approvedRelevanceVariants(context);
@@ -936,7 +975,9 @@ export const validateWriterParts = (
     issues.push(
       "relevance: use only an approved relevance line and supported category substitution.",
     );
-  issues.push(...validateWriterSubject(parts.subject, receipt, prospect));
+  issues.push(
+    ...validateWriterSubject(parts.subject, receipt, prospect, context),
+  );
   for (const [field, limit, sentences] of [
     ["opening", 22, 1],
     ["result", 30, 2],
@@ -1096,12 +1137,16 @@ export const validateWriterParts = (
   )
     issues.push("result: state the store's absence in this one answer.");
   if (receipt.selected.kind === "discovery-absence") {
-    if (!brands.some((name) => hasPhrase(parts.result, name)))
+    if (
+      !noProductBrands &&
+      !brands.some((name) => hasPhrase(parts.result, name))
+    )
       issues.push(
         "result: name two or three brands that this answer actually picked.",
       );
     const merchantSubjects = [
       prospect.company,
+      ...(round3 ? [spokenMerchantName(prospect)] : []),
       receipt.product.name,
       "your store",
       "your brand",
@@ -1330,10 +1375,30 @@ export const compositionPrompt = (
     "No extra ask, links, markup, line breaks, bullets, emojis, exclamation marks, en/em dashes, percentages, statistics, customer proof, lost sales/revenue, invisible, can't see/read or competitor-took-a-sale wording. The fixed founder line is the only company description. No narrative outside opening.",
     "A repair fixes the named violations under exactly the same ledger and policy. Never weaken evidence, drop qualifiers, reorder results or replace missing evidence with a neutral product recap.",
     "Shared voice notes guide style only. Never inherit another author's name, employment history or biography from those notes or examples. The supplied sender identity and its fixed introduction are the only author facts; do not add author biographies to the four written parts.",
+    ...(context.copyRulesVersion === ROUND3_COPY_RULES_VERSION
+      ? [
+          'Round three: use the supplied spoken merchant name in email text. The result starts exactly "It picked ", without repeating "When I asked". Never use the whole word "search" in the subject.',
+          hasRound3NoProductBrands(context.receipt, context.prospect)
+            ? `This saved answer has an explicit reviewed no-product-brand proof. Override the two-brand result instruction: name no alternatives and use exactly "${spokenMerchantName(context.prospect)} didn't come up in that answer." Never substitute sellers or invent brands.`
+            : "Use two or three exact projected product brands; an empty projection never authorizes a no-brand result.",
+        ]
+      : []),
   ].join("\n\n"),
   prompt: JSON.stringify({
     contactRole: context.prospect.title,
-    merchant: context.prospect.company,
+    merchant:
+      context.copyRulesVersion === ROUND3_COPY_RULES_VERSION
+        ? spokenMerchantName(context.prospect)
+        : context.prospect.company,
+    ...(context.copyRulesVersion
+      ? {
+          copyRulesVersion: context.copyRulesVersion,
+          noProductBrands: hasRound3NoProductBrands(
+            context.receipt,
+            context.prospect,
+          ),
+        }
+      : {}),
     product: context.receipt.product,
     findingKind: context.receipt.selected.kind,
     ...writerResearchInput(context.receipt),

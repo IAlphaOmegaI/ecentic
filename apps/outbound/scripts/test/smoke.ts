@@ -84,6 +84,9 @@ export const smokeSuites = [
   "src/server/spec/outbound-held-discovery-review.test.ts",
   "src/server/spec/outbound-held-second-review.test.ts",
   "src/server/spec/outbound-held-brand-reconciliation.test.ts",
+  "src/server/spec/outbound-round3-copy.test.ts",
+  "src/server/spec/outbound-round3-query-research.test.ts",
+  "src/server/spec/outbound-held-third-review.test.ts",
   "src/server/spec/outbound-live-research-pipeline.test.ts",
   "src/server/spec/outbound-linkedin-automation.test.ts",
 ] as const;

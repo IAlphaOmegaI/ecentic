@@ -5,6 +5,10 @@ import {
   type Playbook,
   type ProspectInput,
 } from "./outbound";
+import {
+  type CopyRulesContext,
+  ROUND3_COPY_RULES_VERSION,
+} from "./outbound-round3-copy";
 import type { ShoppingResearch } from "./outbound-shopping-research";
 
 export const LEGACY_WRITING_CONTRACT_VERSION = "discovery-email-v1";
@@ -64,6 +68,7 @@ const hash = z.string().regex(/^[a-f0-9]{64}$/);
 export const currentWritingSnapshotSchema = z
   .object({
     version: z.literal(WRITING_CONTRACT_VERSION),
+    copyRulesVersion: z.literal(ROUND3_COPY_RULES_VERSION).optional(),
     writingPolicyHash: hash,
     receiptHash: hash,
     contentHash: hash,
@@ -82,6 +87,7 @@ export const currentWritingSnapshotSchema = z
   })
   .strict();
 export const legacyWritingSnapshotSchema = currentWritingSnapshotSchema
+  .omit({ copyRulesVersion: true })
   .extend({
     version: z.literal(LEGACY_WRITING_CONTRACT_VERSION),
     parts: legacyWriterPartsSchema,
@@ -410,6 +416,7 @@ export const preflightWriterAssembly = (
 /** Hash only recipient-visible text and delivery order, excluding self-referential writing metadata. */
 export const canonicalSequenceInput = (
   messages: readonly Message[],
+  rules: CopyRulesContext = {},
 ): { status: "ready"; canonicalText: string } | AssemblyHold => {
   if (
     messages.length !== 3 ||
@@ -430,10 +437,24 @@ export const canonicalSequenceInput = (
     return hold(
       "The sequence contains an invalid subject, body or delivery day.",
     );
+  const writing = messages[0]?.writing;
+  const savedRules =
+    writing && "copyRulesVersion" in writing
+      ? writing.copyRulesVersion
+      : undefined;
+  if (
+    rules.copyRulesVersion &&
+    writing &&
+    (writing.version === LEGACY_WRITING_CONTRACT_VERSION ||
+      (savedRules && savedRules !== rules.copyRulesVersion))
+  )
+    return hold("The saved sequence and requested copy rules do not match.");
+  const copyRulesVersion = savedRules ?? rules.copyRulesVersion;
   return {
     status: "ready",
     canonicalText: JSON.stringify({
       version: messages[0]?.writing?.version ?? WRITING_CONTRACT_VERSION,
+      ...(copyRulesVersion ? { copyRulesVersion } : {}),
       messages: messages.map(({ step, afterDays, subject, body }) => ({
         step,
         afterDays,
@@ -487,6 +508,7 @@ export const assembleSequence = (
   receipt: ShoppingResearch,
   settings: Playbook,
   suppliedParts: WriterParts,
+  rules: CopyRulesContext = {},
 ):
   | (AssemblyReady & {
       messages: Message[];
@@ -557,7 +579,7 @@ export const assembleSequence = (
     .map((message) => sentenceProblem(message.body))
     .find(Boolean);
   if (longSentence) return hold(longSentence);
-  const canonical = canonicalSequenceInput(messages);
+  const canonical = canonicalSequenceInput(messages, rules);
   if (canonical.status === "held") return canonical;
   return {
     ...preflight,
