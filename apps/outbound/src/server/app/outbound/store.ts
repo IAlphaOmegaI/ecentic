@@ -2808,7 +2808,7 @@ type AutomaticApproval =
   | { automationJobId: string; reviewJobId?: never }
   | { reviewJobId: string; automationJobId?: never };
 
-const reviewProspectWithin = async (
+export const reviewProspectWithin = async (
   transaction: TransactionScope,
   actor: string,
   input: unknown,
