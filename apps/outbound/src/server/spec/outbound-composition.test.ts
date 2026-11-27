@@ -158,6 +158,66 @@ describe("observed facts and writer-owned narrative", () => {
     ).toBe(true);
   });
 
+  test("dance occasions stay in the opening and participate in repetition checks", () => {
+    const fixture = writerFixture();
+    const query = fixture.receipt.queries[0]?.query;
+    if (!query) throw new Error("Missing synthetic query.");
+    for (const occasion of ["dance competition", "recital"]) {
+      const opening = `Picking out a ${occasion} gift, I asked Google AI Mode for "${query}".`;
+      const parts = { ...fixture.parts, opening };
+      expect(issuesFor(fixture, parts)).toEqual([]);
+      expect(deriveWriterNarrative(opening, query).occasion).toBe(occasion);
+      expect(
+        validateWriterParts({
+          ...fixture,
+          playbook: fixture.policy,
+          parts,
+          peers: [
+            {
+              opening: `I wanted a ${occasion} gift, so I asked for "another query".`,
+              relationship: null,
+              occasion,
+            },
+          ],
+        }),
+      ).toContain("opening: this occasion was already used within ten emails.");
+      for (const field of ["result", "followupFact"] as const)
+        expect(
+          issuesFor(fixture, {
+            ...parts,
+            [field]: `Alder was listed for the ${occasion}.`,
+          }).some((issue) => issue.startsWith(`${field}:`)),
+        ).toBe(true);
+      expect(
+        issuesFor(fixture, {
+          ...parts,
+          opening: opening.replace("gift,", "gift for Ava,"),
+        }).some((issue) => /unsupported named person/.test(issue)),
+      ).toBe(true);
+      expect(
+        issuesFor(fixture, {
+          ...parts,
+          opening: opening.replace("gift,", "gift at $120,"),
+        }).some((issue) => /price|number/.test(issue)),
+      ).toBe(true);
+    }
+    expect(
+      issuesFor(fixture, {
+        ...fixture.parts,
+        opening: `Picking out a competition gift, I asked Google AI Mode for "${query}".`,
+      }).some((issue) => /“competition”/.test(issue)),
+    ).toBe(true);
+    expect(
+      issuesFor(fixture, {
+        ...fixture.parts,
+        opening: `Picking out a dance competition and recital gift, I asked for "${query}".`,
+      }).some((issue) => /one relationship and one occasion/.test(issue)),
+    ).toBe(true);
+    expect(
+      deriveWriterNarrative('I asked for "dance competition gift".').occasion,
+    ).toBeNull();
+  });
+
   test("writer input omits surrounding proof and unapproved discovery details", () => {
     const fixture = writerFixture();
     const query = fixture.receipt.queries[0];

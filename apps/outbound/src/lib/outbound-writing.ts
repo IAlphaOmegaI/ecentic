@@ -331,6 +331,8 @@ const occasions = [
   "party",
   "dinner",
   "new puppy",
+  "dance competition",
+  "recital",
 ];
 
 // Inflections of the existing shopping-narrative verbs, only for the opening.
@@ -892,7 +894,12 @@ const ledgerIssues = (
       ...ordinaryFactWords,
       ...literalValues.flatMap(copyTokens),
       ...relationships,
-      ...occasions.flatMap(copyTokens),
+      ...occasions
+        .filter(
+          (occasion) =>
+            occasion !== "dance competition" || hasPhrase(residual, occasion),
+        )
+        .flatMap(copyTokens),
       ...narrativeVerbForms,
       ...copyTokens(
         "I my me our we was for so a an some something gift present just recently about suitable fit occasion celebration family someone together outdoor outdoors new pair ideas",
