@@ -62,3 +62,83 @@ test("malformed CRM response cannot validate a key or trigger a retry", async ()
   expect(result.success).toBe(false);
   expect(request).toHaveBeenCalledTimes(1);
 });
+
+test("HubSpot page reads request explicit identifiers and ignore provider paging URLs", async () => {
+  const calls: string[] = [];
+  globalThis.fetch = Object.assign(
+    mock(async (input: RequestInfo | URL, options?: RequestInit) => {
+      calls.push(String(input));
+      expect(options?.method).toBe("GET");
+      expect(options?.body).toBeUndefined();
+      return Response.json({
+        results: [
+          {
+            id: "123",
+            archived: false,
+            updatedAt: "2026-11-27T00:00:00.000Z",
+            properties: {
+              email: "known@example.com",
+              hs_additional_emails: "other@example.com",
+            },
+          },
+        ],
+        paging: {
+          next: {
+            after: "opaque+/=",
+            link: "https://untrusted.example/credential-harvest",
+          },
+        },
+      });
+    }),
+    { preconnect: original.preconnect },
+  );
+  const result = await HubSpot.readPage({
+    apiKey: "hubspot-test-secret",
+    object: "contacts",
+    after: "last+/=",
+  });
+  expect(result.success).toBe(true);
+  if (!result.success) throw result.error;
+  expect(result.data.value.paging?.next).toEqual({ after: "opaque+/=" });
+  const url = new URL(calls[0]!);
+  expect(url.origin).toBe("https://api.hubapi.com");
+  expect(url.searchParams.get("limit")).toBe("100");
+  expect(url.searchParams.get("archived")).toBe("false");
+  expect(url.searchParams.get("properties")).toBe("email,hs_additional_emails");
+  expect(url.searchParams.get("after")).toBe("last+/=");
+  expect(calls).toHaveLength(1);
+});
+
+test("oversized and archived record pages fail closed without another request", async () => {
+  for (const results of [
+    Array.from({ length: 101 }, (_, index) => ({
+      id: String(index),
+      archived: false,
+      updatedAt: "2026-11-27T00:00:00.000Z",
+      properties: {},
+    })),
+    [
+      {
+        id: "1",
+        archived: true,
+        updatedAt: "2026-11-27T00:00:00.000Z",
+        properties: {},
+      },
+    ],
+  ]) {
+    const fetch = mock(async () => Response.json({ results }));
+    globalThis.fetch = Object.assign(fetch, {
+      preconnect: original.preconnect,
+    });
+    expect(
+      (
+        await HubSpot.readPage({
+          apiKey: "synthetic",
+          object: "companies",
+          after: null,
+        })
+      ).success,
+    ).toBe(false);
+    expect(fetch).toHaveBeenCalledTimes(1);
+  }
+});
