@@ -42,6 +42,26 @@ describe("CMS article links", () => {
     expect(html).not.toContain("nofollow");
   });
 
+  test("a link-swap partner keeps a followed link", () => {
+    const html = render(
+      '<h2>Next</h2><p><a href="https://keaz.ai" target="_blank" rel="noopener">Keaz</a> and <a href="https://www.zipchat.ai/">Zipchat</a></p>',
+    );
+
+    expect(html).toContain(
+      '<a href="https://keaz.ai" target="_blank" rel="noopener">',
+    );
+    expect(html).toContain('<a href="https://www.zipchat.ai/" rel="noopener">');
+    expect(html).not.toContain("nofollow");
+  });
+
+  test("a host that only contains a partner's name is still qualified", () => {
+    const html = render(
+      '<h2>Sources</h2><p><a href="https://keaz.ai.partner.example/">x</a> <a href="https://notzipchat.ai/">y</a></p>',
+    );
+
+    expect(html.match(/rel="nofollow noopener noreferrer"/g)).toHaveLength(2);
+  });
+
   test("a lookalike host is still outbound", () => {
     const html = render(
       '<h2>Sources</h2><p><a href="https://ecentic.ai.partner.example/">x</a></p>',

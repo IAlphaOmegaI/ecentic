@@ -182,17 +182,35 @@ const isExternal = (href: string) =>
   new URL(href).hostname.replace(/^www\./, "") !== new URL(seo.host).hostname;
 
 /**
+ * Sites we agreed a link swap with: they link to ecentic, and our articles link
+ * to them as a normal, followed link. Add a domain here only for an agreed
+ * swap, never because a draft or a CMS body links to it.
+ */
+export const FOLLOWED_LINK_DOMAINS: readonly string[] = [
+  "keaz.ai",
+  "zipchat.ai",
+];
+
+const isFollowedPartner = (href: string) =>
+  FOLLOWED_LINK_DOMAINS.includes(new URL(href).hostname.replace(/^www\./, ""));
+
+/**
  * CMS bodies decide per link whether it is followed, and the ones left followed
  * include the vendor's own partner placements. Qualify every outbound link the
- * same way, so no article passes ranking credit on someone else's behalf.
+ * same way, so no article passes ranking credit on someone else's behalf. The
+ * one exception is our own link-swap partners, which keep a followed link and
+ * the referrer.
  */
 const qualifyExternalLinks = (html: string) =>
   html.replace(/<a\b[^>]*>/gi, (anchor) => {
     const href = anchor.match(/\bhref\s*=\s*(["'])(.*?)\1/i)?.[2];
     if (!href || !isExternal(href)) return anchor;
+    const rel = isFollowedPartner(href)
+      ? "noopener"
+      : "nofollow noopener noreferrer";
     return anchor
       .replace(/\s+rel\s*=\s*(["']).*?\1/i, "")
-      .replace(/\s*>$/, ' rel="nofollow noopener noreferrer">');
+      .replace(/\s*>$/, ` rel="${rel}">`);
   });
 
 /**

@@ -50,6 +50,10 @@ Plain markdown (GitHub-flavored: tables and lists work).
 - Close with a `## Sources` section: a numbered list of the primary sources, marked inline as `[1]`, `[2]`. No markdown footnotes (`[^1]`); the check refuses them.
 - No raw HTML. It is not published, so the check fails rather than let it disappear.
 - Links are `https://...`, `mailto:...`, or a `/path` on ecentic.ai.
+- Every outbound link is published as `nofollow`, except links to the sites we
+  agreed a link swap with, listed in `FOLLOWED_LINK_DOMAINS`
+  (`apps/web/src/lib/blog-html.ts`). Adding a site there is a change to that
+  file, not to a post.
 - Images inside the body work the same as the hero: `![alt text](/blog/<file>.png)` with the file in `apps/web/public/blog/`.
 
 ## Voice
