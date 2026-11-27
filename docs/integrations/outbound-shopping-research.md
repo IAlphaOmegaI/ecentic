@@ -167,6 +167,19 @@ It preserves the original selected name, raw bodies, hashes and capture dates;
 it performs no browser or network request. A reconstructed view still needs
 normal query grounding, semantic review and freshness checks before purchase.
 
+The separate `heldDiscoveryRound3QueryBasisReview` operation addresses only the
+subsequent unspent Good American basis-decomposition hold. Its operator proposal
+keeps `wide leg jeans` unchanged and binds category `jeans`, attribute `wide leg`
+and the exact saved product excerpt. It archives that failed row and the first
+preparation repair, reserves one fresh normal semantic review, and retains any
+failed, interrupted or late result without automatic retry. Only a currently
+bound semantic pass may requeue the same child at `query`; no generation or
+shopping call runs in this operation. The main cohort must first be terminal,
+and all contacts remain held. The `held-third-query-basis.ts` operator requires
+`TZ=UTC`, exact instruction/request hashes and explicit `--execute`; its default
+is read-only. `reviewAttempts` counts the durable reservation, not measured
+provider calls. Historical failed decisions and capture dates remain intact.
+
 Only direct answer citations can supply competitor URLs. The automatic assessor
 must quote both the actual answer and rendered merchant page, plus a rendered
 competitor source for any comparison. It can select a specific price, variant,

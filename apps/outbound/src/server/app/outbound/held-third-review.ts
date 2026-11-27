@@ -55,6 +55,8 @@ import {
   heldReviewStateSchema,
   heldReviewWrittenSchema,
 } from "@/server/utils/outbound/held-review-contract";
+import { validateQueryBasisReview } from "@/server/utils/outbound/held-third-query-basis";
+import { QUERY_BASIS_REVIEW_SCOPE } from "@/server/utils/outbound/held-third-query-basis-contract";
 import { validateQueryPreparationRepair } from "@/server/utils/outbound/held-third-query-repair";
 import {
   QUERY_PREPARATION_REPAIR_CASES,
@@ -381,6 +383,66 @@ const ready = async (
       throw new ConflictError(
         "This resumed preparation requires its immutable repair audit.",
       );
+  }
+  if (
+    state.queryBasisReview ||
+    (input.controlId === QUERY_BASIS_REVIEW_SCOPE.controlId &&
+      input.merchant.name === QUERY_BASIS_REVIEW_SCOPE.company)
+  ) {
+    const audits = await scope
+      .select()
+      .from(schema.outboundIntegrationJob)
+      .where(
+        and(
+          eq(schema.outboundIntegrationJob.provider, "automation"),
+          sql`input->>'operation'='heldDiscoveryRound3QueryBasisReview'`,
+          sql`input->>'sourceJobId'=${QUERY_BASIS_REVIEW_SCOPE.sourceJobId}`,
+        ),
+      );
+    if (
+      state.queryBasisReview ||
+      audits.some((audit) => audit.output?.["appliedAt"])
+    ) {
+      if (audits.length !== 1 || !state.queryPreparationRepair)
+        throw new ConflictError(
+          "The explicit query basis review is missing or ambiguous.",
+        );
+      const job = await jobAt(scope, QUERY_BASIS_REVIEW_SCOPE.sourceJobId);
+      const [preparation] = await scope
+        .select({
+          canonical: sql<string>`to_jsonb(${schema.outboundIntegrationJob})::text`,
+        })
+        .from(schema.outboundIntegrationJob)
+        .where(
+          eq(
+            schema.outboundIntegrationJob.id,
+            state.queryPreparationRepair.auditJobId,
+          ),
+        );
+      if (
+        !preparation ||
+        !isDeepStrictEqual(job.input, input) ||
+        !isDeepStrictEqual(heldThirdReviewStateSchema.parse(job.output), state)
+      )
+        throw new ConflictError(
+          "The explicit basis review must bind the current persisted child.",
+        );
+      validateQueryBasisReview({
+        job,
+        audit: audits[0]!,
+        preparationAuditCanonical: preparation.canonical,
+      });
+    } else if (
+      audits.length &&
+      (state.stage !== "complete" ||
+        state.query ||
+        state.shoppingJob ||
+        state.answer)
+    ) {
+      throw new ConflictError(
+        "An unapplied basis review cannot resume this child.",
+      );
+    }
   }
   const control = await controlAt(scope, input.controlId);
   if (control.state.paused || control.budget.paused)
