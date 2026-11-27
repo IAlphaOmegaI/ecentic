@@ -100,3 +100,95 @@ test("an ordinary attribute appearing only inside an alias is not product eviden
     expect(result.reason).toContain("exact support");
   expect(generate).toHaveBeenCalledTimes(2);
 });
+
+test("a standalone navigation label beside campaign banners cannot ground an attribute", async () => {
+  const input = await context(
+    "Acme Goods",
+    "Large linen bags.\n\n            Travel\n          \nBLACK FRIDAY IS HERE!\nSHOP NOW\nHSA/FSA NOW ACCEPTED\nLearn More",
+  );
+  const originalBrowser = structuredClone(input.browser);
+  const originalExcerpts = Shopping.shopperQueryExcerpts(input);
+  const { result, generate } = await generated(
+    input,
+    "travel linen bags",
+    "travel",
+  );
+  expect(result.status).toBe("held");
+  if (result.status === "held") {
+    expect(result.reason).toContain("outside navigation");
+  }
+  expect(generate).toHaveBeenCalledTimes(2);
+  expect(input.browser).toEqual(originalBrowser);
+  expect(Shopping.shopperQueryExcerpts(input)).toEqual(originalExcerpts);
+  expect(originalExcerpts?.[0]?.quote).toContain("Travel");
+  const saved = Shopping.preparedQuerySchema.parse({
+    product: input.product,
+    merchant: input.merchant,
+    category: input.category,
+    country: input.country,
+    surface: "google_ai_mode",
+    intent: "unbranded-specific",
+    prompt: "travel linen bags",
+    basis: {
+      category: "bag",
+      attribute: "travel",
+      excerpts: originalExcerpts,
+      promptHash: "a".repeat(64),
+    },
+  });
+  const originalSaved = structuredClone(saved);
+  expect(Shopping.validateShopperQuery({ ...input, query: saved })).toContain(
+    "outside navigation",
+  );
+  expect(saved).toEqual(originalSaved);
+});
+
+test("independent product support survives the same word in navigation", async () => {
+  const input = await context(
+    "Acme Goods",
+    "Large linen bags.\nTravel\nCYBER MONDAY SALE\nSHOP NOW\nProduct details\nThese linen bags are made for travel.",
+  );
+  const { result, generate } = await generated(
+    input,
+    "travel linen bags",
+    "travel",
+  );
+  expect(result.status).toBe("prepared");
+  expect(generate).toHaveBeenCalledTimes(1);
+});
+
+test("product category and supported attribute can remain on separate lines", async () => {
+  const input = await context(
+    "Acme Goods",
+    "Linen bags\nProduct details\nLarge\nTravel\nA roomy main compartment.",
+  );
+  const { result, generate } = await generated(
+    input,
+    "travel linen bags",
+    "travel",
+  );
+  expect(result.status).toBe("prepared");
+  expect(generate).toHaveBeenCalledTimes(1);
+});
+
+test("banner context is checked across exact excerpt boundaries", async () => {
+  const titlePrefix = "Marlow Tote\nMarlow Tote\n";
+  const productPrefix = "Large linen bags.\n";
+  const navigation = "\nTravel\n";
+  const input = await context(
+    "Acme Goods",
+    `${productPrefix}${"x".repeat(1600 - titlePrefix.length - productPrefix.length - navigation.length)}${navigation}BLACK FRIDAY IS HERE!\nSHOP NOW`,
+  );
+  const excerpts = Shopping.shopperQueryExcerpts(input);
+  expect(excerpts?.[0]?.quote).toEndWith("Travel\n");
+  expect(excerpts?.[1]?.quote).toStartWith("BLACK FRIDAY");
+  const { result, generate } = await generated(
+    input,
+    "travel linen bags",
+    "travel",
+  );
+  expect(result.status).toBe("held");
+  if (result.status === "held")
+    expect(result.reason).toContain("outside navigation");
+  expect(generate).toHaveBeenCalledTimes(2);
+});

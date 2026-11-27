@@ -134,6 +134,28 @@ export const heldCardAssessmentRecoverySchema = z
     recoveredAt: z.string().datetime(),
   })
   .strict();
+export const heldWriterCandidateRecoverySchema = z
+  .object({
+    candidatePartsHash: digest,
+    candidateAttempt: z.literal(2),
+    candidatesHash: digest,
+    queryHash: digest,
+    shoppingJobId: z.string().uuid(),
+    responseSha256: digest,
+    receiptHash: digest,
+    contextHash: digest,
+    originalError: z.string().min(1).max(200005),
+    originalHeldReason: z.string().min(1).max(200005),
+    originalIssues: z.array(z.string().min(1).max(2000)).min(1).max(100),
+    rawCaptures: z
+      .array(z.object({ url: z.string().url(), sha256: digest }).strict())
+      .min(3)
+      .max(12),
+    requestedBy: z.string().trim().min(1).max(200),
+    recoveredAt: z.string().datetime(),
+    reservedAt: z.string().datetime().optional(),
+  })
+  .strict();
 const previewMessageSchema = z
   .object({
     step: z.union([z.literal(1), z.literal(2), z.literal(3)]),
@@ -232,6 +254,7 @@ export const heldReviewStateSchema = z
     previewContext: heldReviewPreviewContextSchema.optional(),
     draftBeforeJudge: heldReviewWrittenSchema.optional(),
     writerCandidates: writerCandidatesSchema.optional(),
+    writerCandidateRecovery: heldWriterCandidateRecoverySchema.optional(),
     preview: heldReviewPreviewSchema.optional(),
     heldReason: z.string().optional(),
     failureReceipt: z.record(z.string(), z.unknown()).nullable().optional(),

@@ -333,6 +333,33 @@ const occasions = [
   "new puppy",
 ];
 
+// Inflections of the existing shopping-narrative verbs, only for the opening.
+// Purchase/use prohibitions below still apply, including to "bought" and "tried".
+const narrativeVerbForms = [
+  "need needs needed needing",
+  "look looks looked looking",
+  "want wants wanted wanting",
+  "shop shops shopped shopping",
+  "ask asks asked asking",
+  "search searches searched searching",
+  "browse browses browsed browsing",
+  "get gets got gotten getting",
+  "plan plans planned planning",
+  "pack packs packed packing",
+  "buy buys bought buying",
+  "consider considers considered considering",
+  "think thinks thought thinking",
+  "find finds found finding",
+  "try tries tried trying",
+  "help helps helped helping",
+  "pick picks picked picking",
+  "choose chooses chose chosen choosing",
+  "surprise surprises surprised surprising",
+  "give gives gave given giving",
+  "celebrate celebrates celebrated celebrating",
+  "put puts putting",
+].flatMap(copyTokens);
+
 /** Narrative metadata is derived from text; a model never supplies a verification flag. */
 const narrativeLabels = (opening: string, query = "") => {
   const narrative = stripQuotes(withoutPhrase(opening, query)).replaceAll(
@@ -508,6 +535,7 @@ const ledgerIssues = (
   const { receipt, prospect } = context;
   const issues: string[] = [];
   const query = receipt.queries[receipt.selected.queryIndex]?.query ?? "";
+  const surface = receipt.queries[receipt.selected.queryIndex]?.surface;
   const claims = receipt.claims ?? [];
   const quoted = quotedStrings(text);
   if (
@@ -865,11 +893,16 @@ const ledgerIssues = (
       ...literalValues.flatMap(copyTokens),
       ...relationships,
       ...occasions.flatMap(copyTokens),
+      ...narrativeVerbForms,
       ...copyTokens(
-        "I my me our we needed need looking looked wanted want shopping shop was for so asked searched searching browsing a an some something gift present getting get got just recently planning packing buying considering thinking about finding trying find help helping pick choosing choose chose surprise surprising give giving suitable fit occasion celebration celebrate family someone together outdoor outdoors new pair putting ideas",
+        "I my me our we was for so a an some something gift present just recently about suitable fit occasion celebration family someone together outdoor outdoors new pair ideas",
       ),
     ]);
-    const unsupported = copyTokens(residual).find(
+    const narrative = residual.replace(
+      /\b(pick(?:s|ed|ing)?)\s+out\b/giu,
+      "$1",
+    );
+    const unsupported = copyTokens(narrative).find(
       (word) =>
         !narrativeWords.has(word) &&
         !narrativeWords.has(word.replace(/['’]s$/, "")) &&
@@ -889,6 +922,7 @@ const ledgerIssues = (
       "Google's AI Mode",
       "AI Mode",
       "ChatGPT",
+      ...(surface ? [surface] : []),
       ...occasions.map(
         (occasion) => occasion[0]?.toUpperCase() + occasion.slice(1),
       ),

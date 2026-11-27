@@ -21,12 +21,17 @@ import {
   prospectSchema,
   settingsForProspect,
 } from "@/lib/outbound";
-import { writingSnapshotSchema } from "@/lib/outbound-composition";
+import {
+  assembleSequence,
+  writingSnapshotSchema,
+} from "@/lib/outbound-composition";
 import {
   copyVerdictProblem,
+  deterministicCopyIssues,
   hasCompleteCopyVerdict,
 } from "@/lib/outbound-copy-quality";
 import { rebuildHeldReviewWritingProposal } from "@/lib/outbound-rebuild-policy";
+import { writerCandidatesSchema } from "@/lib/outbound-sequence-composition";
 import { db, schema, type TransactionScope } from "@/server/database";
 import { ConflictError, ValidationError } from "@/server/utils/error";
 import * as Draft from "@/server/utils/outbound/draft";
@@ -53,6 +58,7 @@ import {
   heldReviewStageBudget,
   heldReviewStateSchema,
   heldReviewWrittenSchema,
+  heldWriterCandidateRecoverySchema,
 } from "@/server/utils/outbound/held-review-contract";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import * as Capture from "@/server/utils/outbound/live-shopping";
@@ -74,7 +80,10 @@ import {
   researchHash,
   researchPolicyHash,
 } from "@/server/utils/outbound/shopping-research";
-import { appendWriterCandidate } from "@/server/utils/outbound/writing-candidates";
+import {
+  appendWriterCandidate,
+  writerDiagnosticHash,
+} from "@/server/utils/outbound/writing-candidates";
 import * as Credentials from "./provider-credentials";
 import * as Composition from "./sequence-composition";
 import { claimShoppingProviderSlot } from "./shopping-provider-pacing";
@@ -280,6 +289,168 @@ const eligible = async (
   if (context.suppressed)
     throw new ConflictError("This contact or company is suppressed.");
   return { prospect, policy, batch };
+};
+
+const previewPeers = async (
+  scope: TransactionScope,
+  input: HeldReviewInput,
+  jobId: string,
+  prospect: Parameters<typeof Composition.recentCompositionPeers>[0],
+) => {
+  const staged = await scope
+    .select({
+      writing: sql<unknown>`${schema.outboundIntegrationJob.output}->'preview'->'messages'->0->'writing'`,
+    })
+    .from(schema.outboundIntegrationJob)
+    .where(
+      and(
+        eq(schema.outboundIntegrationJob.provider, "automation"),
+        eq(schema.outboundIntegrationJob.status, "complete"),
+        ne(schema.outboundIntegrationJob.id, jobId),
+        sql`${schema.outboundIntegrationJob.input}->>'operation' = 'heldDiscoveryReview'`,
+        sql`${schema.outboundIntegrationJob.input}->>'batchId' = ${input.batchId}`,
+        sql`${schema.outboundIntegrationJob.output}->'preview' is not null`,
+      ),
+    )
+    .orderBy(desc(schema.outboundIntegrationJob.updatedAt))
+    .limit(9);
+  const stagedPeers = staged.flatMap(({ writing }) => {
+    const parsed = writingSnapshotSchema.safeParse(writing);
+    return parsed.success
+      ? [{ opening: parsed.data.parts.opening, ...parsed.data.narrative }]
+      : [];
+  });
+  return [
+    ...stagedPeers,
+    ...value(await Composition.recentCompositionPeers(prospect, null, scope)),
+  ].slice(0, 9);
+};
+
+/** Pure evidence and copy replay inside the caller's short transaction; no provider. */
+const checkedWriterCandidate = async (
+  scope: TransactionScope,
+  input: HeldReviewInput,
+  state: HeldReviewState,
+  jobId: string,
+  expectedPartsHash: string,
+) => {
+  const context = heldReviewPreviewContextSchema.parse(state.previewContext);
+  const candidates = writerCandidatesSchema.parse(state.writerCandidates);
+  const candidate = candidates.at(-1);
+  if (
+    candidates.length !== 2 ||
+    candidates[0]?.attempt !== 1 ||
+    candidate?.attempt !== 2 ||
+    !candidates.every((saved) => saved.issues.length > 0) ||
+    candidate.partsHash !== expectedPartsHash ||
+    state.draftBeforeJudge ||
+    state.preview ||
+    state.composition ||
+    state.researchId ||
+    state.failureReceipt ||
+    state.queryQualityHold
+  )
+    throw new ConflictError(
+      "Only the exact final candidate of two deterministically rejected attempts can receive its first judgment.",
+    );
+  for (const saved of candidates) appendWriterCandidate([], saved, context);
+  const ready = await eligible(scope, input, state);
+  const receipt = captureReceipt(state);
+  const answer = Capture.aiCaptureSchema.parse(state.answer);
+  const browser = Capture.browserResearchSchema.parse(state.browser);
+  const shoppingJob = Capture.aiJobSchema.parse(state.shoppingJob);
+  const queryHash = heldPreparedQueryHash(state.query);
+  if (
+    !state.queryReservedAt ||
+    state.shoppingQueryCount !==
+      (state.shoppingQueryIntent === "unbranded-broad" ? 2 : 1) ||
+    (state.shoppingHistory?.length ?? 0) !== state.shoppingQueryCount - 1 ||
+    ready.batch.budget.queriesReserved < state.shoppingQueryCount ||
+    queryHash !== heldPreparedQueryHash(shoppingJob.query) ||
+    shoppingJob.query.intent !== state.shoppingQueryIntent ||
+    !isDeepStrictEqual(shoppingJob, answer.job) ||
+    browser.status !== "captured"
+  )
+    throw new ConflictError("The saved paid query or capture binding changed.");
+  const queryIssue = queryProblem(input, state, ready.policy.settings);
+  if (queryIssue) throw new ValidationError(queryIssue);
+  const response = answer.raw.find(
+    (raw) => raw.url === shoppingPollUrl(shoppingJob),
+  );
+  if (!response)
+    throw new ValidationError("The original paid response is missing.");
+  const restored = value(
+    Capture.restoreCompletedQueryResponse(
+      shoppingJob,
+      response,
+      answer.raw.find((raw) => raw.url !== response.url),
+      Date.now(),
+    ),
+  );
+  if (!isDeepStrictEqual(restored, answer))
+    throw new ValidationError(
+      "The saved answer changed from its original provider response.",
+    );
+  const proofIssue = Assessment.validateAutomaticResearch(
+    { answer, browser },
+    receipt,
+    ready.policy.settings.verificationDays,
+    ready.policy.settings,
+  );
+  if (proofIssue) throw new ValidationError(proofIssue);
+  const proposedPolicy = playbookSchema.parse(
+    rebuildHeldReviewWritingProposal(ready.policy.settings),
+  );
+  const settings = settingsForProspect(ready.prospect, proposedPolicy);
+  const prospect = prospectSchema.parse({
+    ...ready.prospect.details,
+    id: ready.prospect.id,
+    assignedSenderEmail: settings.fromEmail,
+  });
+  if (
+    !isDeepStrictEqual(context.prospect, prospect) ||
+    !isDeepStrictEqual(context.proposedPolicy, proposedPolicy) ||
+    context.globalVoiceNotes !== proposedPolicy.voiceNotes
+  )
+    throw new ConflictError(
+      "The original preview context no longer matches this held prospect and policy.",
+    );
+  const assembled = assembleSequence(
+    prospect,
+    receipt,
+    settings,
+    candidate.parts,
+  );
+  if (assembled.status !== "ready")
+    throw new ValidationError(`Copy: ${assembled.reason}`);
+  const currentPeers = await previewPeers(scope, input, jobId, ready.prospect);
+  for (const peers of [context.peers, currentPeers]) {
+    const issues = deterministicCopyIssues({
+      prospect,
+      receipt,
+      playbook: settings,
+      parts: candidate.parts,
+      messages: assembled.messages,
+      peers,
+      globalVoiceNotes: context.globalVoiceNotes,
+    });
+    if (issues.length) throw new ValidationError(`Copy: ${issues.join(" ")}`);
+  }
+  const binding = {
+    candidatePartsHash: candidate.partsHash,
+    candidateAttempt: candidate.attempt,
+    candidatesHash: writerDiagnosticHash(JSON.stringify(candidates)),
+    queryHash,
+    shoppingJobId: shoppingJob.id,
+    responseSha256: response.sha256,
+    receiptHash: researchHash(receipt),
+    contextHash: candidate.contextHash,
+    rawCaptures: [...answer.raw, ...browser.raw].map(({ url, sha256 }) => ({
+      url,
+      sha256,
+    })),
+  };
+  return { candidate, candidates, context, binding };
 };
 
 /** Read-only preflight. The private IDs are never included in the returned summary. */
@@ -883,6 +1054,85 @@ export const reconcileCardAssessment = (
       alternatives: receipt.discovery.listed.length,
     };
   });
+/** Stages exact saved text for its first judge; cannot call a writer or a search. */
+export const reconcileWriterCandidate = (
+  actor: string,
+  input: {
+    manifest: HeldReviewManifest;
+    jobId: string;
+    expectedCandidatePartsHash: string;
+    execute?: boolean;
+  },
+) =>
+  transaction(async (scope) => {
+    const manifest = validateManifest(input.manifest);
+    const job = await jobAt(scope, z.string().uuid().parse(input.jobId));
+    const details = heldReviewInputSchema.parse(job.input);
+    const state = heldReviewStateSchema.parse(job.output);
+    if (
+      job.provider !== "automation" ||
+      job.prospectId !== details.prospectId ||
+      !manifest.prospectIds.includes(details.prospectId) ||
+      job.status !== "failed" ||
+      state.stage !== "draft" ||
+      state.lease !== null ||
+      state.writerCandidateRecovery ||
+      !job.error ||
+      state.heldReason !== job.error
+    )
+      throw new ConflictError(
+        "Only a failed, unleased draft with no prior candidate recovery can be staged once.",
+      );
+    const checked = await checkedWriterCandidate(
+      scope,
+      details,
+      state,
+      job.id,
+      z
+        .string()
+        .regex(/^[a-f0-9]{64}$/)
+        .parse(input.expectedCandidatePartsHash),
+    );
+    if (job.error !== `Copy: ${checked.candidate.issues.join(" ")}`)
+      throw new ConflictError(
+        "The saved failure is not this candidate's deterministic rejection.",
+      );
+    const recovery = heldWriterCandidateRecoverySchema.parse({
+      ...checked.binding,
+      originalError: job.error,
+      originalHeldReason: state.heldReason,
+      originalIssues: checked.candidate.issues,
+      requestedBy: actor,
+      recoveredAt: new Date().toISOString(),
+    });
+    if (input.execute === true) {
+      const { heldReason: _heldReason, ...retained } = state;
+      await scope
+        .update(schema.outboundIntegrationJob)
+        .set({
+          status: "pending",
+          error: null,
+          output: heldReviewStateSchema.parse({
+            ...retained,
+            availableAt: new Date().toISOString(),
+            writerCandidateRecovery: recovery,
+          }),
+          updatedAt: new Date(),
+        })
+        .where(eq(schema.outboundIntegrationJob.id, job.id));
+    }
+    return {
+      jobId: job.id,
+      batchId: details.batchId,
+      candidatePartsHash: checked.candidate.partsHash,
+      originalWriterAttempts: checked.candidate.attempt,
+      newWriterCalls: 0,
+      newSearchCalls: 0,
+      judgeCalls: 0,
+      reconciled: input.execute === true,
+    };
+  });
+
 const checkpoint = (
   claim: Claim,
   patch: Partial<HeldReviewState>,
@@ -1494,10 +1744,62 @@ const execute = async (
       const receipt = captureReceipt(state);
       if (["no-gap", "product-observation"].includes(receipt.selected.kind))
         return held("This research has no eligible finding for a preview.");
-      const context = value(
+      const prepared = value(
         await transaction(async (scope) => {
           const current = await owns(scope, claim);
           const ready = await eligible(scope, input, current);
+          if (current.writerCandidateRecovery) {
+            const recovery = current.writerCandidateRecovery;
+            if (recovery.reservedAt)
+              throw new ConflictError(
+                "This cached candidate's first judgment was already reserved.",
+              );
+            const checked = await checkedWriterCandidate(
+              scope,
+              input,
+              current,
+              claim.job.id,
+              recovery.candidatePartsHash,
+            );
+            if (
+              Object.entries(checked.binding).some(
+                ([key, expected]) =>
+                  !isDeepStrictEqual(
+                    recovery[key as keyof typeof recovery],
+                    expected,
+                  ),
+              ) ||
+              recovery.originalError !==
+                `Copy: ${checked.candidate.issues.join(" ")}` ||
+              recovery.originalHeldReason !== recovery.originalError ||
+              !isDeepStrictEqual(
+                recovery.originalIssues,
+                checked.candidate.issues,
+              )
+            )
+              throw new ConflictError(
+                "The cached candidate recovery no longer matches its original audit.",
+              );
+            const reservedRecovery = {
+              ...recovery,
+              reservedAt: new Date().toISOString(),
+            };
+            await scope
+              .update(schema.outboundIntegrationJob)
+              .set({
+                output: heldReviewStateSchema.parse({
+                  ...current,
+                  writerCandidateRecovery: reservedRecovery,
+                }),
+                updatedAt: new Date(),
+              })
+              .where(eq(schema.outboundIntegrationJob.id, claim.job.id));
+            return {
+              context: checked.context,
+              cachedCandidate: checked.candidate,
+              recovery: reservedRecovery,
+            };
+          }
           if (
             current.previewContext ||
             current.draftBeforeJudge ||
@@ -1529,44 +1831,12 @@ const execute = async (
             id: ready.prospect.id,
             assignedSenderEmail: settings.fromEmail,
           });
-          const staged = await scope
-            .select({
-              writing: sql<unknown>`${schema.outboundIntegrationJob.output}->'preview'->'messages'->0->'writing'`,
-            })
-            .from(schema.outboundIntegrationJob)
-            .where(
-              and(
-                eq(schema.outboundIntegrationJob.provider, "automation"),
-                eq(schema.outboundIntegrationJob.status, "complete"),
-                ne(schema.outboundIntegrationJob.id, claim.job.id),
-                sql`${schema.outboundIntegrationJob.input}->>'operation' = 'heldDiscoveryReview'`,
-                sql`${schema.outboundIntegrationJob.input}->>'batchId' = ${input.batchId}`,
-                sql`${schema.outboundIntegrationJob.output}->'preview' is not null`,
-              ),
-            )
-            .orderBy(desc(schema.outboundIntegrationJob.updatedAt))
-            .limit(9);
-          const stagedPeers = staged.flatMap(({ writing }) => {
-            const parsed = writingSnapshotSchema.safeParse(writing);
-            return parsed.success
-              ? [
-                  {
-                    opening: parsed.data.parts.opening,
-                    ...parsed.data.narrative,
-                  },
-                ]
-              : [];
-          });
-          const peers = [
-            ...stagedPeers,
-            ...value(
-              await Composition.recentCompositionPeers(
-                ready.prospect,
-                null,
-                scope,
-              ),
-            ),
-          ].slice(0, 9);
+          const peers = await previewPeers(
+            scope,
+            input,
+            claim.job.id,
+            ready.prospect,
+          );
           const previewContext = heldReviewPreviewContextSchema.parse({
             status: "unapplied",
             prospect,
@@ -1595,9 +1865,14 @@ const execute = async (
               updatedAt: new Date(),
             })
             .where(eq(schema.outboundIntegrationJob.id, claim.job.id));
-          return previewContext;
+          return {
+            context: previewContext,
+            cachedCandidate: null,
+            recovery: null,
+          };
         }),
       );
+      const { context, cachedCandidate } = prepared;
       const composed = value(
         await Draft.composeSequence(
           context.prospect,
@@ -1605,66 +1880,75 @@ const execute = async (
           context.proposedPolicy,
           {
             generate: dependencies.generate,
+            ...(cachedCandidate
+              ? { suppliedParts: cachedCandidate.parts }
+              : {}),
             judge: dependencies.judge,
             deadline,
             peers: context.peers,
             globalVoiceNotes: context.globalVoiceNotes,
-            onCandidate: async (candidate) => {
-              const problem = value(
-                await transaction(async (scope) => {
-                  const currentJob = await jobAt(scope, claim.job.id);
-                  const current = heldReviewStateSchema.parse(
-                    currentJob.output,
-                  );
-                  if (
-                    !current.lease ||
-                    current.lease.token !== state.lease?.token
-                  )
-                    throw new ConflictError(
-                      "The completed candidate belongs to a superseded preview lease.",
-                    );
-                  const ready = await resultify(() => {
-                    if (!isDeepStrictEqual(current.previewContext, context))
-                      throw new ConflictError(
-                        "The original preview writing context changed.",
+            onCandidate: cachedCandidate
+              ? undefined
+              : async (candidate) => {
+                  const problem = value(
+                    await transaction(async (scope) => {
+                      const currentJob = await jobAt(scope, claim.job.id);
+                      const current = heldReviewStateSchema.parse(
+                        currentJob.output,
                       );
-                    return eligible(scope, input, current);
-                  });
-                  const active =
-                    currentJob.status === "starting" &&
-                    Date.parse(current.lease.expiresAt) > Date.now();
-                  const reason = !active
-                    ? "The candidate completed after its lease expired. Its unapproved text is retained without another writer purchase."
-                    : ready.success
-                      ? null
-                      : ready.error.message;
-                  const writerCandidates = appendWriterCandidate(
-                    current.writerCandidates,
-                    candidate,
-                    context,
+                      if (
+                        !current.lease ||
+                        current.lease.token !== state.lease?.token
+                      )
+                        throw new ConflictError(
+                          "The completed candidate belongs to a superseded preview lease.",
+                        );
+                      const ready = await resultify(async () => {
+                        if (!isDeepStrictEqual(current.previewContext, context))
+                          throw new ConflictError(
+                            "The original preview writing context changed.",
+                          );
+                        return eligible(scope, input, current);
+                      });
+                      const active =
+                        currentJob.status === "starting" &&
+                        Date.parse(current.lease.expiresAt) > Date.now();
+                      const reason = !active
+                        ? "The candidate completed after its lease expired. Its unapproved text is retained without another writer purchase."
+                        : ready.success
+                          ? null
+                          : ready.error.message;
+                      const writerCandidates = appendWriterCandidate(
+                        current.writerCandidates,
+                        candidate,
+                        context,
+                      );
+                      await scope
+                        .update(schema.outboundIntegrationJob)
+                        .set({
+                          status: !active
+                            ? "uncertain"
+                            : reason
+                              ? "failed"
+                              : "starting",
+                          output: heldReviewStateSchema.parse({
+                            ...current,
+                            writerCandidates,
+                            ...(reason
+                              ? { lease: null, heldReason: reason }
+                              : {}),
+                          }),
+                          ...(reason ? { error: reason } : {}),
+                          updatedAt: new Date(),
+                        })
+                        .where(
+                          eq(schema.outboundIntegrationJob.id, claim.job.id),
+                        );
+                      return reason;
+                    }),
                   );
-                  await scope
-                    .update(schema.outboundIntegrationJob)
-                    .set({
-                      status: !active
-                        ? "uncertain"
-                        : reason
-                          ? "failed"
-                          : "starting",
-                      output: heldReviewStateSchema.parse({
-                        ...current,
-                        writerCandidates,
-                        ...(reason ? { lease: null, heldReason: reason } : {}),
-                      }),
-                      ...(reason ? { error: reason } : {}),
-                      updatedAt: new Date(),
-                    })
-                    .where(eq(schema.outboundIntegrationJob.id, claim.job.id));
-                  return reason;
-                }),
-              );
-              if (problem) throw new ConflictError(problem);
-            },
+                  if (problem) throw new ConflictError(problem);
+                },
             onWritten: async (draft) => {
               const mayJudge = value(
                 await transaction(async (scope) => {
@@ -1679,11 +1963,35 @@ const execute = async (
                     throw new ConflictError(
                       "The preview writer result belongs to a superseded lease.",
                     );
-                  const ready = await resultify(() => {
+                  const ready = await resultify(async () => {
                     if (!isDeepStrictEqual(current.previewContext, context))
                       throw new ConflictError(
                         "The original preview writing context changed.",
                       );
+                    if (cachedCandidate) {
+                      if (
+                        !isDeepStrictEqual(
+                          current.writerCandidateRecovery,
+                          prepared.recovery,
+                        )
+                      )
+                        throw new ConflictError(
+                          "The cached candidate judgment reservation changed.",
+                        );
+                      const checked = await checkedWriterCandidate(
+                        scope,
+                        input,
+                        current,
+                        claim.job.id,
+                        cachedCandidate.partsHash,
+                      );
+                      if (
+                        !isDeepStrictEqual(checked.candidate, cachedCandidate)
+                      )
+                        throw new ConflictError(
+                          "The cached candidate changed before its first judgment.",
+                        );
+                    }
                     return eligible(scope, input, current);
                   });
                   const active =
@@ -1697,7 +2005,9 @@ const execute = async (
                   const draftBeforeJudge = heldReviewWrittenSchema.parse({
                     parts: draft.parts,
                     messages: draft.messages,
-                    generation: { attempts: draft.attempts },
+                    generation: {
+                      attempts: cachedCandidate?.attempt ?? draft.attempts,
+                    },
                     writerCompletedAt: new Date().toISOString(),
                   });
                   await scope
@@ -1738,6 +2048,9 @@ const execute = async (
       const preview = heldReviewPreviewSchema.parse({
         ...context,
         ...composed,
+        ...(cachedCandidate
+          ? { generation: { attempts: cachedCandidate.attempt } }
+          : {}),
         parts: writing.parts,
       });
       const problem = copyVerdictProblem(writing.quality);

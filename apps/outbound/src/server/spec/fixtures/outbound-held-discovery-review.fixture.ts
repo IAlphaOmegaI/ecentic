@@ -1009,6 +1009,262 @@ await db
   })
   .where(eq(schema.outboundIntegrationJob.id, repeated.id));
 
+// Historical diagnostic fixture: these exact parts failed only the former
+// opening vocabulary. Recovery must reuse them, not buy another writer attempt.
+const cachedQuery = repeatedState.shoppingReceipt?.queries[0]?.query;
+assert.ok(cachedQuery && repeatedState.writerCandidates?.length === 2);
+const cachedParts: WriterParts = {
+  ...repeatedState.writerCandidates[1]!.parts,
+  opening: `I was picking bags, so I asked for "${cachedQuery}".`,
+};
+const cachedPartsHash = createHash("sha256")
+  .update(JSON.stringify(cachedParts))
+  .digest("hex");
+const originalCandidateIssues = [
+  "opening: “picking” is outside the supported product context and permitted shopping narrative.",
+];
+const cachedError = `Copy: ${originalCandidateIssues.join(" ")}`;
+const cachedState = Contract.heldReviewStateSchema.parse({
+  ...repeatedState,
+  heldReason: cachedError,
+  writerCandidates: repeatedState.writerCandidates.map((candidate) => ({
+    ...candidate,
+    parts: cachedParts,
+    partsHash: cachedPartsHash,
+    issues: originalCandidateIssues,
+  })),
+});
+const cachedRequest = {
+  manifest,
+  jobId: repeated.id,
+  expectedCandidatePartsHash: cachedPartsHash,
+};
+const resetCachedCase = () =>
+  db
+    .update(schema.outboundIntegrationJob)
+    .set({
+      status: "failed",
+      error: cachedError,
+      output: cachedState,
+    })
+    .where(eq(schema.outboundIntegrationJob.id, repeated.id));
+const callsBeforeCached = { ...calls };
+// The ordinary repeated-opening rejection is still not recoverable.
+assert.equal(
+  (
+    await Review.reconcileWriterCandidate(actor, {
+      ...cachedRequest,
+      expectedCandidatePartsHash: repeatedState.writerCandidates[1]!.partsHash,
+    })
+  ).success,
+  false,
+);
+await resetCachedCase();
+const beforeCachedDryRun = await jobFor(repeatedTarget);
+const dryCached = value(
+  await Review.reconcileWriterCandidate(actor, cachedRequest),
+);
+assert.equal(dryCached.reconciled, false);
+assert.equal(dryCached.originalWriterAttempts, 2);
+assert.equal(dryCached.newWriterCalls, 0);
+assert.deepEqual(await jobFor(repeatedTarget), beforeCachedDryRun);
+assert.deepEqual(calls, callsBeforeCached);
+assert.equal(
+  (
+    await Review.reconcileWriterCandidate(actor, {
+      ...cachedRequest,
+      expectedCandidatePartsHash: "0".repeat(64),
+    })
+  ).success,
+  false,
+);
+assert.equal(
+  (await Review.reconcileWriterCandidate("", cachedRequest)).success,
+  false,
+);
+for (const patch of [
+  { status: "uncertain" as const, output: cachedState },
+  { status: "complete" as const, output: cachedState },
+  {
+    status: "failed" as const,
+    output: {
+      ...cachedState,
+      lease: {
+        token: randomUUID(),
+        expiresAt: new Date(Date.now() + 100000).toISOString(),
+      },
+    },
+  },
+  {
+    status: "failed" as const,
+    output: {
+      ...cachedState,
+      draftBeforeJudge: failedPreviewState.draftBeforeJudge,
+    },
+  },
+  {
+    status: "failed" as const,
+    output: { ...cachedState, preview: failedPreviewState.preview },
+  },
+  {
+    status: "failed" as const,
+    output: {
+      ...cachedState,
+      writerCandidates: cachedState.writerCandidates?.map((candidate) => ({
+        ...candidate,
+        parts: { ...candidate.parts, result: "Tampered text." },
+      })),
+    },
+  },
+  {
+    status: "failed" as const,
+    output: {
+      ...cachedState,
+      answer: {
+        ...cachedState.answer,
+        raw: cachedState.answer?.raw.map((raw, index) =>
+          index ? raw : { ...raw, body: `${raw.body} tampered` },
+        ),
+      },
+    },
+  },
+  {
+    status: "failed" as const,
+    output: {
+      ...cachedState,
+      query: { ...cachedState.query, prompt: "changed prompt" },
+    },
+  },
+]) {
+  await db
+    .update(schema.outboundIntegrationJob)
+    .set(patch)
+    .where(eq(schema.outboundIntegrationJob.id, repeated.id));
+  const beforeRejected = await jobFor(repeatedTarget);
+  assert.equal(
+    (
+      await Review.reconcileWriterCandidate(actor, {
+        ...cachedRequest,
+        execute: true,
+      })
+    ).success,
+    false,
+  );
+  assert.deepEqual(await jobFor(repeatedTarget), beforeRejected);
+  assert.deepEqual(calls, callsBeforeCached);
+}
+await resetCachedCase();
+await db
+  .update(schema.outboundPlaybook)
+  .set({ settings: { ...settings, fromName: "Changed cached author" } })
+  .where(eq(schema.outboundPlaybook.id, "default"));
+assert.equal(
+  (await Review.reconcileWriterCandidate(actor, cachedRequest)).success,
+  false,
+);
+await db
+  .update(schema.outboundPlaybook)
+  .set({ settings })
+  .where(eq(schema.outboundPlaybook.id, "default"));
+const stageCached = async () => {
+  await resetCachedCase();
+  assert.equal(
+    value(
+      await Review.reconcileWriterCandidate(actor, {
+        ...cachedRequest,
+        execute: true,
+      }),
+    ).reconciled,
+    true,
+  );
+  const staged = Contract.heldReviewStateSchema.parse(
+    (await jobFor(repeatedTarget)).output,
+  );
+  assert.deepEqual(staged.writerCandidates, cachedState.writerCandidates);
+  assert.equal(staged.writerCandidateRecovery?.originalError, cachedError);
+  assert.deepEqual(
+    staged.writerCandidateRecovery?.originalIssues,
+    originalCandidateIssues,
+  );
+  assert.equal(staged.writerCandidateRecovery?.reservedAt, undefined);
+  assert.deepEqual(staged.shoppingHistory, cachedState.shoppingHistory);
+  assert.deepEqual(staged.answer, cachedState.answer);
+  assert.deepEqual(staged.browser, cachedState.browser);
+  assert.equal(staged.shoppingQueryCount, cachedState.shoppingQueryCount);
+  assert.equal(staged.queryReservedAt, cachedState.queryReservedAt);
+  assert.equal(
+    (
+      await Review.reconcileWriterCandidate(actor, {
+        ...cachedRequest,
+        execute: true,
+      })
+    ).success,
+    false,
+  );
+  return staged;
+};
+// A changed staged audit is rejected before the first judge.
+const stagedCached = await stageCached();
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({
+    output: {
+      ...stagedCached,
+      writerCandidateRecovery: {
+        ...stagedCached.writerCandidateRecovery,
+        candidatesHash: "0".repeat(64),
+      },
+    },
+  })
+  .where(eq(schema.outboundIntegrationJob.id, repeated.id));
+await tick();
+assert.deepEqual(calls, callsBeforeCached);
+assert.equal((await jobFor(repeatedTarget)).status, "failed");
+// Isolated lifecycle cases start from the same saved pre-recovery fixture.
+for (const outcome of ["pass", "interrupted", "fail"] as const) {
+  await stageCached();
+  const beforeJudge = { ...calls };
+  uncertainJudge = outcome === "interrupted";
+  failedJudge = outcome === "fail";
+  await tick();
+  const recovered = await jobFor(repeatedTarget);
+  const recoveredState = Contract.heldReviewStateSchema.parse(recovered.output);
+  assert.deepEqual(calls, { ...beforeJudge, judge: beforeJudge.judge + 1 });
+  assert.ok(recoveredState.writerCandidateRecovery?.reservedAt);
+  assert.deepEqual(
+    recoveredState.writerCandidates,
+    cachedState.writerCandidates,
+  );
+  assert.deepEqual(recoveredState.draftBeforeJudge?.parts, cachedParts);
+  assert.equal(recoveredState.draftBeforeJudge?.generation.attempts, 2);
+  if (outcome === "interrupted") {
+    assert.equal(recovered.status, "uncertain");
+    assert.equal(recoveredState.preview, undefined);
+  } else {
+    assert.equal(recovered.status, "complete");
+    assert.deepEqual(recoveredState.preview?.parts, cachedParts);
+    assert.equal(recoveredState.preview?.generation.attempts, 2);
+    assert.equal(
+      recoveredState.preview?.messages[0]?.writing?.quality?.passed,
+      outcome === "pass",
+    );
+  }
+  const afterJudge = { ...calls };
+  await tick();
+  assert.deepEqual(calls, afterJudge);
+  assert.equal(
+    (
+      await Review.reconcileWriterCandidate(actor, {
+        ...cachedRequest,
+        execute: true,
+      })
+    ).success,
+    false,
+  );
+  uncertainJudge = false;
+  failedJudge = false;
+}
+
 // These three isolated jobs model a known first candidate accepted before the
 // category-identity guard existed. No fresh first candidate is generated here.
 const seedUnspentCategoryCandidate = async (prospectId: string) => {

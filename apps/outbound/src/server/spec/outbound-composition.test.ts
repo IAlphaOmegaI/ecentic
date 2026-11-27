@@ -84,6 +84,80 @@ describe("observed facts and writer-owned narrative", () => {
     }
   });
 
+  test("opening verb inflections keep the same narrative, fact and word boundaries", () => {
+    const fixture = writerFixture();
+    const query = fixture.receipt.queries[0]?.query;
+    if (!query) throw new Error("Missing synthetic query.");
+    for (const narrative of [
+      "My sister picks a tote",
+      "My sister picked a tote",
+      "My sister was picking a tote",
+      "My sister picks out a tote",
+      "My sister picked out a tote",
+      "My sister was picking out a tote",
+      "I was choosing a gift",
+      "I considered a gift",
+      "I planned a gift",
+    ])
+      expect(
+        issuesFor(fixture, {
+          ...fixture.parts,
+          opening: `${narrative}, so I asked for "${query}".`,
+        }),
+      ).toEqual([]);
+    for (const [narrative, reason] of [
+      ["My sister was picking a tote for Ava", /unsupported named person/],
+      ["I was picking a tote in Milan", /unsupported named person/],
+      ["I was embroidering a tote", /“embroidering”/],
+      ["I was out looking for a tote", /“out”/],
+      ["I was picking out a tote out", /“out”/],
+      ["I was picking a tote with UV400", /number|“uv400”/],
+      ["I was picking a tote at $120", /price|number/],
+      ["I bought a tote", /invents a purchase/],
+      ["I tried a tote", /invents a purchase/],
+    ] as const)
+      expect(
+        issuesFor(fixture, {
+          ...fixture.parts,
+          opening: `${narrative}, so I asked for "${query}".`,
+        }).some((issue) => reason.test(issue)),
+      ).toBe(true);
+    expect(
+      issuesFor(fixture, {
+        ...fixture.parts,
+        opening: `${"I was picking a tote and ".repeat(4)}asked for "${query}".`,
+      }).some((issue) => /exceeds 22 words/.test(issue)),
+    ).toBe(true);
+    expect(
+      issuesFor(fixture, {
+        ...fixture.parts,
+        followupFact: "Alder needs a gift.",
+      }).some((issue) => /followupFact: “needs”/.test(issue)),
+    ).toBe(true);
+  });
+
+  test("a retained opening's pick-out grammar and exact captured surface stay valid", () => {
+    const fixture = writerFixture();
+    const query = fixture.receipt.queries[0];
+    if (!query) throw new Error("Missing synthetic query.");
+    // Retained candidate sentence structure, with this synthetic fixture's query.
+    const opening = `While picking out a birthday gift, I asked Google AI Mode for "${query.query}".`;
+    expect(issuesFor(fixture, { ...fixture.parts, opening })).toEqual([]);
+    for (const name of ["Ava", "Milan", "Bing AI Mode", "Google AI Mode Ava"])
+      expect(
+        issuesFor(fixture, {
+          ...fixture.parts,
+          opening: opening.replace("Google AI Mode", name),
+        }).some((issue) => /unsupported named person/.test(issue)),
+      ).toBe(true);
+    query.surface = "Google Search";
+    expect(
+      issuesFor(fixture, { ...fixture.parts, opening }).some((issue) =>
+        /unsupported named person/.test(issue),
+      ),
+    ).toBe(true);
+  });
+
   test("writer input omits surrounding proof and unapproved discovery details", () => {
     const fixture = writerFixture();
     const query = fixture.receipt.queries[0];

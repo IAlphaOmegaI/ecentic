@@ -21,10 +21,12 @@ const { values } = parseArgs({
     "hold-unspent": { type: "string" },
     "reconcile-poll": { type: "string" },
     "reconcile-card-assessment": { type: "string" },
+    "reconcile-writer-candidate": { type: "string" },
     reason: { type: "string" },
     "expected-query-hash": { type: "string" },
     "expected-shopping-job-id": { type: "string" },
     "expected-response-sha256": { type: "string" },
+    "expected-candidate-parts-hash": { type: "string" },
   },
 });
 const steps = z.coerce.number().int().min(1).max(50).parse(values.steps);
@@ -34,6 +36,7 @@ if (
     values["hold-unspent"],
     values["reconcile-poll"],
     values["reconcile-card-assessment"],
+    values["reconcile-writer-candidate"],
   ].filter(Boolean).length > 1
 )
   throw new Error("Choose only one explicit operator action.");
@@ -44,6 +47,13 @@ if (
   throw new Error("An unspent-query action requires --expected-query-hash.");
 if (Boolean(values["hold-unspent"]) !== Boolean(values.reason))
   throw new Error("Use --hold-unspent and --reason together.");
+if (
+  Boolean(values["reconcile-writer-candidate"]) !==
+  Boolean(values["expected-candidate-parts-hash"])
+)
+  throw new Error(
+    "A cached-writer action requires --expected-candidate-parts-hash.",
+  );
 if (
   Boolean(values["reconcile-poll"] || values["reconcile-card-assessment"]) !==
     Boolean(values["expected-shopping-job-id"]) ||
@@ -180,6 +190,29 @@ if (values["reconcile-card-assessment"]) {
       ...restored.data,
     }),
   );
+  process.exit(0);
+}
+if (values["reconcile-writer-candidate"]) {
+  const restored = await Review.reconcileWriterCandidate(values.actor, {
+    manifest,
+    jobId: z.string().uuid().parse(values["reconcile-writer-candidate"]),
+    expectedCandidatePartsHash: z
+      .string()
+      .regex(/^[a-f0-9]{64}$/)
+      .parse(values["expected-candidate-parts-hash"]),
+    execute: values.execute,
+  });
+  if (!restored.success)
+    throw new Error(
+      `Cached writer reconciliation failed: ${restored.error.message}`,
+    );
+  console.log(
+    JSON.stringify({
+      mode: values.execute ? "cached-writer-staged" : "cached-writer-dry-run",
+      ...restored.data,
+    }),
+  );
+  // This only stages the first judgment. It never runs a provider stage.
   process.exit(0);
 }
 if (values.execute) {
