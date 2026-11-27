@@ -529,6 +529,29 @@ export const composeForProspect = async (
       throw new ValidationError(
         "Adoption must use the exact reviewed parts and opening authorization.",
       );
+    if (prospect.replacementOf) {
+      const Replacement = await import("./replacement-sequences");
+      const family = await Replacement.assertSequenceFamilyWithin(
+        scope,
+        prospect,
+        policy.settings,
+      );
+      if (!family)
+        throw new ValidationError("The replacement authorization is missing.");
+      const source = await Replacement.loadReplacementPreviewWithin(
+        scope,
+        family.authorization,
+        policy,
+      );
+      if (
+        !isDeepStrictEqual(parsed.data.suppliedParts, source.preview.parts) ||
+        parsed.data.preview ||
+        dependencies.openingRuleException
+      )
+        throw new ValidationError(
+          "The replacement must use the owner's exact reviewed parts without a new writer.",
+        );
+    }
     const liveSettings = settingsForProspect(prospect, policy.settings);
     const selectedPolicy = parsed.data.preview
       ? rebuildWritingProposal(policy.settings)

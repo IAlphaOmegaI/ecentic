@@ -267,6 +267,8 @@ spyOn(Store, "getEnrichmentContext").mockImplementation(async () => ({
       companyId: "company-fixture",
       personId: "person-fixture",
       campaignId: null,
+      replacementOf: null,
+      replacementAuthorization: null,
       details,
       status: "candidate",
       messages: [],

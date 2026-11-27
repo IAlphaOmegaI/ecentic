@@ -50,6 +50,7 @@ export const list = (input: ProspectSearchParams = {}) =>
     ], null)`;
     const pattern = `%${query.q.replace(/[!%_]/g, "!$&")}%`;
     const where = and(
+      sql`not exists (select 1 from outbound_prospect replacement where replacement.replacement_of = ${prospect.id})`,
       query.status === "all" ? undefined : eq(prospect.status, query.status),
       query.lifecycle === "all" ? undefined : lifecycle[query.lifecycle],
       query.linkedin === "all"

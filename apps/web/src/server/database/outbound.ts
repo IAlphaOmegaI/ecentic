@@ -2,8 +2,10 @@
 // the typed runtime model in apps/outbound/src/server/database/outbound.ts.
 import { sql } from "drizzle-orm";
 import {
+  type AnyPgColumn,
   bigint,
   boolean,
+  check,
   index,
   integer,
   jsonb,
@@ -133,8 +135,11 @@ export const outboundProspect = pgTable(
     campaignId: text("campaign_id").references(() => outboundCampaign.id),
     companyId: text("company_id")
       .notNull()
-      .unique()
       .references(() => outboundCompany.id),
+    replacementOf: text("replacement_of").references(
+      (): AnyPgColumn => outboundProspect.id,
+    ),
+    replacementAuthorization: jsonb("replacement_authorization"),
     personId: text("person_id")
       .notNull()
       .references(() => outboundPerson.id),
@@ -164,6 +169,20 @@ export const outboundProspect = pgTable(
     updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
   },
   (table) => [
+    check(
+      "outbound_prospect_replacement_not_self",
+      sql`${table.replacementOf} is null or ${table.replacementOf} <> ${table.id}`,
+    ),
+    check(
+      "outbound_prospect_replacement_authorization_pair",
+      sql`(${table.replacementOf} is null) = (${table.replacementAuthorization} is null)`,
+    ),
+    uniqueIndex("outbound_prospect_root_company_unique")
+      .on(table.companyId)
+      .where(sql`${table.replacementOf} is null`),
+    uniqueIndex("outbound_prospect_replacement_unique")
+      .on(table.replacementOf)
+      .where(sql`${table.replacementOf} is not null`),
     index("outbound_prospect_campaign_idx").on(table.campaignId),
     index("outbound_prospect_status_idx").on(table.status),
     index("outbound_prospect_due_idx").on(table.nextSendAt),

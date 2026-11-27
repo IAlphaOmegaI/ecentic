@@ -48,6 +48,7 @@ import {
   researchPolicyHash,
 } from "@/server/utils/outbound/shopping-research";
 import { repository } from "@/server/utils/repository";
+import * as Replacement from "./replacement-sequences";
 import * as Store from "./store";
 
 const Jobs = repository(schema.outboundIntegrationJob);
@@ -401,6 +402,30 @@ const save = (
         );
       const captureProof = await (async () => {
         if (reviewed) return reviewed.proof;
+        if (prospect.replacementOf) {
+          const family = await Replacement.assertSequenceFamilyWithin(
+            transaction,
+            prospect,
+            policy.settings,
+          );
+          if (
+            !family ||
+            parsed.captureJobId !== family.authorization.previewJobId
+          )
+            throw new ValidationError(
+              "Use the replacement's exact reviewed research source.",
+            );
+          const fresh = await Replacement.loadReplacementPreviewWithin(
+            transaction,
+            family.authorization,
+            policy,
+          );
+          if (researchHash(fresh.receipt) !== receiptHash)
+            throw new ValidationError(
+              "The replacement research differs from the reviewed receipt.",
+            );
+          return fresh.proof;
+        }
         const captureJobId = automatic?.jobId ?? parsed.captureJobId;
         if (!captureJobId)
           throw new ValidationError(

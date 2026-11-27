@@ -88,16 +88,18 @@ const view = (
   updatedAt: thread.updatedAt.toISOString(),
 });
 
+const familyId = sql<string>`coalesce((select p.replacement_of from outbound_prospect p where p.id = ${schema.outboundConversation.prospectId}), ${schema.outboundConversation.prospectId})`;
+
 export const summary = () =>
   resultify(async () => {
     const rows = value(
       await resultifyRead(() =>
         db
           .select({
-            needsReply: sql<number>`count(distinct ${schema.outboundConversation.prospectId}) filter (where ${schema.outboundConversation.needsReply} and ${schema.outboundConversation.archivedAt} is null)::int`,
-            meetingsBooked: sql<number>`count(distinct ${schema.outboundConversation.prospectId}) filter (where ${schema.outboundConversation.stage} = 'meetingBooked')::int`,
-            meetingsHeld: sql<number>`count(distinct ${schema.outboundConversation.prospectId}) filter (where ${schema.outboundConversation.stage} = 'meetingHeld')::int`,
-            meetingsRecorded: sql<number>`count(distinct ${schema.outboundConversation.prospectId}) filter (where ${schema.outboundConversation.stage} in ('meetingBooked','meetingHeld'))::int`,
+            needsReply: sql<number>`count(distinct ${familyId}) filter (where ${schema.outboundConversation.needsReply} and ${schema.outboundConversation.archivedAt} is null)::int`,
+            meetingsBooked: sql<number>`count(distinct ${familyId}) filter (where ${schema.outboundConversation.stage} = 'meetingBooked')::int`,
+            meetingsHeld: sql<number>`count(distinct ${familyId}) filter (where ${schema.outboundConversation.stage} = 'meetingHeld')::int`,
+            meetingsRecorded: sql<number>`count(distinct ${familyId}) filter (where ${schema.outboundConversation.stage} in ('meetingBooked','meetingHeld'))::int`,
           })
           .from(schema.outboundConversation),
       ),
@@ -135,14 +137,14 @@ export const list = (input: unknown = {}) =>
     const grouped = value(
       await resultifyRead(() =>
         db
-          .select({ prospectId: schema.outboundConversation.prospectId })
+          .select({ prospectId: familyId })
           .from(schema.outboundConversation)
           .where(where)
-          .groupBy(schema.outboundConversation.prospectId)
+          .groupBy(familyId)
           .orderBy(
             sql`bool_or(${schema.outboundConversation.needsReply}) desc`,
             sql`max(${schema.outboundConversation.updatedAt}) desc`,
-            schema.outboundConversation.prospectId,
+            familyId,
           )
           .offset((query.page - 1) * 25)
           .limit(25),
@@ -152,7 +154,7 @@ export const list = (input: unknown = {}) =>
       await resultifyRead(() =>
         db
           .select({
-            total: sql<number>`count(distinct ${schema.outboundConversation.prospectId})::int`,
+            total: sql<number>`count(distinct ${familyId})::int`,
           })
           .from(schema.outboundConversation)
           .where(where),
@@ -162,7 +164,10 @@ export const list = (input: unknown = {}) =>
     const prospects = identifiers.length
       ? value(
           await Prospects.find(Environment.SERVER, {
-            where: inArray(schema.outboundProspect.id, identifiers),
+            where: or(
+              inArray(schema.outboundProspect.id, identifiers),
+              inArray(schema.outboundProspect.replacementOf, identifiers),
+            ),
           }),
         )
       : [];
@@ -170,7 +175,10 @@ export const list = (input: unknown = {}) =>
       ? value(
           await Threads.find(Environment.SERVER, {
             where: and(
-              inArray(schema.outboundConversation.prospectId, identifiers),
+              inArray(
+                schema.outboundConversation.prospectId,
+                prospects.map((row) => row.id),
+              ),
               archiveFilter,
             ),
             orderBy: [
@@ -188,8 +196,12 @@ export const list = (input: unknown = {}) =>
       : [];
     const items = grouped.map((group) => {
       const prospect = prospects.find((row) => row.id === group.prospectId);
-      const related = threads.filter(
-        (thread) => thread.prospectId === group.prospectId,
+      const related = threads.filter((thread) =>
+        prospects.some(
+          (row) =>
+            row.id === thread.prospectId &&
+            (row.replacementOf ?? row.id) === group.prospectId,
+        ),
       );
       const representative =
         related.find(
@@ -230,9 +242,21 @@ export const get = (input: { id: string; threadId?: string; page?: number }) =>
     const prospectId = legacy?.prospectId ?? parsed.id;
     const prospect = value(await Prospects.get(Environment.SERVER, prospectId));
     if (!prospect) throw new NotFoundError("conversation-prospect-missing");
+    const rootId = prospect.replacementOf ?? prospect.id;
+    const family = value(
+      await Prospects.find(Environment.SERVER, {
+        where: or(
+          eq(schema.outboundProspect.id, rootId),
+          eq(schema.outboundProspect.replacementOf, rootId),
+        ),
+      }),
+    );
     const threads = value(
       await Threads.find(Environment.SERVER, {
-        where: eq(schema.outboundConversation.prospectId, prospectId),
+        where: inArray(
+          schema.outboundConversation.prospectId,
+          family.map((row) => row.id),
+        ),
         orderBy: [
           { column: schema.outboundConversation.needsReply, direction: "desc" },
           { column: schema.outboundConversation.updatedAt, direction: "desc" },
@@ -416,6 +440,8 @@ export const ingestWithin = async (
     ),
   );
   const incoming = message.direction === "inbound" && !message.isAutomated;
+  if (incoming || parsed.outcome === "bounce" || parsed.outcome === "optout")
+    await Store.stopReplacementFamilyWithin(transaction, prospect);
   const latestInbound =
     incoming &&
     (!thread.lastInboundAt || message.sentAt >= thread.lastInboundAt);

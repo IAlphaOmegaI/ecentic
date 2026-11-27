@@ -1,5 +1,4 @@
 import "server-only";
-import { clayContinuationProblem } from "@/server/utils/outbound/clay-role";
 
 import { createHash, randomInt, randomUUID } from "node:crypto";
 import { isDeepStrictEqual } from "node:util";
@@ -118,6 +117,7 @@ import {
   NotFoundError,
   ValidationError,
 } from "@/server/utils/error";
+import { clayContinuationProblem } from "@/server/utils/outbound/clay-role";
 import { draftCopyReadiness } from "@/server/utils/outbound/draft-copy-readiness";
 import {
   hasRecentLinkedInTouch,
@@ -146,6 +146,7 @@ import {
 import { repository, resultifyRead } from "@/server/utils/repository";
 import * as Conversations from "./conversations";
 import { legacyHistory, mapLegacyProspect, parseImport } from "./import";
+import * as Replacement from "./replacement-sequences";
 
 const Playbooks = repository(schema.outboundPlaybook);
 const Companies = repository(schema.outboundCompany);
@@ -377,7 +378,17 @@ const qualifiedProductSchema = z.object({
 const assertSavedContactVerification = async (
   transaction: TransactionScope,
   prospect: ProspectRow,
-) => {
+): Promise<boolean> => {
+  if (prospect.replacementOf) {
+    const family = await Replacement.assertSequenceFamilyWithin(
+      transaction,
+      prospect,
+      (await policy(transaction)).settings,
+    );
+    if (!family)
+      throw new ValidationError("The replacement contact source is missing.");
+    return assertSavedContactVerification(transaction, family.original);
+  }
   if (!prospect.details.savedContactVerificationId) return false;
   const receipt = requireData(
     await IntegrationJobs.get(
@@ -399,7 +410,7 @@ const assertSavedContactVerification = async (
 };
 
 /** Retain the independently sourced contact when later product research changes. */
-export const assertAutomaticContactEvidence = async (
+const assertContactEvidence = async (
   transaction: TransactionScope,
   prospect: ProspectRow,
 ) => {
@@ -469,6 +480,32 @@ export const assertAutomaticContactEvidence = async (
       "The recipient no longer matches the independently selected contact.",
     );
   return job;
+};
+
+export const assertAutomaticContactEvidence = async (
+  transaction: TransactionScope,
+  prospect: ProspectRow,
+) => {
+  if (!prospect.replacementOf)
+    return assertContactEvidence(transaction, prospect);
+  const family = await Replacement.assertSequenceFamilyWithin(
+    transaction,
+    prospect,
+    (await policy(transaction)).settings,
+  );
+  if (!family)
+    throw new ValidationError(
+      "The replacement contact authorization is missing.",
+    );
+  const job = await assertContactEvidence(transaction, family.original);
+  if (!prospect.sentStep && job?.output?.["clayRole"]) {
+    const problem = clayContinuationProblem(
+      job.output["clayRole"],
+      family.original,
+    );
+    if (problem) throw new ValidationError(`Clay: ${problem}`);
+  }
+  return null;
 };
 
 /** Source checks are independent: new shopping evidence does not replace contact proof. */
@@ -992,6 +1029,7 @@ export const getReviewQueue = (input: ReviewSearchParams = {}) =>
     // Escape wildcard characters so searches for names such as "100%" stay literal.
     const pattern = `%${query.q.replace(/[!%_]/g, "!$&")}%`;
     const where = and(
+      sql`not exists (select 1 from outbound_prospect replacement where replacement.replacement_of = ${prospect.id})`,
       inArray(prospect.status, [...REVIEW_STATUSES]),
       query.campaign ? eq(prospect.campaignId, query.campaign) : undefined,
       sql`jsonb_array_length(${prospect.messages}) > 0`,
@@ -1423,6 +1461,49 @@ const revoke = async (
     );
 };
 
+/** Preserve the historical root; immediately revoke only its fresh replacement on a family stop. */
+export const stopReplacementFamilyWithin = async (
+  transaction: TransactionScope,
+  prospect: ProspectRow,
+) => {
+  const root = prospect.replacementOf ?? prospect.id;
+  const siblings = requireData(
+    await Prospects.find(
+      Environment.SERVER,
+      {
+        where: eq(schema.outboundProspect.replacementOf, root),
+      },
+      { tx: transaction },
+    ),
+  );
+  for (const sibling of siblings) {
+    if (["replied", "optedOut", "bounced", "finished"].includes(sibling.status))
+      continue;
+    await revoke(
+      transaction,
+      sibling,
+      "Earlier thread received a reply or stop",
+    );
+    requireData(
+      await Prospects.update(
+        Environment.SERVER,
+        sibling.id,
+        {
+          status: "held",
+          holdReason: "replacementFamilyStopped",
+          nextSendAt: null,
+          approvalHash: null,
+          approvedAt: null,
+          approvedBy: null,
+          linkedinNextActionAt: null,
+          updatedAt: new Date(),
+        },
+        { tx: transaction },
+      ),
+    );
+  }
+};
+
 /** Pause both cold sequences under the caller's workspace lock, without inventing a reply or opt-out. */
 export const pauseColdOutreachWithin = async (
   transaction: TransactionScope,
@@ -1810,6 +1891,16 @@ const saveProspectWithin = async (
   if (!domain) throw new ValidationError("Enter a valid store domain.");
   const previous = input.id ? await findProspect(transaction, input.id) : null;
   if (
+    previous?.replacementOf &&
+    (previous.details.email.toLowerCase() !== input.email.toLowerCase() ||
+      previous.details.name !== input.name ||
+      previous.details.linkedinUrl !== input.linkedinUrl ||
+      previous.details.assignedSenderEmail !== input.assignedSenderEmail)
+  )
+    throw new ConflictError(
+      "An authorized replacement cannot change its recipient or sender.",
+    );
+  if (
     previous?.sentStep &&
     (previous.details.email.toLowerCase() !== input.email.toLowerCase() ||
       normalizeDomain(previous.details.domain) !== domain)
@@ -1843,7 +1934,13 @@ const saveProspectWithin = async (
     requireData(
       await Prospects.find(
         Environment.SERVER,
-        { where: eq(schema.outboundProspect.companyId, company.id), limit: 1 },
+        {
+          where: and(
+            eq(schema.outboundProspect.companyId, company.id),
+            isNull(schema.outboundProspect.replacementOf),
+          ),
+          limit: 1,
+        },
         { tx: transaction },
       ),
     )[0];
@@ -2229,7 +2326,10 @@ export const assertCampaignActive = async (
       {
         where: and(
           eq(schema.outboundCampaignCompany.campaignId, campaign.id),
-          eq(schema.outboundCampaignCompany.prospectId, prospect.id),
+          eq(
+            schema.outboundCampaignCompany.prospectId,
+            prospect.replacementOf ?? prospect.id,
+          ),
         ),
         limit: 1,
       },
@@ -2492,7 +2592,7 @@ export const saveComposedDraftWithin = async (
       writingPolicyHash(settings, {
         globalVoiceNotes,
         copyRulesVersion: completed.copyRulesVersion,
-    openingRuleException: completed.openingRuleException,
+        openingRuleException: completed.openingRuleException,
       }) ||
     completed.composition.contentHash !==
       createHash("sha256").update(canonical.canonicalText).digest("hex")
@@ -2727,6 +2827,12 @@ const reviewProspectWithin = async (
     );
   const current = await policy(transaction);
   if (parsed.data.decision === "approve") {
+    await Replacement.assertSequenceFamilyWithin(
+      transaction,
+      prospect,
+      current.settings,
+      { reviewedCopy: true },
+    );
     await assertAppliedCompositionWithin(transaction, prospect);
     await assertCampaignActive(transaction, prospect);
     if (automatic) {
@@ -3450,8 +3556,10 @@ export const assertAppliedCompositionWithin = async (
     prospect.messages[0]?.writing,
   );
   const rules = {
-    openingRuleException: writing.success && isCurrentWritingSnapshot(writing.data)
-      ? writing.data.openingRuleException : undefined,
+    openingRuleException:
+      writing.success && isCurrentWritingSnapshot(writing.data)
+        ? writing.data.openingRuleException
+        : undefined,
     copyRulesVersion:
       writing.success && isCurrentWritingSnapshot(writing.data)
         ? writing.data.copyRulesVersion
@@ -3846,6 +3954,8 @@ export const recordOutcome = (actor: string, input: unknown) =>
         ),
       );
     }
+    if (kind !== "note")
+      await stopReplacementFamilyWithin(transaction, prospect);
     if (["optout", "negative", "bounce"].includes(kind)) {
       const entries: { scope: "email" | "domain"; value: string }[] = [
         ...(prospect.details.email
@@ -4669,7 +4779,7 @@ const fixedBumpResearchReplay = async (
       writingPolicyHash(effective, {
         globalVoiceNotes: settings.voiceNotes,
         copyRulesVersion: completed.copyRulesVersion,
-    openingRuleException: completed.openingRuleException,
+        openingRuleException: completed.openingRuleException,
       }) ||
     completed.context.prospectHash !== compositionProspectHash(details) ||
     !isDeepStrictEqual(
@@ -4701,6 +4811,12 @@ const deliveryGates = async (
   currentAttempt?: AttemptRow,
 ) => {
   const now = new Date();
+  const family = await Replacement.assertSequenceFamilyWithin(
+    transaction,
+    prospect,
+    settings,
+    { reviewedCopy: true, dispatch: true },
+  );
   if (!outreachMayStart(settings, now))
     throw new ConflictError(
       "Cold outreach cannot start before the saved release date.",
@@ -4893,7 +5009,10 @@ const deliveryGates = async (
     : false;
   if (
     !company ||
-    (!prospect.sentStep && company.lastContactedAt && !ownLinkedInHistory)
+    (!prospect.sentStep &&
+      company.lastContactedAt &&
+      !ownLinkedInHistory &&
+      !family)
   )
     throw new ConflictError("This company already has outbound history.");
   const aliases = requireData(

@@ -34,12 +34,14 @@ export const read = (playbookRevision: number) =>
     const result = await resultifyRead(() =>
       db.execute(sql`
         with contacts as (
-          select id, revision, playbook_revision, status, messages, approval_hash,
+          select id, coalesce(replacement_of,id) as family_id,
+            not exists (select 1 from outbound_prospect child where child.replacement_of=outbound_prospect.id) as current_sequence,
+            revision, playbook_revision, status, messages, approval_hash,
             approved_at, first_sent_at, sent_step
           from outbound_prospect
           where coalesce(details->>'source', '') <> 'internal-mailbox-setup-test'
         ), research_jobs as (
-          select job.id, contact.id as contact_id, job.status, job.output,
+          select job.id, contact.id as prospect_id, contact.family_id as contact_id, job.status, job.output,
             job.input->>'operation' as operation, job.created_at, job.updated_at
           from outbound_integration_job job
           join contacts contact on contact.id = coalesce(job.prospect_id, job.input->>'prospectId')
@@ -95,7 +97,7 @@ export const read = (playbookRevision: number) =>
             )
         ), passed_copy as (
           select contact.id from contacts contact
-          where contact.playbook_revision = ${playbookRevision}
+          where contact.current_sequence and contact.playbook_revision = ${playbookRevision}
             and contact.messages->0->'writing'->>'version' = ${WRITING_CONTRACT_VERSION}
             and contact.messages->0->'writing'->>'revision' = contact.revision::text
             and contact.messages->0->'writing'->'quality'->>'passed' = 'true'
@@ -116,20 +118,20 @@ export const read = (playbookRevision: number) =>
             )
             and exists (
               select 1 from research_jobs job
-              where job.contact_id = contact.id and job.operation = 'sequenceComposition' and job.status = 'complete'
+              where job.prospect_id = contact.id and job.operation = 'sequenceComposition' and job.status = 'complete'
                 and job.output->>'appliedProspectRevision' = contact.revision::text
                 and jsonb_set(job.output->'messages', '{0,writing,revision}', to_jsonb(contact.revision)) = contact.messages
             )
         ), current_approvals as (
           select contact.id from contacts contact
           join outbound_revision revision on revision.prospect_id = contact.id and revision.revision = contact.revision
-          where contact.status in ('approved', 'active') and contact.approval_hash is not null
+          where contact.current_sequence and contact.status in ('approved', 'active') and contact.approval_hash is not null
             and contact.playbook_revision = ${playbookRevision}
             and revision.content_hash = contact.approval_hash
             and revision.approved_at is not null and revision.revoked_at is null
             and revision.messages = contact.messages
         ), first_approvals as (
-          select distinct contact.id from contacts contact
+          select distinct contact.family_id from contacts contact
           join outbound_revision revision on revision.prospect_id = contact.id
           left join outbound_send_attempt first_send on first_send.prospect_id = contact.id
             and first_send.step = 1 and first_send.status = 'accepted' and not first_send.test
@@ -137,36 +139,38 @@ export const read = (playbookRevision: number) =>
             and (contact.sent_step = 0 or coalesce(contact.first_sent_at, first_send.completed_at) is not null)
             and revision.approved_at <= coalesce(contact.first_sent_at, first_send.completed_at, 'infinity'::timestamp)
         ), human_replies as (
-          select distinct thread.prospect_id as contact_id
+          select distinct contact.family_id as contact_id
           from outbound_conversation thread
           join contacts contact on contact.id = thread.prospect_id
           join outbound_conversation_message message on message.conversation_id = thread.id
           where message.direction = 'inbound' and not message.is_automated
           union
-          select distinct event.prospect_id from outbound_event event
+          select distinct contact.family_id from outbound_event event
           join contacts contact on contact.id = event.prospect_id
           where event.kind in ('reply', 'positive', 'negative', 'optout')
         ), positive_replies as (
-          select distinct event.prospect_id as contact_id from outbound_event event
-          join human_replies reply on reply.contact_id = event.prospect_id
+          select distinct contact.family_id as contact_id from outbound_event event
+          join contacts contact on contact.id = event.prospect_id
+          join human_replies reply on reply.contact_id = contact.family_id
           where event.kind = 'positive'
             or (event.kind = 'conversationStage' and event.detail ~ '^Conversation [^:]+: interested$')
           union
-          select distinct thread.prospect_id from outbound_conversation thread
-          join human_replies reply on reply.contact_id = thread.prospect_id
+          select distinct contact.family_id from outbound_conversation thread
+          join contacts contact on contact.id = thread.prospect_id
+          join human_replies reply on reply.contact_id = contact.family_id
           where thread.stage = 'interested'
         ), held_meetings as (
-          select distinct thread.prospect_id as contact_id from outbound_conversation thread
+          select distinct contact.family_id as contact_id from outbound_conversation thread
           join contacts contact on contact.id = thread.prospect_id
           where thread.stage = 'meetingHeld'
           union
-          select distinct event.prospect_id from outbound_event event
+          select distinct contact.family_id from outbound_event event
           join contacts contact on contact.id = event.prospect_id
           where event.kind = 'meetingHeld'
             or (event.kind = 'conversationStage' and event.detail ~ '^Conversation [^:]+: meetingHeld$')
         )
         select
-          (select count(*)::int from contacts) as "contactsIn",
+          (select count(distinct family_id)::int from contacts) as "contactsIn",
           (select count(*)::int from latest_research where has_receipt) as researched,
           (select count(*)::int from latest_research where kind in ('discovery-absence', 'discovery-outranked', 'query-comparison', 'product-data-gap', 'checkout-handoff', 'ucp-gap')) as findings,
           (select count(*)::int from latest_research where kind = 'no-gap') as "noGap",

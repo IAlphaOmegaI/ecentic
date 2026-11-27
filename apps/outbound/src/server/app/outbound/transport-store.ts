@@ -789,8 +789,27 @@ export const ingest = (inbox: Inbox, mail: Mail) =>
       : exact.length
         ? exact
         : byCompany;
+    // A fresh sequence shares one recipient with its historical root. Headerless replies
+    // still get one visible conversation; every matched sequence receives the stop below.
+    const oneFamily =
+      matches.length > 1 &&
+      new Set(matches.map((prospect) => prospect.replacementOf ?? prospect.id))
+        .size === 1 &&
+      new Set(matches.map((prospect) => prospect.details.email.toLowerCase()))
+        .size === 1;
+    const conversationOwner =
+      matches.length === 1
+        ? matches[0]
+        : oneFamily
+          ? (matches.find((prospect) => prospect.inboxId === inbox.id) ??
+            matches.find(
+              (prospect) =>
+                prospect.details.assignedSenderEmail === inbox.email,
+            ) ??
+            matches.find((prospect) => !prospect.replacementOf))
+          : undefined;
     for (const prospect of matches) {
-      if (matches.length === 1) {
+      if (prospect.id === conversationOwner?.id) {
         await storeConversationMail(
           inbox,
           mail,

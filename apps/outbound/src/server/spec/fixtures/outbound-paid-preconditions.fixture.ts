@@ -24,6 +24,8 @@ const base = {
   prospect: {
     id: "d3013043-3e41-40e5-b97f-833886827380",
     campaignId: null,
+    replacementOf: null,
+    replacementAuthorization: null,
     companyId: "company-fixture",
     personId: "person-fixture",
     details: prospectSchema.parse({

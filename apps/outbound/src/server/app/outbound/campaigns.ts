@@ -609,7 +609,13 @@ const sharedExclusion = async (
     const prospects = value(
       await Prospects.find(
         Environment.SERVER,
-        { where: eq(schema.outboundProspect.companyId, existing.id), limit: 1 },
+        {
+          where: and(
+            eq(schema.outboundProspect.companyId, existing.id),
+            sql`${schema.outboundProspect.replacementOf} is null`,
+          ),
+          limit: 1,
+        },
         { tx: transaction },
       ),
     );

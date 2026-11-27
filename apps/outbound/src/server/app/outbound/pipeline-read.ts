@@ -132,8 +132,8 @@ export const read = () =>
       (select count(*)::int from active_campaigns) as "activeCampaigns",
       (select count(distinct domain)::int from current_companies) as companies,
       (select count(distinct source_company_domain)::int from current_jobs where ${researched}) as insights,
-      (select count(distinct prospect.id)::int from current_companies company join outbound_prospect prospect on prospect.id = company.prospect_id) as contacts,
-      (select count(distinct prospect.id)::int from current_companies company join outbound_prospect prospect on prospect.id = company.prospect_id where prospect.status in ('approved','active') and prospect.approval_hash is not null) as sequences,
+      (select count(distinct prospect.id)::int from current_companies company join outbound_prospect prospect on prospect.id = coalesce((select replacement.id from outbound_prospect replacement where replacement.replacement_of = company.prospect_id), company.prospect_id)) as contacts,
+      (select count(distinct prospect.id)::int from current_companies company join outbound_prospect prospect on prospect.id = coalesce((select replacement.id from outbound_prospect replacement where replacement.replacement_of = company.prospect_id), company.prospect_id) where prospect.status in ('approved','active') and prospect.approval_hash is not null) as sequences,
       ((select count(*)::int from outbound_send_attempt where status = 'accepted' and not test and completed_at >= now() - interval '7 days')
         + (select count(*)::int from outbound_conversation_send reply join outbound_conversation thread on thread.id = reply.conversation_id where reply.status = 'accepted' and thread.channel = 'email' and reply.completed_at >= now() - interval '7 days')) as "acceptedEmails",
       ((select count(*)::int from outbound_integration_job where provider = 'linkedin' and status = 'complete' and output->>'providerMessageId' is not null and (output->>'acceptedAt')::timestamptz >= now() - interval '7 days')
@@ -143,8 +143,8 @@ export const read = () =>
         db.execute(sql`${scoped} select campaign.id, campaign.name,
       (select count(*)::int from current_companies company where company.campaign_id = campaign.id) as companies,
       (select count(*)::int from current_jobs job where job.source_campaign_id = campaign.id and (${researched})) as insights,
-      (select count(*)::int from current_companies company join outbound_prospect prospect on prospect.id = company.prospect_id where company.campaign_id = campaign.id) as contacts,
-      (select count(*)::int from current_companies company join outbound_prospect prospect on prospect.id = company.prospect_id where company.campaign_id = campaign.id and prospect.status in ('approved','active') and prospect.approval_hash is not null) as sequences,
+      (select count(*)::int from current_companies company join outbound_prospect prospect on prospect.id = coalesce((select replacement.id from outbound_prospect replacement where replacement.replacement_of = company.prospect_id), company.prospect_id) where company.campaign_id = campaign.id) as contacts,
+      (select count(*)::int from current_companies company join outbound_prospect prospect on prospect.id = coalesce((select replacement.id from outbound_prospect replacement where replacement.replacement_of = company.prospect_id), company.prospect_id) where company.campaign_id = campaign.id and prospect.status in ('approved','active') and prospect.approval_hash is not null) as sequences,
       (select count(*)::int from current_jobs job where job.source_campaign_id = campaign.id and not job.recovered and (job.status in ('failed','uncertain') or job.output->>'heldReason' is not null)) as held
       from active_campaigns campaign order by campaign.updated_at desc, campaign.id limit 8`),
       ),

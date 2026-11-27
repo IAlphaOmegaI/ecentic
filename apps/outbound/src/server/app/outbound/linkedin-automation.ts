@@ -326,6 +326,11 @@ const eligible = async (
   if (!prospect || !prospect.campaignId)
     return hold("linkedin-campaign-required");
   const policy = await Store.policy(transaction);
+  if (prospect.replacementOf) return hold("linkedin-replacement-email-only");
+  const { assertSequenceFamilyWithin } = await import(
+    "./replacement-sequences"
+  );
+  await assertSequenceFamilyWithin(transaction, prospect, policy.settings);
   if (
     !policy.settings.automationEnabled ||
     !policy.settings.linkedinAutomationEnabled
