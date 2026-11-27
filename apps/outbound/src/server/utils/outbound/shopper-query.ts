@@ -885,7 +885,9 @@ const generateQuery = async (
       previousQuestion: input.previousQuestion ?? null,
       broadSearchRule:
         input.intent === "unbranded-broad"
-          ? "Use a broader supported use or occasion while retaining the product category and all unbranded checks. Do not repeat the previous question."
+          ? revised
+            ? "Use the product category plus one broader grounded attribute or use in natural word order. An occasion is optional; do not force a use or occasion when an attribute is sufficient. Keep the exact product an obvious candidate and do not repeat the previous question."
+            : "Use a broader supported use or occasion while retaining the product category and all unbranded checks. Do not repeat the previous question."
           : null,
       excerpts,
       ...(revised

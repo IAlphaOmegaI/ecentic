@@ -507,3 +507,42 @@ test("an old ordinary subtype remains eligible without rewriting its narrower hi
   ).toBeNull();
   expect(query).toEqual(original);
 });
+
+test("revised broader-query guidance permits a grounded attribute without forcing an occasion", async () => {
+  const input = {
+    ...context(
+      "beef jerky",
+      "Original Beef Jerky",
+      "This beef jerky is slow-smoked. 0g sugar.",
+    ),
+    intent: "unbranded-broad" as const,
+    previousQuestion: "0g sugar beef jerky",
+  };
+  const generation = mock(async ({ prompt }: { prompt: string }) => ({
+    question: "smoked beef jerky",
+    category: "beef jerky",
+    attribute: "smoked",
+    excerptIds: [JSON.parse(prompt).excerpts[0].id],
+  }));
+  const review = mock(async ({ prompt }: { prompt: string }) =>
+    decision(prompt),
+  );
+  const revised = await Capture.generateShopperQuery(input, {
+    generate: generation,
+    review,
+  });
+  expect(revised.success && revised.data.status).toBe("prepared");
+  expect(generation).toHaveBeenCalledTimes(1);
+  expect(review).toHaveBeenCalledTimes(1);
+  const revisedRequest = generation.mock.calls[0]?.[0];
+  if (!revisedRequest) throw new Error("Missing generated-query prompt.");
+  expect(JSON.parse(revisedRequest.prompt).broadSearchRule).toBe(
+    "Use the product category plus one broader grounded attribute or use in natural word order. An occasion is optional; do not force a use or occasion when an attribute is sufficient. Keep the exact product an obvious candidate and do not repeat the previous question.",
+  );
+  await Capture.generateLegacyShopperQuery(input, { generate: generation });
+  const legacyRequest = generation.mock.calls[1]?.[0];
+  if (!legacyRequest) throw new Error("Missing historical-query prompt.");
+  expect(JSON.parse(legacyRequest.prompt).broadSearchRule).toBe(
+    "Use a broader supported use or occasion while retaining the product category and all unbranded checks. Do not repeat the previous question.",
+  );
+});
