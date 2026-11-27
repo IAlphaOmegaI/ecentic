@@ -38,6 +38,7 @@ import * as Draft from "@/server/utils/outbound/draft";
 import { browserClaimInterval } from "@/server/utils/outbound/firecrawl-cooldown";
 import {
   HELD_CARD_ASSESSMENT_ERRORS,
+  HELD_RESULT_BRAND_ERROR,
   HELD_REVIEW_MANIFEST_HASH,
   HELD_REVIEW_REASON,
   HELD_REVIEW_ROUND2_INSTRUCTION_HASH,
@@ -50,6 +51,8 @@ import {
   heldPreparedQueryHash,
   heldQueryQualityHoldSchema,
   heldQueryRepairSchema,
+  heldResultBrandReconciliationSchema,
+  heldResultBrandSelectionSchema,
   heldReviewBatchSchema,
   heldReviewBudgetSchema,
   heldReviewInputSchema,
@@ -74,6 +77,7 @@ import {
   assessUnrankedCardAbsence,
   inspectDiscoveryPresence,
   projectRepeatedPresence,
+  projectResultBrands,
 } from "@/server/utils/outbound/shopping-fact-assessment";
 import {
   compositionProspectHash,
@@ -346,6 +350,10 @@ const eligible = async (
       throw new ConflictError(
         "The held preview identity, receipt or sender policy changed.",
       );
+  }
+  if (state.resultBrandReconciliation) {
+    const problem = resultBrandReconciliationProblem(state);
+    if (problem) throw new ConflictError(problem);
   }
   const context = value(await Store.getEnrichmentContext(prospect.id, scope));
   if (context.suppressed)
@@ -1357,6 +1365,262 @@ export const reconcileCardAssessment = (
       alternatives: receipt.discovery.listed.length,
     };
   });
+/** Audit links never grant facts; every resumed draft still replays its raw receipt. */
+const resultBrandReconciliationProblem = (
+  state: HeldReviewState,
+): string | null => {
+  const audit = state.resultBrandReconciliation;
+  if (!audit) return null;
+  if (
+    writerDiagnosticHash(JSON.stringify(audit.originalOutput)) !==
+    audit.originalOutputHash
+  )
+    return "The preserved brand-failure output changed.";
+  const original = heldReviewStateSchema.safeParse(audit.originalOutput);
+  if (
+    !original.success ||
+    original.data.resultBrandReconciliation ||
+    original.data.heldReason !== HELD_RESULT_BRAND_ERROR ||
+    original.data.stage !== "complete" ||
+    !original.data.shoppingReceipt ||
+    !state.shoppingReceipt ||
+    researchHash(original.data.shoppingReceipt) !== audit.originalReceiptHash ||
+    researchHash(state.shoppingReceipt) !== audit.receiptHash ||
+    audit.instructionHash !== HELD_REVIEW_ROUND2_INSTRUCTION_HASH ||
+    audit.originalHeldReason !== original.data.heldReason
+  )
+    return "The reconciled brands no longer match their preserved failure and receipts.";
+  for (const field of [
+    "prospectRevision",
+    "shoppingQueryIntent",
+    "shoppingQueryCount",
+    "queryReservedAt",
+    "polls",
+    "productCapture",
+    "query",
+    "queryGeneration",
+    "shoppingJob",
+    "answer",
+    "browser",
+    "priorPurchase",
+    "previousQueryReview",
+    "queryReview",
+    "queryPurpose",
+    "shoppingHistory",
+  ] as const)
+    if (!isDeepStrictEqual(state[field], original.data[field]))
+      return "The reconciled brand capture or query context changed.";
+  if (
+    !state.answer ||
+    state.browser?.status !== "captured" ||
+    heldPreparedQueryHash(state.query) !== audit.queryHash ||
+    state.shoppingJob?.id !== audit.shoppingJobId ||
+    state.shoppingReceipt.discovery?.answerHash !== audit.answerHash ||
+    state.shoppingReceipt.discovery.linksHash !== audit.linksHash ||
+    !isDeepStrictEqual(
+      audit.rawCaptures,
+      [...state.answer.raw, ...state.browser.raw].map(({ url, sha256 }) => ({
+        url,
+        sha256,
+      })),
+    ) ||
+    !isDeepStrictEqual(
+      audit.selectedProof,
+      state.shoppingReceipt.claimExcerpts?.filter((quote) => quote.brand),
+    )
+  )
+    return "The manually selected brands lost their original query, raw hashes or quote provenance.";
+  const replay = projectResultBrands(
+    evidenceForState(state),
+    original.data.shoppingReceipt,
+    audit.selection,
+  );
+  return replay.status === "researched" &&
+    isDeepStrictEqual(replay.receipt, state.shoppingReceipt)
+    ? null
+    : "The explicit saved-answer brand selection no longer replays.";
+};
+
+/** Explicit manual brand selection from unchanged saved evidence; no provider is called. */
+export const reconcileResultBrands = (
+  actor: string,
+  input: {
+    manifest: HeldReviewManifest;
+    jobId: string;
+    instructionHash: string;
+    expectedOutputHash: string;
+    selection: z.input<typeof heldResultBrandSelectionSchema>;
+    execute?: boolean;
+  },
+) =>
+  transaction(async (scope) => {
+    const manifest = validateManifest(input.manifest);
+    const instructionHash = z
+      .string()
+      .regex(/^[a-f0-9]{64}$/)
+      .parse(input.instructionHash);
+    const expectedOutputHash = z
+      .string()
+      .regex(/^[a-f0-9]{64}$/)
+      .parse(input.expectedOutputHash);
+    const selection = heldResultBrandSelectionSchema.parse(input.selection);
+    const job = await jobAt(scope, z.string().uuid().parse(input.jobId));
+    const details = heldReviewInputSchema.parse(job.input);
+    const state = heldReviewStateSchema.parse(job.output);
+    if (
+      job.provider !== "automation" ||
+      job.prospectId !== details.prospectId ||
+      !manifest.prospectIds.includes(details.prospectId) ||
+      details.reviewRound !== 2 ||
+      instructionHash !== HELD_REVIEW_ROUND2_INSTRUCTION_HASH ||
+      details.instructionHash !== instructionHash ||
+      actor !== details.requestedBy
+    )
+      throw new ConflictError(
+        "Only the authorized second-review operator and instruction may reconcile brands.",
+      );
+    const ready = await eligible(scope, details, state);
+    const queryIssue = queryProblem(
+      details,
+      state,
+      ready.policy.settings,
+      true,
+    );
+    if (queryIssue) throw new ValidationError(queryIssue);
+    if (state.resultBrandReconciliation) {
+      const prior = state.resultBrandReconciliation;
+      if (
+        prior.originalOutputHash !== expectedOutputHash ||
+        !isDeepStrictEqual(prior.selection, selection)
+      )
+        throw new ConflictError(
+          "This brand hold was already reconciled with a different original output or selection.",
+        );
+      return {
+        jobId: job.id,
+        batchId: details.batchId,
+        stage: state.stage,
+        reconciled: true,
+        repeated: true,
+        originalOutputHash: prior.originalOutputHash,
+        receiptHash: prior.receiptHash,
+        selection: prior.selection,
+      };
+    }
+    if (writerDiagnosticHash(JSON.stringify(job.output)) !== expectedOutputHash)
+      throw new ConflictError(
+        "The saved brand-failure output changed after inspection.",
+      );
+    if (
+      job.status !== "complete" ||
+      state.stage !== "complete" ||
+      state.lease !== null ||
+      state.heldReason !== HELD_RESULT_BRAND_ERROR ||
+      (job.error !== null && job.error !== state.heldReason) ||
+      !state.queryReservedAt ||
+      !state.shoppingQueryCount ||
+      state.shoppingQueryCount > 2 ||
+      !state.shoppingJob ||
+      !state.answer ||
+      state.browser?.status !== "captured" ||
+      state.productCapture?.status !== "captured" ||
+      !state.shoppingReceipt ||
+      state.shoppingReceipt.discovery?.brandProjection ||
+      !["discovery-absence", "discovery-outranked"].includes(
+        state.shoppingReceipt.selected.kind,
+      ) ||
+      heldPreparedQueryHash(state.query) !==
+        heldPreparedQueryHash(state.shoppingJob.query) ||
+      !isDeepStrictEqual(state.shoppingJob, state.answer.job) ||
+      state.composition ||
+      state.researchId ||
+      state.writerCandidates?.length ||
+      state.previewContext ||
+      state.draftBeforeJudge ||
+      state.preview ||
+      state.writerCandidateRecovery ||
+      state.queryQualityHold ||
+      state.failureReceipt ||
+      ready.batch.budget.queriesReserved < state.shoppingQueryCount
+    )
+      throw new ConflictError(
+        "Only a complete known brand-selection failure with intact paid evidence and no writer, preview or judge can be reconciled.",
+      );
+    const evidence = evidenceForState(state);
+    const originalProblem = Assessment.validateAutomaticResearch(
+      evidence,
+      state.shoppingReceipt,
+      ready.policy.settings.verificationDays,
+      ready.policy.settings,
+    );
+    if (originalProblem) throw new ValidationError(originalProblem);
+    const assessed = projectResultBrands(
+      evidence,
+      state.shoppingReceipt,
+      selection,
+    );
+    if (assessed.status !== "researched")
+      throw new ValidationError(assessed.reason);
+    const receipt = assessed.receipt;
+    const problem = Assessment.validateAutomaticResearch(
+      evidence,
+      receipt,
+      ready.policy.settings.verificationDays,
+      ready.policy.settings,
+    );
+    if (problem) throw new ValidationError(problem);
+    const audit = heldResultBrandReconciliationSchema.parse({
+      version: "result-brands-reconciliation-v1",
+      instructionHash,
+      originalOutputHash: expectedOutputHash,
+      originalOutput: job.output,
+      originalError: job.error,
+      originalHeldReason: state.heldReason,
+      originalReceiptHash: researchHash(state.shoppingReceipt),
+      receiptHash: researchHash(receipt),
+      queryHash: heldPreparedQueryHash(state.query),
+      shoppingJobId: state.shoppingJob.id,
+      answerHash: receipt.discovery?.answerHash,
+      linksHash: receipt.discovery?.linksHash,
+      selection,
+      selectedProof: receipt.claimExcerpts?.filter((quote) => quote.brand),
+      rawCaptures: [...state.answer.raw, ...state.browser.raw].map(
+        ({ url, sha256 }) => ({ url, sha256 }),
+      ),
+      requestedBy: actor,
+      reconciledAt: new Date().toISOString(),
+    });
+    if (input.execute === true) {
+      const { heldReason: _heldReason, ...retained } = state;
+      await scope
+        .update(schema.outboundIntegrationJob)
+        .set({
+          status: "pending",
+          error: null,
+          output: heldReviewStateSchema.parse({
+            ...retained,
+            stage: "draft",
+            lease: null,
+            availableAt: new Date().toISOString(),
+            shoppingReceipt: receipt,
+            resultBrandReconciliation: audit,
+          }),
+          updatedAt: new Date(),
+        })
+        .where(eq(schema.outboundIntegrationJob.id, job.id));
+    }
+    return {
+      jobId: job.id,
+      batchId: details.batchId,
+      stage: input.execute ? "draft" : "complete",
+      reconciled: input.execute === true,
+      repeated: false,
+      originalOutputHash: audit.originalOutputHash,
+      receiptHash: audit.receiptHash,
+      selection: audit.selection,
+    };
+  });
+
 /** Stages exact saved text for its first judge; cannot call a writer or a search. */
 export const reconcileWriterCandidate = (
   actor: string,

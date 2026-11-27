@@ -25,6 +25,9 @@ const { values } = parseArgs({
     "reconcile-poll": { type: "string" },
     "reconcile-card-assessment": { type: "string" },
     "reconcile-writer-candidate": { type: "string" },
+    "reconcile-result-brands": { type: "string" },
+    "expected-output-hash": { type: "string" },
+    "brand-selection": { type: "string" },
     reason: { type: "string" },
     "expected-query-hash": { type: "string" },
     "expected-shopping-job-id": { type: "string" },
@@ -73,6 +76,7 @@ if (
     values["reconcile-poll"],
     values["reconcile-card-assessment"],
     values["reconcile-writer-candidate"],
+    values["reconcile-result-brands"],
   ].filter(Boolean).length > 1
 )
   throw new Error("Choose only one explicit operator action.");
@@ -89,6 +93,19 @@ if (
 )
   throw new Error(
     "A cached-writer action requires --expected-candidate-parts-hash.",
+  );
+if (
+  Boolean(values["reconcile-result-brands"]) !==
+    Boolean(values["expected-output-hash"]) ||
+  Boolean(values["reconcile-result-brands"]) !==
+    Boolean(values["brand-selection"])
+)
+  throw new Error(
+    "Explicit brand reconciliation requires --expected-output-hash and --brand-selection.",
+  );
+if (values["reconcile-result-brands"] && reviewRound !== 2)
+  throw new Error(
+    "Explicit brand reconciliation is limited to the second review.",
   );
 if (
   Boolean(values["reconcile-poll"] || values["reconcile-card-assessment"]) !==
@@ -245,6 +262,34 @@ if (values["reconcile-card-assessment"]) {
       ...restored.data,
     }),
   );
+  process.exit(0);
+}
+if (values["reconcile-result-brands"]) {
+  const selection = Contract.heldResultBrandSelectionSchema.parse(
+    JSON.parse(await readFile(values["brand-selection"] ?? "", "utf8")),
+  );
+  const restored = await Review.reconcileResultBrands(values.actor, {
+    manifest,
+    jobId: z.string().uuid().parse(values["reconcile-result-brands"]),
+    instructionHash: instructionHash ?? "",
+    expectedOutputHash: z
+      .string()
+      .regex(/^[a-f0-9]{64}$/)
+      .parse(values["expected-output-hash"]),
+    selection,
+    execute: values.execute,
+  });
+  if (!restored.success)
+    throw new Error(
+      `Explicit brand reconciliation failed: ${restored.error.message}`,
+    );
+  console.log(
+    JSON.stringify({
+      mode: values.execute ? "saved-brands-staged" : "saved-brands-dry-run",
+      ...restored.data,
+    }),
+  );
+  // Staging the receipt does not run a writer, judge, search or provider step.
   process.exit(0);
 }
 if (values["reconcile-writer-candidate"]) {

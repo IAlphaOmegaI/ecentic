@@ -172,6 +172,53 @@ export const heldWriterCandidateRecoverySchema = z
     reservedAt: z.string().datetime().optional(),
   })
   .strict();
+export const HELD_RESULT_BRAND_ERROR =
+  "A brand must be an exact brand string in the saved product title or answer prose, not a full listing title, seller or URL.";
+export const heldResultBrandSelectionSchema = z
+  .object({
+    decision: z.literal("supported"),
+    reason: z.string().trim().min(1).max(1500),
+    brands: z
+      .array(
+        z
+          .object({
+            name: z.string().min(1).max(100),
+            quoteId: z.string().min(1).max(80),
+          })
+          .strict(),
+      )
+      .min(2)
+      .max(3),
+  })
+  .strict();
+export const heldResultBrandReconciliationSchema = z
+  .object({
+    version: z.literal("result-brands-reconciliation-v1"),
+    instructionHash: digest,
+    originalOutputHash: digest,
+    originalOutput: z.record(z.string(), z.unknown()),
+    originalError: z.string().nullable(),
+    originalHeldReason: z.literal(HELD_RESULT_BRAND_ERROR),
+    originalReceiptHash: digest,
+    receiptHash: digest,
+    queryHash: digest,
+    shoppingJobId: z.string().uuid(),
+    answerHash: digest,
+    linksHash: digest,
+    selection: heldResultBrandSelectionSchema,
+    selectedProof: z
+      .array(shoppingResearchSchema.shape.claimExcerpts.unwrap().element)
+      .min(1)
+      .max(3),
+    rawCaptures: z
+      .array(z.object({ url: z.string().url(), sha256: digest }).strict())
+      .min(3)
+      .max(20),
+    requestedBy: z.string().trim().min(1).max(200),
+    reconciledAt: z.string().datetime(),
+  })
+  .strict();
+
 const previewMessageSchema = z
   .object({
     step: z.union([z.literal(1), z.literal(2), z.literal(3)]),
@@ -262,6 +309,7 @@ export const heldReviewStateSchema = z
     queryQualityHold: heldQueryQualityHoldSchema.optional(),
     pollRecoveries: z.array(heldPollRecoverySchema).max(2).optional(),
     cardAssessmentRecovery: heldCardAssessmentRecoverySchema.optional(),
+    resultBrandReconciliation: heldResultBrandReconciliationSchema.optional(),
     shoppingJob: aiJobSchema.optional(),
     answer: aiCaptureSchema.optional(),
     browser: browserResearchSchema.optional(),
