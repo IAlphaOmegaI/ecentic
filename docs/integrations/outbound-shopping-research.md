@@ -62,6 +62,24 @@ read-only preflight; adding `--execute` stages and advances only these unpublish
 review jobs. The reviewed sections 7 and 16 are bound by a canonical SHA-256 hash.
 The older protected-fragment workflow described below remains historical context.
 
+Two explicit reconciliation operations preserve failed review evidence. An exact
+second writer candidate rejected only by deterministic checks can be replayed under
+the corrected checks and staged for its first judgment, without another writer or
+search call. Its original two candidates and errors remain intact; an existing or
+uncertain judgment cannot be retried. A completed brand-selection failure with no
+writer or judgment can receive an operator-selected set of two or three exact
+brand proofs from the same saved answer. This preserves the original failed output,
+query, captures and receipt hash, then stages the normal first draft. Both operations
+are instruction-bound, dry-run by default and confined to the held review jobs.
+
+The copy judge receives each projected brand beside its exact source quotation.
+Leading answer excerpts are labelled non-exhaustive; other saved product cards can
+establish additional brands. Contradictions still fail and completed verdicts are
+never rewritten by this input clarification. Presence replay also treats an
+uppercase shortened merchant name as a possible identity when the merchant's own
+structured Product brand, Product name and rendered title corroborate it. This
+can veto absence but cannot establish a rank or definite merchant identity.
+
 Future application of a reviewed round-two receipt needs an explicit, separately
 authorized adoption change. The existing `LeadResearch` capture-proof snapshot
 stores only the current `answer` and `browser`. A receipt with a separate
