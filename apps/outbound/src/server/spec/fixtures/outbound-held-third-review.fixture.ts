@@ -454,13 +454,13 @@ const focus = async (company: string) => {
     sql`update outbound_integration_job set output=jsonb_set(output,'{availableAt}',to_jsonb(${new Date().toISOString()}::text)) where input->>'operation'='heldDiscoveryRound3' and input->'merchant'->>'name'=${company}`,
   );
 };
-const calls = { writer: 0, judge: 0, search: 0 };
+const calls = { writer: 0, judge: 0, search: 0, browser: 0 };
 const deps: HeldThirdReviewDependencies = {
   resolveKey: async () => ({ success: true, data: "synthetic" }),
-  inspectProduct: async (input) => ({
-    success: true,
-    data: heldBrowser(input.product),
-  }),
+  inspectProduct: async (input) => {
+    calls.browser++;
+    return { success: true, data: heldBrowser(input.product) };
+  },
   generate: async () => {
     calls.writer++;
     throw new Error("Unexpected writer purchase");
@@ -489,6 +489,71 @@ const advance = async (
   await focus(company);
   return value(await Third.runNext({ controlId: started.controlId }, custom));
 };
+// Cached loading preserves the same field order and Date representation used by
+// already-created child parent hashes; it does not require rewriting old input.
+const plainParent = frozenParents.find(
+  (row) => row.input?.["reviewRound"] === 2,
+);
+assert.ok(plainParent);
+const plainParentCompany = Contract.heldReviewInputSchema.parse(
+  plainParent.input,
+).merchant.name;
+const boundChild = ThirdContract.heldThirdReviewInputSchema.parse(
+  (await child(plainParentCompany)).input,
+);
+assert.equal(
+  boundChild.previousJobHash,
+  writerDiagnosticHash(JSON.stringify(plainParent)),
+);
+// Startup warms the immutable cache. Changing either prior row is still detected
+// from its full database row before any browser, search, writer, or judge call.
+const obagiParent = frozenParents.find(
+  (row) =>
+    row.input?.["reviewRound"] === 2 &&
+    (row.input?.["merchant"] as { name?: string })?.name === "Obagi",
+);
+assert.ok(obagiParent);
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({ error: "Synthetic cached-parent tamper" })
+  .where(eq(schema.outboundIntegrationJob.id, obagiParent.id));
+await advance("Obagi");
+assert.equal((await child("Obagi")).status, "failed");
+assert.match(
+  (await child("Obagi")).error ?? "",
+  /immutable second-review parent changed/,
+);
+assert.deepEqual(calls, { writer: 0, judge: 0, search: 0, browser: 0 });
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({ error: obagiParent.error, updatedAt: obagiParent.updatedAt })
+  .where(eq(schema.outboundIntegrationJob.id, obagiParent.id));
+const patternFirst = frozenParents.find(
+  (row) =>
+    !row.input?.["reviewRound"] &&
+    (row.input?.["merchant"] as { name?: string })?.name === "Pattern Beauty",
+);
+assert.ok(patternFirst);
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({
+    output: {
+      ...patternFirst.output,
+      heldReason: "Synthetic cached R1 output tamper",
+    },
+  })
+  .where(eq(schema.outboundIntegrationJob.id, patternFirst.id));
+await advance("Pattern Beauty");
+assert.equal((await child("Pattern Beauty")).status, "failed");
+assert.match(
+  (await child("Pattern Beauty")).error ?? "",
+  /preserved first-review record changed/,
+);
+assert.deepEqual(calls, { writer: 0, judge: 0, search: 0, browser: 0 });
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({ output: patternFirst.output, updatedAt: patternFirst.updatedAt })
+  .where(eq(schema.outboundIntegrationJob.id, patternFirst.id));
 // A carried result receives no writer and can never change the prospect row.
 assert.equal((await advance("Alice Lane Home Collection")).stage, "copyProof");
 const alice = ThirdContract.heldThirdReviewStateSchema.parse(

@@ -2,7 +2,16 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { isDeepStrictEqual } from "node:util";
 import { type Result, resultify } from "@zenncore/utils";
-import { and, asc, desc, eq, inArray, ne, sql } from "drizzle-orm";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  getTableColumns,
+  inArray,
+  ne,
+  sql,
+} from "drizzle-orm";
 import { z } from "zod";
 import {
   playbookSchema,
@@ -110,13 +119,48 @@ const transaction = <T>(operation: (scope: TransactionScope) => Promise<T>) =>
       return operation(scope);
     }),
   );
-const jobAt = async (scope: TransactionScope, id: string) => {
-  const [job] = await scope
-    .select()
+const immutableReviewJobs = new Map<string, { rowHash: string; job: Job }>();
+const fullJobRowHash = sql<string>`encode(sha256(convert_to(to_jsonb(${schema.outboundIntegrationJob})::text, 'UTF8')), 'hex')`;
+/** A hit saves transfer only. Every reuse rechecks the entire persisted row. */
+const jobAt = async (scope: TransactionScope, id: string): Promise<Job> => {
+  const saved = immutableReviewJobs.get(id);
+  if (saved) {
+    const [current] = await scope
+      .select({ rowHash: fullJobRowHash })
+      .from(schema.outboundIntegrationJob)
+      .where(eq(schema.outboundIntegrationJob.id, id))
+      .limit(1);
+    if (current?.rowHash === saved.rowHash) return structuredClone(saved.job);
+    immutableReviewJobs.delete(id);
+  }
+  // Row and hash come from the same SQL statement and MVCC snapshot.
+  const [loaded] = await scope
+    .select({
+      ...getTableColumns(schema.outboundIntegrationJob),
+      cacheRowHash: fullJobRowHash,
+    })
     .from(schema.outboundIntegrationJob)
     .where(eq(schema.outboundIntegrationJob.id, id))
     .limit(1);
-  if (!job) throw new ConflictError("The third-review record is unavailable.");
+  if (!loaded)
+    throw new ConflictError("The third-review record is unavailable.");
+  const { cacheRowHash, ...job } = loaded;
+  if (
+    job.provider === "automation" &&
+    job.input?.["operation"] === "heldDiscoveryReview" &&
+    (job.input["reviewRound"] === undefined ||
+      job.input["reviewRound"] === 2) &&
+    ["complete", "failed", "uncertain"].includes(job.status)
+  ) {
+    if (immutableReviewJobs.size >= 64) {
+      const oldest = immutableReviewJobs.keys().next().value;
+      if (oldest) immutableReviewJobs.delete(oldest);
+    }
+    immutableReviewJobs.set(id, {
+      rowHash: cacheRowHash,
+      job: structuredClone(job),
+    });
+  }
   return job;
 };
 const manifestFor = (input: HeldReviewManifest) => {
@@ -316,6 +360,7 @@ const ready = async (
     scope,
     parentInput,
     parentState,
+    jobAt,
   );
   const firstState = heldReviewStateSchema.parse(original.firstReview?.output);
   if (
@@ -400,7 +445,12 @@ const inspectWithin = async (
     const parent = await jobAt(scope, parentSummary.id);
     const input = heldReviewInputSchema.parse(parent.input);
     const state = heldReviewStateSchema.parse(parent.output);
-    const original = await assertHeldReviewEligibility(scope, input, state);
+    const original = await assertHeldReviewEligibility(
+      scope,
+      input,
+      state,
+      jobAt,
+    );
     const action = actionFor(input.merchant.name);
     const firstState = heldReviewStateSchema.parse(
       original.firstReview?.output,

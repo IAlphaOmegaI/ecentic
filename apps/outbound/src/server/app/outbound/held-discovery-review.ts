@@ -167,11 +167,12 @@ const eligible = async (
   scope: TransactionScope,
   input: HeldReviewInput,
   state: HeldReviewState,
+  loadPriorJob: typeof jobAt = jobAt,
 ) => {
   const batch = await batchAt(scope, input.batchId);
   const firstReview =
     input.reviewRound === 2 && input.previousJobId
-      ? await jobAt(scope, input.previousJobId)
+      ? await loadPriorJob(scope, input.previousJobId)
       : null;
   if (input.reviewRound === 2) {
     if (
