@@ -3,6 +3,7 @@ import { type Result, resultify } from "@zenncore/utils";
 import { inArray, sql } from "drizzle-orm";
 import type { Playbook } from "@/lib/outbound";
 import { db, schema } from "@/server/database";
+import { confirmedBrowserCooldown } from "@/server/utils/outbound/firecrawl-cooldown";
 import * as Credentials from "./provider-credentials";
 
 const value = <Data>(result: Result<Data, Error>): Data => {
@@ -30,14 +31,19 @@ export const getStatus = (
       .select({
         provider: sql<string>`output->>'failureProvider'`,
         updatedAt: schema.outboundIntegrationJob.updatedAt,
+        error: schema.outboundIntegrationJob.error,
+        receipt: sql<unknown>`output->'failureReceipt'`,
+        checkedAt:
+          sql<number>`extract(epoch from current_timestamp) * 1000`.mapWith(
+            Number,
+          ),
       })
       .from(schema.outboundIntegrationJob)
       .where(sql`provider = 'automation' and input->>'operation' = 'campaignAutomation'
         and status = 'failed' and output->>'failureProvider' in ('scrapellm','firecrawl')
         and error in ('provider-access','provider-quota','provider-rate-limit')
         and updated_at > (current_timestamp at time zone 'UTC') -
-          case when error = 'provider-rate-limit' then interval '15 minutes' else interval '24 hours' end`)
-      .limit(50);
+          case when error = 'provider-rate-limit' then interval '1 hour' else interval '24 hours' end`);
     const keys = failures.length
       ? await db
           .select({
@@ -58,7 +64,23 @@ export const getStatus = (
                 (key) =>
                   key.provider === failure.provider &&
                   key.updatedAt > failure.updatedAt,
-              ),
+              ) &&
+              (failure.error !== "provider-rate-limit" ||
+                (() => {
+                  const retryAt =
+                    failure.provider === "firecrawl"
+                      ? confirmedBrowserCooldown(
+                          failure.receipt,
+                          failure.checkedAt,
+                        )
+                      : null;
+                  return (
+                    (retryAt
+                      ? Date.parse(retryAt)
+                      : failure.updatedAt.getTime() + 15 * 60_000) >
+                    failure.checkedAt
+                  );
+                })()),
           )
           .map((failure) => failure.provider),
       ),

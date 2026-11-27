@@ -31,10 +31,16 @@ import { productCategoryCorrection } from "@/server/utils/outbound/product-categ
 import * as Providers from "@/server/utils/outbound/providers";
 import * as ShoppingAssessment from "@/server/utils/outbound/shopping-assessment";
 import {
-  broaderSearchProblem,
-  completedShoppingQuerySchema,
-  shoppingQueryHistorySchema,
-} from "@/server/utils/outbound/shopping-query-history";
+  type NormalShoppingQueryHistory,
+  normalBroaderSearchProblem,
+  normalShoppingQueryHistorySchema,
+  presentShoppingQuerySchema,
+} from "@/server/utils/outbound/shopping-broader-history";
+import {
+  inspectDiscoveryPresence,
+  projectRepeatedPresence,
+} from "@/server/utils/outbound/shopping-discovery-review";
+import { completedShoppingQuerySchema } from "@/server/utils/outbound/shopping-query-history";
 import { researchPolicyHash } from "@/server/utils/outbound/shopping-research";
 import * as AutomaticClay from "./automatic-clay";
 import type { AutomationClaim } from "./automation";
@@ -212,7 +218,24 @@ const shoppingEvidence = (claimed: AutomationClaim) => {
     throw new ValidationError(
       "The shopping research no longer matches the Playbook.",
     );
-  return { answer, browser };
+  const history = normalShoppingQueryHistorySchema.parse(
+    claimed.state["shoppingHistory"] ?? [],
+  );
+  return {
+    answer,
+    browser,
+    ...(history.length
+      ? {
+          previous: history.map((entry) => {
+            if (entry.browser.status !== "captured")
+              throw new ValidationError(
+                "The prior product capture is incomplete.",
+              );
+            return { answer: entry.answer, browser: entry.browser };
+          }),
+        }
+      : {}),
+  };
 };
 const shoppingReceipt = (claimed: AutomationClaim) => {
   const receipt = shoppingResearchSchema.parse(
@@ -228,7 +251,7 @@ const shoppingReceipt = (claimed: AutomationClaim) => {
   return receipt;
 };
 const broaderShoppingResearchSupported = (claimed: AutomationClaim) => {
-  const previous = shoppingQueryHistorySchema.parse(
+  const previous = normalShoppingQueryHistorySchema.parse(
     claimed.state["shoppingHistory"] ?? [],
   )[0];
   return (
@@ -237,9 +260,42 @@ const broaderShoppingResearchSupported = (claimed: AutomationClaim) => {
       qualifiedProduct(claimed.state).product.url &&
     previous.query.product.name ===
       qualifiedProduct(claimed.state).product.name &&
-    !broaderSearchProblem(previous, Date.now(), claimed.playbook)
+    previous.query.merchant?.name === claimed.company.name &&
+    normalizeDomain(previous.query.merchant.domain) ===
+      normalizeDomain(claimed.company.domain) &&
+    !normalBroaderSearchProblem(previous, Date.now(), claimed.playbook)
   );
 };
+const broaderShoppingOutput = (previous: NormalShoppingQueryHistory) => ({
+  shoppingHistory: [previous],
+  shoppingQueryIntent: "unbranded-broad",
+  shoppingQuery: undefined,
+  shoppingJob: undefined,
+  shoppingAnswer: undefined,
+  shoppingBrowser: undefined,
+  shoppingReceipt: undefined,
+  shoppingAssessment: undefined,
+  shoppingRequestId: undefined,
+  shoppingQueryReservedAt: undefined,
+  shoppingQueryGeneration: undefined,
+  shoppingPollError: undefined,
+  failureReceipt: undefined,
+  failureProvider: undefined,
+  providerRecovery: undefined,
+  shoppingPolls: 0,
+});
+const shoppingAttemptMetadata = (
+  state: AutomationState,
+  assessment: ShoppingAssessment.AssessmentResult,
+) => ({
+  generation: state["shoppingQueryGeneration"],
+  assessment,
+  polls: state["shoppingPolls"],
+  pollError: state["shoppingPollError"],
+  failureReceipt: state["failureReceipt"],
+  failureProvider: state["failureProvider"],
+  providerRecovery: state["providerRecovery"],
+});
 const requiredKey = async (provider: "scrapellm" | "firecrawl") => {
   const key = value(await Credentials.resolveKey(provider));
   if (!key)
@@ -458,8 +514,9 @@ export const execute = async (
       const intent = state.shoppingQueryIntent ?? "unbranded-specific";
       const previous = Capture.preparedQuerySchema.safeParse(
         intent === "unbranded-broad"
-          ? shoppingQueryHistorySchema.parse(state["shoppingHistory"] ?? [])[0]
-              ?.query
+          ? normalShoppingQueryHistorySchema.parse(
+              state["shoppingHistory"] ?? [],
+            )[0]?.query
           : state["shoppingQuery"],
       );
       if (intent === "unbranded-broad") {
@@ -687,13 +744,73 @@ export const execute = async (
           };
     }
     case "assessShopping": {
-      const assessment = value(
-        await ShoppingAssessment.assess({
-          ...shoppingEvidence(claimed),
-          playbook,
-          deadline,
-        }),
+      const evidence = shoppingEvidence(claimed);
+      const history = normalShoppingQueryHistorySchema.parse(
+        state["shoppingHistory"] ?? [],
       );
+      const presence = inspectDiscoveryPresence(evidence);
+      if (
+        history.some((entry) => "broaderBasis" in entry) &&
+        (!broaderShoppingResearchSupported(claimed) ||
+          state.shoppingQueryCount !== 2 ||
+          evidence.answer.job.query.intent !== "unbranded-broad")
+      )
+        return {
+          stage: "assessShopping",
+          reason: "shopping-broader-search-not-supported",
+        };
+      const assessment =
+        history.some((entry) => "broaderBasis" in entry) &&
+        presence.status === "verified" &&
+        presence.discovery.merchantPresent === true
+          ? projectRepeatedPresence(evidence)
+          : value(
+              await ShoppingAssessment.assess({
+                ...evidence,
+                playbook,
+                deadline,
+              }),
+            );
+      if (
+        assessment.status === "held" &&
+        presence.status === "verified" &&
+        presence.canBroaden &&
+        presence.order === "unranked" &&
+        playbook.searchesPerLead === 2 &&
+        state.shoppingQueryCount === 1 &&
+        history.length === 0 &&
+        evidence.answer.job.query.intent === "unbranded-specific"
+      ) {
+        const previous = presentShoppingQuerySchema.parse({
+          broaderBasis: "verified-product-card-presence-v1",
+          query: Capture.preparedQuerySchema.parse(state["shoppingQuery"]),
+          shoppingJob: Capture.aiJobSchema.parse(state["shoppingJob"]),
+          answer: evidence.answer,
+          browser: evidence.browser,
+          requestId: state["shoppingRequestId"],
+          queryReservedAt: state["shoppingQueryReservedAt"],
+          policyHash: state["shoppingPolicyHash"],
+          attemptMetadata: shoppingAttemptMetadata(state, assessment),
+        });
+        const problem = normalBroaderSearchProblem(
+          previous,
+          Date.now(),
+          playbook,
+        );
+        if (!problem)
+          return {
+            stage: "researchQuery",
+            output: broaderShoppingOutput(previous),
+          };
+        return {
+          stage: "assessShopping",
+          reason: "shopping-research-held",
+          output: {
+            shoppingAssessment: assessment,
+            shoppingBroaderSearchProblem: problem,
+          },
+        };
+      }
       if (assessment.status !== "researched")
         return {
           stage: "assessShopping",
@@ -701,7 +818,6 @@ export const execute = async (
           output: { shoppingAssessment: assessment },
         };
       const receipt = assessment.receipt;
-      const evidence = shoppingEvidence(claimed);
       const output = {
         shoppingReceipt: receipt,
         shoppingAssessment: assessment,
@@ -720,9 +836,6 @@ export const execute = async (
       );
       if (problem) throw new ValidationError(problem);
       if (receipt.selected.kind === "no-gap") {
-        const history = shoppingQueryHistorySchema.parse(
-          state["shoppingHistory"] ?? [],
-        );
         if (
           playbook.searchesPerLead === 1 ||
           state.shoppingQueryCount !== 1 ||
@@ -742,17 +855,13 @@ export const execute = async (
           requestId: state["shoppingRequestId"],
           queryReservedAt: state["shoppingQueryReservedAt"],
           policyHash: state["shoppingPolicyHash"],
-          attemptMetadata: {
-            generation: state["shoppingQueryGeneration"],
-            assessment,
-            polls: state["shoppingPolls"],
-            pollError: state["shoppingPollError"],
-            failureReceipt: state["failureReceipt"],
-            failureProvider: state["failureProvider"],
-            providerRecovery: state["providerRecovery"],
-          },
+          attemptMetadata: shoppingAttemptMetadata(state, assessment),
         });
-        const problem = broaderSearchProblem(previous, Date.now(), playbook);
+        const problem = normalBroaderSearchProblem(
+          previous,
+          Date.now(),
+          playbook,
+        );
         if (problem)
           return {
             stage: "assessShopping",
@@ -761,24 +870,7 @@ export const execute = async (
           };
         return {
           stage: "researchQuery",
-          output: {
-            shoppingHistory: [previous],
-            shoppingQueryIntent: "unbranded-broad",
-            shoppingQuery: undefined,
-            shoppingJob: undefined,
-            shoppingAnswer: undefined,
-            shoppingBrowser: undefined,
-            shoppingReceipt: undefined,
-            shoppingAssessment: undefined,
-            shoppingRequestId: undefined,
-            shoppingQueryReservedAt: undefined,
-            shoppingQueryGeneration: undefined,
-            shoppingPollError: undefined,
-            failureReceipt: undefined,
-            failureProvider: undefined,
-            providerRecovery: undefined,
-            shoppingPolls: 0,
-          },
+          output: broaderShoppingOutput(previous),
         };
       }
       return { stage: "findContacts", output };

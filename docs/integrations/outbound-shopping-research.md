@@ -147,6 +147,25 @@ errors retry only the known GET job within a bounded poll count. An uncertain
 submission never purchases a replacement automatically. Provider responses and
 their SHA256 digests are checkpointed before later stages.
 
+Normal campaign automation also supports the one broader search after verified
+merchant presence in grouped product cards. It retains that complete first
+purchase with `verified-product-card-presence-v1`, without inventing a ranked or
+correctness receipt. The broader plan and submission recheck the original raw
+answer, linked cards, product, merchant, policy, freshness and two-search limit.
+A second merchant presence becomes `no-gap`; absence still needs the current
+linked-product and brand proof. Earlier ranked-first histories keep their
+original schema and receipts. Prior captures remain audit-only through normal
+research application, composition and approval.
+
+All normal campaign browser claims participate in the same 60-second
+`browserAvailableAt` gate read by saved-contact and held-preview batches. Public
+qualification HTTP reads and Apollo company facts do not call Firecrawl. A fully
+saved, hash-verified rejected Firecrawl session creation may clear readiness at
+its original retry time, with a 60-second minimum; reading status never restarts
+that timer. Unknown or malformed rate-limit responses retain the 15-minute
+fallback, while access and quota stops retain 24 hours. This does not reset or
+retry any failed job or permit another session after an uncertain acceptance.
+
 Firecrawl Interact opens a fresh short-lived browser, records rendered product
 text, selected options, structured offers and a screenshot, then deletes the
 session. A 120-second TTL backs up cleanup. URLs are checked, robots rules are

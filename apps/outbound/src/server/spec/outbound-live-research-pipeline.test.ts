@@ -9,7 +9,7 @@ import {
   spyOn,
   test,
 } from "bun:test";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { eq, sql } from "drizzle-orm";
 import { defaultPlaybook } from "@/lib/outbound";
 import { IntegrationError } from "@/server/utils/outbound/http";
@@ -112,6 +112,8 @@ const state = {
   pendingPoll: false,
   startError: null as IntegrationError | null,
   afterStart: null as (() => Promise<void>) | null,
+  specificAnswer: null as string | null,
+  broadAnswer: null as string | null,
 };
 const fixture = {
   campaignId: "",
@@ -130,7 +132,7 @@ const currentJob = async () => {
   return job;
 };
 const advance = async (maxSteps = 20) => {
-  setSystemTime(new Date(Date.now() + 15_000));
+  setSystemTime(new Date(Date.now() + 60_000));
   const { db, schema, automation } = active();
   for (const job of (await jobs()).filter(
     (job) => job.provider === "automation" && job.status === "pending",
@@ -144,6 +146,22 @@ const advance = async (maxSteps = 20) => {
   return value(
     await automation.run({ campaignId: fixture.campaignId, maxSteps }),
   );
+};
+/** Synthetic grouped provider card, with a real product-link shape and no global rank. */
+const presentCard =
+  '#### Portable choices\n<div html-index="1" style="display:flex;align-items:center;gap:12px;padding:10px"><img src="data:image/jpeg;base64,AA==" alt="Sample Goods Linen Tote" width="120" height="auto" style="object-fit:cover; border-radius: 0.5rem;" /><div style="flex:1"><div style="font-weight:bold"><a href="https://samplegoods.com/products/tote">Sample Goods Linen Tote</a></div><div style="margin-top:4px;font-size:18px">$30<span style="text-decoration: line-through;">$40</span></div><div>Sample Goods</div><div> </div></div><div style="display: none">00000000000000000000000000000001</div></div>';
+const reachStage = async (stage: string) => {
+  for (const _step of Array.from({ length: 24 })) {
+    await advance(1);
+    const job = await currentJob();
+    if (
+      job.output?.["stage"] === stage ||
+      job.status === "failed" ||
+      job.status === "uncertain"
+    )
+      return job;
+  }
+  throw new Error(`Synthetic workflow did not reach ${stage}.`);
 };
 const configure = () => {
   const {
@@ -253,9 +271,12 @@ const configure = () => {
     originalGenerate(input, {
       review: syntheticQueryReview,
       generate: async ({ prompt }) => ({
-        question: "large linen tote bags",
+        question:
+          input.intent === "unbranded-broad"
+            ? "everyday linen tote bags"
+            : "large linen tote bags",
         category: "linen tote bag",
-        attribute: "large",
+        attribute: input.intent === "unbranded-broad" ? "everyday" : "large",
         excerptIds: [JSON.parse(prompt).excerpts[0].id],
       }),
     }),
@@ -287,9 +308,13 @@ const configure = () => {
                   scraper: job.query.surface,
                   status: "done",
                   cached: false,
-                  result_markdown: state.noAngle
-                    ? "Sample Goods linen tote is included. Other options are Canvas Works and Harbor Label."
-                    : "1. [Canvas Works — Large carry bag](https://canvas.example/products/carry-bag).\n2. [Harbor Label — Cotton shopper](https://harbor.example/products/shopper).",
+                  result_markdown:
+                    (job.query.intent === "unbranded-broad"
+                      ? state.broadAnswer
+                      : state.specificAnswer) ??
+                    (state.noAngle
+                      ? "Sample Goods linen tote is included. Other options are Canvas Works and Harbor Label."
+                      : "1. [Canvas Works — Large carry bag](https://canvas.example/products/carry-bag).\n2. [Harbor Label — Cotton shopper](https://harbor.example/products/shopper)."),
                   citations: [],
                 },
               }),
@@ -454,6 +479,8 @@ describe.skipIf(!endpoint)(
         pendingPoll: false,
         startError: null,
         afterStart: null,
+        specificAnswer: null,
+        broadAnswer: null,
       });
       fixture.capture = await buildSyntheticShoppingEvidence({
         prospect: {
@@ -463,7 +490,7 @@ describe.skipIf(!endpoint)(
           productUrl: product.url,
         },
         now: now.getTime(),
-        pageText: "Linen tote is a large linen tote bag.",
+        pageText: "Linen tote is a large linen tote bag for everyday carrying.",
       });
       configure();
     });
@@ -543,6 +570,226 @@ describe.skipIf(!endpoint)(
       });
       expect(capture.startQuery).not.toHaveBeenCalled();
     });
+    test.each([
+      {
+        error: "provider-rate-limit",
+        age: 70_000,
+        retry: 13,
+        valid: true,
+        blocked: false,
+      },
+      {
+        error: "provider-rate-limit",
+        age: 70_000,
+        retry: 120,
+        valid: true,
+        blocked: true,
+      },
+      {
+        error: "provider-rate-limit",
+        age: 20 * 60_000,
+        retry: 3600,
+        valid: true,
+        blocked: true,
+      },
+      {
+        error: "provider-rate-limit",
+        age: 70_000,
+        retry: 13,
+        valid: false,
+        blocked: true,
+      },
+      {
+        error: "provider-rate-limit",
+        age: 16 * 60_000,
+        retry: 13,
+        valid: false,
+        blocked: false,
+      },
+      {
+        error: "provider-access",
+        age: 20 * 60_000,
+        retry: 13,
+        valid: true,
+        blocked: true,
+      },
+      {
+        error: "provider-quota",
+        age: 20 * 60_000,
+        retry: 13,
+        valid: true,
+        blocked: true,
+      },
+    ])(
+      "real readiness respects verified creation retry and conservative fallback: %j",
+      async ({ error, age, retry, valid, blocked }) => {
+        if (!readResearchStatus) throw new Error("Missing readiness function");
+        const { credentials, db, schema } = active();
+        spyOn(credentials, "metadata").mockResolvedValue({
+          success: true,
+          data: {
+            configured: true,
+            configuration: {},
+            credentialStatus: "saved",
+          },
+        });
+        setSystemTime();
+        const failedAt = new Date(Date.now() - age);
+        const body = JSON.stringify({
+          success: false,
+          error:
+            "Rate limit exceeded. Consumed (req/min): 3, Remaining (req/min): 0.",
+          retry_after_seconds: retry,
+        });
+        const [failure] = await db
+          .insert(schema.outboundIntegrationJob)
+          .values({
+            provider: "automation",
+            status: "failed",
+            error,
+            updatedAt: failedAt,
+            input: { operation: "campaignAutomation" },
+            output: {
+              failureProvider: "firecrawl",
+              failureReceipt: {
+                retryAfterSeconds: retry,
+                response: {
+                  url: "https://api.firecrawl.dev/v2/interact",
+                  status: 429,
+                  receivedAt: failedAt.toISOString(),
+                  body,
+                  sha256: valid
+                    ? createHash("sha256").update(body).digest("hex")
+                    : "0".repeat(64),
+                },
+              },
+            },
+          })
+          .returning();
+        expect(value(await readResearchStatus(settings)).blocked).toEqual(
+          blocked ? ["firecrawl"] : [],
+        );
+        expect(
+          (
+            await db
+              .select()
+              .from(schema.outboundIntegrationJob)
+              .where(eq(schema.outboundIntegrationJob.id, failure!.id))
+          )[0],
+        ).toEqual(failure);
+      },
+    );
+    test("normal browser claims share the old batch gate, including concurrent reservations", async () => {
+      const { db, schema } = active();
+      const { claimBrowserProviderSlot } = await import(
+        "@/server/app/outbound/browser-provider-pacing"
+      );
+      const reserved = new Date(Date.now() + 60_000).toISOString();
+      const [legacy] = await db
+        .insert(schema.outboundIntegrationJob)
+        .values({
+          provider: "automation",
+          status: "pending",
+          input: { operation: "badEmailFreshPreviewBatchV1" },
+          output: { browserAvailableAt: reserved },
+        })
+        .returning();
+      const claimSlot = () =>
+        db.transaction(async (scope) => {
+          await scope.execute(
+            sql`select pg_advisory_xact_lock(hashtext('ecentic-outbound-workspace'))`,
+          );
+          return claimBrowserProviderSlot(scope);
+        });
+      expect(await claimSlot()).toBe(false);
+      setSystemTime(new Date(reserved));
+      // A pre-hotfix worker has no browserAvailableAt; decode its real SQL claim timestamp.
+      await db.insert(schema.outboundIntegrationJob).values({
+        provider: "automation",
+        status: "starting",
+        input: { operation: "heldDiscoveryRound3" },
+        output: { stage: "browser" },
+        updatedAt: new Date(),
+      });
+      expect(await claimSlot()).toBe(false);
+      setSystemTime(new Date(Date.now() + 60_000));
+      expect((await Promise.all([claimSlot(), claimSlot()])).sort()).toEqual([
+        false,
+        true,
+      ]);
+      const [gate] = await db
+        .select({
+          availableAt: sql<string>`max(output->>'browserAvailableAt')`,
+        })
+        .from(schema.outboundIntegrationJob)
+        .where(eq(schema.outboundIntegrationJob.provider, "automation"));
+      expect(gate?.availableAt).toBe(
+        new Date(Date.now() + 60_000).toISOString(),
+      );
+      expect(
+        (
+          await db
+            .select()
+            .from(schema.outboundIntegrationJob)
+            .where(eq(schema.outboundIntegrationJob.id, legacy!.id))
+        )[0],
+      ).toEqual(legacy);
+    });
+    test.each(["provider-rate-limit", "provider-quota"] as const)(
+      "more than fifty expired rate limits cannot hide an active %s",
+      async (error) => {
+        if (!readResearchStatus) throw new Error("Missing readiness function");
+        const { credentials, db, schema } = active();
+        spyOn(credentials, "metadata").mockResolvedValue({
+          success: true,
+          data: {
+            configured: true,
+            configuration: {},
+            credentialStatus: "saved",
+          },
+        });
+        setSystemTime();
+        const observedAt = new Date(Date.now() - 5 * 60_000);
+        const body = JSON.stringify({
+          success: false,
+          error:
+            "Rate limit exceeded. Consumed (req/min): 3, Remaining (req/min): 0.",
+          retry_after_seconds: 13,
+        });
+        await db.insert(schema.outboundIntegrationJob).values(
+          Array.from({ length: 51 }, () => ({
+            provider: "automation" as const,
+            status: "failed" as const,
+            error: "provider-rate-limit",
+            updatedAt: observedAt,
+            input: { operation: "campaignAutomation" },
+            output: {
+              failureProvider: "firecrawl",
+              failureReceipt: {
+                response: {
+                  url: "https://api.firecrawl.dev/v2/interact",
+                  status: 429,
+                  receivedAt: observedAt.toISOString(),
+                  body,
+                  sha256: createHash("sha256").update(body).digest("hex"),
+                },
+              },
+            },
+          })),
+        );
+        await db.insert(schema.outboundIntegrationJob).values({
+          provider: "automation",
+          status: "failed",
+          error,
+          updatedAt: new Date(),
+          input: { operation: "campaignAutomation" },
+          output: { failureProvider: "scrapellm" },
+        });
+        expect(value(await readResearchStatus(settings)).blocked).toEqual([
+          "scrapellm",
+        ]);
+      },
+    );
     test("one saved query progresses through polling, evidence, contacts, verification, draft and approval", async () => {
       const { capture, providers, db, schema, draft } = active();
       expect((await advance()).results.at(-1)?.stage).toBe("pollShoppingQuery");
@@ -579,6 +826,166 @@ describe.skipIf(!endpoint)(
       expect(draft.composeSequence).toHaveBeenCalledTimes(1);
       expect((await advance()).processed).toBe(0);
     });
+    test("grouped merchant presence buys one broader query and repeated presence holds as no gap", async () => {
+      state.specificAnswer = presentCard;
+      state.broadAnswer = presentCard;
+      const { capture, providers, draft } = active();
+      const first = await reachStage("assessShopping");
+      expect(first.status).toBe("pending");
+      expect((await advance(1)).results.at(-1)?.stage).toBe("researchQuery");
+      const broader = await currentJob();
+      expect(broader.output?.["shoppingHistory"]).toMatchObject([
+        {
+          broaderBasis: "verified-product-card-presence-v1",
+          answer: first.output?.["shoppingAnswer"],
+          browser: first.output?.["shoppingBrowser"],
+        },
+      ]);
+      expect(broader.output?.["shoppingReceipt"]).toBeUndefined();
+      expect(capture.startQuery).toHaveBeenCalledTimes(1);
+      expect((await reachStage("assessShopping")).status).toBe("pending");
+      const result = await advance(1);
+      expect(result.results.at(-1)?.reason).toBe("shopping-no-gap");
+      const held = await currentJob();
+      expect(held.output?.["shoppingReceipt"]).toMatchObject({
+        selected: { kind: "no-gap" },
+        discovery: {
+          merchantPresent: true,
+          merchantPosition: null,
+          totalListed: null,
+          noGapProof: { version: "repeated-presence-v1" },
+        },
+        captureHistory: [{ auditOnly: true }],
+      });
+      expect(capture.startQuery).toHaveBeenCalledTimes(2);
+      expect(providers.searchApolloPeople).not.toHaveBeenCalled();
+      expect(draft.composeSequence).not.toHaveBeenCalled();
+      expect((await advance()).processed).toBe(0);
+      expect(capture.startQuery).toHaveBeenCalledTimes(2);
+    });
+    test("a broader absence preserves the complete first purchase through normal evidence, composition and approval", async () => {
+      state.specificAnswer = presentCard;
+      const { capture, db, schema } = active();
+      const first = await reachStage("assessShopping");
+      await advance(1);
+      await reachStage("assessShopping");
+      expect((await advance()).results.at(-1)?.stage).toBe("pollVerification");
+      expect((await advance()).results.at(-1)?.status).toBe("complete");
+      const [prospect] = await db.select().from(schema.outboundProspect);
+      expect(prospect?.status).toBe("approved");
+      const completed = await currentJob();
+      expect(completed.output?.["shoppingReceipt"]).toMatchObject({
+        selected: { kind: "discovery-absence" },
+        discovery: { merchantPresent: false },
+        captureHistory: [{ auditOnly: true }],
+      });
+      expect(completed.output?.["shoppingHistory"]).toMatchObject([
+        {
+          answer: first.output?.["shoppingAnswer"],
+          browser: first.output?.["shoppingBrowser"],
+        },
+      ]);
+      expect(capture.startQuery).toHaveBeenCalledTimes(2);
+      expect(await db.select().from(schema.outboundSendAttempt)).toHaveLength(
+        0,
+      );
+    });
+    test.each([
+      "Sample Goods has a page about linen bags. No shopping recommendations were supplied.",
+      "## Sources\n[Sample Goods](https://samplegoods.com/about) makes linen totes.",
+    ])(
+      "informational merchant presence without product cards cannot buy a broader query: %s",
+      async (answer) => {
+        state.specificAnswer = answer;
+        const { capture, providers } = active();
+        await reachStage("assessShopping");
+        expect((await advance(1)).results.at(-1)?.reason).toBe(
+          "shopping-research-held",
+        );
+        expect(
+          (await currentJob()).output?.["shoppingHistory"],
+        ).toBeUndefined();
+        expect(capture.startQuery).toHaveBeenCalledTimes(1);
+        expect(providers.searchApolloPeople).not.toHaveBeenCalled();
+      },
+    );
+    test("one-search policy keeps grouped presence held without a broader reservation", async () => {
+      const { store, capture } = active();
+      value(
+        await store.savePlaybook("fixture", {
+          ...settings,
+          searchesPerLead: 1,
+        }),
+      );
+      state.specificAnswer = presentCard;
+      await reachStage("assessShopping");
+      await advance(1);
+      expect((await currentJob()).status).toBe("failed");
+      expect((await currentJob()).output?.["shoppingQueryCount"]).toBe(1);
+      expect(capture.startQuery).toHaveBeenCalledTimes(1);
+    });
+    test.each(["raw", "product", "policy"] as const)(
+      "a changed %s stops broader planning before any second provider purchase",
+      async (change) => {
+        state.specificAnswer = presentCard;
+        const { db, schema, capture, store } = active();
+        await reachStage("assessShopping");
+        await advance(1);
+        const saved = await currentJob();
+        const output = structuredClone(saved.output!);
+        if (change === "policy")
+          value(
+            await store.savePlaybook("fixture", {
+              ...settings,
+              discoveryFreshnessDays: 6,
+            }),
+          );
+        else {
+          if (change === "raw") {
+            const history = output["shoppingHistory"] as {
+              answer: { raw: { body: string }[] };
+            }[];
+            history[0]!.answer.raw[0]!.body += "changed";
+          } else {
+            const qualification = output["qualification"] as {
+              details: { product: string };
+            };
+            qualification.details.product = "Different product";
+          }
+          await db
+            .update(schema.outboundIntegrationJob)
+            .set({ output })
+            .where(eq(schema.outboundIntegrationJob.id, saved.id));
+        }
+        await advance(1);
+        expect((await currentJob()).status).toBe("failed");
+        expect(capture.startQuery).toHaveBeenCalledTimes(1);
+        expect(capture.generateShopperQuery).toHaveBeenCalledTimes(1);
+      },
+    );
+    test.each(["quota", "unavailable"] as const)(
+      "a broader %s response retains the first purchase and never reserves a third",
+      async (code) => {
+        state.specificAnswer = presentCard;
+        const { capture } = active();
+        await reachStage("assessShopping");
+        await advance(1);
+        const preserved = (await currentJob()).output?.["shoppingHistory"];
+        await advance(1);
+        state.startError = new IntegrationError(
+          "scrapellm",
+          code,
+          "Synthetic bounded provider failure.",
+        );
+        await advance(1);
+        const held = await currentJob();
+        expect(held.status).toBe(code === "quota" ? "failed" : "uncertain");
+        expect(held.output?.["shoppingHistory"]).toEqual(preserved);
+        expect(held.output?.["shoppingQueryCount"]).toBe(2);
+        expect((await advance()).processed).toBe(0);
+        expect(capture.startQuery).toHaveBeenCalledTimes(2);
+      },
+    );
     test("an unsubmitted legacy query cannot spend without a current semantic review", async () => {
       const { capture, db, schema } = active();
       expect((await advance(4)).results.at(-1)?.stage).toBe(
