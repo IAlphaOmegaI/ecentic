@@ -40,6 +40,33 @@ const response = await Quality.judgeSequenceCopy(context, {
     const prompt = JSON.parse(request.prompt);
     expect(prompt.sender.name).toBe("Juri");
     expect(prompt.fixed.founderLine).toContain("I'm Juri.");
+    expect(prompt.serverWordCounts.deterministicLengthChecksPassed).toBe(true);
+    expect(prompt.serverWordCounts.messages).toEqual([
+      {
+        step: 1,
+        bodyWords: 64,
+        bodyWordLimit: 99,
+        longestSentenceWords: 13,
+        sentenceWordLimit: 25,
+      },
+      {
+        step: 2,
+        bodyWords: 22,
+        bodyWordLimit: null,
+        longestSentenceWords: 8,
+        sentenceWordLimit: 25,
+      },
+      {
+        step: 3,
+        bodyWords: 34,
+        bodyWordLimit: null,
+        longestSentenceWords: 12,
+        sentenceWordLimit: 25,
+      },
+    ]);
+    expect(
+      prompt.messages.map((message: { body: string }) => message.body),
+    ).toEqual(context.messages.map((message) => message.body));
     expect(request.instructions).toContain("untrusted data");
     expect(request.instructions).toContain("actual sender");
     expect(request.deadline - Date.now()).toBeLessThanOrEqual(30000);
@@ -64,6 +91,25 @@ expect(failed.data.passed).toBe(false);
 expect(copyVerdictProblem(failed.data)).toBe(
   "naturalVoice: The transition sounds scripted.",
 );
+
+// Authoritative input improves future judgments but never overrides a returned fail.
+let mistakenJudgeCalls = 0;
+const mistakenLength = await Quality.judgeSequenceCopy(context, {
+  generate: async () => {
+    mistakenJudgeCalls += 1;
+    return {
+      ...pass(),
+      naturalVoice: { passed: false, reason: "First email exceeds 99 words." },
+    };
+  },
+});
+expect(mistakenLength.success).toBe(true);
+if (!mistakenLength.success) throw mistakenLength.error;
+expect(mistakenLength.data.passed).toBe(false);
+expect(copyVerdictProblem(mistakenLength.data)).toBe(
+  "naturalVoice: First email exceeds 99 words.",
+);
+expect(mistakenJudgeCalls).toBe(1);
 
 for (const supplied of [
   {},
@@ -112,4 +158,23 @@ expect(rejected.data.passed).toBe(false);
 expect(hasCompleteCopyVerdict(rejected.data)).toBe(true);
 expect(rejected.data.deterministicIssues.length).toBeGreaterThan(0);
 expect(forbiddenCalls).toHaveLength(0);
+
+const oversized = structuredClone(context);
+const oversizedFirst = oversized.messages[0];
+if (!oversizedFirst) throw new Error("First message missing.");
+oversizedFirst.body += ` ${"word ".repeat(36).trim()}`;
+let oversizedJudgeCalls = 0;
+const lengthRejected = await Quality.judgeSequenceCopy(oversized, {
+  generate: async () => {
+    oversizedJudgeCalls += 1;
+    return pass();
+  },
+});
+expect(lengthRejected.success).toBe(true);
+if (!lengthRejected.success) throw lengthRejected.error;
+expect(lengthRejected.data.passed).toBe(false);
+expect(lengthRejected.data.deterministicIssues).toContain(
+  "The whole first email exceeds its word limit.",
+);
+expect(oversizedJudgeCalls).toBe(0);
 console.log("Copy judge offline contracts passed.");
