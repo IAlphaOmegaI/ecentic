@@ -66,3 +66,27 @@ export const sessionCreationRateLimit = (
     ).toISOString(),
   });
 };
+
+/** Readiness may shorten only a fully saved, hash-checked rejected session creation. */
+export const confirmedBrowserCooldown = (
+  receipt: unknown,
+  now = Date.now(),
+) => {
+  const parsed = z
+    .object({
+      response: rawCaptureSchema,
+      retryAfterSeconds: z.number().nullable().optional(),
+    })
+    .safeParse(receipt);
+  if (!parsed.success) return null;
+  const receivedAt = Date.parse(parsed.data.response.receivedAt);
+  if (!Number.isFinite(receivedAt) || receivedAt > now) return null;
+  return (
+    sessionCreationRateLimit(
+      parsed.data,
+      parsed.data.retryAfterSeconds ?? null,
+      0,
+      receivedAt,
+    )?.retryAt ?? null
+  );
+};

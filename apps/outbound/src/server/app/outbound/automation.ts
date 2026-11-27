@@ -29,6 +29,7 @@ import { productCategoryCorrection } from "@/server/utils/outbound/product-categ
 import { repository, resultifyRead } from "@/server/utils/repository";
 import * as AutomaticClay from "./automatic-clay";
 import * as Steps from "./automation-steps";
+import { claimBrowserProviderSlot } from "./browser-provider-pacing";
 import * as ResearchReadiness from "./research-readiness";
 import { claimShoppingProviderSlot } from "./shopping-provider-pacing";
 import * as Store from "./store";
@@ -321,6 +322,11 @@ const claim = (campaignId?: string, jobId?: string, researchReady = true) =>
       if (
         ["startShoppingQuery", "pollShoppingQuery"].includes(state.stage) &&
         !(await claimShoppingProviderSlot(transaction))
+      )
+        continue;
+      if (
+        ["browseProduct", "browseShopping"].includes(state.stage) &&
+        !(await claimBrowserProviderSlot(transaction))
       )
         continue;
       const clayPreparation =

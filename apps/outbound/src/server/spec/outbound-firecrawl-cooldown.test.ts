@@ -1,6 +1,9 @@
 import { expect, test } from "bun:test";
 import { createHash } from "node:crypto";
-import { sessionCreationRateLimit } from "@/server/utils/outbound/firecrawl-cooldown";
+import {
+  confirmedBrowserCooldown,
+  sessionCreationRateLimit,
+} from "@/server/utils/outbound/firecrawl-cooldown";
 
 const now = Date.parse("2026-11-25T12:00:00.000Z");
 const receipt = (
@@ -59,4 +62,44 @@ test("accepted, execute, uncertain, quota and tampered responses cannot authoriz
     null,
   ])
     expect(sessionCreationRateLimit(input, null, 0, now)).toBeNull();
+});
+
+test("readiness keeps the original retry instant instead of restarting its cooldown on every read", () => {
+  const saved = receipt({ ...rejection, retry_after_seconds: 13 });
+  const original = structuredClone(saved);
+  expect(confirmedBrowserCooldown(saved, now + 70_000)).toBe(
+    new Date(now + 60_000).toISOString(),
+  );
+  expect(confirmedBrowserCooldown(saved, now + 80_000)).toBe(
+    new Date(now + 60_000).toISOString(),
+  );
+  expect(
+    confirmedBrowserCooldown(
+      { ...saved, retryAfterSeconds: 3600 },
+      now + 20 * 60_000,
+    ),
+  ).toBe(new Date(now + 3600_000).toISOString());
+  expect(saved).toEqual(original);
+  expect(
+    confirmedBrowserCooldown({ ...saved, retryAfterSeconds: -1 }, now),
+  ).toBeNull();
+  expect(
+    confirmedBrowserCooldown({ ...saved, retryAfterSeconds: 3601 }, now),
+  ).toBeNull();
+  expect(confirmedBrowserCooldown(saved, now - 1)).toBeNull();
+  expect(
+    confirmedBrowserCooldown(
+      { response: { ...saved.response, sha256: "0".repeat(64) } },
+      now,
+    ),
+  ).toBeNull();
+  expect(
+    confirmedBrowserCooldown(
+      receipt(
+        rejection,
+        "https://api.firecrawl.dev/v2/interact/session/execute",
+      ),
+      now,
+    ),
+  ).toBeNull();
 });
