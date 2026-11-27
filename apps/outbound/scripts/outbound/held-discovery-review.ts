@@ -20,6 +20,7 @@ const { values } = parseArgs({
     "repair-unspent": { type: "string" },
     "hold-unspent": { type: "string" },
     "reconcile-poll": { type: "string" },
+    "reconcile-card-assessment": { type: "string" },
     reason: { type: "string" },
     "expected-query-hash": { type: "string" },
     "expected-shopping-job-id": { type: "string" },
@@ -32,6 +33,7 @@ if (
     values["repair-unspent"],
     values["hold-unspent"],
     values["reconcile-poll"],
+    values["reconcile-card-assessment"],
   ].filter(Boolean).length > 1
 )
   throw new Error("Choose only one explicit operator action.");
@@ -43,13 +45,13 @@ if (
 if (Boolean(values["hold-unspent"]) !== Boolean(values.reason))
   throw new Error("Use --hold-unspent and --reason together.");
 if (
-  Boolean(values["reconcile-poll"]) !==
+  Boolean(values["reconcile-poll"] || values["reconcile-card-assessment"]) !==
     Boolean(values["expected-shopping-job-id"]) ||
-  Boolean(values["reconcile-poll"]) !==
+  Boolean(values["reconcile-poll"] || values["reconcile-card-assessment"]) !==
     Boolean(values["expected-response-sha256"])
 )
   throw new Error(
-    "Use --reconcile-poll with --expected-shopping-job-id and --expected-response-sha256.",
+    "A saved-capture reconciliation requires --expected-shopping-job-id and --expected-response-sha256.",
   );
 const corpusPath =
   values.corpus ??
@@ -147,6 +149,34 @@ if (values["reconcile-poll"]) {
   console.log(
     JSON.stringify({
       mode: values.execute ? "poll-reconciled" : "poll-reconciliation-dry-run",
+      ...restored.data,
+    }),
+  );
+  process.exit(0);
+}
+if (values["reconcile-card-assessment"]) {
+  const restored = await Review.reconcileCardAssessment(values.actor, {
+    manifest,
+    jobId: z.string().uuid().parse(values["reconcile-card-assessment"]),
+    expectedShoppingJobId: z
+      .string()
+      .uuid()
+      .parse(values["expected-shopping-job-id"]),
+    expectedResponseSha256: z
+      .string()
+      .regex(/^[a-f0-9]{64}$/)
+      .parse(values["expected-response-sha256"]),
+    execute: values.execute,
+  });
+  if (!restored.success)
+    throw new Error(
+      `Saved card-assessment reconciliation failed: ${restored.error.message}`,
+    );
+  console.log(
+    JSON.stringify({
+      mode: values.execute
+        ? "card-assessment-reconciled"
+        : "card-assessment-dry-run",
       ...restored.data,
     }),
   );

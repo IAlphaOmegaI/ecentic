@@ -110,6 +110,27 @@ export const heldPollRecoverySchema = z
     recoveredAt: z.string().datetime(),
   })
   .strict();
+export const HELD_CARD_ASSESSMENT_ERRORS = [
+  "The selected finding needs more than twelve exact excerpts.",
+  "Grouped product cards establish no global rank, count, price comparison or correctness; only complete merchant absence is supported.",
+] as const;
+export const heldCardAssessmentRecoverySchema = z
+  .object({
+    shoppingJobId: z.string().uuid(),
+    responseSha256: digest,
+    queryHash: digest,
+    originalHeldReason: z.enum(HELD_CARD_ASSESSMENT_ERRORS),
+    originalError: z.enum(HELD_CARD_ASSESSMENT_ERRORS).nullable(),
+    originalReceiptHash: z.null(),
+    receiptHash: digest,
+    rawCaptures: z
+      .array(z.object({ url: z.string().url(), sha256: digest }).strict())
+      .min(3)
+      .max(12),
+    requestedBy: z.string().trim().min(1).max(200),
+    recoveredAt: z.string().datetime(),
+  })
+  .strict();
 const previewMessageSchema = z
   .object({
     step: z.union([z.literal(1), z.literal(2), z.literal(3)]),
@@ -197,6 +218,7 @@ export const heldReviewStateSchema = z
     queryRepair: heldQueryRepairSchema.optional(),
     queryQualityHold: heldQueryQualityHoldSchema.optional(),
     pollRecoveries: z.array(heldPollRecoverySchema).max(2).optional(),
+    cardAssessmentRecovery: heldCardAssessmentRecoverySchema.optional(),
     shoppingJob: aiJobSchema.optional(),
     answer: aiCaptureSchema.optional(),
     browser: browserResearchSchema.optional(),

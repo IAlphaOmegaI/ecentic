@@ -32,11 +32,13 @@ import { ConflictError, ValidationError } from "@/server/utils/error";
 import * as Draft from "@/server/utils/outbound/draft";
 import { browserClaimInterval } from "@/server/utils/outbound/firecrawl-cooldown";
 import {
+  HELD_CARD_ASSESSMENT_ERRORS,
   HELD_REVIEW_MANIFEST_HASH,
   HELD_REVIEW_REASON,
   type HeldReviewInput,
   type HeldReviewManifest,
   type HeldReviewState,
+  heldCardAssessmentRecoverySchema,
   heldManifestHash,
   heldPollRecoverySchema,
   heldPreparedQueryHash,
@@ -54,8 +56,12 @@ import {
 } from "@/server/utils/outbound/held-review-contract";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import * as Capture from "@/server/utils/outbound/live-shopping";
-import { shoppingPollLimit } from "@/server/utils/outbound/scrapellm-cooldown";
+import {
+  shoppingPollLimit,
+  shoppingPollUrl,
+} from "@/server/utils/outbound/scrapellm-cooldown";
 import * as Assessment from "@/server/utils/outbound/shopping-assessment";
+import { assessUnrankedCardAbsence } from "@/server/utils/outbound/shopping-fact-assessment";
 import {
   compositionProspectHash,
   writingPolicyHash,
@@ -720,6 +726,157 @@ export const reconcileFailedPoll = (
       responseSha256: receipt.response.sha256,
       reconciled: input.execute === true,
       stage: input.execute === true ? ("browser" as const) : ("poll" as const),
+    };
+  });
+/** Rebuilds only two known card-assessment holds from saved evidence, without AI. */
+export const reconcileCardAssessment = (
+  actor: string,
+  input: {
+    manifest: HeldReviewManifest;
+    jobId: string;
+    expectedShoppingJobId: string;
+    expectedResponseSha256: string;
+    execute?: boolean;
+  },
+) =>
+  transaction(async (scope) => {
+    const manifest = validateManifest(input.manifest);
+    const job = await jobAt(scope, z.string().uuid().parse(input.jobId));
+    const details = heldReviewInputSchema.parse(job.input);
+    const state = heldReviewStateSchema.parse(job.output);
+    const shoppingJob = Capture.aiJobSchema.parse(state.shoppingJob);
+    const answer = Capture.aiCaptureSchema.parse(state.answer);
+    const browser = Capture.browserResearchSchema.parse(state.browser);
+    const queryHash = heldPreparedQueryHash(state.query);
+    if (
+      job.provider !== "automation" ||
+      job.prospectId !== details.prospectId ||
+      !manifest.prospectIds.includes(details.prospectId) ||
+      job.status !== "complete" ||
+      state.stage !== "complete" ||
+      !HELD_CARD_ASSESSMENT_ERRORS.some(
+        (reason) => reason === state.heldReason,
+      ) ||
+      state.lease !== null ||
+      !state.queryReservedAt ||
+      state.shoppingQueryCount !==
+        (state.shoppingQueryIntent === "unbranded-broad" ? 2 : 1) ||
+      (state.shoppingHistory?.length ?? 0) !== state.shoppingQueryCount - 1 ||
+      queryHash !== heldPreparedQueryHash(shoppingJob.query) ||
+      shoppingJob.query.intent !== state.shoppingQueryIntent ||
+      shoppingJob.id !== z.string().uuid().parse(input.expectedShoppingJobId) ||
+      !isDeepStrictEqual(shoppingJob, answer.job) ||
+      (job.error !== null && job.error !== state.heldReason) ||
+      browser.status !== "captured" ||
+      state.queryQualityHold ||
+      state.failureReceipt ||
+      state.shoppingReceipt ||
+      state.composition ||
+      state.researchId ||
+      state.previewContext ||
+      state.draftBeforeJudge ||
+      state.preview ||
+      state.cardAssessmentRecovery
+    )
+      throw new ConflictError(
+        "Only a completed card-assessment hold with its unchanged paid capture and no receipt or preview can be reconciled once.",
+      );
+    const response = answer.raw.find(
+      (raw) => raw.url === shoppingPollUrl(shoppingJob),
+    );
+    if (
+      !response ||
+      response.sha256 !==
+        z
+          .string()
+          .regex(/^[a-f0-9]{64}$/)
+          .parse(input.expectedResponseSha256)
+    )
+      throw new ConflictError(
+        "The saved paid response changed before card-assessment reconciliation.",
+      );
+    const ready = await eligible(scope, details, state);
+    if (ready.batch.budget.queriesReserved < state.shoppingQueryCount)
+      throw new ConflictError("The existing paid reservation is missing.");
+    const queryIssue = queryProblem(details, state, ready.policy.settings);
+    if (queryIssue) throw new ValidationError(queryIssue);
+    const restored = value(
+      Capture.restoreCompletedQueryResponse(
+        shoppingJob,
+        response,
+        answer.raw.find((raw) => raw.url !== response.url),
+        Date.now(),
+      ),
+    );
+    if (!isDeepStrictEqual(restored, answer))
+      throw new ValidationError(
+        "The saved answer differs from its complete original provider response.",
+      );
+    const assessed = assessUnrankedCardAbsence({ answer, browser }, Date.now());
+    if (assessed.status !== "researched")
+      throw new ValidationError(assessed.reason);
+    const receipt = assessed.receipt;
+    if (
+      receipt.selected.kind !== "discovery-absence" ||
+      receipt.discovery?.order !== "unranked" ||
+      receipt.discovery.merchantPresent !== false ||
+      receipt.discovery.merchantPosition !== null ||
+      receipt.discovery.totalListed !== null ||
+      !receipt.discovery.listed.length ||
+      receipt.discovery.listed.length > 3
+    )
+      throw new ValidationError(
+        "This saved capture does not establish a bounded unranked absence finding.",
+      );
+    const proofIssue = Assessment.validateAutomaticResearch(
+      { answer, browser },
+      receipt,
+      ready.policy.settings.verificationDays,
+      ready.policy.settings,
+    );
+    if (proofIssue) throw new ValidationError(proofIssue);
+    const recovery = heldCardAssessmentRecoverySchema.parse({
+      shoppingJobId: shoppingJob.id,
+      responseSha256: response.sha256,
+      queryHash,
+      originalHeldReason: state.heldReason,
+      originalError: job.error,
+      originalReceiptHash: null,
+      receiptHash: researchHash(receipt),
+      rawCaptures: [...answer.raw, ...browser.raw].map(({ url, sha256 }) => ({
+        url,
+        sha256,
+      })),
+      requestedBy: actor,
+      recoveredAt: new Date().toISOString(),
+    });
+    if (input.execute === true) {
+      const { heldReason: _heldReason, ...retained } = state;
+      await scope
+        .update(schema.outboundIntegrationJob)
+        .set({
+          status: "pending",
+          error: null,
+          output: heldReviewStateSchema.parse({
+            ...retained,
+            stage: "draft",
+            shoppingReceipt: receipt,
+            cardAssessmentRecovery: recovery,
+          }),
+          updatedAt: new Date(),
+        })
+        .where(eq(schema.outboundIntegrationJob.id, job.id));
+    }
+    return {
+      jobId: job.id,
+      batchId: details.batchId,
+      shoppingJobId: shoppingJob.id,
+      responseSha256: response.sha256,
+      reconciled: input.execute === true,
+      stage:
+        input.execute === true ? ("draft" as const) : ("complete" as const),
+      receiptHash: recovery.receiptHash,
+      alternatives: receipt.discovery.listed.length,
     };
   });
 const checkpoint = (

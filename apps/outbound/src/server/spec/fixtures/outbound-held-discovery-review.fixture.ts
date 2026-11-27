@@ -1774,6 +1774,353 @@ assert.equal(
   beforeStaleIdentityBudget,
 );
 
+// Two known model-assessment failures can be rebuilt from existing product cards
+// without another assessment, browser request, writer, poll or query purchase.
+const syntheticRecoveryCard = (index: number) => {
+  const identity = index === 2 ? 1 : index;
+  const title = `Synthetic mesh top ${identity}`;
+  return `<div html-index="${index}" style="display:flex;align-items:center;gap:12px;padding:10px">
+<img src="data:image/jpeg;base64,AAAA==" alt="${title}" width="120" height="auto" style="object-fit:cover;border-radius:0.5rem" />
+<div style="flex:1"><div style="font-weight:bold"><a href="https://other.test/item-${index}">${title}</a></div>
+<div style="margin-top:4px;font-size:18px">$20<span style="text-decoration:line-through">$25</span></div>
+<div>Other Seller ${identity}</div><div> </div></div><div style="display:none">${index.toString(16).padStart(32, "0")}</div></div>`;
+};
+const beforeCardRecoveryCalls = { ...calls };
+const [beforeCardRecoveryBudget] = await db
+  .select()
+  .from(schema.outboundIntegrationJob)
+  .where(eq(schema.outboundIntegrationJob.id, batch.batchId));
+for (const [
+  index,
+  holdReason,
+] of Contract.HELD_CARD_ASSESSMENT_ERRORS.entries()) {
+  const target = ids[index === 0 ? 18 : 20];
+  assert.ok(target);
+  const existing = await jobFor(target);
+  const input = Contract.heldReviewInputSchema.parse(existing.input);
+  const browser = heldBrowser(
+    input.product,
+    `${input.product.name}. This top is made from sheer stretch mesh fabric.`,
+  );
+  const excerpt = shopperQueryExcerpts({
+    product: input.product,
+    category: input.category,
+    merchant: input.merchant,
+    browser,
+  })?.[0];
+  assert.ok(excerpt);
+  const query = Capture.preparedQuerySchema.parse({
+    product: input.product,
+    category: input.category,
+    country: input.country,
+    surface: "google_ai_mode",
+    intent: "unbranded-specific",
+    merchant: { ...input.merchant, aliases: [] },
+    prompt: "stretch mesh top",
+    basis: {
+      category: "top",
+      attribute: "stretch mesh",
+      excerpts: [excerpt],
+      promptHash: "b".repeat(64),
+    },
+  });
+  const shoppingJob = Capture.aiJobSchema.parse({
+    id: randomUUID(),
+    query,
+    submittedAt: new Date().toISOString(),
+  });
+  const responseBody = (extra = "") =>
+    JSON.stringify({
+      job_id: shoppingJob.id,
+      status: "done",
+      scraper: query.surface,
+      prompt: query.prompt,
+      country: query.country,
+      completed_at: new Date().toISOString(),
+      result: {
+        status: "done",
+        scraper: query.surface,
+        cached: false,
+        result_markdown:
+          Array.from({ length: 13 }, (_, card) =>
+            syntheticRecoveryCard(card + 1),
+          ).join("\n") + extra,
+        citations: [],
+      },
+    });
+  const raw = Capture.rawCaptureSchema.parse({
+    url: `https://api.scrapellm.com/jobs/${shoppingJob.id}`,
+    status: 200,
+    body: responseBody(),
+    sha256: "0".repeat(64),
+    receivedAt: new Date().toISOString(),
+  });
+  raw.sha256 = createHash("sha256").update(raw.body).digest("hex");
+  const answer = value(
+    Capture.restoreCompletedQueryResponse(
+      shoppingJob,
+      raw,
+      undefined,
+      Date.now(),
+    ),
+  );
+  const state = Contract.heldReviewStateSchema.parse({
+    stage: "complete",
+    prospectRevision: 1,
+    availableAt: new Date().toISOString(),
+    lease: null,
+    shoppingQueryIntent: "unbranded-specific",
+    shoppingQueryCount: 1,
+    queryReservedAt: shoppingJob.submittedAt,
+    polls: 1,
+    productCapture: browser,
+    query,
+    queryGeneration: { attempts: 1 },
+    shoppingJob,
+    answer,
+    browser,
+    shoppingHistory: [],
+    heldReason: holdReason,
+  });
+  const originalError = index === 1 ? holdReason : null;
+  const save = (output = state) =>
+    db
+      .update(schema.outboundIntegrationJob)
+      .set({ status: "complete", error: originalError, output })
+      .where(eq(schema.outboundIntegrationJob.id, existing.id));
+  await save();
+  const operatorInput = {
+    manifest,
+    jobId: existing.id,
+    expectedShoppingJobId: shoppingJob.id,
+    expectedResponseSha256: raw.sha256,
+  };
+  const before = await jobFor(target);
+  const dry = value(await Review.reconcileCardAssessment(actor, operatorInput));
+  assert.equal(dry.reconciled, false);
+  assert.equal(dry.alternatives, 3);
+  assert.deepEqual(await jobFor(target), before);
+  for (const change of [
+    { expectedShoppingJobId: randomUUID() },
+    { expectedResponseSha256: "0".repeat(64) },
+    {
+      manifest: {
+        ...manifest,
+        prospectIds: [...ids.slice(0, 20), randomUUID()],
+      },
+    },
+  ])
+    assert.equal(
+      (
+        await Review.reconcileCardAssessment(actor, {
+          ...operatorInput,
+          ...change,
+          execute: true,
+        })
+      ).success,
+      false,
+    );
+  for (const status of [
+    "pending",
+    "failed",
+    "uncertain",
+    "starting",
+  ] as const) {
+    await db
+      .update(schema.outboundIntegrationJob)
+      .set({ status })
+      .where(eq(schema.outboundIntegrationJob.id, existing.id));
+    assert.equal(
+      (
+        await Review.reconcileCardAssessment(actor, {
+          ...operatorInput,
+          execute: true,
+        })
+      ).success,
+      false,
+    );
+  }
+  for (const changed of [
+    { ...state, stage: "draft" as const },
+    { ...state, heldReason: Contract.HELD_REVIEW_REASON },
+    { ...state, heldReason: "Synthetic unrelated hold." },
+    { ...state, prospectRevision: 2 },
+    { ...state, shoppingQueryCount: 0 },
+    { ...state, shoppingReceipt: staleIdentityReceipt },
+    {
+      ...state,
+      lease: {
+        token: randomUUID(),
+        expiresAt: new Date(Date.now() + 60_000).toISOString(),
+      },
+    },
+    {
+      ...state,
+      answer: { ...answer, answer: answer.answer + " changed projection" },
+    },
+    {
+      ...state,
+      answer: { ...answer, raw: [{ ...raw, body: raw.body + " " }] },
+    },
+    {
+      ...state,
+      browser: {
+        ...browser,
+        raw: browser.raw.map((capture, offset) =>
+          offset === 0 ? { ...capture, body: capture.body + " " } : capture,
+        ),
+      },
+    },
+  ]) {
+    await save(Contract.heldReviewStateSchema.parse(changed));
+    assert.equal(
+      (
+        await Review.reconcileCardAssessment(actor, {
+          ...operatorInput,
+          execute: true,
+        })
+      ).success,
+      false,
+    );
+  }
+  // A genuine present-merchant answer cannot be converted to absence even with
+  // one of the two recognized historical hold labels.
+  const presentBody = responseBody(`\n${input.merchant.name} is also present.`);
+  const presentRaw = {
+    ...raw,
+    body: presentBody,
+    sha256: createHash("sha256").update(presentBody).digest("hex"),
+  };
+  const presentAnswer = value(
+    Capture.restoreCompletedQueryResponse(
+      shoppingJob,
+      presentRaw,
+      undefined,
+      Date.now(),
+    ),
+  );
+  await save(
+    Contract.heldReviewStateSchema.parse({ ...state, answer: presentAnswer }),
+  );
+  assert.equal(
+    (
+      await Review.reconcileCardAssessment(actor, {
+        ...operatorInput,
+        expectedResponseSha256: presentRaw.sha256,
+        execute: true,
+      })
+    ).success,
+    false,
+  );
+  await save();
+  assert.equal(
+    value(
+      await Review.reconcileCardAssessment(actor, {
+        ...operatorInput,
+        execute: true,
+      }),
+    ).reconciled,
+    true,
+  );
+  const saved = await jobFor(target);
+  const recovered = Contract.heldReviewStateSchema.parse(saved.output);
+  assert.equal(saved.status, "pending");
+  assert.equal(saved.error, null);
+  assert.equal(recovered.stage, "draft");
+  assert.equal(recovered.heldReason, undefined);
+  assert.equal(recovered.previewContext, undefined);
+  assert.equal(recovered.preview, undefined);
+  assert.ok(recovered.shoppingReceipt);
+  assert.equal(recovered.shoppingReceipt.selected.kind, "discovery-absence");
+  assert.equal(recovered.shoppingReceipt.discovery?.order, "unranked");
+  assert.equal(recovered.shoppingReceipt.discovery?.listed.length, 3);
+  assert.equal(
+    new Set(
+      recovered.shoppingReceipt.discovery?.listed.map(
+        (item) => `${item.name}\n${item.seller}`,
+      ),
+    ).size,
+    3,
+  );
+  assert.equal(
+    recovered.shoppingReceipt.claims?.some((claim) =>
+      ["price", "position", "count"].includes(claim.kind),
+    ),
+    false,
+  );
+  assert.ok((recovered.shoppingReceipt.claimExcerpts?.length ?? 99) <= 12);
+  assert.equal(
+    Assessment.validateAutomaticResearch(
+      { answer, browser },
+      recovered.shoppingReceipt,
+      settings.verificationDays,
+      settings,
+    ),
+    null,
+  );
+  assert.deepEqual(recovered.cardAssessmentRecovery, {
+    shoppingJobId: shoppingJob.id,
+    responseSha256: raw.sha256,
+    queryHash: Contract.heldPreparedQueryHash(query),
+    originalHeldReason: holdReason,
+    originalError,
+    originalReceiptHash: null,
+    receiptHash: dry.receiptHash,
+    rawCaptures: [...answer.raw, ...browser.raw].map(({ url, sha256 }) => ({
+      url,
+      sha256,
+    })),
+    requestedBy: actor,
+    recoveredAt: new Date().toISOString(),
+  });
+  const {
+    stage: _cardStage,
+    shoppingReceipt: _cardReceipt,
+    cardAssessmentRecovery: _cardAudit,
+    ...retained
+  } = recovered;
+  const { stage: _oldCardStage, heldReason: _oldCardHold, ...original } = state;
+  assert.deepEqual(retained, original);
+  assert.equal(
+    (
+      await Review.reconcileCardAssessment(actor, {
+        ...operatorInput,
+        execute: true,
+      })
+    ).success,
+    false,
+  );
+  await save(
+    Contract.heldReviewStateSchema.parse({
+      ...state,
+      cardAssessmentRecovery: recovered.cardAssessmentRecovery,
+    }),
+  );
+  assert.equal(
+    (
+      await Review.reconcileCardAssessment(actor, {
+        ...operatorInput,
+        execute: true,
+      })
+    ).success,
+    false,
+  );
+  await db
+    .update(schema.outboundIntegrationJob)
+    .set({ status: saved.status, error: saved.error, output: recovered })
+    .where(eq(schema.outboundIntegrationJob.id, saved.id));
+}
+assert.deepEqual(calls, beforeCardRecoveryCalls);
+assert.deepEqual(
+  (
+    await db
+      .select()
+      .from(schema.outboundIntegrationJob)
+      .where(eq(schema.outboundIntegrationJob.id, batch.batchId))
+  )[0],
+  beforeCardRecoveryBudget,
+);
+
 // Independent operations share one durable slot, including concurrent claims.
 const pacing = () =>
   db.transaction(async (scope) => {

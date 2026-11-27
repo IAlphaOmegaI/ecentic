@@ -19,6 +19,7 @@ const {
   validateFactResearch,
   orderedAnswerEntries,
   createFactAssessmentCatalog,
+  assessUnrankedCardAbsence,
 } = await import("@/server/utils/outbound/shopping-fact-assessment");
 const value = <T>(
   result: { success: true; data: T } | { success: false; error: Error },
@@ -301,14 +302,7 @@ describe("fact-only shopping assessment", () => {
       validateAutomaticResearch(input.evidence, result.receipt, 7),
     ).toBeNull();
     expect(input.evidence.answer).toEqual(original);
-    const generate = mock(async ({ prompt }: { prompt: string }) => {
-      const prepared = JSON.parse(prompt);
-      expect(
-        prepared.quoteCatalog.filter((quote: { card?: unknown }) => quote.card)
-          .length,
-      ).toBe(2);
-      return input.selection;
-    });
+    const generate = mock(async () => input.selection);
     const assessed = value(
       await assess(
         {
@@ -320,7 +314,184 @@ describe("fact-only shopping assessment", () => {
       ),
     );
     expect(assessed.status).toBe("researched");
-    expect(generate).toHaveBeenCalledTimes(1);
+    expect(assessed.attempts).toBe(0);
+    expect(generate).not.toHaveBeenCalled();
+    if (assessed.status !== "researched") throw new Error(assessed.reason);
+    expect(assessed.receipt).toEqual(result.receipt);
+  });
+
+  test("selects three distinct alternatives from thirty cards without model calls or losing full raw proof", async () => {
+    const answerText = `## Saved alternatives\n${Array.from(
+      { length: 30 },
+      (_, index) =>
+        cardHtml(
+          index + 1,
+          `Linen Tote ${index === 1 ? 0 : index}`,
+          "Harbor &amp; Co",
+        ),
+    ).join("\n")}`;
+    const input = await fixture(answerText);
+    const original = structuredClone(input.evidence);
+    const catalog = createFactAssessmentCatalog(input.evidence, input.now);
+    const cardQuotes = catalog.quotes.filter((quote) => quote.card);
+    expect(cardQuotes).toHaveLength(30);
+    const oversized = {
+      ...input.selection,
+      listed: cardQuotes.slice(0, 12).map((quote) => ({
+        name: defined(quote.card).title,
+        kind: "product" as const,
+        quoteId: quote.id,
+        price: null,
+      })),
+    };
+    expect(
+      projectFactAssessment(input.evidence, oversized, input.now),
+    ).toMatchObject({
+      status: "held",
+      reason: "The selected finding needs more than twelve exact excerpts.",
+    });
+    const generate = mock(async () => oversized);
+    const result = value(
+      await assess(
+        {
+          ...input.evidence,
+          playbook: defaultPlaybook,
+          deadline: input.now + 45_000,
+        },
+        { now: () => input.now, generate },
+      ),
+    );
+    expect(generate).not.toHaveBeenCalled();
+    expect(result).toMatchObject({ status: "researched", attempts: 0 });
+    if (result.status !== "researched") throw new Error(result.reason);
+    expect(result.receipt.discovery).toMatchObject({
+      order: "unranked",
+      merchantPresent: false,
+      merchantPosition: null,
+      totalListed: null,
+      description: null,
+      correctness: "uncertain",
+      correctnessExcerptIds: [],
+    });
+    expect(
+      result.receipt.discovery?.listed.map((entry) => ({
+        name: entry.name,
+        seller: entry.seller,
+        position: entry.position,
+        price: entry.price,
+      })),
+    ).toEqual([
+      {
+        name: "Linen Tote 0",
+        seller: "Harbor & Co",
+        position: null,
+        price: null,
+      },
+      {
+        name: "Linen Tote 2",
+        seller: "Harbor & Co",
+        position: null,
+        price: null,
+      },
+      {
+        name: "Linen Tote 3",
+        seller: "Harbor & Co",
+        position: null,
+        price: null,
+      },
+    ]);
+    expect(result.receipt.claimExcerpts).toHaveLength(5);
+    expect(
+      result.receipt.claims?.some((claim) =>
+        [
+          "position",
+          "count",
+          "price",
+          "product-attribute",
+          "description",
+        ].includes(claim.kind),
+      ),
+    ).toBe(false);
+    expect(result.receipt.priceComparison).toBeUndefined();
+    expect(result.receipt.discovery?.correctnessProof).toBeUndefined();
+    expect(
+      validateFactResearch(input.evidence, result.receipt, input.now),
+    ).toBeNull();
+    expect(
+      validateAutomaticResearch(input.evidence, result.receipt, 7),
+    ).toBeNull();
+    expect(assessUnrankedCardAbsence(input.evidence, input.now)).toEqual(
+      result,
+    );
+    expect(
+      Capture.replayShoppingCapture(input.evidence.answer, input.now)
+        .answerText,
+    ).toBe(answerText);
+    expect(input.evidence).toEqual(original);
+  });
+
+  test("checks the whole large card answer before selecting a subset", async () => {
+    const answerText = `Saved context: ${"The complete answer retains this contextual detail. ".repeat(400)}\n## Saved alternatives\n${Array.from(
+      { length: 30 },
+      (_, index) =>
+        cardHtml(
+          index + 1,
+          index === 29 ? "Aster Goods Linen Tote" : `Linen Tote ${index}`,
+          "Harbor &amp; Co",
+        ),
+    ).join("\n")}`;
+    const input = await fixture(answerText);
+    expect(input.evidence.answer.source.content).not.toContain("Aster Goods");
+    const generate = mock(async () => input.selection);
+    const result = value(
+      await assess(
+        {
+          ...input.evidence,
+          playbook: defaultPlaybook,
+          deadline: input.now + 45_000,
+        },
+        { now: () => input.now, generate },
+      ),
+    );
+    expect(result.status).toBe("held");
+    expect(generate).not.toHaveBeenCalled();
+    expect(assessUnrankedCardAbsence(input.evidence, input.now)).toMatchObject({
+      status: "held",
+      attempts: 0,
+    });
+  });
+
+  test("deterministic card absence holds incomplete, changed-browser and ungrounded-query evidence without assessment calls", async () => {
+    const input = await cardFixture();
+    const missingCompleteness = structuredClone(input.evidence);
+    delete missingCompleteness.answer.completeness;
+    const changedBrowser = structuredClone(input.evidence);
+    defined(changedBrowser.browser.sources[0]).content += " Changed text.";
+    const ungroundedQuery = structuredClone(input.evidence);
+    ungroundedQuery.answer.job.query.category = "motorcycle kit";
+    for (const evidence of [
+      missingCompleteness,
+      changedBrowser,
+      ungroundedQuery,
+    ]) {
+      const generate = mock(async () => input.selection);
+      const result = value(
+        await assess(
+          {
+            ...evidence,
+            playbook: defaultPlaybook,
+            deadline: input.now + 45_000,
+          },
+          { now: () => input.now, generate },
+        ),
+      );
+      expect(result.status).toBe("held");
+      expect(generate).not.toHaveBeenCalled();
+      expect(assessUnrankedCardAbsence(evidence, input.now)).toMatchObject({
+        status: "held",
+        attempts: 0,
+      });
+    }
   });
 
   test("rejects changed card provenance, attribution, rank markers and prices on replay", async () => {
