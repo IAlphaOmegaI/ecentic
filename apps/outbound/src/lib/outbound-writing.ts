@@ -746,9 +746,17 @@ const ledgerIssues = (
       )
       .map((claim) => claim.value),
   ].sort((a, b) => b.length - a.length);
+  const recordedQuery = receipt.queries[receipt.selected.queryIndex];
+  const verifiedAnswerScope =
+    recordedQuery?.status === "observed" &&
+    receipt.discovery?.completeness.status === "complete" &&
+    recordedQuery.sourceIds.includes(receipt.discovery.sourceId) &&
+    claims.some((claim) => claim.kind === "query" && claim.value === query);
   const residual = literalValues
     .reduce(withoutPhrase, factual)
-    .replace(/\b\d+(?:st|nd|rd|th)\b/gi, " ");
+    .replace(/\b\d+(?:st|nd|rd|th)\b/gi, " ")
+    .replace(verifiedAnswerScope ? /\bwhen I asked\b/gi : /$^/, " ")
+    .replace(verifiedAnswerScope ? /\bcaptured answer\b/gi : /$^/, "answer");
   const genericNameTokens = new Set([
     ...ordinaryFactWords,
     ...copyTokens(prospect.productCategory),
@@ -854,7 +862,12 @@ export const validateWriterSubject = (
   if (
     copyTokens(subject).some(
       (word) =>
-        !topicWords.has(word) && !topicWords.has(word.replace(/s$/, "")),
+        !topicWords.has(word) &&
+        !topicWords.has(word.replace(/s$/, "")) &&
+        !topicWords.has(`${word}s`) &&
+        ![...topicWords].some(
+          (topic) => /(?:[sxz]|ch|sh)$/.test(topic) && word === `${topic}es`,
+        ),
     )
   )
     issues.push(

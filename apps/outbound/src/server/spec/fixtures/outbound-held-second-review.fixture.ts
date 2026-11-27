@@ -390,6 +390,245 @@ assert.equal(preview.messages[1]?.afterDays, 3);
 assert.equal(preview.messages[2]?.afterDays, 7);
 assert.equal(calls.starts, 0);
 
+// Retrospective synthetic diagnostics: current raw/context remain real fixture
+// outputs; only the completed old-parser rejection record is synthesized.
+const seedCachedCandidate = async (prospectId: string, opening: string) => {
+  const job = await secondJob(prospectId);
+  const saved = Contract.heldReviewStateSchema.parse(job.output);
+  const base = saved.writerCandidates?.[0];
+  assert.ok(base && saved.previewContext);
+  const parts = {
+    ...base.parts,
+    opening,
+    result:
+      "That answer picked Canvas Works and Harbor Label. Sample Goods didn't come up in the captured answer.",
+  };
+  const partsHash = createHash("sha256")
+    .update(JSON.stringify(parts))
+    .digest("hex");
+  const issues = [
+    "result: “captured” is not supported by the observed ledger.",
+  ];
+  const error = `Copy: ${issues.join(" ")}`;
+  const {
+    preview: _preview,
+    draftBeforeJudge: _draft,
+    writerCandidateRecovery: _recovery,
+    ...retained
+  } = saved;
+  const state = Contract.heldReviewStateSchema.parse({
+    ...retained,
+    stage: "draft",
+    lease: null,
+    heldReason: error,
+    writerCandidates: [1, 2].map((attempt) => ({
+      ...base,
+      attempt,
+      parts,
+      partsHash,
+      issues,
+    })),
+  });
+  const restore = () =>
+    db
+      .update(schema.outboundIntegrationJob)
+      .set({ status: "failed", error, output: state })
+      .where(eq(schema.outboundIntegrationJob.id, job.id));
+  await restore();
+  return {
+    job,
+    state,
+    parts,
+    restore,
+    request: {
+      manifest,
+      jobId: job.id,
+      expectedCandidatePartsHash: partsHash,
+      reviewRound: 2 as const,
+      instructionHash: Contract.HELD_REVIEW_ROUND2_INSTRUCTION_HASH,
+    },
+  };
+};
+const recoverCached = async (
+  cached: Awaited<ReturnType<typeof seedCachedCandidate>>,
+  uncertain = false,
+) => {
+  const before = await secondJob(cached.job.prospectId!);
+  const budget = value(await Review.status(batch.batchId, 2)).queriesReserved;
+  assert.equal(
+    (
+      await Review.reconcileWriterCandidate(actor, {
+        ...cached.request,
+        reviewRound: 1,
+      })
+    ).success,
+    false,
+  );
+  assert.equal(
+    (
+      await Review.reconcileWriterCandidate(actor, {
+        ...cached.request,
+        instructionHash: "0".repeat(64),
+      })
+    ).success,
+    false,
+  );
+  assert.equal(
+    (
+      await Review.reconcileWriterCandidate(actor, {
+        ...cached.request,
+        expectedCandidatePartsHash: "0".repeat(64),
+      })
+    ).success,
+    false,
+  );
+  assert.equal(
+    value(await Review.reconcileWriterCandidate(actor, cached.request))
+      .newWriterCalls,
+    0,
+  );
+  assert.deepEqual(await secondJob(cached.job.prospectId!), before);
+  for (const patch of [
+    { shoppingQueryCount: cached.state.shoppingQueryCount === 1 ? 2 : 1 },
+    { queryReview: { ...cached.state.queryReview, status: "invalid" } },
+    {
+      answer: {
+        ...cached.state.answer,
+        raw: cached.state.answer?.raw.map((raw, index) =>
+          index ? raw : { ...raw, body: `${raw.body} tampered` },
+        ),
+      },
+    },
+    {
+      writerCandidates: cached.state.writerCandidates?.map((candidate) => ({
+        ...candidate,
+        parts: { ...candidate.parts, result: "Tampered name" },
+      })),
+    },
+  ]) {
+    await db
+      .update(schema.outboundIntegrationJob)
+      .set({ output: { ...cached.state, ...patch } })
+      .where(eq(schema.outboundIntegrationJob.id, cached.job.id));
+    assert.equal(
+      (
+        await Review.reconcileWriterCandidate(actor, {
+          ...cached.request,
+          execute: true,
+        })
+      ).success,
+      false,
+    );
+    await cached.restore();
+  }
+  value(
+    await Review.reconcileWriterCandidate(actor, {
+      ...cached.request,
+      execute: true,
+    }),
+  );
+  const staged = Contract.heldReviewStateSchema.parse(
+    (await secondJob(cached.job.prospectId!)).output,
+  );
+  assert.equal(staged.writerCandidateRecovery?.reviewRound, 2);
+  assert.equal(
+    staged.writerCandidateRecovery?.instructionHash,
+    Contract.HELD_REVIEW_ROUND2_INSTRUCTION_HASH,
+  );
+  assert.ok(staged.writerCandidateRecovery?.reviewProofHash);
+  assert.deepEqual(staged.writerCandidates, cached.state.writerCandidates);
+  assert.equal(
+    (
+      await Review.reconcileWriterCandidate(actor, {
+        ...cached.request,
+        execute: true,
+      })
+    ).success,
+    false,
+  );
+  await focus(cached.job.prospectId!);
+  let judges = 0;
+  const forbidden = async () => {
+    throw new Error(
+      "Cached recovery must not buy a writer, query or browser step.",
+    );
+  };
+  const dependencies: HeldReviewDependencies = {
+    generate: forbidden,
+    start: forbidden,
+    poll: forbidden,
+    browse: forbidden,
+    inspectProduct: forbidden,
+    generateQuery: forbidden,
+    reviewQuery: forbidden,
+    assess: forbidden,
+    assessBrands: forbidden,
+    judge: async () => {
+      judges++;
+      if (uncertain)
+        throw new IntegrationError(
+          "azure",
+          "uncertain",
+          "Synthetic first judge interruption.",
+        );
+      return passingCopyJudge();
+    },
+  };
+  value(
+    await Review.runNext(
+      { batchId: batch.batchId, reviewRound: 2 },
+      dependencies,
+    ),
+  );
+  const finished = await secondJob(cached.job.prospectId!);
+  const state = Contract.heldReviewStateSchema.parse(finished.output);
+  assert.equal(judges, 1, JSON.stringify({ error: finished.error, state }));
+  assert.equal(finished.status, uncertain ? "uncertain" : "complete");
+  assert.equal(state.draftBeforeJudge?.generation.attempts, 2);
+  assert.deepEqual(state.draftBeforeJudge?.parts, cached.parts);
+  assert.deepEqual(state.writerCandidates, cached.state.writerCandidates);
+  assert.deepEqual(state.answer, cached.state.answer);
+  assert.deepEqual(state.priorPurchase, cached.state.priorPurchase);
+  assert.equal(state.shoppingQueryCount, cached.state.shoppingQueryCount);
+  assert.equal(
+    value(await Review.status(batch.batchId, 2)).queriesReserved,
+    budget,
+  );
+  assert.equal(
+    (
+      await Review.reconcileWriterCandidate(actor, {
+        ...cached.request,
+        execute: true,
+      })
+    ).success,
+    false,
+  );
+  assert.equal(
+    value(
+      await Review.runNext(
+        { batchId: batch.batchId, reviewRound: 2 },
+        dependencies,
+      ),
+    ).advanced,
+    false,
+  );
+  assert.equal(
+    judges,
+    1,
+    "Neither a completed nor uncertain first judge can be replayed.",
+  );
+};
+const reuseState = Contract.heldReviewStateSchema.parse(
+  (await secondJob(reuse.prospectId)).output,
+);
+assert.equal(reuseState.shoppingQueryCount, 1);
+const reusedCached = await seedCachedCandidate(
+  reuse.prospectId,
+  `A cousin needed bags, so I asked for "${reuseState.query!.prompt}".`,
+);
+await recoverCached(reusedCached);
+assert.equal(calls.starts, 0);
+
 const correction = originals[1];
 assert.ok(correction?.prospectId);
 await focus(correction.prospectId);
@@ -435,6 +674,55 @@ assert.equal(
   2,
 );
 assert.equal(value(await Review.status(batch.batchId, 2)).queriesReserved, 4);
+// Continue the already acknowledged corrected query using injected captures;
+// the recovery checks both this answer and its preserved invalid-query history.
+await focus(correction.prospectId);
+setSystemTime(new Date(Date.now() + 45000));
+const correctedDeps: HeldReviewDependencies = {
+  ...copyDependencies,
+  poll: (input) => heldPoll(input.job, false),
+  browse: async (input) => ({ success: true, data: input.productCapture! }),
+  assess: heldAssessment,
+  generate: async ({ prompt }) => ({
+    subject: "linen bags",
+    opening: `I wanted a travel bag, so I asked for "${JSON.parse(prompt).observedQuery.query}".`,
+    result:
+      "It picked Canvas Works and Harbor Label. Sample Goods didn't come up.",
+    relevance: "That's the kind of search a new customer starts with.",
+  }),
+};
+for (
+  let index = 0;
+  index < 6 &&
+  (await secondJob(correction.prospectId)).output?.["stage"] !== "complete";
+  index++
+) {
+  await focus(correction.prospectId);
+  value(
+    await Review.runNext(
+      { batchId: batch.batchId, reviewRound: 2 },
+      correctedDeps,
+    ),
+  );
+}
+const correctedComplete = await secondJob(correction.prospectId);
+assert.equal(
+  correctedComplete.status,
+  "complete",
+  correctedComplete.error ?? JSON.stringify(correctedComplete.output),
+);
+const correctedState = Contract.heldReviewStateSchema.parse(
+  correctedComplete.output,
+);
+assert.equal(correctedState.shoppingQueryCount, 2);
+assert.equal(correctedState.shoppingReceipt?.captureHistory?.length, 1);
+const correctedCached = await seedCachedCandidate(
+  correction.prospectId,
+  `I wanted a travel bag, so I asked for "${correctedState.query!.prompt}".`,
+);
+await recoverCached(correctedCached, true);
+assert.equal(calls.starts, 1);
+
 const failedProvider = originals[2];
 assert.ok(failedProvider?.prospectId);
 await focus(failedProvider.prospectId);

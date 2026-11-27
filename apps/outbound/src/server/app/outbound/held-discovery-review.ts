@@ -423,11 +423,19 @@ const checkedWriterCandidate = async (
   const browser = Capture.browserResearchSchema.parse(state.browser);
   const shoppingJob = Capture.aiJobSchema.parse(state.shoppingJob);
   const queryHash = heldPreparedQueryHash(state.query);
+  const secondReview = input.reviewRound === 2;
+  const expectedCount = secondReview
+    ? ["correction", "broader"].includes(state.queryPurpose ?? "")
+      ? 2
+      : 1
+    : state.shoppingQueryIntent === "unbranded-broad"
+      ? 2
+      : 1;
   if (
     !state.queryReservedAt ||
-    state.shoppingQueryCount !==
-      (state.shoppingQueryIntent === "unbranded-broad" ? 2 : 1) ||
-    (state.shoppingHistory?.length ?? 0) !== state.shoppingQueryCount - 1 ||
+    state.shoppingQueryCount !== expectedCount ||
+    (state.shoppingHistory?.length ?? 0) !==
+      (secondReview ? 0 : state.shoppingQueryCount - 1) ||
     ready.batch.budget.queriesReserved < state.shoppingQueryCount ||
     queryHash !== heldPreparedQueryHash(shoppingJob.query) ||
     shoppingJob.query.intent !== state.shoppingQueryIntent ||
@@ -435,7 +443,20 @@ const checkedWriterCandidate = async (
     browser.status !== "captured"
   )
     throw new ConflictError("The saved paid query or capture binding changed.");
-  const queryIssue = queryProblem(input, state, ready.policy.settings);
+  if (
+    secondReview &&
+    state.queryPurpose === "reuse" &&
+    (!state.priorPurchase ||
+      state.shoppingQueryCount !== 1 ||
+      state.queryReservedAt !== state.priorPurchase.queryReservedAt ||
+      !isDeepStrictEqual(state.query, state.priorPurchase.query) ||
+      !isDeepStrictEqual(shoppingJob, state.priorPurchase.shoppingJob) ||
+      !isDeepStrictEqual(answer, state.priorPurchase.answer))
+  )
+    throw new ConflictError(
+      "The reused query no longer matches its preserved original purchase.",
+    );
+  const queryIssue = queryProblem(input, state, ready.policy.settings, true);
   if (queryIssue) throw new ValidationError(queryIssue);
   const response = answer.raw.find(
     (raw) => raw.url === shoppingPollUrl(shoppingJob),
@@ -455,7 +476,7 @@ const checkedWriterCandidate = async (
       "The saved answer changed from its original provider response.",
     );
   const proofIssue = Assessment.validateAutomaticResearch(
-    { answer, browser },
+    evidenceForState(state),
     receipt,
     ready.policy.settings.verificationDays,
     ready.policy.settings,
@@ -500,6 +521,21 @@ const checkedWriterCandidate = async (
     if (issues.length) throw new ValidationError(`Copy: ${issues.join(" ")}`);
   }
   const binding = {
+    ...(secondReview
+      ? {
+          reviewRound: 2 as const,
+          instructionHash: input.instructionHash,
+          reviewProofHash: writerDiagnosticHash(
+            JSON.stringify({
+              purpose: state.queryPurpose,
+              queryReview: state.queryReview,
+              previousQueryReview: state.previousQueryReview,
+              previousOutputHash: input.previousOutputHash,
+              shoppingQueryCount: state.shoppingQueryCount,
+            }),
+          ),
+        }
+      : {}),
     candidatePartsHash: candidate.partsHash,
     candidateAttempt: candidate.attempt,
     candidatesHash: writerDiagnosticHash(JSON.stringify(candidates)),
@@ -1329,6 +1365,8 @@ export const reconcileWriterCandidate = (
     jobId: string;
     expectedCandidatePartsHash: string;
     execute?: boolean;
+    reviewRound?: 1 | 2;
+    instructionHash?: string;
   },
 ) =>
   transaction(async (scope) => {
@@ -1337,6 +1375,11 @@ export const reconcileWriterCandidate = (
     const details = heldReviewInputSchema.parse(job.input);
     const state = heldReviewStateSchema.parse(job.output);
     if (
+      (input.reviewRound ?? 1) !== (details.reviewRound ?? 1) ||
+      (details.reviewRound === 2
+        ? input.instructionHash !== HELD_REVIEW_ROUND2_INSTRUCTION_HASH ||
+          input.instructionHash !== details.instructionHash
+        : input.instructionHash !== undefined) ||
       job.provider !== "automation" ||
       job.prospectId !== details.prospectId ||
       !manifest.prospectIds.includes(details.prospectId) ||
@@ -1759,6 +1802,7 @@ const queryProblem = (
   input: HeldReviewInput,
   state: HeldReviewState,
   policy: Awaited<ReturnType<typeof Store.policy>>["settings"],
+  allowValidatedReuse = false,
 ) => {
   if (
     !state.query ||
@@ -1780,7 +1824,9 @@ const queryProblem = (
     });
     if (reviewed) return reviewed;
     if (state.queryPurpose === "reuse")
-      return "A saved valid query is reused without a new shopping purchase.";
+      return allowValidatedReuse
+        ? null
+        : "A saved valid query is reused without a new shopping purchase.";
     if (state.priorPurchase) {
       const priorProblem = previousQueryProblem(input, state);
       if (priorProblem) return priorProblem;
@@ -2471,10 +2517,22 @@ const execute = async (
                         cachedCandidate.partsHash,
                       );
                       if (
-                        !isDeepStrictEqual(checked.candidate, cachedCandidate)
+                        !isDeepStrictEqual(
+                          checked.candidate,
+                          cachedCandidate,
+                        ) ||
+                        Object.entries(checked.binding).some(
+                          ([key, expected]) =>
+                            !isDeepStrictEqual(
+                              prepared.recovery[
+                                key as keyof typeof prepared.recovery
+                              ],
+                              expected,
+                            ),
+                        )
                       )
                         throw new ConflictError(
-                          "The cached candidate changed before its first judgment.",
+                          "The cached candidate or its proof changed before its first judgment.",
                         );
                     }
                     return eligible(scope, input, current);

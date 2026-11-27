@@ -128,7 +128,6 @@ if (
     values["hold-unspent"],
     values["reconcile-poll"],
     values["reconcile-card-assessment"],
-    values["reconcile-writer-candidate"],
   ].some(Boolean)
 )
   throw new Error(
@@ -251,6 +250,10 @@ if (values["reconcile-card-assessment"]) {
 if (values["reconcile-writer-candidate"]) {
   const restored = await Review.reconcileWriterCandidate(values.actor, {
     manifest,
+    reviewRound,
+    ...(reviewRound === 2
+      ? { instructionHash: instructionHash ?? undefined }
+      : {}),
     jobId: z.string().uuid().parse(values["reconcile-writer-candidate"]),
     expectedCandidatePartsHash: z
       .string()

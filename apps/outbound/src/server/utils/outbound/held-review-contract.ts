@@ -149,6 +149,9 @@ export const heldCardAssessmentRecoverySchema = z
   .strict();
 export const heldWriterCandidateRecoverySchema = z
   .object({
+    reviewRound: z.literal(2).optional(),
+    instructionHash: digest.optional(),
+    reviewProofHash: digest.optional(),
     candidatePartsHash: digest,
     candidateAttempt: z.literal(2),
     candidatesHash: digest,

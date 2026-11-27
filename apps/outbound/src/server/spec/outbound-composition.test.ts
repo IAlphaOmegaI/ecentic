@@ -293,6 +293,57 @@ describe("observed facts and writer-owned narrative", () => {
     }
   });
 
+  test("verified answer-scoping phrases do not authorize new factual words", () => {
+    const fixture = writerFixture();
+    for (const result of [
+      "When I asked, it picked Alder and Birch. Sample Goods didn't come up in that answer.",
+      "That answer picked Alder and Birch. Sample Goods didn't come up in the captured answer.",
+    ])
+      expect(issuesFor(fixture, { ...fixture.parts, result })).toEqual([]);
+    for (const result of [
+      "I captured Alder and Birch. Sample Goods didn't come up.",
+      "It picked Alder and Birch. Sample Goods didn't come up in the guaranteed answer.",
+      "When I asked, it picked InventedCo and Birch. Sample Goods didn't come up.",
+      "When I asked, it picked Alder before Birch at $42. Sample Goods didn't come up.",
+    ])
+      expect(
+        issuesFor(fixture, { ...fixture.parts, result }).length,
+      ).toBeGreaterThan(0);
+    fixture.receipt.queries[0]!.status = "blocked";
+    expect(
+      issuesFor(fixture, {
+        ...fixture.parts,
+        result:
+          "When I asked, it picked Alder and Birch. Sample Goods didn't come up in the captured answer.",
+      }).length,
+    ).toBeGreaterThan(0);
+  });
+
+  test("subject es-plurals remain tied to an exact researched category", () => {
+    const fixture = writerFixture();
+    fixture.receipt.queries[0]!.query = "gift box sweet and savory snacks";
+    fixture.receipt.queries[0]!.basis!.category = "gift box";
+    const parts = {
+      ...fixture.parts,
+      opening:
+        'I wanted a host present, so I asked for "gift box sweet and savory snacks".',
+    };
+    const queryClaim = fixture.receipt.claims!.find(
+      (claim) => claim.kind === "query",
+    )!;
+    queryClaim.value = fixture.receipt.queries[0]!.query;
+    for (const subject of ["gift snack boxes", "snack gift boxes"])
+      expect(issuesFor(fixture, { ...parts, subject })).toEqual([]);
+    for (const subject of [
+      "gift designer boxes",
+      "gift snack foxes",
+      "gift snack boxen",
+    ])
+      expect(issuesFor(fixture, { ...parts, subject })).toContain(
+        "subject: the topic must come from the researched category or query.",
+      );
+  });
+
   test("invented brands and obsolete writer follow-up fields are rejected", () => {
     const fixture = writerFixture();
     expect(
