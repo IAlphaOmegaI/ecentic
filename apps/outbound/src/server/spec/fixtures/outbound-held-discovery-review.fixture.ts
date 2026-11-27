@@ -14,6 +14,8 @@ const endpoint = requireTestDatabase(process.env.OUTBOUND_TEST_DATABASE_URL);
 Object.assign(process.env, { DATABASE_URL: endpoint });
 mock.module("server-only", () => ({}));
 const Capture = await import("@/server/utils/outbound/live-shopping");
+const Presence = await import("@/server/utils/outbound/shopping-presence");
+const Assessment = await import("@/server/utils/outbound/shopping-assessment");
 const { shopperQueryExcerpts } = await import(
   "@/server/utils/outbound/shopper-query"
 );
@@ -84,10 +86,11 @@ for (const id of [changedCampaignId, archivedCampaignId])
   });
 for (const [index, id] of ids.entries()) {
   const domain = `held${index}.test`;
+  const companyName = index === 19 ? "Pattern Beauty" : "Sample Goods";
   const [company] = await db
     .insert(schema.outboundCompany)
     .values({
-      name: "Sample Goods",
+      name: companyName,
       domain,
       website: `https://${domain}`,
       country: "US",
@@ -116,6 +119,7 @@ for (const [index, id] of ids.entries()) {
     holdReason: Contract.HELD_REVIEW_REASON,
     details: prospectSchema.parse({
       ...writerFixture().prospect,
+      company: companyName,
       id,
       domain,
       website: `https://${domain}`,
@@ -1563,6 +1567,211 @@ assert.deepEqual(
       .where(eq(schema.outboundIntegrationJob.id, batch.batchId))
   )[0],
   beforeRecoveryBudget,
+);
+
+// A staged absence created before abbreviated-brand replay must be rejected
+// before the writer. Only fixture seeding simulates the historical presence
+// projection; the runner, receipt validation and every saved raw byte stay real.
+const staleIdentityTarget = ids[19];
+assert.ok(staleIdentityTarget);
+await parkExcept(staleIdentityTarget);
+const staleIdentityJob = await jobFor(staleIdentityTarget);
+const staleIdentityInput = Contract.heldReviewInputSchema.parse(
+  staleIdentityJob.input,
+);
+const identityBrowser = heldBrowser(
+  staleIdentityInput.product,
+  `${staleIdentityInput.product.name}. This top is made from sheer stretch mesh fabric.`,
+);
+const identityRaw = identityBrowser.raw[0];
+assert.ok(identityRaw);
+const identityEnvelope = z
+  .object({ stdout: z.string() })
+  .passthrough()
+  .parse(JSON.parse(identityRaw.body));
+const identityExecution = z
+  .object({ title: z.string() })
+  .passthrough()
+  .parse(JSON.parse(identityEnvelope.stdout));
+identityRaw.body = JSON.stringify({
+  ...identityEnvelope,
+  stdout: JSON.stringify({
+    ...identityExecution,
+    title: `${staleIdentityInput.product.name} | PATTERN – Pattern Beauty`,
+  }),
+});
+identityRaw.sha256 = createHash("sha256")
+  .update(identityRaw.body)
+  .digest("hex");
+const identityProduct = Capture.projectBrowserExecution({
+  capture: identityRaw,
+  url: staleIdentityInput.product.url,
+  id: "product-browser",
+  productName: staleIdentityInput.product.name,
+  startedAt: identityRaw.receivedAt,
+  now: Date.now(),
+});
+assert.ok(identityProduct);
+identityBrowser.sources = identityBrowser.sources.map((source) =>
+  source.id === identityProduct.source.id ? identityProduct.source : source,
+);
+const identityQuery = value(
+  await Capture.generateShopperQuery(
+    {
+      product: staleIdentityInput.product,
+      category: staleIdentityInput.category,
+      country: staleIdentityInput.country,
+      merchant: staleIdentityInput.merchant,
+      browser: identityBrowser,
+      deadline: Date.now() + 30_000,
+    },
+    {
+      generate: async ({ prompt }) => ({
+        question: "stretch mesh top",
+        category: "top",
+        attribute: "stretch mesh",
+        excerptIds: [
+          z
+            .object({ excerpts: z.array(z.object({ id: z.string() })).min(1) })
+            .parse(JSON.parse(prompt)).excerpts[0]?.id ?? "",
+        ],
+      }),
+    },
+  ),
+);
+if (identityQuery.status !== "prepared") throw new Error(identityQuery.reason);
+const identityShoppingJob = Capture.aiJobSchema.parse({
+  id: randomUUID(),
+  query: identityQuery.query,
+  submittedAt: new Date().toISOString(),
+});
+const identityBody = JSON.stringify({
+  job_id: identityShoppingJob.id,
+  status: "done",
+  scraper: identityQuery.query.surface,
+  prompt: identityQuery.query.prompt,
+  country: identityQuery.query.country,
+  completed_at: new Date().toISOString(),
+  result: {
+    scraper: identityQuery.query.surface,
+    status: "done",
+    cached: false,
+    result_markdown:
+      "1. Canvas Works — Large carry bag.\n2. Harbor Label — Cotton shopper.\n3. Pattern Leave-In Conditioner — Another named product.",
+    citations: [],
+  },
+});
+const identityAnswer = value(
+  Capture.restoreCompletedQueryResponse(
+    identityShoppingJob,
+    {
+      url: `https://api.scrapellm.com/jobs/${identityShoppingJob.id}`,
+      status: 200,
+      body: identityBody,
+      sha256: createHash("sha256").update(identityBody).digest("hex"),
+      receivedAt: new Date().toISOString(),
+    },
+    undefined,
+    Date.now(),
+  ),
+);
+const originalPresence = Presence.computeDiscoveryBase;
+const staleIdentityReceipt = await (async () => {
+  const historicalPresence = spyOn(
+    Presence,
+    "computeDiscoveryBase",
+  ).mockImplementation((input, now) =>
+    originalPresence({ ...input, browser: undefined }, now),
+  );
+  try {
+    const assessed = value(
+      await heldAssessment({
+        answer: identityAnswer,
+        browser: identityBrowser,
+        playbook: settings,
+        deadline: Date.now() + 30_000,
+      }),
+    );
+    if (assessed.status !== "researched") throw new Error(assessed.reason);
+    assert.equal(assessed.receipt.selected.kind, "discovery-absence");
+    assert.equal(
+      Assessment.validateAutomaticResearch(
+        { answer: identityAnswer, browser: identityBrowser },
+        assessed.receipt,
+        settings.verificationDays,
+        settings,
+      ),
+      null,
+      "The stale receipt passed the earlier full-name-only presence contract.",
+    );
+    return assessed.receipt;
+  } finally {
+    historicalPresence.mockRestore();
+  }
+})();
+const staleIdentityReason =
+  "The answer names a possible shortened merchant identity from the captured product page; absence is not established.";
+assert.equal(
+  Assessment.validateAutomaticResearch(
+    { answer: identityAnswer, browser: identityBrowser },
+    staleIdentityReceipt,
+    settings.verificationDays,
+    settings,
+  ),
+  staleIdentityReason,
+);
+const staleIdentityState = Contract.heldReviewStateSchema.parse({
+  stage: "draft",
+  prospectRevision: 1,
+  availableAt: new Date().toISOString(),
+  lease: null,
+  shoppingQueryIntent: "unbranded-specific",
+  shoppingQueryCount: 1,
+  queryReservedAt: identityShoppingJob.submittedAt,
+  polls: 1,
+  productCapture: identityBrowser,
+  query: identityQuery.query,
+  queryGeneration: identityQuery.generation,
+  shoppingJob: identityShoppingJob,
+  answer: identityAnswer,
+  browser: identityBrowser,
+  shoppingReceipt: staleIdentityReceipt,
+  shoppingHistory: [],
+});
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({
+    status: "pending",
+    error: null,
+    output: staleIdentityState,
+  })
+  .where(eq(schema.outboundIntegrationJob.id, staleIdentityJob.id));
+const beforeStaleIdentityCalls = { ...calls };
+const beforeStaleIdentityBudget = value(
+  await Review.status(batch.batchId),
+).queriesReserved;
+const staleIdentityTick = await tick();
+assert.equal(staleIdentityTick.advanced, true);
+if (!staleIdentityTick.advanced)
+  throw new Error("Expected a staged draft check.");
+assert.equal(staleIdentityTick.status, "held");
+const staleIdentityHeldJob = await jobFor(staleIdentityTarget);
+assert.equal(staleIdentityHeldJob.status, "failed");
+assert.equal(staleIdentityHeldJob.error, staleIdentityReason);
+const staleIdentityHeld = Contract.heldReviewStateSchema.parse(
+  staleIdentityHeldJob.output,
+);
+assert.equal(staleIdentityHeld.heldReason, staleIdentityReason);
+assert.equal(staleIdentityHeld.previewContext, undefined);
+assert.equal(staleIdentityHeld.draftBeforeJudge, undefined);
+assert.equal(staleIdentityHeld.preview, undefined);
+const { heldReason: _staleIdentityHold, ...retainedStaleIdentity } =
+  staleIdentityHeld;
+assert.deepEqual(retainedStaleIdentity, staleIdentityState);
+assert.deepEqual(calls, beforeStaleIdentityCalls);
+assert.equal(
+  value(await Review.status(batch.batchId)).queriesReserved,
+  beforeStaleIdentityBudget,
 );
 
 // Independent operations share one durable slot, including concurrent claims.

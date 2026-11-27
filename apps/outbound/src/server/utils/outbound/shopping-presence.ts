@@ -3,15 +3,18 @@ import "server-only";
 import { createHash } from "node:crypto";
 import { isDeepStrictEqual } from "node:util";
 import { resultify } from "@zenncore/utils";
+import { parseFragment } from "parse5";
 import { z } from "zod";
 import { normalizeDomain } from "@/lib/outbound";
 import type {
   ShoppingCaptureCompleteness,
   ShoppingDiscovery,
 } from "@/lib/outbound-shopping-research";
+import { reusableProductCapture } from "./live-shopping-browser";
 import {
   type AiCapture,
   aiCaptureSchema,
+  type BrowserResearch,
   publicUrlSchema,
 } from "./live-shopping-contract";
 import { shoppingPollUrl } from "./scrapellm-cooldown";
@@ -421,26 +424,21 @@ export const deriveCaptureCompleteness = (
 export const replayShoppingCapture = (answer: AiCapture, now = Date.now()) =>
   replay(answer, now, true);
 
-const decodeText = (value: string) =>
-  value
-    .replace(/(?:%[a-f0-9]{2})+/gi, (encoded) => {
-      const decoded = resultify(() => decodeURIComponent(encoded));
-      return decoded.success ? decoded.data : encoded;
-    })
-    .replace(
-      /&#(?:x([a-f0-9]+)|(\d+));/gi,
-      (original, hex: string, decimal: string) => {
-        const code = Number.parseInt(hex || decimal, hex ? 16 : 10);
-        return code > 0 && code <= 0x10ffff
-          ? String.fromCodePoint(code)
-          : original;
-      },
-    )
-    .replace(/&amp;/gi, " and ")
-    .replace(/&(?:nbsp|quot|apos|ndash|mdash);/gi, " ")
+const decodeText = (value: string) => {
+  const unescaped = value.replace(/(?:%[a-f0-9]{2})+/gi, (encoded) => {
+    const decoded = resultify(() => decodeURIComponent(encoded));
+    return decoded.success ? decoded.data : encoded;
+  });
+  // Escape markup first so HTML decoding retains every tag, attribute and URL
+  // as searchable text. This projection never changes the raw capture or proof.
+  return parseFragment(unescaped.replaceAll("<", "&lt;"))
+    .childNodes.map((node) => ("value" in node ? node.value : ""))
+    .join("")
+    .replaceAll("&", " and ")
     .normalize("NFKD")
     .replace(/\p{M}/gu, "")
     .toLowerCase();
+};
 const normalized = (value: string) =>
   decodeText(value)
     .replace(/[^\p{L}\p{N}]+/gu, " ")
@@ -488,9 +486,83 @@ export const matchMerchantText = (
   ].slice(0, 50);
 };
 
+/** Candidate abbreviations only veto absence; they never establish identity or rank. */
+const shortenedMerchantNames = (
+  browser: BrowserResearch,
+  merchant: Merchant,
+  product: Product,
+  now: number,
+): string[] | null => {
+  const verified = reusableProductCapture({ browser, product, now });
+  if (!verified) return null;
+  const execution = verified.raw.find((raw) => raw.url.endsWith("/execute"));
+  const decoded = resultify(() => {
+    const envelope = JSON.parse(execution?.body ?? "");
+    return z
+      .object({ title: z.string(), structured: z.array(z.string()) })
+      .parse(JSON.parse(envelope.stdout || envelope.result || ""));
+  });
+  if (!decoded.success) return null;
+  const fullNames = [merchant.name, ...(merchant.aliases ?? [])].map(
+    normalized,
+  );
+  const title = decoded.data.title;
+  const titleNames = fullNames.some((name) =>
+    ` ${normalized(title)} `.includes(` ${name} `),
+  )
+    ? title.split(/\s*[|–—]\s*|\s+-\s+/)
+    : [];
+  const productName = normalized(product.name);
+  const brandNames = (input: unknown, depth = 0): string[] => {
+    if (depth > 12 || !input || typeof input !== "object") return [];
+    if (Array.isArray(input))
+      return input.flatMap((item) => brandNames(item, depth + 1));
+    const record = input as Record<string, unknown>;
+    const { name, brand } = record;
+    const types = [record["@type"]].flat();
+    const ownProduct =
+      types.includes("Product") &&
+      typeof name === "string" &&
+      productName &&
+      ` ${normalized(name)} `.includes(` ${productName} `);
+    const names = ownProduct
+      ? [brand].flat().flatMap((item) => {
+          if (typeof item === "string") return [item];
+          if (!item || typeof item !== "object") return [];
+          const { name: candidate } = item as Record<string, unknown>;
+          return typeof candidate === "string" ? [candidate] : [];
+        })
+      : [];
+    return [
+      ...names,
+      ...Object.values(record).flatMap((value) => brandNames(value, depth + 1)),
+    ];
+  };
+  const structuredNames = decoded.data.structured.flatMap((block) => {
+    const parsed = resultify(() => JSON.parse(block) as unknown);
+    return parsed.success ? brandNames(parsed.data) : [];
+  });
+  return [
+    ...new Set([...titleNames, ...structuredNames].map((name) => name.trim())),
+  ].filter((name) => {
+    const candidate = normalized(name);
+    return (
+      candidate.length > 0 &&
+      candidate.length <= 80 &&
+      !fullNames.includes(candidate) &&
+      fullNames.some((full) => ` ${full} `.includes(` ${candidate} `))
+    );
+  });
+};
+
 /** An assessor can append ordering facts, but cannot decide merchant presence. */
 export const computeDiscoveryBase = (
-  input: { answer: AiCapture; merchant?: Merchant; queryIndex?: number },
+  input: {
+    answer: AiCapture;
+    merchant?: Merchant;
+    queryIndex?: number;
+    browser?: BrowserResearch;
+  },
   now = Date.now(),
 ): DiscoveryBase => {
   const proof = replayShoppingCapture(input.answer, now);
@@ -505,7 +577,7 @@ export const computeDiscoveryBase = (
         { ...merchant, aliases: merchant.aliases ?? [] },
         saved,
       ));
-  const completeness = identityMatches
+  let completeness = identityMatches
     ? proof.completeness
     : {
         status: "uncertain" as const,
@@ -522,6 +594,39 @@ export const computeDiscoveryBase = (
           ),
         ].slice(0, 50)
       : [];
+  if (
+    completeness.status === "complete" &&
+    merchant &&
+    !matchedAliases.length &&
+    input.browser
+  ) {
+    const shortened = shortenedMerchantNames(
+      input.browser,
+      merchant,
+      input.answer.job.query.product,
+      now,
+    );
+    if (shortened === null)
+      completeness = {
+        status: "uncertain",
+        reason:
+          "The captured product page cannot verify possible merchant aliases.",
+      };
+    else if (
+      shortened.some((name) =>
+        [...proof.answerVariants, ...proof.citationText].some(
+          (text) =>
+            matchMerchantText(text, { name, domain: "" }, { name: "", url: "" })
+              .length > 0,
+        ),
+      )
+    )
+      completeness = {
+        status: "uncertain",
+        reason:
+          "The answer names a possible shortened merchant identity from the captured product page; absence is not established.",
+      };
+  }
   return {
     queryIndex: z
       .number()

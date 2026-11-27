@@ -8,6 +8,7 @@ import { lintMessages, settingsForProspect } from "@/lib/outbound";
 import {
   isReviewCopyIssue,
   type ReviewContext,
+  reviewDiscoverySummary,
 } from "@/lib/outbound-review-context";
 import { shoppingResearchSchema } from "@/lib/outbound-shopping-research";
 import { schema } from "@/server/database";
@@ -165,10 +166,7 @@ export const readReviewContext = withAuthorization(
               priceDifference: Boolean(receipt.priceComparison),
               kind: receipt.selected.kind,
               observation: receipt.selected.observation,
-              position: receipt.discovery?.merchantPosition ?? null,
-              total: receipt.discovery?.totalListed ?? null,
-              listed:
-                receipt.discovery?.listed.map((entry) => entry.name) ?? [],
+              ...reviewDiscoverySummary(receipt),
               checkedAt:
                 query?.executedAt ??
                 receipt.sources[0]?.checkedAt ??

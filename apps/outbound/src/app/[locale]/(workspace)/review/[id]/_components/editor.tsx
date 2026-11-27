@@ -40,6 +40,7 @@ import {
   type ReviewContext,
   reviewChecks,
   reviewNextAction,
+  reviewResearchOutcome,
 } from "@/lib/outbound-review-context";
 import * as Outbound from "@/server/app/outbound";
 import * as CopyActions from "@/server/app/outbound/copy-actions";
@@ -189,21 +190,7 @@ export const ReviewEditor = ({
       }
     });
   };
-  const outcome = !research
-    ? "noResearch"
-    : research.kind === "discovery-absence"
-      ? "absent"
-      : research.kind === "discovery-outranked"
-        ? "ranked"
-        : research.kind === "query-comparison" && research.priceDifference
-          ? "wrongPrice"
-          : research.kind === "product-data-gap"
-            ? "pageData"
-            : research.kind === "no-gap"
-              ? "noGap"
-              : research.kind === "product-observation"
-                ? "legacy"
-                : "unknown";
+  const outcome = reviewResearchOutcome(research);
   const formConfig = {
     subject: field({
       shape: "text",

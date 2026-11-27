@@ -14,13 +14,21 @@ const { projectBrowserExecution } = await import(
 );
 const { createAssessmentCatalog, assess, validateAutomaticResearch } =
   await import("@/server/utils/outbound/shopping-assessment");
-const { projectFactAssessment, validateFactResearch, orderedAnswerEntries } =
-  await import("@/server/utils/outbound/shopping-fact-assessment");
+const {
+  projectFactAssessment,
+  validateFactResearch,
+  orderedAnswerEntries,
+  createFactAssessmentCatalog,
+} = await import("@/server/utils/outbound/shopping-fact-assessment");
 const value = <T>(
   result: { success: true; data: T } | { success: false; error: Error },
 ): T => {
   if (!result.success) throw result.error;
   return result.data;
+};
+const defined = <T>(value: T | null | undefined): T => {
+  assert.ok(value !== null && value !== undefined);
+  return value;
 };
 const digest = (body: string) =>
   createHash("sha256").update(body).digest("hex");
@@ -206,7 +214,210 @@ const fixture = async (
 const alternate =
   "1. Canvas Works — Large carry bag.\n2. Harbor Label — Cotton shopper.";
 
+// Synthetic provider-shaped cards; none of these recommendations are real evidence.
+const cardHtml = (
+  index: number,
+  title: string,
+  seller: string,
+) => `<div html-index="${index}" style="display:flex;align-items:center;gap:12px;padding:10px">
+<img src="data:image/jpeg;base64,${"A".repeat(22000)}==" alt="${title}" width="120" height="auto" style="object-fit:cover;border-radius:0.5rem" />
+<div style="flex:1"><div style="font-weight:bold"><a href="https://example.test/item-${index}">${title}</a></div>
+<div style="margin-top:4px;font-size:18px">from $39.99<span style="text-decoration:line-through">$50</span></div>
+<div>${seller}</div><div> </div></div><div style="display:none">${index.toString(16).padStart(32, "0")}</div></div>`;
+const cardFixture = async (suffix = "") => {
+  const input = await fixture(
+    `## Everyday bags\n${cardHtml(1, "Canvas Works&#39; Linen Tote", "Harbor &amp; Co")}\n\n## Travel bags\n${cardHtml(2, "Drift Canvas Shopper", "Bay Store")}\n${suffix}`,
+  );
+  const catalog = createFactAssessmentCatalog(input.evidence, input.now);
+  const selection = {
+    ...input.selection,
+    listed: catalog.quotes
+      .filter((quote) => quote.card)
+      .map((quote) => ({
+        name: defined(quote.card).title,
+        kind: "product" as const,
+        quoteId: quote.id,
+        price: null,
+      })),
+  };
+  return { ...input, selection, catalog };
+};
+
 describe("fact-only shopping assessment", () => {
+  test("binds unranked card alternatives to exact full raw product and seller proof", async () => {
+    const input = await cardFixture();
+    const original = structuredClone(input.evidence.answer);
+    const result = projectFactAssessment(
+      input.evidence,
+      input.selection,
+      input.now,
+    );
+    expect(result.status).toBe("researched");
+    if (result.status !== "researched") throw new Error(result.reason);
+    expect(result.receipt.discovery).toMatchObject({
+      order: "unranked",
+      merchantPresent: false,
+      merchantPosition: null,
+      totalListed: null,
+      listed: [
+        {
+          name: "Canvas Works' Linen Tote",
+          seller: "Harbor & Co",
+          kind: "product",
+          position: null,
+          price: null,
+        },
+        {
+          name: "Drift Canvas Shopper",
+          seller: "Bay Store",
+          kind: "product",
+          position: null,
+          price: null,
+        },
+      ],
+    });
+    expect(
+      result.receipt.claims?.some((claim) =>
+        ["position", "count", "price"].includes(claim.kind),
+      ),
+    ).toBe(false);
+    expect(
+      result.receipt.claims?.find(
+        (claim) => claim.value === "Canvas Works' Linen Tote",
+      )?.qualifiers,
+    ).toEqual(["Harbor & Co"]);
+    expect(
+      result.receipt.claimExcerpts?.filter((quote) => quote.card).length,
+    ).toBe(2);
+    expect(
+      result.receipt.claimExcerpts
+        ?.filter((quote) => quote.card)
+        .every(
+          (quote) =>
+            !input.evidence.answer.source.content.includes(quote.quote),
+        ),
+    ).toBe(true);
+    expect(
+      validateAutomaticResearch(input.evidence, result.receipt, 7),
+    ).toBeNull();
+    expect(input.evidence.answer).toEqual(original);
+    const generate = mock(async ({ prompt }: { prompt: string }) => {
+      const prepared = JSON.parse(prompt);
+      expect(
+        prepared.quoteCatalog.filter((quote: { card?: unknown }) => quote.card)
+          .length,
+      ).toBe(2);
+      return input.selection;
+    });
+    const assessed = value(
+      await assess(
+        {
+          ...input.evidence,
+          playbook: defaultPlaybook,
+          deadline: input.now + 45_000,
+        },
+        { now: () => input.now, generate },
+      ),
+    );
+    expect(assessed.status).toBe("researched");
+    expect(generate).toHaveBeenCalledTimes(1);
+  });
+
+  test("rejects changed card provenance, attribution, rank markers and prices on replay", async () => {
+    const input = await cardFixture();
+    const result = projectFactAssessment(
+      input.evidence,
+      input.selection,
+      input.now,
+    );
+    if (result.status !== "researched") throw new Error(result.reason);
+    const mutations = [
+      (receipt: typeof result.receipt) => {
+        delete defined(receipt.discovery).order;
+      },
+      (receipt: typeof result.receipt) => {
+        defined(receipt.discovery).order = "ranked";
+      },
+      (receipt: typeof result.receipt) => {
+        defined(receipt.discovery).totalListed = 2;
+      },
+      (receipt: typeof result.receipt) => {
+        defined(defined(receipt.discovery).listed[0]).position = 1;
+      },
+      (receipt: typeof result.receipt) => {
+        defined(defined(receipt.discovery).listed[0]).seller = "Bay Store";
+      },
+      (receipt: typeof result.receipt) => {
+        defined(defined(receipt.discovery).listed[0]).price = "from $39.99";
+      },
+      (receipt: typeof result.receipt) => {
+        defined(
+          defined(receipt.claimExcerpts?.find((quote) => quote.card)).card,
+        ).start += 1;
+      },
+      (receipt: typeof result.receipt) => {
+        defined(
+          defined(receipt.claimExcerpts?.find((quote) => quote.card)).card,
+        ).rawHash = "f".repeat(64);
+      },
+      (receipt: typeof result.receipt) => {
+        receipt.selected.kind = "discovery-outranked";
+      },
+      (receipt: typeof result.receipt) => {
+        receipt.selected.kind = "no-gap";
+      },
+    ];
+    for (const mutate of mutations) {
+      const changed = structuredClone(result.receipt);
+      mutate(changed);
+      expect(
+        validateAutomaticResearch(input.evidence, changed, 7),
+      ).not.toBeNull();
+    }
+  });
+
+  test("present card answers cannot acquire rank from a separate numbered footer or spend an assessment", async () => {
+    const input = await cardFixture(
+      "1. Canvas Works\n2. Bay Store\n3. Aster Goods",
+    );
+    expect(
+      projectFactAssessment(input.evidence, input.selection, input.now).status,
+    ).toBe("held");
+    const generate = mock(async () => input.selection);
+    const result = value(
+      await assess(
+        {
+          ...input.evidence,
+          playbook: defaultPlaybook,
+          deadline: input.now + 45_000,
+        },
+        { now: () => input.now, generate },
+      ),
+    );
+    expect(result.status).toBe("held");
+    expect(generate).not.toHaveBeenCalled();
+  });
+
+  test("unknown completeness and altered card selections never establish absence", async () => {
+    const input = await cardFixture();
+    for (const item of [
+      { ...defined(input.selection.listed[0]), name: "Invented Store" },
+      { ...defined(input.selection.listed[0]), kind: "brand" },
+      { ...defined(input.selection.listed[0]), price: "from $39.99" },
+    ])
+      expect(
+        projectFactAssessment(
+          input.evidence,
+          { ...input.selection, listed: [item] },
+          input.now,
+        ).status,
+      ).toBe("held");
+    delete input.evidence.answer.completeness;
+    expect(
+      projectFactAssessment(input.evidence, input.selection, input.now).status,
+    ).toBe("held");
+  });
+
   test("legacy exact-name captures still need the first discovery query, even with a page defect", async () => {
     const input = await fixture(
       "Aster Goods Marlow Tote.",

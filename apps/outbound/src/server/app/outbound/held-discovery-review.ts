@@ -789,7 +789,7 @@ const claimNext = (batchId: string, deadline: number) =>
         ),
       )
       .orderBy(
-        sql`case when ${schema.outboundIntegrationJob.output}->>'stage' in ('renderedProduct', 'browser') then 1 else 0 end`,
+        sql`case when ${schema.outboundIntegrationJob.output}->>'stage' = 'renderedProduct' then 1 else 0 end`,
         asc(schema.outboundIntegrationJob.updatedAt),
       )
       .limit(21);

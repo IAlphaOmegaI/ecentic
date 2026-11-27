@@ -51,6 +51,25 @@ export type ShoppingCaptureCompleteness = z.infer<
   typeof shoppingCaptureCompletenessSchema
 >;
 
+/** Decoded card labels are replayed from the full raw answer by the server. */
+export const shoppingCardProofSchema = z
+  .object({
+    format: z.literal("scrapellm-product-cards-v1"),
+    answerHash: digest,
+    cardId: text(80),
+    sectionId: text(80),
+    start: z.number().int().min(0),
+    end: z.number().int().min(1),
+    rawHash: digest,
+    title: text(300),
+    seller: text(300),
+  })
+  .strict();
+export type ShoppingCardProof = z.infer<typeof shoppingCardProofSchema>;
+export const shoppingCardQuote = (
+  card: Pick<ShoppingCardProof, "title" | "seller">,
+) => `Product: ${card.title}\nSeller: ${card.seller}`;
+
 /** Presence is a server result over the full answer and cited links, never model output. */
 export const shoppingDiscoverySchema = z
   .object({
@@ -63,15 +82,18 @@ export const shoppingDiscoverySchema = z
     merchantPresent: z.boolean().nullable(),
     merchantPosition: z.number().int().min(1).max(1000).nullable(),
     totalListed: z.number().int().min(0).max(1000).nullable(),
+    order: z.enum(["ranked", "unranked"]).optional(),
     listed: z
       .array(
         z
           .object({
             name: text(300),
-            kind: z.enum(["brand", "retailer", "marketplace"]),
-            position: z.number().int().min(1).max(1000),
+            kind: z.enum(["brand", "retailer", "marketplace", "product"]),
+            position: z.number().int().min(1).max(1000).nullable(),
             price: text(100).nullable(),
             excerptIds: identifiers,
+            seller: text(300).optional(),
+            cardId: text(80).optional(),
           })
           .strict(),
       )
@@ -205,6 +227,7 @@ export const shoppingResearchSchema = z
             id: text(80),
             sourceId: text(80),
             quote: z.string().min(1).max(2000),
+            card: shoppingCardProofSchema.optional(),
           })
           .strict(),
       )
@@ -327,6 +350,7 @@ const discoveryLedgerProblem = (receipt: ShoppingResearch): string | null => {
       : null;
   const claims = receipt.claims;
   const excerpts = receipt.claimExcerpts;
+  const discovery = receipt.discovery;
   if (!claims?.length || !excerpts?.length)
     return "The finding needs its observed claims and exact supporting excerpts.";
   if (
@@ -342,9 +366,16 @@ const discoveryLedgerProblem = (receipt: ShoppingResearch): string | null => {
     excerpts.some(
       (excerpt) =>
         !sourceMap.has(excerpt.sourceId) ||
-        !normalizeResearchText(
-          sourceMap.get(excerpt.sourceId)?.content ?? "",
-        ).includes(normalizeResearchText(excerpt.quote)),
+        (excerpt.card
+          ? discovery?.order !== "unranked" ||
+            receipt.selected.kind !== "discovery-absence" ||
+            excerpt.sourceId !== discovery.sourceId ||
+            excerpt.card.answerHash !== discovery.answerHash ||
+            excerpt.card.end <= excerpt.card.start ||
+            excerpt.quote !== shoppingCardQuote(excerpt.card)
+          : !normalizeResearchText(
+              sourceMap.get(excerpt.sourceId)?.content ?? "",
+            ).includes(normalizeResearchText(excerpt.quote))),
     )
   )
     return "A claim excerpt does not match its saved source.";
@@ -369,6 +400,25 @@ const discoveryLedgerProblem = (receipt: ShoppingResearch): string | null => {
     return "A claim references an unknown or unrelated source, excerpt or query.";
   if (
     claims.some((claim) => {
+      const cardExcerpts = claim.excerptIds
+        .map((id) => excerptMap.get(id))
+        .filter((excerpt) => excerpt?.card);
+      if (cardExcerpts.length) {
+        const card = cardExcerpts[0]?.card;
+        return (
+          cardExcerpts.length !== 1 ||
+          claim.excerptIds.length !== 1 ||
+          claim.kind !== "name" ||
+          claim.queryIndex !== discovery?.queryIndex ||
+          !card ||
+          !(
+            (claim.value === card.title &&
+              claim.qualifiers.length === 1 &&
+              claim.qualifiers[0] === card.seller) ||
+            (claim.value === card.seller && !claim.qualifiers.length)
+          )
+        );
+      }
       const evidence = claim.excerptIds
         .map((id) => excerptMap.get(id)?.quote ?? "")
         .join("\n");
@@ -391,12 +441,28 @@ const discoveryLedgerProblem = (receipt: ShoppingResearch): string | null => {
     })
   )
     return "An observed claim or qualifier is missing from its exact supporting evidence.";
-  const discovery = receipt.discovery;
   if (!discovery)
     return discoveryKind ? "The finding needs a saved discovery result." : null;
   const query = receipt.queries[discovery.queryIndex];
   const totalListed = discovery.totalListed;
   const merchantPosition = discovery.merchantPosition;
+  const unranked = discovery.order === "unranked";
+  if (
+    unranked &&
+    (receipt.selected.kind !== "discovery-absence" ||
+      discovery.merchantPresent !== false ||
+      merchantPosition !== null ||
+      totalListed !== null ||
+      discovery.description !== null ||
+      discovery.correctness !== "uncertain" ||
+      discovery.correctnessProof ||
+      discovery.correctnessExcerptIds?.length ||
+      receipt.priceComparison ||
+      claims.some((claim) =>
+        ["position", "count", "price"].includes(claim.kind),
+      ))
+  )
+    return "Unranked product cards support only absence with no price, position, count or correctness claim.";
   if (
     !query ||
     discovery.queryIndex !== receipt.selected.queryIndex ||
@@ -426,8 +492,29 @@ const discoveryLedgerProblem = (receipt: ShoppingResearch): string | null => {
   if (
     discovery.listed.some(
       (entry, index) =>
-        (index > 0 &&
-          entry.position <= (discovery.listed[index - 1]?.position ?? 0)) ||
+        (unranked
+          ? entry.kind !== "product" ||
+            entry.position !== null ||
+            entry.price !== null ||
+            !entry.seller ||
+            !entry.cardId ||
+            entry.excerptIds.length !== 1 ||
+            !entry.excerptIds.some((id) => {
+              const card = excerptMap.get(id)?.card;
+              return (
+                card !== undefined &&
+                card.cardId === entry.cardId &&
+                card.title === entry.name &&
+                card.seller === entry.seller
+              );
+            })
+          : entry.kind === "product" ||
+            entry.position === null ||
+            entry.seller !== undefined ||
+            entry.cardId !== undefined ||
+            (index > 0 &&
+              entry.position <=
+                (discovery.listed[index - 1]?.position ?? 0))) ||
         entry.excerptIds.some(
           (id) =>
             !excerptMap.has(id) ||
@@ -448,9 +535,26 @@ const discoveryLedgerProblem = (receipt: ShoppingResearch): string | null => {
   )
     return "The named results must retain their supported order, names, prices and answer excerpts.";
   if (
+    excerpts.some(
+      (excerpt) =>
+        excerpt.card &&
+        !discovery.listed.some(
+          (entry) =>
+            entry.cardId === excerpt.card?.cardId &&
+            entry.excerptIds.includes(excerpt.id),
+        ),
+    ) ||
+    (unranked &&
+      new Set(discovery.listed.map((entry) => entry.cardId)).size !==
+        discovery.listed.length)
+  )
+    return "Every saved card must belong to exactly one named alternative.";
+  if (
     totalListed !== null &&
     (totalListed < discovery.listed.length ||
-      discovery.listed.some((entry) => entry.position > totalListed) ||
+      discovery.listed.some(
+        (entry) => entry.position !== null && entry.position > totalListed,
+      ) ||
       (merchantPosition !== null && merchantPosition > totalListed))
   )
     return "The saved result count does not match its listed positions.";
@@ -507,8 +611,9 @@ const discoveryLedgerProblem = (receipt: ShoppingResearch): string | null => {
     (discovery.merchantPresent !== true ||
       merchantPosition === null ||
       merchantPosition < 3 ||
-      discovery.listed.filter((entry) => entry.position < merchantPosition)
-        .length < 2)
+      discovery.listed.filter(
+        (entry) => entry.position !== null && entry.position < merchantPosition,
+      ).length < 2)
   )
     return "An outranking finding needs the merchant after at least two named results.";
   if (

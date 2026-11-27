@@ -14,6 +14,7 @@ export type ReviewContext = {
     priceDifference: boolean;
     kind: ShoppingResearch["selected"]["kind"];
     observation: string;
+    order?: "ranked" | "unranked";
     position: number | null;
     total: number | null;
     listed: string[];
@@ -26,6 +27,53 @@ export type ReviewContext = {
     messages: Message[];
     postalAddress: string;
   };
+};
+
+export const reviewDiscoverySummary = (receipt: ShoppingResearch) => {
+  const order =
+    receipt.discovery?.order === "unranked" ||
+    receipt.discovery?.listed.some(
+      (entry) => entry.kind === "product" || entry.position === null,
+    )
+      ? ("unranked" as const)
+      : ("ranked" as const);
+  return {
+    order,
+    position:
+      order === "ranked" ? (receipt.discovery?.merchantPosition ?? null) : null,
+    total: order === "ranked" ? (receipt.discovery?.totalListed ?? null) : null,
+    listed:
+      receipt.discovery?.listed.map((entry) =>
+        order === "unranked" && entry.seller
+          ? `${entry.name} (${entry.seller})`
+          : entry.name,
+      ) ?? [],
+  };
+};
+
+export const reviewResearchOutcome = (research: ReviewContext["research"]) => {
+  if (!research) return "noResearch";
+  if (research.kind === "discovery-absence") return "absent";
+  if (research.kind === "discovery-outranked")
+    return research.order !== "unranked" &&
+      research.position !== null &&
+      research.position >= 1 &&
+      research.total !== null &&
+      research.total >= research.position
+      ? "ranked"
+      : "unknown";
+  if (research.kind === "query-comparison" && research.priceDifference)
+    return "wrongPrice";
+  if (research.kind === "product-data-gap") return "pageData";
+  if (research.kind === "no-gap")
+    return research.order !== "unranked" &&
+      research.position === 1 &&
+      research.total !== null &&
+      research.total >= 1
+      ? "noGap"
+      : "unknown";
+  if (research.kind === "product-observation") return "legacy";
+  return "unknown";
 };
 
 const contactFields = new Set([
@@ -110,6 +158,8 @@ export const reviewChecks = (context: ReviewContext) => {
         : "missing",
     research:
       evidence.length ||
+      (research?.kind === "discovery-outranked" &&
+        reviewResearchOutcome(research) === "unknown") ||
       research?.kind === "no-gap" ||
       research?.kind === "product-observation"
         ? "attention"
@@ -130,6 +180,7 @@ export const reviewChecks = (context: ReviewContext) => {
 export const reviewNextAction = (context: ReviewContext) => {
   const checks = reviewChecks(context);
   if (checks.research !== "ready") {
+    if (context.research?.order === "unranked") return "freshSearch";
     if (context.research?.kind === "no-gap")
       return context.research.queryIntent === "unbranded-broad"
         ? "anotherProduct"
