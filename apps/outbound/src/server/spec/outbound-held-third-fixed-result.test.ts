@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 
 for (const scenario of [
   "normal",
+  "opening-peer-change",
   "expired",
   "replay-expired",
   "judgment-before-reservation",

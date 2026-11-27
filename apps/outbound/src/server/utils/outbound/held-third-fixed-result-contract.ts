@@ -29,7 +29,9 @@ export const fixedResultBindingSchema = z
     correctionMode: z.enum([
       "fixed-result",
       "brand-subset",
+      "brand-subset-opening",
       "first-final-judgment",
+      "first-final-opening",
       "reuse-exact-rejudge",
     ]),
     sourceRowHash: hash,
@@ -50,6 +52,18 @@ export const fixedResultBindingSchema = z
     resultBefore: z.string().min(1),
     resultAfter: z.string().min(1),
     correctedPartsHash: hash,
+    correctiveEdits: z
+      .array(
+        z
+          .object({
+            field: z.literal("opening"),
+            before: z.string().min(1),
+            after: z.string().min(1),
+          })
+          .strict(),
+      )
+      .length(1)
+      .optional(),
   })
   .strict();
 export const fixedResultInputSchema = z

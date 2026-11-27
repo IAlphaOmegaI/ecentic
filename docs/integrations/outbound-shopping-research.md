@@ -379,6 +379,13 @@ saved copy failures under that same instruction digest. Diamond Dotz and Terrapi
 Ridge Farms may replace only the final second candidate's result with the user's
 literal no-brand sentence. Peepers may keep all three messages unchanged and
 receive one judgment under the explicit non-exhaustive two-or-three-brand rule.
+Two additional explicit modes permit only Peepers' opening prefix `A friend` to
+become `A colleague`, or D'IYANU's `A cousin` to become `My brother`, after their
+original supplemental preflights found a conflicting recent relationship. These
+edits are separately bound as `correctiveEdits`; every other part, subject and
+follow-up remains exact, including D'IYANU's already-saved result-prefix edit.
+Both changed texts receive only their first final judgment. Existing completed
+Diamond, Terrapin and Danessa projections remain unchanged.
 D'IYANU may receive its first judgment of the already-saved prefix edit after the
 exact pre-compose timeout. Danessa may only reuse its original passing recheck
 locally after the exact pre-generation timeout, with identical original text,

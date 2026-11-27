@@ -41,6 +41,7 @@ import {
   heldReviewPreviewSchema,
 } from "@/server/utils/outbound/held-review-contract";
 import {
+  type FixedResultInput,
   type FixedResultRequest,
   type FixedResultState,
   fixedResultBindingSchema,
@@ -126,6 +127,9 @@ const JUDGE_PRECALL_TIMEOUT =
 export const fixedResultSourceProjection = (
   source: Job,
   hashes: { sourceRowHash: string; sourceOutputHash: string },
+  options: {
+    correctionMode?: FixedResultInput["sourceBinding"]["correctionMode"];
+  } = {},
 ) => {
   const input = heldThirdReviewInputSchema.parse(source.input);
   const state = heldThirdReviewStateSchema.parse(source.output);
@@ -150,7 +154,7 @@ export const fixedResultSourceProjection = (
       "The original receipt and writing context must remain intact.",
     );
   const candidates = writerCandidatesSchema.parse(state.writerCandidates ?? []);
-  const projection = (() => {
+  const originalProjection = (() => {
     if (
       ["Diamond Dotz", "Terrapin Ridge Farms"].includes(input.merchant.name)
     ) {
@@ -361,6 +365,54 @@ export const fixedResultSourceProjection = (
       attempts: 1 as const,
     };
   })();
+  const openingCorrection = (() => {
+    if (options.correctionMode === "brand-subset-opening")
+      return {
+        originalMode: "brand-subset",
+        before: "A friend",
+        after: "A colleague",
+        mode: options.correctionMode,
+      } as const;
+    if (options.correctionMode === "first-final-opening")
+      return {
+        originalMode: "first-final-judgment",
+        before: "A cousin",
+        after: "My brother",
+        mode: options.correctionMode,
+      } as const;
+    return null;
+  })();
+  const projection = (() => {
+    if (!openingCorrection) return originalProjection;
+    if (
+      originalProjection.correctionMode !== openingCorrection.originalMode ||
+      !originalProjection.originalParts.opening.startsWith(
+        `${openingCorrection.before} `,
+      )
+    )
+      throw new ConflictError(
+        "The original opening does not match this exact one-use relationship correction.",
+      );
+    const before = originalProjection.originalParts.opening;
+    const after =
+      openingCorrection.after + before.slice(openingCorrection.before.length);
+    return {
+      ...originalProjection,
+      correctionMode: openingCorrection.mode,
+      correctedParts: writerPartsSchema.parse({
+        ...originalProjection.originalParts,
+        opening: after,
+      }),
+      correctiveEdits: [{ field: "opening" as const, before, after }],
+    };
+  })();
+  if (
+    options.correctionMode &&
+    options.correctionMode !== projection.correctionMode
+  )
+    throw new ConflictError(
+      "The saved correction mode does not match the original source.",
+    );
   const sourceBinding = fixedResultBindingSchema.parse({
     sourceJobId: source.id,
     controlId: input.controlId,
@@ -386,6 +438,9 @@ export const fixedResultSourceProjection = (
     resultBefore: projection.originalParts.result,
     resultAfter: projection.correctedParts.result,
     correctedPartsHash: digest(projection.correctedParts),
+    ...("correctiveEdits" in projection
+      ? { correctiveEdits: projection.correctiveEdits }
+      : {}),
   });
   return {
     input,
@@ -465,7 +520,7 @@ const validateCopy = (
     )
   )
     throw new ConflictError(
-      "Only the fixed result and the explicit new peer context may change.",
+      "Only the explicitly bound copy correction and the new peer context may change.",
     );
   const settings = settingsForSender(
     context.proposedPolicy,
@@ -481,12 +536,42 @@ const validateCopy = (
   if (assembled.status !== "ready") throw new ValidationError(assembled.reason);
   if (messages && !isDeepStrictEqual(messages, assembled.messages))
     throw new ConflictError("The saved judgment messages changed.");
+  const openingEdit = projected.sourceBinding.correctiveEdits?.[0];
+  const expectedMessages = (() => {
+    if (!openingEdit) return projected.sourceMessages;
+    const original = assembleSequence(
+      context.prospect,
+      projected.receipt,
+      settings,
+      projected.originalParts,
+      {
+        copyRulesVersion: ROUND3_COPY_RULES_VERSION,
+      },
+    );
+    if (
+      original.status !== "ready" ||
+      (projected.sourceMessages &&
+        !isDeepStrictEqual(projected.sourceMessages, original.messages)) ||
+      original.messages[0]?.body.split(openingEdit.before).length !== 2
+    )
+      throw new ConflictError(
+        "The original three messages do not bind the exact opening correction.",
+      );
+    return original.messages.map((message) =>
+      message.step === 1
+        ? {
+            ...message,
+            body: message.body.replace(openingEdit.before, openingEdit.after),
+          }
+        : message,
+    );
+  })();
   if (
-    projected.sourceMessages &&
-    !isDeepStrictEqual(projected.sourceMessages, assembled.messages)
+    expectedMessages &&
+    !isDeepStrictEqual(expectedMessages, assembled.messages)
   )
     throw new ConflictError(
-      "This scoped correction must preserve all three exact saved messages.",
+      "This scoped correction must preserve every message except the exact audited opening substitution.",
     );
   const issues = deterministicCopyIssues({
     prospect: context.prospect,
@@ -506,7 +591,12 @@ const validateOriginalRecheck = (
   checked: Awaited<ReturnType<typeof checkedThirdReviewCopyContext>>,
 ) => {
   const mode = projected.sourceBinding.correctionMode;
-  if (mode !== "first-final-judgment" && mode !== "reuse-exact-rejudge") return;
+  if (
+    mode !== "first-final-judgment" &&
+    mode !== "first-final-opening" &&
+    mode !== "reuse-exact-rejudge"
+  )
+    return;
   const audit = projected.state.rejudgeAudit;
   const saved = savedThirdReviewParentCopy(checked.checked.parentState);
   const { round3CopyProof: _proof, ...baseDiscovery } =
@@ -542,16 +632,26 @@ const validateOriginalRecheck = (
     !isDeepStrictEqual(projected.originalContext.peers, saved.context.peers) ||
     projected.originalContext.globalVoiceNotes !==
       saved.context.globalVoiceNotes ||
-    !isDeepStrictEqual(edits.parts, projected.correctedParts) ||
+    !isDeepStrictEqual(edits.parts, projected.originalParts) ||
     !isDeepStrictEqual(edits.edits, projected.state.mechanicalEdits)
   )
     throw new ConflictError(
       "The original passing recheck and exact mechanical edit are not bound to the immutable second review.",
     );
+  const { correctiveEdits: _openingEdits, ...originalBinding } =
+    projected.sourceBinding;
+  const originalCopy =
+    mode === "first-final-opening"
+      ? {
+          ...projected,
+          correctedParts: projected.originalParts,
+          sourceBinding: originalBinding,
+        }
+      : projected;
   const assembled = validateCopy(
-    projected,
+    originalCopy,
     projected.originalContext,
-    projected.correctedParts,
+    projected.originalParts,
   ).assembled;
   const unchanged = isDeepStrictEqual(
     assembled.messages,
@@ -567,7 +667,14 @@ const prepare = async (
   request: FixedResultRequest,
 ) => {
   const { job, hashes } = await sourceAt(scope, request.sourceJobId);
-  const projected = fixedResultSourceProjection(job, hashes);
+  const merchant = heldThirdReviewInputSchema.parse(job.input).merchant.name;
+  const projected = fixedResultSourceProjection(job, hashes, {
+    ...(merchant === "Peepers by PeeperSpecs"
+      ? { correctionMode: "brand-subset-opening" as const }
+      : merchant === "D'IYANU"
+        ? { correctionMode: "first-final-opening" as const }
+        : {}),
+  });
   if (
     request.instructionHash !== projected.input.instructionHash ||
     request.expectedSourceRowHash !== hashes.sourceRowHash ||
@@ -704,7 +811,9 @@ const checkedRecovery = async (scope: TransactionScope, job: Job) => {
   )
     throw new ConflictError("The saved fixed-result judgment context changed.");
   const source = await sourceAt(scope, input.sourceBinding.sourceJobId);
-  const projected = fixedResultSourceProjection(source.job, source.hashes);
+  const projected = fixedResultSourceProjection(source.job, source.hashes, {
+    correctionMode: input.sourceBinding.correctionMode,
+  });
   if (
     !isDeepStrictEqual(projected.sourceBinding, input.sourceBinding) ||
     !isDeepStrictEqual(projected.originalContext, state.originalContext)

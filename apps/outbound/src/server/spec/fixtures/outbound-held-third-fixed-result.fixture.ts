@@ -111,6 +111,20 @@ const changeSyntheticParentCopy = async (
   assert.ok(parent);
   const state = Old.heldReviewStateSchema.parse(parent.output);
   const saved = Third.savedThirdReviewParentCopy(state);
+  // The new brother opening is checked against current peers, not this historical window.
+  const copyContext = {
+    ...saved.context,
+    peers:
+      company === "D'IYANU"
+        ? [
+            {
+              opening: "My brother wanted another product.",
+              relationship: "brother",
+              occasion: null,
+            },
+          ]
+        : saved.context.peers,
+  };
   const parts = {
     ...saved.parts,
     opening,
@@ -127,7 +141,7 @@ const changeSyntheticParentCopy = async (
         suppliedParts: parts,
         judge: passingCopyJudge,
         globalVoiceNotes: saved.context.globalVoiceNotes,
-        peers: [],
+        peers: copyContext.peers,
       },
     ),
   );
@@ -136,7 +150,8 @@ const changeSyntheticParentCopy = async (
     .set({
       output: Old.heldReviewStateSchema.parse({
         ...state,
-        preview: { ...saved.context, ...composed, parts },
+        previewContext: copyContext,
+        preview: { ...copyContext, ...composed, parts },
       }),
     })
     .where(eq(schema.outboundIntegrationJob.id, parent.id));
@@ -153,7 +168,7 @@ const changeSyntheticParentCopy = async (
           ...passedAudit,
           verdict: { ...passedAudit.verdict, evaluatedAt: checkedAt },
           checkedAt,
-          sourceContextHash: digest(saved.context),
+          sourceContextHash: digest(copyContext),
           sourceTextHash: digest(textOf(composed.messages)),
           sourceReceiptHash: researchHash(saved.receipt),
           originalVerdict: composed.messages[0]?.writing?.quality ?? null,
@@ -191,7 +206,7 @@ await changeSyntheticParentCopy(
 );
 await changeSyntheticParentCopy(
   "D'IYANU",
-  'My cousin was planning a trip, so I asked Google AI Mode for "large linen bags".',
+  'A cousin was planning a trip, so I asked Google AI Mode for "large linen bags".',
   true,
 );
 const controlId = Contract.heldThirdReviewInputSchema.parse(
@@ -359,10 +374,45 @@ const loadSource = async (company: string) => {
     .where(eq(schema.outboundIntegrationJob.id, source.id));
   assert.ok(row);
   const { sourceRowHash, sourceOutputHash, ...job } = row;
-  const projected = Recovery.fixedResultSourceProjection(job, {
+  const hashes = {
     sourceRowHash,
     sourceOutputHash,
+  };
+  const legacy = Recovery.fixedResultSourceProjection(job, hashes);
+  assert.equal(Object.hasOwn(legacy.sourceBinding, "correctiveEdits"), false);
+  const mode =
+    company === "Peepers by PeeperSpecs"
+      ? "brand-subset-opening"
+      : company === "D'IYANU"
+        ? "first-final-opening"
+        : legacy.correctionMode;
+  const projected = Recovery.fixedResultSourceProjection(job, hashes, {
+    correctionMode: mode,
   });
+  if (mode !== "brand-subset-opening" && mode !== "first-final-opening")
+    assert.deepEqual(projected, legacy);
+  else {
+    assert.deepEqual(projected.originalParts, legacy.originalParts);
+    assert.deepEqual(projected.sourceMessages, legacy.sourceMessages);
+    const edit = projected.sourceBinding.correctiveEdits?.[0];
+    assert.ok(edit);
+    assert.deepEqual(projected.correctedParts, {
+      ...legacy.originalParts,
+      opening: edit.after,
+    });
+    assert.equal(edit.before, legacy.originalParts.opening);
+    assert.equal(
+      edit.after,
+      edit.before.replace(
+        mode === "brand-subset-opening" ? /^A friend / : /^A cousin /,
+        mode === "brand-subset-opening" ? "A colleague " : "My brother ",
+      ),
+    );
+    assert.equal(
+      projected.sourceBinding.sourceCandidatePartsHash,
+      legacy.sourceBinding.sourceCandidatePartsHash,
+    );
+  }
   return {
     job,
     projected,
@@ -378,6 +428,7 @@ const loadSource = async (company: string) => {
 };
 const calls = { judge: 0 };
 const originalCopyContext = Third.checkedThirdReviewCopyContext;
+const originalPeers = Third.recentHeldThirdReviewPeers;
 const scenario = process.argv[2] ?? "normal";
 const companies =
   scenario === "normal"
@@ -388,7 +439,9 @@ const companies =
         "Terrapin Ridge Farms",
         "Peepers by PeeperSpecs",
       ]
-    : ["Diamond Dotz"];
+    : scenario === "opening-peer-change"
+      ? ["Peepers by PeeperSpecs"]
+      : ["Diamond Dotz"];
 for (const company of companies) {
   const { job, projected, request } = await loadSource(company);
   const hashes = {
@@ -440,7 +493,7 @@ for (const company of companies) {
   }
   const inspected = value(await Recovery.inspect(request));
   assert.deepEqual(inspected.parts, projected.correctedParts);
-  if (projected.correctionMode !== "fixed-result")
+  if (projected.correctionMode === "reuse-exact-rejudge")
     assert.deepEqual(inspected.parts, projected.originalParts);
   const noCallBefore = calls.judge;
   assert.equal(
@@ -453,6 +506,45 @@ for (const company of companies) {
     value(await Recovery.start(actor, request)).jobId,
     started.jobId,
   );
+  const openingEdit = projected.sourceBinding.correctiveEdits?.[0];
+  if (openingEdit) {
+    const relationship =
+      projected.correctionMode === "brand-subset-opening"
+        ? "colleague"
+        : "brother";
+    const conflict = {
+      opening: `My ${relationship} wanted another product.`,
+      relationship,
+      occasion: null,
+    };
+    const peerSpy = spyOn(
+      Third,
+      "recentHeldThirdReviewPeers",
+    ).mockResolvedValue([conflict]);
+    const rejected = await Recovery.run(
+      { jobId: started.jobId },
+      {
+        judge: async () => {
+          calls.judge++;
+          return passingCopyJudge();
+        },
+      },
+    );
+    assert.equal(rejected.success, false);
+    if (!rejected.success)
+      assert.match(rejected.error.message, /relationship was already used/);
+    assert.equal(calls.judge, noCallBefore);
+    const [unreserved] = await db
+      .select()
+      .from(schema.outboundIntegrationJob)
+      .where(eq(schema.outboundIntegrationJob.id, started.jobId));
+    assert.equal(unreserved?.status, "pending");
+    assert.equal(
+      Fixed.fixedResultStateSchema.parse(unreserved?.output).newJudgmentPasses,
+      0,
+    );
+    peerSpy.mockRestore();
+  }
   if (company === "Diamond Dotz") {
     const [prospect] = await db
       .select()
@@ -512,6 +604,14 @@ for (const company of companies) {
     {
       judge: async () => {
         calls.judge++;
+        if (scenario === "opening-peer-change")
+          spyOn(Third, "recentHeldThirdReviewPeers").mockResolvedValue([
+            {
+              opening: "A colleague wanted a different product.",
+              relationship: "colleague",
+              occasion: null,
+            },
+          ]);
         if (scenario === "source-change") {
           await db
             .update(schema.outboundIntegrationJob)
@@ -587,11 +687,43 @@ for (const company of companies) {
       state.preview?.generation.attempts,
       projected.sourceBinding.sourceGenerationAttempts,
     );
+    if (openingEdit) {
+      assert.equal(state.preview?.parts.opening, openingEdit.after);
+      assert.deepEqual(state.preview?.parts, {
+        ...projected.originalParts,
+        opening: openingEdit.after,
+      });
+      assert.equal(
+        state.preview?.messages[0]?.writing?.narrative.relationship,
+        projected.correctionMode === "brand-subset-opening"
+          ? "colleague"
+          : "brother",
+      );
+      if (projected.sourceMessages) {
+        assert.deepEqual(
+          textOf(state.preview.messages).slice(1),
+          projected.sourceMessages.slice(1),
+        );
+        assert.equal(
+          state.preview.messages[0]?.subject,
+          projected.sourceMessages[0]?.subject,
+        );
+        assert.equal(
+          state.preview.messages[0]?.body,
+          projected.sourceMessages[0]?.body.replace(
+            openingEdit.before,
+            openingEdit.after,
+          ),
+        );
+      }
+    }
   } else {
     assert.equal(state.preview, undefined);
     assert.equal(
       saved.status,
-      scenario === "source-change" || scenario.startsWith("judgment-")
+      scenario === "source-change" ||
+        scenario === "opening-peer-change" ||
+        scenario.startsWith("judgment-")
         ? "failed"
         : scenario === "superseded"
           ? "starting"
@@ -600,6 +732,7 @@ for (const company of companies) {
     assert.equal(
       !!state.unappliedVerdict,
       scenario === "source-change" ||
+        scenario === "opening-peer-change" ||
         scenario === "expired" ||
         scenario === "replay-expired" ||
         scenario.startsWith("judgment-"),
@@ -632,6 +765,7 @@ for (const company of companies) {
   );
   assert.equal(repeated.advanced, false);
   mock.restore();
+  assert.equal(Third.recentHeldThirdReviewPeers, originalPeers);
   setSystemTime();
 }
 assert.equal(calls.judge, scenario === "normal" ? 4 : 1);
