@@ -13,6 +13,10 @@ import { outreachMayStart } from "@/lib/outbound-scheduling";
 import { ConflictError } from "@/server/utils/error";
 import * as Direct from "@/server/utils/outbound/direct-mailbox";
 import * as Google from "@/server/utils/outbound/google";
+import {
+  type MailboxSyncDeferral,
+  MailboxSyncDeferredError,
+} from "@/server/utils/outbound/mailbox-sync";
 import * as MX from "@/server/utils/outbound/mx";
 import * as Research from "@/server/utils/outbound/research";
 import * as Store from "./store";
@@ -27,9 +31,7 @@ const value = <T>(
 
 const assertSyncBudget = (deadline: number | undefined, reserve = 25_000) => {
   if (deadline !== undefined && Date.now() >= deadline - reserve)
-    throw new ConflictError(
-      "Mailbox synchronization will continue in the next run.",
-    );
+    throw new MailboxSyncDeferredError("budget");
 };
 export const syncInbox = (
   inboxId: string,
@@ -228,21 +230,33 @@ export const syncAll = ({ deadline }: { deadline?: number } = {}) =>
       complete: boolean;
       processed: number;
       error?: string;
+      deferred?: MailboxSyncDeferral;
     }[];
     for (const inbox of inboxes) {
       if (deadline !== undefined && Date.now() >= deadline - 35_000) break;
       const synced = await syncInbox(inbox.id, { deadline });
+      const deferred =
+        !synced.success && synced.error instanceof MailboxSyncDeferredError
+          ? synced.error.reason
+          : null;
       results.push(
         synced.success
           ? { inboxId: inbox.id, ...synced.data }
-          : {
-              inboxId: inbox.id,
-              complete: false,
-              processed: 0,
-              error: synced.error.message,
-            },
+          : deferred
+            ? {
+                inboxId: inbox.id,
+                complete: false,
+                processed: 0,
+                deferred,
+              }
+            : {
+                inboxId: inbox.id,
+                complete: false,
+                processed: 0,
+                error: synced.error.message,
+              },
       );
-      if (!synced.success)
+      if (!synced.success && !deferred)
         await Mailboxes.updateSync(inbox, {
           error:
             "Inbox synchronization failed. Resolve it before delivery resumes.",
