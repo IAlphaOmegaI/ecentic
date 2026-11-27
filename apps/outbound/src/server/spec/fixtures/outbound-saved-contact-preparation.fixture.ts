@@ -23,6 +23,7 @@ import {
   shoppingQueryUrl,
 } from "@/server/utils/outbound/scrapellm-cooldown";
 import { requireTestDatabase } from "../helpers/database";
+import { compatibleSelectionFromPrompt } from "../helpers/outbound-product-use-fixture";
 import {
   buildSyntheticShoppingCapture,
   syntheticWriterParts,
@@ -65,7 +66,7 @@ const syntheticBrands = async ({ prompt }: { prompt: string }) => {
     id: string;
     quote: string;
   }[];
-  return {
+  return compatibleSelectionFromPrompt(prompt, {
     decision: "supported" as const,
     reason: "Exact synthetic answer brands.",
     brands: ["Canvas Works", "Harbor Label"].map((name) => {
@@ -73,7 +74,7 @@ const syntheticBrands = async ({ prompt }: { prompt: string }) => {
       if (!quote) throw new Error("Missing exact synthetic brand evidence.");
       return { name, quoteId: quote.id };
     }),
-  };
+  });
 };
 const settings = {
   ...syntheticWritingPolicy(defaultPlaybook),

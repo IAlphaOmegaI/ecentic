@@ -859,7 +859,7 @@
           "google": "Crea una aplicación web OAuth de Google, añade el URI de redirección de abajo y guarda su ID y secreto de cliente. Después, conecta cada buzón de Gmail.",
           "scrapellm": "Usa ScrapeLLM para capturar consultas reales de compradores y las respuestas que se muestran.",
           "firecrawl": "Usa Firecrawl para inspeccionar páginas de productos renderizadas y registrar pruebas de respaldo.",
-          "hubspot": "Utiliza una clave de servicio con acceso de lectura a contactos y empresas. La comprobación de conexión no modifica los registros del CRM."
+          "hubspot": "Utiliza un token de acceso de una aplicación privada con solo estos dos permisos de lectura: crm.objects.contacts.read y crm.objects.companies.read. La validación solo lee contactos y empresas."
         },
         "secret": {
           "apollo": "Clave de API de Apollo",
@@ -867,7 +867,7 @@
           "google": "Secreto de cliente OAuth de Google",
           "scrapellm": "Clave API de ScrapeLLM",
           "firecrawl": "Clave API de Firecrawl",
-          "hubspot": "Clave de servicio de HubSpot"
+          "hubspot": "Token de acceso de HubSpot"
         },
         "fields": {
           "clientId": "ID de cliente OAuth de Google",
@@ -975,8 +975,8 @@
       },
       "hubspot": {
         "title": "HubSpot",
-        "description": "Guarda una clave de servicio de HubSpot para sincronizar el CRM. Guardar la clave no inicia una sincronización.",
-        "keySaved": "Clave guardada"
+        "description": "Guarda un token de acceso de una aplicación privada de HubSpot para sincronizar el CRM. Guardar el token no inicia una sincronización.",
+        "keySaved": "Token guardado"
       }
     },
     "relationships": {

@@ -33,6 +33,7 @@ const Capture = await import("@/server/utils/outbound/live-shopping");
 const Discovery = await import(
   "@/server/utils/outbound/shopping-discovery-review"
 );
+const Presence = await import("@/server/utils/outbound/shopping-presence");
 const rules: CopyRulesContext = {
   copyRulesVersion: ROUND3_COPY_RULES_VERSION,
 };
@@ -60,6 +61,12 @@ const synthetic = async (
       product,
       productUrl: `https://${domain}/products/tote`,
     },
+    ...(company ===
+    "Midwinter Co. Alternative Bridal Rings and Modern Fine Jewelry"
+      ? {
+          pageText: `${product} is a large linen bag.\nShop Midwinter Co.\nReturn to shop\nMIDWINTER CO. WILMINGTON, DE.`,
+        }
+      : {}),
     ...(noBrands
       ? {
           listed: [],
@@ -183,6 +190,7 @@ describe("explicit round-three copy rules", () => {
       "Alice Lane Home Collection",
       "Peepers by PeeperSpecs",
       "Só Dança USA",
+      "Midwinter Co. Alternative Bridal Rings and Modern Fine Jewelry",
     ]) {
       const input = await synthetic(company);
       const receipt = value(
@@ -403,6 +411,114 @@ describe("explicit round-three copy rules", () => {
 });
 
 describe("full-answer and saved-citation spoken-name proof", () => {
+  test("the exact Midwinter short name needs its own rendered source and full raw absence", async () => {
+    const company =
+      "Midwinter Co. Alternative Bridal Rings and Modern Fine Jewelry";
+    const input = await synthetic(company, "midwinter.example");
+    const original = JSON.stringify({
+      evidence: input.evidence,
+      receipt: input.receipt,
+    });
+    const receipt = value(
+      Proof.projectRound3CopyProof(input.evidence, input.receipt),
+    );
+    expect(receipt.discovery?.round3CopyProof).toMatchObject({
+      fullName: company,
+      spokenName: "Midwinter Co.",
+      namesAbsent: true,
+    });
+    expect(Proof.validateRound3CopyProof(input.evidence, receipt)).toBeNull();
+    const oldProof = structuredClone(receipt);
+    oldProof.discovery!.round3CopyProof!.spokenName = company;
+    const oldBytes = JSON.stringify(oldProof);
+    expect(
+      Proof.validateRound3CopyProof(input.evidence, oldProof),
+    ).not.toBeNull();
+    expect(JSON.stringify(oldProof)).toBe(oldBytes);
+    expect(
+      spokenMerchantName({ company: "Another Co. Alternative Rings" }),
+    ).toBe("Another Co. Alternative Rings");
+
+    const unsupported = await buildSyntheticShoppingEvidence({
+      prospect: input.prospect,
+    });
+    expect(
+      Proof.projectRound3CopyProof(unsupported.evidence, unsupported.receipt)
+        .success,
+    ).toBe(false);
+    for (const name of [company, "Midwinter Co."]) {
+      const present = await buildSyntheticShoppingCapture({
+        prospect: input.prospect,
+        pageText: "Marlow Tote is a large linen bag. Shop Midwinter Co.",
+        answerText: `1. Canvas Works — Large carry bag.\n2. Harbor Label — Cotton shopper.\n\n${"Other choices. ".repeat(1600)}${name} also appears.`,
+      });
+      expect(present.evidence.answer.source.content).not.toContain(name);
+      const replay = Presence.replayShoppingCapture(present.evidence.answer);
+      const falseAbsence = {
+        ...input.receipt,
+        sources: [
+          present.evidence.answer.source,
+          ...present.evidence.browser.sources,
+        ],
+        discovery: {
+          ...input.receipt.discovery!,
+          answerHash: replay.answerHash,
+          linksHash: replay.linksHash,
+        },
+      };
+      expect(
+        Proof.projectRound3CopyProof(present.evidence, falseAbsence).success,
+      ).toBe(false);
+    }
+    const raw = input.evidence.browser.raw.find((entry) =>
+      entry.url.endsWith("/execute"),
+    );
+    if (!raw) throw new Error("Synthetic product raw missing");
+    const envelope = JSON.parse(raw.body);
+    const rendered = JSON.parse(envelope.stdout);
+    const url = "https://retailer.example/products/another-bag";
+    const body = JSON.stringify({
+      ...envelope,
+      stdout: JSON.stringify({
+        ...rendered,
+        url,
+        title: "Another bag",
+        text: `${"Other text. ".repeat(1600)}Shop Midwinter Co.`,
+      }),
+    });
+    const citedRaw = { ...raw, body, sha256: digest(body) };
+    const projected = Browser.projectBrowserExecution({
+      capture: citedRaw,
+      url,
+      id: "competitor-midwinter",
+      productName: input.prospect.product,
+      startedAt: citedRaw.receivedAt,
+    });
+    if (!projected) throw new Error("Synthetic cited page invalid");
+    expect(projected.source.content).not.toContain("Midwinter Co.");
+    const evidence = {
+      ...input.evidence,
+      browser: {
+        ...input.evidence.browser,
+        raw: [...input.evidence.browser.raw, citedRaw],
+        sources: [...input.evidence.browser.sources, projected.source],
+      },
+    };
+    const citedReceipt = {
+      ...receipt,
+      sources: [evidence.answer.source, ...evidence.browser.sources],
+    };
+    expect(Proof.projectRound3CopyProof(evidence, citedReceipt).success).toBe(
+      false,
+    );
+    expect(
+      Proof.validateRound3CopyProof(evidence, citedReceipt),
+    ).not.toBeNull();
+    expect(
+      JSON.stringify({ evidence: input.evidence, receipt: input.receipt }),
+    ).toBe(original);
+  });
+
   test("a short name outside the display projection still blocks absence", async () => {
     const input = await synthetic();
     const changed = await buildSyntheticShoppingEvidence({

@@ -68,6 +68,59 @@ describe("observed facts and writer-owned narrative", () => {
       ).toEqual([]);
   });
 
+  test("supported merchant abbreviations preserve sentence and absence boundaries", () => {
+    const fixture = writerFixture();
+    for (const company of [
+      "Midwinter Co. Alternative Bridal Rings and Modern Fine Jewelry",
+      "Midwinter Co.",
+      "Sample Inc. Fine Goods",
+      "Sample Ltd.",
+    ]) {
+      fixture.prospect.company = company;
+      const result = `It picked Alder and Birch. ${company} didn't come up in that answer.`;
+      expect(issuesFor(fixture, { ...fixture.parts, result })).toEqual([]);
+      expect(
+        issuesFor(fixture, {
+          ...fixture.parts,
+          result: `It picked Alder. It picked Birch. ${company} didn't come up.`,
+        }),
+      ).toContain("result: exceeds 2 sentences.");
+      expect(
+        issuesFor(fixture, {
+          ...fixture.parts,
+          result: "It picked Alder and Birch. Unsupported Co. didn't come up.",
+        }),
+      ).toContain("result: the absence statement must refer to this merchant.");
+    }
+    fixture.prospect.company = "Midwinter Co.";
+    // A period after the abbreviation still ends an actual sentence.
+    expect(
+      issuesFor(fixture, {
+        ...fixture.parts,
+        result:
+          "It picked Midwinter Co. It picked Alder and Birch. Midwinter Co. didn't come up.",
+      }),
+    ).toEqual(
+      expect.arrayContaining([
+        "result: exceeds 2 sentences.",
+        "result: the absent merchant cannot be named as a picked result.",
+      ]),
+    );
+    expect(
+      issuesFor(fixture, {
+        ...fixture.parts,
+        result:
+          "It picked Alder and Birch. Midwinter Co. didn't come up; Birch didn't come up.",
+      }),
+    ).toContain("result: a listed alternative cannot be described as absent.");
+    expect(
+      issuesFor(fixture, {
+        ...fixture.parts,
+        opening: 'I asked for "an unsupported query".',
+      }),
+    ).toContain("opening: quote the exact query once.");
+  });
+
   test("opening permits narrative but holds factual assertions, price, use, test and recipient claims", () => {
     const fixture = writerFixture();
     const query = fixture.receipt.queries[0]!.query;

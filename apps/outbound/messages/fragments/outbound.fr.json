@@ -859,7 +859,7 @@
           "google": "Créez une application Web OAuth Google, ajoutez l’URI de redirection ci-dessous, puis enregistrez son identifiant et son secret client. Connectez ensuite chaque boîte Gmail.",
           "scrapellm": "Utilisez ScrapeLLM pour capturer les requêtes réelles des acheteurs et les réponses affichées.",
           "firecrawl": "Utilisez Firecrawl pour inspecter les pages produit rendues et enregistrer les éléments de preuve.",
-          "hubspot": "Utilisez une clé de service avec un accès en lecture aux contacts et aux entreprises. La vérification de la connexion ne modifie pas les fiches du CRM."
+          "hubspot": "Utilisez le jeton d’accès d’une application privée avec uniquement ces deux autorisations de lecture : crm.objects.contacts.read et crm.objects.companies.read. La validation lit uniquement les contacts et les entreprises."
         },
         "secret": {
           "apollo": "Clé API Apollo",
@@ -867,7 +867,7 @@
           "google": "Secret client OAuth Google",
           "scrapellm": "Clé API ScrapeLLM",
           "firecrawl": "Clé API Firecrawl",
-          "hubspot": "Clé de service HubSpot"
+          "hubspot": "Jeton d’accès HubSpot"
         },
         "fields": {
           "clientId": "Identifiant client OAuth Google",
@@ -975,8 +975,8 @@
       },
       "hubspot": {
         "title": "HubSpot",
-        "description": "Enregistrez une clé de service HubSpot pour la synchronisation du CRM. Enregistrer la clé ne lance pas de synchronisation.",
-        "keySaved": "Clé enregistrée"
+        "description": "Enregistrez le jeton d’accès d’une application privée HubSpot pour la synchronisation du CRM. Enregistrer le jeton ne lance pas de synchronisation.",
+        "keySaved": "Jeton enregistré"
       }
     },
     "relationships": {

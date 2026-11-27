@@ -31,6 +31,8 @@ const spokenNames: Record<string, string> = {
   "Alice Lane Home Collection": "Alice Lane",
   "Peepers by PeeperSpecs": "Peepers",
   "Só Dança USA": "Só Dança",
+  "Midwinter Co. Alternative Bridal Rings and Modern Fine Jewelry":
+    "Midwinter Co.",
 };
 export const spokenMerchantName = (prospect: Pick<ProspectInput, "company">) =>
   spokenNames[prospect.company] ?? prospect.company;

@@ -72,7 +72,8 @@ export const seedReviewedPreview = async (prospectId: string) => {
     await prepareSyntheticShoppingEvidence(
       actor,
       { prospect: prospectId },
-      { pageText, intent: "unbranded-broad" },
+      // The human-reviewed release predates the automatic use-compatibility gate.
+      { pageText, intent: "unbranded-broad", legacyProductUse: true },
     ),
   );
   const evidence = {

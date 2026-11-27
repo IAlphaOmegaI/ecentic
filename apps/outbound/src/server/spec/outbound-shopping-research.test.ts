@@ -173,19 +173,19 @@ const fixture = {
   inboxId: "",
   receipt: null as ShoppingResearch | null,
 };
-const input = async () => {
+const input = async ({ legacyProductUse = false } = {}) => {
   const prepared = value(
     await prepareSyntheticShoppingEvidence(
       "operator",
       { prospect: fixture.prospectId },
-      { now: now.getTime() },
+      { now: now.getTime(), legacyProductUse },
     ),
   );
   fixture.receipt = prepared.request.receipt;
   return prepared.request;
 };
 
-const automaticFixture = async () => {
+const automaticFixture = async ({ legacyProductUse = false } = {}) => {
   const { db, schema, store, research } = active();
   const [campaign] = await db
     .insert(schema.outboundCampaign)
@@ -254,7 +254,9 @@ const automaticFixture = async () => {
       row.revision,
     ),
   );
-  const saved = value(await research.saveAndApply("operator", await input()));
+  const saved = value(
+    await research.saveAndApply("operator", await input({ legacyProductUse })),
+  );
   value(
     await draftSyntheticProspect("operator", { prospect: fixture.prospectId }),
   );
@@ -561,6 +563,260 @@ describe.skipIf(!endpoint)(
       fixture.inboxId = inbox.id;
     });
     afterAll(() => setSystemTime());
+    test("new automatic review requires use proof while exact historical human approval remains valid", async () => {
+      const { store, db, schema } = active();
+      await automaticFixture({ legacyProductUse: true });
+      const before = value(await store.getProspect(fixture.prospectId))!;
+      const policy = await store.policy();
+      const jobs = await db.select().from(schema.outboundIntegrationJob);
+      expect(fixture.receipt?.discovery?.brandProjection?.version).toBe(
+        "answer-brands-v1",
+      );
+      await expect(
+        db.transaction((transaction) =>
+          store.assertAutomaticDraftReviewReady(transaction, before),
+        ),
+      ).rejects.toThrow("source-bound product-use compatibility");
+      const generate = mock(generated);
+      expect(value(await runReview({ maxDrafts: 1 }, generate)).approved).toBe(
+        0,
+      );
+      expect(generate).not.toHaveBeenCalled();
+      const afterReview = await db.select().from(schema.outboundIntegrationJob);
+      expect(
+        afterReview.filter((job) => jobs.some((saved) => saved.id === job.id)),
+      ).toEqual(jobs);
+      const rejected = afterReview.filter(
+        (job) => !jobs.some((saved) => saved.id === job.id),
+      );
+      expect(rejected).toHaveLength(1);
+      expect(rejected[0]?.status).toBe("failed");
+      expect(rejected[0]?.error).toContain(
+        "source-bound product-use compatibility",
+      );
+      expect(value(await store.getProspect(before.id))).toEqual(before);
+      value(
+        await store.reviewProspect("human-reviewed-exact-copy", {
+          prospect: before.id,
+          revision: before.revision,
+          decision: "approve",
+        }),
+      );
+      const approved = value(await store.getProspect(before.id))!;
+      expect(approved.approvedBy).toBe("human-reviewed-exact-copy");
+      expect(approved.messages).toEqual(before.messages);
+      expect(approved.details).toEqual(before.details);
+      expect(approved.revision).toBe(before.revision);
+      expect(await store.policy()).toEqual(policy);
+      expect(await db.select().from(schema.outboundIntegrationJob)).toEqual(
+        afterReview,
+      );
+      value(
+        await store.savePlaybook("operator", {
+          ...policy.settings,
+          sendingEnabled: true,
+        }),
+      );
+      const claim = value(
+        await store.claimDelivery("operator", {
+          prospect: before.id,
+          inbox: fixture.inboxId,
+        }),
+      );
+      const send = mock(async () => ({
+        success: true as const,
+        data: {
+          providerMessageId: "historical-human-copy",
+          threadId: "historical-human-thread",
+        },
+      }));
+      expect(
+        value(await store.dispatchDelivery("operator", claim, send)).status,
+      ).toBe("accepted");
+      expect(send).toHaveBeenCalledTimes(1);
+    });
+
+    test("an in-flight automatic approval cannot apply a historical absence without use proof", async () => {
+      const { store, db, schema } = active();
+      await automaticFixture({ legacyProductUse: true });
+      const prospect = value(await store.getProspect(fixture.prospectId))!;
+      const policy = await store.policy();
+      const [review] = await db
+        .insert(schema.outboundIntegrationJob)
+        .values({
+          provider: "automation",
+          prospectId: prospect.id,
+          status: "starting",
+          input: {
+            operation: "draftReview",
+            prospectId: prospect.id,
+            prospectRevision: prospect.revision,
+            campaignId: prospect.campaignId,
+            playbookRevision: policy.revision,
+          },
+          output: { appliedProspectRevision: prospect.revision },
+        })
+        .returning();
+      if (!review)
+        throw new Error("Synthetic historical in-flight review missing.");
+      const rejected = await store.reviewProspect(
+        "outbound-draft-review",
+        {
+          prospect: prospect.id,
+          revision: prospect.revision,
+          decision: "approve",
+        },
+        { reviewJobId: review.id },
+      );
+      expect(rejected.success).toBe(false);
+      if (!rejected.success)
+        expect(rejected.error.message).toContain(
+          "source-bound product-use compatibility",
+        );
+      expect(value(await store.getProspect(prospect.id))).toEqual(prospect);
+      expect(await store.policy()).toEqual(policy);
+      expect(await db.select().from(schema.outboundSendAttempt)).toHaveLength(
+        0,
+      );
+    });
+
+    test("a pre-existing automatic approval without use proof cannot claim delivery", async () => {
+      const { store, db, schema } = active();
+      await automaticFixture({ legacyProductUse: true });
+      const prospect = value(await store.getProspect(fixture.prospectId))!;
+      value(
+        await store.reviewProspect("historical-fixture", {
+          prospect: prospect.id,
+          revision: prospect.revision,
+          decision: "approve",
+        }),
+      );
+      // Model the durable approval made by the earlier automatic implementation.
+      // No current automatic approval API is bypassed in the application.
+      await db
+        .update(schema.outboundProspect)
+        .set({ approvedBy: "automatic:historical-fixture" })
+        .where(eq(schema.outboundProspect.id, prospect.id));
+      await db
+        .update(schema.outboundRevision)
+        .set({ approvedBy: "automatic:historical-fixture" })
+        .where(eq(schema.outboundRevision.prospectId, prospect.id));
+      value(
+        await store.savePlaybook("operator", {
+          ...(await store.policy()).settings,
+          sendingEnabled: true,
+        }),
+      );
+      const before = value(await store.getProspect(prospect.id));
+      const rejected = await store.claimDelivery("operator", {
+        prospect: prospect.id,
+        inbox: fixture.inboxId,
+      });
+      expect(rejected.success).toBe(false);
+      if (!rejected.success)
+        expect(rejected.error.message).toContain(
+          "source-bound product-use compatibility",
+        );
+      expect(value(await store.getProspect(prospect.id))).toEqual(before);
+      expect(await db.select().from(schema.outboundSendAttempt)).toHaveLength(
+        0,
+      );
+    });
+
+    test.each(["unchanged", "missing", "source", "future", "held"] as const)(
+      "automatic final delivery independently replays %s use proof and current hold state",
+      async (change) => {
+        const { store, db, schema } = active();
+        const context = await automaticFixture();
+        expect(fixture.receipt?.discovery?.brandProjection?.version).toBe(
+          "answer-brands-v2",
+        );
+        const generate = mock(generated);
+        expect(
+          value(await runReview({ maxDrafts: 1 }, generate)).approved,
+        ).toBe(1);
+        expect(generate).not.toHaveBeenCalled();
+        const prospect = value(await store.getProspect(fixture.prospectId))!;
+        expect(prospect.approvedBy).toBe("automatic:outbound-draft-review");
+        value(
+          await store.savePlaybook("operator", {
+            ...(await store.policy()).settings,
+            sendingEnabled: true,
+          }),
+        );
+        const policy = await store.policy();
+        const claim = value(
+          await store.claimDelivery("operator", {
+            prospect: prospect.id,
+            inbox: fixture.inboxId,
+          }),
+        );
+        if (["missing", "source", "future"].includes(change)) {
+          const [original] = await db
+            .select()
+            .from(schema.outboundIntegrationJob)
+            .where(eq(schema.outboundIntegrationJob.id, context.research));
+          if (!original?.output) throw new Error("Bound research missing.");
+          const altered = shoppingResearchSchema.parse(
+            original.output["receipt"],
+          );
+          const discovery = altered.discovery;
+          if (!discovery?.productUseCompatibility || !discovery.brandProjection)
+            throw new Error("Real projected compatibility proof missing.");
+          if (change === "missing") {
+            discovery.brandProjection.version = "answer-brands-v1";
+            delete discovery.productUseCompatibility;
+          } else if (change === "source") {
+            discovery.productUseCompatibility.matches[0]!.product.artifact =
+              `sha256:${"a".repeat(64)}`;
+          } else {
+            discovery.productUseCompatibility.checkedAt = new Date(
+              now.getTime() + 60_000,
+            ).toISOString();
+          }
+          const receiptHash = createHash("sha256")
+            .update(JSON.stringify(altered))
+            .digest("hex");
+          await db
+            .update(schema.outboundIntegrationJob)
+            .set({
+              input: { ...original.input, receiptHash },
+              output: { ...original.output, receipt: altered },
+            })
+            .where(eq(schema.outboundIntegrationJob.id, original.id));
+        }
+        if (change === "held")
+          value(
+            await store.reviewProspect("owner", {
+              prospect: prospect.id,
+              revision: prospect.revision,
+              decision: "hold",
+              reason: "Exact source preview still requires human review.",
+            }),
+          );
+        const send = mock(async () => ({
+          success: true as const,
+          data: {
+            providerMessageId: "compatible-use-send",
+            threadId: "compatible-use-thread",
+          },
+        }));
+        const delivered = await store.dispatchDelivery("operator", claim, send);
+        expect(delivered.success).toBe(change === "unchanged");
+        expect(send).toHaveBeenCalledTimes(change === "unchanged" ? 1 : 0);
+        if (!delivered.success && change !== "held")
+          expect(delivered.error.message).toMatch(/product-use/);
+        expect(await store.policy()).toEqual(policy);
+        const after = value(await store.getProspect(prospect.id))!;
+        expect(after.messages).toEqual(prospect.messages);
+        expect(after.details).toEqual(prospect.details);
+        if (change === "held")
+          expect(after.holdReason).toBe(
+            "Exact source preview still requires human review.",
+          );
+      },
+    );
+
     test("automatic review approves current operator-researched drafts without redrafting or sending", async () => {
       const { store, review, db, schema } = active();
       await automaticFixture();
@@ -1515,6 +1771,9 @@ describe.skipIf(!endpoint)(
         "@/server/app/outbound/sequence-composition"
       );
       const seeded = await seedReviewedPreview(fixture.prospectId);
+      expect(seeded.request.receipt.discovery?.brandProjection?.version).toBe(
+        "answer-brands-v1",
+      );
       const protectedRows = JSON.stringify({
         source: seeded.source,
         review: seeded.review,

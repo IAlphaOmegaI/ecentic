@@ -84,9 +84,56 @@ export const shoppingBrandProofSchema = z
   })
   .strict();
 export type ShoppingBrandProof = z.infer<typeof shoppingBrandProofSchema>;
+export const PRODUCT_USE_COMPATIBILITY_VERSION = "answer-product-use-v1";
+const productUseExcerptSchema = z
+  .object({
+    id: text(80),
+    sourceId: text(80),
+    artifact: text(80),
+    context: z.enum([
+      "product-description",
+      "rendered-product",
+      "answer-card",
+      "answer-prose",
+    ]),
+    text: text(6000),
+  })
+  .strict();
+export const shoppingProductUseCompatibilitySchema = z
+  .object({
+    version: z.literal(PRODUCT_USE_COMPATIBILITY_VERSION),
+    method: z.literal("semantic"),
+    decision: z.literal("compatible"),
+    answerHash: digest,
+    linksHash: digest,
+    queryHash: digest,
+    catalogHash: digest,
+    checkedAt: z.string().datetime(),
+    reason: text(1500),
+    matches: z
+      .array(
+        z
+          .object({
+            name: text(100),
+            brandExcerptId: text(80),
+            product: productUseExcerptSchema,
+            answer: productUseExcerptSchema,
+            productQuote: text(1200),
+            answerQuote: text(1200),
+            reason: text(1000),
+          })
+          .strict(),
+      )
+      .min(2)
+      .max(3),
+  })
+  .strict();
+export type ShoppingProductUseCompatibility = z.infer<
+  typeof shoppingProductUseCompatibilitySchema
+>;
 export const shoppingBrandProjectionSchema = z
   .object({
-    version: z.literal("answer-brands-v1"),
+    version: z.enum(["answer-brands-v1", "answer-brands-v2"]),
     brands: z
       .array(
         z
@@ -145,38 +192,58 @@ export const shoppingCaptureHistorySchema = z
   })
   .strict();
 
-export const shoppingPurchaseHistorySchema = z.object({
-  version: z.literal("purchase-history-v1"),
-  auditOnly: z.literal(true),
-  jobId: z.string().uuid(),
-  query: text(4000),
-  queryHash: digest,
-  product: z.object({name: text(300), url: text(2000)}).strict(),
-  submittedAt: z.string().datetime(),
-  status: z.enum(["failed", "uncertain"]),
-  reason: text(2000),
-  raw: z.array(z.object({url: text(2000), status: z.number().int(), sha256: digest, receivedAt: z.string().datetime()}).strict()).max(20),
-}).strict();
+export const shoppingPurchaseHistorySchema = z
+  .object({
+    version: z.literal("purchase-history-v1"),
+    auditOnly: z.literal(true),
+    jobId: z.string().uuid(),
+    query: text(4000),
+    queryHash: digest,
+    product: z.object({ name: text(300), url: text(2000) }).strict(),
+    submittedAt: z.string().datetime(),
+    status: z.enum(["failed", "uncertain"]),
+    reason: text(2000),
+    raw: z
+      .array(
+        z
+          .object({
+            url: text(2000),
+            status: z.number().int(),
+            sha256: digest,
+            receivedAt: z.string().datetime(),
+          })
+          .strict(),
+      )
+      .max(20),
+  })
+  .strict();
 
 /** Presence is a server result over the full answer and cited links, never model output. */
-export const round3CopyProofSchema = z.object({
-  version: z.literal("round3-copy-proof-v1"),
-  sourceId: text(80),
-  answerHash: digest,
-  linksHash: digest,
-  fullName: text(300),
-  spokenName: text(300),
-  domain: text(300),
-  namesAbsent: z.literal(true),
-  citedSources: z.array(z.object({ id: text(80), url, sha256: digest }).strict()).max(8),
-  noProductBrands: z.object({
-    reviewedBy: text(300),
-    reviewedAt: z.string().datetime(),
-    reason: text(1500),
-    expectedAnswerHash: digest,
-    expectedLinksHash: digest,
-  }).strict().optional(),
-}).strict();
+export const round3CopyProofSchema = z
+  .object({
+    version: z.literal("round3-copy-proof-v1"),
+    sourceId: text(80),
+    answerHash: digest,
+    linksHash: digest,
+    fullName: text(300),
+    spokenName: text(300),
+    domain: text(300),
+    namesAbsent: z.literal(true),
+    citedSources: z
+      .array(z.object({ id: text(80), url, sha256: digest }).strict())
+      .max(8),
+    noProductBrands: z
+      .object({
+        reviewedBy: text(300),
+        reviewedAt: z.string().datetime(),
+        reason: text(1500),
+        expectedAnswerHash: digest,
+        expectedLinksHash: digest,
+      })
+      .strict()
+      .optional(),
+  })
+  .strict();
 export type Round3CopyProof = z.infer<typeof round3CopyProofSchema>;
 export const PRODUCT_LISTING_ABSENCE_VERSION = "product-listing-absence-v1";
 /** Inclusion proof only: these linked products establish no rank, total or brand. */
@@ -220,6 +287,7 @@ export const shoppingDiscoverySchema = z
     order: z.enum(["ranked", "unranked"]).optional(),
     assessmentVersion: z.literal("discovery-v2").optional(),
     brandProjection: shoppingBrandProjectionSchema.optional(),
+    productUseCompatibility: shoppingProductUseCompatibilitySchema.optional(),
     round3CopyProof: round3CopyProofSchema.optional(),
     productListings: shoppingProductListingsSchema.optional(),
     noGapProof: z
@@ -438,6 +506,43 @@ export const resultBrandTitlePrefix = (
 export const resultBrandNames = (receipt: ShoppingResearch): string[] =>
   receipt.discovery?.brandProjection?.brands.map((brand) => brand.name) ?? [];
 
+/** Automatic approval/delivery requires current use evidence; historical human approvals keep their exact receipts. */
+export const automaticAbsenceUseProblem = (
+  receipt: ShoppingResearch,
+): string | null => {
+  if (receipt.selected.kind !== "discovery-absence") return null;
+  const discovery = receipt.discovery;
+  const proof = discovery?.productUseCompatibility;
+  if (discovery?.brandProjection?.version !== "answer-brands-v2" || !proof)
+    return "Automatic absence copy needs source-bound product-use compatibility for its named alternatives.";
+  const parsed = shoppingProductUseCompatibilitySchema.safeParse(proof);
+  const brands = discovery.brandProjection.brands;
+  if (
+    !parsed.success ||
+    proof.answerHash !== discovery.answerHash ||
+    proof.linksHash !== discovery.linksHash ||
+    proof.matches.length !== brands.length ||
+    proof.matches.some((match, index) => {
+      const brand = brands[index];
+      return (
+        !brand ||
+        match.name !== brand.name ||
+        match.brandExcerptId !== brand.excerptIds[0] ||
+        match.product.sourceId === discovery.sourceId ||
+        match.answer.sourceId !== discovery.sourceId ||
+        !["product-description", "rendered-product"].includes(
+          match.product.context,
+        ) ||
+        !["answer-card", "answer-prose"].includes(match.answer.context) ||
+        !match.product.text.includes(match.productQuote) ||
+        !match.answer.text.includes(match.answerQuote)
+      );
+    })
+  )
+    return "The product-use decision no longer matches its named brands and exact source excerpts.";
+  return null;
+};
+
 export const resultBrandsProblem = (
   receipt: ShoppingResearch,
 ): string | null => {
@@ -521,6 +626,17 @@ export const resultBrandsProblem = (
     names.length
   )
     return "The observed brand claims differ from the projected result brands.";
+  if (
+    (projection.version === "answer-brands-v2" ||
+      receipt.discovery?.productUseCompatibility) &&
+    receipt.selected.kind !== "discovery-absence"
+  )
+    return "Product-use absence proof cannot authorize a different finding kind.";
+  if (
+    projection.version === "answer-brands-v2" ||
+    receipt.discovery?.productUseCompatibility
+  )
+    return automaticAbsenceUseProblem(receipt);
   return null;
 };
 export const normalizeResearchText = (value: string) =>

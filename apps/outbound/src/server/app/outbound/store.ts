@@ -106,6 +106,7 @@ import {
   sequenceRefreshStateSchema,
   validateSequenceRefreshReceipts,
 } from "@/lib/outbound-sequence-refresh";
+import { automaticAbsenceUseProblem } from "@/lib/outbound-shopping-research";
 import {
   validateWriterParts,
   validateWriterSubject,
@@ -513,13 +514,24 @@ export const assertAutomaticEvidence = async (
   transaction: TransactionScope,
   prospect: ProspectRow,
   approvedReplay?: ApprovedShoppingReplay,
+  {
+    requireProductUseCompatibility = false,
+  }: { requireProductUseCompatibility?: boolean } = {},
 ) => {
-  await assertShoppingEvidence(
+  const receipt = await assertShoppingEvidence(
     transaction,
     prospect,
     await policy(transaction),
     approvedReplay,
   );
+  if (
+    receipt &&
+    (requireProductUseCompatibility ||
+      prospect.approvedBy?.startsWith("automatic:"))
+  ) {
+    const problem = automaticAbsenceUseProblem(receipt);
+    if (problem) throw new ValidationError(problem);
+  }
   const job = await assertAutomaticContactEvidence(transaction, prospect);
   if (!prospect.sentStep && job?.output?.["clayRole"]) {
     const problem = clayContinuationProblem(job.output["clayRole"], prospect);
@@ -2916,7 +2928,9 @@ export const reviewProspectWithin = async (
         );
       await assertAutomaticReviewVerification(transaction, prospect);
     }
-    await assertAutomaticEvidence(transaction, prospect);
+    await assertAutomaticEvidence(transaction, prospect, undefined, {
+      requireProductUseCompatibility: Boolean(automatic),
+    });
     const entries = requireData(
       await Suppressions.find(Environment.SERVER, {}, { tx: transaction }),
     );
@@ -3432,7 +3446,9 @@ export const assertAutomaticDraftReviewReady = async (
       "This draft is not available for automatic review.",
     );
   await assertCampaignActive(transaction, prospect);
-  await assertAutomaticEvidence(transaction, prospect);
+  await assertAutomaticEvidence(transaction, prospect, undefined, {
+    requireProductUseCompatibility: true,
+  });
   await assertAutomaticReviewVerification(transaction, prospect);
   const attempts = requireData(
     await Attempts.find(

@@ -68,6 +68,7 @@ export const smokeSuites = [
   "src/server/spec/outbound-saved-contact-timezone.test.ts",
   "src/server/spec/outbound-shopping-facts.test.ts",
   "src/server/spec/outbound-discovery-review.test.ts",
+  "src/server/spec/outbound-product-use.test.ts",
   "src/server/spec/outbound-shopping-answer-cards.test.ts",
   "src/server/spec/outbound-shopping-presence-entities.test.ts",
   "src/server/spec/outbound-shopping-presence-aliases.test.ts",

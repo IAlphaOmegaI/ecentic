@@ -151,12 +151,14 @@ const draftCurrent = async () =>
       prospectId: fixture.prospectId,
     }),
   );
-const applyShoppingResearch = async () => {
+const applyShoppingResearch = async ({ legacyProductUse = false } = {}) => {
   const { fixtures, store } = active();
   value(
-    await fixtures.saveSyntheticShoppingEvidence("fixture", {
-      prospectId: fixture.prospectId,
-    }),
+    await fixtures.saveSyntheticShoppingEvidence(
+      "fixture",
+      { prospectId: fixture.prospectId },
+      { legacyProductUse },
+    ),
   );
   const drafted = await draftCurrent();
   const prospect = value(await store.getProspect(fixture.prospectId));
@@ -371,6 +373,36 @@ describe.skipIf(!endpoint)(
         (await active().db.select().from(active().schema.outboundProspect))[0]
           ?.linkedinStatus,
       ).toBe("invited");
+    });
+    test("automatic LinkedIn cannot send legacy absence copy for a no-email candidate without use proof", async () => {
+      const { store, linkedin, db, schema } = active();
+      await applyShoppingResearch({ legacyProductUse: true });
+      const before = value(await store.getProspect(fixture.prospectId));
+      if (!before) throw new Error("Synthetic no-email candidate missing.");
+      expect(before.details.email).toBe("");
+      expect(before.approvedBy).toBeNull();
+      const policy = await store.policy();
+      const accounts = await db.select().from(schema.outboundLinkedinAccount);
+      const transport = provider();
+      expect(value(await linkedin.run({}, transport))).toMatchObject({
+        attempted: 0,
+        accepted: 0,
+        uncertain: 0,
+      });
+      expect(await rows()).toHaveLength(0);
+      expect(transport.getAccount).not.toHaveBeenCalled();
+      expect(transport.resolveUser).not.toHaveBeenCalled();
+      expect(transport.sendInvitation).not.toHaveBeenCalled();
+      expect(transport.startChat).not.toHaveBeenCalled();
+      expect(transport.sendMessage).not.toHaveBeenCalled();
+      expect(await store.policy()).toEqual(policy);
+      expect(await db.select().from(schema.outboundLinkedinAccount)).toEqual(
+        accounts,
+      );
+      const after = value(await store.getProspect(before.id));
+      expect(after?.details).toEqual(before.details);
+      expect(after?.messages).toEqual(before.messages);
+      expect(after?.approvedBy).toBeNull();
     });
     test("current shopping research can use its original selected contact after campaign and writing revisions", async () => {
       const { db, schema, store, linkedin } = active();

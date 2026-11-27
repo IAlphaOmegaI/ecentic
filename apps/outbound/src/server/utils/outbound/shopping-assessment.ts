@@ -800,7 +800,9 @@ export type AssessmentResult = (
     receiptHash: string;
     attempts: {
       attempt: 1 | 2;
-      selection: import("./shopping-discovery-review").ResultBrandSelection;
+      selection:
+        | import("./shopping-discovery-review").ResultBrandSelection
+        | import("./shopping-discovery-review").ResultBrandUseSelection;
       reason: string;
       completedAt: string;
     }[];

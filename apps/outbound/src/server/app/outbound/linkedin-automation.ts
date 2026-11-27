@@ -353,7 +353,9 @@ const eligible = async (
   )
     return hold("linkedin-prospect-stopped");
   await Store.assertCampaignActive(transaction, prospect);
-  await Store.assertAutomaticEvidence(transaction, prospect);
+  await Store.assertAutomaticEvidence(transaction, prospect, undefined, {
+    requireProductUseCompatibility: true,
+  });
   await Store.assertAppliedCompositionWithin(transaction, prospect);
   const campaign = value(
     await Campaigns.get(Environment.SERVER, prospect.campaignId, {

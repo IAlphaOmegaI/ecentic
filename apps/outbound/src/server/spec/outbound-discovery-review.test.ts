@@ -7,6 +7,7 @@ import {
   shoppingResearchSchema,
   validateShoppingResearch,
 } from "@/lib/outbound-shopping-research";
+import { compatibleBrandSelection } from "./helpers/outbound-product-use-fixture";
 import { buildSyntheticShoppingCapture } from "./helpers/outbound-shopping-fixture";
 
 mock.module("server-only", () => ({}));
@@ -299,14 +300,14 @@ test("brand holds retain both rejected selections as bounded audit-only diagnost
   const base = Review.projectUnrankedDiscoveryAbsence(evidence);
   if (base.status !== "researched") throw new Error(base.reason);
   const catalog = Review.resultBrandCatalog(evidence);
-  const selection = {
+  const selection = await compatibleBrandSelection(evidence, {
     decision: "supported" as const,
     reason: "Synthetic unsupported selection.",
     brands: [
       { name: "Invented", quoteId: catalog[0]!.id },
       { name: "Birch", quoteId: catalog[1]!.id },
     ],
-  };
+  });
   const original = JSON.stringify({ evidence, receipt: base.receipt });
   const generate = mock(async () => selection);
   const result = await Review.assessResultBrands(
@@ -344,15 +345,16 @@ test("a repaired brand selection keeps rejected diagnostics outside the unchange
     receipt: base.receipt,
     deadline: Date.now() + 40000,
   };
-  const valid = {
+  const valid = await compatibleBrandSelection(evidence, {
     decision: "supported" as const,
     reason: "Synthetic exact brands.",
     brands: ["Alder", "Birch"].map((name, index) => ({
       name,
       quoteId: catalog[index]!.id,
     })),
-  };
+  });
   const direct = await Review.assessResultBrands(input, {
+    now: () => fixture.now,
     generate: async () => valid,
   });
   const generate = mock(async ({ prompt }: { prompt: string }) =>
@@ -366,7 +368,10 @@ test("a repaired brand selection keeps rejected diagnostics outside the unchange
           ],
         },
   );
-  const repaired = await Review.assessResultBrands(input, { generate });
+  const repaired = await Review.assessResultBrands(input, {
+    generate,
+    now: () => fixture.now,
+  });
   if (
     !direct.success ||
     direct.data.status !== "researched" ||
@@ -389,14 +394,14 @@ test("an interrupted brand repair retains earlier rejection without retry or app
   const generate = mock(async ({ prompt }: { prompt: string }) => {
     if (JSON.parse(prompt).previous)
       throw new Error("Synthetic interrupted repair");
-    return {
+    return compatibleBrandSelection(evidence, {
       decision: "supported" as const,
       reason: "Synthetic rejection",
       brands: [
         { name: "Invented", quoteId: catalog[0]!.id },
         { name: "Birch", quoteId: catalog[1]!.id },
       ],
-    };
+    });
   });
   const result = await Review.assessResultBrands(
     { ...evidence, receipt: base.receipt, deadline: Date.now() + 40000 },
@@ -602,7 +607,7 @@ test("brand assessment repairs once and provider uncertainty never makes another
     {
       generate: async () => {
         calls++;
-        return {
+        return compatibleBrandSelection(evidence, {
           decision: "supported",
           reason: "Synthetic selection",
           brands: [
@@ -612,7 +617,7 @@ test("brand assessment repairs once and provider uncertainty never makes another
             },
             { name: "Birch", quoteId: catalog[1]?.id ?? "" },
           ],
-        };
+        });
       },
     },
   );
@@ -699,14 +704,14 @@ test("normal reviewed research returns brand-ready facts while a durable caller 
       id: string;
       quote: string;
     }[];
-    return {
+    return compatibleBrandSelection(evidence, {
       decision: "supported" as const,
       reason: "Synthetic brand selection",
       brands: ["Alder", "Birch"].map((name) => ({
         name,
         quoteId: quotes.find((quote) => quote.quote.startsWith(name))?.id ?? "",
       })),
-    };
+    });
   };
   const input = {
     ...evidence,

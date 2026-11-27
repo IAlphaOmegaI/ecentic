@@ -61,6 +61,44 @@ const proofFor = (
     );
   const names = { ...merchant, aliases: [...merchant.aliases, spokenName] };
   const product = evidence.answer.job.query.product;
+  if (spokenName === "Midwinter Co." && merchant.name !== spokenName) {
+    const source = evidence.browser.sources.find(
+      (source) => source.kind === "product" && source.url === product.url,
+    );
+    const raw =
+      source &&
+      evidence.browser.raw.find(
+        (capture) => source.artifact === `sha256:${capture.sha256}`,
+      );
+    const projected =
+      source && raw
+        ? projectBrowserExecution({
+            capture: raw,
+            url: source.url,
+            id: source.id,
+            productName: product.name,
+            startedAt: raw.receivedAt,
+            now,
+          })
+        : null;
+    if (
+      !projected ||
+      !source ||
+      !isDeepStrictEqual(projected.source, source) ||
+      !matchMerchantText(
+        [
+          projected.rendered.title,
+          projected.rendered.text,
+          ...projected.rendered.headings,
+        ].join("\n"),
+        { ...merchant, name: spokenName, aliases: [] },
+        product,
+      ).includes(spokenName)
+    )
+      throw new Error(
+        "The configured Midwinter spoken name needs intact rendered merchant-page support.",
+      );
+  }
   if (
     [...full.answerVariants, ...full.citationText].some(
       (text) => matchMerchantText(text, names, product).length,

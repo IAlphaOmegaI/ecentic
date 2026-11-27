@@ -859,7 +859,7 @@
           "google": "请创建 Google OAuth Web 应用，添加下方的重定向 URI，并保存其客户端 ID 和客户端密钥。然后连接各个 Gmail 收件箱。",
           "scrapellm": "使用 ScrapeLLM 获取真实的购物搜索查询及其显示的回答。",
           "firecrawl": "使用 Firecrawl 检查渲染后的商品页面，并记录支持证据。",
-          "hubspot": "请使用具有联系人和公司读取权限的服务密钥。连接检查不会修改 CRM 记录。"
+          "hubspot": "使用私有应用的访问令牌，仅设置以下两个读取权限：crm.objects.contacts.read 和 crm.objects.companies.read。验证只会读取联系人和公司。"
         },
         "secret": {
           "apollo": "Apollo API 密钥",
@@ -867,7 +867,7 @@
           "google": "Google OAuth 客户端密钥",
           "scrapellm": "ScrapeLLM API 密钥",
           "firecrawl": "Firecrawl API 密钥",
-          "hubspot": "HubSpot 服务密钥"
+          "hubspot": "HubSpot 访问令牌"
         },
         "fields": {
           "clientId": "Google OAuth 客户端 ID",
@@ -975,8 +975,8 @@
       },
       "hubspot": {
         "title": "HubSpot",
-        "description": "保存用于 CRM 同步的 HubSpot 服务密钥。保存密钥不会启动同步。",
-        "keySaved": "密钥已保存"
+        "description": "保存用于 CRM 同步的 HubSpot 私有应用访问令牌。保存令牌不会启动同步。",
+        "keySaved": "令牌已保存"
       }
     },
     "relationships": {

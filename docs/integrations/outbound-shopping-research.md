@@ -55,6 +55,27 @@ assessment; an interrupted repair retains earlier selections in its failure
 receipt. Diagnostics never become claims, copy proof or retry permission. Existing
 successful projections and stored receipts keep their original hashes.
 
+New automatic absence assessments use `answer-brands-v2` and an
+`answer-product-use-v1` compatibility proof. The existing brand-selection call
+receives the merchant's exact same-name, same-URL structured Product description
+when present (otherwise its intact rendered product text), plus each saved answer
+card's original section, title and following description. A generic shared phrase
+is not enough: every named alternative must serve the merchant product's stated
+use. The model must select exact product and answer context IDs and quote both;
+an incompatible or uncertain use holds without another semantic attempt. Missing
+brands do not authorize invented alternatives. Brand-format repairs retain their
+existing one-repair budget; no additional stage or provider request is added.
+
+The server binds this decision to the original product artifact, full answer and
+citations, query, context catalog and exact selected quotations. Raw replay checks
+all bindings before later use. The existing six-criterion copy judge receives the
+same product-use proof and independently checks the opening and relevance against
+it, without changing its call budget. Normal automatic draft review, approval and
+delivery require this proof for an absence finding, including older automatic
+approvals. Historical receipts still parse/replay byte-for-byte, and explicit
+human-reviewed existing approvals keep their original copy/receipt/policy hashes.
+No historical decision is rewritten or automatically retried.
+
 Day 3 is exactly `Bumping this!`; day 7 is `{first}?`, or `Worth a chat?` without a
 first name. Transport keeps both in the first email’s thread and quotes its body,
 including the opt-out and postal address. New writer schemas and checks have no
@@ -502,6 +523,13 @@ writing snapshot binds the derived receipt containing raw-replayed product-listi
 and full/spoken-name absence proof. Original research/capture rows are not changed.
 Store saves and approvals replay this derivation and the saved version; fixed day-3
 and day-7 replies remain bound to the original approved research hash.
+
+The exact catalog label `Midwinter Co. Alternative Bridal Rings and Modern Fine
+Jewelry` maps to `Midwinter Co.` only with intact rendered merchant-page support.
+New and replayed absence proofs check both names across the complete answer,
+citations and saved cited pages. Previously saved copy and receipts are never
+rewritten or reopened by this mapping. Sentence and absence-clause parsing retain
+periods inside supported names, while genuine sentence endings still count.
 
 `composeForProspect` already accepts exact `suppliedParts` with `preview: true`;
 this skips writer generation and uses the normal one-use quality judgment. It

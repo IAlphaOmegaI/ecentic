@@ -859,7 +859,7 @@
           "google": "Google OAuthのウェブアプリケーションを作成し、下記のリダイレクトURIを追加して、クライアントIDとクライアントシークレットを保存してください。その後、各Gmail受信トレイを接続します。",
           "scrapellm": "ScrapeLLMで実際の購入者の検索クエリと表示された回答を取得します。",
           "firecrawl": "Firecrawlで描画された商品ページを確認し、裏付けとなる情報を記録します。",
-          "hubspot": "コンタクトと会社への読み取り権限を持つサービスキーを使用してください。接続確認ではCRMのレコードは変更されません。"
+          "hubspot": "プライベートアプリのアクセストークンを使用し、読み取りスコープは crm.objects.contacts.read と crm.objects.companies.read の2つだけを設定してください。検証ではコンタクトと会社の読み取りのみを行います。"
         },
         "secret": {
           "apollo": "Apollo APIキー",
@@ -867,7 +867,7 @@
           "google": "Google OAuthクライアントシークレット",
           "scrapellm": "ScrapeLLM APIキー",
           "firecrawl": "Firecrawl APIキー",
-          "hubspot": "HubSpotサービスキー"
+          "hubspot": "HubSpotアクセストークン"
         },
         "fields": {
           "clientId": "Google OAuthクライアントID",
@@ -975,8 +975,8 @@
       },
       "hubspot": {
         "title": "HubSpot",
-        "description": "CRM同期用のHubSpotサービスキーを保存します。キーを保存しても同期は開始されません。",
-        "keySaved": "キー保存済み"
+        "description": "CRM同期用のHubSpotプライベートアプリのアクセストークンを保存します。トークンを保存しても同期は開始されません。",
+        "keySaved": "トークンを保存済み"
       }
     },
     "relationships": {

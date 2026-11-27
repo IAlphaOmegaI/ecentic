@@ -14,6 +14,7 @@ import { eq, sql } from "drizzle-orm";
 import { defaultPlaybook } from "@/lib/outbound";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import { requireTestDatabase } from "./helpers/database";
+import { compatibleSelectionFromPrompt } from "./helpers/outbound-product-use-fixture";
 import {
   buildSyntheticShoppingEvidence,
   syntheticWriterParts,
@@ -74,7 +75,7 @@ const syntheticBrands = async ({ prompt }: { prompt: string }) => {
     id: string;
     quote: string;
   }[];
-  return {
+  return compatibleSelectionFromPrompt(prompt, {
     decision: "supported" as const,
     reason: "Exact synthetic answer brands.",
     brands: ["Canvas Works", "Harbor Label"].map((name) => {
@@ -85,7 +86,7 @@ const syntheticBrands = async ({ prompt }: { prompt: string }) => {
         quoteId: quote.id,
       };
     }),
-  };
+  });
 };
 const settings = syntheticWritingPolicy({
   ...defaultPlaybook,

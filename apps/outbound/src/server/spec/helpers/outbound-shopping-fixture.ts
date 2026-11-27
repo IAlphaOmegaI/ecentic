@@ -34,6 +34,8 @@ export type SyntheticShoppingOptions = {
   pageText?: string;
   structured?: string[];
   intent?: "unbranded-specific" | "unbranded-broad";
+  shopper?: { question: string; category: string; attribute: string };
+  legacyProductUse?: boolean;
 };
 
 /** Synthetic provider-shaped data only. No source here describes a real merchant or search. */
@@ -64,7 +66,8 @@ export const buildSyntheticShoppingCapture = async (
   const structured = input.structured ?? [];
   const intent = input.intent ?? "unbranded-specific";
   const question =
-    intent === "unbranded-broad" ? "linen carry bags" : "large linen bags";
+    input.shopper?.question ??
+    (intent === "unbranded-broad" ? "linen carry bags" : "large linen bags");
   const timestamp = new Date(now).toISOString();
   const job = {
     id: randomUUID(),
@@ -72,7 +75,7 @@ export const buildSyntheticShoppingCapture = async (
     query: {
       product,
       merchant,
-      category: "linen bags",
+      category: input.shopper?.category ?? "linen bags",
       country: "US",
       surface: "google_ai_mode" as const,
       prompt: question,
@@ -153,7 +156,7 @@ export const buildSyntheticShoppingCapture = async (
       {
         product,
         merchant,
-        category: "linen bags",
+        category: input.shopper?.category ?? "linen bags",
         country: "US",
         browser,
         intent,
@@ -163,8 +166,10 @@ export const buildSyntheticShoppingCapture = async (
         now: () => now,
         generate: async ({ prompt }) => ({
           question,
-          category: "bag",
-          attribute: intent === "unbranded-broad" ? "linen" : "large",
+          category: input.shopper?.category ?? "bag",
+          attribute:
+            input.shopper?.attribute ??
+            (intent === "unbranded-broad" ? "linen" : "large"),
           excerptIds: [JSON.parse(prompt).excerpts[0].id],
         }),
       },
@@ -301,13 +306,24 @@ export const buildSyntheticShoppingEvidence = async (
         )
       : result;
   if (projected.status !== "researched") throw new Error(projected.reason);
+  const receipt =
+    !input.legacyProductUse &&
+    projected.receipt.selected.kind === "discovery-absence"
+      ? await (
+          await import("./outbound-product-use-fixture")
+        ).withCompatibleProductUse(
+          capture.evidence,
+          projected.receipt,
+          capture.now,
+        )
+      : projected.receipt;
   const problem = Assessment.validateFactResearch(
     capture.evidence,
-    projected.receipt,
+    receipt,
     capture.now,
   );
   if (problem) throw new Error(problem);
-  return { ...capture, selection, receipt: projected.receipt };
+  return { ...capture, selection, receipt };
 };
 
 /** Valid new formula for fixtures, retaining every configured sender profile and identity. */

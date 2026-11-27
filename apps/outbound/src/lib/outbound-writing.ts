@@ -280,11 +280,44 @@ const configuredPhrases = (text: string) =>
     .split(/[;\n]+/)
     .map((phrase) => phrase.trim())
     .filter(Boolean);
-const sentenceParts = (text: string) =>
-  text
-    .split(/[.!?](?:["”']?\s+|["”']?$)/)
-    .map((sentence) => sentence.trim())
+const sentenceParts = (text: string, names: string[], clauses = false) => {
+  // Punctuation inside an exact supported name is not a sentence boundary.
+  // A terminal company abbreviation may continue into a predicate/list, but
+  // still ends a sentence before e.g. "It picked ...".
+  const protectedPeriods = new Set(
+    names.filter(Boolean).flatMap((name) =>
+      [...text.matchAll(new RegExp(phrasePattern(name).source, "giu"))].flatMap(
+        (match) => {
+          const start = match.index + (match[1]?.length ?? 0);
+          const matchedName = match[0].slice(match[1]?.length ?? 0);
+          return [...matchedName.matchAll(/\./g)].flatMap((period) => {
+            const index = start + period.index;
+            const internal = period.index < matchedName.length - 1;
+            const continuedAbbreviation =
+              /\b(?:Co|Inc|Ltd|Corp)\.$/i.test(matchedName) &&
+              /^\s+(?:and|or|didn't|did not|wasn't|was not|weren't|were not|is|isn't|has|had|was|were)\b/.test(
+                text.slice(index + 1),
+              );
+            return internal || continuedAbbreviation ? [index] : [];
+          });
+        },
+      ),
+    ),
+  );
+  const boundaries = [
+    ...text.matchAll(clauses ? /[.!?]/g : /[.!?](?:["”']?\s+|["”']?$)/g),
+  ]
+    .filter((match) => !protectedPeriods.has(match.index))
+    .map((match) => ({
+      start: match.index,
+      end: match.index + match[0].length,
+    }));
+  return [...boundaries, { start: text.length, end: text.length }]
+    .map((boundary, index) =>
+      text.slice(boundaries[index - 1]?.end ?? 0, boundary.end).trim(),
+    )
     .filter(Boolean);
+};
 const quotedStrings = (text: string) =>
   [...text.matchAll(/["“]([^"”]+)["”]/g)].map((match) => match[1] ?? "");
 const stripQuotes = (text: string) => text.replace(/["“][^"”]*["”]/g, " ");
@@ -1004,6 +1037,16 @@ export const validateWriterParts = (
   const brandProblem = noProductBrands ? null : resultBrandsProblem(receipt);
   if (brandProblem) return [brandProblem];
   const brands = resultBrandNames(receipt);
+  const sentenceNames = [
+    prospect.company,
+    ...(round3 ? [spokenMerchantName(prospect)] : []),
+    receipt.product.name,
+    ...brands,
+    ...receipt.discovery.listed.flatMap((entry) => [
+      entry.name,
+      entry.seller ?? "",
+    ]),
+  ];
   if (usesBrandResult(receipt)) {
     const named = brands.filter((name) => hasPhrase(parts.result, name));
     if (!noProductBrands && (named.length < 2 || named.length > 3))
@@ -1062,13 +1105,12 @@ export const validateWriterParts = (
   ] as const) {
     if (countWords(parts[field]) > limit)
       issues.push(`${field}: exceeds ${limit} words.`);
-    if (sentenceParts(parts[field]).length > sentences)
+    const sentencesInPart = sentenceParts(parts[field], sentenceNames);
+    if (sentencesInPart.length > sentences)
       issues.push(
         `${field}: exceeds ${sentences} sentence${sentences > 1 ? "s" : ""}.`,
       );
-    if (
-      sentenceParts(parts[field]).some((sentence) => countWords(sentence) > 25)
-    )
+    if (sentencesInPart.some((sentence) => countWords(sentence) > 25))
       issues.push(`${field}: a sentence exceeds 25 words.`);
   }
   if (
@@ -1230,7 +1272,9 @@ export const validateWriterParts = (
       "your name",
       "you",
     ];
-    const clauses = parts.result.split(/[.!?;]|\b(?:but|while)\b/i);
+    const clauses = sentenceParts(parts.result, sentenceNames, true).flatMap(
+      (sentence) => sentence.split(/;|\b(?:but|while)\b/i),
+    );
     const absentMerchant = clauses.some(
       (clause) =>
         negative.test(clause) &&
