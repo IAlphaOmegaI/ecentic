@@ -8,6 +8,7 @@ import {
   heldReviewManifestSchema,
   heldReviewStateSchema,
 } from "./held-review-contract";
+import { queryPreparationRepairReferenceSchema } from "./held-third-query-repair-contract";
 import {
   aiCaptureSchema,
   aiJobSchema,
@@ -151,6 +152,7 @@ export const heldThirdReviewStateSchema = heldReviewStateSchema
     purchaseBaseline: z.number().int().min(0).max(2),
     priorPurchases: z.array(heldThirdPurchaseSchema).max(4),
     round3ReservedAt: z.string().datetime().optional(),
+    queryPreparationRepair: queryPreparationRepairReferenceSchema.optional(),
     rejudgeReservedAt: z.string().datetime().optional(),
     rejudgeAudit: z
       .object({

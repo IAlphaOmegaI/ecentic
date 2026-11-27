@@ -383,3 +383,28 @@ rows, candidates, verdicts and budget remain unchanged. The exporter independent
 replays these bindings and presents the supplemental outcome beside its source
 failure. `outbound-held-third-fixed-result.test.ts` covers all five modes, source
 and hold changes, expired and superseded leases, and interrupted judgments.
+
+The one-time `heldDiscoveryRound3QueryPreparationRepair` audit is limited to the
+four exact unspent LA Girl, Spyderco, Só Dança and Good American children. The
+operator supplies all four original SQL row/output hashes together after the
+entire main cohort is terminal. One transaction archives the exact canonical
+original rows and outputs, then requeues those same four children for preparation;
+a failed request or write rolls back the whole batch. The other seventeen children,
+all prospects and the shared reservation budget remain unchanged. Good American's
+captured view may only be reconstructed from its original held raw bytes using
+the same-page ProductGroup/color proof. Original captures and their dates remain
+in the immutable archive.
+
+`scripts/outbound/held-third-query-repair.ts --requests <four-requests.json>
+--instructions <authorized-instruction.txt>` defaults to read-only inspection and
+requires `TZ=UTC`; `--execute` stages the atomic repair. Each child receives its
+explicit authorized phrase through the audited state reference while its original
+input remains unchanged. Resuming the ordinary main coordinator requires a fresh
+semantic review of that exact phrase. The repair itself calls no model or shopping
+provider, records no semantic pass, and reserves no search. Ended or uncertain
+semantic reviews cannot be reopened by repeating the repair command. Normal query
+reservation limits and provider pacing still apply. The readiness guard and
+exporter replay the archive, reference, exact product capture and original history
+through later query and polling stages. `outbound-held-third-query-repair.test.ts`
+covers four-row rollback, idempotence, tamper rejection, the normal preparation
+path with a test model, one purchase per child and zero purchases after failed reviews.

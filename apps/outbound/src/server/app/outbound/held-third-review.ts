@@ -55,6 +55,11 @@ import {
   heldReviewStateSchema,
   heldReviewWrittenSchema,
 } from "@/server/utils/outbound/held-review-contract";
+import { validateQueryPreparationRepair } from "@/server/utils/outbound/held-third-query-repair";
+import {
+  QUERY_PREPARATION_REPAIR_CASES,
+  QUERY_PREPARATION_REPAIR_CONTROL,
+} from "@/server/utils/outbound/held-third-query-repair-contract";
 import {
   HELD_THIRD_REVIEW_ACTIONS,
   HELD_THIRD_REVIEW_INSTRUCTION_HASH,
@@ -331,6 +336,52 @@ const ready = async (
   input: HeldThirdReviewInput,
   state: HeldThirdReviewState,
 ) => {
+  const preparationCase =
+    input.controlId === QUERY_PREPARATION_REPAIR_CONTROL
+      ? QUERY_PREPARATION_REPAIR_CASES.find(
+          (row) => row.company === input.merchant.name,
+        )
+      : undefined;
+  if (state.queryPreparationRepair || preparationCase) {
+    if (!preparationCase)
+      throw new ConflictError(
+        "The preparation repair is outside the explicit case list.",
+      );
+    const audits = await scope
+      .select()
+      .from(schema.outboundIntegrationJob)
+      .where(
+        and(
+          eq(schema.outboundIntegrationJob.provider, "automation"),
+          sql`input->>'operation'='heldDiscoveryRound3QueryPreparationRepair'`,
+          sql`input->>'sourceJobId'=${preparationCase.sourceJobId}`,
+        ),
+      );
+    if (audits.length || state.queryPreparationRepair) {
+      if (audits.length !== 1)
+        throw new ConflictError(
+          "The preparation repair audit is missing or ambiguous.",
+        );
+      const job = await jobAt(scope, preparationCase.sourceJobId);
+      if (
+        !isDeepStrictEqual(job.input, input) ||
+        !isDeepStrictEqual(heldThirdReviewStateSchema.parse(job.output), state)
+      )
+        throw new ConflictError(
+          "The preparation repair must validate its current persisted child.",
+        );
+      validateQueryPreparationRepair({ job, audit: audits[0]! });
+    } else if (
+      state.stage !== "complete" ||
+      state.query ||
+      state.shoppingJob ||
+      state.answer ||
+      state.shoppingReceipt
+    )
+      throw new ConflictError(
+        "This resumed preparation requires its immutable repair audit.",
+      );
+  }
   const control = await controlAt(scope, input.controlId);
   if (control.state.paused || control.budget.paused)
     throw new ConflictError("The third review is paused.");
@@ -684,7 +735,9 @@ const queryProblem = (
     state.productCapture?.status !== "captured" ||
     state.query.contractVersion !== Capture.SHOPPER_QUERY_ROUND3_VERSION ||
     state.query.intent !== state.shoppingQueryIntent ||
-    (input.exactQuestion && state.query.prompt !== input.exactQuestion)
+    ((state.queryPreparationRepair?.exactQuestion ?? input.exactQuestion) &&
+      state.query.prompt !==
+        (state.queryPreparationRepair?.exactQuestion ?? input.exactQuestion))
   )
     return "The exact authorized third-review query and current product-fit proof are required.";
   return Capture.validateShopperQueryReview({
@@ -1053,11 +1106,13 @@ const execute = async (
           Capture.SHOPPER_QUERY_ROUND3_VERSION as typeof Capture.SHOPPER_QUERY_ROUND3_VERSION,
         deadline,
       };
+      const exactQuestion =
+        state.queryPreparationRepair?.exactQuestion ?? input.exactQuestion;
       const generated = value(
-        await (input.exactQuestion
+        await (exactQuestion
           ? (dependencies.prepareQuery ?? Capture.prepareShopperQuery)({
               ...context,
-              question: input.exactQuestion,
+              question: exactQuestion,
             })
           : (dependencies.generateQuery ?? Capture.generateShopperQuery)({
               ...context,
@@ -1637,7 +1692,9 @@ export const runNext = (
     const executed = await resultify(async () => {
       const leaseExpiresAt = claim.state.lease?.expiresAt;
       if (!leaseExpiresAt)
-        throw new ConflictError("The claimed review stage has no active lease.");
+        throw new ConflictError(
+          "The claimed review stage has no active lease.",
+        );
       const executionDeadline = Math.min(
         deadline,
         Date.parse(leaseExpiresAt) - 30_000,
