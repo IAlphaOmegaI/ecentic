@@ -921,6 +921,56 @@ describe("fact-only shopping assessment", () => {
     expect(result.neutralFallback).toBeUndefined();
   });
 
+  test("separate headed lists cannot supply global positions or a combined count", async () => {
+    const offers = [
+      "- **[Mountain River Kit](https://example.test/river)** from Example Store.",
+      "- **[Crow and Wolf Kit](https://example.test/wolf)** from Another Store.",
+      "- **[Dragon Kit](https://example.test/dragon)** from Craft Store.",
+      "- **[Abstract Kit](https://example.test/abstract)** from Craft Store.",
+      "- **[Crystal Kit](https://example.test/crystal)** from Canvas Store.",
+    ].join("\n");
+    const contents = [
+      "- **Printed adhesive canvas** with a symbol chart.",
+      "- **Resin drills** sorted by color.",
+      "- **Applicator pen** and grip.",
+      "- **Wax pad** for picking up drills.",
+      "- **Plastic tray** for organizing drills.",
+    ].join("\n");
+    const answer = `### Featured Options\n${offers}\n\n### Kit Contents\n${contents}`;
+    expect(orderedAnswerEntries(answer)).toEqual([]);
+    expect(
+      orderedAnswerEntries(`### Featured Options\n${offers}`),
+    ).toHaveLength(5);
+    for (const divider of [
+      "## Other Choices",
+      "Other Choices\n------------",
+      "Other Choices\n============",
+      "<h2>Other Choices</h2>",
+    ])
+      expect(
+        orderedAnswerEntries(
+          `## First Group\n1. Canvas Works\n2. Harbor Label\n\n${divider}\n3. Aster Goods`,
+        ),
+      ).toEqual([]);
+    const input = await fixture(answer);
+    input.selection.listed = [
+      {
+        name: "Mountain River Kit",
+        kind: "brand",
+        quoteId: input.answerQuoteId,
+        price: null,
+      },
+    ];
+    const result = projectFactAssessment(
+      input.evidence,
+      input.selection,
+      input.now,
+    );
+    expect(result.status).toBe("held");
+    if (result.status === "held")
+      expect(result.reason).toContain("explicit unique ordered answer entry");
+  });
+
   test("flat markdown recommendations keep order without ranking nested feature bullets", async () => {
     const bullets =
       "- **Canvas Works** — Large carry bag.\n  - sturdy handles\n- **Harbor Label** — Cotton shopper.\n- **Aster Goods** — Marlow Tote.";

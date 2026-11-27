@@ -5,6 +5,7 @@ import {
   canonicalSequenceInput,
   type WriterParts,
 } from "@/lib/outbound-composition";
+import type { WriterCandidate } from "@/lib/outbound-sequence-composition";
 import {
   passingCopyJudge,
   writerFixture,
@@ -134,13 +135,26 @@ if (!judgeInterrupted.success)
   assert.equal((judgeInterrupted.error as { code?: string }).code, "uncertain");
 
 const repairRequests: string[] = [];
+const repairCandidates: WriterCandidate[] = [];
 const repaired = await composeSequence(
   fixture.prospect,
   fixture.receipt,
   fixture.policy,
   {
-    judge: passingCopyJudge,
+    judge: async () => {
+      assert.equal(repairCandidates.length, 2);
+      return passingCopyJudge();
+    },
+    onCandidate: async (candidate) => {
+      repairCandidates.push(structuredClone(candidate));
+    },
     generate: async ({ prompt }) => {
+      if (repairRequests.length)
+        assert.equal(
+          repairCandidates.length,
+          1,
+          "First candidate must be durable before repair.",
+        );
       repairRequests.push(prompt);
       return repairRequests.length === 1
         ? {
@@ -160,13 +174,41 @@ assert.equal(repaired.data.generation.attempts, 2);
 assert.equal(repairRequests.length, 2);
 assert.ok(repairRequests[1]?.includes("$99"));
 assert.ok(repairRequests[1]?.includes("price"));
+assert.deepEqual(
+  repairCandidates.map((candidate) => candidate.attempt),
+  [1, 2],
+);
+assert.ok(repairCandidates[0]?.issues.some((issue) => issue.includes("price")));
+assert.deepEqual(repairCandidates[1]?.issues, []);
+for (const [index, candidate] of repairCandidates.entries()) {
+  assert.equal(candidate.status, "unapproved");
+  assert.equal(
+    candidate.promptHash,
+    createHash("sha256")
+      .update(repairRequests[index] ?? "")
+      .digest("hex"),
+  );
+  assert.equal(
+    candidate.partsHash,
+    createHash("sha256").update(JSON.stringify(candidate.parts)).digest("hex"),
+  );
+  assert.ok(Number.isFinite(Date.parse(candidate.completedAt)));
+}
+assert.deepEqual(JSON.parse(repairRequests[1] ?? "{}").previous, {
+  parts: repairCandidates[0]?.parts,
+  issues: repairCandidates[0]?.issues,
+});
 
 const rejectedRequests: number[] = [];
+const rejectedCandidates: WriterCandidate[] = [];
 const rejected = await composeSequence(
   fixture.prospect,
   fixture.receipt,
   fixture.policy,
   {
+    onCandidate: async (candidate) => {
+      rejectedCandidates.push(candidate);
+    },
     generate: async () => {
       rejectedRequests.push(1);
       return {
@@ -179,6 +221,83 @@ const rejected = await composeSequence(
 assert.equal(rejected.success, false);
 assert.equal(rejectedRequests.length, 2);
 if (!rejected.success) assert.match(rejected.error.message, /^Copy:/);
+assert.equal(rejectedCandidates.length, 2);
+if (!rejected.success)
+  assert.equal(
+    rejected.error.message,
+    `Copy: ${rejectedCandidates[1]?.issues.join(" ")}`,
+  );
+
+for (const length of [1550, 1600]) {
+  const unsupported = "x".repeat(length);
+  const candidates: WriterCandidate[] = [];
+  const calls = { writer: 0, judge: 0 };
+  const longRejected = await composeSequence(
+    fixture.prospect,
+    fixture.receipt,
+    fixture.policy,
+    {
+      generate: async ({ prompt }) => {
+        assert.equal(candidates.length, calls.writer);
+        if (calls.writer)
+          assert.deepEqual(JSON.parse(prompt).previous, {
+            parts: candidates[0]?.parts,
+            issues: candidates[0]?.issues,
+          });
+        calls.writer += 1;
+        return { ...fixture.parts, result: unsupported };
+      },
+      onCandidate: async (candidate) => {
+        candidates.push(candidate);
+      },
+      judge: async () => {
+        calls.judge += 1;
+        return passingCopyJudge();
+      },
+    },
+  );
+  assert.equal(longRejected.success, false);
+  assert.deepEqual(calls, { writer: 2, judge: 0 });
+  assert.deepEqual(
+    candidates.map((candidate) => candidate.attempt),
+    [1, 2],
+  );
+  for (const candidate of candidates) {
+    assert.equal(candidate.parts.result, unsupported);
+    assert.ok(candidate.issues.some((issue) => issue.includes(unsupported)));
+    assert.ok(candidate.issues.some((issue) => issue.length > 1500));
+  }
+  if (!longRejected.success)
+    assert.equal(
+      longRejected.error.message,
+      `Copy: ${candidates[1]?.issues.join(" ")}`,
+    );
+}
+
+const durabilityCalls = { writer: 0, judge: 0, written: 0 };
+const durabilityFailure = await composeSequence(
+  fixture.prospect,
+  fixture.receipt,
+  fixture.policy,
+  {
+    generate: async () => {
+      durabilityCalls.writer += 1;
+      return { ...fixture.parts, result: "InventedCo guarantees sales." };
+    },
+    onCandidate: async () => {
+      throw new Error("Synthetic candidate checkpoint failure.");
+    },
+    onWritten: async () => {
+      durabilityCalls.written += 1;
+    },
+    judge: async () => {
+      durabilityCalls.judge += 1;
+      return passingCopyJudge();
+    },
+  },
+);
+assert.equal(durabilityFailure.success, false);
+assert.deepEqual(durabilityCalls, { writer: 1, judge: 0, written: 0 });
 
 const extraFieldAttempts: number[] = [];
 const extraField = await composeSequence(

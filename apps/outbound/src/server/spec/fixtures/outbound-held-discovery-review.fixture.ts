@@ -229,6 +229,10 @@ let uncertainJudge = false;
 let failedJudge = false;
 let duplicateParts: WriterParts | undefined;
 let changeSenderDuringWriting = false;
+const candidateBoundary: {
+  mode: "none" | "expire" | "supersede";
+  replacement?: unknown;
+} = { mode: "none" };
 let repairOutcome: "valid" | "invalid" | "uncertain" = "valid";
 const network = spyOn(globalThis, "fetch").mockImplementation(
   Object.assign(
@@ -323,6 +327,62 @@ const dependencies: HeldReviewDependencies = {
   assess: heldAssessment,
   generate: async ({ prompt }) => {
     calls.writer += 1;
+    const previous = JSON.parse(prompt).previous;
+    if (previous) {
+      const [writing] = await db
+        .select()
+        .from(schema.outboundIntegrationJob)
+        .where(
+          and(
+            eq(schema.outboundIntegrationJob.status, "starting"),
+            sql`${schema.outboundIntegrationJob.output}->>'stage' = 'draft'`,
+          ),
+        );
+      assert.ok(writing);
+      const candidate = Contract.heldReviewStateSchema
+        .parse(writing.output)
+        .writerCandidates?.at(-1);
+      assert.ok(
+        candidate,
+        "A completed candidate must be durable before repair.",
+      );
+      assert.deepEqual(
+        { parts: candidate.parts, issues: candidate.issues },
+        previous,
+      );
+    }
+    if (candidateBoundary.mode === "expire") {
+      setSystemTime(new Date(Date.now() + 180_001));
+      assert.equal(
+        value(await Review.runNext({ batchId: batch.batchId }, dependencies))
+          .advanced,
+        false,
+      );
+    }
+    if (candidateBoundary.mode === "supersede") {
+      const [writing] = await db
+        .select()
+        .from(schema.outboundIntegrationJob)
+        .where(
+          and(
+            eq(schema.outboundIntegrationJob.status, "starting"),
+            sql`${schema.outboundIntegrationJob.output}->>'stage' = 'draft'`,
+          ),
+        );
+      assert.ok(writing);
+      const replacement = Contract.heldReviewStateSchema.parse({
+        ...writing.output,
+        lease: {
+          token: randomUUID(),
+          expiresAt: new Date(Date.now() + 100_000).toISOString(),
+        },
+      });
+      await db
+        .update(schema.outboundIntegrationJob)
+        .set({ output: replacement })
+        .where(eq(schema.outboundIntegrationJob.id, writing.id));
+      candidateBoundary.replacement = replacement;
+    }
     if (changeSenderDuringWriting)
       await db
         .update(schema.outboundPlaybook)
@@ -459,6 +519,13 @@ assert.equal(completed.preview.messages[0]?.writing?.quality?.passed, true);
 assert.equal(completed.preview.messages[0]?.writing?.revision, null);
 assert.equal(completed.preview.prospectRevision, 1);
 assert.deepEqual(completed.preview.parts, completed.draftBeforeJudge.parts);
+assert.equal(completed.writerCandidates?.length, 1);
+assert.deepEqual(
+  completed.writerCandidates?.[0]?.parts,
+  completed.preview.parts,
+);
+assert.deepEqual(completed.writerCandidates?.[0]?.issues, []);
+assert.equal(completed.writerCandidates?.[0]?.status, "unapproved");
 const afterCompleted = { ...calls };
 assert.equal((await tick()).advanced, false);
 assert.deepEqual(
@@ -833,6 +900,15 @@ assert.equal(
   "One bounded repair may not bypass staged opening variety.",
 );
 assert.equal(calls.judge, beforeRepeated.judge);
+const repeatedState = Contract.heldReviewStateSchema.parse(repeated.output);
+assert.deepEqual(
+  repeatedState.writerCandidates?.map((candidate) => candidate.attempt),
+  [1, 2],
+);
+assert.equal(
+  repeated.error,
+  `Copy: ${repeatedState.writerCandidates?.[1]?.issues.join(" ")}`,
+);
 assert.ok(
   Contract.heldReviewStateSchema
     .parse(repeated.output)
@@ -855,7 +931,12 @@ const senderChanged = await finish(senderChangedTarget);
 assert.equal(senderChanged.status, "failed");
 assert.match(senderChanged.error ?? "", /sender policy changed/);
 assert.ok(
+  Contract.heldReviewStateSchema.parse(senderChanged.output).writerCandidates
+    ?.length === 1,
+);
+assert.equal(
   Contract.heldReviewStateSchema.parse(senderChanged.output).draftBeforeJudge,
+  undefined,
 );
 assert.equal(calls.judge, judgesBeforeSenderEdit);
 changeSenderDuringWriting = false;
@@ -863,6 +944,70 @@ await db
   .update(schema.outboundPlaybook)
   .set({ settings })
   .where(eq(schema.outboundPlaybook.id, "default"));
+
+// Same-token late candidates survive; superseded leases never receive our result.
+await parkExcept(repeatedTarget);
+for (const mode of ["expire", "supersede"] as const) {
+  const {
+    previewContext: _context,
+    draftBeforeJudge: _written,
+    writerCandidates: _candidates,
+    preview: _preview,
+    heldReason: _reason,
+    ...rest
+  } = repeatedState;
+  await db
+    .update(schema.outboundIntegrationJob)
+    .set({
+      status: "pending",
+      error: null,
+      output: Contract.heldReviewStateSchema.parse({
+        ...rest,
+        stage: "draft",
+        lease: null,
+        availableAt: new Date().toISOString(),
+      }),
+    })
+    .where(eq(schema.outboundIntegrationJob.id, repeated.id));
+  candidateBoundary.mode = mode;
+  duplicateParts = failedPreviewState.preview.parts;
+  const beforeBoundary = { ...calls };
+  await tick();
+  const boundaryJob = await jobFor(repeatedTarget);
+  const boundaryState = Contract.heldReviewStateSchema.parse(
+    boundaryJob.output,
+  );
+  assert.equal(calls.writer, beforeBoundary.writer + 1);
+  assert.equal(calls.judge, beforeBoundary.judge);
+  assert.equal(boundaryState.draftBeforeJudge, undefined);
+  assert.equal(boundaryState.preview, undefined);
+  if (mode === "expire") {
+    assert.equal(boundaryJob.status, "uncertain");
+    assert.equal(boundaryState.writerCandidates?.length, 1);
+    assert.equal(boundaryState.writerCandidates?.[0]?.status, "unapproved");
+    assert.deepEqual(
+      boundaryState.writerCandidates?.[0]?.parts,
+      duplicateParts,
+    );
+  } else {
+    assert.equal(boundaryJob.status, "starting");
+    assert.deepEqual(boundaryJob.output, candidateBoundary.replacement);
+  }
+  const afterBoundary = { ...calls };
+  await tick();
+  assert.deepEqual(calls, afterBoundary);
+}
+candidateBoundary.mode = "none";
+duplicateParts = undefined;
+await db
+  .update(schema.outboundIntegrationJob)
+  .set({
+    status: repeated.status,
+    output: repeated.output,
+    error: repeated.error,
+    updatedAt: repeated.updatedAt,
+  })
+  .where(eq(schema.outboundIntegrationJob.id, repeated.id));
 
 // These three isolated jobs model a known first candidate accepted before the
 // category-identity guard existed. No fresh first candidate is generated here.

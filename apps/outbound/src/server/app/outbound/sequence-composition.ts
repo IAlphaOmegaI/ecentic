@@ -17,7 +17,10 @@ import {
 } from "@/lib/outbound-composition";
 import { hasCompleteCopyVerdict } from "@/lib/outbound-copy-quality";
 import { rebuildWritingProposal } from "@/lib/outbound-rebuild-policy";
-import { compositionReferenceSchema } from "@/lib/outbound-sequence-composition";
+import {
+  compositionReferenceSchema,
+  writerCandidatesSchema,
+} from "@/lib/outbound-sequence-composition";
 import { shoppingResearchSchema } from "@/lib/outbound-shopping-research";
 import type { CompositionPeer } from "@/lib/outbound-writing";
 import { db, schema, type TransactionScope } from "@/server/database";
@@ -31,6 +34,7 @@ import * as Draft from "@/server/utils/outbound/draft";
 import { IntegrationError } from "@/server/utils/outbound/http";
 import * as Policy from "@/server/utils/outbound/shopping-policy";
 import * as Research from "@/server/utils/outbound/shopping-research";
+import { appendWriterCandidate } from "@/server/utils/outbound/writing-candidates";
 import { repository } from "@/server/utils/repository";
 import * as Store from "./store";
 
@@ -91,6 +95,7 @@ const outputSchema = z.object({
   completedAt: z.string().datetime(),
   appliedProspectRevision: z.number().int().nonnegative().optional(),
   savedAt: z.string().datetime().optional(),
+  writerCandidates: writerCandidatesSchema.optional(),
 });
 export type CompletedComposition = Pick<
   z.infer<typeof outputSchema>,
@@ -158,6 +163,8 @@ const readCompleted = (job: Job): CompletedComposition => {
     );
   const input = parsedInput.data;
   const output = parsedOutput.data;
+  for (const candidate of output.writerCandidates ?? [])
+    appendWriterCandidate([], candidate, input);
   const canonical = canonicalSequenceInput(output.messages);
   const writing = output.messages[0]?.writing;
   const key = compositionJobKey(
@@ -627,6 +634,80 @@ export const composeForProspect = async (
         deadline: dependencies.deadline,
         peers: claim.input.peers,
         globalVoiceNotes: claim.input.globalVoiceNotes,
+        onCandidate: async (candidate) => {
+          const active = value(
+            await transaction(async (scope) => {
+              const current = value(
+                await Jobs.get(Environment.SERVER, claim.job.id, { tx: scope }),
+              );
+              const saved = leaseSchema.safeParse(current?.output?.["lease"]);
+              const expired = leaseSchema.safeParse(
+                current?.output?.["expiredLease"],
+              );
+              const ownsStarting =
+                current?.status === "starting" &&
+                saved.success &&
+                saved.data.token === claim.lease.token;
+              const ownsExpired =
+                current?.status === "uncertain" &&
+                expired.success &&
+                expired.data.token === claim.lease.token;
+              if (!current || (!ownsStarting && !ownsExpired))
+                throw uncertain(
+                  claim.job.id,
+                  "The completed candidate belongs to a superseded writing lease. No repair or judge was called.",
+                );
+              if (
+                JSON.stringify(inputSchema.parse(current.input)) !==
+                JSON.stringify(claim.input)
+              )
+                throw uncertain(
+                  claim.job.id,
+                  "The original writing context changed. No repair or judge was called.",
+                );
+              const active =
+                ownsStarting &&
+                saved.success &&
+                Date.parse(saved.data.expiresAt) > now();
+              const writerCandidates = appendWriterCandidate(
+                current.output?.["writerCandidates"],
+                candidate,
+                claim.input,
+              );
+              value(
+                await Jobs.update(
+                  Environment.SERVER,
+                  current.id,
+                  {
+                    status: active ? "starting" : "uncertain",
+                    output: {
+                      ...current.output,
+                      writerCandidates,
+                      ...(!active
+                        ? {
+                            lease: null,
+                            expiredLease: saved.success
+                              ? saved.data
+                              : expired.success
+                                ? expired.data
+                                : null,
+                          }
+                        : {}),
+                    },
+                    updatedAt: new Date(now()),
+                  },
+                  { tx: scope },
+                ),
+              );
+              return active;
+            }),
+          );
+          if (!active)
+            throw uncertain(
+              claim.job.id,
+              "The completed candidate was retained after lease expiry. No repair or judge was called.",
+            );
+        },
         onWritten: async (draft) => {
           const mayJudge = value(
             await transaction(async (scope) => {
@@ -649,6 +730,14 @@ export const composeForProspect = async (
                 throw uncertain(
                   claim.job.id,
                   "The writing lease changed before copy review. The judge was not called.",
+                );
+              if (
+                JSON.stringify(inputSchema.parse(current.input)) !==
+                JSON.stringify(claim.input)
+              )
+                throw uncertain(
+                  claim.job.id,
+                  "The original writing context changed before copy review. The judge was not called.",
                 );
               const active =
                 ownsStarting &&
@@ -823,6 +912,9 @@ export const composeForProspect = async (
         );
       const output = outputSchema.parse({
         ...response.data,
+        ...(current.output?.["writerCandidates"]
+          ? { writerCandidates: current.output["writerCandidates"] }
+          : {}),
         messages: response.data.messages.map((message) => ({
           ...message,
           ...(message.writing
@@ -860,6 +952,7 @@ export const composeForProspect = async (
             status: "uncertain",
             error: message,
             output: {
+              ...current.output,
               lease: null,
               failure: { name: prepared.error.name, message },
               unappliedResult: response.data,

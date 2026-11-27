@@ -166,7 +166,7 @@ const exactFact = (
     : null;
 };
 
-/** Flat recommendation lists preserve order; nested detail bullets never add positions. */
+/** One flat list preserves order; separate headed lists never become a global rank. */
 export const orderedAnswerEntries = (answer: string) => {
   const matches = [
     ...answer.matchAll(
@@ -180,6 +180,25 @@ export const orderedAnswerEntries = (answer: string) => {
   const flat = matches.filter(
     (match) => (match[1] ?? "").replaceAll("\t", "    ").length === shallowest,
   );
+  const starts = flat.map(
+    (match) => match.index + (match[0].startsWith("\n") ? 1 : 0),
+  );
+  const first = starts[0] ?? answer.length;
+  const last = starts.at(-1) ?? -1;
+  const headings = [
+    ...answer.matchAll(
+      /^[ \t]*(?:#{1,6}[ \t]+[^\n]+|(?:=+|-+)[ \t]*$|<h[1-6](?=[\s>])[^\n]*)/gim,
+    ),
+  ];
+  if (
+    headings.some(
+      (heading) =>
+        heading.index > first &&
+        heading.index < last &&
+        !starts.includes(heading.index),
+    )
+  )
+    return [];
   const numbered = flat.every((match) => match[2]);
   const bullets = flat.every((match) => match[3]);
   if (

@@ -121,7 +121,34 @@ describe("unranked product-card copy", () => {
     expect(prompt.instructions).toContain(
       "A seller alone cannot replace the product",
     );
-    expect(JSON.parse(prompt.prompt).discovery.order).toBe("unranked");
+    expect(prompt.instructions).toContain(
+      "Use one attributed alternative in the result to fit its 30-word limit",
+    );
+    expect(prompt.instructions).toContain(
+      "another unused alternative can be the followupFact",
+    );
+    expect(JSON.parse(prompt.prompt).discovery).toEqual({
+      order: "unranked",
+      merchantPresent: false,
+      merchantPosition: null,
+      totalListed: null,
+      listed: [
+        {
+          name: "Canvas Carry Tote",
+          seller: "Alder Store",
+          kind: "product",
+          position: null,
+          price: null,
+        },
+        {
+          name: "Birch Linen Bag",
+          seller: "Harbor Label",
+          kind: "product",
+          position: null,
+          price: null,
+        },
+      ],
+    });
   });
 
   test("title and seller attribution cannot be omitted, shortened or swapped", () => {

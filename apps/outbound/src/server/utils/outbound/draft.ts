@@ -13,6 +13,10 @@ import {
 } from "@/lib/outbound-composition";
 import { copyVerdictProblem } from "@/lib/outbound-copy-quality";
 import {
+  type WriterCandidate,
+  writerCandidateSchema,
+} from "@/lib/outbound-sequence-composition";
+import {
   type ShoppingResearch,
   shoppingResearchSchema,
   validateShoppingResearch,
@@ -31,8 +35,12 @@ import {
   judgeSequenceCopy,
 } from "./copy-quality";
 import { IntegrationError } from "./http";
-import { writingPolicyHash } from "./shopping-policy";
+import { compositionProspectHash, writingPolicyHash } from "./shopping-policy";
 import { evidenceForDraft, researchHash } from "./shopping-research";
+import {
+  writerCandidateContextHash,
+  writerDiagnosticHash,
+} from "./writing-candidates";
 
 export type CompositionPolicy = Playbook & { relevanceLines?: string[] };
 type GenerationRequest = {
@@ -45,6 +53,7 @@ export type CompositionDependencies = {
   generate?: (request: GenerationRequest) => Promise<WriterParts>;
   judge?: CopyQualityDependencies["generate"];
   suppliedParts?: WriterParts;
+  onCandidate?: (candidate: WriterCandidate) => Promise<void>;
   onWritten?: (draft: {
     parts: WriterParts;
     messages: Message[];
@@ -201,6 +210,34 @@ export const composeSequence = async (
           )
         : []),
     ];
+    const onCandidate = dependencies.onCandidate;
+    if (onCandidate) {
+      const context = {
+        receiptHash: researchHash(research),
+        writingPolicyHash: writingPolicyHash(settings, hashContext),
+        prospectHash: compositionProspectHash(prospect),
+        peers: dependencies.peers ?? [],
+      };
+      const recorded = await resultify(() =>
+        onCandidate(
+          writerCandidateSchema.parse({
+            status: "unapproved",
+            attempt: attempts,
+            parts,
+            issues: problems,
+            completedAt: new Date(now()).toISOString(),
+            partsHash: writerDiagnosticHash(JSON.stringify(parts)),
+            instructionsHash: writerDiagnosticHash(prompt.instructions),
+            promptHash: writerDiagnosticHash(prompt.prompt),
+            receiptHash: context.receiptHash,
+            writingPolicyHash: context.writingPolicyHash,
+            prospectHash: context.prospectHash,
+            contextHash: writerCandidateContextHash(context),
+          }),
+        ),
+      );
+      if (!recorded.success) return recorded;
+    }
     if (problems.length)
       return previous || dependencies.suppliedParts
         ? held(problems.join(" "))

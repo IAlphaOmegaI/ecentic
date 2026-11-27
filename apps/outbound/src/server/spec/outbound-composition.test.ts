@@ -38,6 +38,201 @@ describe("observed facts and writer-owned narrative", () => {
     expect(prompt.prompt).toContain(fixture.policy.humanizerNotes);
   });
 
+  test("ordinary shopping narrative permits pair, putting and ideas without allowing new facts", () => {
+    for (const [product, question, subject, opening] of [
+      [
+        "Sunglasses",
+        "sunglasses polarized lenses",
+        "polarized sunglasses",
+        'My sister needed a pair of sunglasses, so I asked for "sunglasses polarized lenses".',
+      ],
+      [
+        "Linen tote",
+        "linen tote gift bag",
+        "linen tote gifts",
+        'I was putting a gift together, so I asked for "linen tote gift bag".',
+      ],
+      [
+        "Linen tote",
+        "linen tote gift bag",
+        "linen tote gifts",
+        'I wanted gift ideas, so I asked for "linen tote gift bag".',
+      ],
+    ] as const) {
+      const fixture = writerFixture();
+      const query = fixture.receipt.queries[0];
+      const queryClaim = fixture.receipt.claims?.find(
+        (claim) => claim.kind === "query",
+      );
+      if (!query || !queryClaim) throw new Error("Missing synthetic query.");
+      query.query = queryClaim.value = question;
+      fixture.prospect.product = fixture.receipt.product.name = product;
+      const parts = { ...fixture.parts, subject, opening };
+      expect(issuesFor(fixture, parts)).toEqual([]);
+      expect(
+        issuesFor(fixture, {
+          ...parts,
+          opening: opening.replace("I asked", "Ava asked"),
+        }).some((issue) => /unsupported named person/.test(issue)),
+      ).toBe(true);
+      expect(
+        issuesFor(fixture, {
+          ...parts,
+          followupFact: "The pair has UV400 protection at $120.",
+        }).some((issue) => /price|number|observed ledger/.test(issue)),
+      ).toBe(true);
+    }
+  });
+
+  test("writer input omits surrounding proof and unapproved discovery details", () => {
+    const fixture = writerFixture();
+    const query = fixture.receipt.queries[0];
+    const discovery = fixture.receipt.discovery;
+    if (!query?.basis || !discovery)
+      throw new Error("Missing synthetic query and discovery.");
+    const unrelated = "UNSELECTED_SOURCE_FACTS UV400 protection costs $999.";
+    query.basis.excerpts = [
+      { id: "extra-proof", sourceId: "product", quote: unrelated },
+    ];
+    query.coverage = unrelated;
+    discovery.description = unrelated;
+    discovery.matchedAliases = [unrelated];
+    discovery.correctnessProof = {
+      answerQuoteId: "answer-excerpt",
+      productQuoteId: "extra-proof",
+      answerText: unrelated,
+      pageText: unrelated,
+    };
+    for (const source of fixture.receipt.sources) source.content = unrelated;
+    fixture.receipt.claims = fixture.receipt.claims?.filter(
+      (claim) => claim.kind !== "price",
+    );
+    discovery.listed.push({
+      name: "Unapproved Brand",
+      kind: "retailer",
+      position: 3,
+      price: "$999",
+      excerptIds: ["answer-excerpt"],
+    });
+    const before = structuredClone(fixture.receipt);
+    const prompt = compositionPrompt({ ...fixture, playbook: fixture.policy });
+    const input = JSON.parse(prompt.prompt);
+    expect(input.observedQuery).toEqual({
+      query: query.query,
+      surface: query.surface,
+      market: query.market,
+      interfaceLocale: query.interfaceLocale,
+      intent: query.intent,
+      basis: {
+        category: query.basis.category,
+        attribute: query.basis.attribute,
+      },
+    });
+    expect(input.ledger).toEqual(fixture.receipt.claims);
+    expect(input.discovery.listed).toEqual([
+      { name: "Alder", kind: "retailer", position: 1, price: null },
+      { name: "Birch", kind: "retailer", position: 2, price: null },
+    ]);
+    expect(input.discovery).not.toHaveProperty("description");
+    expect(input.discovery).not.toHaveProperty("correctnessProof");
+    expect(prompt.prompt).not.toContain("UNSELECTED_SOURCE_FACTS");
+    expect(prompt.prompt).not.toContain("UV400");
+    expect(prompt.prompt).not.toContain("$999");
+    expect(prompt.prompt).not.toContain("Unapproved Brand");
+    expect(prompt.prompt).not.toContain("around $36");
+    expect(fixture.receipt).toEqual(before);
+  });
+
+  test("writer input keeps observed rank, price qualifiers and concrete repair feedback", () => {
+    const fixture = writerFixture(true);
+    const previous = {
+      parts: { ...fixture.parts, result: "Alder was $30." },
+      issues: ["result: a price is not in the observed ledger."],
+    };
+    const prompt = compositionPrompt({
+      ...fixture,
+      playbook: fixture.policy,
+      previous,
+    });
+    const input = JSON.parse(prompt.prompt);
+    expect(input.discovery).toMatchObject({
+      merchantPresent: true,
+      merchantPosition: 5,
+      totalListed: 6,
+      listed: [
+        { name: "Alder", position: 1, price: "around $36" },
+        { name: "Birch", position: 2, price: null },
+        { name: "Cedar", position: 3, price: null },
+        { name: "Maple", position: 4, price: null },
+        { name: "Sample Goods", position: 5, price: null },
+        { name: "Oak", position: 6, price: null },
+      ],
+    });
+    expect(input.previous).toEqual(previous);
+    expect(prompt.instructions).toContain(
+      "Prices are unavailable unless the ledger contains the exact price claim",
+    );
+    const price = fixture.receipt.claims?.find(
+      (claim) => claim.kind === "price",
+    );
+    if (!price) throw new Error("Missing synthetic price.");
+    price.sourceIds = ["product"];
+    const pageOnly = JSON.parse(
+      compositionPrompt({ ...fixture, playbook: fixture.policy }).prompt,
+    );
+    expect(pageOnly.discovery.listed[0].price).toBeNull();
+  });
+
+  test("comparison and page-data prompts attribute opaque ledger sources without exposing proof", () => {
+    const fixture = writerFixture();
+    const price = fixture.receipt.claims?.find(
+      (claim) => claim.kind === "price",
+    );
+    if (!price) throw new Error("Missing synthetic answer price.");
+    fixture.receipt.claims?.push({
+      ...price,
+      id: "page-price",
+      value: "$41",
+      qualifiers: [],
+      sourceIds: ["product"],
+      excerptIds: ["page-excerpt"],
+      queryIndex: null,
+    });
+    const opaqueId = (id: string) =>
+      id === "answer" ? "opaque-1" : id === "product" ? "opaque-2" : id;
+    for (const source of fixture.receipt.sources) {
+      source.id = opaqueId(source.id);
+      source.content = "UNAPPROVED_PROOF UV400 at $999";
+      source.url = "https://unapproved-source.test/proof";
+    }
+    for (const claim of fixture.receipt.claims ?? [])
+      claim.sourceIds = claim.sourceIds.map(opaqueId);
+    if (fixture.receipt.discovery)
+      fixture.receipt.discovery.sourceId = "opaque-1";
+    for (const kind of ["query-comparison", "product-data-gap"] as const) {
+      fixture.receipt.selected.kind = kind;
+      const prompt = compositionPrompt({
+        ...fixture,
+        playbook: fixture.policy,
+      });
+      const input = JSON.parse(prompt.prompt);
+      expect(input.ledgerSources).toEqual([
+        { id: "opaque-1", kind: "search" },
+        { id: "opaque-2", kind: "product" },
+      ]);
+      expect(input.ledger).toEqual(fixture.receipt.claims);
+      expect(prompt.instructions).toContain(
+        "search means the captured shopping answer; product means the merchant's product page",
+      );
+      expect(prompt.prompt).not.toContain("UNAPPROVED_PROOF");
+      expect(prompt.prompt).not.toContain("unapproved-source.test");
+      expect(prompt.prompt).not.toContain("$999");
+      expect(
+        input.ledgerSources.some(({ id }: { id: string }) => id === "ucp"),
+      ).toBe(false);
+    }
+  });
+
   test("an added brand or changed quote is rejected in either first result or follow-up", () => {
     const fixture = writerFixture();
     expect(

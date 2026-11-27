@@ -5,7 +5,10 @@ import {
   writerPartsSchema,
   writingSnapshotSchema,
 } from "@/lib/outbound-composition";
-import { compositionReferenceSchema } from "@/lib/outbound-sequence-composition";
+import {
+  compositionReferenceSchema,
+  writerCandidatesSchema,
+} from "@/lib/outbound-sequence-composition";
 import { shoppingResearchSchema } from "@/lib/outbound-shopping-research";
 import {
   aiCaptureSchema,
@@ -228,6 +231,7 @@ export const heldReviewStateSchema = z
     researchId: z.string().uuid().optional(),
     previewContext: heldReviewPreviewContextSchema.optional(),
     draftBeforeJudge: heldReviewWrittenSchema.optional(),
+    writerCandidates: writerCandidatesSchema.optional(),
     preview: heldReviewPreviewSchema.optional(),
     heldReason: z.string().optional(),
     failureReceipt: z.record(z.string(), z.unknown()).nullable().optional(),

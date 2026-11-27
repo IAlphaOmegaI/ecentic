@@ -74,6 +74,7 @@ import {
   researchHash,
   researchPolicyHash,
 } from "@/server/utils/outbound/shopping-research";
+import { appendWriterCandidate } from "@/server/utils/outbound/writing-candidates";
 import * as Credentials from "./provider-credentials";
 import * as Composition from "./sequence-composition";
 import { claimShoppingProviderSlot } from "./shopping-provider-pacing";
@@ -452,6 +453,7 @@ const unspentFirstQuery = (
     state.shoppingHistory?.length ||
     state.composition ||
     state.researchId ||
+    state.writerCandidates?.length ||
     state.previewContext ||
     state.draftBeforeJudge ||
     state.preview ||
@@ -639,6 +641,7 @@ export const reconcileFailedPoll = (
       state.shoppingReceipt ||
       state.composition ||
       state.researchId ||
+      state.writerCandidates?.length ||
       state.previewContext ||
       state.draftBeforeJudge ||
       state.preview ||
@@ -773,6 +776,7 @@ export const reconcileCardAssessment = (
       state.shoppingReceipt ||
       state.composition ||
       state.researchId ||
+      state.writerCandidates?.length ||
       state.previewContext ||
       state.draftBeforeJudge ||
       state.preview ||
@@ -1497,6 +1501,7 @@ const execute = async (
           if (
             current.previewContext ||
             current.draftBeforeJudge ||
+            current.writerCandidates?.length ||
             current.preview
           )
             throw new ConflictError(
@@ -1604,6 +1609,62 @@ const execute = async (
             deadline,
             peers: context.peers,
             globalVoiceNotes: context.globalVoiceNotes,
+            onCandidate: async (candidate) => {
+              const problem = value(
+                await transaction(async (scope) => {
+                  const currentJob = await jobAt(scope, claim.job.id);
+                  const current = heldReviewStateSchema.parse(
+                    currentJob.output,
+                  );
+                  if (
+                    !current.lease ||
+                    current.lease.token !== state.lease?.token
+                  )
+                    throw new ConflictError(
+                      "The completed candidate belongs to a superseded preview lease.",
+                    );
+                  const ready = await resultify(() => {
+                    if (!isDeepStrictEqual(current.previewContext, context))
+                      throw new ConflictError(
+                        "The original preview writing context changed.",
+                      );
+                    return eligible(scope, input, current);
+                  });
+                  const active =
+                    currentJob.status === "starting" &&
+                    Date.parse(current.lease.expiresAt) > Date.now();
+                  const reason = !active
+                    ? "The candidate completed after its lease expired. Its unapproved text is retained without another writer purchase."
+                    : ready.success
+                      ? null
+                      : ready.error.message;
+                  const writerCandidates = appendWriterCandidate(
+                    current.writerCandidates,
+                    candidate,
+                    context,
+                  );
+                  await scope
+                    .update(schema.outboundIntegrationJob)
+                    .set({
+                      status: !active
+                        ? "uncertain"
+                        : reason
+                          ? "failed"
+                          : "starting",
+                      output: heldReviewStateSchema.parse({
+                        ...current,
+                        writerCandidates,
+                        ...(reason ? { lease: null, heldReason: reason } : {}),
+                      }),
+                      ...(reason ? { error: reason } : {}),
+                      updatedAt: new Date(),
+                    })
+                    .where(eq(schema.outboundIntegrationJob.id, claim.job.id));
+                  return reason;
+                }),
+              );
+              if (problem) throw new ConflictError(problem);
+            },
             onWritten: async (draft) => {
               const mayJudge = value(
                 await transaction(async (scope) => {
@@ -1618,9 +1679,13 @@ const execute = async (
                     throw new ConflictError(
                       "The preview writer result belongs to a superseded lease.",
                     );
-                  const ready = await resultify(() =>
-                    eligible(scope, input, current),
-                  );
+                  const ready = await resultify(() => {
+                    if (!isDeepStrictEqual(current.previewContext, context))
+                      throw new ConflictError(
+                        "The original preview writing context changed.",
+                      );
+                    return eligible(scope, input, current);
+                  });
                   const active =
                     currentJob.status === "starting" &&
                     Date.parse(current.lease.expiresAt) > Date.now();

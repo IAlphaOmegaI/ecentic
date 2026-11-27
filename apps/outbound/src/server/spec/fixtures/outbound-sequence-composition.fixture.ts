@@ -15,6 +15,7 @@ import {
 } from "@/lib/outbound-composition";
 import { draftReviewReadinessKey } from "@/lib/outbound-draft-review";
 import { rebuildWritingProposal } from "@/lib/outbound-rebuild-policy";
+import { writerCandidatesSchema } from "@/lib/outbound-sequence-composition";
 import { shoppingFinding } from "@/lib/outbound-shopping-research";
 import type { CompletedComposition } from "@/server/app/outbound/sequence-composition";
 import { writingPolicyHash } from "@/server/utils/outbound/shopping-policy";
@@ -159,6 +160,19 @@ const assertPartial = (
   if (expected.status === "ready")
     assert.equal(plain(partial.messages), expected.canonicalText);
   assert.equal(partial.messages[0]?.writing, undefined);
+};
+const assertCandidate = (
+  job: Awaited<ReturnType<typeof jobs>>[number] | undefined,
+  fixture: Awaited<ReturnType<typeof seed>>,
+) => {
+  const candidates = writerCandidatesSchema.parse(
+    job?.output?.["writerCandidates"],
+  );
+  assert.equal(candidates.length, 1);
+  assert.equal(candidates[0]?.status, "unapproved");
+  assert.deepEqual(candidates[0]?.parts, fixture.parts);
+  assert.deepEqual(candidates[0]?.issues, []);
+  assert.equal(job?.output?.["draftBeforeJudge"], undefined);
 };
 
 try {
@@ -376,7 +390,7 @@ try {
     /lease|uncertain|retained/,
   );
   assert.equal(clock.calls, 1);
-  assertPartial((await jobs())[0], lost);
+  assertCandidate((await jobs())[0], lost);
   assert.equal(
     clock.judges,
     0,
@@ -493,7 +507,7 @@ try {
   rejected(await lateFirst, /retained for reconciliation/);
   const lateJob = (await jobs())[0];
   assert.equal(lateJob?.status, "uncertain");
-  assertPartial(lateJob, watched);
+  assertCandidate(lateJob, watched);
   assert.equal(watcherClock.calls, 1);
   assert.equal(watcherClock.judges, 0);
   assert.equal((await row(watched.id)).messages.length, 0);
@@ -644,6 +658,21 @@ try {
   const badCalls = { count: 0 };
   const invalid = async () => {
     badCalls.count += 1;
+    if (badCalls.count === 2) {
+      const candidates = writerCandidatesSchema.parse(
+        (await jobs())[0]?.output?.["writerCandidates"],
+      );
+      assert.equal(
+        candidates.length,
+        1,
+        "The first candidate is saved before a repair purchase.",
+      );
+      assert.equal(
+        candidates[0]?.parts.result,
+        "InventedCo guarantees ten new sales every day.",
+      );
+      assert.ok(candidates[0]?.issues.length);
+    }
     return {
       ...badCopy.parts,
       result: "InventedCo guarantees ten new sales every day.",
@@ -663,6 +692,18 @@ try {
     "One initial attempt and at most one copy repair.",
   );
   assert.equal((await jobs())[0]?.status, "failed");
+  const failedCandidates = writerCandidatesSchema.parse(
+    (await jobs())[0]?.output?.["writerCandidates"],
+  );
+  assert.deepEqual(
+    failedCandidates.map((candidate) => candidate.attempt),
+    [1, 2],
+  );
+  assert.equal(
+    (await jobs())[0]?.error,
+    `Copy: ${failedCandidates[1]?.issues.join(" ")}`,
+  );
+  assert.equal((await row(badCopy.id)).messages.length, 0);
   rejected(
     await Composition.composeForProspect(
       actor,
@@ -674,6 +715,46 @@ try {
   assert.equal(badCalls.count, 2);
   console.log(
     "PASS bounded copy repair failure is cached without another purchase",
+  );
+
+  const superseded = await seed();
+  const supersededCalls = { writer: 0, judge: 0 };
+  const replacementLease: { output?: Record<string, unknown> } = {};
+  rejected(
+    await Composition.composeForProspect(
+      actor,
+      { prospectId: superseded.id },
+      {
+        generate: async () => {
+          supersededCalls.writer += 1;
+          const owned = (await jobs())[0];
+          assert.ok(owned);
+          replacementLease.output = {
+            ...owned.output,
+            lease: {
+              token: randomUUID(),
+              expiresAt: new Date(Date.now() + 180_000).toISOString(),
+            },
+            replacementLeaseOwner: true,
+          };
+          await db
+            .update(schema.outboundIntegrationJob)
+            .set({ output: replacementLease.output })
+            .where(eq(schema.outboundIntegrationJob.id, owned.id));
+          return superseded.parts;
+        },
+        judge: async () => {
+          supersededCalls.judge += 1;
+          return passingCopyJudge();
+        },
+      },
+    ),
+    /lease|Reconcile/,
+  );
+  assert.deepEqual((await jobs())[0]?.output, replacementLease.output);
+  assert.deepEqual(supersededCalls, { writer: 1, judge: 0 });
+  console.log(
+    "PASS candidate checkpoint cannot overwrite a replacementLease lease",
   );
 
   const fresh = await seed();
@@ -794,6 +875,26 @@ try {
   currentFixture.value = { ...currentFixture.value, receipt: previousReceipt };
   const durable = (await jobs())[0];
   assert.ok(durable?.output);
+  const candidateTamper = structuredClone(durable.output);
+  const alteredCandidates = writerCandidatesSchema.parse(
+    candidateTamper["writerCandidates"],
+  );
+  const firstCandidate = alteredCandidates[0];
+  assert.ok(firstCandidate);
+  firstCandidate.parts.result += " Altered diagnostic text.";
+  candidateTamper["writerCandidates"] = alteredCandidates;
+  await db
+    .update(schema.outboundIntegrationJob)
+    .set({ output: candidateTamper })
+    .where(eq(schema.outboundIntegrationJob.id, durable.id));
+  rejected(
+    await Composition.loadCompletedComposition(undefined, durable.id),
+    /candidate.*saved text/,
+  );
+  await db
+    .update(schema.outboundIntegrationJob)
+    .set({ output: durable.output })
+    .where(eq(schema.outboundIntegrationJob.id, durable.id));
   const altered = structuredClone(durable.output);
   const alteredMessage = (altered["messages"] as { body: string }[])[0];
   assert.ok(alteredMessage);
