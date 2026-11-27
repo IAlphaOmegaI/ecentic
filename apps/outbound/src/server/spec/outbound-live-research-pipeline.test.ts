@@ -80,7 +80,10 @@ const syntheticBrands = async ({ prompt }: { prompt: string }) => {
     brands: ["Canvas Works", "Harbor Label"].map((name) => {
       const quote = evidence.find((item) => item.quote.includes(name));
       if (!quote) throw new Error("Missing exact synthetic brand evidence.");
-      return { name, quoteId: quote.id };
+      return {
+        name: state.rejectBrands && name === "Canvas Works" ? "Invented" : name,
+        quoteId: quote.id,
+      };
     }),
   };
 };
@@ -109,6 +112,7 @@ const settings = syntheticWritingPolicy({
 const state = {
   ready: true,
   noAngle: false,
+  rejectBrands: false,
   pendingPoll: false,
   startError: null as IntegrationError | null,
   afterStart: null as (() => Promise<void>) | null,
@@ -476,6 +480,7 @@ describe.skipIf(!endpoint)(
       Object.assign(state, {
         ready: true,
         noAngle: false,
+        rejectBrands: false,
         pendingPoll: false,
         startError: null,
         afterStart: null,
@@ -1053,6 +1058,50 @@ describe.skipIf(!endpoint)(
       expect(draft.composeSequence).not.toHaveBeenCalled();
       expect(await db.select().from(schema.outboundProspect)).toHaveLength(0);
       expect((await advance()).processed).toBe(0);
+    });
+    test("rejected brand selections persist as audit-only state without contacts, drafts or another purchase", async () => {
+      state.rejectBrands = true;
+      const { providers, draft, capture, db, schema } = active();
+      const captured = await reachStage("assessShopping");
+      expect((await advance(1)).results.at(-1)?.reason).toBe(
+        "shopping-research-held",
+      );
+      const held = await currentJob();
+      expect(held.status).toBe("failed");
+      expect(held.output?.["shoppingAssessment"]).toMatchObject({
+        status: "held",
+        brandSelectionDiagnostics: {
+          version: "answer-brand-selection-audit-v1",
+          auditOnly: true,
+          attempts: [
+            {
+              attempt: 1,
+              selection: {
+                brands: [{ name: "Invented" }, { name: "Harbor Label" }],
+              },
+            },
+            {
+              attempt: 2,
+              selection: {
+                brands: [{ name: "Invented" }, { name: "Harbor Label" }],
+              },
+            },
+          ],
+        },
+      });
+      expect(held.output?.["shoppingReceipt"]).toBeUndefined();
+      expect(held.output?.["shoppingAnswer"]).toEqual(
+        captured.output?.["shoppingAnswer"],
+      );
+      expect(held.output?.["shoppingBrowser"]).toEqual(
+        captured.output?.["shoppingBrowser"],
+      );
+      expect(providers.searchApolloPeople).not.toHaveBeenCalled();
+      expect(draft.composeSequence).not.toHaveBeenCalled();
+      expect(await db.select().from(schema.outboundProspect)).toHaveLength(0);
+      expect(capture.startQuery).toHaveBeenCalledTimes(1);
+      expect((await advance()).processed).toBe(0);
+      expect((await currentJob()).output).toEqual(held.output);
     });
     test.each(["scrapellm", "firecrawl"] as const)(
       "saved shopping captures can be assessed during a %s cooldown",

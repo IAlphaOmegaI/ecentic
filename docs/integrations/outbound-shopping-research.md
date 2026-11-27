@@ -40,6 +40,21 @@ and interface suffixes are excluded. Relevance never repeats the query. The gift
 line is reserved for actual gift products; other absence findings default to
 “That’s the kind of search a new customer starts with.”
 
+A card title may place `Men's`, `Women's` or `Unisex` before its exact brand
+(with optional `Unisex` after the gender qualifier) only when another card in the
+same complete answer independently starts with that exact brand. Case, complete
+name boundaries and original quote/card hashes remain required. Qualifier removal
+alone cannot establish a brand. Only this alternate path adds a server-projected
+`corroboratingExcerptId` and its exact independent card excerpt to the receipt;
+normal raw replay verifies both. The Azure selection schema stays fully required
+and accepts no corroboration field. Normal research results retain up to two rejected
+brand selections, their quote IDs and reasons under audit-only
+`brandSelectionDiagnostics`, bound to the original answer, links and base receipt
+hashes. Normal campaign and saved-contact jobs persist these diagnostics with the
+assessment; an interrupted repair retains earlier selections in its failure
+receipt. Diagnostics never become claims, copy proof or retry permission. Existing
+successful projections and stored receipts keep their original hashes.
+
 Day 3 is exactly `Bumping this!`; day 7 is `{first}?`, or `Worth a chat?` without a
 first name. Transport keeps both in the first email’s thread and quotes its body,
 including the opt-out and postal address. New writer schemas and checks have no

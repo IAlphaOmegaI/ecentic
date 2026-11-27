@@ -790,6 +790,21 @@ export type AssessmentResult = (
   | { status: "held"; reason: string; attempts?: number }
   | { status: "researched"; receipt: ShoppingResearch; attempts?: number }
 ) & {
+  /** Rejected selections are diagnostic only, never receipt claims or approval proof. */
+  brandSelectionDiagnostics?: {
+    version: "answer-brand-selection-audit-v1";
+    auditOnly: true;
+    sourceId: string;
+    answerHash: string;
+    linksHash: string;
+    receiptHash: string;
+    attempts: {
+      attempt: 1 | 2;
+      selection: import("./shopping-discovery-review").ResultBrandSelection;
+      reason: string;
+      completedAt: string;
+    }[];
+  };
   // Historical assessment records may retain this metadata; new calls never create a neutral fallback.
   usage?: { inputTokens: number | null; outputTokens: number | null };
   providerRequestId?: string | null;

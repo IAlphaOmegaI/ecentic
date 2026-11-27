@@ -93,6 +93,8 @@ export const shoppingBrandProjectionSchema = z
           .object({
             name: text(100),
             excerptIds: identifiers,
+            // Server-projected receipt only; never part of an Azure output schema.
+            corroboratingExcerptId: text(80).optional(),
             position: z.number().int().min(1).nullable(),
           })
           .strict(),
@@ -416,6 +418,22 @@ export type ShoppingResearch = z.infer<typeof shoppingResearchSchema>;
 export const cleanResultBrand = (value: string) =>
   value.replace(/\s*&\s*more\s*$/i, "").trim();
 
+/** Qualification alone is not brand proof; callers must bind an independent direct title. */
+export const resultBrandTitlePrefix = (
+  title: string,
+  name: string,
+): "direct" | "qualified" | null => {
+  const direct = (value: string) =>
+    value.startsWith(name) &&
+    /[\s:®™-]/.test(value.slice(name.length, name.length + 1));
+  if (direct(title)) return "direct";
+  const unqualified = title.replace(
+    /^(?:(?:men['’]s|women['’]s)(?:\s+unisex)?|unisex)\s+/i,
+    "",
+  );
+  return unqualified !== title && direct(unqualified) ? "qualified" : null;
+};
+
 /** Copy may use only the dedicated brand projection, never historical product/seller names. */
 export const resultBrandNames = (receipt: ShoppingResearch): string[] =>
   receipt.discovery?.brandProjection?.brands.map((brand) => brand.name) ?? [];
@@ -445,10 +463,24 @@ export const resultBrandsProblem = (
       (item) => item.id === entry.excerptIds[0],
     );
     const proof = excerpt?.brand;
-    const boundary = proof?.title.slice(
-      entry.name.length,
-      entry.name.length + 1,
+    const prefix = proof && resultBrandTitlePrefix(proof.title, entry.name);
+    const corroboration = receipt.claimExcerpts?.find(
+      (item) => item.id === entry.corroboratingExcerptId,
     );
+    const corroboratingProof = corroboration?.brand;
+    const corroborated =
+      prefix === "qualified" &&
+      !!corroboration &&
+      !!corroboratingProof &&
+      corroboration.id !== excerpt?.id &&
+      corroboration.sourceId === excerpt?.sourceId &&
+      corroboratingProof.context === "card-title" &&
+      !!corroboratingProof.cardId &&
+      corroboratingProof.cardId !== proof?.cardId &&
+      corroboratingProof.answerHash === proof?.answerHash &&
+      corroboratingProof.end > corroboratingProof.start &&
+      corroboration.quote === corroboratingProof.title &&
+      resultBrandTitlePrefix(corroboratingProof.title, entry.name) === "direct";
     if (
       entry.name !== cleanResultBrand(entry.name) ||
       /(?:https?:|www\.|[\r\n]|[<>])/.test(entry.name) ||
@@ -461,10 +493,9 @@ export const resultBrandsProblem = (
       excerpt.quote !== proof.title ||
       !proof.title.includes(entry.name) ||
       (proof.context === "card-title" &&
-        (!proof.cardId ||
-          !proof.title.startsWith(entry.name) ||
-          !boundary ||
-          !/[\s:®™-]/.test(boundary))) ||
+        (!proof.cardId || (prefix !== "direct" && !corroborated))) ||
+      (entry.corroboratingExcerptId !== undefined &&
+        (proof.context !== "card-title" || !corroborated)) ||
       (entry.position !== null &&
         (receipt.discovery.order === "unranked" ||
           !receipt.discovery.listed.some(

@@ -4,6 +4,7 @@ import { defaultPlaybook } from "@/lib/outbound";
 import {
   resultBrandNames,
   resultBrandsProblem,
+  shoppingResearchSchema,
   validateShoppingResearch,
 } from "@/lib/outbound-shopping-research";
 import { buildSyntheticShoppingCapture } from "./helpers/outbound-shopping-fixture";
@@ -120,6 +121,14 @@ test("brand projection binds exact card-title brands and preserves every origina
     ),
   ).toBe(false);
   expect(resultBrandsProblem(receipt)).toBeNull();
+  expect(
+    receipt.discovery?.brandProjection?.brands.every(
+      (entry) => !("corroboratingExcerptId" in entry),
+    ),
+  ).toBe(true);
+  expect(JSON.stringify(shoppingResearchSchema.parse(receipt))).toBe(
+    JSON.stringify(receipt),
+  );
   expect(validateShoppingResearch(receipt, 7)).toBeNull();
   expect(Assessment.validateAutomaticResearch(evidence, receipt, 7)).toBeNull();
   expect(JSON.stringify(evidence)).toBe(before);
@@ -154,6 +163,263 @@ test("full listing titles, seller-only brands, URL-only brands and invented name
     });
     expect(result.status).toBe("held");
   }
+});
+
+test("generic gender qualifiers need an independent exact direct-prefix card brand", async () => {
+  for (const prefix of ["Men's", "Women’s", "Unisex", "Men's Unisex"]) {
+    const fixture = await synthetic(
+      `${card(1, `${prefix} Alder Carry Bag`)}\n\n${card(2, "Alder Linen Bag")}\n\n${card(3, "Birch Shopper Bag")}`,
+    );
+    const evidence = await review(fixture.evidence);
+    const original = JSON.stringify(evidence);
+    const base = Review.projectUnrankedDiscoveryAbsence(evidence);
+    if (base.status !== "researched") throw new Error(base.reason);
+    const receipt = brands(evidence, base.receipt);
+    expect(resultBrandNames(receipt)).toEqual(["Alder", "Birch"]);
+    expect(receipt.claimExcerpts?.find((quote) => quote.brand)?.quote).toBe(
+      `${prefix} Alder Carry Bag`,
+    );
+    expect(
+      Assessment.validateAutomaticResearch(evidence, receipt, 7),
+    ).toBeNull();
+    expect(JSON.stringify(evidence)).toBe(original);
+
+    const changed = structuredClone(receipt);
+    const excerpt = changed.claimExcerpts?.find((quote) => quote.brand);
+    if (!excerpt?.brand) throw new Error("Missing selected title proof");
+    const originalHash = excerpt.brand.rawHash;
+    excerpt.brand.rawHash = "0".repeat(64);
+    expect(
+      Assessment.validateAutomaticResearch(evidence, changed, 7),
+    ).not.toBeNull();
+    excerpt.brand.rawHash = originalHash;
+    excerpt.quote = "Men's Invented Carry Bag";
+    expect(
+      Assessment.validateAutomaticResearch(evidence, changed, 7),
+    ).not.toBeNull();
+    const absentProof = structuredClone(receipt);
+    const entry = absentProof.discovery?.brandProjection?.brands[0];
+    if (!entry?.corroboratingExcerptId)
+      throw new Error("Missing independent title proof");
+    const corroboration = absentProof.claimExcerpts?.find(
+      (quote) => quote.id === entry.corroboratingExcerptId,
+    );
+    if (!corroboration?.brand) throw new Error("Missing corroborating card");
+    corroboration.brand.rawHash = "0".repeat(64);
+    expect(
+      Assessment.validateAutomaticResearch(evidence, absentProof, 7),
+    ).not.toBeNull();
+    absentProof.claimExcerpts = absentProof.claimExcerpts?.filter(
+      (quote) => quote.id !== entry.corroboratingExcerptId,
+    );
+    expect(resultBrandsProblem(absentProof)).not.toBeNull();
+    expect(
+      Assessment.validateAutomaticResearch(evidence, absentProof, 7),
+    ).not.toBeNull();
+  }
+});
+
+test("corroboration is server-projected receipt proof, never an optional Azure selection field", () => {
+  const wire = Review.resultBrandSelectionSchema.toJSONSchema();
+  expect(wire).toMatchObject({
+    required: ["decision", "reason", "brands"],
+    additionalProperties: false,
+    properties: {
+      brands: {
+        items: {
+          required: ["name", "quoteId"],
+          additionalProperties: false,
+        },
+      },
+    },
+  });
+  expect(JSON.stringify(wire)).not.toContain("corroboratingExcerptId");
+});
+
+test("qualifier stripping cannot invent brand authority or accept arbitrary prefixes and substrings", async () => {
+  for (const selection of [
+    {
+      title: "Men's Alder Carry Bag",
+      name: "Alder",
+      corroboration: "Unknown Carry Bag",
+    },
+    {
+      title: "Men's Cotton Carry Bag",
+      name: "Cotton",
+      corroboration: "Alder Cotton Bag",
+    },
+    {
+      title: "Unisex Carry Bag",
+      name: "Carry",
+      corroboration: "Alder Carry Bag",
+    },
+    {
+      title: "Vintage Alder Carry Bag",
+      name: "Alder",
+      corroboration: "Alder Linen Bag",
+    },
+    {
+      title: "Adult Alder Carry Bag",
+      name: "Alder",
+      corroboration: "Alder Linen Bag",
+    },
+    {
+      title: "Men's Alderish Carry Bag",
+      name: "Alder",
+      corroboration: "Alder Linen Bag",
+    },
+    {
+      title: "Men's Alder Carry Bag",
+      name: "alder",
+      corroboration: "Alder Linen Bag",
+    },
+  ]) {
+    const fixture = await synthetic(
+      `${card(1, selection.title)}\n\n${card(2, selection.corroboration)}\n\n${card(3, "Birch Shopper Bag")}`,
+    );
+    const evidence = await review(fixture.evidence);
+    const base = Review.projectUnrankedDiscoveryAbsence(evidence);
+    if (base.status !== "researched") throw new Error(base.reason);
+    const catalog = Review.resultBrandCatalog(evidence);
+    const projected = Review.projectResultBrands(evidence, base.receipt, {
+      decision: "supported",
+      reason: "Synthetic unsupported brand selection.",
+      brands: [
+        { name: selection.name, quoteId: catalog[0]?.id },
+        { name: "Birch", quoteId: catalog[2]?.id },
+      ],
+    });
+    expect(projected.status, JSON.stringify(selection)).toBe("held");
+  }
+});
+
+test("brand holds retain both rejected selections as bounded audit-only diagnostics", async () => {
+  const fixture = await synthetic();
+  const evidence = await review(fixture.evidence);
+  const base = Review.projectUnrankedDiscoveryAbsence(evidence);
+  if (base.status !== "researched") throw new Error(base.reason);
+  const catalog = Review.resultBrandCatalog(evidence);
+  const selection = {
+    decision: "supported" as const,
+    reason: "Synthetic unsupported selection.",
+    brands: [
+      { name: "Invented", quoteId: catalog[0]!.id },
+      { name: "Birch", quoteId: catalog[1]!.id },
+    ],
+  };
+  const original = JSON.stringify({ evidence, receipt: base.receipt });
+  const generate = mock(async () => selection);
+  const result = await Review.assessResultBrands(
+    { ...evidence, receipt: base.receipt, deadline: Date.now() + 40000 },
+    { generate },
+  );
+  expect(generate).toHaveBeenCalledTimes(2);
+  if (!result.success || result.data.status !== "held")
+    throw new Error(JSON.stringify(result));
+  expect("receipt" in result.data).toBe(false);
+  const audit = result.data.brandSelectionDiagnostics;
+  expect(audit).toMatchObject({
+    version: "answer-brand-selection-audit-v1",
+    auditOnly: true,
+    sourceId: evidence.answer.source.id,
+    answerHash: base.receipt.discovery?.answerHash,
+    linksHash: base.receipt.discovery?.linksHash,
+    attempts: [
+      { attempt: 1, selection, reason: result.data.reason },
+      { attempt: 2, selection, reason: result.data.reason },
+    ],
+  });
+  expect(audit?.receiptHash).toMatch(/^[a-f0-9]{64}$/);
+  expect(JSON.stringify({ evidence, receipt: base.receipt })).toBe(original);
+});
+
+test("a repaired brand selection keeps rejected diagnostics outside the unchanged receipt", async () => {
+  const fixture = await synthetic();
+  const evidence = await review(fixture.evidence);
+  const base = Review.projectUnrankedDiscoveryAbsence(evidence);
+  if (base.status !== "researched") throw new Error(base.reason);
+  const catalog = Review.resultBrandCatalog(evidence);
+  const input = {
+    ...evidence,
+    receipt: base.receipt,
+    deadline: Date.now() + 40000,
+  };
+  const valid = {
+    decision: "supported" as const,
+    reason: "Synthetic exact brands.",
+    brands: ["Alder", "Birch"].map((name, index) => ({
+      name,
+      quoteId: catalog[index]!.id,
+    })),
+  };
+  const direct = await Review.assessResultBrands(input, {
+    generate: async () => valid,
+  });
+  const generate = mock(async ({ prompt }: { prompt: string }) =>
+    JSON.parse(prompt).previous
+      ? valid
+      : {
+          ...valid,
+          brands: [
+            { name: "Invented", quoteId: catalog[0]!.id },
+            valid.brands[1]!,
+          ],
+        },
+  );
+  const repaired = await Review.assessResultBrands(input, { generate });
+  if (
+    !direct.success ||
+    direct.data.status !== "researched" ||
+    !repaired.success ||
+    repaired.data.status !== "researched"
+  )
+    throw new Error(JSON.stringify({ direct, repaired }));
+  expect(direct.data.brandSelectionDiagnostics).toBeUndefined();
+  expect(repaired.data.receipt).toEqual(direct.data.receipt);
+  expect(repaired.data.brandSelectionDiagnostics?.attempts).toHaveLength(1);
+  expect(generate).toHaveBeenCalledTimes(2);
+});
+
+test("an interrupted brand repair retains earlier rejection without retry or approval", async () => {
+  const fixture = await synthetic();
+  const evidence = await review(fixture.evidence);
+  const base = Review.projectUnrankedDiscoveryAbsence(evidence);
+  if (base.status !== "researched") throw new Error(base.reason);
+  const catalog = Review.resultBrandCatalog(evidence);
+  const generate = mock(async ({ prompt }: { prompt: string }) => {
+    if (JSON.parse(prompt).previous)
+      throw new Error("Synthetic interrupted repair");
+    return {
+      decision: "supported" as const,
+      reason: "Synthetic rejection",
+      brands: [
+        { name: "Invented", quoteId: catalog[0]!.id },
+        { name: "Birch", quoteId: catalog[1]!.id },
+      ],
+    };
+  });
+  const result = await Review.assessResultBrands(
+    { ...evidence, receipt: base.receipt, deadline: Date.now() + 40000 },
+    { generate },
+  );
+  expect(generate).toHaveBeenCalledTimes(2);
+  if (result.success)
+    throw new Error("Interrupted repair must remain uncertain");
+  expect(result.error).toMatchObject({
+    name: "outbound-integration-error",
+    code: "uncertain",
+    receipt: {
+      brandSelectionDiagnostics: {
+        auditOnly: true,
+        attempts: [
+          {
+            attempt: 1,
+            selection: { brands: [{ name: "Invented" }, { name: "Birch" }] },
+          },
+        ],
+      },
+    },
+  });
 });
 
 test("mixed headed plain lists support complete absence and exact brands, without global order", async () => {
