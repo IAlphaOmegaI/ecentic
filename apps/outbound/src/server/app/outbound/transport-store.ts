@@ -31,6 +31,7 @@ import {
   type Mail,
   messageIds,
 } from "@/server/utils/outbound/inbound";
+import { MailboxSyncDeferredError } from "@/server/utils/outbound/mailbox-sync";
 import { repository, resultifyRead } from "@/server/utils/repository";
 import * as Store from "./store";
 
@@ -863,9 +864,7 @@ const batchTransaction = <Data>(
   db.transaction(async (transaction) => {
     if (deadline !== undefined) {
       if (Date.now() >= deadline - 1_000)
-        throw new ConflictError(
-          "Mailbox synchronization will continue in the next run.",
-        );
+        throw new MailboxSyncDeferredError("budget");
       await transaction.execute(
         sql`select set_config('statement_timeout', ${String(Math.max(1, Math.min(10_000, deadline - Date.now() - 1000)))}, true)`,
       );
@@ -1205,9 +1204,7 @@ export const ingestBatch = (
     );
     for (const mail of applied.fallback) {
       if (deadline !== undefined && Date.now() >= deadline - 10_000)
-        throw new ConflictError(
-          "Mailbox synchronization will continue in the next run.",
-        );
+        throw new MailboxSyncDeferredError("budget");
       value(await ingest(inbox, mail));
     }
     if (applied.fallback.length && checkpoint)
@@ -1289,7 +1286,7 @@ export const withSyncLock = <T>(id: string, operation: () => Promise<T>) =>
         sql`select pg_try_advisory_xact_lock(hashtext(${`outbound-inbox-sync:${id}`})) as locked`,
       );
       if (!lock[0]?.["locked"])
-        throw new ConflictError("This inbox is already being synchronized.");
+        throw new MailboxSyncDeferredError("busy");
       return operation();
     }),
   );

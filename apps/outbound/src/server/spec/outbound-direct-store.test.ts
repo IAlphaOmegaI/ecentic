@@ -480,6 +480,202 @@ describe.skipIf(!endpoint)("isolated direct mailbox persistence", () => {
     ).toBe(false);
   });
 
+  test("overlapping inbox synchronization defers without replacing healthy mailbox state", async () => {
+    const { mailboxes, direct, worker } = active();
+    const inbox = await connect();
+    required(
+      await mailboxes.updateSync(inbox, {
+        syncMode: null,
+        lastSyncedAt: new Date(),
+        error: null,
+      }),
+    );
+    const before = required(await mailboxes.read(inbox.id));
+    const started = Promise.withResolvers<void>();
+    const release = Promise.withResolvers<void>();
+    const first = mailboxes.withSyncLock(inbox.id, async () => {
+      started.resolve();
+      await release.promise;
+      return true;
+    });
+    const page = spyOn(direct, "syncPage");
+    await started.promise;
+    try {
+      expect(required(await worker.syncAll())).toEqual([
+        {
+          inboxId: inbox.id,
+          complete: false,
+          processed: 0,
+          deferred: "busy",
+        },
+      ]);
+      expect(required(await mailboxes.read(inbox.id))).toEqual(before);
+      expect(page).not.toHaveBeenCalled();
+    } finally {
+      release.resolve();
+      required(await first);
+    }
+  });
+
+  test("a sync ingestion budget deferral preserves the prior error and checkpoint", async () => {
+    const { mailboxes, direct, worker, db, schema } = active();
+    const inbox = await connect();
+    const checkpoint = {
+      version: 1 as const,
+      email,
+      since: new Date(0).toISOString(),
+      folders: [],
+    };
+    required(
+      await mailboxes.updateSync(inbox, {
+        mailboxCheckpoint: checkpoint,
+        syncMode: "full",
+        lastSyncedAt: null,
+        error: "A previous real connection failure still needs resolution.",
+      }),
+    );
+    const before = required(await mailboxes.read(inbox.id));
+    const eventsBefore = await db.select().from(schema.outboundEvent);
+    const deadline = Date.now() + 60_000;
+    spyOn(direct, "syncPage").mockImplementationOnce(async () => {
+      spyOn(Date, "now").mockReturnValue(deadline - 500);
+      return {
+        success: true,
+        data: { messages: [message()], complete: true, checkpoint },
+      };
+    });
+    expect(required(await worker.syncAll({ deadline }))).toEqual([
+      {
+        inboxId: inbox.id,
+        complete: false,
+        processed: 0,
+        deferred: "budget",
+      },
+    ]);
+    expect(required(await mailboxes.read(inbox.id))).toEqual(before);
+    expect(await db.select().from(schema.outboundSuppression)).toHaveLength(0);
+    expect(await db.select().from(schema.outboundEvent)).toEqual(eventsBefore);
+  });
+
+  test("sync budget exhaustion before a provider call is an incomplete deferral", async () => {
+    const { mailboxes, direct, worker } = active();
+    const inbox = await connect();
+    const before = required(await mailboxes.read(inbox.id));
+    const page = spyOn(direct, "syncPage");
+    const result = await worker.syncInbox(inbox.id, {
+      deadline: Date.now() + 20_000,
+    });
+    expect(result).toMatchObject({
+      success: false,
+      error: { name: "mailbox-sync-deferred", reason: "budget" },
+    });
+    expect(page).not.toHaveBeenCalled();
+    expect(required(await mailboxes.read(inbox.id))).toEqual(before);
+  });
+
+  test.each(["access", "unavailable"] as const)(
+    "sync %s failures still persist unhealthy readiness",
+    async (code) => {
+      const { mailboxes, direct, worker } = active();
+      const inbox = await connect();
+      const before = required(await mailboxes.read(inbox.id));
+      const error = new IntegrationError("google", code, "Actual sync failure");
+      spyOn(direct, "syncPage").mockResolvedValueOnce({
+        success: false,
+        error,
+      });
+      expect(required(await worker.syncAll())).toEqual([
+        {
+          inboxId: inbox.id,
+          complete: false,
+          processed: 0,
+          error: error.message,
+        },
+      ]);
+      const after = required(await mailboxes.read(inbox.id));
+      expect(after?.error).toBe(
+        "Inbox synchronization failed. Resolve it before delivery resumes.",
+      );
+      expect(after?.lastSyncedAt).toEqual(before?.lastSyncedAt);
+      expect(after?.mailboxCheckpoint).toEqual(before?.mailboxCheckpoint);
+      expect(after?.enabled).toBe(before?.enabled);
+    },
+  );
+
+  test("a partially ingested page keeps its checkpoint and resumes after a budget deferral", async () => {
+    const { mailboxes, direct, worker, db, schema } = active();
+    const inbox = await connect();
+    await prospect();
+    const before = required(await mailboxes.read(inbox.id));
+    const checkpoint = {
+      version: 1 as const,
+      email,
+      since: new Date(0).toISOString(),
+      folders: [],
+    };
+    const sent = message({
+      id: "imap:sent:1:10",
+      labelIds: ["SENT"],
+      headers: {
+        from: email,
+        to: "prior@legacy-shop.test",
+        "message-id": "<prior@fixture.test>",
+      },
+      text: "A real historical outbound message.",
+    });
+    const deadline = Date.now() + 60_000;
+    const clock = spyOn(Date, "now");
+    const page = spyOn(direct, "syncPage")
+      .mockImplementationOnce(async () => {
+        clock.mockReturnValue(deadline - 9_000);
+        return {
+          success: true,
+          data: { messages: [sent, message()], complete: true, checkpoint },
+        };
+      })
+      .mockResolvedValueOnce({
+        success: true,
+        data: { messages: [sent, message()], complete: true, checkpoint },
+      });
+    expect(required(await worker.syncAll({ deadline }))[0]).toMatchObject({
+      complete: false,
+      deferred: "budget",
+    });
+    expect(required(await mailboxes.read(inbox.id))).toEqual(before);
+    expect(
+      (await db.select().from(schema.outboundEvent)).filter((event) =>
+        event.externalId?.startsWith(`google-imap:${inbox.id}:`),
+      ),
+    ).toHaveLength(1);
+    expect(await db.select().from(schema.outboundSuppression)).toHaveLength(2);
+    clock.mockRestore();
+    expect(required(await worker.syncInbox(inbox.id))).toEqual({
+      complete: true,
+      processed: 2,
+    });
+    expect(page.mock.calls[1]?.[0].checkpoint).toEqual(before?.mailboxCheckpoint);
+    expect(required(await mailboxes.read(inbox.id))).toMatchObject({
+      error: null,
+      syncMode: null,
+      mailboxCheckpoint: checkpoint,
+    });
+    expect(
+      (await db.select().from(schema.outboundEvent)).filter((event) =>
+        event.externalId?.startsWith(`google-imap:${inbox.id}:`),
+      ),
+    ).toHaveLength(2);
+    expect(
+      (await db.select().from(schema.outboundSuppression))
+        .map((suppression) => `${suppression.scope}:${suppression.value}`)
+        .sort(),
+    ).toEqual([
+      "domain:fixture-shop.com",
+      "domain:legacy-shop.test",
+      "email:person@fixture-shop.com",
+      "email:prior@legacy-shop.test",
+    ]);
+  });
+
   test("worker persists partial history before declaring the mailbox fresh", async () => {
     const { mailboxes, direct, worker, db, schema } = active();
     const inbox = await connect();
@@ -548,11 +744,19 @@ describe.skipIf(!endpoint)("isolated direct mailbox persistence", () => {
         },
       };
     });
-    expect((await worker.syncInbox(inbox.id)).success).toBe(false);
+    expect(required(await worker.syncAll())).toEqual([
+      {
+        inboxId: inbox.id,
+        complete: false,
+        processed: 0,
+        error: "The mailbox connection changed during synchronization.",
+      },
+    ]);
     expect(required(await mailboxes.read(inbox.id))).toMatchObject({
       connectionVersion: 2,
       mailboxCheckpoint: null,
       lastSyncedAt: null,
+      syncMode: "full",
       enabled: false,
     });
     expect(await db.select().from(schema.outboundSuppression)).toHaveLength(0);

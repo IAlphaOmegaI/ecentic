@@ -516,6 +516,12 @@ omitted while headers and bounded message text are read through IMAP MIME parts.
 This mailbox scan does not replace an import of
 older contacts and suppressions from Instantly.
 
+An overlapping sync or an exhausted processing budget is an incomplete deferral,
+not a mailbox failure. It preserves the existing error, freshness and page
+checkpoint while retaining already ingested messages for an idempotent later
+resume. Only a completed sync refreshes mailbox readiness; genuine provider or
+connection failures continue to block delivery.
+
 SMTP uses the existing exact-message approval and immutable attempt ledger,
 including stable RFC Message-IDs and reply references. Only an accepted SMTP
 receipt or a matching provider Sent message can reconcile an uncertain attempt.
