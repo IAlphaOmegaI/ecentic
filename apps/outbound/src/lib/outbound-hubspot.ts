@@ -1,6 +1,8 @@
 import { z } from "zod";
 
 export const HUBSPOT_PULL_OPERATION = "hubspotExclusionPullV1";
+export const HUBSPOT_AUTOMATION_OPERATION = "hubspotExclusionAutomationV1";
+export const HUBSPOT_REFRESH_MS = 86_400_000;
 export const HUBSPOT_STALE_MS = 3 * 86_400_000;
 export const hubspotObjectSchema = z.enum(["companies", "contacts"]);
 export const hubspotPageSchema = z.object({
@@ -32,6 +34,14 @@ export const hubspotPullInputSchema = z
     credentialVersion: z.string().regex(/^[a-f0-9]{64}$/),
     maxPages: z.number().int().min(2).max(100),
     mode: z.literal("preview-only"),
+    automation: z
+      .object({
+        configurationId: z.string().uuid(),
+        epoch: z.string().uuid(),
+        day: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      })
+      .strict()
+      .optional(),
   })
   .strict();
 export const hubspotPullStateSchema = z
@@ -71,3 +81,23 @@ export const hubspotPullStateSchema = z
 export type HubspotPage = z.infer<typeof hubspotPageSchema>;
 export type HubspotObject = z.infer<typeof hubspotObjectSchema>;
 export type HubspotPullState = z.infer<typeof hubspotPullStateSchema>;
+export const hubspotAutomationSchema = z
+  .object({
+    enabled: z.boolean(),
+    epoch: z.string().uuid(),
+    credentialVersion: z.string().regex(/^[a-f0-9]{64}$/),
+    proof: z
+      .object({
+        jobId: z.string().uuid(),
+        previewHash: z.string().regex(/^[a-f0-9]{64}$/),
+      })
+      .strict(),
+    maxPages: z.number().int().min(2).max(100),
+    updatedBy: z.string().trim().min(1).max(200),
+    updatedAt: z.string().datetime(),
+    nextDueAt: z.string().datetime(),
+    currentJobId: z.string().uuid().nullable(),
+    reason: z.string().max(500).nullable(),
+  })
+  .strict();
+export type HubspotAutomation = z.infer<typeof hubspotAutomationSchema>;

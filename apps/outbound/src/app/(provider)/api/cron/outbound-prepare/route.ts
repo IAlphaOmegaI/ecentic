@@ -3,6 +3,7 @@ import * as Discovery from "@/server/app/outbound/automatic-company-discovery";
 import * as Review from "@/server/app/outbound/automatic-draft-review";
 import * as Refresh from "@/server/app/outbound/automatic-sequence-refresh";
 import * as Automation from "@/server/app/outbound/automation";
+import * as HubSpot from "@/server/app/outbound/hubspot-exclusions";
 import * as SavedContacts from "@/server/app/outbound/saved-contact-preparation";
 import { authorizeCron } from "@/server/utils/outbound/cron";
 
@@ -11,6 +12,7 @@ export const GET = async (request: Request) => {
   const denied = authorizeCron(request);
   if (denied) return denied;
   const deadline = Date.now() + 240_000;
+  const hubspot = await HubSpot.runScheduled({ deadline: Date.now() + 30_000 });
   const refresh = await Refresh.run({
     maxSteps: 20,
     deadline: deadline - 150_000,
@@ -32,6 +34,9 @@ export const GET = async (request: Request) => {
   const preparation = await Automation.run({ maxSteps: 20, deadline });
   return NextResponse.json(
     {
+      hubspot: hubspot.success
+        ? hubspot.data
+        : { error: "HubSpot history protection needs attention" },
       refresh: refresh.success
         ? refresh.data
         : { error: "Receipt renewal needs attention" },
@@ -50,6 +55,7 @@ export const GET = async (request: Request) => {
     },
     {
       status:
+        hubspot.success &&
         refresh.success &&
         review.success &&
         preparation.success &&

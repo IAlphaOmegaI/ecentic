@@ -26,6 +26,7 @@ export const smokeSuites = [
   "src/server/spec/outbound-integration.test.ts",
   "src/server/spec/outbound-hubspot.test.ts",
   "src/server/spec/outbound-hubspot-exclusions.test.ts",
+  "src/server/spec/outbound-hubspot-daily.test.ts",
   "src/server/spec/outbound-campaign-filter.test.ts",
   "src/server/spec/outbound-review.test.ts",
   "src/lib/spec/outbound-review-state.test.ts",

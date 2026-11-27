@@ -49,8 +49,23 @@ const result = await (async () => {
         job: values.job,
         expectedHash: values.hash,
       });
+    case "enable":
+      if (!values.execute || !values.job || !values.hash)
+        throw Error(
+          "Enabling daily protection requires --execute, --job and the exact applied preview --hash.",
+        );
+      return Sync.enable(values.actor, {
+        job: values.job,
+        expectedHash: values.hash,
+      });
+    case "disable":
+      if (!values.execute)
+        throw Error("Disabling daily protection requires --execute.");
+      return Sync.disable(values.actor);
     default:
-      throw Error("Use status, preview, start, page or apply.");
+      throw Error(
+        "Use status, preview, start, page, apply, enable or disable.",
+      );
   }
 })();
 if (!result.success) throw result.error;
