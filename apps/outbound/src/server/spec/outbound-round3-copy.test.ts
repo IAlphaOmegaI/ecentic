@@ -16,6 +16,7 @@ import { validateWriterParts } from "@/lib/outbound-writing";
 import {
   buildSyntheticShoppingCapture,
   buildSyntheticShoppingEvidence,
+  type FactSelection,
 } from "./helpers/outbound-shopping-fixture";
 import {
   passingCopyJudge,
@@ -411,6 +412,267 @@ describe("explicit round-three copy rules", () => {
 });
 
 describe("full-answer and saved-citation spoken-name proof", () => {
+  const rootsOptions = {
+    prospect: {
+      company: "Roots Farm Fresh",
+      domain: "rootsfarmfresh.com",
+      product: "Classic Cut",
+      productUrl: "https://www.rootsfarmfresh.com/products/classic-cut-fries",
+    },
+    shopper: {
+      question: "frozen potato fries",
+      category: "potato fries",
+      attribute: "frozen",
+    },
+    pageText:
+      "Classic Cut Fries are frozen potato fries. Roots was born as a sustainability mission. The Roots' collective makes eight Roots products.",
+    answerText:
+      "1. [Canvas Works — Frozen fries](https://canvas.example/products/fries).\n2. [Harbor Label — Frozen potato fries](https://harbor.example/products/fries).",
+    select: (selection: FactSelection) => ({
+      ...selection,
+      productAttributes: [],
+    }),
+  };
+
+  test("Roots is an own-domain absence-only alias without changing saved names or proof shape", async () => {
+    const input = await buildSyntheticShoppingEvidence(rootsOptions);
+    const discovery = input.receipt.discovery;
+    if (!discovery) throw new Error("Synthetic discovery missing");
+    const original = JSON.stringify(input);
+    const receipt = value(
+      Proof.projectRound3CopyProof(input.evidence, input.receipt),
+    );
+    expect(spokenMerchantName(rootsOptions.prospect)).toBe("Roots Farm Fresh");
+    expect(receipt.discovery?.round3CopyProof).toEqual({
+      version: "round3-copy-proof-v1",
+      sourceId: input.evidence.answer.source.id,
+      answerHash: discovery.answerHash,
+      linksHash: discovery.linksHash,
+      fullName: "Roots Farm Fresh",
+      spokenName: "Roots Farm Fresh",
+      domain: "rootsfarmfresh.com",
+      namesAbsent: true,
+      citedSources: [],
+    });
+    expect(Proof.validateRound3CopyProof(input.evidence, receipt)).toBeNull();
+    expect(input.evidence.answer.job.query.merchant?.aliases).toEqual([]);
+    expect(JSON.stringify(input)).toBe(original);
+
+    const variant = await buildSyntheticShoppingEvidence({
+      ...rootsOptions,
+      prospect: { ...rootsOptions.prospect, company: "  ROOTS FARM FRESH  " },
+      pageText: "Classic Cut Fries are frozen potato fries.",
+    });
+    const variantProof = Proof.projectRound3CopyProof(
+      variant.evidence,
+      variant.receipt,
+    );
+    expect(variantProof.success).toBe(false);
+    if (!variantProof.success)
+      expect(variantProof.error.message).toContain("Roots absence alias");
+
+    for (const options of [
+      {
+        ...rootsOptions,
+        pageText: "Classic Cut Fries are frozen potato fries.",
+      },
+      {
+        ...rootsOptions,
+        pageText:
+          "Classic Cut Fries are frozen potato fries. Potato plants grow roots in soil.",
+      },
+      {
+        ...rootsOptions,
+        prospect: {
+          ...rootsOptions.prospect,
+          domain: "unrelated.example",
+          productUrl: "https://unrelated.example/products/classic-cut-fries",
+        },
+      },
+    ]) {
+      const unsupported = await buildSyntheticShoppingEvidence(options);
+      const result = Proof.projectRound3CopyProof(
+        unsupported.evidence,
+        unsupported.receipt,
+      );
+      expect(result.success).toBe(false);
+      if (!result.success)
+        expect(result.error.message).toContain("Roots absence alias");
+    }
+    for (const kind of ["missing", "hash", "source", "url"] as const) {
+      const changed = structuredClone(input.evidence);
+      const source = changed.browser.sources.find(
+        (source) => source.kind === "product",
+      );
+      const raw = changed.browser.raw.find(
+        (raw) => source?.artifact === `sha256:${raw.sha256}`,
+      );
+      if (!source || !raw) throw new Error("Synthetic own-page proof missing");
+      if (kind === "missing")
+        changed.browser.raw = changed.browser.raw.filter(
+          (entry) => entry !== raw,
+        );
+      if (kind === "hash") raw.body += " ";
+      if (kind === "source") source.content += " Roots was born.";
+      if (kind === "url") source.url = "https://unrelated.example/product";
+      const attempted = {
+        ...receipt,
+        sources: [changed.answer.source, ...changed.browser.sources],
+      };
+      expect(Proof.projectRound3CopyProof(changed, attempted).success).toBe(
+        false,
+      );
+      expect(Proof.validateRound3CopyProof(changed, attempted)).not.toBeNull();
+    }
+  });
+
+  test("complete Roots answer and citation scans veto absence without declaring brand equivalence", async () => {
+    const input = await buildSyntheticShoppingEvidence(rootsOptions);
+    const receipt = value(
+      Proof.projectRound3CopyProof(input.evidence, input.receipt),
+    );
+    const discovery = receipt.discovery;
+    if (!discovery) throw new Error("Synthetic discovery missing");
+    for (const name of [
+      "Roots Farm Fresh",
+      "Roots Organic Sweet Potato Fries",
+      "Strong Roots Crispy Crinkle Fries",
+    ]) {
+      const present = await buildSyntheticShoppingCapture({
+        ...rootsOptions,
+        answerText: `${rootsOptions.answerText}\n\n${"Other choices. ".repeat(1600)}${name} also appears.`,
+      });
+      expect(present.evidence.answer.source.content).not.toContain(name);
+      const replay = Presence.replayShoppingCapture(present.evidence.answer);
+      const attempted = {
+        ...receipt,
+        sources: [
+          present.evidence.answer.source,
+          ...present.evidence.browser.sources,
+        ],
+        discovery: {
+          ...discovery,
+          sourceId: present.evidence.answer.source.id,
+          answerHash: replay.answerHash,
+          linksHash: replay.linksHash,
+        },
+      };
+      const result = Proof.projectRound3CopyProof(present.evidence, attempted);
+      expect(result.success).toBe(false);
+      expect(
+        Proof.validateRound3CopyProof(present.evidence, attempted),
+      ).not.toBeNull();
+      if (name.startsWith("Strong Roots")) {
+        expect(
+          Presence.computeDiscoveryBase(present.evidence).merchantPresent,
+        ).toBe(false);
+        if (!result.success) {
+          expect(result.error.message).toContain("absence is not established");
+          expect(result.error.message).toContain(
+            "not proof of the same merchant",
+          );
+        }
+      }
+    }
+
+    const poll = input.evidence.answer.raw.find((raw) => raw.status === 200);
+    if (!poll) throw new Error("Synthetic answer raw missing");
+    const response = JSON.parse(poll.body);
+    const polled = value(
+      await Capture.pollQuery(
+        { apiKey: "synthetic", job: input.evidence.answer.job },
+        {
+          now: () => input.now,
+          request: async () => ({
+            success: true,
+            data: Response.json({
+              ...response,
+              result: {
+                ...response.result,
+                citations: [
+                  {
+                    url: "https://retailer.example/frozen-fries",
+                    title: "Frozen fries",
+                    snippet: "Roots Organic Sweet Potato Fries",
+                  },
+                ],
+              },
+            }),
+          }),
+        },
+      ),
+    );
+    if (polled.status !== "captured") throw new Error("Synthetic poll failed");
+    expect(polled.capture.answer).not.toContain("Roots");
+    const replay = Presence.replayShoppingCapture(polled.capture);
+    const evidence = { ...input.evidence, answer: polled.capture };
+    const attempted = {
+      ...receipt,
+      sources: [evidence.answer.source, ...evidence.browser.sources],
+      discovery: {
+        ...discovery,
+        answerHash: replay.answerHash,
+        linksHash: replay.linksHash,
+      },
+    };
+    const result = Proof.projectRound3CopyProof(evidence, attempted);
+    expect(result.success).toBe(false);
+    if (!result.success)
+      expect(result.error.message).toContain("saved answer or cited links");
+  });
+
+  test("a Roots short-name hit beyond the saved cited-page projection invalidates old absence proof", async () => {
+    const input = await buildSyntheticShoppingEvidence(rootsOptions);
+    const receipt = value(
+      Proof.projectRound3CopyProof(input.evidence, input.receipt),
+    );
+    const original = JSON.stringify(input);
+    const raw = input.evidence.browser.raw.find((entry) =>
+      entry.url.endsWith("/execute"),
+    );
+    if (!raw) throw new Error("Synthetic product raw missing");
+    const envelope = JSON.parse(raw.body);
+    const url = "https://retailer.example/best-frozen-fries";
+    const body = JSON.stringify({
+      ...envelope,
+      stdout: JSON.stringify({
+        ...JSON.parse(envelope.stdout),
+        url,
+        title: "Frozen fries",
+        headings: ["Frozen fries"],
+        text: `${"Other choices. ".repeat(1600)}Best Sweet Potato Fries\nRoots Organic Sweet Potato Fries\nThese Roots Organic sweet potato fries are a side dish.`,
+      }),
+    });
+    const citedRaw = { ...raw, body, sha256: digest(body) };
+    const projected = Browser.projectBrowserExecution({
+      capture: citedRaw,
+      url,
+      id: "competitor-roots",
+      productName: rootsOptions.prospect.product,
+      startedAt: citedRaw.receivedAt,
+    });
+    if (!projected) throw new Error("Synthetic cited page invalid");
+    expect(projected.source.content).not.toContain("Roots");
+    const evidence = {
+      ...input.evidence,
+      browser: {
+        ...input.evidence.browser,
+        raw: [...input.evidence.browser.raw, citedRaw],
+        sources: [...input.evidence.browser.sources, projected.source],
+      },
+    };
+    const attempted = {
+      ...receipt,
+      sources: [evidence.answer.source, ...evidence.browser.sources],
+    };
+    const result = Proof.projectRound3CopyProof(evidence, attempted);
+    expect(result.success).toBe(false);
+    if (!result.success)
+      expect(result.error.message).toContain("saved cited page");
+    expect(Proof.validateRound3CopyProof(evidence, attempted)).not.toBeNull();
+    expect(JSON.stringify(input)).toBe(original);
+  });
+
   test("the exact Midwinter short name needs its own rendered source and full raw absence", async () => {
     const company =
       "Midwinter Co. Alternative Bridal Rings and Modern Fine Jewelry";

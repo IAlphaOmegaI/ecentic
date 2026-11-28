@@ -531,6 +531,15 @@ citations and saved cited pages. Previously saved copy and receipts are never
 rewritten or reopened by this mapping. Sentence and absence-clause parsing retain
 periods inside supported names, while genuine sentence endings still count.
 
+`Roots Farm Fresh` keeps its displayed name. Its absence proof also excludes the
+short name `Roots`, but only after intact own-product raw evidence on
+`rootsfarmfresh.com` establishes that self-reference. Missing, changed or foreign
+support holds the proof instead of reverting to full-name-only absence. A short
+name hit anywhere in the complete answer, citations or saved cited pages vetoes
+absence; it does not establish merchant presence, rank or a no-gap finding.
+In particular, an overlapping brand such as `Strong Roots` is not identified as
+the same merchant. This forward guard never rewrites saved previews or receipts.
+
 `composeForProspect` already accepts exact `suppliedParts` with `preview: true`;
 this skips writer generation and uses the normal one-use quality judgment. It
 still requires the prospect's currently applied research. Unapplied round-three

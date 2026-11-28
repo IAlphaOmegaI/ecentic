@@ -59,9 +59,17 @@ const proofFor = (
       original.completeness.reason ??
         "The complete original answer does not establish merchant absence.",
     );
-  const names = { ...merchant, aliases: [...merchant.aliases, spokenName] };
   const product = evidence.answer.job.query.product;
-  if (spokenName === "Midwinter Co." && merchant.name !== spokenName) {
+  // An absence-only alias: do not rename copy or interpret an overlapping
+  // brand such as Strong Roots as this merchant's presence or rank.
+  const rootsAlias =
+    merchant.name.trim().toLowerCase() === "roots farm fresh" ? "Roots" : null;
+  const supportedName =
+    rootsAlias ??
+    (spokenName === "Midwinter Co." && merchant.name !== spokenName
+      ? spokenName
+      : null);
+  if (supportedName) {
     const source = evidence.browser.sources.find(
       (source) => source.kind === "product" && source.url === product.url,
     );
@@ -81,31 +89,51 @@ const proofFor = (
             now,
           })
         : null;
+    const text = projected
+      ? [
+          projected.rendered.title,
+          projected.rendered.text,
+          ...projected.rendered.headings,
+        ].join("\n")
+      : "";
     if (
       !projected ||
       !source ||
       !isDeepStrictEqual(projected.source, source) ||
       !matchMerchantText(
-        [
-          projected.rendered.title,
-          projected.rendered.text,
-          ...projected.rendered.headings,
-        ].join("\n"),
-        { ...merchant, name: spokenName, aliases: [] },
+        text,
+        { ...merchant, name: supportedName, aliases: [] },
         product,
-      ).includes(spokenName)
+      ).includes(supportedName) ||
+      (rootsAlias &&
+        (domain !== "rootsfarmfresh.com" ||
+          new URL(source.url).hostname.replace(/^www\./i, "").toLowerCase() !==
+            domain ||
+          !/\b(?:Roots was born|The Roots['’] collective)\b/i.test(text)))
     )
       throw new Error(
-        "The configured Midwinter spoken name needs intact rendered merchant-page support.",
+        rootsAlias
+          ? "The Roots absence alias needs intact own-domain rendered merchant-page support."
+          : "The configured Midwinter spoken name needs intact rendered merchant-page support.",
       );
   }
+  const names = {
+    ...merchant,
+    aliases: [
+      ...merchant.aliases,
+      spokenName,
+      ...(rootsAlias ? [rootsAlias] : []),
+    ],
+  };
   if (
     [...full.answerVariants, ...full.citationText].some(
       (text) => matchMerchantText(text, names, product).length,
     )
   )
     throw new Error(
-      "The full or spoken merchant name appears in the saved answer or cited links.",
+      rootsAlias
+        ? "A source-backed Roots name occurs in the saved answer or cited links; merchant absence is not established. A longer brand name is not proof of the same merchant."
+        : "The full or spoken merchant name appears in the saved answer or cited links.",
     );
   const citedSources = evidence.browser.sources
     .filter((source) => source.kind === "competitor")
@@ -138,7 +166,9 @@ const proofFor = (
       ].join("\n");
       if (matchMerchantText(text, names, product).length)
         throw new Error(
-          "The full or spoken merchant name appears in a saved cited page.",
+          rootsAlias
+            ? "A source-backed Roots name occurs in a saved cited page; merchant absence is not established. A longer brand name is not proof of the same merchant."
+            : "The full or spoken merchant name appears in a saved cited page.",
         );
       return { id: source.id, url: source.url, sha256: raw.sha256 };
     });
